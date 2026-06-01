@@ -237,6 +237,101 @@
     .mindcheck h2{font-size:clamp(2.2rem,4vw,4rem);color:var(--navy);margin:0 0 16px}
     .mindcheck p{color:var(--muted);line-height:1.75;font-size:1.08rem}
 
+    .ecosystem{
+      background:#fff;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+    .ecosystem-intro{
+      max-width:900px;
+      margin:0 auto 52px;
+      text-align:center;
+    }
+    .ecosystem-intro h2{
+      font-size:clamp(2.25rem,4.5vw,4.5rem);
+      color:var(--navy);
+      margin:0 0 16px;
+    }
+    .ecosystem-intro p{
+      color:var(--muted);
+      font-size:1.1rem;
+      line-height:1.75;
+      margin:0;
+    }
+    .ecosystem-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:40px;
+      align-items:center;
+      margin-bottom:70px;
+    }
+    .ecosystem-grid:last-child{margin-bottom:0}
+    .ecosystem-grid.reverse{direction:rtl}
+    .ecosystem-grid.reverse > *{direction:ltr}
+    .ecosystem-image{
+      position:relative;
+      border-radius:32px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:var(--blue-soft);
+      min-height:420px;
+    }
+    .ecosystem-image img{
+      width:100%;
+      height:420px;
+      object-fit:cover;
+      transition:.5s ease;
+    }
+    .ecosystem-image:hover img{transform:scale(1.04)}
+    .ecosystem-image::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,transparent 55%,rgba(7,21,43,.28));
+      pointer-events:none;
+    }
+    .ecosystem-content{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:32px;
+      padding:38px;
+      box-shadow:var(--shadow-soft);
+    }
+    .ecosystem-content h2{
+      font-size:clamp(2rem,4vw,3.6rem);
+      color:var(--navy);
+      margin:14px 0 16px;
+    }
+    .ecosystem-content p{
+      color:var(--muted);
+      line-height:1.8;
+      font-size:1.06rem;
+      margin:0 0 20px;
+    }
+    .ecosystem-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin:24px 0 28px;
+      padding:0;
+      list-style:none;
+    }
+    .ecosystem-list li{
+      background:#f8fbff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      color:var(--navy);
+      font-weight:800;
+      font-size:.94rem;
+    }
+    .ecosystem-list li::before{
+      content:"✓";
+      color:var(--blue);
+      font-weight:900;
+      margin-right:8px;
+    }
+
     .testimonials{background:var(--bg)}
     .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
     .quote-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow-soft)}
@@ -367,7 +462,7 @@
 
     @media(max-width:1000px){
       .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid{grid-template-columns:repeat(2,1fr)}
-      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid{grid-template-columns:1fr}
+      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse{grid-template-columns:1fr;direction:ltr}
       .hero{background-position:center}
       .founder-photo{height:360px}
     }
@@ -385,9 +480,11 @@
       .btn{width:100%}
       .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid{grid-template-columns:1fr}
       .gallery-item{height:240px}
-      .mindcheck-wrap,.founder-wrap,.why-box{padding:26px}
+      .mindcheck-wrap,.founder-wrap,.why-box,.ecosystem-content{padding:26px}
       .floating-help{left:16px;right:16px;text-align:center}
       .contact-option{flex-direction:column}
+      .ecosystem-list{grid-template-columns:1fr}
+      .ecosystem-image,.ecosystem-image img{height:300px;min-height:300px}
     }
 
     @media(prefers-reduced-motion:reduce){
@@ -418,6 +515,7 @@
         <a href="#impact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Impact</a>
         <a href="#programs" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Programs</a>
         <a href="#mindcheck" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">MindCheck</a>
+        <a href="#ecosystem" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Learning Hub</a>
         <a href="#partners" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Partners</a>
         <a href="#contact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Contact</a>
       </nav>
@@ -544,6 +642,62 @@
             <div class="screen-line"></div>
             <div class="screen-line short gold"></div>
             <div class="screen-card"><div></div><div></div><div></div><div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ecosystem" id="ecosystem">
+      <div class="container">
+        <div class="ecosystem-intro reveal">
+          <span class="label">Learning & Growth Ecosystem</span>
+          <h2>Beyond awareness. Building skills, knowledge and opportunities.</h2>
+          <p>SpeakOut connects mental wellness with practical learning, digital knowledge, leadership growth and youth development.</p>
+        </div>
+
+        <div class="ecosystem-grid reveal">
+          <div class="ecosystem-image">
+            <img src="images/speakhub.png" alt="African youth learning digital skills through SpeakHub">
+          </div>
+
+          <div class="ecosystem-content">
+            <span class="label">Skills Development Center</span>
+            <h2>SpeakHub</h2>
+            <p>SpeakHub is our skills development center designed to help young people access digital skills, leadership training, professional development, certifications and career growth resources.</p>
+
+            <ul class="ecosystem-list">
+              <li>Digital Skills</li>
+              <li>Leadership Training</li>
+              <li>Career Growth</li>
+              <li>Certification Programs</li>
+              <li>Professional Development</li>
+              <li>Youth Empowerment</li>
+            </ul>
+
+            <a href="https://mindcheck.speakoutmentalhealth.org/speakhub.html" target="_blank" rel="noopener" class="btn btn-primary">Explore SpeakHub</a>
+          </div>
+        </div>
+
+        <div class="ecosystem-grid reverse reveal">
+          <div class="ecosystem-image">
+            <img src="images/elibrary.png" alt="African students using books and tablets in a digital library">
+          </div>
+
+          <div class="ecosystem-content">
+            <span class="label">Digital Knowledge Center</span>
+            <h2>E-Library</h2>
+            <p>The E-Library gives young people access to curated books, educational resources, mental health materials, leadership content and personal development tools.</p>
+
+            <ul class="ecosystem-list">
+              <li>Mental Health Resources</li>
+              <li>Leadership Books</li>
+              <li>Personal Development</li>
+              <li>Academic Materials</li>
+              <li>Wellness Education</li>
+              <li>Digital Learning</li>
+            </ul>
+
+            <a href="https://mindcheck.speakoutmentalhealth.org/e-library.html" target="_blank" rel="noopener" class="btn btn-primary">Open E-Library</a>
           </div>
         </div>
       </div>
@@ -734,7 +888,7 @@
                 <span>03</span>
                 <div>
                   <strong>Media & Outreach</strong>
-                  <a href="https://instagram.com/speaak_out" target="_blank" rel="noopener">Instagram: @speaaakout</a>
+                  <a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">Instagram: @speaaakout</a>
                 </div>
               </div>
 
@@ -814,6 +968,7 @@
           <a href="#impact">Impact</a>
           <a href="#programs">Programs</a>
           <a href="#partners">Partners</a>
+          <a href="#ecosystem">Learning Hub</a>
           <a href="#documents">Documents</a>
           <a href="#contact">Contact</a>
         </div>
@@ -822,6 +977,8 @@
           <h4>Action</h4>
           <a href="https://speakoutmentalhealth.github.io/MindCheck/" target="_blank" rel="noopener">MindCheck</a>
           <a href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" rel="noopener">Ambassador Program</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/speakhub.html" target="_blank" rel="noopener">SpeakHub</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/e-library.html" target="_blank" rel="noopener">E-Library</a>
           <a href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate / Sponsor</a>
         </div>
 
