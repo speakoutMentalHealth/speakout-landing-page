@@ -168,19 +168,44 @@
       top:0;
       z-index:1000;
       min-height:84px;
-      padding:12px 0;
-      background:rgba(255,255,255,.94);
+      padding:10px 0;
+      background:rgba(255,255,255,.96);
       backdrop-filter:blur(18px);
       border-bottom:1px solid rgba(7,21,43,.08);
     }
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .brand img{width:58px;height:58px;object-fit:contain}
-    .brand h2{margin:0;color:var(--blue);font-size:1.35rem;line-height:1;font-weight:900}
-    .brand p{margin:3px 0 0;color:var(--gold-2);font-size:.74rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
-    .nav-links{display:flex;align-items:center;gap:22px;font-weight:800;color:#374151;font-size:.95rem}
+
+    /* Header fix: keeps the logo protected and pushes menu buttons away from it */
+    .nav-inner{
+      display:grid;
+      grid-template-columns:minmax(210px,auto) 1fr auto;
+      align-items:center;
+      gap:34px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:210px;
+      flex-shrink:0;
+    }
+    .brand img{width:54px;height:54px;object-fit:contain;flex:0 0 auto}
+    .brand h2{margin:0;color:var(--blue);font-size:1.22rem;line-height:1;font-weight:900;white-space:nowrap}
+    .brand p{margin:4px 0 0;color:var(--gold-2);font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+    .nav-links{
+      grid-column:3;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      margin-left:auto;
+      font-weight:800;
+      color:#374151;
+      font-size:.82rem;
+      min-width:0;
+    }
+    .nav-links .btn{min-height:40px;padding:11px 14px}
     .nav-links a:hover{color:var(--blue)}
-    .menu-toggle{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:10px 13px;font-size:1.25rem;cursor:pointer}
+    .menu-toggle{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:10px 13px;font-size:1.25rem;cursor:pointer;grid-column:3;justify-self:end}
 
     .btn{
       display:inline-flex;
@@ -650,12 +675,10 @@
     }
 
     @media(max-width:760px){
-      .menu-toggle{display:block}
-      .nav-links{display:none;position:fixed;top:84px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:24px 6%;flex-direction:column;align-items:flex-start}
-      body.menu-open .nav-links{display:flex}
-      .brand img{width:48px;height:48px}
-      .brand h2{font-size:1.1rem}
-      .brand p{font-size:.66rem}
+      .brand img{width:46px;height:46px}
+      .brand h2{font-size:1.05rem}
+      .brand p{font-size:.58rem;letter-spacing:.08em}
+      .nav-links{top:70px;left:4%;right:4%;padding:16px}
       .hero{min-height:auto;background-position:center}
       .hero .container{padding:78px 0}
       .hero-actions,.cta-actions{flex-direction:column}
@@ -716,7 +739,7 @@
     <div class="container nav-inner">
       <a href="#home" class="brand" aria-label="SpeakOut Home">
         <img src="logo.png" alt="SpeakOut Logo" />
-        <div>
+        <div class="brand-text">
           <h2>SpeakOut</h2>
           <p>Mental Health Outreach</p>
         </div>
