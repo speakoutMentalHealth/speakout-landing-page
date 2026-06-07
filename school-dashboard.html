@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School Dashboard | SpeakOut Portal</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="https://speakoutmentalhealth.org/">
+      <img src="icons/logo.png" alt="SpeakOut"> School Portal
+    </a>
+    <div class="nav-links">
+      <button class="btn btn-dark" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>School Dashboard</h1>
+    <p>Access school wellness resources, club materials, learning portals, and reporting tools.</p>
+  </div>
+</section>
+
+<main class="container" style="padding:40px 0;">
+  <div class="grid grid-3">
+    <a class="card" href="speakhub.html"><h2>SpeakHub</h2><p>Student training resources.</p></a><a class="card" href="e-library.html"><h2>E-Library</h2><p>Approved books and materials.</p></a><a class="card" href="kiddies.html"><h2>Kiddies Corner</h2><p>Primary and secondary school content.</p></a>
+  </div>
+</main>
+
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { auth } from "./firebase-config.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+document.getElementById("logoutBtn").onclick = async () => {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
+</script>
+</body>
+</html>
