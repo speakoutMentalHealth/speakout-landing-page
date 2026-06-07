@@ -1,0 +1,42 @@
+SPEAKOUT PORTAL INSTALLATION GUIDE
+
+1. Upload these files to your GitHub repository:
+   - firebase-config.js
+   - auth-guard.js
+   - portal.css
+   - login.html
+   - register.html
+   - pending.html
+   - student-dashboard.html
+   - school-dashboard.html
+   - admin-dashboard.html
+
+2. Add this line before </body> on protected pages:
+   <script type="module" src="auth-guard.js"></script>
+
+Protected pages include:
+   - speakhub.html
+   - e-library.html
+   - elibrary.html
+   - kiddies.html
+
+3. In Firebase Console:
+   Go to Firestore Database → Rules
+   Paste the content from firestore-rules.txt
+   Click Publish
+
+4. Create your admin:
+   - Open register.html
+   - Register yourself
+   - Go to Firebase Console → Firestore Database → users
+   - Open your user record
+   - Change:
+       role = admin
+       status = approved
+
+5. Login again using login.html.
+   You should now go to admin-dashboard.html.
+
+IMPORTANT:
+Firebase API keys are public in frontend apps.
+Security comes from Firestore Rules and approval logic.
