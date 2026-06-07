@@ -700,6 +700,207 @@
       *,*::before,*::after{animation:none!important;transition:none!important}
       .reveal,.reveal.active,.reveal.exit{opacity:1;transform:none}
     }
+
+
+    /* =========================================================
+       FINAL MOBILE HEADER + OVERFLOW FIX
+       This override must stay at the END of the style block.
+       ========================================================= */
+    html,
+    body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    *,
+    *::before,
+    *::after{
+      max-width:100%;
+    }
+
+    .nav{
+      width:100%;
+      max-width:100%;
+    }
+
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      position:relative;
+    }
+
+    .brand{
+      min-width:0;
+      flex:0 1 auto;
+    }
+
+    .brand-text{
+      min-width:0;
+    }
+
+    .nav-links{
+      margin-left:auto;
+    }
+
+    @media(max-width:1180px){
+      .menu-toggle{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .nav-inner{
+        display:flex;
+      }
+
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:calc(100% + 12px);
+        left:0;
+        right:0;
+        width:100%;
+        max-width:100%;
+        background:#fff;
+        border:1px solid var(--line);
+        border-radius:24px;
+        padding:18px;
+        box-shadow:0 25px 60px rgba(7,21,43,.18);
+        flex-direction:column;
+        align-items:stretch;
+        justify-content:flex-start;
+        gap:12px;
+        z-index:2500;
+      }
+
+      body.menu-open .nav-links{
+        display:flex;
+      }
+
+      .nav-links a,
+      .nav-links .btn{
+        width:100%;
+        justify-content:center;
+        text-align:center;
+        white-space:normal;
+      }
+
+      .nav-links .btn{
+        min-height:50px;
+        padding:14px 16px;
+      }
+    }
+
+    @media(max-width:760px){
+      .support-strip{
+        font-size:.82rem;
+        padding:8px 0;
+      }
+
+      .support-strip .container{
+        width:94%;
+      }
+
+      .nav{
+        min-height:auto;
+        padding:9px 0;
+      }
+
+      .nav .container,
+      .container{
+        width:min(94%,1180px);
+      }
+
+      .brand{
+        gap:9px;
+        max-width:calc(100% - 58px);
+      }
+
+      .brand img{
+        width:44px;
+        height:44px;
+      }
+
+      .brand h2{
+        font-size:1rem;
+      }
+
+      .brand p{
+        font-size:.55rem;
+        letter-spacing:.06em;
+      }
+
+      .menu-toggle{
+        width:44px;
+        height:44px;
+        padding:0;
+        border-radius:14px;
+        flex:0 0 44px;
+      }
+
+      .nav-links{
+        top:calc(100% + 10px);
+        left:0;
+        right:0;
+        padding:16px;
+        border-radius:22px;
+        max-height:calc(100vh - 110px);
+        overflow-y:auto;
+      }
+
+      h1{
+        font-size:clamp(2.55rem,12vw,3.35rem);
+      }
+
+      .hero .container{
+        padding:72px 0;
+      }
+
+      .hero-actions,
+      .cta-actions{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .hero-actions .btn,
+      .cta-actions .btn,
+      .resources-alert .btn,
+      .resources-help-copy .btn{
+        width:100%;
+      }
+
+      .resources-help-wrap,
+      .mindcheck-wrap,
+      .founder-wrap,
+      .why-box,
+      .ecosystem-content,
+      .resources-alert{
+        padding:24px;
+      }
+
+      .quick-help-grid,
+      .program-grid,
+      .testimonial-grid,
+      .project-grid,
+      .gallery-grid,
+      .impact-grid,
+      .logo-wall,
+      .footer-grid,
+      .report-grid{
+        grid-template-columns:1fr;
+      }
+
+      .floating-help{
+        left:16px;
+        right:16px;
+        width:auto;
+        text-align:center;
+      }
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -745,7 +946,7 @@
         </div>
       </a>
 
-      <button class="menu-toggle" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open') ? 'true' : 'false')">☰</button>
 
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#impact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Impact</a>
