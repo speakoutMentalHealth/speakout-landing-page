@@ -901,6 +901,206 @@
       }
     }
 
+
+
+    /* =====================================================
+       COMPACT UI OVERRIDES — GLOBAL BUTTON + SPACING SYSTEM
+       Purpose: keep all buttons/cards compact across the platform
+       ===================================================== */
+    html, body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    .container{width:min(1180px,92%)}
+
+    section{padding:68px 0}
+
+    .nav{min-height:70px;padding:8px 0}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative}
+    .brand{min-width:auto;gap:10px}
+    .brand img{width:46px;height:46px}
+    .brand h2{font-size:1.05rem}
+    .brand p{font-size:.56rem;letter-spacing:.08em}
+
+    .btn,
+    button,
+    .nav-links .btn,
+    .hero-actions .btn,
+    .cta-actions .btn,
+    .contact-form button,
+    .floating-help{
+      min-height:38px;
+      padding:9px 14px;
+      font-size:.86rem;
+      border-radius:999px;
+      line-height:1.05;
+      font-weight:850;
+    }
+
+    .nav-links{gap:8px;font-size:.78rem}
+    .nav-links .btn{min-height:34px;padding:8px 11px;font-size:.76rem}
+
+    .hero{min-height:74vh}
+    .hero .container{padding:58px 0}
+    h1{font-size:clamp(2.75rem,6vw,5.6rem);margin:16px 0}
+    .hero p{font-size:1.05rem;line-height:1.65;margin:18px 0 22px;max-width:700px}
+    .hero-actions{gap:9px;margin-top:20px}
+    .hero-trust{gap:9px;margin-top:22px}
+    .hero-trust span{padding:8px 11px;font-size:.85rem}
+    .kicker,.label,.section-title .label{padding:7px 11px;font-size:.68rem}
+
+    .section-title{margin-bottom:32px}
+    .section-title h2{font-size:clamp(1.9rem,3.8vw,3.7rem);margin-bottom:10px}
+    .section-title p{font-size:1rem;line-height:1.65}
+
+    .impact-card,
+    .program-body,
+    .quote-card,
+    .project-card,
+    .report-card,
+    .contact-card,
+    .quick-help-card,
+    .why-list div,
+    .resource-chip{
+      padding:20px;
+    }
+    .impact-card{min-height:120px}
+    .program-card,
+    .quote-card,
+    .project-card,
+    .report-card,
+    .contact-card,
+    .quick-help-card,
+    .resource-chip,
+    .why-list div,
+    .partner-logo,
+    .gallery-item{
+      border-radius:20px;
+    }
+    .program-card img{height:205px}
+    .program-body h3,.project-card h3{font-size:1.25rem}
+    .program-body p,.project-card p,.report-card p,.contact-card p{line-height:1.55;font-size:.95rem}
+
+    .vision-card{gap:28px}
+    .vision p{font-size:1.05rem;line-height:1.65}
+    .why-box{padding:28px;border-radius:26px}
+    .why-box p{font-size:1rem;line-height:1.65}
+
+    .mindcheck-wrap,
+    .founder-wrap,
+    .resources-help-wrap{
+      padding:30px;
+      border-radius:28px;
+    }
+    .resources-alert{padding:30px;min-height:280px;border-radius:24px}
+    .resources-alert strong{font-size:clamp(2rem,4vw,3.8rem)}
+    .resources-alert p,.resources-help p{font-size:.98rem;line-height:1.62}
+    .resource-chip{min-height:auto}
+    .quick-help-grid{gap:14px;margin-top:28px}
+
+    .ecosystem-grid{gap:28px;margin-bottom:46px}
+    .ecosystem-content{padding:26px;border-radius:24px}
+    .ecosystem-image,.ecosystem-image img{height:360px;min-height:360px;border-radius:24px}
+    .ecosystem-list{gap:9px;margin:18px 0 22px}
+    .ecosystem-list li{padding:10px 12px;font-size:.85rem}
+
+    .logo-wall,.project-grid,.gallery-grid,.report-grid,.program-grid,.testimonial-grid{gap:16px}
+    .partner-logo{height:110px;padding:16px}
+    .partner-logo img{max-height:70px}
+    .gallery-item{height:230px}
+    .founder-photo{height:380px}
+
+    .contact-option{padding:14px;border-radius:16px}
+    .contact-option span{width:34px;height:34px;border-radius:11px;font-size:.82rem}
+    .contact-form input,.contact-form textarea,.contact-form select{padding:12px 14px;border-radius:13px}
+    .contact-form textarea{min-height:110px}
+
+    .footer{padding:46px 0 24px}
+    .footer-grid{gap:22px}
+    .footer-brand img{width:48px;height:48px}
+
+    .floating-help{right:16px;bottom:16px;padding:10px 16px;font-size:.86rem}
+
+    /* Mobile navigation must collapse. This overrides every earlier nav rule. */
+    @media(max-width:900px){
+      .menu-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:42px;width:42px;height:42px;padding:0;border-radius:14px}
+      .nav{position:sticky;top:0;min-height:64px}
+      .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:62px;
+        left:0;
+        right:0;
+        width:100%;
+        background:#fff;
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:12px;
+        box-shadow:0 22px 55px rgba(7,21,43,.16);
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        z-index:2500;
+      }
+      body.menu-open .nav-links{display:flex}
+      .nav-links .btn{width:100%;min-height:38px;padding:10px 12px;font-size:.82rem;justify-content:center}
+    }
+
+    @media(max-width:760px){
+      .support-strip{font-size:.76rem;padding:7px 0}
+      .support-strip a{padding:5px 8px}
+      .container{width:min(100% - 28px,1180px)}
+      section{padding:48px 0}
+      .brand img{width:40px;height:40px}
+      .brand h2{font-size:.95rem}
+      .brand p{font-size:.5rem}
+
+      .hero{min-height:auto;background-position:center}
+      .hero .container{padding:46px 0 70px}
+      h1{font-size:clamp(2.45rem,11vw,3.65rem);line-height:1.02}
+      .hero p{font-size:.98rem;line-height:1.55;margin:16px 0 18px}
+      .hero-actions{
+        flex-direction:row!important;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:18px;
+      }
+      .hero-actions .btn{
+        width:auto!important;
+        flex:1 1 calc(33.333% - 8px);
+        min-width:0;
+        min-height:40px;
+        padding:10px 8px;
+        font-size:.72rem;
+        white-space:normal;
+      }
+      .hero-trust{gap:7px;margin-top:18px}
+      .hero-trust span{padding:7px 9px;font-size:.76rem}
+
+      .btn,
+      .cta-actions .btn,
+      .contact-form button{
+        width:auto;
+        min-height:38px;
+        padding:9px 12px;
+        font-size:.8rem;
+      }
+      .cta-actions{gap:8px}
+
+      .impact-grid,.program-grid,.testimonial-grid,.project-grid,.gallery-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:1fr}
+      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
+      .mindcheck-wrap,.founder-wrap,.why-box,.ecosystem-content,.resources-help-wrap,.resources-alert{padding:20px;border-radius:22px}
+      .program-card img{height:180px}
+      .gallery-item{height:205px}
+      .ecosystem-image,.ecosystem-image img{height:260px;min-height:260px}
+      .resource-chip-grid,.ecosystem-list{grid-template-columns:1fr}
+      .founder-photo{height:300px}
+      .floating-help{left:18px;right:18px;bottom:12px;text-align:center;width:auto;min-height:38px;padding:10px 14px;font-size:.82rem}
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -952,7 +1152,7 @@
         <a href="#impact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Impact</a>
         <a href="#programs" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Programs</a>
         <a href="#mindcheck" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">MindCheck</a>
-        <a href="#resources-help" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Resources & Help</a>
+        <a href="#resources-help" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Get Help</a>
         <a href="#ecosystem" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Learning Hub</a>
         <a href="#partners" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Partners</a>
         <a href="#contact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Contact</a>
@@ -970,9 +1170,9 @@
           <p>Building Africa’s most accessible mental wellness ecosystem through technology, education, school outreach and community partnerships.</p>
 
           <div class="hero-actions">
-            <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" class="btn btn-primary" rel="noopener">Take a Mental Health Check</a>
-            <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" class="btn btn-gold" rel="noopener">Resources & Help</a>
-            <a href="#contact" class="btn btn-light">Partner With Us</a>
+            <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" class="btn btn-primary" rel="noopener">MindCheck</a>
+            <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" class="btn btn-gold" rel="noopener">Get Help</a>
+            <a href="#contact" class="btn btn-light">Partner</a>
           </div>
 
           <div class="hero-trust" aria-label="Trust signals">
