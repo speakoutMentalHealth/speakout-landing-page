@@ -1,0 +1,82 @@
+login.html<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | SpeakOut Portal</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="https://speakoutmentalhealth.org/">
+      <img src="icons/logo.png" alt="SpeakOut"> SpeakOut Portal
+    </a>
+    <div class="nav-links">
+      <a class="btn" href="register.html">Create Account</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card form">
+    <h1>Login</h1>
+    <p>Approved students and schools can access SpeakHub, E-Library, and Kiddies Corner.</p>
+    <div class="field">
+      <label>Email</label>
+      <input id="email" type="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password">
+    </div>
+    <button class="btn btn-primary" id="loginBtn">Login</button>
+    <p id="message" class="notice" style="display:none;margin-top:14px;"></p>
+  </section>
+</main>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const msg = document.getElementById("message");
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  msg.style.display = "none";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (!snap.exists()) {
+      window.location.href = "pending.html";
+      return;
+    }
+
+    const profile = snap.data();
+
+    if (profile.status !== "approved") {
+      window.location.href = "pending.html";
+      return;
+    }
+
+    if (profile.role === "admin") {
+      window.location.href = "admin-dashboard.html";
+    } else if (profile.role === "school") {
+      window.location.href = "school-dashboard.html";
+    } else {
+      window.location.href = "student-dashboard.html";
+    }
+  } catch (error) {
+    msg.textContent = error.message;
+    msg.style.display = "block";
+  }
+});
+</script>
+</body>
+</html>
