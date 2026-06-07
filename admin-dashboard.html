@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | SpeakOut Portal</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="https://speakoutmentalhealth.org/">
+      <img src="icons/logo.png" alt="SpeakOut"> Admin Portal
+    </a>
+    <div class="nav-links">
+      <button class="btn btn-dark" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Admin Dashboard</h1>
+    <p>Approve students and schools for portal access.</p>
+  </div>
+</section>
+
+<main class="container" style="padding:40px 0;">
+  <div class="card">
+    <h2>Pending Users</h2>
+    <div id="userList">Loading...</div>
+  </div>
+</main>
+
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+document.getElementById("logoutBtn").onclick = async () => {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
+
+async function loadUsers(){
+  const list = document.getElementById("userList");
+  const q = query(collection(db, "users"), where("status", "==", "pending"));
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    list.innerHTML = "<p>No pending users.</p>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  snap.forEach(userDoc => {
+    const u = userDoc.data();
+    const div = document.createElement("div");
+    div.className = "card";
+    div.style.marginBottom = "12px";
+    div.innerHTML = `
+      <h3>${u.name || "No name"}</h3>
+      <p><strong>Email:</strong> ${u.email || ""}</p>
+      <p><strong>School:</strong> ${u.schoolName || ""}</p>
+      <p><strong>Role:</strong> ${u.role || ""}</p>
+      <button class="btn btn-primary approve">Approve</button>
+      <button class="btn btn-dark reject">Reject</button>
+    `;
+
+    div.querySelector(".approve").onclick = async () => {
+      await updateDoc(doc(db, "users", userDoc.id), { status: "approved" });
+      loadUsers();
+    };
+
+    div.querySelector(".reject").onclick = async () => {
+      await updateDoc(doc(db, "users", userDoc.id), { status: "rejected" });
+      loadUsers();
+    };
+
+    list.appendChild(div);
+  });
+}
+
+loadUsers();
+</script>
+</body>
+</html>
