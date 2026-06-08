@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>My Progress | SpeakOut Portal</title>
+<meta name="description" content="Student progress dashboard for SpeakOut portal.">
+
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#07152b;--blue:#0a5fbf;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#b42318;--redSoft:#fff1f0;--ink:#111827;
+  --muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);
+  --soft:0 10px 28px rgba(7,21,43,.07);--r:22px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}button{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.84rem;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--blue)}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:56px 0 48px}
+.hero h1{font-size:clamp(2.3rem,5vw,4.8rem);margin:10px 0;letter-spacing:-.04em;line-height:1.04}
+.hero p{max-width:800px;color:rgba(255,255,255,.88);line-height:1.65}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
+.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:36px 0}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft);padding:18px}
+.metric strong{display:block;color:var(--blue);font-size:clamp(1.8rem,3vw,2.7rem);line-height:1}
+.metric span{display:block;color:var(--muted);font-weight:850;font-size:.82rem;margin-top:8px}
+.title{text-align:center;max-width:800px;margin:0 auto 28px}.title h2{color:var(--navy);font-size:clamp(1.8rem,4vw,3.3rem);margin:0 0 10px}.title p{color:var(--muted);line-height:1.65}
+.list{display:grid;gap:10px}
+.item{padding:14px;border-radius:16px;background:#f8fbff;border:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.item strong{color:var(--navy)}.item span{display:block;color:var(--muted);font-size:.86rem;margin-top:3px}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:capitalize}
+.badge.started,.badge.opened{background:var(--blueSoft);color:var(--blue)}
+.badge.completed,.badge.downloaded{background:var(--greenSoft);color:var(--green)}
+.empty{padding:16px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}
+.footer a{color:rgba(255,255,255,.72)}
+@media(max-width:900px){.g4,.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.nav-inner{flex-direction:column;align-items:flex-start;padding:12px 0}.nav-links{width:100%}.nav-links a,.nav-links button{width:100%;border-radius:14px}.g4,.g3{grid-template-columns:1fr}.item{flex-direction:column}.hero{padding:42px 0}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="student-dashboard.html"><img src="icons/logo.png" alt="SpeakOut"><div>SpeakOut<small>My Progress</small></div></a>
+    <nav class="nav-links">
+      <a class="btn soft" href="student-dashboard.html">Dashboard</a>
+      <a class="btn soft" href="e-library.html">E-Library</a>
+      <a class="btn soft" href="speakhub.html">SpeakHub</a>
+      <a class="btn soft" href="kiddies.html">Kiddies</a>
+      <button class="btn dark" id="logoutBtn">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Student Activity</span>
+    <h1>My Progress</h1>
+    <p>Track what you have opened, started, downloaded and completed inside the SpeakOut learning portal.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g4">
+    <div class="card metric"><strong id="booksOpened">0</strong><span>Books Opened</span></div>
+    <div class="card metric"><strong id="booksDownloaded">0</strong><span>Downloads</span></div>
+    <div class="card metric"><strong id="coursesStarted">0</strong><span>Courses Started</span></div>
+    <div class="card metric"><strong id="coursesCompleted">0</strong><span>Courses Completed</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="title"><span class="label">Activity History</span><h2>Your learning records</h2><p>These records update when tracking is connected to E-Library and SpeakHub buttons.</p></div>
+    <div class="grid g3">
+      <div class="panel">
+        <h3>Books & Resources</h3>
+        <div id="bookList" class="list"><div class="empty">Loading...</div></div>
+      </div>
+      <div class="panel">
+        <h3>Courses</h3>
+        <div id="courseList" class="list"><div class="empty">Loading...</div></div>
+      </div>
+      <div class="panel">
+        <h3>Next Best Action</h3>
+        <div class="empty">Do not just click around. Pick one course, complete it, then request a certificate if eligible.</div>
+        <p><a class="btn primary" href="speakhub.html">Continue Learning</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Student Progress • <a href="https://speakoutmentalhealth.org/">Main Website</a></div></footer>
+
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+document.getElementById("logoutBtn").onclick = async()=>{ await signOut(auth); location.href="login.html"; };
+
+function set(id,val){ document.getElementById(id).textContent = Number(val || 0).toLocaleString(); }
+function safe(v){ return v || "—"; }
+
+function renderList(id, rows){
+  const box = document.getElementById(id);
+  if(!rows.length){
+    box.innerHTML = `<div class="empty">No activity yet.</div>`;
+    return;
+  }
+  box.innerHTML = rows.map(r => `
+    <div class="item">
+      <div><strong>${safe(r.title)}</strong><span>${safe(r.category)} • ${safe(r.audience)}</span></div>
+      <span class="badge ${r.status}">${safe(r.status)}</span>
+    </div>
+  `).join("");
+}
+
+onAuthStateChanged(auth, async user => {
+  if(!user) return;
+  const q = query(collection(db, "userProgress"), where("userId", "==", user.uid));
+  const snap = await getDocs(q);
+  const rows = [];
+  snap.forEach(d => rows.push({ id:d.id, ...d.data() }));
+
+  const books = rows.filter(r => r.type === "book");
+  const courses = rows.filter(r => r.type === "course");
+
+  set("booksOpened", books.filter(r => r.status === "opened" || r.status === "downloaded").length);
+  set("booksDownloaded", books.filter(r => r.status === "downloaded").length);
+  set("coursesStarted", courses.filter(r => r.status === "started" || r.status === "completed").length);
+  set("coursesCompleted", courses.filter(r => r.status === "completed").length);
+
+  renderList("bookList", books);
+  renderList("courseList", courses);
+});
+</script>
+</body>
+</html>
