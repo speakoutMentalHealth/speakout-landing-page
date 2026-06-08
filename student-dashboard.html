@@ -1,43 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student Dashboard | SpeakOut Portal</title>
-  <link rel="stylesheet" href="portal.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Dashboard | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#07152b;--navy2:#0b2344;--blue:#0a5fbf;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:24px;
+}
+*{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{text-decoration:none;color:inherit}button{font:inherit}
+.container{width:min(1220px,94%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.82rem;cursor:pointer;transition:.2s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(7,21,43,.12)}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}.success{background:var(--green);color:#fff}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(7,21,43,.08);backdrop-filter:blur(18px)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:900;color:var(--blue)}
+.brand img{width:46px;height:46px;object-fit:contain}.brand div{line-height:1.05}.brand strong{display:block;color:var(--blue);font-size:1.05rem}.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.nav-links{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.15rem}
+.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:56px 0 48px}
+.hero h1{font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.04;letter-spacing:-.045em;margin:10px 0}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65;font-size:1.02rem}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft)}.card{padding:20px;transition:.22s ease}.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card h2,.card h3{margin:0 0 8px;color:var(--navy);letter-spacing:-.03em}.card p{color:var(--muted);line-height:1.55;margin:0 0 14px;font-size:.93rem}
+.icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:1.25rem;font-weight:900;margin-bottom:12px}
+.metric strong{display:block;color:var(--blue);font-size:clamp(1.8rem,3vw,2.6rem);line-height:1}.metric span{display:block;color:var(--muted);font-weight:850;font-size:.82rem;margin-top:8px}.metric small{display:block;color:var(--green);font-weight:800;margin-top:8px}
+.title{max-width:860px;margin:0 auto 28px;text-align:center}.title h2{color:var(--navy);font-size:clamp(1.8rem,4vw,3.35rem);line-height:1.06;letter-spacing:-.04em;margin:0 0 10px}.title p{color:var(--muted);line-height:1.65;margin:0}
+.notice{background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--soft)}
+.notice h3{margin:0 0 10px;color:var(--navy);font-size:1.4rem}.notice p{color:var(--muted);line-height:1.6;margin:0 0 14px}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px}.footer h3,.footer h4{color:#fff;margin-top:0}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.9rem}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a,.nav-links button{width:100%;border-radius:14px}.brand img{width:42px;height:42px}.hero{padding:42px 0}.g4,.g3,.g2,.footer-grid{grid-template-columns:1fr}section{padding:28px 0}.card{padding:17px;border-radius:20px}}
+</style>
 </head>
 <body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="https://speakoutmentalhealth.org/">
-      <img src="icons/logo.png" alt="SpeakOut"> Student Portal
-    </a>
-    <div class="nav-links">
-      <button class="btn btn-dark" id="logoutBtn">Logout</button>
-    </div>
-  </div>
-</header>
+<header class="nav"><div class="container nav-inner">
+  <a class="brand" href="student-dashboard.html"><img src="icons/logo.png" alt="SpeakOut Logo"><div><strong>SpeakOut</strong><small>Student Portal</small></div></a>
+  <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
+  <nav class="nav-links">
+    <a class="btn primary" href="student-dashboard.html">Dashboard</a>
+    <a class="btn soft" href="e-library.html">E-Library</a>
+    <a class="btn soft" href="speakhub.html">SpeakHub</a>
+    <a class="btn soft" href="kiddies.html">Kiddies</a>
+    <a class="btn soft" href="verify-certificate.html">Verify</a>
+    <button class="btn dark" id="logoutBtn">Logout</button>
+  </nav>
+</div></header>
 
-<section class="hero">
-  <div class="container">
-    <h1>Student Dashboard</h1>
-    <p>Access learning, books, mental health resources, and school wellness activities.</p>
-  </div>
-</section>
+<main>
+<section class="hero"><div class="container">
+  <span class="kicker">Approved Student Access</span>
+  <h1>Welcome to your SpeakOut Student Portal</h1>
+  <p>Access books, courses, Kiddies Corner, certificates, mental health resources, leadership content, and school wellness activities.</p>
+</div></section>
 
-<main class="container" style="padding:40px 0;">
-  <div class="grid grid-3">
-    <a class="card" href="speakhub.html"><h2>SpeakHub</h2><p>Training, skills and certificates.</p></a><a class="card" href="e-library.html"><h2>E-Library</h2><p>Books, resources and reading clubs.</p></a><a class="card" href="kiddies.html"><h2>Kiddies Corner</h2><p>Primary and secondary school resources.</p></a>
+<section><div class="container grid g4">
+  <div class="card metric"><strong id="booksTotal">0</strong><span>Library Resources</span><small>available to read</small></div>
+  <div class="card metric"><strong id="coursesTotal">0</strong><span>Courses</span><small>available to learn</small></div>
+  <div class="card metric"><strong id="certsTotal">0</strong><span>My Certificates</span><small>linked to your email</small></div>
+  <div class="card metric"><strong id="featuredTotal">0</strong><span>Featured Items</span><small>recommended</small></div>
+</div></section>
+
+<section><div class="container">
+  <div class="title"><span class="label">Learning Areas</span><h2>Start from here</h2><p>These are the main areas students should use consistently.</p></div>
+  <div class="grid g3">
+    <a class="card" href="e-library.html"><div class="icon">📚</div><h2>E-Library</h2><p>Read books, school resources, mental health guides, leadership materials and career resources.</p><span class="btn soft">Open Library</span></a>
+    <a class="card" href="speakhub.html"><div class="icon">🎓</div><h2>SpeakHub</h2><p>Take courses in mental health, leadership, digital skills, public speaking and career development.</p><span class="btn soft">Open SpeakHub</span></a>
+    <a class="card" href="kiddies.html"><div class="icon">🧒</div><h2>Kiddies Corner</h2><p>Primary and secondary learning tracks for character, safety, confidence and digital basics.</p><span class="btn soft">Open Kiddies</span></a>
+    <a class="card" href="verify-certificate.html"><div class="icon">🏆</div><h2>Certificate Verification</h2><p>Check certificate numbers and confirm issued SpeakOut certificates.</p><span class="btn soft">Verify Certificate</span></a>
+    <a class="card" href="ambassador.html"><div class="icon">👑</div><h2>Ambassador Program</h2><p>Apply and grow into student leadership, advocacy and community service roles.</p><span class="btn soft">View Program</span></a>
+    <a class="card" href="resources.html"><div class="icon">🧠</div><h2>Resources & Help</h2><p>Access mental health help, support pathways and referral information.</p><span class="btn soft">Get Help</span></a>
   </div>
+</div></section>
+
+<section><div class="container grid g2">
+  <div class="notice"><span class="label">Student Growth Path</span><h3>Read → Learn → Serve → Earn Recognition</h3><p>The serious students will not only read. They will complete courses, join clubs, become ambassadors, and earn certificates.</p><a class="btn primary" href="speakhub.html">Start Learning</a></div>
+  <div class="notice"><span class="label">Ruthless Reminder</span><h3>Do not just collect certificates.</h3><p>Certificates are useful, but skills matter more. Pick one course, complete it properly, and apply what you learn in your school or community.</p><a class="btn gold" href="e-library.html">Read First</a></div>
+</div></section>
 </main>
+
+<footer class="footer"><div class="container footer-grid"><div><h3>SpeakOut Student Portal</h3><p>Protected access for approved students.</p></div><div><h4>Learning</h4><a href="e-library.html">E-Library</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies Corner</a></div><div><h4>Support</h4><a href="https://speakoutmentalhealth.org/">Main Website</a><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a></div></div></footer>
 
 <script type="module" src="auth-guard.js"></script>
 <script type="module">
-import { auth } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-document.getElementById("logoutBtn").onclick = async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
-};
+import { auth, db } from "./firebase-config.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth); location.href="login.html"};
+function set(id,val){document.getElementById(id).textContent=Number(val||0).toLocaleString()}
+async function get(name){try{const s=await getDocs(collection(db,name));const r=[];s.forEach(d=>r.push({id:d.id,...d.data()}));return r}catch(e){return []}}
+onAuthStateChanged(auth, async user=>{
+  if(!user)return;
+  const [books,courses]=await Promise.all([get("books"),get("courses")]);
+  let certs=[];
+  try{const snap=await getDocs(query(collection(db,"certificates"),where("recipientEmail","==",user.email)));snap.forEach(d=>certs.push(d.data()))}catch(e){}
+  set("booksTotal",books.filter(b=>b.status==="active").length);
+  set("coursesTotal",courses.filter(c=>c.status==="active").length);
+  set("certsTotal",certs.filter(c=>c.status==="issued").length);
+  set("featuredTotal",books.filter(b=>b.featured===true).length + courses.filter(c=>c.featured===true).length);
+});
 </script>
-</body>
-</html>
+</body></html>
