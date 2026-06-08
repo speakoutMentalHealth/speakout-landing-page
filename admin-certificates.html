@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Admin Certificates | SpeakOut Portal</title>
+<meta name="description" content="SpeakOut certificate generator and certificate management dashboard.">
+
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#07152b;--navy2:#0b2344;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;
+  --gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;
+  --red:#b42318;--redSoft:#fff1f0;--ink:#111827;--muted:#637083;--line:#e5edf6;
+  --bg:#f7f9fc;--white:#ffffff;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px;
+}
+*{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}
+.container{width:min(1320px,94%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:8px 12px;border-radius:999px;border:0;font-weight:850;font-size:.8rem;line-height:1.1;text-align:center;cursor:pointer;transition:.2s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(7,21,43,.12)}
+.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.success{background:var(--green);color:#fff}.danger{background:var(--red);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(7,21,43,.08);backdrop-filter:blur(18px)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:900;color:var(--blue)}
+.brand img{width:46px;height:46px;object-fit:contain}.brand div{line-height:1.05}.brand strong{display:block;color:var(--blue);font-size:1.05rem}.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.nav-links{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.15rem}
+.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:52px 0 46px}
+.hero h1{font-size:clamp(2.2rem,5vw,4.6rem);line-height:1.05;letter-spacing:-.04em;margin:10px 0}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65;font-size:1rem}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:34px 0}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--soft)}.stat strong{display:block;color:var(--blue);font-size:1.75rem;line-height:1}.stat span{display:block;color:var(--muted);font-weight:800;font-size:.8rem;margin-top:6px}
+.panel,.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft)}.panel{padding:18px}
+.input,.select,.textarea{width:100%;min-height:40px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:10px 12px;outline:none;font-size:.9rem}.textarea{min-height:88px;resize:vertical}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.10)}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.form-grid .wide{grid-column:span 4}.form-grid .half{grid-column:span 2}
+.controls-grid{display:grid;grid-template-columns:1.2fr .6fr .6fr .45fr;gap:10px;align-items:center}
+.table-wrap{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:#fff}table{width:100%;border-collapse:collapse;min-width:1200px}th,td{padding:13px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;font-size:.88rem}th{background:#f8fbff;color:var(--navy);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em}tr:hover td{background:#fbfdff}
+.cert-name{font-weight:900;color:var(--navy)}.cert-meta{color:var(--muted);font-size:.82rem;margin-top:3px;line-height:1.35}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:capitalize;margin:2px 2px 2px 0}.badge.issued,.badge.active{background:var(--greenSoft);color:var(--green)}.badge.draft,.badge.pending{background:var(--goldSoft);color:#8a5600}.badge.revoked{background:var(--redSoft);color:var(--red)}.badge.category{background:var(--blueSoft);color:var(--blue)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.empty,.message{margin-top:14px;padding:13px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800;display:none;font-size:.9rem}.message.success-msg{background:var(--greenSoft);color:var(--green)}.message.error-msg{background:var(--redSoft);color:var(--red)}.loading{padding:22px;color:var(--muted);font-weight:800}
+.preview-wrap{background:#f8fbff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}
+.certificate{width:100%;max-width:900px;aspect-ratio:1.414/1;margin:auto;background:linear-gradient(135deg,#fff,#f8fbff);border:8px solid var(--navy);outline:3px solid var(--gold);border-radius:8px;padding:34px;text-align:center;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.certificate:before{content:"";position:absolute;inset:18px;border:1px solid rgba(10,95,191,.22);border-radius:4px}.certificate:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-80px;background:rgba(244,162,28,.12)}
+.cert-logo{width:72px;height:72px;object-fit:contain;margin:0 auto 10px}.cert-org{font-weight:900;color:var(--blue);font-size:1.05rem}.cert-title{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:900;color:var(--navy);margin:14px 0 6px;letter-spacing:-.04em}.cert-line{color:var(--muted);font-weight:700}.cert-recipient{font-size:clamp(1.5rem,3vw,2.5rem);font-weight:900;color:var(--gold);margin:12px 0}.cert-course{font-size:clamp(1.1rem,2vw,1.6rem);font-weight:900;color:var(--navy);margin:8px 0}.cert-footer{display:flex;justify-content:space-between;gap:16px;margin-top:26px;text-align:left;font-size:.8rem;color:var(--muted);position:relative;z-index:2}.cert-footer strong{display:block;color:var(--navy)}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px}.footer h3,.footer h4{color:#fff;margin-top:0}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.9rem}
+@media print{body *{visibility:hidden}.certificate,.certificate *{visibility:visible}.certificate{position:absolute;left:0;top:0;width:100%;max-width:none;height:auto;box-shadow:none}}
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(3,1fr)}.controls-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr 1fr}.form-grid .wide,.form-grid .half{grid-column:span 2}}
+@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a,.nav-links button{width:100%;border-radius:14px}.brand img{width:42px;height:42px}.hero{padding:42px 0}.stats-grid,.controls-grid,.form-grid,.footer-grid{grid-template-columns:1fr}.form-grid .wide,.form-grid .half{grid-column:span 1}section{padding:28px 0}.panel{padding:15px;border-radius:18px}.certificate{padding:20px;border-width:5px}.cert-footer{flex-direction:column;text-align:center;gap:6px}}
+</style>
+</head>
+
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="admin-dashboard.html">
+      <img src="icons/logo.png" alt="SpeakOut Logo">
+      <div><strong>SpeakOut</strong><small>Certificates</small></div>
+    </a>
+    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="nav-links">
+      <a class="btn soft" href="admin-dashboard.html">Dashboard</a>
+      <a class="btn soft" href="admin-users.html">Users</a>
+      <a class="btn soft" href="admin-schools.html">Schools</a>
+      <a class="btn soft" href="admin-books.html">Books</a>
+      <a class="btn soft" href="admin-courses.html">Courses</a>
+      <a class="btn primary" href="admin-certificates.html">Certificates</a>
+      <button class="btn dark" id="logoutBtn">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Admin Only • Certificate Generator</span>
+    <h1>Certificate Management</h1>
+    <p>Issue certificates for courses, ambassador training, school leadership, volunteer service, workshops, and mental health club activities. Each certificate gets a unique verification number.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container stats-grid">
+    <div class="stat"><strong id="totalCerts">0</strong><span>Total Certificates</span></div>
+    <div class="stat"><strong id="issuedCerts">0</strong><span>Issued</span></div>
+    <div class="stat"><strong id="draftCerts">0</strong><span>Draft</span></div>
+    <div class="stat"><strong id="revokedCerts">0</strong><span>Revoked</span></div>
+    <div class="stat"><strong id="thisYearCerts">0</strong><span>This Year</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="panel">
+      <span class="label">Issue New Certificate</span>
+      <div class="form-grid">
+        <input id="certId" type="hidden">
+        <input id="recipientName" class="input half" placeholder="Recipient full name">
+        <input id="schoolName" class="input" placeholder="School / Organization">
+        <input id="recipientEmail" class="input" placeholder="Recipient email">
+        <select id="certificateType" class="select">
+          <option value="course-completion">Course Completion</option>
+          <option value="ambassador-training">Ambassador Training</option>
+          <option value="school-leadership">School Leadership</option>
+          <option value="volunteer-service">Volunteer Service</option>
+          <option value="workshop-participation">Workshop Participation</option>
+          <option value="mental-health-club">Mental Health Club Activity</option>
+        </select>
+        <input id="programTitle" class="input half" placeholder="Course / Program / Workshop title">
+        <input id="issueDate" class="input" type="date">
+        <select id="status" class="select">
+          <option value="issued">Issued</option>
+          <option value="draft">Draft</option>
+          <option value="revoked">Revoked</option>
+        </select>
+        <input id="issuerName" class="input half" placeholder="Issuer name e.g. Ngozi Offorka">
+        <input id="certificateNumber" class="input half" placeholder="Auto-generated if blank">
+        <textarea id="notes" class="textarea wide" placeholder="Internal notes"></textarea>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" id="saveCertBtn">Issue Certificate</button>
+        <button class="btn gold" id="previewBtn">Preview</button>
+        <button class="btn ghost" id="clearFormBtn">Clear</button>
+      </div>
+      <div id="message" class="message"></div>
+
+      <div class="preview-wrap">
+        <div class="certificate" id="certPreview">
+          <img class="cert-logo" src="icons/logo.png" alt="SpeakOut Logo">
+          <div class="cert-org">SpeakOut Mental Health Outreach</div>
+          <div class="cert-line">in partnership with Synia Aid Foundation</div>
+          <div class="cert-title">Certificate of Recognition</div>
+          <div class="cert-line">This certificate is proudly presented to</div>
+          <div class="cert-recipient" id="pName">Recipient Name</div>
+          <div class="cert-line">for successful participation/completion of</div>
+          <div class="cert-course" id="pProgram">Program Title</div>
+          <div class="cert-footer">
+            <div><strong>Certificate No.</strong><span id="pNumber">SO-2026-000001</span></div>
+            <div><strong>Date Issued</strong><span id="pDate">Date</span></div>
+            <div><strong>Issuer</strong><span id="pIssuer">SpeakOut</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn dark" onclick="window.print()">Print / Save as PDF</button>
+        <a class="btn soft" href="verify-certificate.html" target="_blank">Open Verification Page</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="panel">
+      <span class="label">Certificate Controls</span>
+      <div class="controls-grid">
+        <input id="searchInput" class="input" placeholder="Search name, school, program, certificate number...">
+        <select id="typeFilter" class="select">
+          <option value="all">All Types</option>
+          <option value="course-completion">Course Completion</option>
+          <option value="ambassador-training">Ambassador Training</option>
+          <option value="school-leadership">School Leadership</option>
+          <option value="volunteer-service">Volunteer Service</option>
+          <option value="workshop-participation">Workshop Participation</option>
+          <option value="mental-health-club">Mental Health Club</option>
+        </select>
+        <select id="statusFilter" class="select">
+          <option value="all">All Status</option>
+          <option value="issued">Issued</option>
+          <option value="draft">Draft</option>
+          <option value="revoked">Revoked</option>
+        </select>
+        <button class="btn ghost" id="refreshBtn">Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Recipient</th><th>Program</th><th>Type</th><th>Status</th><th>Certificate No.</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="certsTable"><tr><td colspan="7" class="loading">Loading certificates...</td></tr></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyState">No certificates match your search/filter.</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><h3>SpeakOut Certificates</h3><p>Issue, manage, print and verify certificates.</p></div>
+    <div><h4>Admin</h4><a href="admin-dashboard.html">Dashboard</a><a href="admin-courses.html">Courses</a><a href="admin-users.html">Users</a></div>
+    <div><h4>Public</h4><a href="verify-certificate.html">Verify Certificate</a><a href="https://speakoutmentalhealth.org/">Main Website</a></div>
+  </div>
+</footer>
+
+<script type="module" src="auth-guard.js"></script>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, addDoc, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const certsTable=document.getElementById("certsTable"), searchInput=document.getElementById("searchInput"), typeFilter=document.getElementById("typeFilter"), statusFilter=document.getElementById("statusFilter"), emptyState=document.getElementById("emptyState"), messageBox=document.getElementById("message");
+let allCerts=[];
+
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth); location.href="login.html"};
+
+function val(id){return document.getElementById(id).value.trim()}
+function safe(v){return v||"—"}
+function pretty(v){return (v||"—").replaceAll("-"," ")}
+function today(){return new Date().toISOString().slice(0,10)}
+document.getElementById("issueDate").value=today();
+
+function showMessage(text,type="success"){messageBox.textContent=text;messageBox.className="message "+(type==="success"?"success-msg":"error-msg");messageBox.style.display="block";setTimeout(()=>messageBox.style.display="none",3500)}
+function generateNumber(){
+  const year=new Date().getFullYear();
+  const next=(allCerts.length+1).toString().padStart(6,"0");
+  return `SO-${year}-${next}`;
+}
+function updatePreview(){
+  document.getElementById("pName").textContent=val("recipientName")||"Recipient Name";
+  document.getElementById("pProgram").textContent=val("programTitle")||"Program Title";
+  document.getElementById("pNumber").textContent=val("certificateNumber")||generateNumber();
+  document.getElementById("pDate").textContent=val("issueDate")||today();
+  document.getElementById("pIssuer").textContent=val("issuerName")||"SpeakOut";
+}
+["recipientName","programTitle","certificateNumber","issueDate","issuerName"].forEach(id=>document.getElementById(id).addEventListener("input",updatePreview));
+document.getElementById("previewBtn").onclick=updatePreview;
+
+function clearForm(){
+  ["certId","recipientName","schoolName","recipientEmail","programTitle","issuerName","certificateNumber","notes"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("certificateType").value="course-completion";
+  document.getElementById("issueDate").value=today();
+  document.getElementById("status").value="issued";
+  document.getElementById("saveCertBtn").textContent="Issue Certificate";
+  updatePreview();
+}
+document.getElementById("clearFormBtn").onclick=clearForm;
+
+document.getElementById("saveCertBtn").onclick=async()=>{
+  if(!val("recipientName")||!val("programTitle")){showMessage("Recipient name and program title are required.","error");return}
+  const id=val("certId");
+  const payload={
+    recipientName:val("recipientName"),
+    schoolName:val("schoolName"),
+    recipientEmail:val("recipientEmail"),
+    certificateType:document.getElementById("certificateType").value,
+    programTitle:val("programTitle"),
+    issueDate:val("issueDate")||today(),
+    status:document.getElementById("status").value,
+    issuerName:val("issuerName")||"SpeakOut Mental Health Outreach",
+    certificateNumber:val("certificateNumber")||generateNumber(),
+    notes:val("notes"),
+    updatedAt:serverTimestamp()
+  };
+  try{
+    if(id){await updateDoc(doc(db,"certificates",id),payload);showMessage("Certificate updated successfully.")}
+    else{await addDoc(collection(db,"certificates"),{...payload,createdAt:serverTimestamp()});showMessage("Certificate issued successfully.")}
+    clearForm();loadCerts();
+  }catch(e){showMessage(e.message,"error")}
+};
+
+function updateStats(certs){
+  const year=String(new Date().getFullYear());
+  document.getElementById("totalCerts").textContent=certs.length;
+  document.getElementById("issuedCerts").textContent=certs.filter(c=>c.status==="issued").length;
+  document.getElementById("draftCerts").textContent=certs.filter(c=>c.status==="draft").length;
+  document.getElementById("revokedCerts").textContent=certs.filter(c=>c.status==="revoked").length;
+  document.getElementById("thisYearCerts").textContent=certs.filter(c=>(c.certificateNumber||"").includes(year)).length;
+}
+function renderCerts(){
+  const q=searchInput.value.toLowerCase().trim(), type=typeFilter.value, status=statusFilter.value;
+  const filtered=allCerts.filter(c=>{
+    const s=`${c.recipientName||""} ${c.schoolName||""} ${c.programTitle||""} ${c.certificateNumber||""} ${c.recipientEmail||""}`.toLowerCase();
+    return (!q||s.includes(q))&&(type==="all"||c.certificateType===type)&&(status==="all"||c.status===status);
+  });
+  if(!filtered.length){certsTable.innerHTML="";emptyState.style.display="block";return}
+  emptyState.style.display="none";
+  certsTable.innerHTML=filtered.map(c=>`
+    <tr>
+      <td><div class="cert-name">${safe(c.recipientName)}</div><div class="cert-meta">${safe(c.schoolName)} • ${safe(c.recipientEmail)}</div></td>
+      <td><div class="cert-name">${safe(c.programTitle)}</div><div class="cert-meta">Issuer: ${safe(c.issuerName)}</div></td>
+      <td><span class="badge category">${pretty(c.certificateType)}</span></td>
+      <td><span class="badge ${c.status||"draft"}">${safe(c.status)}</span></td>
+      <td>${safe(c.certificateNumber)}</td>
+      <td>${safe(c.issueDate)}</td>
+      <td><div class="actions">
+        <button class="btn primary edit-btn" data-id="${c.id}">Edit</button>
+        <button class="btn success status-btn" data-id="${c.id}" data-status="issued">Issue</button>
+        <button class="btn gold status-btn" data-id="${c.id}" data-status="draft">Draft</button>
+        <button class="btn danger status-btn" data-id="${c.id}" data-status="revoked">Revoke</button>
+      </div></td>
+    </tr>`).join("");
+  document.querySelectorAll(".status-btn").forEach(b=>b.onclick=()=>updateCertStatus(b.dataset.id,b.dataset.status));
+  document.querySelectorAll(".edit-btn").forEach(b=>b.onclick=()=>editCert(b.dataset.id));
+}
+async function loadCerts(){
+  certsTable.innerHTML='<tr><td colspan="7" class="loading">Loading certificates...</td></tr>';
+  try{
+    const snap=await getDocs(collection(db,"certificates")); allCerts=[]; snap.forEach(d=>allCerts.push({id:d.id,...d.data()}));
+    allCerts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    updateStats(allCerts);renderCerts();updatePreview();
+  }catch(e){certsTable.innerHTML='<tr><td colspan="7" class="loading">Failed to load certificates.</td></tr>';showMessage(e.message,"error")}
+}
+async function updateCertStatus(id,status){
+  try{await updateDoc(doc(db,"certificates",id),{status,updatedAt:serverTimestamp()}); const c=allCerts.find(x=>x.id===id); if(c)c.status=status; updateStats(allCerts);renderCerts();showMessage(`Certificate status changed to ${status}.`)}
+  catch(e){showMessage(e.message,"error")}
+}
+function editCert(id){
+  const c=allCerts.find(x=>x.id===id); if(!c)return;
+  document.getElementById("certId").value=c.id;
+  document.getElementById("recipientName").value=c.recipientName||"";
+  document.getElementById("schoolName").value=c.schoolName||"";
+  document.getElementById("recipientEmail").value=c.recipientEmail||"";
+  document.getElementById("certificateType").value=c.certificateType||"course-completion";
+  document.getElementById("programTitle").value=c.programTitle||"";
+  document.getElementById("issueDate").value=c.issueDate||today();
+  document.getElementById("status").value=c.status||"issued";
+  document.getElementById("issuerName").value=c.issuerName||"";
+  document.getElementById("certificateNumber").value=c.certificateNumber||"";
+  document.getElementById("notes").value=c.notes||"";
+  document.getElementById("saveCertBtn").textContent="Update Certificate";
+  updatePreview(); window.scrollTo({top:document.querySelector(".panel").offsetTop-80,behavior:"smooth"});
+}
+searchInput.oninput=renderCerts; typeFilter.onchange=renderCerts; statusFilter.onchange=renderCerts; document.getElementById("refreshBtn").onclick=loadCerts;
+loadCerts();
+</script>
+</body>
+</html>
