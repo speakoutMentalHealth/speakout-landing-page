@@ -6,7 +6,7 @@
 
   <title>SpeakOut Mental Health Outreach | MindCheck, Resources & Youth Wellness</title>
   <meta name="description" content="SpeakOut Mental Health Outreach expands access to youth mental wellness through MindCheck, Resources & Help, education, school outreach, community support and partnerships across Nigeria and Africa." />
-  <meta name="keywords" content="SpeakOut Mental Health Outreach, MindCheck, mental health Nigeria, youth mental wellness, mental health resources, school outreach, SpeakHub, e-library" />
+  <meta name="keywords" content="SpeakOut Mental Health Outreach, MindCheck, mental health Nigeria, youth mental wellness, mental health resources, school outreach, SpeakHub, e-library, protected portal" />
   <meta name="author" content="SpeakOut Mental Health Outreach" />
   <meta name="theme-color" content="#0a5fbf" />
   <link rel="canonical" href="https://mindcheck.speakoutmentalhealth.org/" />
@@ -49,18 +49,21 @@
       --radius:30px;
     }
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    *{box-sizing:border-box;max-width:100%}
+    html{scroll-behavior:smooth;width:100%;max-width:100%;overflow-x:hidden}
     body{
       margin:0;
       font-family:"Outfit",Arial,sans-serif;
       color:var(--ink);
       background:var(--bg);
+      width:100%;
+      max-width:100%;
       overflow-x:hidden;
     }
     img{max-width:100%;display:block}
     a{text-decoration:none;color:inherit}
-    .container{width:min(1180px,90%);margin:auto}
+    button,input,select,textarea{font:inherit}
+    .container{width:min(1180px,92%);margin:auto}
 
     .skip-link{
       position:absolute;
@@ -92,12 +95,13 @@
       width:0;
       z-index:3000;
     }
+
     .support-strip{
       background:linear-gradient(90deg,var(--navy),var(--blue));
       color:#fff;
       font-weight:800;
-      font-size:.92rem;
-      padding:10px 0;
+      font-size:.86rem;
+      padding:9px 0;
       border-bottom:1px solid rgba(255,255,255,.10);
     }
     .support-strip .container{
@@ -117,112 +121,84 @@
       font-weight:900;
     }
 
-    .quick-help-grid{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:18px;
-      margin-top:42px;
-      grid-column:1 / -1;
-    }
-    .quick-help-card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:24px;
-      box-shadow:var(--shadow-soft);
-      min-width:0;
-    }
-    .quick-help-card span{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:var(--blue-soft);
-      color:var(--blue);
-      font-weight:900;
-      margin-bottom:14px;
-    }
-    .quick-help-card h3{color:var(--navy);font-size:1.15rem;margin:0 0 8px;letter-spacing:-.02em}
-    .quick-help-card p{color:var(--muted);line-height:1.65;margin:0;font-size:.98rem}
-
-    .newsletter-box{
-      margin-top:32px;
-      background:linear-gradient(135deg,#f8fbff,#fff8ee);
-      border:1px solid var(--line);
-      border-radius:28px;
-      padding:26px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      box-shadow:var(--shadow-soft);
-    }
-    .newsletter-box h3{margin:0 0 8px;color:var(--navy);font-size:1.35rem}
-    .newsletter-box p{margin:0;color:var(--muted);line-height:1.6}
-    .microcopy{font-size:.92rem;color:rgba(255,255,255,.58);line-height:1.6;margin-top:14px}
-
-
     .nav{
       position:sticky;
       top:0;
       z-index:1000;
-      min-height:84px;
-      padding:10px 0;
+      min-height:70px;
+      padding:8px 0;
       background:rgba(255,255,255,.96);
       backdrop-filter:blur(18px);
       border-bottom:1px solid rgba(7,21,43,.08);
+      width:100%;
+      max-width:100%;
     }
-
-    /* Header fix: keeps the logo protected and pushes menu buttons away from it */
     .nav-inner{
-      display:grid;
-      grid-template-columns:minmax(210px,auto) 1fr auto;
+      display:flex;
       align-items:center;
-      gap:34px;
+      justify-content:space-between;
+      gap:18px;
+      position:relative;
     }
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
-      min-width:210px;
-      flex-shrink:0;
+      gap:10px;
+      min-width:0;
+      flex:0 1 auto;
     }
-    .brand img{width:54px;height:54px;object-fit:contain;flex:0 0 auto}
-    .brand h2{margin:0;color:var(--blue);font-size:1.22rem;line-height:1;font-weight:900;white-space:nowrap}
-    .brand p{margin:4px 0 0;color:var(--gold-2);font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+    .brand img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
+    .brand-text{min-width:0}
+    .brand h2{margin:0;color:var(--blue);font-size:1.05rem;line-height:1;font-weight:900;white-space:nowrap}
+    .brand p{margin:4px 0 0;color:var(--gold-2);font-size:.56rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+
     .nav-links{
-      grid-column:3;
       display:flex;
       align-items:center;
       justify-content:flex-end;
-      gap:10px;
+      gap:8px;
       margin-left:auto;
       font-weight:800;
       color:#374151;
-      font-size:.82rem;
+      font-size:.78rem;
       min-width:0;
+      flex-wrap:wrap;
     }
-    .nav-links .btn{min-height:40px;padding:11px 14px}
     .nav-links a:hover{color:var(--blue)}
-    .menu-toggle{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:10px 13px;font-size:1.25rem;cursor:pointer;grid-column:3;justify-self:end}
+
+    .menu-toggle{
+      display:none;
+      border:0;
+      background:var(--navy);
+      color:#fff;
+      border-radius:14px;
+      width:42px;
+      height:42px;
+      padding:0;
+      font-size:1.25rem;
+      cursor:pointer;
+      flex:0 0 42px;
+      align-items:center;
+      justify-content:center;
+    }
 
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
-      min-height:48px;
-      padding:14px 22px;
+      gap:7px;
+      min-height:38px;
+      padding:9px 14px;
       border-radius:999px;
-      font-weight:900;
+      font-weight:850;
       border:0;
       cursor:pointer;
       transition:.25s ease;
       white-space:nowrap;
-      line-height:1;
+      line-height:1.05;
+      font-size:.84rem;
     }
-    .btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(7,21,43,.14)}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(7,21,43,.14)}
     .btn-primary{background:var(--blue);color:#fff}
     .btn-primary:hover{background:var(--blue-2)}
     .btn-dark{background:var(--navy);color:#fff}
@@ -234,7 +210,7 @@
     .hero{
       position:relative;
       overflow:hidden;
-      min-height:calc(100vh - 84px);
+      min-height:74vh;
       display:grid;
       align-items:center;
       background:
@@ -251,57 +227,197 @@
         radial-gradient(circle at 85% 15%,rgba(10,95,191,.30),transparent 35%);
       pointer-events:none;
     }
-    .hero .container{position:relative;z-index:2;padding:92px 0}
+    .hero .container{position:relative;z-index:2;padding:58px 0}
     .hero-content{max-width:890px}
     .kicker{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:8px 14px;
+      padding:7px 11px;
       border-radius:999px;
       background:rgba(255,255,255,.13);
       border:1px solid rgba(255,255,255,.20);
-      font-size:.8rem;
+      font-size:.68rem;
       font-weight:900;
       letter-spacing:.1em;
       text-transform:uppercase;
       color:#fff;
     }
     h1,h2,h3{margin-top:0;line-height:1.05;letter-spacing:-.045em}
-    h1{font-size:clamp(3.2rem,7vw,7.4rem);margin:22px 0;max-width:1040px}
-    .hero p{font-size:1.23rem;line-height:1.75;max-width:770px;color:rgba(255,255,255,.90)}
-    .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
-    .hero-trust{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;color:#fff}
-    .hero-trust span{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-weight:800}
+    h1{font-size:clamp(2.75rem,6vw,5.6rem);margin:16px 0;max-width:1040px}
+    .hero p{font-size:1.05rem;line-height:1.65;max-width:700px;color:rgba(255,255,255,.90);margin:18px 0 22px}
+    .hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+    .hero-trust{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;color:#fff}
+    .hero-trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-weight:800;font-size:.85rem}
 
-    section{padding:94px 0}
-    .section-title{max-width:880px;margin:0 auto 46px;text-align:center}
+    section{padding:68px 0}
+    .section-title{max-width:880px;margin:0 auto 32px;text-align:center}
     .section-title .label,
     .label{
       display:inline-flex;
-      padding:8px 14px;
+      padding:7px 11px;
       border-radius:999px;
       background:var(--blue-soft);
       color:var(--blue);
-      font-size:.78rem;
+      font-size:.68rem;
       font-weight:900;
       letter-spacing:.1em;
       text-transform:uppercase;
       margin-bottom:16px;
     }
-    .section-title h2{font-size:clamp(2.25rem,4.5vw,4.5rem);margin:0 0 16px;color:var(--navy)}
-    .section-title p{font-size:1.1rem;line-height:1.75;color:var(--muted);margin:0}
+    .section-title h2{font-size:clamp(1.9rem,3.8vw,3.7rem);margin:0 0 10px;color:var(--navy)}
+    .section-title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+
+    /* PUBLIC / PORTAL DEMARCATION */
+    .public-portal-section{
+      background:
+        radial-gradient(circle at 12% 18%, rgba(244,162,28,.12), transparent 28%),
+        linear-gradient(180deg,#ffffff,var(--bg));
+      border-bottom:1px solid var(--line);
+    }
+    .public-portal-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+      align-items:stretch;
+    }
+    .public-portal-card{
+      position:relative;
+      overflow:hidden;
+      padding:28px;
+      border-radius:28px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+    }
+    .public-portal-card::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      right:-100px;
+      top:-100px;
+      background:var(--blue);
+      opacity:.11;
+    }
+    .protected-side{
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      color:#fff;
+      border-color:rgba(255,255,255,.14);
+    }
+    .protected-side::after{
+      background:var(--gold);
+      opacity:.16;
+    }
+    .portal-card-icon{
+      width:52px;
+      height:52px;
+      border-radius:17px;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-size:1.35rem;
+      margin-bottom:14px;
+    }
+    .protected-side .portal-card-icon{
+      background:rgba(255,255,255,.14);
+      color:#fff;
+    }
+    .portal-status{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+    .portal-status.open{
+      background:#e9fbf5;
+      color:var(--green);
+    }
+    .portal-status.locked{
+      background:rgba(244,162,28,.18);
+      color:#ffd27a;
+      border:1px solid rgba(244,162,28,.24);
+    }
+    .public-portal-card h3{
+      color:var(--navy);
+      font-size:clamp(1.5rem,3vw,2.45rem);
+      margin:0 0 10px;
+    }
+    .protected-side h3{color:#fff}
+    .public-portal-card p{
+      color:var(--muted);
+      line-height:1.65;
+      margin:0 0 18px;
+    }
+    .protected-side p{color:rgba(255,255,255,.84)}
+    .portal-list{
+      list-style:none;
+      margin:0 0 22px;
+      padding:0;
+      display:grid;
+      gap:10px;
+    }
+    .portal-list li{
+      position:relative;
+      padding-left:25px;
+      color:#344054;
+      font-weight:800;
+      line-height:1.45;
+    }
+    .protected-side .portal-list li{color:rgba(255,255,255,.88)}
+    .portal-list li::before{
+      content:"✓";
+      position:absolute;
+      left:0;
+      top:1px;
+      width:17px;
+      height:17px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#e9fbf5;
+      color:var(--green);
+      font-size:.68rem;
+      font-weight:900;
+    }
+    .protected-side .portal-list li::before{
+      background:rgba(244,162,28,.22);
+      color:#ffd27a;
+    }
+    .portal-card-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .portal-note{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--gold-soft);
+      border:1px solid rgba(244,162,28,.28);
+      color:#704800;
+      font-weight:750;
+      line-height:1.6;
+    }
 
     .impact{background:#fff;border-bottom:1px solid var(--line)}
     .impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     .impact-card{
-      padding:30px;
+      padding:20px;
       border:1px solid var(--line);
-      border-radius:24px;
+      border-radius:20px;
       background:linear-gradient(180deg,#fff,#f8fbff);
       box-shadow:var(--shadow-soft);
       text-align:center;
-      min-height:160px;
+      min-height:120px;
       display:grid;
       place-items:center;
     }
@@ -310,18 +426,18 @@
 
     .vision{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;position:relative;overflow:hidden}
     .vision::before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-120px;top:-140px;background:rgba(244,162,28,.16);filter:blur(4px);animation:float 8s ease-in-out infinite}
-    .vision-card{position:relative;z-index:2;display:grid;grid-template-columns:.8fr 1.2fr;gap:42px;align-items:center}
+    .vision-card{position:relative;z-index:2;display:grid;grid-template-columns:.8fr 1.2fr;gap:28px;align-items:center}
     .vision h2{font-size:clamp(2.4rem,5vw,5rem);margin:0;color:#fff}
-    .vision p{font-size:1.25rem;line-height:1.8;color:rgba(255,255,255,.86);margin:0}
+    .vision p{font-size:1.05rem;line-height:1.65;color:rgba(255,255,255,.86);margin:0}
 
-    .program-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-    .program-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-soft);transition:.35s ease}
-    .program-card:hover{transform:translateY(-10px);box-shadow:var(--shadow)}
-    .program-card img{height:240px;width:100%;object-fit:cover;transition:.45s ease}
+    .program-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .program-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-soft);transition:.35s ease}
+    .program-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+    .program-card img{height:205px;width:100%;object-fit:cover;transition:.45s ease}
     .program-card:hover img{transform:scale(1.04)}
-    .program-body{padding:28px}
-    .program-body h3{font-size:1.55rem;color:var(--navy);margin:0 0 12px}
-    .program-body p{color:var(--muted);line-height:1.7;margin:0 0 18px}
+    .program-body{padding:20px}
+    .program-body h3{font-size:1.25rem;color:var(--navy);margin:0 0 12px}
+    .program-body p{color:var(--muted);line-height:1.55;margin:0 0 18px;font-size:.95rem}
     .learn{font-weight:900;color:var(--blue)}
 
     .mindcheck{background:#fff}
@@ -332,8 +448,8 @@
       align-items:center;
       background:linear-gradient(135deg,#f8fbff,#fff8ee);
       border:1px solid var(--line);
-      border-radius:38px;
-      padding:48px;
+      border-radius:28px;
+      padding:30px;
       box-shadow:var(--shadow);
     }
     .device{background:var(--navy);border-radius:32px;padding:20px;box-shadow:0 35px 80px rgba(7,21,43,.25);transform:rotate(-1.5deg)}
@@ -344,7 +460,7 @@
     .screen-card{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
     .screen-card div{height:80px;border-radius:18px;background:var(--blue-soft)}
     .mindcheck h2{font-size:clamp(2.2rem,4vw,4rem);color:var(--navy);margin:0 0 16px}
-    .mindcheck p{color:var(--muted);line-height:1.75;font-size:1.08rem}
+    .mindcheck p{color:var(--muted);line-height:1.62;font-size:.98rem}
 
     .ecosystem{
       background:#fff;
@@ -370,24 +486,24 @@
     .ecosystem-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:40px;
+      gap:28px;
       align-items:center;
-      margin-bottom:70px;
+      margin-bottom:46px;
     }
     .ecosystem-grid:last-child{margin-bottom:0}
     .ecosystem-grid.reverse{direction:rtl}
     .ecosystem-grid.reverse > *{direction:ltr}
     .ecosystem-image{
       position:relative;
-      border-radius:32px;
+      border-radius:24px;
       overflow:hidden;
       box-shadow:var(--shadow);
       background:var(--blue-soft);
-      min-height:420px;
+      min-height:360px;
     }
     .ecosystem-image img{
       width:100%;
-      height:420px;
+      height:360px;
       object-fit:cover;
       transition:.5s ease;
     }
@@ -402,8 +518,8 @@
     .ecosystem-content{
       background:#fff;
       border:1px solid var(--line);
-      border-radius:32px;
-      padding:38px;
+      border-radius:24px;
+      padding:26px;
       box-shadow:var(--shadow-soft);
     }
     .ecosystem-content h2{
@@ -420,8 +536,8 @@
     .ecosystem-list{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin:24px 0 28px;
+      gap:9px;
+      margin:18px 0 22px;
       padding:0;
       list-style:none;
     }
@@ -429,10 +545,10 @@
       background:#f8fbff;
       border:1px solid var(--line);
       border-radius:16px;
-      padding:12px 14px;
+      padding:10px 12px;
       color:var(--navy);
       font-weight:800;
-      font-size:.94rem;
+      font-size:.85rem;
     }
     .ecosystem-list li::before{
       content:"✓";
@@ -441,8 +557,6 @@
       margin-right:8px;
     }
 
-
-    /* Resources & Help — optimized layout */
     .resources-help{
       background:linear-gradient(135deg,#fff,#f8fbff);
       border-top:1px solid var(--line);
@@ -456,16 +570,16 @@
       align-items:stretch;
       background:#fff;
       border:1px solid var(--line);
-      border-radius:38px;
-      padding:46px;
+      border-radius:28px;
+      padding:30px;
       box-shadow:var(--shadow);
     }
     .resources-alert{
       background:linear-gradient(135deg,var(--navy),var(--blue));
       color:#fff;
-      border-radius:32px;
-      padding:42px;
-      min-height:340px;
+      border-radius:24px;
+      padding:30px;
+      min-height:280px;
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -495,15 +609,15 @@
     .resources-alert > *{position:relative;z-index:2}
     .resources-alert strong{
       display:block;
-      font-size:clamp(2.35rem,4.7vw,4.8rem);
+      font-size:clamp(2rem,4vw,3.8rem);
       line-height:1.02;
       letter-spacing:-.06em;
       margin-bottom:18px;
     }
     .resources-alert p{
       color:rgba(255,255,255,.88);
-      line-height:1.75;
-      font-size:1.08rem;
+      line-height:1.62;
+      font-size:.98rem;
       margin:0 0 26px;
       max-width:560px;
     }
@@ -518,7 +632,7 @@
       color:var(--navy);
       margin:0 0 16px;
     }
-    .resources-help p{color:var(--muted);line-height:1.78;font-size:1.08rem}
+    .resources-help p{color:var(--muted);line-height:1.62;font-size:.98rem}
     .resource-chip-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -529,51 +643,79 @@
       border:1px solid var(--line);
       background:#f8fbff;
       border-radius:20px;
-      padding:18px;
+      padding:20px;
       font-weight:900;
       color:var(--navy);
       box-shadow:var(--shadow-soft);
-      min-height:112px;
+      min-height:auto;
     }
     .resource-chip span{display:block;color:var(--muted);font-size:.9rem;font-weight:700;margin-top:6px;line-height:1.52}
+    .quick-help-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      margin-top:28px;
+      grid-column:1 / -1;
+    }
+    .quick-help-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:20px;
+      box-shadow:var(--shadow-soft);
+      min-width:0;
+    }
+    .quick-help-card span{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-weight:900;
+      margin-bottom:14px;
+    }
+    .quick-help-card h3{color:var(--navy);font-size:1.15rem;margin:0 0 8px;letter-spacing:-.02em}
+    .quick-help-card p{color:var(--muted);line-height:1.65;margin:0;font-size:.98rem}
 
     .testimonials{background:var(--bg)}
-    .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-    .quote-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow-soft)}
+    .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .quote-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
     .quote-mark{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);color:#9a5f00;font-size:2rem;font-weight:900;margin-bottom:18px}
     .quote-card p{color:#374151;line-height:1.75;font-size:1.05rem}
     .quote-card strong{display:block;color:var(--navy);margin-top:20px}
     .quote-card small{color:var(--muted);font-weight:800}
 
     .partners{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .logo-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .logo-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     .partner-logo{
-      height:140px;
+      height:110px;
       border:1px solid var(--line);
-      border-radius:24px;
+      border-radius:20px;
       background:#fff;
       display:grid;
       place-items:center;
-      padding:22px;
+      padding:16px;
       box-shadow:var(--shadow-soft);
       transition:.3s ease;
     }
     .partner-logo:hover{transform:translateY(-6px)}
-    .partner-logo img{max-height:86px;object-fit:contain}
+    .partner-logo img{max-height:70px;object-fit:contain}
 
     .projects{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
     .projects .section-title h2,.projects .section-title p{color:#fff}
     .projects .section-title p{opacity:.84}
     .projects .section-title .label{background:rgba(255,255,255,.13);color:#fff}
-    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-    .project-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:var(--radius);padding:30px;backdrop-filter:blur(12px);transition:.35s ease}
-    .project-card:hover{transform:translateY(-10px);background:rgba(255,255,255,.13)}
-    .project-card h3{font-size:1.45rem;color:#fff;margin:0 0 12px}
-    .project-card p{color:rgba(255,255,255,.82);line-height:1.7}
+    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .project-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:20px;backdrop-filter:blur(12px);transition:.35s ease}
+    .project-card:hover{transform:translateY(-8px);background:rgba(255,255,255,.13)}
+    .project-card h3{font-size:1.25rem;color:#fff;margin:0 0 12px}
+    .project-card p{color:rgba(255,255,255,.82);line-height:1.55;font-size:.95rem}
     .project-card small{color:var(--gold);font-weight:900}
 
-    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .gallery-item{position:relative;border-radius:26px;overflow:hidden;height:280px;box-shadow:var(--shadow-soft)}
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .gallery-item{position:relative;border-radius:20px;overflow:hidden;height:230px;box-shadow:var(--shadow-soft)}
     .gallery-item img{width:100%;height:100%;object-fit:cover;transition:.5s ease}
     .gallery-item:hover img{transform:scale(1.06)}
     .gallery-item span{
@@ -590,50 +732,50 @@
 
     .why-matters{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .why-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:38px;align-items:center}
-    .why-box{background:var(--navy);color:#fff;border-radius:38px;padding:42px;box-shadow:var(--shadow)}
+    .why-box{background:var(--navy);color:#fff;border-radius:26px;padding:28px;box-shadow:var(--shadow)}
     .why-box h2{font-size:clamp(2.1rem,4vw,4rem);color:#fff;margin-bottom:18px}
-    .why-box p{color:rgba(255,255,255,.84);line-height:1.8;font-size:1.1rem}
+    .why-box p{color:rgba(255,255,255,.84);line-height:1.65;font-size:1rem}
     .why-list{display:grid;gap:16px}
-    .why-list div{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow-soft)}
+    .why-list div{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
     .why-list h3{color:var(--navy);margin:0 0 8px;font-size:1.3rem}
     .why-list p{margin:0;color:var(--muted);line-height:1.7}
 
     .founder{background:#fff}
-    .founder-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:38px;box-shadow:var(--shadow);padding:34px}
-    .founder-photo{border-radius:30px;overflow:hidden;height:460px;background:var(--blue-soft)}
+    .founder-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:30px}
+    .founder-photo{border-radius:30px;overflow:hidden;height:380px;background:var(--blue-soft)}
     .founder-photo img{width:100%;height:100%;object-fit:cover}
     .founder h2{font-size:clamp(2.2rem,4vw,4rem);color:var(--navy);margin:0 0 16px}
     .founder p{color:var(--muted);line-height:1.8;font-size:1.08rem}
 
     .reports{background:var(--bg)}
-    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-    .report-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow-soft);transition:.3s ease}
+    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .report-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft);transition:.3s ease}
     .report-card:hover{transform:translateY(-7px);box-shadow:var(--shadow)}
     .report-card h3{color:var(--navy);font-size:1.2rem;margin-bottom:8px}
-    .report-card p{color:var(--muted);line-height:1.65;margin:0 0 14px}
+    .report-card p{color:var(--muted);line-height:1.55;font-size:.95rem;margin:0 0 14px}
     .report-card strong{color:var(--blue)}
 
     .contact-section{background:#fff}
     .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-    .contact-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-soft)}
+    .contact-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
     .contact-card h3{color:var(--navy);font-size:1.4rem;margin-bottom:10px}
-    .contact-card p{color:var(--muted);line-height:1.7;margin:0 0 18px}
+    .contact-card p{color:var(--muted);line-height:1.55;font-size:.95rem;margin:0 0 18px}
     .contact-options{display:grid;gap:14px}
-    .contact-option{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--line);border-radius:20px;padding:18px;background:#fbfdff}
-    .contact-option span{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-weight:900;flex:0 0 auto}
+    .contact-option{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--line);border-radius:16px;padding:14px;background:#fbfdff}
+    .contact-option span{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-weight:900;flex:0 0 auto;font-size:.82rem}
     .contact-option strong{display:block;color:var(--navy);margin-bottom:4px}
     .contact-option a{color:var(--blue);font-weight:900}
     .contact-form{display:grid;gap:14px}
     .contact-form input,.contact-form textarea,.contact-form select{
       width:100%;
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:15px 16px;
+      border-radius:13px;
+      padding:12px 14px;
       font:inherit;
       outline:none;
       background:#fbfdff;
     }
-    .contact-form textarea{min-height:135px;resize:vertical}
+    .contact-form textarea{min-height:110px;resize:vertical}
     .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus{
       border-color:var(--blue);
       box-shadow:0 0 0 4px rgba(10,95,191,.10);
@@ -644,19 +786,20 @@
     .final-cta .container{position:relative;z-index:2}
     .final-cta h2{font-size:clamp(2.5rem,5vw,5rem);color:#fff;margin:0 0 18px}
     .final-cta p{max-width:760px;margin:0 auto 28px;color:rgba(255,255,255,.86);line-height:1.75;font-size:1.12rem}
-    .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .cta-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 
-    .floating-help{position:fixed;right:20px;bottom:20px;z-index:999;background:#25d366;color:#fff;padding:14px 18px;border-radius:999px;font-weight:900;box-shadow:0 16px 35px rgba(0,0,0,.22)}
+    .floating-help{position:fixed;right:16px;bottom:16px;z-index:999;background:#25d366;color:#fff;padding:10px 16px;border-radius:999px;font-weight:900;box-shadow:0 16px 35px rgba(0,0,0,.22);font-size:.86rem}
 
-    .footer{background:#061126;color:rgba(255,255,255,.74);padding:62px 0 28px}
-    .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+    .footer{background:#061126;color:rgba(255,255,255,.74);padding:46px 0 24px}
+    .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:22px}
     .footer-brand{display:flex;align-items:center;gap:12px}
-    .footer-brand img{width:60px;height:60px;object-fit:contain;background:#fff;border-radius:14px;padding:4px}
+    .footer-brand img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:14px;padding:4px}
     .footer h3,.footer h4{color:#fff;margin:0 0 12px}
     .footer a{display:block;color:rgba(255,255,255,.72);margin:8px 0}
     .footer-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
     .footer-badges span{border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:7px 10px;color:rgba(255,255,255,.80);font-weight:800;font-size:.85rem}
     .footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+    .microcopy{font-size:.92rem;color:rgba(255,255,255,.58);line-height:1.6;margin-top:14px}
 
     .reveal{opacity:.12;transform:translateY(52px) scale(.98);transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}
     .reveal.active{opacity:1;transform:translateY(0) scale(1)}
@@ -665,373 +808,12 @@
     @keyframes premiumFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-24px)}}
 
-    @media(max-width:1000px){
-      .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:repeat(2,1fr)}
-      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
-      .resources-alert{min-height:auto}
-      .resource-chip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .hero{background-position:center}
-      .founder-photo{height:360px}
-    }
-
-    @media(max-width:760px){
-      .brand img{width:46px;height:46px}
-      .brand h2{font-size:1.05rem}
-      .brand p{font-size:.58rem;letter-spacing:.08em}
-      .nav-links{top:70px;left:4%;right:4%;padding:16px}
-      .hero{min-height:auto;background-position:center}
-      .hero .container{padding:78px 0}
-      .hero-actions,.cta-actions{flex-direction:column}
-      .btn{width:100%}
-      .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:1fr}
-      .gallery-item{height:240px}
-      .mindcheck-wrap,.founder-wrap,.why-box,.ecosystem-content,.resources-help-wrap,.resources-alert{padding:26px}
-      .resource-chip-grid{grid-template-columns:1fr}
-      .resource-chip{min-height:auto}
-      .floating-help{left:16px;right:16px;text-align:center}
-      .contact-option{flex-direction:column}
-      .newsletter-box{flex-direction:column;align-items:flex-start}
-      .ecosystem-list,.resource-chip-grid{grid-template-columns:1fr}
-      .ecosystem-image,.ecosystem-image img{height:300px;min-height:300px}
-    }
-
-    @media(prefers-reduced-motion:reduce){
-      html{scroll-behavior:auto}
-      *,*::before,*::after{animation:none!important;transition:none!important}
-      .reveal,.reveal.active,.reveal.exit{opacity:1;transform:none}
-    }
-
-
-    /* =========================================================
-       FINAL MOBILE HEADER + OVERFLOW FIX
-       This override must stay at the END of the style block.
-       ========================================================= */
-    html,
-    body{
-      width:100%;
-      max-width:100%;
-      overflow-x:hidden;
-    }
-
-    *,
-    *::before,
-    *::after{
-      max-width:100%;
-    }
-
-    .nav{
-      width:100%;
-      max-width:100%;
-    }
-
-    .nav-inner{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      position:relative;
-    }
-
-    .brand{
-      min-width:0;
-      flex:0 1 auto;
-    }
-
-    .brand-text{
-      min-width:0;
-    }
-
-    .nav-links{
-      margin-left:auto;
-    }
-
     @media(max-width:1180px){
-      .menu-toggle{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-      }
-
-      .nav-inner{
-        display:flex;
-      }
-
+      .menu-toggle{display:inline-flex}
       .nav-links{
         display:none;
         position:absolute;
-        top:calc(100% + 12px);
-        left:0;
-        right:0;
-        width:100%;
-        max-width:100%;
-        background:#fff;
-        border:1px solid var(--line);
-        border-radius:24px;
-        padding:18px;
-        box-shadow:0 25px 60px rgba(7,21,43,.18);
-        flex-direction:column;
-        align-items:stretch;
-        justify-content:flex-start;
-        gap:12px;
-        z-index:2500;
-      }
-
-      body.menu-open .nav-links{
-        display:flex;
-      }
-
-      .nav-links a,
-      .nav-links .btn{
-        width:100%;
-        justify-content:center;
-        text-align:center;
-        white-space:normal;
-      }
-
-      .nav-links .btn{
-        min-height:50px;
-        padding:14px 16px;
-      }
-    }
-
-    @media(max-width:760px){
-      .support-strip{
-        font-size:.82rem;
-        padding:8px 0;
-      }
-
-      .support-strip .container{
-        width:94%;
-      }
-
-      .nav{
-        min-height:auto;
-        padding:9px 0;
-      }
-
-      .nav .container,
-      .container{
-        width:min(94%,1180px);
-      }
-
-      .brand{
-        gap:9px;
-        max-width:calc(100% - 58px);
-      }
-
-      .brand img{
-        width:44px;
-        height:44px;
-      }
-
-      .brand h2{
-        font-size:1rem;
-      }
-
-      .brand p{
-        font-size:.55rem;
-        letter-spacing:.06em;
-      }
-
-      .menu-toggle{
-        width:44px;
-        height:44px;
-        padding:0;
-        border-radius:14px;
-        flex:0 0 44px;
-      }
-
-      .nav-links{
         top:calc(100% + 10px);
-        left:0;
-        right:0;
-        padding:16px;
-        border-radius:22px;
-        max-height:calc(100vh - 110px);
-        overflow-y:auto;
-      }
-
-      h1{
-        font-size:clamp(2.55rem,12vw,3.35rem);
-      }
-
-      .hero .container{
-        padding:72px 0;
-      }
-
-      .hero-actions,
-      .cta-actions{
-        flex-direction:column;
-        align-items:stretch;
-      }
-
-      .hero-actions .btn,
-      .cta-actions .btn,
-      .resources-alert .btn,
-      .resources-help-copy .btn{
-        width:100%;
-      }
-
-      .resources-help-wrap,
-      .mindcheck-wrap,
-      .founder-wrap,
-      .why-box,
-      .ecosystem-content,
-      .resources-alert{
-        padding:24px;
-      }
-
-      .quick-help-grid,
-      .program-grid,
-      .testimonial-grid,
-      .project-grid,
-      .gallery-grid,
-      .impact-grid,
-      .logo-wall,
-      .footer-grid,
-      .report-grid{
-        grid-template-columns:1fr;
-      }
-
-      .floating-help{
-        left:16px;
-        right:16px;
-        width:auto;
-        text-align:center;
-      }
-    }
-
-
-
-    /* =====================================================
-       COMPACT UI OVERRIDES — GLOBAL BUTTON + SPACING SYSTEM
-       Purpose: keep all buttons/cards compact across the platform
-       ===================================================== */
-    html, body{
-      width:100%;
-      max-width:100%;
-      overflow-x:hidden;
-    }
-
-    .container{width:min(1180px,92%)}
-
-    section{padding:68px 0}
-
-    .nav{min-height:70px;padding:8px 0}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative}
-    .brand{min-width:auto;gap:10px}
-    .brand img{width:46px;height:46px}
-    .brand h2{font-size:1.05rem}
-    .brand p{font-size:.56rem;letter-spacing:.08em}
-
-    .btn,
-    button,
-    .nav-links .btn,
-    .hero-actions .btn,
-    .cta-actions .btn,
-    .contact-form button,
-    .floating-help{
-      min-height:38px;
-      padding:9px 14px;
-      font-size:.86rem;
-      border-radius:999px;
-      line-height:1.05;
-      font-weight:850;
-    }
-
-    .nav-links{gap:8px;font-size:.78rem}
-    .nav-links .btn{min-height:34px;padding:8px 11px;font-size:.76rem}
-
-    .hero{min-height:74vh}
-    .hero .container{padding:58px 0}
-    h1{font-size:clamp(2.75rem,6vw,5.6rem);margin:16px 0}
-    .hero p{font-size:1.05rem;line-height:1.65;margin:18px 0 22px;max-width:700px}
-    .hero-actions{gap:9px;margin-top:20px}
-    .hero-trust{gap:9px;margin-top:22px}
-    .hero-trust span{padding:8px 11px;font-size:.85rem}
-    .kicker,.label,.section-title .label{padding:7px 11px;font-size:.68rem}
-
-    .section-title{margin-bottom:32px}
-    .section-title h2{font-size:clamp(1.9rem,3.8vw,3.7rem);margin-bottom:10px}
-    .section-title p{font-size:1rem;line-height:1.65}
-
-    .impact-card,
-    .program-body,
-    .quote-card,
-    .project-card,
-    .report-card,
-    .contact-card,
-    .quick-help-card,
-    .why-list div,
-    .resource-chip{
-      padding:20px;
-    }
-    .impact-card{min-height:120px}
-    .program-card,
-    .quote-card,
-    .project-card,
-    .report-card,
-    .contact-card,
-    .quick-help-card,
-    .resource-chip,
-    .why-list div,
-    .partner-logo,
-    .gallery-item{
-      border-radius:20px;
-    }
-    .program-card img{height:205px}
-    .program-body h3,.project-card h3{font-size:1.25rem}
-    .program-body p,.project-card p,.report-card p,.contact-card p{line-height:1.55;font-size:.95rem}
-
-    .vision-card{gap:28px}
-    .vision p{font-size:1.05rem;line-height:1.65}
-    .why-box{padding:28px;border-radius:26px}
-    .why-box p{font-size:1rem;line-height:1.65}
-
-    .mindcheck-wrap,
-    .founder-wrap,
-    .resources-help-wrap{
-      padding:30px;
-      border-radius:28px;
-    }
-    .resources-alert{padding:30px;min-height:280px;border-radius:24px}
-    .resources-alert strong{font-size:clamp(2rem,4vw,3.8rem)}
-    .resources-alert p,.resources-help p{font-size:.98rem;line-height:1.62}
-    .resource-chip{min-height:auto}
-    .quick-help-grid{gap:14px;margin-top:28px}
-
-    .ecosystem-grid{gap:28px;margin-bottom:46px}
-    .ecosystem-content{padding:26px;border-radius:24px}
-    .ecosystem-image,.ecosystem-image img{height:360px;min-height:360px;border-radius:24px}
-    .ecosystem-list{gap:9px;margin:18px 0 22px}
-    .ecosystem-list li{padding:10px 12px;font-size:.85rem}
-
-    .logo-wall,.project-grid,.gallery-grid,.report-grid,.program-grid,.testimonial-grid{gap:16px}
-    .partner-logo{height:110px;padding:16px}
-    .partner-logo img{max-height:70px}
-    .gallery-item{height:230px}
-    .founder-photo{height:380px}
-
-    .contact-option{padding:14px;border-radius:16px}
-    .contact-option span{width:34px;height:34px;border-radius:11px;font-size:.82rem}
-    .contact-form input,.contact-form textarea,.contact-form select{padding:12px 14px;border-radius:13px}
-    .contact-form textarea{min-height:110px}
-
-    .footer{padding:46px 0 24px}
-    .footer-grid{gap:22px}
-    .footer-brand img{width:48px;height:48px}
-
-    .floating-help{right:16px;bottom:16px;padding:10px 16px;font-size:.86rem}
-
-    /* Mobile navigation must collapse. This overrides every earlier nav rule. */
-    @media(max-width:900px){
-      .menu-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:42px;width:42px;height:42px;padding:0;border-radius:14px}
-      .nav{position:sticky;top:0;min-height:64px}
-      .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
-      .nav-links{
-        display:none;
-        position:absolute;
-        top:62px;
         left:0;
         right:0;
         width:100%;
@@ -1046,7 +828,27 @@
         z-index:2500;
       }
       body.menu-open .nav-links{display:flex}
-      .nav-links .btn{width:100%;min-height:38px;padding:10px 12px;font-size:.82rem;justify-content:center}
+      .nav-links a,.nav-links .btn{
+        width:100%;
+        min-height:38px;
+        padding:10px 12px;
+        font-size:.82rem;
+        justify-content:center;
+        white-space:normal;
+        text-align:center;
+      }
+    }
+
+    @media(max-width:1000px){
+      .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:repeat(2,1fr)}
+      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
+      .resources-alert{min-height:auto}
+      .resource-chip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero{background-position:center}
+      .founder-photo{height:360px}
+      .public-portal-grid{grid-template-columns:1fr}
+      .public-portal-card{padding:22px;border-radius:22px}
+      .portal-card-actions .btn{width:100%;border-radius:14px}
     }
 
     @media(max-width:760px){
@@ -1054,20 +856,23 @@
       .support-strip a{padding:5px 8px}
       .container{width:min(100% - 28px,1180px)}
       section{padding:48px 0}
+      .nav{min-height:64px}
+      .brand{max-width:calc(100% - 58px)}
       .brand img{width:40px;height:40px}
       .brand h2{font-size:.95rem}
       .brand p{font-size:.5rem}
+      .menu-toggle{width:42px;height:42px}
+      .nav-links{
+        top:calc(100% + 10px);
+        max-height:calc(100vh - 110px);
+        overflow-y:auto;
+      }
 
       .hero{min-height:auto;background-position:center}
       .hero .container{padding:46px 0 70px}
       h1{font-size:clamp(2.45rem,11vw,3.65rem);line-height:1.02}
       .hero p{font-size:.98rem;line-height:1.55;margin:16px 0 18px}
-      .hero-actions{
-        flex-direction:row!important;
-        flex-wrap:wrap;
-        gap:8px;
-        margin-top:18px;
-      }
+      .hero-actions{flex-direction:row!important;flex-wrap:wrap;gap:8px;margin-top:18px}
       .hero-actions .btn{
         width:auto!important;
         flex:1 1 calc(33.333% - 8px);
@@ -1080,16 +885,6 @@
       .hero-trust{gap:7px;margin-top:18px}
       .hero-trust span{padding:7px 9px;font-size:.76rem}
 
-      .btn,
-      .cta-actions .btn,
-      .contact-form button{
-        width:auto;
-        min-height:38px;
-        padding:9px 12px;
-        font-size:.8rem;
-      }
-      .cta-actions{gap:8px}
-
       .impact-grid,.program-grid,.testimonial-grid,.project-grid,.gallery-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:1fr}
       .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
       .mindcheck-wrap,.founder-wrap,.why-box,.ecosystem-content,.resources-help-wrap,.resources-alert{padding:20px;border-radius:22px}
@@ -1098,9 +893,16 @@
       .ecosystem-image,.ecosystem-image img{height:260px;min-height:260px}
       .resource-chip-grid,.ecosystem-list{grid-template-columns:1fr}
       .founder-photo{height:300px}
+      .contact-option{flex-direction:column}
       .floating-help{left:18px;right:18px;bottom:12px;text-align:center;width:auto;min-height:38px;padding:10px 14px;font-size:.82rem}
+      .portal-list li{font-size:.9rem}
     }
 
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation:none!important;transition:none!important}
+      .reveal,.reveal.active,.reveal.exit{opacity:1;transform:none}
+    }
   </style>
 
   <script type="application/ld+json">
@@ -1112,9 +914,7 @@
     "logo": "https://mindcheck.speakoutmentalhealth.org/logo.png",
     "description": "Youth mental wellness outreach, MindCheck digital wellbeing tools, resources, education and community partnerships.",
     "areaServed": "Nigeria",
-    "sameAs": [
-      "https://instagram.com/speaaakout"
-    ],
+    "sameAs": ["https://instagram.com/speaaakout"],
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "General Support",
@@ -1153,10 +953,11 @@
         <a href="#programs" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Programs</a>
         <a href="#mindcheck" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">MindCheck</a>
         <a href="#resources-help" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Get Help</a>
-        <a href="#ecosystem" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Learning Hub</a>
+        <a href="#public-portal" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Public / Portal</a>
         <a href="#partners" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Partners</a>
         <a href="#contact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Contact</a>
-        <a href="https://paystack.shop/pay/speakout-donate" target="_blank" class="btn btn-gold" rel="noopener">Donate</a>
+        <a href="login.html" class="btn btn-dark" onclick="document.body.classList.remove('menu-open')">Portal Login</a>
+        <a href="register.html" class="btn btn-gold" onclick="document.body.classList.remove('menu-open')">Apply Access</a>
       </nav>
     </div>
   </header>
@@ -1180,6 +981,75 @@
             <span>School outreach</span>
             <span>Partnership ready</span>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="public-portal-section" id="public-portal">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Public Website vs Protected Portal</span>
+          <h2>Choose the right access path.</h2>
+          <p>
+            SpeakOut now has two clear areas: the public website for everyone, and a protected learning portal
+            for approved students, schools, teachers, ambassadors and administrators.
+          </p>
+        </div>
+
+        <div class="public-portal-grid">
+          <article class="public-portal-card public-side reveal">
+            <div class="portal-card-icon">🌍</div>
+            <span class="portal-status open">Open to Everyone</span>
+            <h3>Public Website</h3>
+            <p>
+              This side is for visitors, partners, sponsors, parents, media, volunteers and anyone who wants to
+              learn about SpeakOut or access general support information.
+            </p>
+
+            <ul class="portal-list">
+              <li>About SpeakOut and our mission</li>
+              <li>Programs and outreach activities</li>
+              <li>MindCheck information</li>
+              <li>Resources & Help</li>
+              <li>Partnerships, sponsorships and donations</li>
+              <li>Contact and volunteer interest</li>
+            </ul>
+
+            <div class="portal-card-actions">
+              <a href="#programs" class="btn btn-primary">Explore Public Website</a>
+              <a href="#contact" class="btn btn-soft">Partner With Us</a>
+            </div>
+          </article>
+
+          <article class="public-portal-card protected-side reveal">
+            <div class="portal-card-icon">🔐</div>
+            <span class="portal-status locked">Approval Required</span>
+            <h3>Protected Portal</h3>
+            <p>
+              This side is for approved users only. It gives access to learning tools, school resources,
+              dashboards, certificates and progress tracking.
+            </p>
+
+            <ul class="portal-list">
+              <li>Student, school and admin dashboards</li>
+              <li>E-Library books and learning resources</li>
+              <li>SpeakHub courses and training center</li>
+              <li>Kiddies Corner for primary and secondary students</li>
+              <li>Certificates and verification tools</li>
+              <li>Progress tracking and school resources</li>
+            </ul>
+
+            <div class="portal-card-actions">
+              <a href="login.html" class="btn btn-light">Login to Portal</a>
+              <a href="register.html" class="btn btn-gold">Apply for Access</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="portal-note reveal">
+          <strong>Important:</strong>
+          SpeakHub, E-Library, Kiddies Corner, school dashboards and certificates are part of the protected portal.
+          Users must register and be approved before accessing them.
         </div>
       </div>
     </section>
@@ -1339,7 +1209,6 @@
       </div>
     </section>
 
-
     <section class="ecosystem" id="ecosystem">
       <div class="container">
         <div class="ecosystem-intro reveal">
@@ -1354,9 +1223,9 @@
           </div>
 
           <div class="ecosystem-content">
-            <span class="label">Skills Development Center</span>
-            <h2>SpeakHub</h2>
-            <p>SpeakHub is our skills development center designed to help young people access digital skills, leadership training, professional development, certifications and career growth resources.</p>
+            <span class="label">Protected Skills Development Center</span>
+            <h2>SpeakHub 🔐</h2>
+            <p>SpeakHub is our protected skills development center for approved students, schools, teachers and ambassadors. It supports digital skills, leadership training, professional development, certifications and career growth.</p>
 
             <ul class="ecosystem-list">
               <li>Digital Skills</li>
@@ -1367,7 +1236,7 @@
               <li>Youth Empowerment</li>
             </ul>
 
-            <a href="https://mindcheck.speakoutmentalhealth.org/speakhub.html" target="_blank" rel="noopener" class="btn btn-primary">Explore SpeakHub</a>
+            <a href="login.html" class="btn btn-primary">Login to Access SpeakHub 🔐</a>
           </div>
         </div>
 
@@ -1377,9 +1246,9 @@
           </div>
 
           <div class="ecosystem-content">
-            <span class="label">Digital Knowledge Center</span>
-            <h2>E-Library</h2>
-            <p>The E-Library gives young people access to curated books, educational resources, mental health materials, leadership content and personal development tools.</p>
+            <span class="label">Protected Digital Knowledge Center</span>
+            <h2>E-Library 🔐</h2>
+            <p>The E-Library is now part of the protected portal. Approved users can access curated books, educational resources, mental health materials, leadership content and personal development tools.</p>
 
             <ul class="ecosystem-list">
               <li>Mental Health Resources</li>
@@ -1390,7 +1259,7 @@
               <li>Digital Learning</li>
             </ul>
 
-            <a href="https://mindcheck.speakoutmentalhealth.org/e-library.html" target="_blank" rel="noopener" class="btn btn-primary">Open E-Library</a>
+            <a href="login.html" class="btn btn-primary">Login to Access E-Library 🔐</a>
           </div>
         </div>
       </div>
@@ -1660,8 +1529,8 @@
           <a href="#impact">Impact</a>
           <a href="#programs">Programs</a>
           <a href="#resources-help">Resources & Help</a>
+          <a href="#public-portal">Public / Portal</a>
           <a href="#partners">Partners</a>
-          <a href="#ecosystem">Learning Hub</a>
           <a href="#documents">Documents</a>
           <a href="#contact">Contact</a>
         </div>
@@ -1670,9 +1539,9 @@
           <h4>Action</h4>
           <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a>
           <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" rel="noopener">Resources & Help</a>
+          <a href="login.html">Portal Login</a>
+          <a href="register.html">Apply for Portal Access</a>
           <a href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" rel="noopener">Ambassador Program</a>
-          <a href="https://mindcheck.speakoutmentalhealth.org/speakhub.html" target="_blank" rel="noopener">SpeakHub</a>
-          <a href="https://mindcheck.speakoutmentalhealth.org/e-library.html" target="_blank" rel="noopener">E-Library</a>
           <a href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate / Sponsor</a>
         </div>
 
@@ -1759,7 +1628,6 @@
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => document.body.classList.remove('menu-open'));
   });
-
 </script>
 </body>
 </html>
