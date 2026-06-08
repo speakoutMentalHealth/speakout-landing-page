@@ -1,0 +1,41 @@
+SPEAKOUT SCHOOL RESOURCE CENTER — INSTALL GUIDE
+
+1. Upload school-resources.html to your GitHub repository.
+
+2. Make sure these existing files are also in the same repo folder:
+   - firebase-config.js
+   - auth-guard.js
+   - login.html
+   - school-dashboard.html
+   - student-dashboard.html
+   - e-library.html
+   - speakhub.html
+   - kiddies.html
+
+3. Add a link to school-dashboard.html:
+   <a class="card" href="school-resources.html"><h2>School Resource Center</h2><p>Club guides, parent tools, teacher materials, reports and visibility support.</p></a>
+
+4. Because school-resources.html already includes:
+   <script type="module" src="auth-guard.js"></script>
+
+   only approved users can access it.
+
+5. Replace the placeholder buttons that say "Add Drive Link" with your real Google Drive file links when your documents are ready.
+
+6. Suggested Google Drive folders:
+   - Club Setup
+   - Teacher Resources
+   - Parent Resources
+   - Student Ambassadors
+   - Reports and Monitoring
+   - Media and Visibility
+   - School Website Support
+
+NEXT BUILD:
+Create the actual downloadable templates:
+- Mental Health Club Setup Guide
+- Parent Invitation Letter
+- Teacher Coordinator Guide
+- Student Ambassador Handbook
+- Termly Activity Report
+- Social Media Caption Pack
