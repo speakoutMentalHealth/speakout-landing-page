@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify Certificate | SpeakOut</title>
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--green:#0f8f6f;--red:#b42318;--bg:#f7f9fc;--line:#e5edf6;--muted:#637083}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}.container{width:min(900px,92%);margin:auto}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:70px 0;text-align:center}.hero h1{font-size:clamp(2.2rem,5vw,4.5rem);margin:0 0 12px}.hero p{color:rgba(255,255,255,.86);line-height:1.6}.card{background:white;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 16px 44px rgba(7,21,43,.08);margin-top:30px}.field{display:flex;gap:10px;flex-wrap:wrap}.field input{flex:1;min-height:46px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit}.btn{border:0;border-radius:999px;background:var(--blue);color:white;padding:12px 18px;font-weight:900;cursor:pointer}.result{display:none;margin-top:18px;padding:18px;border-radius:18px}.valid{background:#e9fbf5;color:var(--green)}.invalid{background:#fff1f0;color:var(--red)}.result h2{margin-top:0}.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0;color:#111827}.detail strong{display:block;color:var(--navy);font-size:.78rem;text-transform:uppercase}.back{display:inline-block;margin-top:22px;color:var(--blue);font-weight:900;text-decoration:none}
+</style>
+</head>
+<body>
+<section class="hero"><div class="container"><h1>Verify Certificate</h1><p>Enter the certificate number to confirm if it was issued by SpeakOut Mental Health Outreach.</p></div></section>
+<main class="container">
+  <div class="card">
+    <div class="field">
+      <input id="certNumber" placeholder="Example: SO-2026-000001">
+      <button class="btn" id="verifyBtn">Verify</button>
+    </div>
+    <div id="validResult" class="result valid">
+      <h2>✅ Certificate Verified</h2>
+      <div class="detail"><strong>Recipient</strong><span id="rName"></span></div>
+      <div class="detail"><strong>Program</strong><span id="rProgram"></span></div>
+      <div class="detail"><strong>School / Organization</strong><span id="rSchool"></span></div>
+      <div class="detail"><strong>Date Issued</strong><span id="rDate"></span></div>
+      <div class="detail"><strong>Status</strong><span id="rStatus"></span></div>
+    </div>
+    <div id="invalidResult" class="result invalid">
+      <h2>❌ Certificate Not Found</h2>
+      <p>Please check the certificate number and try again.</p>
+    </div>
+    <a class="back" href="https://speakoutmentalhealth.org/">← Back to SpeakOut</a>
+  </div>
+</main>
+
+<script type="module">
+import { db } from "./firebase-config.js";
+import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const input=document.getElementById("certNumber"), valid=document.getElementById("validResult"), invalid=document.getElementById("invalidResult");
+document.getElementById("verifyBtn").onclick=verify;
+input.addEventListener("keydown",e=>{if(e.key==="Enter")verify()});
+
+async function verify(){
+  const number=input.value.trim();
+  valid.style.display="none"; invalid.style.display="none";
+  if(!number){invalid.style.display="block";return}
+  const q=query(collection(db,"certificates"),where("certificateNumber","==",number));
+  const snap=await getDocs(q);
+  if(snap.empty){invalid.style.display="block";return}
+  const cert=snap.docs[0].data();
+  if(cert.status!=="issued"){invalid.style.display="block";return}
+  document.getElementById("rName").textContent=cert.recipientName||"—";
+  document.getElementById("rProgram").textContent=cert.programTitle||"—";
+  document.getElementById("rSchool").textContent=cert.schoolName||"—";
+  document.getElementById("rDate").textContent=cert.issueDate||"—";
+  document.getElementById("rStatus").textContent=cert.status||"—";
+  valid.style.display="block";
+}
+</script>
+</body>
+</html>
