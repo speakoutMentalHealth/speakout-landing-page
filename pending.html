@@ -1,32 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Approval Pending | SpeakOut Portal</title>
-  <link rel="stylesheet" href="portal.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Pending Approval | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --gold:#f4a21c;
+  --bg:#f7f9fc;
+  --line:#e5edf6;
+  --muted:#637083;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(244,162,28,.18),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:22px;
+}
+.card{
+  width:min(720px,100%);
+  background:#fff;
+  color:#111827;
+  border-radius:28px;
+  padding:34px;
+  box-shadow:0 24px 70px rgba(0,0,0,.22);
+  text-align:center;
+}
+.logo{
+  width:76px;
+  height:76px;
+  object-fit:contain;
+  margin:0 auto 16px;
+}
+.badge{
+  display:inline-flex;
+  padding:8px 13px;
+  border-radius:999px;
+  background:#fff4df;
+  color:#8a5600;
+  font-size:.75rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:14px;
+}
+h1{
+  color:var(--navy);
+  font-size:clamp(2rem,5vw,3.4rem);
+  line-height:1.05;
+  letter-spacing:-.04em;
+  margin:0 0 12px;
+}
+p{
+  color:var(--muted);
+  line-height:1.65;
+  font-size:1rem;
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-top:22px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:10px 15px;
+  border-radius:999px;
+  border:0;
+  text-decoration:none;
+  font-weight:900;
+}
+.primary{background:var(--blue);color:#fff}
+.gold{background:var(--gold);color:#241300}
+.soft{background:#eaf3ff;color:var(--blue)}
+@media(max-width:640px){
+  .card{padding:24px;border-radius:22px}
+  .actions{flex-direction:column}
+  .btn{width:100%;border-radius:14px}
+}
+</style>
 </head>
 <body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="https://speakoutmentalhealth.org/">
-      <img src="icons/logo.png" alt="SpeakOut"> SpeakOut Portal
-    </a>
-    <div class="nav-links">
-      <a class="btn" href="login.html">Login</a>
+  <main class="card">
+    <img class="logo" src="logo.png" alt="SpeakOut Logo">
+    <span class="badge">Account Pending</span>
+    <h1>Your portal access is awaiting approval.</h1>
+    <p>
+      Thank you for registering. Your account needs to be reviewed and approved before you can access
+      the protected SpeakOut portal, E-Library, SpeakHub, Kiddies Corner, dashboards and certificates.
+    </p>
+    <p>
+      If this is urgent, contact the SpeakOut team on WhatsApp and provide the email address you used to register.
+    </p>
+    <div class="actions">
+      <a class="btn gold" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Contact WhatsApp</a>
+      <a class="btn primary" href="login.html">Back to Login</a>
+      <a class="btn soft" href="index.html">Return Home</a>
     </div>
-  </div>
-</header>
-
-<main class="container">
-  <section class="card form">
-    <h1>Account Waiting for Approval</h1>
-    <p>Your registration has been received. SpeakOut will review your account before granting access.</p>
-    <div class="notice">
-      Access to SpeakHub, E-Library, and Kiddies Corner is only available to approved students and schools.
-    </div>
-    <p><a class="btn btn-primary" href="https://speakoutmentalhealth.org/">Return to Main Website</a></p>
-  </section>
-</main>
+  </main>
 </body>
 </html>
