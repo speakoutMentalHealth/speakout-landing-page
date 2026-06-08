@@ -1,50 +1,131 @@
+// auth-guard.js
+// SpeakOut Portal Access Control
+// Protects approved-only pages and admin-only pages.
+
 import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-const currentPage = window.location.pathname.split("/").pop();
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
-const adminOnlyPages = ["admin-dashboard.html"];
-const schoolOnlyPages = ["school-dashboard.html"];
-const studentOnlyPages = ["student-dashboard.html"];
+/*
+  Public pages are open to everyone.
+  Keep index.html public. Keep login/register public.
+*/
+const publicPages = [
+  "index.html",
+  "",
+  "login.html",
+  "register.html",
+  "forgot-password.html",
+  "verify-certificate.html"
+];
 
-function redirect(page){
-  window.location.href = page;
+/*
+  Admin-only pages.
+  Only users with role = admin AND status = approved can access these.
+*/
+const adminOnlyPages = [
+  "admin-dashboard.html",
+  "admin-users.html",
+  "admin-schools.html",
+  "admin-books.html",
+  "admin-courses.html",
+  "admin-certificates.html",
+  "admin-analytics.html",
+  "admin-progress.html"
+];
+
+/*
+  Approved portal pages.
+  Any approved user can access these.
+*/
+const approvedOnlyPages = [
+  "student-dashboard.html",
+  "school-dashboard.html",
+  "student-progress.html",
+  "e-library.html",
+  "speakhub.html",
+  "kiddies.html",
+  "school-resources.html",
+  "submit-work.html"
+];
+
+function redirectToLogin(){
+  const next = encodeURIComponent(currentPage);
+  window.location.href = `login.html?next=${next}`;
+}
+
+function redirectToPending(){
+  window.location.href = "pending-approval.html";
+}
+
+function redirectToDashboard(role){
+  if(role === "admin") window.location.href = "admin-dashboard.html";
+  else if(role === "school") window.location.href = "school-dashboard.html";
+  else window.location.href = "student-dashboard.html";
+}
+
+function isPublicPage(){
+  return publicPages.includes(currentPage);
+}
+
+function isAdminPage(){
+  return adminOnlyPages.includes(currentPage);
+}
+
+function isApprovedPage(){
+  return approvedOnlyPages.includes(currentPage);
+}
+
+async function getUserProfile(uid){
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
+  if(!snap.exists()) return null;
+  return snap.data();
 }
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    redirect("login.html");
-    return;
-  }
+  try{
+    if(isPublicPage()){
+      return;
+    }
 
-  const userRef = doc(db, "users", user.uid);
-  const userSnap = await getDoc(userRef);
+    if(!user){
+      redirectToLogin();
+      return;
+    }
 
-  if (!userSnap.exists()) {
-    redirect("pending.html");
-    return;
-  }
+    const profile = await getUserProfile(user.uid);
 
-  const profile = userSnap.data();
+    if(!profile){
+      await signOut(auth);
+      redirectToLogin();
+      return;
+    }
 
-  if (profile.status !== "approved") {
-    redirect("pending.html");
-    return;
-  }
+    const role = profile.role || "student";
+    const status = profile.status || "pending";
 
-  if (adminOnlyPages.includes(currentPage) && profile.role !== "admin") {
-    redirect(profile.role === "school" ? "school-dashboard.html" : "student-dashboard.html");
-    return;
-  }
+    if(status !== "approved"){
+      if(currentPage !== "pending-approval.html"){
+        redirectToPending();
+      }
+      return;
+    }
 
-  if (schoolOnlyPages.includes(currentPage) && profile.role !== "school" && profile.role !== "admin") {
-    redirect("student-dashboard.html");
-    return;
-  }
+    if(isAdminPage() && role !== "admin"){
+      redirectToDashboard(role);
+      return;
+    }
 
-  if (studentOnlyPages.includes(currentPage) && profile.role !== "student" && profile.role !== "admin") {
-    redirect("school-dashboard.html");
-    return;
+    if(isApprovedPage()){
+      return;
+    }
+
+  }catch(error){
+    console.error("Auth guard error:", error);
+    await signOut(auth);
+    redirectToLogin();
   }
 });
