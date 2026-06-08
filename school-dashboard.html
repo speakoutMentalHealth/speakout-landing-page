@@ -1,43 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>School Dashboard | SpeakOut Portal</title>
-  <link rel="stylesheet" href="portal.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>School Dashboard | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#07152b;--navy2:#0b2344;--blue:#0a5fbf;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:24px;
+}
+*{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{text-decoration:none;color:inherit}button{font:inherit}
+.container{width:min(1220px,94%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.82rem;cursor:pointer;transition:.2s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(7,21,43,.12)}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}.success{background:var(--green);color:#fff}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(7,21,43,.08);backdrop-filter:blur(18px)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:900;color:var(--blue)}
+.brand img{width:46px;height:46px;object-fit:contain}.brand div{line-height:1.05}.brand strong{display:block;color:var(--blue);font-size:1.05rem}.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.nav-links{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.15rem}
+.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:56px 0 48px}
+.hero h1{font-size:clamp(2.25rem,5vw,4.8rem);line-height:1.04;letter-spacing:-.045em;margin:10px 0}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65;font-size:1.02rem}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft)}.card{padding:20px;transition:.22s ease}.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card h2,.card h3{margin:0 0 8px;color:var(--navy);letter-spacing:-.03em}.card p{color:var(--muted);line-height:1.55;margin:0 0 14px;font-size:.93rem}
+.icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:1.25rem;font-weight:900;margin-bottom:12px}
+.metric strong{display:block;color:var(--blue);font-size:clamp(1.8rem,3vw,2.6rem);line-height:1}.metric span{display:block;color:var(--muted);font-weight:850;font-size:.82rem;margin-top:8px}.metric small{display:block;color:var(--green);font-weight:800;margin-top:8px}
+.title{max-width:860px;margin:0 auto 28px;text-align:center}.title h2{color:var(--navy);font-size:clamp(1.8rem,4vw,3.35rem);line-height:1.06;letter-spacing:-.04em;margin:0 0 10px}.title p{color:var(--muted);line-height:1.65;margin:0}
+.notice{background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--soft)}
+.notice h3{margin:0 0 10px;color:var(--navy);font-size:1.4rem}.notice p{color:var(--muted);line-height:1.6;margin:0 0 14px}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px}.footer h3,.footer h4{color:#fff;margin-top:0}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.9rem}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a,.nav-links button{width:100%;border-radius:14px}.brand img{width:42px;height:42px}.hero{padding:42px 0}.g4,.g3,.g2,.footer-grid{grid-template-columns:1fr}section{padding:28px 0}.card{padding:17px;border-radius:20px}}
+</style>
 </head>
 <body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="https://speakoutmentalhealth.org/">
-      <img src="icons/logo.png" alt="SpeakOut"> School Portal
-    </a>
-    <div class="nav-links">
-      <button class="btn btn-dark" id="logoutBtn">Logout</button>
-    </div>
-  </div>
-</header>
+<header class="nav"><div class="container nav-inner">
+  <a class="brand" href="school-dashboard.html"><img src="icons/logo.png" alt="SpeakOut Logo"><div><strong>SpeakOut</strong><small>School Portal</small></div></a>
+  <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
+  <nav class="nav-links">
+    <a class="btn primary" href="school-dashboard.html">Dashboard</a>
+    <a class="btn soft" href="school-resources.html">Resources</a>
+    <a class="btn soft" href="e-library.html">E-Library</a>
+    <a class="btn soft" href="speakhub.html">SpeakHub</a>
+    <a class="btn soft" href="kiddies.html">Kiddies</a>
+    <button class="btn dark" id="logoutBtn">Logout</button>
+  </nav>
+</div></header>
 
-<section class="hero">
-  <div class="container">
-    <h1>School Dashboard</h1>
-    <p>Access school wellness resources, club materials, learning portals, and reporting tools.</p>
-  </div>
-</section>
+<main>
+<section class="hero"><div class="container">
+  <span class="kicker">Approved School Access</span>
+  <h1>School Wellness Portal</h1>
+  <p>Access implementation guides, teacher materials, parent tools, student resources, school visibility support, E-Library and SpeakHub learning tools.</p>
+</div></section>
 
-<main class="container" style="padding:40px 0;">
-  <div class="grid grid-3">
-    <a class="card" href="speakhub.html"><h2>SpeakHub</h2><p>Student training resources.</p></a><a class="card" href="e-library.html"><h2>E-Library</h2><p>Approved books and materials.</p></a><a class="card" href="kiddies.html"><h2>Kiddies Corner</h2><p>Primary and secondary school content.</p></a>
+<section><div class="container grid g4">
+  <div class="card metric"><strong id="schoolsTotal">0</strong><span>School Records</span><small>in admin system</small></div>
+  <div class="card metric"><strong id="studentsTotal">0</strong><span>Estimated Students</span><small>from school profiles</small></div>
+  <div class="card metric"><strong id="ambassadorsTotal">0</strong><span>Ambassadors</span><small>from school profiles</small></div>
+  <div class="card metric"><strong id="resourcesTotal">0</strong><span>Resources</span><small>books + courses</small></div>
+</div></section>
+
+<section><div class="container">
+  <div class="title"><span class="label">School Tools</span><h2>Run the program from here</h2><p>This dashboard turns the school partnership into a working system.</p></div>
+  <div class="grid g3">
+    <a class="card" href="school-resources.html"><div class="icon">🏫</div><h2>School Resource Center</h2><p>Club guides, parent tools, teacher materials, reports, templates and media visibility support.</p><span class="btn soft">Open Resources</span></a>
+    <a class="card" href="kiddies.html"><div class="icon">🧒</div><h2>Kiddies Corner</h2><p>Primary and secondary learning tracks for students, including digital skills and wellbeing.</p><span class="btn soft">Open Kiddies</span></a>
+    <a class="card" href="e-library.html"><div class="icon">📚</div><h2>E-Library</h2><p>Books, toolkits, reading clubs, school resources and public learning links.</p><span class="btn soft">Open Library</span></a>
+    <a class="card" href="speakhub.html"><div class="icon">🎓</div><h2>SpeakHub</h2><p>Courses for students, teachers, parents, ambassadors and club leaders.</p><span class="btn soft">Open SpeakHub</span></a>
+    <a class="card" href="verify-certificate.html"><div class="icon">🏆</div><h2>Certificate Verification</h2><p>Verify SpeakOut certificates issued to students, ambassadors, teachers and coordinators.</p><span class="btn soft">Verify</span></a>
+    <a class="card" href="https://speakoutmentalhealth.org/"><div class="icon">🌍</div><h2>Main Website</h2><p>Public SpeakOut website for parents, partners and community visibility.</p><span class="btn soft">Visit Site</span></a>
   </div>
+</div></section>
+
+<section><div class="container grid g2">
+  <div class="notice"><span class="label">School Value</span><h3>Show parents what is happening.</h3><p>Use the Resource Center to run activities, then use media templates to project the school’s development publicly.</p><a class="btn primary" href="school-resources.html">Open Templates</a></div>
+  <div class="notice"><span class="label">Sustainability</span><h3>Activities must be visible.</h3><p>If parents do not see workshops, club activities, reports and certificates, the wellness fee will look weak. Evidence is your protection.</p><a class="btn gold" href="school-resources.html">View Reports</a></div>
+</div></section>
 </main>
+
+<footer class="footer"><div class="container footer-grid"><div><h3>SpeakOut School Portal</h3><p>Protected access for approved schools.</p></div><div><h4>School Tools</h4><a href="school-resources.html">Resource Center</a><a href="kiddies.html">Kiddies Corner</a><a href="e-library.html">E-Library</a></div><div><h4>Support</h4><a href="https://speakoutmentalhealth.org/">Main Website</a><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a></div></div></footer>
 
 <script type="module" src="auth-guard.js"></script>
 <script type="module">
-import { auth } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-document.getElementById("logoutBtn").onclick = async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
-};
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth); location.href="login.html"};
+function set(id,val){document.getElementById(id).textContent=Number(val||0).toLocaleString()}
+function sum(arr,key){return arr.reduce((a,x)=>a+Number(x[key]||0),0)}
+async function get(name){try{const s=await getDocs(collection(db,name));const r=[];s.forEach(d=>r.push({id:d.id,...d.data()}));return r}catch(e){return []}}
+async function load(){const [schools,books,courses]=await Promise.all([get("schools"),get("books"),get("courses")]);set("schoolsTotal",schools.length);set("studentsTotal",sum(schools,"studentCount"));set("ambassadorsTotal",sum(schools,"ambassadorCount"));set("resourcesTotal",books.filter(b=>b.status==="active").length + courses.filter(c=>c.status==="active").length)}
+load();
 </script>
-</body>
-</html>
+</body></html>
