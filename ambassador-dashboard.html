@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ambassador Dashboard | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--blueSoft:#eaf3ff;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--line:#e5edf6;--muted:#637083;--bg:#f7f9fc;--ink:#111827;--soft:0 10px 28px rgba(7,21,43,.07);--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.82rem;cursor:pointer}.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--blue)}.brand img{width:44px;height:44px;object-fit:contain}.brand small{display:block;color:#d98200;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.1rem}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:54px 0}.hero h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.04;letter-spacing:-.04em;margin:10px 0}.hero p{max-width:850px;color:rgba(255,255,255,.86);line-height:1.65}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:34px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--soft);padding:20px}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);transition:.2s}
+.metric strong{display:block;color:var(--blue);font-size:clamp(1.8rem,3vw,2.6rem);line-height:1}.metric span{display:block;color:var(--muted);font-weight:850;font-size:.82rem;margin-top:8px}.icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:1.25rem;margin-bottom:12px}.card h2,.card h3{color:var(--navy);margin:0 0 8px}.card p,.panel p{color:var(--muted);line-height:1.6;margin:0 0 14px}.notice{background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--soft)}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer a{color:rgba(255,255,255,.72)}
+@media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr}.menu{display:block}.nav-links{display:none;position:fixed;top:70px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column}.nav-links a,.nav-links button{width:100%;border-radius:14px}body.menu-open .nav-links{display:flex}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="#"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Ambassador Portal</small></div></a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<nav class="nav-links">
+<a class="btn soft" href="e-library.html">E-Library</a>
+<a class="btn soft" href="speakhub.html">SpeakHub</a>
+<a class="btn soft" href="kiddies.html">Kiddies</a>
+<a class="btn soft" href="school-resources.html">Resources</a>
+<a class="btn soft" href="student-progress.html">Progress</a>
+<button class="btn dark" id="logoutBtn">Logout</button>
+</nav></div></header>
+<main>
+<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>Student Ambassador Dashboard</h1><p>Access ambassador training, monthly tasks, leadership resources, certificates and progress tracking.</p></div></section>
+<section><div class="container grid g4"><div class="card metric"><strong>Bronze</strong><span>Current Level</span></div>
+<div class="card metric"><strong>0</strong><span>Points</span></div>
+<div class="card metric"><strong>0</strong><span>Tasks Done</span></div>
+<div class="card metric"><strong>0</strong><span>Certificates</span></div></div></section>
+<section><div class="container"><div class="grid g3"><a class="card" href="speakhub.html"><div class="icon">👑</div><h2>Ambassador Training</h2><p>Complete leadership and mental health advocacy training.</p><span class="btn soft">Start Training</span></a>
+<a class="card" href="school-resources.html"><div class="icon">📣</div><h2>Monthly Tasks</h2><p>Use school resource templates to run awareness activities.</p><span class="btn soft">View Tasks</span></a>
+<a class="card" href="e-library.html"><div class="icon">📚</div><h2>Learning Library</h2><p>Read youth leadership, wellbeing and personal growth resources.</p><span class="btn soft">Open Library</span></a>
+<a class="card" href="kiddies.html"><div class="icon">🧒</div><h2>Kiddies Corner</h2><p>Access student-friendly resources for peer support and awareness.</p><span class="btn soft">Open Kiddies</span></a>
+<a class="card" href="verify-certificate.html"><div class="icon">🏆</div><h2>Certificates</h2><p>Verify issued ambassador certificates.</p><span class="btn soft">Verify</span></a>
+<a class="card" href="student-progress.html"><div class="icon">📈</div><h2>My Progress</h2><p>Track courses started and resources opened.</p><span class="btn soft">View Progress</span></a></div></div></section>
+<section><div class="container"><div class="notice"><span class="label">Ruthless Clarity</span><h3>Use the portal with evidence.</h3><p>Ambassadors are not title collectors. The value is in completed activities, reports, service hours, and visible school impact. No activity, no credibility.</p></div></div></section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { auth } from "./firebase-config.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth);location.href="login.html"};
+</script>
+</body></html>
