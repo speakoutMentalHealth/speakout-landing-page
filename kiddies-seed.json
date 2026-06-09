@@ -1,0 +1,202 @@
+[
+  {
+    "id": "abc-adventures",
+    "title": "ABC Adventures",
+    "category": "numeracy",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on abc adventures.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>ABC Adventures</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "numbers-fun",
+    "title": "Numbers Fun",
+    "category": "emotions",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on numbers fun.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>Numbers Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "colors-and-shapes",
+    "title": "Colors and Shapes",
+    "category": "safety",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on colors and shapes.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>Colors and Shapes</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "good-manners",
+    "title": "Good Manners",
+    "category": "character",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on good manners.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>Good Manners</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "my-feelings",
+    "title": "My Feelings",
+    "category": "literacy",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on my feelings.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>My Feelings</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "safety-first",
+    "title": "Safety First",
+    "category": "numeracy",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on safety first.",
+    "status": "active",
+    "featured": true,
+    "contentHtml": "<h2>Safety First</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "healthy-habits",
+    "title": "Healthy Habits",
+    "category": "emotions",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on healthy habits.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Healthy Habits</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "story-time",
+    "title": "Story Time",
+    "category": "safety",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on story time.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Story Time</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "reading-club",
+    "title": "Reading Club",
+    "category": "character",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on reading club.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Reading Club</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "mathematics-fun",
+    "title": "Mathematics Fun",
+    "category": "literacy",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on mathematics fun.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Mathematics Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "science-explorers",
+    "title": "Science Explorers",
+    "category": "numeracy",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on science explorers.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Science Explorers</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "creative-drawing",
+    "title": "Creative Drawing",
+    "category": "emotions",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on creative drawing.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Creative Drawing</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "public-speaking-for-kids",
+    "title": "Public Speaking for Kids",
+    "category": "safety",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on public speaking for kids.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Public Speaking for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "leadership-for-kids",
+    "title": "Leadership for Kids",
+    "category": "character",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on leadership for kids.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Leadership for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "emotional-intelligence",
+    "title": "Emotional Intelligence",
+    "category": "literacy",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on emotional intelligence.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Emotional Intelligence</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "environmental-awareness",
+    "title": "Environmental Awareness",
+    "category": "numeracy",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on environmental awareness.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Environmental Awareness</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "kind-words",
+    "title": "Kind Words",
+    "category": "emotions",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on kind words.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Kind Words</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "sharing-and-teamwork",
+    "title": "Sharing and Teamwork",
+    "category": "safety",
+    "ageGroup": "ages-3-5",
+    "description": "Child-friendly SpeakOut learning activity on sharing and teamwork.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Sharing and Teamwork</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "my-safety-circle",
+    "title": "My Safety Circle",
+    "category": "character",
+    "ageGroup": "ages-6-9",
+    "description": "Child-friendly SpeakOut learning activity on my safety circle.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>My Safety Circle</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  },
+  {
+    "id": "calm-down-toolbox",
+    "title": "Calm Down Toolbox",
+    "category": "literacy",
+    "ageGroup": "ages-10-13",
+    "description": "Child-friendly SpeakOut learning activity on calm down toolbox.",
+    "status": "active",
+    "featured": false,
+    "contentHtml": "<h2>Calm Down Toolbox</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+  }
+]
