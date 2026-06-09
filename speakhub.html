@@ -71,17 +71,17 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 <body>
 <header class="nav">
   <div class="container nav-inner">
-    <a href="student-dashboard.html" class="brand" aria-label="SpeakHub Home">
+    <a href="portal.html" class="brand" aria-label="SpeakHub Home">
       <img src="icons/logo.png" alt="SpeakOut Logo">
       <div><h2>SpeakOut</h2><p>SpeakHub</p></div>
     </a>
     <button class="menu" type="button" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
     <nav class="nav-links">
-      <a href="student-dashboard.html">Dashboard</a>
+      <a href="portal.html">Portal</a>
       <a href="e-library.html">E-Library</a>
       <a href="kiddies.html">Kiddies</a>
-      <a href="school-resources.html">School Resources</a>
-      <a href="verify-certificate.html" class="btn primary">Verify Certificate</a>
+      <a href="ambassador.html">Ambassador</a>
+      <a href="portal.html#certificates" class="btn primary">Certificates</a>
     </nav>
   </div>
 </header>
@@ -92,11 +92,11 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
     <div class="hero-content">
       <span class="kicker">Protected Access • Firestore Courses • Approved Users</span>
       <h1>Learn practical skills for school, work and life.</h1>
-      <p>SpeakHub now loads courses directly from the admin course database. Add courses in <strong>admin-courses.html</strong> and approved users will see them here automatically.</p>
+      <p>SpeakHub loads approved courses directly from the admin course database. Add courses in the <strong>Admin Console</strong>, and approved users will see them here automatically.</p>
       <div class="actions">
         <a href="#courses" class="btn primary">Start Learning</a>
         <a href="#filters" class="btn light">Search Courses</a>
-        <a href="verify-certificate.html" class="btn gold">Verify Certificate</a>
+        <a href="portal.html#certificates" class="btn gold">My Certificates</a>
       </div>
       <div class="trust"><span>Mental Health</span><span>Leadership</span><span>Digital Skills</span><span>Career</span><span>Teachers</span></div>
     </div>
@@ -200,8 +200,8 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
     <div class="title"><span class="label">Certification Path</span><h2>Courses can lead to recognition</h2><p>When courses are marked certificate eligible, admins can issue certificates through the certificate management dashboard.</p></div>
     <div class="grid g3">
       <article class="card dark-card"><div class="icon">🎓</div><h3>Complete Training</h3><p>Students, teachers or ambassadors complete approved learning activities.</p><a class="btn gold" href="#courses">View Courses</a></article>
-      <article class="card dark-card"><div class="icon">🏆</div><h3>Issue Certificate</h3><p>Admins issue certificates from the certificate management page.</p><a class="btn gold" href="admin-certificates.html">Admin Certificates</a></article>
-      <article class="card dark-card"><div class="icon">✅</div><h3>Verify Publicly</h3><p>Certificates can be verified using the public verification page.</p><a class="btn gold" href="verify-certificate.html">Verify</a></article>
+      <article class="card dark-card"><div class="icon">🏆</div><h3>Certificate Records</h3><p>Approved users can view certificate records inside the portal.</p><a class="btn gold" href="portal.html#certificates">My Certificates</a></article>
+      <article class="card dark-card"><div class="icon">✅</div><h3>Admin Issued</h3><p>Certificates are created and managed by the SpeakOut admin team.</p><a class="btn gold" href="portal.html">Back to Portal</a></article>
     </div>
   </div>
 </section>
@@ -226,8 +226,8 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
   <div class="container">
     <div class="footer-grid">
       <div><div class="footer-brand"><img src="icons/logo.png" alt="SpeakOut Logo"><div><h3>SpeakOut</h3><p>SpeakHub</p></div></div><p>Protected training center for student wellness, digital skills, leadership and school development.</p></div>
-      <div><h4>Explore</h4><a href="student-dashboard.html">Student Dashboard</a><a href="school-dashboard.html">School Dashboard</a><a href="#courses">Courses</a><a href="#tracks">Tracks</a></div>
-      <div><h4>Ecosystem</h4><a href="e-library.html">E-Library</a><a href="kiddies.html">Kiddies Corner</a><a href="school-resources.html">School Resources</a><a href="verify-certificate.html">Verify Certificate</a></div>
+      <div><h4>Portal</h4><a href="portal.html">Main Portal</a><a href="portal.html#reports">Submit Report</a><a href="portal.html#certificates">Certificates</a></div>
+      <div><h4>Ecosystem</h4><a href="e-library.html">E-Library</a><a href="kiddies.html">Kiddies Corner</a><a href="ambassador.html">Ambassador Center</a></div>
       <div><h4>Contact</h4><a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp: +234 811 810 3510</a><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a></div>
     </div>
     <div class="footer-bottom"><p>© 2026 SpeakOut Mental Health Outreach. SpeakHub for learning, skills and leadership.</p></div>
@@ -235,12 +235,14 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 </footer>
 
 <script type="module" src="auth-guard.js"></script>
+<script type="module" src="protected-page-guard.js"></script>
 
 <script type="module">
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 let allCourses = [];
+let visibleCourses = [];
 
 const courseGrid = document.getElementById("courseGrid");
 const loading = document.getElementById("loading");
@@ -318,7 +320,7 @@ function renderCourses(){
   const audience = audienceFilter.value;
   const difficulty = difficultyFilter.value;
 
-  const filtered = allCourses.filter(course => {
+  visibleCourses = allCourses.filter(course => {
     const searchable = `${course.title||""} ${course.instructor||""} ${course.category||""} ${course.audience||""} ${course.difficulty||""} ${course.tags||""} ${course.description||""}`.toLowerCase();
     const okS = !s || searchable.includes(s);
     const okC = cat === "all" || course.category === cat;
@@ -327,12 +329,14 @@ function renderCourses(){
     return okS && okC && okA && okD;
   });
 
-  courseGrid.innerHTML = filtered.map(courseCard).join("");
-  emptyState.style.display = filtered.length === 0 ? "block" : "none";
+  courseGrid.innerHTML = visibleCourses.map(courseCard).join("");
+  emptyState.style.display = visibleCourses.length === 0 ? "block" : "none";
 }
 
 window.openCourse = function(index){
-  const c = allCourses[index];
+  const c = visibleCourses[index];
+  if(!c) return;
+
   const modal = document.getElementById("courseModal");
   document.getElementById("modalCategory").textContent = pretty(c.category);
   document.getElementById("modalTitle").textContent = safe(c.title);
@@ -397,3 +401,4 @@ document.querySelectorAll(".tab").forEach(btn => {
 loadCourses();
 </script>
 </body>
+</html>
