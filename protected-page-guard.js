@@ -37,3 +37,4 @@ onAuthStateChanged(auth, async user => {
 
   document.body.classList.add("access-approved");
 });
+
