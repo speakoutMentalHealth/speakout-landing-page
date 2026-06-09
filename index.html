@@ -903,6 +903,342 @@
       *,*::before,*::after{animation:none!important;transition:none!important}
       .reveal,.reveal.active,.reveal.exit{opacity:1;transform:none}
     }
+
+    /* =====================================================
+       PAGE 1 FINAL RESPONSIVE HARDENING
+       Keep this at the END of the style block.
+       ===================================================== */
+
+    html,
+    body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+
+    *,
+    *::before,
+    *::after{
+      box-sizing:border-box;
+    }
+
+    img,
+    video,
+    canvas,
+    svg,
+    iframe{
+      max-width:100%;
+    }
+
+    .container{
+      width:min(1180px, 92%);
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .nav-inner{
+      width:min(1180px, 92%);
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .nav .container.nav-inner{
+      width:min(1180px, 92%);
+    }
+
+    .brand{
+      min-width:0;
+    }
+
+    .brand-text{
+      min-width:0;
+    }
+
+    .brand h2,
+    .brand p{
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .btn{
+      max-width:100%;
+      text-align:center;
+    }
+
+    .hero{
+      min-height:72vh;
+    }
+
+    .hero-content{
+      max-width:820px;
+    }
+
+    .hero h1{
+      max-width:900px;
+    }
+
+    .public-portal-card,
+    .program-card,
+    .quote-card,
+    .project-card,
+    .report-card,
+    .contact-card,
+    .quick-help-card,
+    .resource-chip,
+    .ecosystem-content,
+    .founder-wrap,
+    .mindcheck-wrap,
+    .resources-help-wrap{
+      min-width:0;
+    }
+
+    @media(max-width:1180px){
+      .menu-toggle{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .nav-inner,
+      .nav .container.nav-inner{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        position:relative;
+      }
+
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:calc(100% + 10px);
+        left:0;
+        right:0;
+        width:100%;
+        background:#fff;
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:12px;
+        box-shadow:0 22px 55px rgba(7,21,43,.16);
+        flex-direction:column;
+        align-items:stretch;
+        justify-content:flex-start;
+        gap:8px;
+        z-index:2500;
+        max-height:calc(100vh - 110px);
+        overflow-y:auto;
+      }
+
+      body.menu-open .nav-links{
+        display:flex;
+      }
+
+      .nav-links a,
+      .nav-links .btn{
+        width:100%;
+        justify-content:center;
+        border-radius:14px;
+        white-space:normal;
+      }
+    }
+
+    @media(max-width:1000px){
+      .impact-grid,
+      .program-grid,
+      .testimonial-grid,
+      .project-grid,
+      .gallery-grid,
+      .logo-wall,
+      .report-grid,
+      .quick-help-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+
+      .public-portal-grid,
+      .mindcheck-wrap,
+      .vision-card,
+      .founder-wrap,
+      .why-wrap,
+      .contact-grid,
+      .ecosystem-grid,
+      .ecosystem-grid.reverse,
+      .resources-help-wrap{
+        grid-template-columns:1fr;
+        direction:ltr;
+      }
+    }
+
+    @media(max-width:760px){
+      .container,
+      .nav-inner,
+      .nav .container.nav-inner{
+        width:calc(100% - 28px);
+      }
+
+      .support-strip{
+        font-size:.74rem;
+        line-height:1.35;
+      }
+
+      .support-strip a{
+        border-radius:12px;
+      }
+
+      .brand{
+        max-width:calc(100% - 54px);
+      }
+
+      .brand img{
+        width:40px;
+        height:40px;
+      }
+
+      .brand h2{
+        font-size:.95rem;
+      }
+
+      .brand p{
+        font-size:.5rem;
+      }
+
+      .hero{
+        min-height:auto;
+      }
+
+      .hero .container{
+        padding:46px 0 58px;
+      }
+
+      h1{
+        font-size:clamp(2.35rem, 11vw, 3.45rem);
+      }
+
+      .hero p{
+        font-size:.98rem;
+        line-height:1.58;
+      }
+
+      section{
+        padding:46px 0;
+      }
+
+      .section-title{
+        margin-bottom:24px;
+      }
+
+      .hero-actions,
+      .cta-actions,
+      .portal-card-actions,
+      .actions{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+      }
+
+      .hero-actions .btn,
+      .cta-actions .btn,
+      .portal-card-actions .btn,
+      .btn{
+        width:100%;
+        border-radius:14px;
+      }
+
+      .hero-trust{
+        align-items:stretch;
+      }
+
+      .hero-trust span{
+        width:100%;
+        text-align:center;
+        border-radius:14px;
+      }
+
+      .impact-grid,
+      .program-grid,
+      .testimonial-grid,
+      .project-grid,
+      .gallery-grid,
+      .logo-wall,
+      .report-grid,
+      .quick-help-grid{
+        grid-template-columns:1fr;
+      }
+
+      .public-portal-card,
+      .mindcheck-wrap,
+      .founder-wrap,
+      .why-box,
+      .ecosystem-content,
+      .resources-help-wrap,
+      .resources-alert,
+      .contact-card{
+        padding:20px;
+        border-radius:22px;
+      }
+
+      .program-card img{
+        height:180px;
+      }
+
+      .ecosystem-image,
+      .ecosystem-image img{
+        height:250px;
+        min-height:250px;
+      }
+
+      .gallery-item{
+        height:205px;
+      }
+
+      .founder-photo{
+        height:300px;
+      }
+
+      .resource-chip-grid,
+      .ecosystem-list{
+        grid-template-columns:1fr;
+      }
+
+      .contact-option{
+        flex-direction:column;
+      }
+
+      .floating-help{
+        left:16px;
+        right:16px;
+        bottom:12px;
+        width:auto;
+        text-align:center;
+        border-radius:14px;
+      }
+
+      .footer{
+        padding-bottom:74px;
+      }
+    }
+
+    @media(max-width:390px){
+      .container,
+      .nav-inner,
+      .nav .container.nav-inner{
+        width:calc(100% - 22px);
+      }
+
+      h1{
+        font-size:2.18rem;
+      }
+
+      .public-portal-card,
+      .program-body,
+      .quote-card,
+      .project-card,
+      .report-card,
+      .contact-card{
+        padding:16px;
+      }
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -990,7 +1326,10 @@
         <div class="section-title reveal">
           <span class="label">Public Website vs Protected Portal</span>
           <h2>Choose the right access path.</h2>
-          
+          <p>
+            SpeakOut now has two clear areas: the public website for everyone, and a protected learning portal
+            for approved students, schools, teachers, ambassadors and administrators.
+          </p>
         </div>
 
         <div class="public-portal-grid">
@@ -1267,6 +1606,7 @@
         <div class="section-title reveal">
           <span class="label">Voices of Impact</span>
           <h2>What people are saying</h2>
+          <p>Sample testimonials to show the kind of impact SpeakOut is building. Replace these with real quotes as programs grow.</p>
         </div>
 
         <div class="testimonial-grid">
@@ -1345,6 +1685,7 @@
         <div class="section-title reveal">
           <span class="label">Outreach Gallery</span>
           <h2>Community work in action</h2>
+          <p>Generic image placeholders are used here. Replace them with your actual outreach photos when ready.</p>
         </div>
 
         <div class="gallery-grid">
@@ -1626,3 +1967,4 @@
 </script>
 </body>
 </html>
+
