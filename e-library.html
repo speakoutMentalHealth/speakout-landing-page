@@ -8,17 +8,76 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px}
-*{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}button,input,select{font:inherit}.container{width:min(1180px,92%);margin:auto}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.84rem;cursor:pointer;text-align:center}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--blueSoft);color:var(--blue)}.light{background:#fff;color:var(--navy)}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
-.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand img{width:46px;height:46px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
-.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.92),rgba(7,21,43,.72) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue));position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}.hero .container{position:relative;z-index:2;padding:64px 0 58px}.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:14px}h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}h1{font-size:clamp(2.35rem,6vw,5.3rem);margin:18px 0}.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:760px;color:rgba(255,255,255,.9)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
-section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:center}.title h2{font-size:clamp(1.85rem,4vw,3.5rem);margin:0 0 12px;color:var(--navy)}.title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft);padding:18px;position:relative;overflow:hidden;transition:.25s}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.card h3{font-size:1.05rem;color:var(--navy);margin:0 0 8px}.card p{color:var(--muted);line-height:1.55;margin:0 0 10px;font-size:.9rem}.stats{background:#fff;border-bottom:1px solid var(--line)}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--soft);text-align:center}.stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
-.controls{background:#fff;border-bottom:1px solid var(--line)}.controls-grid{display:grid;grid-template-columns:1.2fr .7fr .7fr;gap:10px;margin-top:14px}.input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}.empty{margin-top:14px;padding:13px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800;display:none;font-size:.9rem}.thumb{height:130px;border-radius:17px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));padding:14px;display:flex;align-items:flex-end;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.thumb strong{position:relative;z-index:2;font-size:.95rem;line-height:1.15;max-width:86%;text-shadow:0 3px 18px rgba(0,0,0,.35)}.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--blueSoft);color:var(--blue);text-transform:capitalize}.pill.gold{background:var(--goldSoft);color:#8a5600}.pill.green{background:var(--greenSoft);color:var(--green)}.loading{padding:18px;border-radius:18px;background:var(--blueSoft);color:var(--blue);font-weight:900;text-align:center}.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}.footer h3,.footer h4{color:#fff;margin:0 0 10px}
-@media(max-width:1000px){.g4,.g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}.controls-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}section{padding:48px 0}.hero .container{padding:52px 0}.g4,.g3,.stats-grid,.footer-grid,.controls-grid{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}.card,.panel{padding:16px;border-radius:19px}}
+:root{--navy:#07152b;--blue:#0a5fbf;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px}
+*{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.84rem;cursor:pointer;text-align:center}
+.primary{background:var(--blue);color:#fff}
+.gold{background:var(--gold);color:#241300}
+.soft{background:var(--blueSoft);color:var(--blue)}
+.light{background:#fff;color:var(--navy)}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}
+.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}
+.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
+.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.92),rgba(7,21,43,.72) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue));position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}
+.hero .container{position:relative;z-index:2;padding:64px 0 58px}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
+.label{background:var(--blueSoft);color:var(--blue);margin-bottom:14px}
+h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}
+h1{font-size:clamp(2.35rem,6vw,5.3rem);margin:18px 0}
+.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:760px;color:rgba(255,255,255,.9)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
+section{padding:58px 0}
+.title{max-width:850px;margin:0 auto 30px;text-align:center}
+.title h2{font-size:clamp(1.85rem,4vw,3.5rem);margin:0 0 12px;color:var(--navy)}
+.title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft);padding:18px;position:relative;overflow:hidden;transition:.25s}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.card h3{font-size:1.05rem;color:var(--navy);margin:0 0 8px}
+.card p{color:var(--muted);line-height:1.55;margin:0 0 10px;font-size:.9rem}
+.stats{background:#fff;border-bottom:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--soft);text-align:center}
+.stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1}
+.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
+.controls{background:#fff;border-bottom:1px solid var(--line)}
+.controls-grid{display:grid;grid-template-columns:1.2fr .7fr .7fr;gap:10px;margin-top:14px}
+.input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}
+.empty,.loading{margin-top:14px;padding:13px;border-radius:16px;background:var(--blueSoft);color:var(--blue);font-weight:800;font-size:.9rem;text-align:center}
+.empty{display:none;background:var(--goldSoft);color:#704800}
+.thumb{height:130px;border-radius:17px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));padding:14px;display:flex;align-items:flex-end;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb strong{position:relative;z-index:2;font-size:.95rem;line-height:1.15;max-width:86%;text-shadow:0 3px 18px rgba(0,0,0,.35)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--blueSoft);color:var(--blue);text-transform:capitalize}
+.pill.gold{background:var(--goldSoft);color:#8a5600}
+.pill.green{background:var(--greenSoft);color:var(--green)}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}
+.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}
+.footer h3,.footer h4{color:#fff;margin:0 0 10px}
+@media(max-width:1000px){.g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}.controls-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}section{padding:48px 0}.hero .container{padding:52px 0}.g3,.stats-grid,.footer-grid,.controls-grid{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}.card,.panel{padding:16px;border-radius:19px}}
 </style>
 </head>
+
 <body>
 <header class="nav">
   <div class="container nav-inner">
@@ -48,7 +107,7 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
       <a href="#filters" class="btn light">Search</a>
       <a href="portal.html" class="btn gold">Back to Portal</a>
     </div>
-    <div class="trust"><span>Pre-installed</span><span>Admin expandable</span><span>Approved users only</span></div>
+    <div class="trust"><span>Pre-installed fallback</span><span>Admin expandable</span><span>Approved users only</span></div>
   </div>
 </section>
 
@@ -69,8 +128,26 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
       <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, category, audience, topic or keyword.</p>
       <div class="controls-grid">
         <input type="text" id="searchInput" class="input" placeholder="Search resources...">
-        <select id="categoryFilter" class="select"><option value="all">All Categories</option><option value="mental-health">Mental Health</option><option value="leadership">Leadership</option><option value="personal-development">Personal Development</option><option value="student-wellness">Student Wellness</option><option value="parent-guide">Parent Guide</option><option value="teacher-guide">Teacher Guide</option><option value="career">Career</option><option value="study-skills">Study Skills</option></select>
-        <select id="audienceFilter" class="select"><option value="all">All Audiences</option><option value="primary">Primary</option><option value="secondary">Secondary</option><option value="university">University</option><option value="teachers">Teachers</option><option value="parents">Parents</option><option value="general">General</option></select>
+        <select id="categoryFilter" class="select">
+          <option value="all">All Categories</option>
+          <option value="mental-health">Mental Health</option>
+          <option value="leadership">Leadership</option>
+          <option value="personal-development">Personal Development</option>
+          <option value="student-wellness">Student Wellness</option>
+          <option value="parent-guide">Parent Guide</option>
+          <option value="teacher-guide">Teacher Guide</option>
+          <option value="career">Career</option>
+          <option value="study-skills">Study Skills</option>
+        </select>
+        <select id="audienceFilter" class="select">
+          <option value="all">All Audiences</option>
+          <option value="primary">Primary</option>
+          <option value="secondary">Secondary</option>
+          <option value="university">University</option>
+          <option value="teachers">Teachers</option>
+          <option value="parents">Parents</option>
+          <option value="general">General</option>
+        </select>
       </div>
       <div class="empty" id="emptyState">No matching resource found. Try another keyword or filter.</div>
     </div>
@@ -79,7 +156,7 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 
 <section id="items">
   <div class="container">
-    <div class="title"><span class="label">Live Resources</span><h2>Pre-installed resources plus admin additions</h2><p>Only resources marked <strong>active</strong> appear here.</p></div>
+    <div class="title"><span class="label">Live Resources</span><h2>Pre-installed resources plus admin additions</h2><p id="sourceNote">Loading Firestore books. If Firebase is not ready, starter books will show automatically.</p></div>
     <div id="loading" class="loading">Loading resources...</div>
     <div class="grid g3" id="itemGrid"></div>
   </div>
@@ -96,13 +173,978 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 
 <script type="module" src="auth-guard.js"></script>
 <script type="module" src="protected-page-guard.js"></script>
+
 <script type="module">
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+const PRELOADED_BOOKS = [
+  {
+    "title": "Understanding Anxiety in Young People Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "secondary",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "university",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "parents",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "teachers",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "general",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "secondary",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "university",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "parents",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "teachers",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 1",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "general",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "secondary",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "university",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": true,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "parents",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "teachers",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "general",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "secondary",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "university",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "parents",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "teachers",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 2",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "general",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "secondary",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "university",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "parents",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "teachers",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "general",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "secondary",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "university",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "parents",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "teachers",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 3",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "general",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "secondary",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "university",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "parents",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "teachers",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "general",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "secondary",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "university",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "parents",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "teachers",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 4",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "general",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "secondary",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "university",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "parents",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "teachers",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "general",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "secondary",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "university",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "parents",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "teachers",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 5",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "general",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "secondary",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "university",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "parents",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "teachers",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "general",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "secondary",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "university",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "parents",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "teachers",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 6",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "general",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "secondary",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "university",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "parents",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "teachers",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "general",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "secondary",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "university",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "parents",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "teachers",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 7",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "general",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Understanding Anxiety in Young People Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "secondary",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Building Emotional Resilience Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "university",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "The Student Wellness Starter Guide Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "mental-health",
+    "audience": "parents",
+    "description": "A curated mental health resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Leadership Habits for Young Changemakers Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "leadership",
+    "audience": "teachers",
+    "description": "A curated leadership resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Confidence and Public Speaking Basics Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "personal-development",
+    "audience": "general",
+    "description": "A curated personal development resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Managing Stress During Exams Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "student-wellness",
+    "audience": "secondary",
+    "description": "A curated student wellness resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Healthy Friendships and Boundaries Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "parent-guide",
+    "audience": "university",
+    "description": "A curated parent guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Digital Safety for Students Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "teacher-guide",
+    "audience": "parents",
+    "description": "A curated teacher guide resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Goal Setting for School Success Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "career",
+    "audience": "teachers",
+    "description": "A curated career resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  },
+  {
+    "title": "Mindfulness for Everyday Life Vol. 8",
+    "author": "SpeakOut Learning Team",
+    "category": "study-skills",
+    "audience": "general",
+    "description": "A curated study skills resource for students, schools, parents, teachers and youth leaders.",
+    "bookUrl": "https://drive.google.com/",
+    "coverUrl": "",
+    "status": "active",
+    "featured": false,
+    "source": "pre-installed"
+  }
+];
+
 let allItems = [];
 const grid = document.getElementById("itemGrid");
 const loading = document.getElementById("loading");
+const sourceNote = document.getElementById("sourceNote");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
 const audienceFilter = document.getElementById("audienceFilter");
@@ -137,15 +1179,30 @@ function card(item){
   `;
 }
 
+function useFallback(reason){
+  allItems = PRELOADED_BOOKS.filter(item => item.status === "active");
+  loading.style.display = "none";
+  sourceNote.textContent = reason || "Showing pre-installed starter books. Admin-added Firestore books will appear when Firebase rules and seeding are ready.";
+  updateStats(allItems);
+  renderItems();
+}
+
 async function loadItems(){
   try{
     const snap = await getDocs(collection(db, "books"));
-    allItems = [];
+    const firestoreBooks = [];
+
     snap.forEach(docSnap => {
       const item = { id:docSnap.id, ...docSnap.data() };
-      if(item.status === "active") allItems.push(item);
+      if(item.status === "active") firestoreBooks.push(item);
     });
 
+    if(firestoreBooks.length === 0){
+      useFallback("No active Firestore books found yet. Showing pre-installed starter books.");
+      return;
+    }
+
+    allItems = firestoreBooks;
     allItems.sort((a,b) => {
       if(a.featured && !b.featured) return -1;
       if(!a.featured && b.featured) return 1;
@@ -153,11 +1210,12 @@ async function loadItems(){
     });
 
     loading.style.display = "none";
+    sourceNote.textContent = "Showing books from Firestore. Admin-added books are live.";
     updateStats(allItems);
     renderItems();
   }catch(error){
-    loading.textContent = "Failed to load resources. Check Firestore rules and admin approval.";
-    console.error(error);
+    console.error("E-Library Firestore error:", error.code, error.message);
+    useFallback("Firestore is not ready or rules blocked the request. Showing pre-installed starter books for now.");
   }
 }
 
