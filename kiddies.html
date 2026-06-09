@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiddies Corner | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard-shared.css">
+</head>
+<body>
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Portal Dashboard</small></div></a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<nav class="nav-links">
+<a class="btn soft" href="student-dashboard.html">Student</a>
+<a class="btn soft" href="school-dashboard.html">School</a>
+<a class="btn soft" href="my-library.html">Library</a>
+<a class="btn soft" href="my-courses.html">Courses</a>
+<a class="btn soft" href="progress.html">Progress</a>
+<a class="btn soft" href="certificates.html">Certificates</a>
+<a class="btn soft" href="profile.html">Profile</a>
+<button class="btn dark" id="logoutBtn">Logout</button>
+</nav></div></header>
+<main>
+<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>Kiddies Corner</h1><p>Student-friendly resources for primary and secondary school learners.</p></div></section>
+
+<section><div class="container grid g4"><div class="card metric"><strong>Primary</strong><span>Young Learners</span></div><div class="card metric"><strong>Secondary</strong><span>Teen Learners</span></div><div class="card metric"><strong>Wellness</strong><span>Emotional Skills</span></div><div class="card metric"><strong>Safety</strong><span>Help-Seeking</span></div></div></section>
+<section><div class="container grid g3">
+<article class="card"><div class="icon">🧠</div><h2>Feelings & Emotions</h2><p>Simple resources to help children name feelings and ask for help.</p><a class="btn soft" href="my-library.html">Open Materials</a></article>
+<article class="card"><div class="icon">📖</div><h2>Study Skills</h2><p>Resources for confidence, focus, reading and better school habits.</p><a class="btn soft" href="my-library.html">Open Materials</a></article>
+<article class="card"><div class="icon">🛡️</div><h2>Safety & Support</h2><p>Age-appropriate support resources for speaking up and staying safe.</p><a class="btn soft" href="my-library.html">Open Materials</a></article>
+</div></section>
+
+</main>
+<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { SO } from "./dashboard-shared.js";
+
+</script>
+</body></html>
