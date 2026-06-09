@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile | SpeakOut Portal</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard-shared.css">
+</head>
+<body>
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Portal Dashboard</small></div></a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<nav class="nav-links">
+<a class="btn soft" href="student-dashboard.html">Student</a>
+<a class="btn soft" href="school-dashboard.html">School</a>
+<a class="btn soft" href="my-library.html">Library</a>
+<a class="btn soft" href="my-courses.html">Courses</a>
+<a class="btn soft" href="progress.html">Progress</a>
+<a class="btn soft" href="certificates.html">Certificates</a>
+<a class="btn soft" href="profile.html">Profile</a>
+<button class="btn dark" id="logoutBtn">Logout</button>
+</nav></div></header>
+<main>
+<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>My Profile</h1><p>View your portal profile, role, school and approval status.</p></div></section>
+
+<section><div class="container grid g2"><div class="panel"><span class="label">Profile</span><h3 id="name">Loading...</h3><p id="email"></p><div class="table-wrap"><table><tbody id="rows"></tbody></table></div></div><div class="notice"><span class="label">Account Status</span><h3 id="status">Checking...</h3><p>Your access depends on your role and approval status in Firestore.</p></div></div></section>
+
+</main>
+<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
+<script type="module" src="auth-guard.js"></script>
+<script type="module">
+import { SO } from "./dashboard-shared.js";
+
+SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;const p=await SO.profile(user.uid);name.textContent=p?.fullName||user.displayName||"Portal User";email.textContent=user.email;status.textContent=p?.status||"pending";rows.innerHTML=`<tr><th>Role</th><td>${SO.safe(p?.role)}</td></tr><tr><th>School</th><td>${SO.safe(p?.schoolName)}</td></tr><tr><th>Phone</th><td>${SO.safe(p?.phone)}</td></tr><tr><th>Location</th><td>${SO.safe(p?.location)}</td></tr>`});
+
+</script>
+</body></html>
