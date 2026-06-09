@@ -5,385 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>School Resource Center | SpeakOut Portal</title>
-<meta name="description" content="Protected SpeakOut School Resource Center for approved schools, coordinators, teachers and student wellness club leaders.">
+<meta name="description" content="SpeakOut School Resource Center for Mental Health Club setup, parent letters, teacher guides, ambassador handbook, reports and visibility templates.">
 
-<link rel="icon" type="image/png" href="icons/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --navy:#07152b;
-  --navy2:#0b2344;
-  --blue:#0a5fbf;
-  --blue2:#074f9f;
-  --blueSoft:#eaf3ff;
-  --gold:#f4a21c;
-  --goldSoft:#fff4df;
-  --green:#0f8f6f;
-  --greenSoft:#e9fbf5;
-  --ink:#111827;
-  --muted:#637083;
-  --line:#e5edf6;
-  --bg:#f7f9fc;
-  --white:#ffffff;
-  --shadow:0 18px 44px rgba(7,21,43,.10);
-  --soft:0 10px 28px rgba(7,21,43,.07);
-  --r:22px;
+  --navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--blueSoft:#eaf3ff;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;
+  --bg:#f7f9fc;--soft:0 10px 28px rgba(7,21,43,.07);--shadow:0 18px 44px rgba(7,21,43,.10)
 }
 *{box-sizing:border-box}
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:Outfit,Arial,sans-serif;
-  color:var(--ink);
-  background:var(--bg);
-}
-a{text-decoration:none;color:inherit}
-button,input,select{font:inherit}
-.container{width:min(1180px,92%);margin:auto}
-
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  min-height:38px;
-  padding:9px 14px;
-  border-radius:999px;
-  border:0;
-  font-weight:850;
-  font-size:.84rem;
-  line-height:1.1;
-  text-align:center;
-  cursor:pointer;
-  transition:.2s ease;
-}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(7,21,43,.13)}
-.primary{background:var(--blue);color:#fff}
-.gold{background:var(--gold);color:#241300}
-.soft{background:var(--blueSoft);color:var(--blue)}
-.dark{background:var(--navy);color:#fff}
-.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
-
-.nav{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(255,255,255,.96);
-  border-bottom:1px solid rgba(7,21,43,.08);
-  backdrop-filter:blur(18px);
-}
-.nav-inner{
-  min-height:72px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-  font-weight:900;
-  color:var(--blue);
-}
-.brand img{
-  width:46px;
-  height:46px;
-  object-fit:contain;
-}
-.brand div{line-height:1.05}
-.brand strong{display:block;color:var(--blue);font-size:1.05rem}
-.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
-.nav-links{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.menu{
-  display:none;
-  width:42px;
-  height:42px;
-  border:0;
-  border-radius:13px;
-  background:var(--navy);
-  color:#fff;
-  font-weight:900;
-  font-size:1.15rem;
-}
-
-.hero{
-  background:
-    radial-gradient(circle at 15% 20%,rgba(244,162,28,.24),transparent 30%),
-    linear-gradient(135deg,var(--navy),var(--blue));
-  color:#fff;
-  padding:64px 0 58px;
-}
-.hero h1{
-  font-size:clamp(2.3rem,6vw,5.2rem);
-  line-height:1.05;
-  letter-spacing:-.04em;
-  margin:14px 0;
-}
-.hero p{
-  max-width:820px;
-  color:rgba(255,255,255,.88);
-  line-height:1.65;
-  font-size:1.05rem;
-}
-.kicker,.label{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:.7rem;
-  font-weight:900;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
-.label{background:var(--blueSoft);color:var(--blue);margin-bottom:14px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-
-section{padding:56px 0}
-.title{
-  max-width:850px;
-  margin:0 auto 30px;
-  text-align:center;
-}
-.title h2{
-  color:var(--navy);
-  font-size:clamp(1.8rem,4vw,3.4rem);
-  line-height:1.06;
-  letter-spacing:-.04em;
-  margin:0 0 10px;
-}
-.title p{
-  color:var(--muted);
-  line-height:1.65;
-  margin:0;
-}
-
-.grid{display:grid;gap:16px}
-.g4{grid-template-columns:repeat(4,1fr)}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  box-shadow:var(--soft);
-}
-.card{
-  padding:18px;
-  transition:.22s ease;
-}
-.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.card h3{
-  color:var(--navy);
-  margin:0 0 8px;
-  font-size:1.05rem;
-}
-.card p{
-  color:var(--muted);
-  line-height:1.55;
-  margin:0 0 12px;
-  font-size:.92rem;
-}
-.icon{
-  width:44px;
-  height:44px;
-  border-radius:15px;
-  display:grid;
-  place-items:center;
-  background:var(--blueSoft);
-  color:var(--blue);
-  font-size:1.18rem;
-  font-weight:900;
-  margin-bottom:12px;
-}
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.pill{
-  display:inline-flex;
-  padding:5px 9px;
-  border-radius:999px;
-  font-size:.68rem;
-  font-weight:900;
-  background:var(--blueSoft);
-  color:var(--blue);
-}
-.pill.green{background:var(--greenSoft);color:var(--green)}
-.pill.gold{background:var(--goldSoft);color:#8a5600}
-
-.panel{
-  padding:20px;
-}
-.controls-grid{
-  display:grid;
-  grid-template-columns:1.3fr .7fr;
-  gap:10px;
-  margin-top:14px;
-}
-.input,.select{
-  width:100%;
-  min-height:42px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:#fbfdff;
-  color:var(--ink);
-  padding:11px 13px;
-  outline:none;
-  font-size:.92rem;
-}
-.empty{
-  margin-top:14px;
-  padding:13px;
-  border-radius:16px;
-  background:var(--goldSoft);
-  color:#704800;
-  font-weight:800;
-  display:none;
-  font-size:.9rem;
-}
-
-.notice{
-  background:#fff;
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-}
-.notice-box{
-  background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:22px;
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:14px;
-  box-shadow:var(--soft);
-}
-.notice-icon{
-  width:46px;
-  height:46px;
-  border-radius:15px;
-  display:grid;
-  place-items:center;
-  background:var(--goldSoft);
-  color:#8a5600;
-  font-size:1.25rem;
-}
-.notice-box h2{margin:0 0 7px;color:var(--navy)}
-.notice-box p{margin:0;color:var(--muted);line-height:1.6}
-
-.dark-section{
-  background:linear-gradient(135deg,var(--navy),var(--navy2));
-  color:#fff;
-}
-.dark-section .title h2,.dark-section .title p{color:#fff}
-.dark-section .card{
-  background:rgba(255,255,255,.09);
-  border-color:rgba(255,255,255,.15);
-  color:#fff;
-}
-.dark-section .card h3{color:#fff}
-.dark-section .card p{color:rgba(255,255,255,.8)}
-
-.timeline{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:14px;
-}
-.time{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:var(--soft);
-}
-.time strong{
-  display:inline-grid;
-  place-items:center;
-  width:38px;
-  height:38px;
-  border-radius:14px;
-  background:var(--blueSoft);
-  color:var(--blue);
-  margin-bottom:10px;
-}
-.time h3{font-size:1rem;margin-bottom:6px;color:var(--navy)}
-.time p{color:var(--muted);line-height:1.55;font-size:.9rem;margin:0}
-
-.footer{
-  background:#061126;
-  color:rgba(255,255,255,.74);
-  padding:44px 0 24px;
-}
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  gap:26px;
-}
-.footer h3,.footer h4{color:#fff;margin-top:0}
-.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}
-.hidden{display:none!important}
-
-@media(max-width:1000px){
-  .g4,.g3,.timeline,.footer-grid{grid-template-columns:repeat(2,1fr)}
-  .controls-grid{grid-template-columns:1fr}
-}
-@media(max-width:760px){
-  .menu{display:block}
-  .nav-inner{min-height:68px}
-  .nav-links{
-    display:none;
-    position:fixed;
-    top:68px;
-    left:0;
-    right:0;
-    background:#fff;
-    border-bottom:1px solid var(--line);
-    padding:14px 6%;
-    flex-direction:column;
-    align-items:stretch;
-    gap:8px;
-  }
-  body.menu-open .nav-links{display:flex}
-  .nav-links a,.nav-links button{width:100%;border-radius:14px}
-  .brand img{width:42px;height:42px}
-  .hero{padding:48px 0}
-  section{padding:44px 0}
-  .g4,.g3,.g2,.timeline,.footer-grid{grid-template-columns:1fr}
-  .notice-box{grid-template-columns:1fr}
-  .card,.panel{padding:16px;border-radius:19px}
-  .actions .btn{flex:1 1 auto;border-radius:14px}
-}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}button,input,select{font:inherit}
+.container{width:min(1240px,94%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.82rem;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--blue);font-weight:900}.brand img{width:44px;height:44px;object-fit:contain}.brand small{display:block;color:#d98200;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.1rem}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:54px 0;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.25),transparent 30%)}
+.hero .container{position:relative;z-index:2}.hero h1{font-size:clamp(2.2rem,5vw,4.9rem);line-height:1.04;letter-spacing:-.04em;margin:10px 0}.hero p{max-width:900px;color:rgba(255,255,255,.88);line-height:1.65}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
+section{padding:34px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--soft);padding:20px}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);transition:.2s}
+.icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:1.25rem;margin-bottom:12px;font-weight:900}
+.card h2,.card h3,.panel h3{color:var(--navy);margin:0 0 8px}.card p,.panel p{color:var(--muted);line-height:1.6;margin:0 0 14px}
+.title{text-align:center;max-width:850px;margin:0 auto 28px}.title h2{color:var(--navy);font-size:clamp(1.8rem,4vw,3.35rem);line-height:1.06;letter-spacing:-.04em;margin:0 0 10px}.title p{color:var(--muted);line-height:1.65;margin:0}
+.controls{display:grid;grid-template-columns:1.2fr .7fr .5fr;gap:10px;margin-top:14px}.input,.select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:14px;background:#fbfdff;padding:10px 12px;outline:none}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--blueSoft);color:var(--blue);text-transform:capitalize}.pill.gold{background:var(--goldSoft);color:#8a5600}.pill.green{background:var(--greenSoft);color:var(--green)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.empty{display:none;margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--goldSoft);color:#704800;font-weight:800}
+.notice{background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--soft)}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer a{color:rgba(255,255,255,.72)}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.controls{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.menu{display:block}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column}.nav-links a,.nav-links button{width:100%;border-radius:14px}body.menu-open .nav-links{display:flex}.g4,.g3,.g2,.controls{grid-template-columns:1fr}.hero{padding:42px 0}.card,.panel,.notice{padding:16px;border-radius:20px}}
 </style>
 </head>
 
 <body>
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="school-dashboard.html">
-      <img src="icons/logo.png" alt="SpeakOut Logo">
-      <div>
-        <strong>SpeakOut</strong>
-        <small>School Resource Center</small>
-      </div>
-    </a>
-
-    <button class="menu" type="button" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-
+    <a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>School Resources</small></div></a>
+    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
     <nav class="nav-links">
-      <a class="btn soft" href="school-dashboard.html">School Dashboard</a>
-      <a class="btn soft" href="kiddies.html">Kiddies</a>
+      <a class="btn soft" href="school-dashboard.html">Dashboard</a>
+      <a class="btn primary" href="school-resources.html">Resources</a>
       <a class="btn soft" href="e-library.html">E-Library</a>
       <a class="btn soft" href="speakhub.html">SpeakHub</a>
+      <a class="btn soft" href="kiddies.html">Kiddies</a>
       <button class="btn dark" id="logoutBtn">Logout</button>
     </nav>
   </div>
@@ -392,240 +63,172 @@ section{padding:56px 0}
 <main>
 <section class="hero">
   <div class="container">
-    <span class="kicker">For Approved Schools • Coordinators • Teachers</span>
+    <span class="kicker">Implementation Toolkit • Schools • Teachers • Parents</span>
     <h1>School Resource Center</h1>
-    <p>This protected center gives schools the practical tools needed to run the SpeakOut Student Wellness and Mental Health Club: guides, templates, teacher resources, parent materials, ambassador tools, reporting documents, and visibility support.</p>
+    <p>Download and use the practical materials needed to launch, run, document and publicly showcase the SpeakOut Mental Health Club inside your school.</p>
     <div class="actions">
-      <a class="btn gold" href="#toolkits">Open Toolkits</a>
-      <a class="btn primary" href="#calendar">Implementation Calendar</a>
-      <a class="btn soft" href="#media">Media Support</a>
+      <a class="btn gold" href="#resources">Browse Templates</a>
+      <a class="btn light" href="school-dashboard.html#reports">Submit Report</a>
     </div>
   </div>
 </section>
 
-<section class="notice">
+<section>
   <div class="container">
-    <div class="notice-box">
-      <div class="notice-icon">🏫</div>
-      <div>
-        <h2>This is the school’s implementation engine.</h2>
-        <p>The school runs the club internally through approved teachers, coordinators, and student ambassadors. SpeakOut provides the framework, resources, training support, monitoring tools, and visibility structure.</p>
-      </div>
+    <div class="notice">
+      <span class="label">Implementation Rule</span>
+      <h3>Every school must document evidence.</h3>
+      <p>Activities without attendance, photos, summaries, parent communication and term reports will not sustain trust. These templates help you show value clearly.</p>
     </div>
   </div>
 </section>
 
-<section class="controls">
+<section>
+  <div class="container">
+    <div class="title">
+      <span class="label">Resource Categories</span>
+      <h2>Everything needed to run the program</h2>
+      <p>Use these sections for setup, teacher coordination, student ambassadors, parent engagement, reporting and school visibility.</p>
+    </div>
+
+    <div class="grid g4">
+      <a class="card" href="#resources" data-jump="club"><div class="icon">🏫</div><h2>Club Setup</h2><p>Setup guide, constitution, launch checklist and club structure.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="teacher"><div class="icon">👩‍🏫</div><h2>Teachers</h2><p>Coordinator guide, session guide and reporting expectations.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="student"><div class="icon">👑</div><h2>Students</h2><p>Ambassador handbook, leadership tasks and student activity templates.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="parent"><div class="icon">👨‍👩‍👧</div><h2>Parents</h2><p>Parent invitation letters, awareness notes and workshop materials.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="report"><div class="icon">📝</div><h2>Reports</h2><p>Termly reports, attendance templates and evidence checklist.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="visibility"><div class="icon">📣</div><h2>Visibility</h2><p>Social media captions, gallery checklist and public story templates.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="finance"><div class="icon">💰</div><h2>Sustainability</h2><p>Financial model, fee explanation and school value proposition.</p><span class="btn soft">View</span></a>
+      <a class="card" href="#resources" data-jump="certificate"><div class="icon">🏆</div><h2>Certificates</h2><p>Certificate request guide and recognition pathways.</p><span class="btn soft">View</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="resources">
   <div class="container">
     <div class="panel">
-      <span class="label">Search Resources</span>
-      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find school tools quickly</h2>
-      <p style="color:var(--muted);line-height:1.6;margin:0;">Search by teacher, parent, student ambassador, report, media, or club activity.</p>
-      <div class="controls-grid">
-        <input type="text" id="resourceSearch" class="input" placeholder="Search club guide, parent seminar, teacher training, report...">
-        <select id="resourceFilter" class="select">
-          <option value="all">All Resource Types</option>
+      <span class="label">Templates Library</span>
+      <h3>Search and filter resources</h3>
+      <p>Replace placeholder Drive links later with your actual Google Docs, PDFs, Canva templates or Drive files.</p>
+      <div class="controls">
+        <input id="search" class="input" placeholder="Search parent letter, ambassador, report, caption...">
+        <select id="category" class="select">
+          <option value="all">All Categories</option>
           <option value="club">Club Setup</option>
-          <option value="teacher">Teacher Resources</option>
-          <option value="parent">Parent Resources</option>
-          <option value="ambassador">Student Ambassadors</option>
-          <option value="report">Reports & Monitoring</option>
-          <option value="media">Media & Visibility</option>
+          <option value="teacher">Teachers</option>
+          <option value="student">Students</option>
+          <option value="parent">Parents</option>
+          <option value="report">Reports</option>
+          <option value="visibility">Visibility</option>
+          <option value="finance">Sustainability</option>
+          <option value="certificate">Certificates</option>
         </select>
+        <button class="btn ghost" id="resetBtn">Reset</button>
       </div>
-      <div class="empty" id="emptyState">No matching resource found.</div>
+      <div class="empty" id="empty">No matching resource found.</div>
     </div>
+
+    <div class="grid g3" id="resourceGrid" style="margin-top:16px"></div>
   </div>
 </section>
 
-<section id="toolkits">
-  <div class="container">
-    <div class="title">
-      <span class="label">Core Toolkits</span>
-      <h2>Everything needed to run the club properly</h2>
-      <p>These are placeholders for now. Replace each button link with your Google Drive file links once your documents are uploaded.</p>
+<section>
+  <div class="container grid g2">
+    <div class="notice">
+      <span class="label">School Owner Value</span>
+      <h3>Why this matters commercially</h3>
+      <p>The resource center helps the school prove to parents that the wellness program is real. That proof supports the sustainability fee model because parents can see activities, resources, reports and outcomes.</p>
     </div>
-
-    <div class="grid g3" id="resourceGrid"></div>
-  </div>
-</section>
-
-<section class="dark-section">
-  <div class="container">
-    <div class="title">
-      <span class="label">What Schools Can Show Parents</span>
-      <h2>Visible value for the Student Wellness Support Model</h2>
-      <p>These resources help the school prove to parents that the wellness program is active, structured, and beneficial.</p>
-    </div>
-
-    <div class="grid g3">
-      <article class="card">
-        <div class="icon">📸</div>
-        <h3>Program Activity Highlights</h3>
-        <p>Photos, captions, and updates showing club inauguration, training, ambassador activities, and student participation.</p>
-      </article>
-      <article class="card">
-        <div class="icon">📊</div>
-        <h3>Termly Wellness Report</h3>
-        <p>A short report that explains what happened during the term and what students gained from the program.</p>
-      </article>
-      <article class="card">
-        <div class="icon">🏆</div>
-        <h3>Student Recognition</h3>
-        <p>Certificates, ambassador badges, public appreciation, and club leadership recognition for active students.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="calendar">
-  <div class="container">
-    <div class="title">
-      <span class="label">Pilot Term Plan</span>
-      <h2>Simple implementation calendar</h2>
-      <p>This makes the program easy for school administrators to understand and manage.</p>
-    </div>
-
-    <div class="timeline">
-      <div class="time"><strong>01</strong><h3>Approval</h3><p>School approves the pilot and appoints a coordinator.</p></div>
-      <div class="time"><strong>02</strong><h3>Club Setup</h3><p>Student ambassadors and club executives are selected.</p></div>
-      <div class="time"><strong>03</strong><h3>Training</h3><p>Teachers, ambassadors, and student leaders receive orientation.</p></div>
-      <div class="time"><strong>04</strong><h3>Parent Session</h3><p>Parents are invited to understand the program value.</p></div>
-      <div class="time"><strong>05</strong><h3>Report</h3><p>School receives pilot report and moves to sustainability phase.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="media">
-  <div class="container">
-    <div class="title">
-      <span class="label">Visibility Support</span>
-      <h2>Project the school’s development publicly</h2>
-      <p>Schools can use these resources to improve public image, parent trust, and future enrollment visibility.</p>
-    </div>
-
-    <div class="grid g3">
-      <article class="card resource-card" data-type="media" data-search="social media captions school visibility public image">
-        <div class="icon">📱</div>
-        <div class="pills"><span class="pill gold">Media</span></div>
-        <h3>Social Media Caption Templates</h3>
-        <p>Ready-to-edit captions for club inauguration, parent sessions, student ambassador activities, and wellness campaigns.</p>
-        <a class="btn primary" href="#" target="_blank" rel="noopener">Open Template</a>
-      </article>
-
-      <article class="card resource-card" data-type="media" data-search="school website basic information website landing page">
-        <div class="icon">🌐</div>
-        <div class="pills"><span class="pill gold">Website</span></div>
-        <h3>Basic School Website Checklist</h3>
-        <p>A checklist for building or improving a simple school website with admissions, contact, programs, gallery, and announcements.</p>
-        <a class="btn primary" href="#" target="_blank" rel="noopener">Open Checklist</a>
-      </article>
-
-      <article class="card resource-card" data-type="media" data-search="photo consent branding student media policy">
-        <div class="icon">✅</div>
-        <div class="pills"><span class="pill gold">Policy</span></div>
-        <h3>Media Consent Guide</h3>
-        <p>Guidance for responsible photo/video use, student privacy, and school-approved public visibility.</p>
-        <a class="btn primary" href="#" target="_blank" rel="noopener">Open Guide</a>
-      </article>
+    <div class="notice">
+      <span class="label">Do not skip this</span>
+      <h3>Templates protect the program</h3>
+      <p>Without templates, every school will run the program differently. That becomes chaos. Templates standardize quality and make your SpeakOut model repeatable across 21+ schools.</p>
     </div>
   </div>
 </section>
 </main>
 
 <footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <h3>SpeakOut School Resource Center</h3>
-      <p>Protected implementation tools for approved schools and coordinators.</p>
-    </div>
-    <div>
-      <h4>Portal</h4>
-      <a href="school-dashboard.html">School Dashboard</a>
-      <a href="kiddies.html">Kiddies Corner</a>
-      <a href="e-library.html">E-Library</a>
-      <a href="speakhub.html">SpeakHub</a>
-    </div>
-    <div>
-      <h4>Contact</h4>
-      <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
-      <a href="https://speakoutmentalhealth.org/">Main Website</a>
-    </div>
-  </div>
+  <div class="container">SpeakOut School Resource Center • <a href="school-dashboard.html">Back to School Dashboard</a></div>
 </footer>
 
 <script type="module" src="auth-guard.js"></script>
-
 <script type="module">
 import { auth } from "./firebase-config.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
-const logoutBtn = document.getElementById("logoutBtn");
-if(logoutBtn){
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-}
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth);location.href="login.html"};
 </script>
 
 <script>
 const resources = [
-  ["📘","Mental Health Club Setup Guide","Step-by-step guide for launching the club, selecting executives, and defining school roles.","club","Club Setup","green"],
-  ["📋","Club Constitution Template","A simple constitution structure for club purpose, membership, executives, meetings, and activities.","club","Club Setup","green"],
-  ["👩‍🏫","Teacher Coordinator Guide","Guidance for the teacher or staff member coordinating the club inside the school.","teacher","Teacher",""],
-  ["🧠","Teacher Mental Health Awareness Notes","Basic awareness notes for identifying stress, withdrawal, bullying, low mood, and student distress.","teacher","Teacher",""],
-  ["👨‍👩‍👧","Parent Awareness Session Guide","A guide for explaining the program to parents and showing them what their children stand to gain.","parent","Parent","gold"],
-  ["📣","Parent Invitation Letter Template","Editable letter schools can send to parents for the pilot term or parent awareness seminar.","parent","Parent","gold"],
-  ["👑","Student Ambassador Handbook","Roles, conduct, activities, and responsibilities for student mental health ambassadors.","ambassador","Ambassador",""],
-  ["🏅","Ambassador Certificate Template","Certificate structure for recognizing trained student ambassadors and club executives.","ambassador","Ambassador",""],
-  ["📊","Termly Activity Report Template","Simple reporting template for activities completed, attendance, outcomes, and next steps.","report","Report","green"],
-  ["📝","Student Feedback Form Template","A template for collecting anonymous student feedback after sessions and club activities.","report","Report","green"],
-  ["📆","Monthly Club Activity Calendar","Suggested monthly activities for club meetings, campaigns, reading circles, and wellness discussions.","club","Club Setup","green"],
-  ["📱","Social Media Visibility Pack","Captions and content ideas to help schools show the public what they are doing for student wellbeing.","media","Media","gold"]
+  ["club","Mental Health Club Setup Guide","Step-by-step guide to launch the club, define leadership and start activities.","Guide","Replace with Drive Link"],
+  ["club","Mental Health Club Constitution","Basic constitution template for structure, purpose and membership rules.","Template","Replace with Drive Link"],
+  ["club","Club Launch Checklist","Checklist for launch day, photos, attendance, speeches and student selection.","Checklist","Replace with Drive Link"],
+  ["teacher","Teacher Coordinator Guide","Explains coordinator duties, reporting structure and student support boundaries.","Guide","Replace with Drive Link"],
+  ["teacher","Monthly Teacher Session Outline","Simple structure for monthly student wellbeing sessions.","Template","Replace with Drive Link"],
+  ["teacher","Student Concern Escalation Guide","Guidance for handling sensitive student wellbeing concerns responsibly.","Guide","Replace with Drive Link"],
+  ["student","Student Ambassador Handbook","Explains ambassador roles, responsibilities, activities and recognition path.","Handbook","Replace with Drive Link"],
+  ["student","Ambassador Monthly Task Sheet","Monthly task template for awareness, peer support and reporting.","Template","Replace with Drive Link"],
+  ["student","Student Activity Worksheet","Printable worksheet for student reflection and classroom activities.","Worksheet","Replace with Drive Link"],
+  ["parent","Parent Invitation Letter","Letter inviting parents to the school mental health awareness program.","Letter","Replace with Drive Link"],
+  ["parent","Parent Awareness Flyer Text","Ready-to-edit flyer content for parent engagement.","Copy","Replace with Drive Link"],
+  ["parent","Parent Workshop Outline","Outline for a parent-focused mental health and child support workshop.","Guide","Replace with Drive Link"],
+  ["report","Termly Activity Report","Main report template for term activities, reach, photos and outcomes.","Report","Replace with Drive Link"],
+  ["report","Attendance Sheet Template","Attendance format for students, teachers and parents.","Template","Replace with Drive Link"],
+  ["report","Evidence Checklist","Checklist of photos, attendance, captions, summaries and Drive links.","Checklist","Replace with Drive Link"],
+  ["visibility","Social Media Caption Pack","Captions for school launch, parent workshop, ambassador activities and reports.","Caption Pack","Replace with Drive Link"],
+  ["visibility","School Gallery Checklist","Photo checklist for activities and public documentation.","Checklist","Replace with Drive Link"],
+  ["visibility","Featured School Story Template","Template for writing and publishing school impact stories.","Template","Replace with Drive Link"],
+  ["finance","One-Page Financial Model","Simple model showing sustainability fee, school value and program support.","Model","Replace with Drive Link"],
+  ["finance","Parent Fee Explanation Note","Parent-facing explanation of the wellness fee and student benefits.","Letter","Replace with Drive Link"],
+  ["finance","School Value Proposition Sheet","Explains what the school gains: visibility, structure, reports and parent trust.","Sheet","Replace with Drive Link"],
+  ["certificate","Certificate Request Guide","How schools request certificates for ambassadors, teachers and activities.","Guide","Replace with Drive Link"],
+  ["certificate","Recognition Pathways","Explains student, teacher, ambassador and school recognition categories.","Guide","Replace with Drive Link"]
 ];
 
-function resourceCard([icon,title,desc,type,label,color]){
-  return `
-  <article class="card resource-card" data-type="${type}" data-search="${(title+' '+desc+' '+type+' '+label).toLowerCase()}">
-    <div class="icon">${icon}</div>
-    <div class="pills"><span class="pill ${color || ''}">${label}</span></div>
-    <h3>${title}</h3>
-    <p>${desc}</p>
-    <a class="btn soft" href="#" target="_blank" rel="noopener">Add Drive Link</a>
-  </article>`;
-}
+const grid = document.getElementById("resourceGrid");
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+const empty = document.getElementById("empty");
 
-document.getElementById("resourceGrid").innerHTML = resources.map(resourceCard).join("");
-
-const search = document.getElementById("resourceSearch");
-const filter = document.getElementById("resourceFilter");
-const empty = document.getElementById("emptyState");
-
-function runFilter(){
-  const query = search.value.toLowerCase().trim();
-  const type = filter.value;
-  let count = 0;
-
-  document.querySelectorAll(".resource-card").forEach(card => {
-    const cardType = card.dataset.type || "";
-    const cardSearch = card.dataset.search || "";
-    const okQuery = !query || cardSearch.includes(query);
-    const okType = type === "all" || cardType === type;
-
-    if(okQuery && okType){
-      card.classList.remove("hidden");
-      count++;
-    }else{
-      card.classList.add("hidden");
-    }
+function pretty(v){return v.replaceAll("-"," ")}
+function render(){
+  const q = search.value.toLowerCase().trim();
+  const cat = category.value;
+  const filtered = resources.filter(r => {
+    const s = r.join(" ").toLowerCase();
+    return (!q || s.includes(q)) && (cat === "all" || r[0] === cat);
   });
 
-  empty.style.display = count === 0 ? "block" : "none";
-}
+  grid.innerHTML = filtered.map(r => `
+    <article class="card resource-card" data-category="${r[0]}">
+      <div class="icon">${iconFor(r[0])}</div>
+      <div class="pills"><span class="pill">${pretty(r[0])}</span><span class="pill gold">${r[3]}</span><span class="pill green">Ready</span></div>
+      <h2>${r[1]}</h2>
+      <p>${r[2]}</p>
+      <div class="actions">
+        <a class="btn primary" href="#" onclick="alert('Replace this placeholder with your Google Drive link for: ${r[1].replaceAll("'","")}');return false;">Open</a>
+        <a class="btn soft" href="school-dashboard.html#reports">Use in Report</a>
+      </div>
+    </article>
+  `).join("");
 
-search.addEventListener("input", runFilter);
-filter.addEventListener("change", runFilter);
+  empty.style.display = filtered.length ? "none" : "block";
+}
+function iconFor(cat){
+  return {club:"🏫",teacher:"👩‍🏫",student:"👑",parent:"👨‍👩‍👧",report:"📝",visibility:"📣",finance:"💰",certificate:"🏆"}[cat] || "📘";
+}
+search.addEventListener("input", render);
+category.addEventListener("change", render);
+document.getElementById("resetBtn").onclick=()=>{search.value="";category.value="all";render()};
+document.querySelectorAll("[data-jump]").forEach(a=>{
+  a.addEventListener("click",()=>{
+    category.value=a.dataset.jump;
+    search.value="";
+    setTimeout(render,50);
+  });
+});
+render();
 </script>
 </body>
 </html>
