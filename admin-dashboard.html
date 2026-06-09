@@ -1,223 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Admin Dashboard | SpeakOut Portal</title>
-<meta name="description" content="SpeakOut master admin dashboard for managing users, schools, library resources, courses, certificates and analytics.">
-
-<link rel="icon" type="image/png" href="icons/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  --navy:#07152b;--navy2:#0b2344;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;
-  --gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;
-  --red:#b42318;--redSoft:#fff1f0;--ink:#111827;--muted:#637083;--line:#e5edf6;
-  --bg:#f7f9fc;--white:#fff;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:24px;
-}
-*{box-sizing:border-box}
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-body{margin:0;font-family:Outfit,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-a{text-decoration:none;color:inherit}button{font:inherit}
-.container{width:min(1320px,94%);margin:auto}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.82rem;cursor:pointer;transition:.2s ease}
-.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(7,21,43,.12)}
-.primary{background:var(--blue);color:#fff}.soft{background:var(--blueSoft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}.success{background:var(--green);color:#fff}
-.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(7,21,43,.08);backdrop-filter:blur(18px)}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:900;color:var(--blue)}
-.brand img{width:46px;height:46px;object-fit:contain}.brand div{line-height:1.05}.brand strong{display:block;color:var(--blue);font-size:1.05rem}.brand small{display:block;color:#d98200;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
-.nav-links{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
-.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.15rem}
-.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:58px 0 50px}
-.hero h1{font-size:clamp(2.35rem,5vw,5rem);line-height:1.04;letter-spacing:-.045em;margin:10px 0}.hero p{max-width:900px;color:rgba(255,255,255,.88);line-height:1.65;font-size:1.02rem}
-.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--blueSoft);color:var(--blue);margin-bottom:12px}
-section{padding:36px 0}.grid{display:grid;gap:16px}.g6{grid-template-columns:repeat(6,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft)}
-.card{padding:20px;transition:.22s ease;position:relative;overflow:hidden}.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.card h2,.card h3{margin:0 0 8px;color:var(--navy);letter-spacing:-.03em}.card p{color:var(--muted);line-height:1.55;margin:0 0 14px;font-size:.93rem}
-.icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-size:1.25rem;font-weight:900;margin-bottom:12px}
-.metric strong{display:block;color:var(--blue);font-size:clamp(1.8rem,3vw,2.6rem);line-height:1}.metric span{display:block;color:var(--muted);font-weight:850;font-size:.82rem;margin-top:8px}.metric small{display:block;color:var(--green);font-weight:800;margin-top:8px}
-.title{max-width:860px;margin:0 auto 28px;text-align:center}.title h2{color:var(--navy);font-size:clamp(1.8rem,4vw,3.35rem);line-height:1.06;letter-spacing:-.04em;margin:0 0 10px}.title p{color:var(--muted);line-height:1.65;margin:0}
-.quick{background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--soft)}
-.quick h3{margin:0 0 10px;color:var(--navy);font-size:1.4rem}.quick p{color:var(--muted);line-height:1.6;margin:0 0 14px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.status-list{display:grid;gap:10px}.status-item{display:flex;justify-content:space-between;gap:12px;padding:12px;border-radius:16px;background:#f8fbff;border:1px solid var(--line)}.status-item strong{color:var(--navy)}.status-item span{font-weight:900;color:var(--blue)}
-.footer{background:#061126;color:rgba(255,255,255,.74);padding:34px 0;margin-top:30px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px}.footer h3,.footer h4{color:#fff;margin-top:0}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.9rem}
-@media(max-width:1200px){.g6{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a,.nav-links button{width:100%;border-radius:14px}.brand img{width:42px;height:42px}.hero{padding:42px 0}.g6,.g4,.g3,.g2,.footer-grid{grid-template-columns:1fr}section{padding:28px 0}.card{padding:17px;border-radius:20px}}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard | SpeakOut Admin</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin-shared.css">
 </head>
-
 <body>
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="admin-dashboard.html">
-      <img src="icons/logo.png" alt="SpeakOut Logo">
-      <div><strong>SpeakOut</strong><small>Master Admin</small></div>
-    </a>
-    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
-    <nav class="nav-links">
-      <a class="btn primary" href="admin-dashboard.html">Dashboard</a>
-      <a class="btn soft" href="admin-users.html">Users</a>
-      <a class="btn soft" href="admin-schools.html">Schools</a>
-      <a class="btn soft" href="admin-books.html">Books</a>
-      <a class="btn soft" href="admin-courses.html">Courses</a>
-      <a class="btn soft" href="admin-certificates.html">Certificates</a>
-      <a class="btn soft" href="admin-analytics.html">Analytics</a>
-      <button class="btn dark" id="logoutBtn">Logout</button>
-    </nav>
-  </div>
-</header>
-
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Admin Control</small></div></a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<nav class="nav-links">
+<a class="btn soft" href="admin-dashboard.html">Home</a>
+<a class="btn soft" href="admin-users.html">Users</a>
+<a class="btn soft" href="admin-schools.html">Schools</a>
+<a class="btn soft" href="admin-books.html">Books</a>
+<a class="btn soft" href="admin-courses.html">Courses</a>
+<a class="btn soft" href="admin-certificates.html">Certificates</a>
+<a class="btn soft" href="admin-activities.html">Activities</a>
+<a class="btn soft" href="admin-reports.html">Reports</a>
+<a class="btn gold" href="executive-dashboard.html">Executive</a>
+<button class="btn dark" id="logoutBtn">Logout</button>
+</nav></div></header>
 <main>
-<section class="hero">
-  <div class="container">
-    <span class="kicker">Admin Only • SpeakOut Control Center</span>
-    <h1>Master Admin Dashboard</h1>
-    <p>Manage the full SpeakOut education and wellness ecosystem from one place: users, schools, resources, courses, certificates, analytics, and protected portal access.</p>
-    <div class="actions" style="margin-top:18px">
-      <a class="btn gold" href="admin-users.html">Review Users</a>
-      <a class="btn primary" href="admin-analytics.html">View Analytics</a>
-      <a class="btn soft" href="verify-certificate.html" target="_blank">Verify Certificate</a>
-    </div>
-  </div>
-</section>
+<section class="hero"><div class="container"><span class="kicker">Admin Area</span><h1>Admin Control Center</h1><p>Manage users, schools, books, courses, certificates, reports, payments and operations.</p></div></section>
 
-<section>
-  <div class="container grid g6">
-    <div class="card metric"><strong id="usersTotal">0</strong><span>Users</span><small id="pendingUsers">0 pending</small></div>
-    <div class="card metric"><strong id="schoolsTotal">0</strong><span>Schools</span><small id="activeSchools">0 active</small></div>
-    <div class="card metric"><strong id="studentsTotal">0</strong><span>Students</span><small>estimated reach</small></div>
-    <div class="card metric"><strong id="booksTotal">0</strong><span>Resources</span><small id="activeBooks">0 active</small></div>
-    <div class="card metric"><strong id="coursesTotal">0</strong><span>Courses</span><small id="certCourses">0 cert eligible</small></div>
-    <div class="card metric"><strong id="certsTotal">0</strong><span>Certificates</span><small id="issuedCerts">0 issued</small></div>
-  </div>
-</section>
+<section><div class="container grid g6">
+<a class="card metric" href="admin-users.html"><strong id="users">0</strong><span>Users</span></a>
+<a class="card metric" href="admin-schools.html"><strong id="schools">0</strong><span>Schools</span></a>
+<a class="card metric" href="admin-books.html"><strong id="books">0</strong><span>Books</span></a>
+<a class="card metric" href="admin-courses.html"><strong id="courses">0</strong><span>Courses</span></a>
+<a class="card metric" href="admin-certificates.html"><strong id="certs">0</strong><span>Certificates</span></a>
+<a class="card metric" href="admin-reports.html"><strong id="reports">0</strong><span>Reports</span></a>
+</div></section>
+<section><div class="container grid g3">
+<a class="card" href="admin-users.html"><h2>User Management</h2><p>Approve, reject and monitor student, school, teacher, parent and ambassador accounts.</p><span class="btn primary">Open Users</span></a>
+<a class="card" href="admin-books.html"><h2>Book Management</h2><p>Add E-Library books, covers, descriptions, categories and access links.</p><span class="btn primary">Open Books</span></a>
+<a class="card" href="admin-courses.html"><h2>Course Management</h2><p>Add SpeakHub programs, lessons, categories and course links.</p><span class="btn primary">Open Courses</span></a>
+<a class="card" href="admin-activities.html"><h2>Activities</h2><p>Track school activities, reach, evidence links and implementation status.</p><span class="btn soft">Open Activities</span></a>
+<a class="card" href="admin-payments.html"><h2>Payments</h2><p>Track school sustainability fees and revenue records.</p><span class="btn soft">Open Payments</span></a>
+<a class="card" href="executive-dashboard.html"><h2>Executive Dashboard</h2><p>One screen for sponsors: schools, reach, activities, revenue and states.</p><span class="btn gold">Open Executive</span></a>
+</div></section>
 
-<section>
-  <div class="container">
-    <div class="title">
-      <span class="label">Admin Modules</span>
-      <h2>Manage the platform</h2>
-      <p>Each card opens a dedicated admin module. This is the structure that keeps the project scalable instead of messy.</p>
-    </div>
-
-    <div class="grid g3">
-      <a class="card" href="admin-users.html"><div class="icon">👥</div><h2>User Management</h2><p>Approve, reject, suspend and manage students, schools and admins.</p><span class="btn soft">Open Users</span></a>
-      <a class="card" href="admin-schools.html"><div class="icon">🏫</div><h2>School Management</h2><p>Create partner school records, track phase, population, ambassadors and coordinators.</p><span class="btn soft">Open Schools</span></a>
-      <a class="card" href="admin-books.html"><div class="icon">📚</div><h2>Book Management</h2><p>Add and manage E-Library books, Drive links, school resources and reading materials.</p><span class="btn soft">Open Books</span></a>
-      <a class="card" href="admin-courses.html"><div class="icon">🎓</div><h2>Course Management</h2><p>Add SpeakHub and Kiddies courses, training links and certificate eligibility.</p><span class="btn soft">Open Courses</span></a>
-      <a class="card" href="admin-certificates.html"><div class="icon">🏆</div><h2>Certificate Management</h2><p>Issue, print, manage and verify certificates using unique certificate numbers.</p><span class="btn soft">Open Certificates</span></a>
-      <a class="card" href="admin-analytics.html"><div class="icon">📊</div><h2>Analytics Dashboard</h2><p>View impact metrics for sponsors, schools, Synia Aid, and grant reporting.</p><span class="btn soft">Open Analytics</span></a>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container grid g2">
-    <div class="quick">
-      <span class="label">Quick Actions</span>
-      <h3>Use this when you are working fast</h3>
-      <p>These shortcuts take you straight to the most common admin tasks.</p>
-      <div class="actions">
-        <a class="btn primary" href="admin-users.html">Approve Users</a>
-        <a class="btn gold" href="admin-schools.html">Add School</a>
-        <a class="btn soft" href="admin-books.html">Add Book</a>
-        <a class="btn soft" href="admin-courses.html">Add Course</a>
-        <a class="btn dark" href="admin-certificates.html">Issue Certificate</a>
-      </div>
-    </div>
-
-    <div class="quick">
-      <span class="label">Platform Health</span>
-      <h3>Immediate checks</h3>
-      <div class="status-list">
-        <div class="status-item"><strong>Pending users</strong><span id="healthPending">0</span></div>
-        <div class="status-item"><strong>Draft books/resources</strong><span id="healthDraftBooks">0</span></div>
-        <div class="status-item"><strong>Draft courses</strong><span id="healthDraftCourses">0</span></div>
-        <div class="status-item"><strong>Revoked certificates</strong><span id="healthRevokedCerts">0</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="quick">
-      <span class="label">Ruthless Mentor Note</span>
-      <h3>Do not keep adding pages without data discipline.</h3>
-      <p>Your platform is now structurally strong. The next weak point will be messy content entry. Every book, course, school and certificate must follow the same naming format, category format, and audience format. If you ignore this, analytics will become trash.</p>
-      <div class="actions">
-        <a class="btn primary" href="admin-analytics.html">Check Analytics</a>
-        <a class="btn soft" href="school-resources.html">School Resource Center</a>
-        <a class="btn soft" href="e-library.html">View E-Library</a>
-        <a class="btn soft" href="speakhub.html">View SpeakHub</a>
-      </div>
-    </div>
-  </div>
-</section>
 </main>
-
-<footer class="footer">
-  <div class="container footer-grid">
-    <div><h3>SpeakOut Master Admin</h3><p>Control center for the SpeakOut protected portal.</p></div>
-    <div><h4>Admin</h4><a href="admin-users.html">Users</a><a href="admin-schools.html">Schools</a><a href="admin-books.html">Books</a><a href="admin-courses.html">Courses</a></div>
-    <div><h4>Portal</h4><a href="student-dashboard.html">Student Dashboard</a><a href="school-dashboard.html">School Dashboard</a><a href="verify-certificate.html">Verify Certificate</a><a href="https://speakoutmentalhealth.org/">Main Website</a></div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div></footer>
 <script type="module" src="auth-guard.js"></script>
-
 <script type="module">
-import { auth, db } from "./firebase-config.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { SO } from "./admin-shared.js";
 
-document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth); location.href="login.html"};
-
-function set(id,val){document.getElementById(id).textContent=Number(val||0).toLocaleString()}
-function sum(arr,key){return arr.reduce((a,x)=>a+Number(x[key]||0),0)}
-async function getCollection(name){
-  try{
-    const snap=await getDocs(collection(db,name));
-    const rows=[]; snap.forEach(d=>rows.push({id:d.id,...d.data()})); return rows;
-  }catch(e){console.warn(name,e); return []}
+async function load(){
+ const [users,schools,books,courses,certs,reports] = await Promise.all([
+  SO.getAll("users"), SO.getAll("schools"), SO.getAll("books"), SO.getAll("courses"), SO.getAll("certificates"), SO.getAll("schoolReports")
+ ]);
+ document.getElementById("users").textContent=SO.num(users.length);
+ document.getElementById("schools").textContent=SO.num(schools.length);
+ document.getElementById("books").textContent=SO.num(books.length);
+ document.getElementById("courses").textContent=SO.num(courses.length);
+ document.getElementById("certs").textContent=SO.num(certs.length);
+ document.getElementById("reports").textContent=SO.num(reports.length);
 }
-async function loadDashboard(){
-  const [users,schools,books,courses,certs]=await Promise.all([
-    getCollection("users"),getCollection("schools"),getCollection("books"),getCollection("courses"),getCollection("certificates")
-  ]);
-  set("usersTotal",users.length);
-  set("schoolsTotal",schools.length);
-  set("studentsTotal",sum(schools,"studentCount"));
-  set("booksTotal",books.length);
-  set("coursesTotal",courses.length);
-  set("certsTotal",certs.length);
+load();
 
-  const pending=users.filter(u=>u.status==="pending").length;
-  const activeSchools=schools.filter(s=>s.phase==="active").length;
-  const activeBooks=books.filter(b=>b.status==="active").length;
-  const certCourses=courses.filter(c=>c.certificateEligible===true).length;
-  const issued=certs.filter(c=>c.status==="issued").length;
-
-  document.getElementById("pendingUsers").textContent=`${pending.toLocaleString()} pending`;
-  document.getElementById("activeSchools").textContent=`${activeSchools.toLocaleString()} active`;
-  document.getElementById("activeBooks").textContent=`${activeBooks.toLocaleString()} active`;
-  document.getElementById("certCourses").textContent=`${certCourses.toLocaleString()} cert eligible`;
-  document.getElementById("issuedCerts").textContent=`${issued.toLocaleString()} issued`;
-
-  set("healthPending",pending);
-  set("healthDraftBooks",books.filter(b=>b.status==="draft").length);
-  set("healthDraftCourses",courses.filter(c=>c.status==="draft").length);
-  set("healthRevokedCerts",certs.filter(c=>c.status==="revoked").length);
-}
-loadDashboard();
 </script>
 </body>
 </html>
