@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>SpeakOut E-Library | Protected Learning Resources</title>
+<meta name="description" content="Protected SpeakOut E-Library powered by Firestore books and resources.">
+
+<link rel="icon" type="image/png" href="icons/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#07152b;--navy2:#0b2344;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;
+  --gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;
+  --red:#b42318;--redSoft:#fff1f0;--ink:#111827;--muted:#637083;--line:#e5edf6;
+  --bg:#f7f9fc;--white:#fff;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px;
+}
+*{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Outfit,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.84rem;line-height:1.1;text-align:center;cursor:pointer;transition:.2s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(7,21,43,.13)}
+.primary{background:var(--blue);color:#fff}.primary:hover{background:var(--blue2)}
+.gold{background:var(--gold);color:#241300}.soft{background:var(--blueSoft);color:var(--blue)}
+.light{background:#fff;color:var(--navy)}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:1000;min-height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}
+.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.92),rgba(7,21,43,.72) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue))}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}
+.hero .container{position:relative;z-index:2;padding:64px 0 58px}
+.hero-content{max-width:900px}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
+.label{background:var(--blueSoft);color:var(--blue);margin-bottom:14px}
+h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}
+h1{font-size:clamp(2.35rem,6vw,5.3rem);margin:18px 0}
+.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:760px;color:rgba(255,255,255,.9)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
+section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:center}.title h2{font-size:clamp(1.85rem,4vw,3.5rem);margin:0 0 12px;color:var(--navy)}.title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+.card,.panel,.notice-box,.modal-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft)}
+.card{padding:18px;transition:.25s ease;position:relative;overflow:hidden}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.card h3{font-size:1.05rem;color:var(--navy);margin:0 0 8px}.card p{color:var(--muted);line-height:1.55;margin:0 0 10px;font-size:.9rem}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.stats,.notice,.controls{background:#fff;border-bottom:1px solid var(--line)}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--soft);text-align:center}.stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);letter-spacing:-.04em;line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
+.notice-box{padding:20px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:linear-gradient(135deg,#fff,#f8fbff 55%,#fff8ee)}.notice-icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:var(--goldSoft);color:#8a5600;font-size:1.2rem;font-weight:900}.notice-box h2{margin:0 0 7px;color:var(--navy);font-size:1.25rem}.notice-box p{margin:0;color:var(--muted);line-height:1.6;font-size:.95rem}
+.panel{padding:20px}.controls-grid{display:grid;grid-template-columns:1.2fr .65fr .65fr .65fr;gap:10px;margin-top:14px}.input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}.input:focus,.select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.10)}
+.empty{margin-top:14px;padding:13px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800;display:none;font-size:.9rem}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}.tab{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:8px 11px;font-weight:850;cursor:pointer;transition:.2s ease;box-shadow:var(--soft);font-size:.8rem}.tab:hover,.tab.active{background:var(--blue);color:#fff;transform:translateY(-2px)}
+.icon{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:var(--blueSoft);color:var(--blue);font-weight:900;font-size:1.15rem;margin-bottom:12px}.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--blueSoft);color:var(--blue);text-transform:capitalize}.pill.free{background:var(--greenSoft);color:var(--green)}.pill.gold{background:var(--goldSoft);color:#8a5600}.pill.dark{background:#eef2ff;color:var(--navy)}
+.book{min-height:330px;display:flex;flex-direction:column;justify-content:space-between}.cover{height:124px;border-radius:17px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));padding:14px;display:flex;align-items:flex-end;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.cover::after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-26px;top:-26px;background:rgba(255,255,255,.12)}.cover strong{position:relative;z-index:2;font-size:.92rem;line-height:1.15;max-width:86%;text-shadow:0 3px 18px rgba(0,0,0,.35)}
+.book-title{font-size:1.02rem;color:var(--navy);font-weight:900;line-height:1.18;margin-bottom:5px}.author{color:var(--muted);font-weight:800;margin-bottom:8px;font-size:.86rem}.summary{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);line-height:1.5;margin-bottom:12px;font-size:.86rem}.book-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.book-actions .btn{min-height:36px;padding:8px 9px;font-size:.78rem;border-radius:14px}
+.dark-section{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff}.dark-section .title h2,.dark-section .title p{color:#fff}.dark-section .title p{opacity:.84}.dark-section .label{background:rgba(255,255,255,.13);color:#fff}.dark-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(12px)}.dark-card h3{color:#fff}.dark-card p{color:rgba(255,255,255,.82)}
+.modal{position:fixed;inset:0;background:rgba(7,21,43,.62);display:none;align-items:center;justify-content:center;padding:18px;z-index:5000}.modal.open{display:flex}.modal-card{width:min(760px,96vw);max-height:88vh;overflow:auto;padding:22px}.modal-top{display:flex;justify-content:space-between;gap:14px;align-items:start;margin-bottom:12px}.modal-close{border:0;background:var(--blueSoft);color:var(--blue);border-radius:999px;width:36px;height:36px;font-weight:900;cursor:pointer}.modal-cover{height:160px;border-radius:18px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;display:flex;align-items:flex-end;padding:18px;margin-bottom:16px;position:relative;overflow:hidden}.modal-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.modal-cover strong{position:relative;z-index:2;font-size:1.2rem;text-shadow:0 3px 18px rgba(0,0,0,.35)}.modal-body p{color:var(--muted);line-height:1.65}.modal-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}.footer-brand{display:flex;align-items:center;gap:10px}.footer-brand img{width:52px;height:52px;object-fit:contain;background:#fff;border-radius:13px;padding:4px}.footer h3,.footer h4{color:#fff;margin:0 0 10px}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}.footer-bottom{margin-top:30px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);font-size:.9rem}
+.loading{padding:18px;border-radius:18px;background:var(--blueSoft);color:var(--blue);font-weight:900;text-align:center}
+.hidden{display:none!important}
+@media(max-width:1000px){.g4,.g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}.controls-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.menu{display:block}.nav{min-height:68px}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a,.nav-links button{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}.brand img{width:42px;height:42px}.brand h2{font-size:1rem}.brand p{font-size:.58rem}section{padding:48px 0}.hero .container{padding:52px 0}.book-actions{grid-template-columns:1fr}.g4,.g3,.g2,.stats-grid,.footer-grid{grid-template-columns:1fr}.controls-grid{grid-template-columns:1fr}.card,.panel,.modal-card{padding:16px;border-radius:19px}.cover{height:110px}.tabs{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px}.tab{flex:0 0 auto;font-size:.76rem;padding:8px 10px}.btn{min-height:36px;padding:8px 10px;font-size:.78rem;border-radius:14px}}
+</style>
+</head>
+
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="student-dashboard.html" class="brand" aria-label="SpeakOut E-Library Home">
+      <img src="icons/logo.png" alt="SpeakOut Logo">
+      <div><h2>SpeakOut</h2><p>E-Library</p></div>
+    </a>
+    <button class="menu" type="button" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="nav-links">
+      <a href="student-dashboard.html">Dashboard</a>
+      <a href="speakhub.html">SpeakHub</a>
+      <a href="kiddies.html">Kiddies</a>
+      <a href="school-resources.html">School Resources</a>
+      <a href="submit-work.html" class="btn primary">Submit Resource</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="kicker">Protected Access • Firestore Library • Approved Users</span>
+      <h1>Read, learn and grow through curated resources.</h1>
+      <p>This E-Library now loads resources directly from the admin book database. Add books in <strong>admin-books.html</strong> and approved users will see them here automatically.</p>
+      <div class="actions">
+        <a href="#books" class="btn primary">Start Reading</a>
+        <a href="#filters" class="btn light">Search Library</a>
+        <a href="submit-work.html" class="btn gold">Submit Book</a>
+      </div>
+      <div class="trust"><span>Students</span><span>Schools</span><span>Teachers</span><span>Parents</span><span>NYSC</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat"><strong id="totalCount">0</strong><span>Total Active Resources</span></div>
+    <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+    <div class="stat"><strong id="schoolCount">0</strong><span>School Resources</span></div>
+    <div class="stat"><strong id="kiddiesCount">0</strong><span>Kiddies / Students</span></div>
+  </div>
+</section>
+
+<section class="notice">
+  <div class="container">
+    <div class="notice-box">
+      <div class="notice-icon">⚖️</div>
+      <div>
+        <h2>Responsible learning library</h2>
+        <p>Only admin-approved active resources appear here. Use official, open, permitted, or author-submitted resources only. Don’t build your platform on stolen PDFs — that is a legal and brand-risk trap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="controls" id="filters">
+  <div class="container">
+    <div class="panel">
+      <span class="label">Search the Library</span>
+      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find resources by title, audience or category</h2>
+      <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, author, school resources, depression, leadership, technology, primary, secondary, teachers, parents and more.</p>
+      <div class="controls-grid">
+        <input type="text" id="librarySearch" class="input" placeholder="Search depression, leadership, primary, Excel, teacher guide...">
+        <select id="categoryFilter" class="select">
+          <option value="all">All Categories</option>
+          <option value="mental-health">Mental Health</option>
+          <option value="leadership">Leadership</option>
+          <option value="business">Business</option>
+          <option value="technology">Technology</option>
+          <option value="health">Public Health</option>
+          <option value="career">Career</option>
+          <option value="study-skills">Study Skills</option>
+          <option value="personal-growth">Personal Growth</option>
+          <option value="kiddies">Kiddies</option>
+          <option value="school-resources">School Resources</option>
+          <option value="parent-resources">Parent Resources</option>
+          <option value="teacher-resources">Teacher Resources</option>
+        </select>
+        <select id="audienceFilter" class="select">
+          <option value="all">All Audiences</option>
+          <option value="primary">Primary</option>
+          <option value="secondary">Secondary</option>
+          <option value="university">University</option>
+          <option value="nysc">NYSC</option>
+          <option value="teachers">Teachers</option>
+          <option value="parents">Parents</option>
+          <option value="schools">Schools</option>
+          <option value="general">General</option>
+        </select>
+        <select id="typeFilter" class="select">
+          <option value="all">All Types</option>
+          <option value="book">Book</option>
+          <option value="guide">Guide</option>
+          <option value="toolkit">Toolkit</option>
+          <option value="worksheet">Worksheet</option>
+          <option value="video">Video</option>
+          <option value="course">Course Link</option>
+          <option value="article">Article</option>
+        </select>
+      </div>
+      <div class="empty" id="emptyState">No matching resource found. Try another keyword or filter.</div>
+    </div>
+  </div>
+</section>
+
+<section id="shelves">
+  <div class="container">
+    <div class="title"><span class="label">Shelves</span><h2>Browse by category</h2><p>These shelves filter the same live database. Add or edit content from the admin book manager.</p></div>
+    <div class="tabs">
+      <button class="tab active" data-category="all">All</button>
+      <button class="tab" data-category="mental-health">Mental Health</button>
+      <button class="tab" data-category="kiddies">Kiddies</button>
+      <button class="tab" data-category="school-resources">School Resources</button>
+      <button class="tab" data-category="teacher-resources">Teachers</button>
+      <button class="tab" data-category="parent-resources">Parents</button>
+      <button class="tab" data-category="leadership">Leadership</button>
+      <button class="tab" data-category="technology">Technology</button>
+      <button class="tab" data-category="career">Career</button>
+    </div>
+  </div>
+</section>
+
+<section id="books">
+  <div class="container">
+    <div class="title"><span class="label">Live Resources</span><h2>Featured books, guides and toolkits</h2><p>Only resources marked <strong>active</strong> in Firestore appear here.</p></div>
+    <div id="loading" class="loading">Loading library resources...</div>
+    <div class="grid g3" id="bookGrid"></div>
+  </div>
+</section>
+
+<section class="dark-section">
+  <div class="container">
+    <div class="title"><span class="label">Submission Pathway</span><h2>Want to feature a book or guide?</h2><p>Authors, schools, professionals and institutions can submit resources for review before publishing.</p></div>
+    <div class="grid g3">
+      <article class="card dark-card"><div class="icon">📩</div><h3>Submit Resource</h3><p>Use the submission page to send book/resource details for SpeakOut review.</p><a class="btn gold" href="submit-work.html">Submit Work</a></article>
+      <article class="card dark-card"><div class="icon">✅</div><h3>Admin Review</h3><p>Resources must be reviewed for suitability, permission and quality before publishing.</p><a class="btn gold" href="admin-books.html">Admin Books</a></article>
+      <article class="card dark-card"><div class="icon">📚</div><h3>Published to Library</h3><p>Once active in Firestore, the resource appears automatically here.</p><a class="btn gold" href="#books">View Library</a></article>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="modal" id="bookModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-top">
+      <div><span class="label" id="modalCategory">Book</span><h2 id="modalTitle" style="margin:8px 0 4px;color:var(--navy)">Book Title</h2><div id="modalAuthor" class="author"></div></div>
+      <button class="modal-close" type="button" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-cover" id="modalCover"><strong id="modalCoverTitle"></strong></div>
+    <div class="modal-body"><p id="modalSummary"></p></div>
+    <div class="modal-actions">
+      <a id="modalRead" class="btn primary" target="_blank" rel="noopener">Read Online</a>
+      <a id="modalDownload" class="btn soft" target="_blank" rel="noopener">Download / Source</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-brand"><img src="icons/logo.png" alt="SpeakOut Logo"><div><h3>SpeakOut</h3><p>E-Library</p></div></div><p>Protected digital knowledge hub for student wellness, learning, leadership and school support.</p></div>
+      <div><h4>Explore</h4><a href="student-dashboard.html">Student Dashboard</a><a href="school-dashboard.html">School Dashboard</a><a href="#books">Books</a><a href="#shelves">Shelves</a></div>
+      <div><h4>Ecosystem</h4><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies Corner</a><a href="school-resources.html">School Resources</a><a href="verify-certificate.html">Verify Certificate</a></div>
+      <div><h4>Contact</h4><a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp: +234 811 810 3510</a><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 SpeakOut Mental Health Outreach. E-Library for learning, healing and leadership.</p></div>
+  </div>
+</footer>
+
+<script type="module" src="auth-guard.js"></script>
+
+<script type="module">
+import { db } from "./firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let allBooks = [];
+
+const bookGrid = document.getElementById("bookGrid");
+const loading = document.getElementById("loading");
+const searchInput = document.getElementById("librarySearch");
+const categoryFilter = document.getElementById("categoryFilter");
+const audienceFilter = document.getElementById("audienceFilter");
+const typeFilter = document.getElementById("typeFilter");
+const emptyState = document.getElementById("emptyState");
+
+function safe(value){ return value || "—"; }
+function pretty(value){ return (value || "—").replaceAll("-", " "); }
+
+function stat(id, value){
+  document.getElementById(id).textContent = Number(value || 0).toLocaleString() + "+";
+}
+
+function updateStats(books){
+  stat("totalCount", books.length);
+  stat("featuredCount", books.filter(b => b.featured === true).length);
+  stat("schoolCount", books.filter(b => b.category === "school-resources" || b.audience === "schools").length);
+  stat("kiddiesCount", books.filter(b => b.category === "kiddies" || b.audience === "primary" || b.audience === "secondary").length);
+}
+
+function bookCard(book, index){
+  const cover = book.coverUrl ? `<img src="${book.coverUrl}" alt="">` : "";
+  return `
+    <article class="card book filter-card" data-category="${book.category || ""}" data-audience="${book.audience || ""}" data-type="${book.type || ""}" data-search="${`${book.title||""} ${book.author||""} ${book.source||""} ${book.category||""} ${book.audience||""} ${book.type||""} ${book.tags||""} ${book.description||""}`.toLowerCase()}">
+      <div>
+        <div class="cover">${cover}<strong>${safe(book.title)}</strong></div>
+        <div class="pills">
+          <span class="pill free">${pretty(book.type || "Resource")}</span>
+          <span class="pill">${pretty(book.category || "General")}</span>
+          <span class="pill gold">${pretty(book.audience || "General")}</span>
+        </div>
+        <div class="book-title">${safe(book.title)}</div>
+        <div class="author">${safe(book.author)} • ${safe(book.source)}</div>
+        <p class="summary">${safe(book.description)}</p>
+      </div>
+      <div class="book-actions">
+        <button class="btn primary" type="button" onclick="openBook(${index})">Details</button>
+        ${book.readUrl ? `<a class="btn soft" href="${book.readUrl}" target="_blank" rel="noopener">Read</a>` : `<button class="btn ghost" disabled>No Link</button>`}
+      </div>
+    </article>
+  `;
+}
+
+async function loadBooks(){
+  try{
+    const snap = await getDocs(collection(db, "books"));
+    allBooks = [];
+    snap.forEach(docSnap => {
+      const book = { id: docSnap.id, ...docSnap.data() };
+      if(book.status === "active") allBooks.push(book);
+    });
+
+    allBooks.sort((a,b) => {
+      if(a.featured && !b.featured) return -1;
+      if(!a.featured && b.featured) return 1;
+      return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+    });
+
+    loading.style.display = "none";
+    updateStats(allBooks);
+    renderBooks();
+  }catch(error){
+    loading.textContent = "Failed to load library resources. Check Firestore rules and admin approval.";
+    console.error(error);
+  }
+}
+
+function renderBooks(){
+  const s = searchInput.value.toLowerCase().trim();
+  const cat = categoryFilter.value;
+  const audience = audienceFilter.value;
+  const type = typeFilter.value;
+
+  const filtered = allBooks.filter(book => {
+    const searchable = `${book.title||""} ${book.author||""} ${book.source||""} ${book.category||""} ${book.audience||""} ${book.type||""} ${book.tags||""} ${book.description||""}`.toLowerCase();
+    const okS = !s || searchable.includes(s);
+    const okC = cat === "all" || book.category === cat;
+    const okA = audience === "all" || book.audience === audience;
+    const okT = type === "all" || book.type === type;
+    return okS && okC && okA && okT;
+  });
+
+  bookGrid.innerHTML = filtered.map(bookCard).join("");
+  emptyState.style.display = filtered.length === 0 ? "block" : "none";
+}
+
+window.openBook = function(index){
+  const b = allBooks[index];
+  const modal = document.getElementById("bookModal");
+  document.getElementById("modalCategory").textContent = pretty(b.category);
+  document.getElementById("modalTitle").textContent = safe(b.title);
+  document.getElementById("modalCoverTitle").textContent = safe(b.title);
+  document.getElementById("modalAuthor").textContent = `${safe(b.author)} • ${safe(b.source)} • ${pretty(b.audience)}`;
+  document.getElementById("modalSummary").textContent = safe(b.description);
+
+  const modalCover = document.getElementById("modalCover");
+  modalCover.querySelectorAll("img").forEach(img => img.remove());
+  if(b.coverUrl){
+    const img = document.createElement("img");
+    img.src = b.coverUrl;
+    img.alt = "";
+    modalCover.prepend(img);
+  }
+
+  const read = document.getElementById("modalRead");
+  const download = document.getElementById("modalDownload");
+  read.href = b.readUrl || b.downloadUrl || "#";
+  download.href = b.downloadUrl || b.readUrl || "#";
+  read.style.display = (b.readUrl || b.downloadUrl) ? "inline-flex" : "none";
+  download.style.display = (b.downloadUrl || b.readUrl) ? "inline-flex" : "none";
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+};
+
+window.closeModal = function(){
+  const modal = document.getElementById("bookModal");
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden","true");
+};
+
+document.getElementById("bookModal").addEventListener("click", e => {
+  if(e.target.id === "bookModal") closeModal();
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape"){
+    closeModal();
+    document.body.classList.remove("menu-open");
+  }
+});
+
+searchInput.addEventListener("input", renderBooks);
+categoryFilter.addEventListener("change", renderBooks);
+audienceFilter.addEventListener("change", renderBooks);
+typeFilter.addEventListener("change", renderBooks);
+
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    categoryFilter.value = btn.dataset.category;
+    searchInput.value = "";
+    audienceFilter.value = "all";
+    typeFilter.value = "all";
+    renderBooks();
+    document.getElementById("books").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+});
+
+loadBooks();
+</script>
+</body>
