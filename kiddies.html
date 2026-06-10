@@ -280,6 +280,7 @@ section{padding:58px 0}
 <script type="module">
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { KIDDIES_CONTENT } from "./kiddies-content.js";
 
 let allItems = [];
 
@@ -419,7 +420,7 @@ window.openKiddiesResource = function(id){
 
   document.getElementById("resourceModalTitle").textContent = item.title || "Resource";
 
-  document.getElementById("resourceModalContent").innerHTML = item.contentHtml || `
+  document.getElementById("resourceModalContent").innerHTML = KIDDIES_CONTENT[item.id] || item.contentHtml || `
     <h2>${safe(item.title)}</h2>
     <p>${safe(item.description)}</p>
     <p>No full content has been added yet.</p>
