@@ -2,201 +2,201 @@
   {
     "id": "abc-adventures",
     "title": "ABC Adventures",
-    "category": "numeracy",
-    "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on abc adventures.",
+    "category": "literacy",
+    "ageGroup": "ages-3-5",
+    "description": "A child-friendly literacy guide that helps young learners recognize letters, sounds, and simple words through play.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>ABC Adventures</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>ABC Adventures</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> This activity helps young children begin their reading journey through letters, sounds, pictures, movement, and simple conversation.</p>\n<h3>What children will learn</h3>\n<ul><li>Recognize common letters.</li><li>Connect letters with sounds.</li><li>Say simple words clearly.</li><li>Build confidence while learning.</li></ul>\n<h3>Warm-up activity</h3>\n<p>Ask the child to sing the alphabet slowly. After singing, choose five letters and ask the child to find objects around them that begin with those letters.</p>\n<h3>Letter sound game</h3>\n<p>Pick one letter, say the sound, and ask the child to repeat it. Example: “B says /b/ as in ball, baby, bag.” Let the child clap once each time they hear the sound.</p>\n<h3>Picture-word match</h3>\n<p>Draw or show pictures such as apple, ball, cup, dog, egg, fish, and goat. Ask the child to say the word and identify the first letter.</p>\n<h3>Mini practice</h3>\n<ol><li>Trace five letters with a finger.</li><li>Say the letter name.</li><li>Say the letter sound.</li><li>Say one word that begins with the letter.</li></ol>\n<h3>Reflection questions</h3>\n<ul><li>What letter did you enjoy today?</li><li>What word was easy for you?</li><li>What word do you want to try again?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Use encouragement, repetition, and play. Do not shame a child for forgetting letters. Young children learn best when reading feels safe, warm, and fun.</p>"
   },
   {
     "id": "numbers-fun",
     "title": "Numbers Fun",
-    "category": "emotions",
-    "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on numbers fun.",
+    "category": "numeracy",
+    "ageGroup": "ages-3-5",
+    "description": "A playful numeracy guide that helps children count, compare, group, and understand numbers in daily life.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>Numbers Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Numbers Fun</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> This guide helps children enjoy numbers through counting, movement, toys, food items, and simple household objects.</p>\n<h3>What children will learn</h3>\n<ul><li>Count objects from 1 to 20.</li><li>Understand more, less, and equal.</li><li>Match numbers to real items.</li><li>Build patience and confidence.</li></ul>\n<h3>Counting around me</h3>\n<p>Ask the child to count spoons, shoes, cups, pencils, or toys. Let them touch each object as they count so they understand that every number represents one item.</p>\n<h3>More or less game</h3>\n<p>Place three objects on one side and five objects on another side. Ask: “Which side has more?” Then change the objects and repeat.</p>\n<h3>Movement counting</h3>\n<ul><li>Jump 5 times.</li><li>Clap 10 times.</li><li>Touch your head 3 times.</li><li>Take 7 tiny steps.</li></ul>\n<h3>Mini activity</h3>\n<p>Give the child numbers 1–10 on small cards. Ask them to arrange the cards in order, then place the correct number of objects under each card.</p>\n<h3>Reflection questions</h3>\n<ul><li>What number did you count up to today?</li><li>Which number was hard?</li><li>Where do you see numbers at home or school?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Avoid rushing. Celebrate small progress. Children need repetition before numbers become meaningful.</p>"
   },
   {
     "id": "colors-and-shapes",
     "title": "Colors and Shapes",
-    "category": "safety",
+    "category": "early-learning",
     "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on colors and shapes.",
+    "description": "A creative early-learning resource for identifying colors, shapes, patterns, and objects in the child’s environment.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>Colors and Shapes</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Colors and Shapes</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> This activity helps young children notice colors and shapes in everyday life while developing language, attention, and observation skills.</p>\n<h3>What children will learn</h3>\n<ul><li>Name common colors.</li><li>Recognize circles, squares, triangles, and rectangles.</li><li>Describe objects clearly.</li><li>Use creativity through drawing and sorting.</li></ul>\n<h3>Color hunt</h3>\n<p>Choose one color and ask the child to find three things with that color. Example: “Find three blue things.” Let the child point, name, and describe each item.</p>\n<h3>Shape hunt</h3>\n<p>Look around the room. Ask: “What looks like a circle? What looks like a rectangle?” Use plates, doors, books, windows, clocks, and boxes.</p>\n<h3>Draw and color</h3>\n<ol><li>Draw one circle, one square, and one triangle.</li><li>Color each shape differently.</li><li>Ask the child to describe the picture.</li><li>Let the child make a simple house, car, or flower using shapes.</li></ol>\n<h3>Pattern practice</h3>\n<p>Create a pattern: red-blue-red-blue. Ask the child what comes next. Try shape patterns too: circle-square-circle-square.</p>\n<h3>Reflection questions</h3>\n<ul><li>What is your favorite color?</li><li>What shape was easy to find?</li><li>What can you build with shapes?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Use daily objects instead of expensive learning tools. Children learn faster when the lesson connects to things they already see.</p>"
   },
   {
     "id": "good-manners",
     "title": "Good Manners",
     "category": "character",
     "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on good manners.",
+    "description": "A practical character-building guide that teaches respect, kindness, polite words, and responsible behavior.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>Good Manners</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Good Manners</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Good manners help children build respect, friendship, confidence, and peaceful relationships at home, school, and in the community.</p>\n<h3>What are good manners?</h3>\n<p>Good manners are kind and respectful ways of speaking and behaving. They show people that we value them and care about their feelings.</p>\n<h3>Important polite words</h3>\n<ul><li>Please</li><li>Thank you</li><li>Excuse me</li><li>I am sorry</li><li>May I?</li><li>You are welcome</li></ul>\n<h3>Everyday examples</h3>\n<ul><li>Greet people respectfully.</li><li>Wait for your turn.</li><li>Do not interrupt when someone is speaking.</li><li>Say thank you when someone helps you.</li><li>Apologize when you hurt someone.</li></ul>\n<h3>Role-play activity</h3>\n<p>Practice three scenes: asking for help, apologizing to a friend, and thanking a teacher. Let children act out both the wrong way and the better way.</p>\n<h3>Reflection questions</h3>\n<ul><li>Which polite word do you use often?</li><li>Which polite word do you need to practice?</li><li>How do you feel when someone speaks kindly to you?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Children copy adults. Model the same manners you want them to use. Correct with calmness, not embarrassment.</p>"
   },
   {
     "id": "my-feelings",
     "title": "My Feelings",
-    "category": "literacy",
-    "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on my feelings.",
+    "category": "emotions",
+    "ageGroup": "ages-6-9",
+    "description": "A mental wellbeing guide that helps children name, understand, and express feelings safely.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>My Feelings</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>My Feelings</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> This guide helps children understand that feelings are normal and can be expressed safely.</p>\n<h3>What are feelings?</h3>\n<p>Feelings are emotions we experience inside. We may feel happy, sad, angry, scared, excited, lonely, proud, or worried. Feelings are not bad, but our actions must be safe.</p>\n<h3>Common feelings</h3>\n<ul><li>Happy: when something good happens.</li><li>Sad: when we lose, miss, or feel hurt.</li><li>Angry: when something feels unfair.</li><li>Scared: when we feel unsafe or unsure.</li><li>Worried: when we keep thinking about a problem.</li></ul>\n<h3>Healthy ways to express feelings</h3>\n<ul><li>Use words: “I feel sad because…”</li><li>Draw the feeling.</li><li>Talk to a trusted adult.</li><li>Take deep breaths.</li><li>Ask for a break.</li></ul>\n<h3>Feeling thermometer</h3>\n<p>Ask the child to rate their feeling from 1 to 5. 1 means calm. 5 means very strong. Then ask what would help them move down one step.</p>\n<h3>Reflection questions</h3>\n<ul><li>What feeling did you have today?</li><li>Where did you feel it in your body?</li><li>Who can you talk to when feelings are too big?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Do not dismiss feelings with “stop crying” or “you are fine.” Help the child name the emotion, feel safe, and choose a better action.</p>"
   },
   {
     "id": "safety-first",
     "title": "Safety First",
-    "category": "numeracy",
-    "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on safety first.",
+    "category": "safety",
+    "ageGroup": "ages-6-9",
+    "description": "A child protection and personal safety guide that teaches safe boundaries, trusted adults, and emergency help-seeking.",
     "status": "active",
     "featured": true,
-    "contentHtml": "<h2>Safety First</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Safety First</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> This guide teaches children how to stay safe, speak up, and ask for help when something feels wrong.</p>\n<h3>What safety means</h3>\n<p>Safety means protecting your body, mind, feelings, and environment. Every child deserves to feel safe at home, school, online, and in the community.</p>\n<h3>Body safety rules</h3>\n<ul><li>Your body belongs to you.</li><li>No one should touch private parts except for health or hygiene reasons with proper adult support.</li><li>You can say “No” to unsafe touch.</li><li>Unsafe secrets should be reported.</li><li>Tell a trusted adult if something feels wrong.</li></ul>\n<h3>Trusted adults</h3>\n<p>A trusted adult is someone who listens, protects, and helps you without making you feel afraid. Examples may include a parent, teacher, school counsellor, caregiver, nurse, or responsible family member.</p>\n<h3>Safety circle activity</h3>\n<p>Ask the child to draw a circle and write the names of three trusted adults they can talk to if they feel unsafe.</p>\n<h3>Emergency practice</h3>\n<ul><li>Know your full name.</li><li>Know your parent or caregiver’s phone number if possible.</li><li>Know where to go for help in school.</li><li>Never follow a stranger without permission.</li></ul>\n<h3>For parents and teachers</h3>\n<p>Teach safety calmly, without frightening the child. Children must know they will not be blamed for reporting unsafe behavior.</p>"
   },
   {
     "id": "healthy-habits",
     "title": "Healthy Habits",
-    "category": "emotions",
+    "category": "wellness",
     "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on healthy habits.",
+    "description": "A practical wellbeing guide that teaches sleep, food, hygiene, movement, screen balance, and daily self-care.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Healthy Habits</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Healthy Habits</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Healthy habits help children grow, learn, play, and manage emotions better.</p>\n<h3>Why habits matter</h3>\n<p>Small daily habits affect energy, mood, focus, confidence, and health. Children do not need perfect routines. They need simple, repeated actions that support their wellbeing.</p>\n<h3>Important habits</h3>\n<ul><li>Sleep early and wake up refreshed.</li><li>Eat balanced meals when possible.</li><li>Drink water.</li><li>Brush teeth and bathe regularly.</li><li>Move the body through play or exercise.</li><li>Take breaks from screens.</li></ul>\n<h3>My healthy day checklist</h3>\n<ol><li>I washed my hands.</li><li>I drank water.</li><li>I moved my body.</li><li>I ate something nourishing.</li><li>I rested when I was tired.</li><li>I spoke kindly to myself.</li></ol>\n<h3>Activity</h3>\n<p>Ask the child to choose one habit to practice for seven days. Keep a small chart and tick each day they try.</p>\n<h3>Reflection questions</h3>\n<ul><li>What healthy habit is easy for me?</li><li>What habit do I need help with?</li><li>How does my body feel after rest and good food?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Make routines visible and simple. Avoid using food, sleep, or body size as shame-based discipline.</p>"
   },
   {
     "id": "story-time",
     "title": "Story Time",
-    "category": "safety",
-    "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on story time.",
+    "category": "literacy",
+    "ageGroup": "ages-6-9",
+    "description": "A reading and reflection guide that helps children learn values, emotions, and problem-solving through stories.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Story Time</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Story Time</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Stories help children build language, imagination, empathy, and decision-making.</p>\n<h3>Why stories are powerful</h3>\n<p>Children learn from characters. A story can teach kindness, courage, patience, honesty, safety, and emotional awareness without sounding like a lecture.</p>\n<h3>How to read a story</h3>\n<ul><li>Look at the title and picture first.</li><li>Ask what the child thinks the story is about.</li><li>Read slowly.</li><li>Pause to ask questions.</li><li>Let the child retell the story in their own words.</li></ul>\n<h3>Story reflection questions</h3>\n<ul><li>Who is the main character?</li><li>What problem did the character face?</li><li>How did the character feel?</li><li>What choice did the character make?</li><li>What would you have done?</li></ul>\n<h3>Create your own story</h3>\n<p>Ask the child to create a short story about a child who helps a friend. The story should have a beginning, a problem, a helpful action, and an ending.</p>\n<h3>Mini activity</h3>\n<p>Draw one scene from the story and write or say one lesson learned.</p>\n<h3>For parents and teachers</h3>\n<p>Do not focus only on reading accuracy. Use stories to build confidence, listening, vocabulary, empathy, and moral reasoning.</p>"
   },
   {
     "id": "reading-club",
     "title": "Reading Club",
-    "category": "character",
-    "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on reading club.",
+    "category": "literacy",
+    "ageGroup": "ages-10-13",
+    "description": "A guide for creating a simple reading habit, discussing books, and building vocabulary with peers.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Reading Club</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Reading Club</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> A reading club helps learners enjoy books, improve vocabulary, and build confidence in speaking.</p>\n<h3>What is a reading club?</h3>\n<p>A reading club is a small group of learners who read, discuss, ask questions, and share lessons from books, articles, stories, or poems.</p>\n<h3>Club rules</h3>\n<ul><li>Respect every reader.</li><li>Do not laugh at mistakes.</li><li>Take turns speaking.</li><li>Ask questions kindly.</li><li>Share one lesson from each reading.</li></ul>\n<h3>Weekly reading plan</h3>\n<ol><li>Choose a short text.</li><li>Read silently for 10 minutes.</li><li>Read one paragraph aloud.</li><li>Discuss difficult words.</li><li>Share the main lesson.</li></ol>\n<h3>Vocabulary builder</h3>\n<p>Each learner writes three new words, their meanings, and one sentence using each word.</p>\n<h3>Reflection questions</h3>\n<ul><li>What did I learn from today’s reading?</li><li>What new word can I use this week?</li><li>How did the story connect to real life?</li></ul>\n<h3>For teachers</h3>\n<p>Keep the group safe and encouraging. The goal is not to embarrass weak readers; the goal is to build steady confidence.</p>"
   },
   {
     "id": "mathematics-fun",
     "title": "Mathematics Fun",
-    "category": "literacy",
+    "category": "numeracy",
     "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on mathematics fun.",
+    "description": "A friendly math confidence guide that helps children practice numbers, addition, subtraction, and problem-solving.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Mathematics Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Mathematics Fun</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Mathematics becomes easier when children practice with real objects, games, and calm guidance.</p>\n<h3>Why math matters</h3>\n<p>Math helps us count money, share food, tell time, measure things, compare prices, and solve everyday problems.</p>\n<h3>Simple addition</h3>\n<p>Use stones, pencils, beans, or bottle tops. Put 4 items on the table. Add 3 more. Count all together. Explain that 4 + 3 = 7.</p>\n<h3>Simple subtraction</h3>\n<p>Place 8 objects on the table. Remove 2. Count what is left. Explain that 8 - 2 = 6.</p>\n<h3>Math in daily life</h3>\n<ul><li>Count steps while walking.</li><li>Share snacks equally.</li><li>Compare which cup has more water.</li><li>Count coins or notes with guidance.</li><li>Read numbers on signs and doors.</li></ul>\n<h3>Activity</h3>\n<p>Create five real-life math questions. Example: “If I have 5 mangoes and give 2 away, how many remain?”</p>\n<h3>Reflection questions</h3>\n<ul><li>What math topic feels easy?</li><li>What topic do I need help with?</li><li>How can I practice without fear?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Do not call a child “bad at math.” Anxiety makes learning harder. Use patience, objects, repetition, and praise for effort.</p>"
   },
   {
     "id": "science-explorers",
     "title": "Science Explorers",
-    "category": "numeracy",
+    "category": "science",
     "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on science explorers.",
+    "description": "A curiosity-building science resource that encourages observation, questioning, experiments, and safe exploration.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Science Explorers</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Science Explorers</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Science helps children ask questions, observe carefully, test ideas, and understand the world.</p>\n<h3>What is science?</h3>\n<p>Science is the process of learning about nature, people, animals, plants, weather, materials, health, and technology through observation and evidence.</p>\n<h3>Explorer mindset</h3>\n<ul><li>Ask: What do I notice?</li><li>Ask: Why might this happen?</li><li>Test safely.</li><li>Record what you see.</li><li>Explain your findings.</li></ul>\n<h3>Simple experiment: floating and sinking</h3>\n<p>Collect safe objects like a spoon, leaf, plastic bottle cap, coin, and small stick. Predict which will float. Place them in water one by one and record what happens.</p>\n<h3>Observation journal</h3>\n<p>Choose a plant, cloud, insect, shadow, or water container. Observe it for three days and write or draw what changes.</p>\n<h3>Reflection questions</h3>\n<ul><li>What surprised me today?</li><li>What question do I still have?</li><li>How can science help my community?</li></ul>\n<h3>Safety note</h3>\n<p>Children should not mix unknown chemicals, taste experiment materials, use fire, or handle sharp objects without adult supervision.</p>"
   },
   {
     "id": "creative-drawing",
     "title": "Creative Drawing",
-    "category": "emotions",
+    "category": "creativity",
     "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on creative drawing.",
+    "description": "A gentle creative expression guide that helps children use drawing to communicate ideas, feelings, and stories.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Creative Drawing</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Creative Drawing</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Drawing helps children express thoughts, feelings, imagination, and stories even before they can write fluently.</p>\n<h3>Why drawing matters</h3>\n<p>Drawing builds fine motor skills, focus, creativity, confidence, and emotional expression. A child’s drawing does not need to be perfect to be meaningful.</p>\n<h3>Today’s drawing ideas</h3>\n<ul><li>Draw your family.</li><li>Draw your favorite food.</li><li>Draw a happy place.</li><li>Draw how you feel today.</li><li>Draw an animal you like.</li></ul>\n<h3>Feeling drawing</h3>\n<p>Ask the child: “If your feeling had a color, what color would it be?” Let them draw the feeling using shapes and colors.</p>\n<h3>Tell me about it</h3>\n<p>After drawing, ask the child to explain the picture. Avoid judging the artwork. Ask open questions like, “What is happening here?”</p>\n<h3>Mini activity</h3>\n<p>Fold a paper into four boxes. In each box, draw: something I like, someone I love, something I can do, and something I want to learn.</p>\n<h3>For parents and teachers</h3>\n<p>Do not over-correct drawings. Creative expression should feel safe. Praise effort, ideas, and storytelling.</p>"
   },
   {
     "id": "public-speaking-for-kids",
     "title": "Public Speaking for Kids",
-    "category": "safety",
-    "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on public speaking for kids.",
+    "category": "confidence",
+    "ageGroup": "ages-10-13",
+    "description": "A confidence-building guide that teaches children how to speak clearly, organize ideas, and present without fear.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Public Speaking for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Public Speaking for Kids</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Public speaking helps children share ideas, build confidence, and communicate respectfully.</p>\n<h3>Why public speaking matters</h3>\n<p>Children who practice speaking learn to organize thoughts, make eye contact, use clear words, and express themselves with courage.</p>\n<h3>Simple speech structure</h3>\n<ol><li>Greeting: “Good morning everyone.”</li><li>Topic: “Today I will speak about…”</li><li>Three points: share three clear ideas.</li><li>Conclusion: “Thank you for listening.”</li></ol>\n<h3>Practice tips</h3>\n<ul><li>Stand straight.</li><li>Speak slowly.</li><li>Breathe before starting.</li><li>Look at friendly faces.</li><li>Practice with a small group first.</li></ul>\n<h3>One-minute speech activity</h3>\n<p>Choose one topic: my favorite subject, my role model, why kindness matters, or how to stay safe. Prepare three points and speak for one minute.</p>\n<h3>Reflection questions</h3>\n<ul><li>What makes speaking in public scary?</li><li>What helps me feel brave?</li><li>What topic can I speak about confidently?</li></ul>\n<h3>For teachers</h3>\n<p>Do not force ridicule-based presentations. Start with pairs, then small groups, then larger groups. Confidence grows gradually.</p>"
   },
   {
     "id": "leadership-for-kids",
     "title": "Leadership for Kids",
-    "category": "character",
+    "category": "leadership",
     "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on leadership for kids.",
+    "description": "A child-friendly leadership guide focused on responsibility, service, teamwork, decision-making, and integrity.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Leadership for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Leadership for Kids</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Leadership is not about shouting or controlling people. It is about serving, guiding, taking responsibility, and doing what is right.</p>\n<h3>Who is a good leader?</h3>\n<p>A good leader listens, respects others, tells the truth, helps solve problems, and makes choices that protect the group.</p>\n<h3>Leadership qualities</h3>\n<ul><li>Responsibility</li><li>Honesty</li><li>Kindness</li><li>Courage</li><li>Teamwork</li><li>Problem-solving</li></ul>\n<h3>Leadership at school</h3>\n<ul><li>Help a classmate understand a task.</li><li>Report bullying or unsafe behavior.</li><li>Keep promises.</li><li>Encourage others.</li><li>Use respectful words even when correcting someone.</li></ul>\n<h3>Activity: leadership challenge</h3>\n<p>Choose one helpful action to do this week. Examples: organize books, welcome a new student, help clean the classroom, or support someone who feels left out.</p>\n<h3>Reflection questions</h3>\n<ul><li>How can I lead without being proud?</li><li>What problem can I help solve?</li><li>Who is a leader I admire and why?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Give children small responsibilities. Leadership grows when children are trusted, guided, and held accountable.</p>"
   },
   {
     "id": "emotional-intelligence",
     "title": "Emotional Intelligence",
-    "category": "literacy",
-    "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on emotional intelligence.",
+    "category": "emotions",
+    "ageGroup": "ages-10-13",
+    "description": "A deeper emotional wellbeing guide that helps young learners understand feelings, empathy, choices, and self-control.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Emotional Intelligence</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Emotional Intelligence</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Emotional intelligence means understanding your feelings, managing your actions, and respecting other people’s feelings too.</p>\n<h3>The four skills</h3>\n<ul><li>Notice: What am I feeling?</li><li>Name: What is this feeling called?</li><li>Understand: Why might I feel this way?</li><li>Choose: What safe action should I take?</li></ul>\n<h3>Feelings and actions are different</h3>\n<p>You may feel angry, but you can choose not to insult, hit, or destroy things. You may feel afraid, but you can ask for help and take one brave step.</p>\n<h3>Empathy practice</h3>\n<p>Empathy means trying to understand how another person feels. Ask: “How would I feel if this happened to me?”</p>\n<h3>Self-control tools</h3>\n<ul><li>Pause before reacting.</li><li>Take three slow breaths.</li><li>Use words instead of shouting.</li><li>Walk away from danger.</li><li>Ask an adult for help.</li></ul>\n<h3>Reflection questions</h3>\n<ul><li>What feeling is hardest for me to manage?</li><li>What helps me calm down?</li><li>How can I show empathy this week?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Teach emotional intelligence through real situations. Help children repair harm after mistakes instead of only punishing them.</p>"
   },
   {
     "id": "environmental-awareness",
     "title": "Environmental Awareness",
-    "category": "numeracy",
+    "category": "environment",
     "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on environmental awareness.",
+    "description": "A values-based guide that teaches children cleanliness, care for nature, waste reduction, and community responsibility.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Environmental Awareness</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Environmental Awareness</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Caring for the environment means protecting the places where people, animals, and plants live.</p>\n<h3>What is the environment?</h3>\n<p>The environment includes air, water, land, plants, animals, homes, schools, roads, and communities around us.</p>\n<h3>How children can help</h3>\n<ul><li>Do not throw litter on the ground.</li><li>Use bins when available.</li><li>Save water.</li><li>Care for plants.</li><li>Keep classrooms and playgrounds clean.</li><li>Reuse items safely when possible.</li></ul>\n<h3>Clean space activity</h3>\n<p>Choose one small area, such as a desk, classroom corner, or bedroom space. Clean it, arrange it, and discuss how it feels afterward.</p>\n<h3>Nature observation</h3>\n<p>Look at one plant or tree. Notice the leaves, color, shape, and size. Discuss why plants need water, sunlight, soil, and care.</p>\n<h3>Reflection questions</h3>\n<ul><li>Why should we keep our school clean?</li><li>What happens when people throw trash everywhere?</li><li>What one environmental habit can I practice?</li></ul>\n<h3>For teachers</h3>\n<p>Use environmental care as a leadership and responsibility lesson. Assign rotating cleanliness roles without using shame or punishment.</p>"
   },
   {
     "id": "kind-words",
     "title": "Kind Words",
     "category": "emotions",
-    "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on kind words.",
+    "ageGroup": "ages-6-9",
+    "description": "A kindness and communication guide that helps children understand how words affect feelings and relationships.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Kind Words</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Kind Words</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Words can help or hurt. Kind words make people feel seen, respected, encouraged, and safe.</p>\n<h3>What are kind words?</h3>\n<p>Kind words are words that show respect, care, patience, and encouragement. They do not insult, mock, threaten, or embarrass others.</p>\n<h3>Examples of kind words</h3>\n<ul><li>You can try again.</li><li>I am sorry.</li><li>Thank you for helping me.</li><li>Would you like to join us?</li><li>I like your effort.</li><li>Are you okay?</li></ul>\n<h3>Words that hurt</h3>\n<p>Calling people names, laughing at mistakes, spreading rumors, and shouting insults can make others feel sad, ashamed, or afraid.</p>\n<h3>Kindness challenge</h3>\n<p>Say one kind sentence to three people today: a friend, a teacher, and someone at home.</p>\n<h3>Reflection questions</h3>\n<ul><li>What kind word made me feel good before?</li><li>Have I ever used words that hurt someone?</li><li>How can I repair hurtful words?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Correct unkind speech early. Teach children to apologize clearly: “I am sorry I said ____. It was not kind. I will try to speak better.”</p>"
   },
   {
     "id": "sharing-and-teamwork",
     "title": "Sharing and Teamwork",
-    "category": "safety",
+    "category": "character",
     "ageGroup": "ages-3-5",
-    "description": "Child-friendly SpeakOut learning activity on sharing and teamwork.",
+    "description": "A social development guide that teaches turn-taking, sharing, helping, and working together.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Sharing and Teamwork</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Sharing and Teamwork</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Sharing and teamwork help children learn patience, friendship, cooperation, and respect.</p>\n<h3>What is sharing?</h3>\n<p>Sharing means allowing others to use, enjoy, or take turns with something. It does not always mean giving everything away. It means learning fairness and kindness.</p>\n<h3>What is teamwork?</h3>\n<p>Teamwork means people working together to complete a task, solve a problem, or help one another.</p>\n<h3>Practice phrases</h3>\n<ul><li>Can I have a turn?</li><li>You can use it after me.</li><li>Let us do it together.</li><li>Thank you for sharing.</li><li>Please may I join?</li></ul>\n<h3>Team activity</h3>\n<p>Give children blocks, paper, or toys and ask them to build something together. One child chooses, one arranges, one counts, and one explains.</p>\n<h3>Reflection questions</h3>\n<ul><li>How do I feel when someone shares with me?</li><li>How can I ask for a turn kindly?</li><li>What can our team do better next time?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Young children are still learning impulse control. Teach turn-taking with timers, clear rules, and calm repetition.</p>"
   },
   {
     "id": "my-safety-circle",
     "title": "My Safety Circle",
-    "category": "character",
+    "category": "safety",
     "ageGroup": "ages-6-9",
-    "description": "Child-friendly SpeakOut learning activity on my safety circle.",
+    "description": "A practical protection guide that helps children identify trusted adults and know when to ask for help.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>My Safety Circle</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>My Safety Circle</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> Every child needs a safety circle: trusted people they can talk to when they feel worried, confused, unsafe, or hurt.</p>\n<h3>What is a safety circle?</h3>\n<p>A safety circle is a small group of trusted adults who listen, protect, guide, and help a child make safe decisions.</p>\n<h3>Who can be in my safety circle?</h3>\n<ul><li>Parent or caregiver</li><li>Teacher</li><li>School counsellor</li><li>Responsible relative</li><li>Faith leader or community helper</li><li>Health worker</li></ul>\n<h3>When should I talk to my safety circle?</h3>\n<ul><li>When someone touches me in an unsafe way.</li><li>When someone asks me to keep a bad secret.</li><li>When I feel scared, threatened, or followed.</li><li>When I am bullied.</li><li>When I feel very sad or overwhelmed.</li></ul>\n<h3>Activity</h3>\n<p>Draw your hand. On each finger, write one trusted adult. Practice saying: “I need help. Something happened and I want to talk.”</p>\n<h3>Reflection questions</h3>\n<ul><li>Who listens to me well?</li><li>Who helps me feel safe?</li><li>What should I do if the first adult does not listen?</li></ul>\n<h3>For parents and teachers</h3>\n<p>Tell children they can keep reporting until someone helps. A child should never be punished for speaking up about safety.</p>"
   },
   {
     "id": "calm-down-toolbox",
     "title": "Calm Down Toolbox",
-    "category": "literacy",
+    "category": "emotions",
     "ageGroup": "ages-10-13",
-    "description": "Child-friendly SpeakOut learning activity on calm down toolbox.",
+    "description": "A practical emotional regulation guide that teaches safe calming tools for worry, anger, fear, and overwhelm.",
     "status": "active",
     "featured": false,
-    "contentHtml": "<h2>Calm Down Toolbox</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"
+    "contentHtml": "<h2>Calm Down Toolbox</h2>\n<p><strong>Published by SpeakOut Mental Health Outreach.</strong> A calm down toolbox is a set of safe actions a learner can use when feelings become too strong.</p>\n<h3>When to use this toolbox</h3>\n<p>Use it when you feel angry, anxious, embarrassed, afraid, overwhelmed, or close to reacting in a way that could hurt yourself or someone else.</p>\n<h3>Tool 1: Pause and breathe</h3>\n<p>Breathe in slowly for four counts. Hold for two counts. Breathe out slowly for four counts. Repeat five times.</p>\n<h3>Tool 2: Name the feeling</h3>\n<p>Say quietly: “I feel ____ because ____.” Naming the feeling helps the brain slow down.</p>\n<h3>Tool 3: Grounding</h3>\n<ul><li>Name 5 things you can see.</li><li>Name 4 things you can touch.</li><li>Name 3 things you can hear.</li><li>Name 2 things you can smell.</li><li>Name 1 safe thing you can do next.</li></ul>\n<h3>Tool 4: Safe support</h3>\n<p>Talk to a trusted adult, school counsellor, parent, teacher, or responsible older person when the feeling is too big to handle alone.</p>\n<h3>Reflection questions</h3>\n<ul><li>What feeling do I need help calming?</li><li>Which tool works best for me?</li><li>Who can I talk to when I am overwhelmed?</li></ul>\n<h3>Important safety note</h3>\n<p>If a young person feels like harming themselves or someone else, they should tell a trusted adult immediately and get urgent support.</p>"
   }
 ]
