@@ -1,17 +1,167 @@
 [
   {
-    "id": "mental-health-foundations",
-    "title": "Mental Health Foundations",
-    "category": "mental-health",
-    "audience": "secondary",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Mental Health Foundations. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": true,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
+“id”: “mental-health-foundations”,
+“title”: “Mental Health Foundations”,
+“category”: “mental-health”,
+“audience”: “secondary”,
+“difficulty”: “intermediate”,
+“duration”: “4 Weeks”,
+“description”: “A comprehensive introduction to mental health, emotional wellbeing, resilience, self-care, and mental health advocacy.”,
+“status”: “active”,
+“featured”: true,
+“certificateEligible”: true,
+“lessonCount”: 24,
+
+“modules”: [
+
+{
+  "title": "Module 1: Understanding Mental Health",
+  "description": "Build a strong foundation in mental health concepts.",
+  "lessons": [
+    {
+      "title": "What is Mental Health?",
+      "duration": "20 mins",
+      "content": "<h2>What is Mental Health?</h2><p>Mental health refers to our emotional, psychological, and social wellbeing. It influences how we think, feel, behave, make decisions, cope with stress, and relate to others.</p><p>Good mental health does not mean feeling happy every day. It means having the ability to manage life's challenges in healthy ways.</p><h3>Learning Objectives</h3><ul><li>Define mental health</li><li>Understand emotional wellbeing</li><li>Recognize the importance of mental wellness</li></ul>"
+    },
+    {
+      "title": "Mental Health vs Mental Illness",
+      "duration": "20 mins",
+      "content": "<h2>Mental Health vs Mental Illness</h2><p>Everyone has mental health, just as everyone has physical health. Mental illness refers to specific conditions that affect thinking, mood, or behavior.</p><p>A person can have poor mental health without a diagnosed illness, and a person with a mental illness can still live a productive and meaningful life.</p>"
+    },
+    {
+      "title": "Common Mental Health Myths",
+      "duration": "20 mins",
+      "content": "<h2>Mental Health Myths</h2><ul><li>Myth: Mental illness is a sign of weakness.</li><li>Fact: Mental illness is a health condition.</li><li>Myth: People should just 'snap out of it'.</li><li>Fact: Recovery often requires support and treatment.</li></ul>"
+    },
+    {
+      "title": "Why Mental Health Matters",
+      "duration": "25 mins",
+      "content": "<h2>Why Mental Health Matters</h2><p>Mental health affects relationships, academic performance, productivity, decision-making, and physical health.</p>"
+    }
+  ],
+  "quiz": {
+    "title": "Module 1 Quiz",
+    "questions": 10,
+    "passMark": 70
+  }
+},
+{
+  "title": "Module 2: Emotional Wellbeing",
+  "description": "Understanding emotions and self-awareness.",
+  "lessons": [
+    {
+      "title": "Understanding Emotions",
+      "duration": "25 mins"
+    },
+    {
+      "title": "Emotional Regulation",
+      "duration": "25 mins"
+    },
+    {
+      "title": "Building Resilience",
+      "duration": "25 mins"
+    },
+    {
+      "title": "Developing Self-Awareness",
+      "duration": "25 mins"
+    }
+  ],
+  "quiz": {
+    "questions": 10,
+    "passMark": 70
+  }
+},
+{
+  "title": "Module 3: Stress and Anxiety",
+  "description": "Recognizing stress and anxiety and learning healthy coping strategies.",
+  "lessons": [
+    {
+      "title": "What is Stress?"
+    },
+    {
+      "title": "What is Anxiety?"
+    },
+    {
+      "title": "Signs and Symptoms"
+    },
+    {
+      "title": "Healthy Coping Skills"
+    }
+  ],
+  "quiz": {
+    "questions": 10,
+    "passMark": 70
+  }
+},
+{
+  "title": "Module 4: Depression Awareness",
+  "description": "Recognizing warning signs and supporting others.",
+  "lessons": [
+    {
+      "title": "Understanding Depression"
+    },
+    {
+      "title": "Common Symptoms"
+    },
+    {
+      "title": "Risk Factors"
+    },
+    {
+      "title": "How to Support Someone"
+    }
+  ],
+  "quiz": {
+    "questions": 10,
+    "passMark": 70
+  }
+},
+{
+  "title": "Module 5: Building Wellbeing",
+  "description": "Practical wellbeing habits.",
+  "lessons": [
+    {
+      "title": "Sleep and Mental Health"
+    },
+    {
+      "title": "Nutrition and Mood"
+    },
+    {
+      "title": "Exercise and Wellbeing"
+    },
+    {
+      "title": "Social Connection"
+    }
+  ],
+  "quiz": {
+    "questions": 10,
+    "passMark": 70
+  }
+},
+{
+  "title": "Module 6: Mental Health Advocacy",
+  "description": "Using knowledge to support others and reduce stigma.",
+  "lessons": [
+    {
+      "title": "Becoming an Advocate"
+    },
+    {
+      "title": "Reducing Stigma"
+    },
+    {
+      "title": "Community Awareness"
+    },
+    {
+      "title": "Taking Action"
+    }
+  ],
+  "finalAssessment": {
+    "questions": 50,
+    "passMark": 70
+  }
+}
+
+]
+}
   {
     "id": "anxiety-management",
     "title": "Anxiety Management",
