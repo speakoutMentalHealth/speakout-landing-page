@@ -3,27 +3,45 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    match /users/{userId} {
-      allow create: if request.auth != null && request.auth.uid == userId;
+    function signedIn() {
+      return request.auth != null;
+    }
 
-      allow read: if request.auth != null &&
-        (
-          request.auth.uid == userId ||
-          (
-            exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
-          )
-        );
-
-      allow update: if request.auth != null &&
+    function isAdmin() {
+      return signedIn() &&
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
     }
 
-    match /{document=**} {
-      allow read, write: if request.auth != null &&
+    function isApprovedUser() {
+      return signedIn() &&
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+        (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approved == true ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == "approved" ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
+        );
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId;
+
+      allow read: if signedIn() &&
+        (
+          request.auth.uid == userId ||
+          isAdmin()
+        );
+
+      allow update: if isAdmin();
+    }
+
+    match /kiddiesResources/{docId} {
+      allow read: if isApprovedUser();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
     }
   }
 }
