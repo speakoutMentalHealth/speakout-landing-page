@@ -56,7 +56,6 @@ section{padding:58px 0}
 .title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
 
 .grid{display:grid;gap:16px}
-.g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft);padding:18px;position:relative;overflow:hidden;transition:.25s}
 .card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
@@ -83,13 +82,27 @@ section{padding:58px 0}
 .pill.green{background:var(--greenSoft);color:var(--green)}
 .loading{padding:18px;border-radius:18px;background:var(--blueSoft);color:var(--blue);font-weight:900;text-align:center}
 
+.modal{display:none;position:fixed;inset:0;background:rgba(7,21,43,.78);z-index:9999;padding:18px;overflow:auto}
+.modal-box{background:#fff;border-radius:26px;max-width:900px;margin:28px auto;box-shadow:0 30px 80px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;z-index:2}
+.modal-title{font-size:1.25rem;font-weight:950;color:var(--navy)}
+.close-btn{background:#fee2e2;color:#991b1b;border:0;border-radius:16px;padding:12px 18px;font-weight:950;cursor:pointer}
+.modal-content{padding:26px;color:#1f2937;font-size:1rem;line-height:1.8}
+.modal-content h2{font-size:2rem;color:var(--navy);margin:0 0 14px}
+.modal-content h3{font-size:1.25rem;color:var(--navy);margin:28px 0 10px}
+.modal-content p{margin:0 0 14px}
+.modal-content ul,.modal-content ol{padding-left:24px;margin:0 0 16px}
+.modal-content li{margin:7px 0}
+.modal-actions{border-top:1px solid var(--line);padding:18px;display:flex;gap:10px;flex-wrap:wrap;background:#fbfdff}
+.modal-actions .btn{flex:1;min-width:180px}
+
 .footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}
 .footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}
 .footer h3,.footer h4{color:#fff;margin:0 0 10px}
 
 @media(max-width:1000px){
-  .g4,.g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}
+  .g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}
   .controls-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:760px){
@@ -100,10 +113,16 @@ section{padding:58px 0}
   .nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}
   section{padding:48px 0}
   .hero .container{padding:52px 0}
-  .g4,.g3,.stats-grid,.footer-grid,.controls-grid{grid-template-columns:1fr}
+  .g3,.stats-grid,.footer-grid,.controls-grid{grid-template-columns:1fr}
   .actions{flex-direction:column}
   .btn{width:100%;border-radius:14px}
   .card,.panel{padding:16px;border-radius:19px}
+  .modal{padding:10px}
+  .modal-box{margin:12px auto;border-radius:22px}
+  .modal-head{grid-template-columns:1fr}
+  .close-btn{width:100%}
+  .modal-content{padding:20px;font-size:.98rem}
+  .modal-content h2{font-size:1.65rem}
 }
 </style>
 </head>
@@ -173,15 +192,25 @@ section{padding:58px 0}
 
         <select id="categoryFilter" class="select">
           <option value="all">All Categories</option>
+          <option value="literacy">Literacy</option>
+          <option value="numeracy">Numeracy</option>
+          <option value="early-learning">Early Learning</option>
           <option value="emotions">Emotions</option>
           <option value="safety">Safety</option>
-          <option value="study-skills">Study Skills</option>
           <option value="character">Character</option>
           <option value="wellness">Wellness</option>
+          <option value="confidence">Confidence</option>
+          <option value="leadership">Leadership</option>
+          <option value="science">Science</option>
+          <option value="creativity">Creativity</option>
+          <option value="environment">Environment</option>
         </select>
 
         <select id="audienceFilter" class="select">
           <option value="all">All Ages</option>
+          <option value="ages-3-5">Ages 3–5</option>
+          <option value="ages-6-9">Ages 6–9</option>
+          <option value="ages-10-13">Ages 10–13</option>
           <option value="primary">Primary</option>
           <option value="junior-secondary">Junior Secondary</option>
           <option value="senior-secondary">Senior Secondary</option>
@@ -206,6 +235,22 @@ section{padding:58px 0}
   </div>
 </section>
 </main>
+
+<div class="modal" id="resourceModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="resourceModalTitle">Resource</div>
+      <button class="close-btn" type="button" onclick="closeKiddiesResource()">Close</button>
+    </div>
+
+    <div class="modal-content" id="resourceModalContent"></div>
+
+    <div class="modal-actions">
+      <a class="btn soft" id="resourceSourceBtn" href="#" target="_blank" rel="noopener" style="display:none;">Open Source</a>
+      <a class="btn gold" id="resourceDownloadBtn" href="#" target="_blank" rel="noopener" style="display:none;">Download / Source Page</a>
+    </div>
+  </div>
+</div>
 
 <footer class="footer">
   <div class="container footer-grid">
@@ -253,6 +298,10 @@ function pretty(value){
   return (value || "—").toString().replaceAll("-", " ");
 }
 
+function escapeAttr(value){
+  return String(value || "").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
 function stat(id, value){
   const el = document.getElementById(id);
   if(el) el.textContent = Number(value || 0).toLocaleString();
@@ -266,8 +315,7 @@ function updateStats(items){
 }
 
 function card(item){
-  const cover = item.coverUrl ? `<img src="${item.coverUrl}" alt="${safe(item.title)}">` : "";
-  const resourceLink = item.resourceUrl || item.url || item.fileUrl || "#";
+  const cover = item.coverUrl ? `<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title)}">` : "";
 
   return `
     <article class="card">
@@ -285,9 +333,9 @@ function card(item){
       <h3>${safe(item.title)}</h3>
       <p>${safe(item.description)}</p>
 
-      <a class="btn primary" href="${resourceLink}" target="_blank" rel="noopener">
+      <button class="btn primary" type="button" onclick="openKiddiesResource('${escapeAttr(item.id)}')">
         Open Resource
-      </a>
+      </button>
     </article>
   `;
 }
@@ -347,6 +395,7 @@ function renderItems(){
       ${item.description || ""}
       ${item.keywords || ""}
       ${item.topic || ""}
+      ${item.contentHtml || ""}
     `.toLowerCase();
 
     const okS = !s || searchable.includes(s);
@@ -359,6 +408,63 @@ function renderItems(){
   grid.innerHTML = filtered.map(card).join("");
   emptyState.style.display = filtered.length === 0 ? "block" : "none";
 }
+
+window.openKiddiesResource = function(id){
+  const item = allItems.find(x => x.id === id);
+
+  if(!item){
+    alert("Resource not found.");
+    return;
+  }
+
+  document.getElementById("resourceModalTitle").textContent = item.title || "Resource";
+
+  document.getElementById("resourceModalContent").innerHTML = item.contentHtml || `
+    <h2>${safe(item.title)}</h2>
+    <p>${safe(item.description)}</p>
+    <p>No full content has been added yet.</p>
+  `;
+
+  const sourceBtn = document.getElementById("resourceSourceBtn");
+  const downloadBtn = document.getElementById("resourceDownloadBtn");
+
+  const sourceUrl = item.sourceUrl || item.resourceUrl || item.url || "";
+  const downloadUrl = item.downloadUrl || item.fileUrl || item.resourceUrl || "";
+
+  if(sourceUrl){
+    sourceBtn.href = sourceUrl;
+    sourceBtn.style.display = "inline-flex";
+  }else{
+    sourceBtn.style.display = "none";
+  }
+
+  if(downloadUrl){
+    downloadBtn.href = downloadUrl;
+    downloadBtn.style.display = "inline-flex";
+  }else{
+    downloadBtn.style.display = "none";
+  }
+
+  document.getElementById("resourceModal").style.display = "block";
+  document.body.style.overflow = "hidden";
+};
+
+window.closeKiddiesResource = function(){
+  document.getElementById("resourceModal").style.display = "none";
+  document.body.style.overflow = "";
+};
+
+document.getElementById("resourceModal").addEventListener("click", function(e){
+  if(e.target.id === "resourceModal"){
+    closeKiddiesResource();
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closeKiddiesResource();
+  }
+});
 
 searchInput.addEventListener("input", renderItems);
 categoryFilter.addEventListener("change", renderItems);
