@@ -17,22 +17,20 @@ async function isAdmin(user){
 }
 
 async function seedCollection(name, rows){
-  const existing = await getDocs(collection(db, name));
-  const keys = new Set();
-  existing.forEach(d => {
-    const x = d.data();
-    if(x.id) keys.add(String(x.id).toLowerCase());
-    if(x.title) keys.add(String(x.title).toLowerCase());
-  });
   const batch = writeBatch(db);
   let count = 0;
+
   rows.forEach(row => {
-    const key = String(row.id || row.title || "").toLowerCase();
-    if(keys.has(key)) return;
     const ref = row.id ? doc(db, name, row.id) : doc(collection(db, name));
-    batch.set(ref, {...row, createdAt: serverTimestamp(), updatedAt: serverTimestamp()});
+
+    batch.set(ref, {
+      ...row,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
     count++;
   });
+
   if(count) await batch.commit();
   return count;
 }
