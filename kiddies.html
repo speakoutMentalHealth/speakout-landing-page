@@ -333,9 +333,15 @@ function card(item){
       <h3>${safe(item.title)}</h3>
       <p>${safe(item.description)}</p>
 
-      <button class="btn primary" type="button" onclick="openKiddiesResource('${escapeAttr(item.id)}')">
-        Open Resource
-      </button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn primary" href="kiddies-reader.html?id=${encodeURIComponent(item.id)}">
+          🚀 Start Interactive Lesson
+        </a>
+
+        <button class="btn soft" type="button" onclick="openKiddiesResource('${escapeAttr(item.id)}')">
+          Preview
+        </button>
+      </div>
     </article>
   `;
 }
@@ -474,4 +480,3 @@ loadItems();
 </script>
 </body>
 </html>
-
