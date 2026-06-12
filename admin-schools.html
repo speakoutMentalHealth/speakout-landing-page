@@ -1,45 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Schools | SpeakOut Admin</title>
-<link rel="icon" type="image/png" href="logo.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Schools | SpeakOut</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin-shared.css">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--line:#e5edf6;--muted:#637083;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem;text-align:center}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.soft{background:var(--soft);color:var(--blue)}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:54px 0}.kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.04;letter-spacing:-.05em;margin:16px 0}.hero p{max-width:760px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:42px 0}.panel,.school-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.controls{display:grid;grid-template-columns:1.2fr .7fr;gap:12px;margin-bottom:18px}input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font:inherit;background:#fbfdff}.grid{display:grid;gap:16px}.school-card h3{margin:0 0 8px;color:var(--navy);font-size:1.25rem}.school-card p{margin:6px 0;color:var(--muted);line-height:1.55}.pills{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.72rem;font-weight:900;text-transform:capitalize}.pill.pending{background:#fff4df;color:#704800}.pill.approved{background:var(--greenSoft);color:var(--green)}.pill.rejected,.pill.suspended{background:var(--redSoft);color:var(--red)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:36px 0;margin-top:30px}@media(max-width:800px){.controls{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}}
+</style>
 </head>
 <body>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Admin Control</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="admin-dashboard.html">Home</a>
-<a class="btn soft" href="admin-users.html">Users</a>
-<a class="btn soft" href="admin-schools.html">Schools</a>
-<a class="btn soft" href="admin-books.html">Books</a>
-<a class="btn soft" href="admin-courses.html">Courses</a>
-<a class="btn soft" href="admin-certificates.html">Certificates</a>
-<a class="btn soft" href="admin-activities.html">Activities</a>
-<a class="btn soft" href="admin-reports.html">Reports</a>
-<a class="btn gold" href="executive-dashboard.html">Executive</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>Super Admin</p></div></a><a class="btn dark" href="portal.html">Back to Portal</a></div></header>
 <main>
-<section class="hero"><div class="container"><span class="kicker">Admin Area</span><h1>Admin Schools</h1><p>Manage school records, student counts, ambassadors and coordinators.</p></div></section>
-
-<section><div class="container grid g4"><div class="card metric"><strong id="total">0</strong><span>Schools</span></div><div class="card metric"><strong id="students">0</strong><span>Students</span></div><div class="card metric"><strong id="ambassadors">0</strong><span>Ambassadors</span></div><div class="card metric"><strong id="states">0</strong><span>States</span></div></div></section>
-<section><div class="container grid g2"><div class="panel"><span class="label">Add School</span><form class="form-grid" id="f"><input id="name" placeholder="School name" required><input id="state" placeholder="State"><input id="ownerEmail" type="email" placeholder="Owner/contact email"><input id="studentCount" type="number" placeholder="Student count"><input id="ambassadorCount" type="number" placeholder="Ambassador count"><input id="coordinatorName" placeholder="Coordinator name"><button class="btn primary full">Save School</button></form><div id="msg" class="message"></div></div><div class="panel"><span class="label">Schools by State</span><div id="bars"></div></div></div></section>
-<section><div class="container"><div class="panel"><span class="label">School List</span><div class="controls"><input id="search" placeholder="Search school, state..."><button class="btn ghost" id="refresh">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>School</th><th>State</th><th>Email</th><th>Students</th><th>Ambassadors</th><th>Coordinator</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section>
-
+<section class="hero"><div class="container"><span class="kicker">School Approval Center</span><h1>Manage School Applications</h1><p>Review school applications, approve verified schools, generate school codes, reject unsuitable applications, or suspend schools when needed.</p></div></section>
+<section><div class="container"><div id="statusBox" class="notice">Checking admin access...</div><div class="panel"><div class="controls"><input id="searchInput" type="text" placeholder="Search school name, city, state, email..."><select id="statusFilter"><option value="all">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div id="schoolList" class="grid"></div></div></div></section>
 </main>
-<footer class="footer"><div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div></footer>
+<footer class="footer"><div class="container">SpeakOut Super Admin • School Approval System</div></footer>
 <script type="module" src="auth-guard.js"></script>
 <script type="module">
-import { SO } from "./admin-shared.js";
-
-let rows=[];async function load(){rows=await SO.getAll("schools");total.textContent=SO.num(rows.length);students.textContent=SO.num(rows.reduce((a,r)=>a+Number(r.studentCount||r.totalStudents||0),0));ambassadors.textContent=SO.num(rows.reduce((a,r)=>a+Number(r.ambassadorCount||0),0));states.textContent=SO.num(new Set(rows.map(r=>r.state||r.location).filter(Boolean)).size);SO.bars("bars",SO.by(rows.map(r=>({...r,state:r.state||r.location||"Unknown"})),"state"));render()}
-function render(){let out=SO.filter(rows,search.value,["name","schoolName","state","ownerEmail"]);document.getElementById("rows").innerHTML=out.length?out.map(r=>`<tr><td>${SO.safe(r.name||r.schoolName)}</td><td>${SO.safe(r.state||r.location)}</td><td>${SO.safe(r.ownerEmail)}</td><td>${SO.num(r.studentCount||r.totalStudents)}</td><td>${SO.num(r.ambassadorCount)}</td><td>${SO.safe(r.coordinatorName)}</td></tr>`).join(""):`<tr><td colspan="6">No schools.</td></tr>`}
-f.onsubmit=async e=>{e.preventDefault();await SO.addDoc(SO.collection(SO.db,"schools"),{name:name.value,state:state.value,ownerEmail:ownerEmail.value,studentCount:+studentCount.value||0,ambassadorCount:+ambassadorCount.value||0,coordinatorName:coordinatorName.value,status:"active",createdAt:SO.serverTimestamp(),updatedAt:SO.serverTimestamp()});f.reset();SO.msg("msg","School saved.");load()};search.oninput=render;refresh.onclick=load;load();
-
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
+const statusBox=document.getElementById('statusBox'),schoolList=document.getElementById('schoolList'),searchInput=document.getElementById('searchInput'),statusFilter=document.getElementById('statusFilter');
+let currentUser=null,allSchools=[];
+function show(message,type='info'){statusBox.textContent=message;statusBox.style.display='block';if(type==='error'){statusBox.style.background='#fee2e2';statusBox.style.color='#991b1b'}else if(type==='success'){statusBox.style.background='#e9fbf5';statusBox.style.color='#0f8f6f'}else{statusBox.style.background='#eaf3ff';statusBox.style.color='#0a5fbf'}}
+function createSchoolCode(school){const city=(school.city||'SPK').toUpperCase().replace(/[^A-Z]/g,'').slice(0,5)||'SPK';const suffix=Math.floor(1000+Math.random()*9000);return `SPK-${city}-${suffix}`}
+async function isSuperAdmin(user){if(!user)return false;const snap=await getDoc(doc(db,'users',user.uid));if(!snap.exists())return false;const role=(snap.data().role||'').toLowerCase();return role==='super_admin'||role==='admin'}
+function safe(value){return value||'—'}
+function renderSchools(){const s=searchInput.value.toLowerCase().trim();const status=statusFilter.value;const filtered=allSchools.filter(school=>{const searchable=`${school.schoolName||''} ${school.schoolType||''} ${school.principalName||''} ${school.email||''} ${school.phone||''} ${school.state||''} ${school.city||''} ${school.schoolCode||''} ${school.status||''}`.toLowerCase();return(!s||searchable.includes(s))&&(status==='all'||school.status===status)});if(!filtered.length){schoolList.innerHTML='<div class="notice">No school applications found.</div>';return}schoolList.innerHTML=filtered.map(school=>`<article class="school-card"><h3>${safe(school.schoolName)}</h3><div class="pills"><span class="pill ${school.status||'pending'}">${safe(school.status||'pending')}</span><span class="pill">${safe(school.schoolType)}</span><span class="pill">${safe(school.state)}</span><span class="pill">${safe(school.city)}</span></div><p><strong>Principal / Coordinator:</strong> ${safe(school.principalName)}</p><p><strong>Email:</strong> ${safe(school.email)}</p><p><strong>Phone:</strong> ${safe(school.phone)}</p><p><strong>Estimated Students:</strong> ${Number(school.estimatedStudents||school.totalStudents||0).toLocaleString()}</p><p><strong>School Code:</strong> ${safe(school.schoolCode)}</p><p><strong>Reason:</strong> ${safe(school.reason)}</p><div class="actions"><button class="btn success" data-action="approve" data-id="${school.id}">Approve</button><button class="btn danger" data-action="reject" data-id="${school.id}">Reject</button><button class="btn danger" data-action="suspend" data-id="${school.id}">Suspend</button><button class="btn soft" data-action="pending" data-id="${school.id}">Move to Pending</button></div></article>`).join('');schoolList.querySelectorAll('button[data-action]').forEach(button=>{button.addEventListener('click',async()=>{await updateSchoolStatus(button.dataset.id,button.dataset.action)})})}
+async function loadSchools(){const snap=await getDocs(collection(db,'schools'));allSchools=[];snap.forEach(docSnap=>{allSchools.push({id:docSnap.id,...docSnap.data()})});allSchools.sort((a,b)=>{const order={pending:1,approved:2,rejected:3,suspended:4};return(order[a.status]||9)-(order[b.status]||9)});renderSchools()}
+async function updateSchoolStatus(id,action){const school=allSchools.find(x=>x.id===id);if(!school){alert('School not found.');return}let status=action;if(action==='approve')status='approved';if(action==='reject')status='rejected';if(action==='suspend')status='suspended';if(action==='pending')status='pending';const updates={status,updatedAt:serverTimestamp()};if(status==='approved'){updates.approvedAt=serverTimestamp();updates.approvedBy=currentUser.uid;updates.schoolCode=school.schoolCode||createSchoolCode(school)}await updateDoc(doc(db,'schools',id),updates);show(`School moved to ${status}.`,'success');await loadSchools()}
+searchInput.addEventListener('input',renderSchools);statusFilter.addEventListener('change',renderSchools);
+onAuthStateChanged(auth,async user=>{currentUser=user;if(!user){location.href='auth.html';return}try{const ok=await isSuperAdmin(user);if(!ok){show('Access denied. Super Admin only.','error');return}show('Super Admin verified. Loading schools...','success');await loadSchools()}catch(error){console.error(error);show('Failed to load admin school page. Check Firestore rules.','error')}});
 </script>
 </body>
 </html>
