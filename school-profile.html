@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School Profile | SpeakOut</title><link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--r:22px}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem;text-align:center}.primary{background:var(--blue);color:#fff}.softBtn{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:46px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1,h2,h3{line-height:1.05;letter-spacing:-.04em}h1{font-size:clamp(2rem,5vw,4.5rem);margin:12px 0}.hero p{max-width:820px;line-height:1.65;color:rgba(255,255,255,.88)}section{padding:34px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}.stat strong{display:block;font-size:2.3rem;color:var(--blue);line-height:1}.stat span{display:block;color:var(--muted);font-weight:850;margin-top:6px}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:14px}.bad{background:var(--redSoft);color:var(--red)}.ok{background:var(--greenSoft);color:var(--green)}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font:inherit;background:#fbfdff}textarea{min-height:110px;resize:vertical}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.72rem;font-weight:900;text-transform:capitalize}.pill.pending{background:var(--goldSoft);color:#704800}.pill.approved{background:var(--greenSoft);color:var(--green)}.pill.rejected,.pill.suspended{background:var(--redSoft);color:var(--red)}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media(max-width:900px){.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
+</style>
+</head><body><header class="nav"><div class="container nav-inner">
+<a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>School Portal</p></div></a>
+<nav class="nav-links">
+<a class="btn softBtn" href="school-dashboard.html">Dashboard</a>
+<a class="btn softBtn" href="school-users.html">Users</a>
+<a class="btn softBtn" href="school-profile.html">Profile</a>
+<a class="btn softBtn" href="e-library.html">E-Library</a>
+<a class="btn softBtn" href="speakhub.html">SpeakHub</a>
+<a class="btn dark" href="portal.html">Portal</a>
+</nav></div></header>
+<main><section class="hero"><div class="container"><span class="kicker">School Profile</span><h1 id="schoolTitle">School Profile</h1><p>View your approved school details and update contact information.</p></div></section>
+<section><div class="container"><div id="statusBox" class="notice">Checking access...</div><div class="panel"><form id="profileForm"><div class="form-grid">
+<input id="schoolName" placeholder="School Name" required>
+<input id="schoolType" placeholder="School Type">
+<input id="principalName" placeholder="Principal / Coordinator Name">
+<input id="email" placeholder="School Email">
+<input id="phone" placeholder="Phone">
+<input id="state" placeholder="State">
+<input id="city" placeholder="City">
+<input id="schoolCode" placeholder="School Code" disabled>
+</div><textarea id="address" placeholder="School Address"></textarea><button class="btn primary" type="submit">Update Profile</button></form></div></div></section></main><footer class="footer"><div class="container">SpeakOut School Portal</div></footer>
+<script type="module" src="school-portal-guard.js"></script>
+<script type="module">
+import { db } from "./firebase-config.js";
+import { doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { requireSchoolAdmin } from "./school-portal-guard.js";
+let school=null; const statusBox=document.getElementById("statusBox");
+function show(msg,type="info"){statusBox.textContent=msg;statusBox.className="notice "+(type==="error"?"bad":type==="success"?"ok":"");}
+function fill(s){schoolTitle.textContent=s.schoolName||"School Profile";schoolName.value=s.schoolName||"";schoolType.value=s.schoolType||"";principalName.value=s.principalName||"";email.value=s.email||"";phone.value=s.phone||"";state.value=s.state||"";city.value=s.city||"";schoolCode.value=s.schoolCode||"";address.value=s.address||"";}
+profileForm.addEventListener("submit",async e=>{e.preventDefault();await updateDoc(doc(db,"schools",school.id),{schoolName:schoolName.value,schoolType:schoolType.value,principalName:principalName.value,email:email.value,phone:phone.value,state:state.value,city:city.value,address:address.value,updatedAt:serverTimestamp()});show("School profile updated.","success");});
+requireSchoolAdmin(async (user,profile,s)=>{school=s;if(!school){show("No school profile found.","error");return;}fill(school);show("School profile loaded.","success");});
+</script></body></html>
