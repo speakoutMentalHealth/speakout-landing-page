@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Approvals</title>
+
+<link rel="stylesheet" href="speakout-style.css">
+
+<style>
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+}
+
+.table th,
+.table td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+.approve{
+background:#10b981;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.reject{
+background:#ef4444;
+color:white;
+border:none;
+padding:8px 15px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.status{
+margin-bottom:20px;
+padding:15px;
+border-radius:10px;
+display:none;
+}
+
+.success{
+background:#d1fae5;
+color:#065f46;
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Pending User Approvals</h1>
+
+<div id="status" class="status"></div>
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Role</th>
+<th>Email</th>
+<th>School</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="approvalTable"></tbody>
+
+</table>
+
+</div>
+
+<script type="module" src="school-approvals.js"></script>
+
+</body>
+</html>
