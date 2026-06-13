@@ -1,44 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Users | SpeakOut Admin</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin-shared.css">
-</head>
-<body>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Admin Control</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="admin-dashboard.html">Home</a>
-<a class="btn soft" href="admin-users.html">Users</a>
-<a class="btn soft" href="admin-schools.html">Schools</a>
-<a class="btn soft" href="admin-books.html">Books</a>
-<a class="btn soft" href="admin-courses.html">Courses</a>
-<a class="btn soft" href="admin-certificates.html">Certificates</a>
-<a class="btn soft" href="admin-activities.html">Activities</a>
-<a class="btn soft" href="admin-reports.html">Reports</a>
-<a class="btn gold" href="executive-dashboard.html">Executive</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
-<main>
-<section class="hero"><div class="container"><span class="kicker">Admin Area</span><h1>Admin Users</h1><p>Review users, roles and approval status.</p></div></section>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Users | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1220px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2.25rem}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.actions{display:flex;gap:8px;flex-wrap:wrap}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
+</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Admin Command Center</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn soft" href="admin-schools.html">Schools</a><a class="btn soft" href="admin-users.html">Users</a><a class="btn soft" href="admin-content-review.html">Content</a><a class="btn soft" href="admin-payments.html">Payments</a><a class="btn dark" href="portal.html">Portal</a></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">Admin</span><h1>Admin Users</h1><p>Search, review and update records.</p></div></section><section><div class="container"><div id="statusBox" class="notice">Checking admin access...</div><div class="panel"><div class="form-grid"><input id="searchInput" placeholder="Search..."><select id="statusFilter"><option value="all">All Status</option><option value="pending">Pending</option><option value="pending_school_approval">Pending School Approval</option><option value="approved">Approved</option><option value="active">Active</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div></div><div class="panel" style="margin-top:18px"><div style="overflow:auto"><table class="table"><thead><tr><th>First</th><th>Last</th><th>Email</th><th>Role</th><th>School Code</th><th>Status</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section></main><footer class="footer"><div class="container">SpeakOut Admin Command Center</div></footer><script type="module">
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-<section><div class="container grid g4"><div class="card metric"><strong id="total">0</strong><span>Total Users</span></div><div class="card metric"><strong id="pending">0</strong><span>Pending</span></div><div class="card metric"><strong id="approved">0</strong><span>Approved</span></div><div class="card metric"><strong id="schools">0</strong><span>School Users</span></div></div></section>
-<section><div class="container"><div class="panel"><span class="label">Users</span><p>Approve users by editing their Firestore status. This page reads current users and shows what needs attention.</p><div class="controls"><input id="search" placeholder="Search name, email, role..."><select id="filter"><option value="all">All Status</option><option>pending</option><option>approved</option><option>rejected</option><option>suspended</option></select><button class="btn ghost" id="refresh">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>School</th><th>Location</th><th>Phone</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section>
+window.ADM = { auth, db, collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp };
 
-</main>
-<footer class="footer"><div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div></footer>
-<script type="module" src="auth-guard.js"></script>
-<script type="module">
-import { SO } from "./admin-shared.js";
+window.show = function(m,t=""){
+ const el=document.getElementById("statusBox");
+ if(el){ el.textContent=m; el.className="notice "+t; }
+};
 
-let rows=[];async function load(){rows=await SO.getAll("users");total.textContent=SO.num(rows.length);pending.textContent=SO.num(rows.filter(r=>r.status==="pending").length);approved.textContent=SO.num(rows.filter(r=>r.status==="approved").length);schools.textContent=SO.num(rows.filter(r=>r.role==="school").length);render()}
-function render(){let out=SO.filter(rows,search.value,["fullName","email","role","schoolName","location"]).filter(r=>filter.value==="all"||r.status===filter.value);document.getElementById("rows").innerHTML=out.length?out.map(r=>`<tr><td>${SO.safe(r.fullName)}</td><td>${SO.safe(r.email)}</td><td>${SO.safe(r.role)}</td><td>${SO.badge(r.status)}</td><td>${SO.safe(r.schoolName)}</td><td>${SO.safe(r.location)}</td><td>${SO.safe(r.phone)}</td></tr>`).join(""):`<tr><td colspan="7">No users found.</td></tr>`}
-search.oninput=render;filter.onchange=render;refresh.onclick=load;load();
+window.safe = function(v){ return v || "—"; };
+window.pill = function(v){ return `<span class="pill ${(v||"").toLowerCase()}">${window.safe(v)}</span>`; };
 
-</script>
-</body>
-</html>
+window.requireAdmin = function(callback){
+ onAuthStateChanged(auth, async user=>{
+   if(!user){ location.href="auth.html"; return; }
+   const snap=await getDoc(doc(db,"users",user.uid));
+   if(!snap.exists()){ location.href="auth.html#pending"; return; }
+   const profile={uid:user.uid,...snap.data()};
+   const role=(profile.role||"").toLowerCase().trim();
+   const status=(profile.status||"").toLowerCase().trim();
+
+   if(status!=="approved"){ location.href="portal.html"; return; }
+
+   if(role!=="admin" && role!=="super_admin"){
+     location.href="portal.html";
+     return;
+   }
+
+   callback(user,profile);
+ });
+};
+</script><script type="module">
+let ITEMS=[];
+async function loadItems(){
+ const api=window.ADM;
+ try{
+   const snap=await api.getDocs(api.collection(api.db,"users"));
+   ITEMS=[];
+   snap.forEach(d=>ITEMS.push({id:d.id,...d.data()}));
+   render();
+   window.show("Admin Users loaded.","ok");
+ }catch(e){console.error(e);window.show("Could not load Admin Users.","bad");}
+}
+function render(){
+ const s=(searchInput.value||"").toLowerCase().trim();
+ const sf=statusFilter.value;
+ const filtered=ITEMS.filter(item=>{
+   const text=`${item.firstName||""} ${item.lastName||""} ${item.email||""} ${item.role||""} ${item.schoolCode||""} ${item.status||""}`.toLowerCase();
+   return(!s||text.includes(s))&&(sf==="all"||item.status===sf);
+ });
+ rows.innerHTML=filtered.map(item=>`<tr class="row"><td>${window.safe(item.firstName)}</td><td>${window.safe(item.lastName)}</td><td>${window.safe(item.email)}</td><td>${window.safe(item.role)}</td><td>${window.safe(item.schoolCode)}</td><td>${window.pill(item.status||"pending")}</td><td><div class="actions"><button class="btn success" data-id="${item.id}" data-status="approved">Approve</button><button class="btn danger" data-id="${item.id}" data-status="rejected">Reject</button><button class="btn soft" data-id="${item.id}" data-status="pending">Pending</button><button class="btn dark" data-id="${item.id}" data-status="suspended">Suspend</button></div></td></tr>`).join("")||"<tr><td colspan='10'>No records found.</td></tr>";
+ rows.querySelectorAll("button[data-id]").forEach(b=>b.onclick=async()=>{
+   const api=window.ADM;
+   await api.updateDoc(api.doc(api.db,"users",b.dataset.id),{status:b.dataset.status,updatedAt:api.serverTimestamp()});
+   await loadItems();
+ });
+}
+searchInput.addEventListener("input",render);
+statusFilter.addEventListener("change",render);
+window.requireAdmin(async()=>{await loadItems();});
+</script></body></html>
