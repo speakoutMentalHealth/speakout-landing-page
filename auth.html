@@ -1,1 +1,300 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Auth | SpeakOut Portal</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="speakout-style.css"></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png"><div>SpeakOut<small>Portal Access</small></div></a><button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button><nav class="nav-links"><a class="btn soft" href="index.html">Home</a><a class="btn dark" href="#login">Login</a><a class="btn gold" href="#register">Apply</a></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">Access</span><h1>Login or Apply</h1><p>New users are created as pending until approved by SpeakOut.</p></div></section><section><div class="container grid g2"><div class="panel" id="login"><span class="label">Login</span><h2>Welcome back</h2><form class="form-grid" id="loginForm"><input class="full" id="loginEmail" type="email" placeholder="Email" required><input class="full" id="loginPassword" type="password" placeholder="Password" required><button class="btn primary full">Login</button></form><div id="loginMsg" class="message"></div></div><div class="panel" id="register"><span class="label">Apply Access</span><h2>Create account</h2><form class="form-grid" id="registerForm"><input id="fullName" placeholder="Full name" required><input id="email" type="email" placeholder="Email" required><input id="phone" placeholder="Phone / WhatsApp"><select id="role" required><option value="">Select role</option><option value="student">Student</option><option value="school">School</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="ambassador">Ambassador</option></select><input id="schoolName" placeholder="School / Organization"><input id="location" placeholder="Location / State"><input id="password" type="password" placeholder="Password" required><input id="confirmPassword" type="password" placeholder="Confirm password" required><textarea class="full" id="reason" placeholder="Why do you need access?"></textarea><button class="btn gold full">Submit Application</button></form><div id="regMsg" class="message"></div></div></div></section><section id="pending"><div class="container"><div class="notice"><span class="label">Pending Approval</span><h3>If your account is pending</h3><p>Wait for SpeakOut admin approval. Contact WhatsApp if urgent.</p></div></div></section></main><script type="module">import{auth,db}from'./firebase-config.js';import{signInWithEmailAndPassword,createUserWithEmailAndPassword,updateProfile,signOut}from'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';import{doc,getDoc,setDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';const msg=(id,t,ok=true)=>{const e=document.getElementById(id);e.textContent=t;e.className='message '+(ok?'ok':'bad');e.style.display='block'};async function route(user){const s=await getDoc(doc(db,'users',user.uid));if(!s.exists()){location.href='auth.html#pending';return}const p=s.data();if(p.status!=='approved'){location.href='auth.html#pending';return}location.href=p.role==='admin'?'admin.html':'portal.html'}loginForm.onsubmit=async e=>{e.preventDefault();try{const r=await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);msg('loginMsg','Login successful.');route(r.user)}catch(err){msg('loginMsg','Login failed.',false)}};registerForm.onsubmit=async e=>{e.preventDefault();if(password.value!==confirmPassword.value){msg('regMsg','Passwords do not match.',false);return}try{const r=await createUserWithEmailAndPassword(auth,email.value,password.value);await updateProfile(r.user,{displayName:fullName.value});await setDoc(doc(db,'users',r.user.uid),{uid:r.user.uid,fullName:fullName.value,email:email.value,phone:phone.value,role:role.value,status:'pending',schoolName:schoolName.value,location:location.value,reason:reason.value,createdAt:serverTimestamp()});await signOut(auth);msg('regMsg','Application submitted. Wait for approval.')}catch(err){msg('regMsg','Registration failed.',false)}};</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auth | SpeakOut Portal</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="speakout-style.css">
+
+<style>
+.message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800;line-height:1.5}
+.message.ok{display:block;background:#e9fbf5;color:#0f8f6f}
+.message.bad{display:block;background:#fee2e2;color:#991b1b}
+.message.warn{display:block;background:#fff4df;color:#704800}
+.notice{background:#fff;border:1px solid #e5edf6;border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(7,21,43,.08)}
+.help-text{font-size:.88rem;color:#637083;line-height:1.55;margin-top:8px}
+.terms{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
+.terms input{width:auto;min-height:auto;margin-top:4px}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div>
+        SpeakOut
+        <small>Portal Access</small>
+      </div>
+    </a>
+
+    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+
+    <nav class="nav-links">
+      <a class="btn soft" href="index.html">Home</a>
+      <a class="btn dark" href="#login">Login</a>
+      <a class="btn gold" href="#register">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Access</span>
+    <h1>Login or Apply</h1>
+    <p>New users are created as pending until approved by SpeakOut or the school they belong to.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g2">
+
+    <div class="panel" id="login">
+      <span class="label">Login</span>
+      <h2>Welcome back</h2>
+      <p class="help-text">After login, you will be routed to the right dashboard based on your role.</p>
+
+      <form class="form-grid" id="loginForm">
+        <input class="full" id="loginEmail" type="email" placeholder="Email" required>
+        <input class="full" id="loginPassword" type="password" placeholder="Password" required>
+        <button class="btn primary full" type="submit">Login</button>
+      </form>
+
+      <div id="loginMsg" class="message"></div>
+    </div>
+
+    <div class="panel" id="register">
+      <span class="label">Apply Access</span>
+      <h2>Create account</h2>
+      <p class="help-text">If you have a school code, enter it. If not, you can still apply as an individual user.</p>
+
+      <form class="form-grid" id="registerForm">
+
+        <input id="firstName" placeholder="First Name" required>
+        <input id="lastName" placeholder="Last Name" required>
+
+        <input id="email" type="email" placeholder="Email" required>
+        <input id="phone" placeholder="Phone / WhatsApp">
+
+        <select id="role" required>
+          <option value="">Select role</option>
+          <option value="student">Student</option>
+          <option value="parent">Parent</option>
+          <option value="teacher">Teacher</option>
+          <option value="school_admin">School Administrator</option>
+          <option value="ambassador">Ambassador</option>
+          <option value="contributor">Contributor / Publisher</option>
+        </select>
+
+        <input id="schoolCode" placeholder="School Code (Optional)">
+        <input id="schoolName" placeholder="School / Organization (Optional)">
+        <input id="location" placeholder="Location / State">
+
+        <input id="password" type="password" placeholder="Password" required>
+        <input id="confirmPassword" type="password" placeholder="Confirm password" required>
+
+        <textarea class="full" id="reason" placeholder="Why do you need access?"></textarea>
+
+        <label class="terms full">
+          <input id="terms" type="checkbox" required>
+          <span>I confirm that the information provided is accurate and I agree to use SpeakOut responsibly for learning, support and community wellbeing.</span>
+        </label>
+
+        <button class="btn gold full" type="submit">Submit Application</button>
+      </form>
+
+      <div id="regMsg" class="message"></div>
+    </div>
+
+  </div>
+</section>
+
+<section id="pending">
+  <div class="container">
+    <div class="notice">
+      <span class="label">Pending Approval</span>
+      <h3>If your account is pending</h3>
+      <p>Your account has been created, but it must be approved before full access is enabled.</p>
+      <p>School-linked users may be approved by their school admin. Contributors, ambassadors and schools may be approved by SpeakOut admin.</p>
+      <p><strong>Urgent?</strong> Contact SpeakOut on WhatsApp.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
+
+const msg = (id, text, type = 'ok') => {
+  const e = document.getElementById(id);
+  e.textContent = text;
+  e.className = 'message ' + type;
+  e.style.display = 'block';
+};
+
+function normalizeRole(role){
+  const r = (role || '').toLowerCase().trim();
+
+  if(r === 'school') return 'school_admin';
+  if(r === 'admin') return 'admin';
+  if(r === 'super_admin') return 'super_admin';
+
+  return r;
+}
+
+async function route(user){
+  const s = await getDoc(doc(db, 'users', user.uid));
+
+  if(!s.exists()){
+    location.href = 'auth.html#pending';
+    return;
+  }
+
+  const p = s.data();
+  const role = normalizeRole(p.role);
+  const status = (p.status || '').toLowerCase().trim();
+
+  if(status !== 'approved'){
+    location.href = 'portal.html';
+    return;
+  }
+
+  const routes = {
+    admin: 'admin-dashboard.html',
+    super_admin: 'admin-dashboard.html',
+    school_admin: 'school-dashboard.html',
+    teacher: 'teacher-dashboard.html',
+    parent: 'parent-dashboard.html',
+    student: 'student-dashboard.html',
+    ambassador: 'ambassador.html',
+    contributor: 'contributor-dashboard.html'
+  };
+
+  location.href = routes[role] || 'portal.html';
+}
+
+loginForm.onsubmit = async e => {
+  e.preventDefault();
+
+  try{
+    const r = await signInWithEmailAndPassword(
+      auth,
+      loginEmail.value.trim(),
+      loginPassword.value
+    );
+
+    msg('loginMsg', 'Login successful. Redirecting...', 'ok');
+
+    await route(r.user);
+
+  }catch(err){
+    console.error(err);
+    msg('loginMsg', err.message || 'Login failed.', 'bad');
+  }
+};
+
+registerForm.onsubmit = async e => {
+  e.preventDefault();
+
+  if(password.value !== confirmPassword.value){
+    msg('regMsg', 'Passwords do not match.', 'bad');
+    return;
+  }
+
+  if(password.value.length < 6){
+    msg('regMsg', 'Password must be at least 6 characters.', 'bad');
+    return;
+  }
+
+  try{
+    const cleanEmail = email.value.trim();
+    const cleanRole = normalizeRole(role.value);
+    const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`.trim();
+
+    const r = await createUserWithEmailAndPassword(
+      auth,
+      cleanEmail,
+      password.value
+    );
+
+    await updateProfile(r.user, {
+      displayName: fullName
+    });
+
+    await setDoc(doc(db, 'users', r.user.uid), {
+      uid: r.user.uid,
+
+      firstName: firstName.value.trim(),
+      lastName: lastName.value.trim(),
+      fullName,
+
+      email: cleanEmail,
+      phone: phone.value.trim(),
+
+      role: cleanRole,
+      status: 'pending',
+
+      schoolCode: schoolCode.value.trim(),
+      schoolName: schoolName.value.trim(),
+
+      location: location.value.trim(),
+      reason: reason.value.trim(),
+
+      bio: '',
+      country: '',
+      state: '',
+      city: '',
+      occupation: '',
+
+      profileCompleted: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+
+    await signOut(auth);
+
+    msg(
+      'regMsg',
+      'Application submitted successfully. Please wait for approval before logging in.',
+      'ok'
+    );
+
+    registerForm.reset();
+
+  }catch(err){
+    console.error(err);
+
+    let cleanMessage = err.message || 'Registration failed.';
+
+    if(cleanMessage.includes('EMAIL_EXISTS') || cleanMessage.includes('email-already-in-use')){
+      cleanMessage = 'This email already has an account. Please login instead.';
+    }
+
+    msg('regMsg', cleanMessage, 'bad');
+  }
+};
+</script>
+
+</body>
+</html>
