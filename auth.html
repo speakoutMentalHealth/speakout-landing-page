@@ -26,10 +26,7 @@
   <div class="container nav-inner">
     <a class="brand" href="index.html">
       <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        SpeakOut
-        <small>Portal Access</small>
-      </div>
+      <div>SpeakOut<small>Portal Access</small></div>
     </a>
 
     <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
@@ -143,7 +140,11 @@ import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs
 } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
 
 const msg = (id, text, type = 'ok') => {
@@ -155,19 +156,44 @@ const msg = (id, text, type = 'ok') => {
 
 function normalizeRole(role){
   const r = (role || '').toLowerCase().trim();
-
   if(r === 'school') return 'school_admin';
-  if(r === 'admin') return 'admin';
-  if(r === 'super_admin') return 'super_admin';
-
   return r;
+}
+
+function val(id){
+  return document.getElementById(id)?.value?.trim() || '';
+}
+
+async function findSchoolByCode(code){
+  if(!code) return { schoolId:'', schoolName:'', schoolCode:'' };
+
+  const q = query(
+    collection(db, 'schools'),
+    where('schoolCode', '==', code)
+  );
+
+  const snap = await getDocs(q);
+
+  if(snap.empty){
+    return { schoolId:'', schoolName:'', schoolCode:code };
+  }
+
+  const schoolDoc = snap.docs[0];
+  const school = schoolDoc.data();
+
+  return {
+    schoolId: schoolDoc.id,
+    schoolName: school.schoolName || school.name || '',
+    schoolCode: school.schoolCode || code
+  };
 }
 
 async function route(user){
   const s = await getDoc(doc(db, 'users', user.uid));
 
   if(!s.exists()){
-    location.href = 'auth.html#pending';
+    msg('loginMsg', 'Your login exists, but your profile is missing. Contact admin.', 'bad');
+    await signOut(auth);
     return;
   }
 
@@ -176,7 +202,8 @@ async function route(user){
   const status = (p.status || '').toLowerCase().trim();
 
   if(status !== 'approved'){
-    location.href = 'portal.html';
+    msg('loginMsg', 'Your account is awaiting approval.', 'warn');
+    await signOut(auth);
     return;
   }
 
@@ -200,12 +227,11 @@ loginForm.onsubmit = async e => {
   try{
     const r = await signInWithEmailAndPassword(
       auth,
-      loginEmail.value.trim(),
+      val('loginEmail'),
       loginPassword.value
     );
 
-    msg('loginMsg', 'Login successful. Redirecting...', 'ok');
-
+    msg('loginMsg', 'Login successful. Checking approval...', 'ok');
     await route(r.user);
 
   }catch(err){
@@ -228,9 +254,11 @@ registerForm.onsubmit = async e => {
   }
 
   try{
-    const cleanEmail = email.value.trim();
-    const cleanRole = normalizeRole(role.value);
-    const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`.trim();
+    const cleanEmail = val('email');
+    const cleanRole = normalizeRole(val('role'));
+    const fullName = `${val('firstName')} ${val('lastName')}`.trim();
+
+    const schoolInfo = await findSchoolByCode(val('schoolCode'));
 
     const r = await createUserWithEmailAndPassword(
       auth,
@@ -242,24 +270,25 @@ registerForm.onsubmit = async e => {
       displayName: fullName
     });
 
-    await setDoc(doc(db, 'users', r.user.uid), {
+    const userData = {
       uid: r.user.uid,
 
-      firstName: firstName.value.trim(),
-      lastName: lastName.value.trim(),
+      firstName: val('firstName'),
+      lastName: val('lastName'),
       fullName,
 
       email: cleanEmail,
-      phone: phone.value.trim(),
+      phone: val('phone'),
 
       role: cleanRole,
       status: 'pending',
 
-      schoolCode: schoolCode.value.trim(),
-      schoolName: schoolName.value.trim(),
+      schoolId: schoolInfo.schoolId,
+      schoolCode: schoolInfo.schoolCode,
+      schoolName: schoolInfo.schoolName || val('schoolName'),
 
-      location: location.value.trim(),
-      reason: reason.value.trim(),
+      location: val('location'),
+      reason: val('reason'),
 
       bio: '',
       country: '',
@@ -270,13 +299,21 @@ registerForm.onsubmit = async e => {
       profileCompleted: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
-    });
+    };
+
+    if(cleanRole === 'student'){
+      userData.studentId = 'STU-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+    }
+
+    await setDoc(doc(db, 'users', r.user.uid), userData);
 
     await signOut(auth);
 
     msg(
       'regMsg',
-      'Application submitted successfully. Please wait for approval before logging in.',
+      schoolInfo.schoolId
+        ? 'Application submitted successfully under ' + userData.schoolName + '. Please wait for school approval.'
+        : 'Application submitted successfully. Please wait for approval.',
       'ok'
     );
 
@@ -287,7 +324,7 @@ registerForm.onsubmit = async e => {
 
     let cleanMessage = err.message || 'Registration failed.';
 
-    if(cleanMessage.includes('EMAIL_EXISTS') || cleanMessage.includes('email-already-in-use')){
+    if(cleanMessage.includes('email-already-in-use')){
       cleanMessage = 'This email already has an account. Please login instead.';
     }
 
