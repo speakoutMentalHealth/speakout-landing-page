@@ -15,21 +15,7 @@ const dashboardRoutes = {
 };
 
 export function routeForRole(role){
-  return dashboardRoutes[(role || "").toLowerCase().trim()] || "portal.html";
-}
-
-export function roleLabel(role){
-  const labels = {
-    super_admin: "Super Admin",
-    admin: "Admin",
-    school_admin: "School Admin",
-    teacher: "Teacher",
-    parent: "Parent",
-    student: "Student",
-    ambassador: "Ambassador",
-    contributor: "Contributor"
-  };
-  return labels[(role || "").toLowerCase().trim()] || "User";
+  return dashboardRoutes[(role || "").toLowerCase().trim()] || "auth.html";
 }
 
 export async function getCurrentProfile(user){
@@ -40,29 +26,23 @@ export async function getCurrentProfile(user){
 
 export function requireRoles(allowedRoles, callback){
   onAuthStateChanged(auth, async user => {
-    if(!user){
-      location.href = "auth.html";
-      return;
-    }
+    if(!user){ location.href = "auth.html"; return; }
 
     const profile = await getCurrentProfile(user);
-
-    if(!profile){
-      location.href = "auth.html#pending";
-      return;
-    }
+    if(!profile){ location.href = "auth.html#pending"; return; }
 
     const role = (profile.role || "").toLowerCase().trim();
     const status = (profile.status || "").toLowerCase().trim();
 
     if(status !== "approved"){
-      location.href = "portal.html";
+      location.href = "auth.html#pending";
       return;
     }
 
     const allowed = allowedRoles.map(r => r.toLowerCase().trim());
+    const privileged = role === "admin" || role === "super_admin";
 
-    if(!allowed.includes(role) && role !== "admin" && role !== "super_admin"){
+    if(!allowed.includes(role) && !privileged){
       location.href = routeForRole(role);
       return;
     }
@@ -73,20 +53,23 @@ export function requireRoles(allowedRoles, callback){
 
 export function renderRoleNav(profile, active = ""){
   const role = (profile.role || "").toLowerCase().trim();
+
   const linksByRole = {
     student: [
       ["Dashboard","student-dashboard.html"],
-      ["My Courses","speakhub.html?audience=student"],
-      ["Student Library","student-library.html"],
+      ["Courses","speakhub.html?audience=student"],
+      ["Library","student-library.html"],
       ["Kiddies","kiddies.html"],
-      ["Certificates","certificate-center.html"]
+      ["Certificates","certificate-center.html"],
+      ["Payments","payment-history.html"]
     ],
     parent: [
       ["Dashboard","parent-dashboard.html"],
       ["My Children","parent-child-link.html"],
       ["Parent Library","parent-library.html"],
       ["Workshops","workshops.html"],
-      ["Certificates","certificate-center.html"]
+      ["Certificates","certificate-center.html"],
+      ["Payments","payment-history.html"]
     ],
     teacher: [
       ["Dashboard","teacher-dashboard.html"],
@@ -116,25 +99,13 @@ export function renderRoleNav(profile, active = ""){
       ["Users","admin-users.html"],
       ["Content","admin-content-review.html"],
       ["Payments","admin-payments.html"]
-    ],
-    contributor: [
-      ["Dashboard","contributor-dashboard.html"],
-      ["My Books","contributor-books.html"],
-      ["My Courses","contributor-courses.html"],
-      ["Sales","contributor-sales.html"]
-    ],
-    ambassador: [
-      ["Dashboard","ambassador.html"],
-      ["Courses","speakhub.html?audience=ambassador"],
-      ["Certificates","certificate-center.html"]
     ]
   };
 
-  const links = linksByRole[role] || [["Dashboard", routeForRole(role)]];
   const nav = document.getElementById("roleNav");
-
   if(!nav) return;
 
+  const links = linksByRole[role] || [["Dashboard", routeForRole(role)]];
   nav.innerHTML = links.map(([label, href]) => {
     const cls = label.toLowerCase() === active.toLowerCase() ? "btn dark" : "btn soft";
     return `<a class="${cls}" href="${href}">${label}</a>`;
