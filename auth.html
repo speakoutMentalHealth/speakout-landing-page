@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auth | SpeakOut Portal</title>
+<title>Auth | SpeakOut Member Access</title>
 <link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="speakout-style.css">
@@ -17,6 +17,10 @@
 .help-text{font-size:.88rem;color:#637083;line-height:1.55;margin-top:8px}
 .terms{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
 .terms input{width:auto;min-height:auto;margin-top:4px}
+.role-info{margin-top:18px;display:grid;gap:10px}
+.role-info div{background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
+.role-info strong{display:block;color:#07152b}
+.forgot-link{display:inline-block;margin-top:12px;font-weight:800;color:#0a5fbf}
 </style>
 </head>
 
@@ -26,7 +30,7 @@
   <div class="container nav-inner">
     <a class="brand" href="index.html">
       <img src="logo.png" alt="SpeakOut Logo">
-      <div>SpeakOut<small>Portal Access</small></div>
+      <div>SpeakOut<small>Member Access</small></div>
     </a>
 
     <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
@@ -43,7 +47,7 @@
 
 <section class="hero">
   <div class="container">
-    <span class="kicker">Access</span>
+    <span class="kicker">Member Access</span>
     <h1>Login or Apply</h1>
     <p>New users are created as pending until approved by SpeakOut or the school they belong to.</p>
   </div>
@@ -55,13 +59,15 @@
     <div class="panel" id="login">
       <span class="label">Login</span>
       <h2>Welcome back</h2>
-      <p class="help-text">After login, you will be routed to the right dashboard based on your role.</p>
+      <p class="help-text">After login, you will be routed to the right dashboard based on your approved role.</p>
 
       <form class="form-grid" id="loginForm">
         <input class="full" id="loginEmail" type="email" placeholder="Email" required>
         <input class="full" id="loginPassword" type="password" placeholder="Password" required>
         <button class="btn primary full" type="submit">Login</button>
       </form>
+
+      <a href="#" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
 
       <div id="loginMsg" class="message"></div>
     </div>
@@ -93,6 +99,15 @@
         <input id="schoolName" placeholder="School / Organization (Optional)">
         <input id="location" placeholder="Location / State">
 
+        <select id="contentType">
+          <option value="">Contributor Content Type (Optional)</option>
+          <option value="books">Books</option>
+          <option value="courses">Courses</option>
+          <option value="worksheets">Worksheets</option>
+          <option value="videos">Videos</option>
+          <option value="research">Research</option>
+        </select>
+
         <input id="password" type="password" placeholder="Password" required>
         <input id="confirmPassword" type="password" placeholder="Confirm password" required>
 
@@ -107,6 +122,13 @@
       </form>
 
       <div id="regMsg" class="message"></div>
+
+      <div class="role-info">
+        <div><strong>Students</strong> Access learning resources, courses, certificates and school activities.</div>
+        <div><strong>Parents</strong> Link to children, access parent resources and monitor approved child progress.</div>
+        <div><strong>Teachers</strong> Access teacher resources, workshops and school wellbeing tools.</div>
+        <div><strong>Schools</strong> School administrators manage students, parents, teachers, workshops and reports after approval.</div>
+      </div>
     </div>
 
   </div>
@@ -117,8 +139,8 @@
     <div class="notice">
       <span class="label">Pending Approval</span>
       <h3>If your account is pending</h3>
-      <p>Your account has been created, but it must be approved before full access is enabled.</p>
-      <p>School-linked users may be approved by their school admin. Contributors, ambassadors and schools may be approved by SpeakOut admin.</p>
+      <p>Your application has been received successfully, but full access is enabled only after approval.</p>
+      <p>School-linked users may be approved by their school administrator. Contributors, ambassadors and school administrators may be approved by SpeakOut admin.</p>
       <p><strong>Urgent?</strong> Contact SpeakOut on WhatsApp.</p>
     </div>
   </div>
@@ -133,7 +155,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
-  signOut
+  signOut,
+  sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 
 import {
@@ -164,7 +187,11 @@ function val(id){
   return document.getElementById(id)?.value?.trim() || '';
 }
 
-async function findSchoolByCode(code){
+function generateStudentId(){
+  return 'STU-' + Date.now().toString().slice(-6);
+}
+
+async function findSchoolByCode(code, role){
   if(!code) return { schoolId:'', schoolName:'', schoolCode:'' };
 
   const q = query(
@@ -175,6 +202,10 @@ async function findSchoolByCode(code){
   const snap = await getDocs(q);
 
   if(snap.empty){
+    if(['student','parent','teacher','school_admin'].includes(role)){
+      throw new Error('School code not found. Please confirm the code from your school.');
+    }
+
     return { schoolId:'', schoolName:'', schoolCode:code };
   }
 
@@ -201,8 +232,14 @@ async function route(user){
   const role = normalizeRole(p.role);
   const status = (p.status || '').toLowerCase().trim();
 
+  if(!role){
+    msg('loginMsg', 'Your role is missing. Contact administrator.', 'bad');
+    await signOut(auth);
+    return;
+  }
+
   if(status !== 'approved'){
-    msg('loginMsg', 'Your account is awaiting approval.', 'warn');
+    msg('loginMsg', 'Your account is awaiting approval. Please contact SpeakOut or your school administrator if urgent.', 'warn');
     await signOut(auth);
     return;
   }
@@ -218,7 +255,7 @@ async function route(user){
     contributor: 'contributor-dashboard.html'
   };
 
-  location.href = routes[role] || 'portal.html';
+  location.href = routes[role] || 'index.html';
 }
 
 loginForm.onsubmit = async e => {
@@ -240,6 +277,25 @@ loginForm.onsubmit = async e => {
   }
 };
 
+forgotPasswordLink.onclick = async e => {
+  e.preventDefault();
+
+  const email = val('loginEmail');
+
+  if(!email){
+    msg('loginMsg', 'Enter your email first, then click Forgot Password.', 'warn');
+    return;
+  }
+
+  try{
+    await sendPasswordResetEmail(auth, email);
+    msg('loginMsg', 'Password reset link sent. Please check your email.', 'ok');
+  }catch(err){
+    console.error(err);
+    msg('loginMsg', err.message || 'Could not send password reset email.', 'bad');
+  }
+};
+
 registerForm.onsubmit = async e => {
   e.preventDefault();
 
@@ -258,7 +314,7 @@ registerForm.onsubmit = async e => {
     const cleanRole = normalizeRole(val('role'));
     const fullName = `${val('firstName')} ${val('lastName')}`.trim();
 
-    const schoolInfo = await findSchoolByCode(val('schoolCode'));
+    const schoolInfo = await findSchoolByCode(val('schoolCode'), cleanRole);
 
     const r = await createUserWithEmailAndPassword(
       auth,
@@ -289,12 +345,14 @@ registerForm.onsubmit = async e => {
 
       location: val('location'),
       reason: val('reason'),
+      contentType: val('contentType'),
 
       bio: '',
       country: '',
       state: '',
       city: '',
       occupation: '',
+      photoData: '',
 
       profileCompleted: false,
       createdAt: serverTimestamp(),
@@ -302,7 +360,7 @@ registerForm.onsubmit = async e => {
     };
 
     if(cleanRole === 'student'){
-      userData.studentId = 'STU-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      userData.studentId = generateStudentId();
     }
 
     await setDoc(doc(db, 'users', r.user.uid), userData);
@@ -313,7 +371,7 @@ registerForm.onsubmit = async e => {
       'regMsg',
       schoolInfo.schoolId
         ? 'Application submitted successfully under ' + userData.schoolName + '. Please wait for school approval.'
-        : 'Application submitted successfully. Please wait for approval.',
+        : 'Application submitted successfully. You will receive access once approved by SpeakOut or the relevant school administrator.',
       'ok'
     );
 
@@ -335,5 +393,3 @@ registerForm.onsubmit = async e => {
 
 </body>
 </html>
-
-
