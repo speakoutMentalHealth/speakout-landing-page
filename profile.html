@@ -1,38 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Profile | SpeakOut Portal</title>
-<link rel="icon" type="image/png" href="logo.png">
+<!DOCTYPE html><html><head><title>My Profile | SpeakOut</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dashboard-shared.css">
-</head>
-<body>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Portal Dashboard</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="student-dashboard.html">Student</a>
-<a class="btn soft" href="school-dashboard.html">School</a>
-<a class="btn soft" href="my-library.html">Library</a>
-<a class="btn soft" href="my-courses.html">Courses</a>
-<a class="btn soft" href="progress.html">Progress</a>
-<a class="btn soft" href="certificates.html">Certificates</a>
-<a class="btn soft" href="profile.html">Profile</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
-<main>
-<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>My Profile</h1><p>View your portal profile, role, school and approval status.</p></div></section>
-
-<section><div class="container grid g2"><div class="panel"><span class="label">Profile</span><h3 id="name">Loading...</h3><p id="email"></p><div class="table-wrap"><table><tbody id="rows"></tbody></table></div></div><div class="notice"><span class="label">Account Status</span><h3 id="status">Checking...</h3><p>Your access depends on your role and approval status in Firestore.</p></div></div></section>
-
-</main>
-<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
-<script type="module" src="auth-guard.js"></script>
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:820px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:110px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}}
+</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a><nav class="nav-links"><a class="btn soft" href="portal.html">Portal</a><a class="btn soft" href="profile.html">Profile</a><a class="btn soft" href="e-library.html">E-Library</a><a class="btn soft" href="speakhub.html">SpeakHub</a><a class="btn dark" href="auth.html">Login</a></nav></div></header>
+<main><section class="hero"><div class="container"><span class="kicker">My Account</span><h1>My Profile</h1><p>Update your basic profile information.</p></div></section>
+<section><div class="container"><div id="statusBox" class="notice">Loading profile...</div><div class="panel"><form id="profileForm"><div class="form-grid">
+<input id="firstName" placeholder="First Name"><input id="lastName" placeholder="Last Name"><input id="email" placeholder="Email" disabled><input id="phone" placeholder="Phone"><input id="country" placeholder="Country"><input id="state" placeholder="State"><input id="city" placeholder="City"><input id="occupation" placeholder="Occupation / Class Level"><input id="schoolCode" placeholder="School Code" disabled><input id="role" placeholder="Role" disabled></div><textarea id="bio" placeholder="Short bio / interests / learning goals"></textarea><button class="btn primary" type="submit">Update Profile</button></form></div></div></section></main><footer class="footer"><div class="container">SpeakOut Portal</div></footer>
 <script type="module">
-import { SO } from "./dashboard-shared.js";
-
-SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;const p=await SO.profile(user.uid);name.textContent=p?.fullName||user.displayName||"Portal User";email.textContent=user.email;status.textContent=p?.status||"pending";rows.innerHTML=`<tr><th>Role</th><td>${SO.safe(p?.role)}</td></tr><tr><th>School</th><td>${SO.safe(p?.schoolName)}</td></tr><tr><th>Phone</th><td>${SO.safe(p?.phone)}</td></tr><tr><th>Location</th><td>${SO.safe(p?.location)}</td></tr>`});
-
-</script>
-</body></html>
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+let currentUser=null; const statusBox=document.getElementById("statusBox");
+function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t}
+function val(id,v){document.getElementById(id).value=v||""}
+onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return;}currentUser=user;const s=await getDoc(doc(db,"users",user.uid));if(!s.exists()){show("Profile not found. Contact admin.","bad");return;}const p=s.data();["firstName","lastName","phone","country","state","city","occupation","schoolCode","role","bio"].forEach(k=>val(k,p[k]));val("email",p.email||user.email);show("Profile loaded.","ok");});
+profileForm.addEventListener("submit",async e=>{e.preventDefault();await setDoc(doc(db,"users",currentUser.uid),{firstName:firstName.value,lastName:lastName.value,phone:phone.value,country:country.value,state:state.value,city:city.value,occupation:occupation.value,bio:bio.value,updatedAt:serverTimestamp()},{merge:true});show("Profile updated successfully.","ok");});
+</script></body></html>
