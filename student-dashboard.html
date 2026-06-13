@@ -1,74 +1,13 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School Dashboard | SpeakOut</title><link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!DOCTYPE html><html><head><title>Student Dashboard | SpeakOut</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--r:22px}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem;text-align:center}.primary{background:var(--blue);color:#fff}.softBtn{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:46px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1,h2,h3{line-height:1.05;letter-spacing:-.04em}h1{font-size:clamp(2rem,5vw,4.5rem);margin:12px 0}.hero p{max-width:820px;line-height:1.65;color:rgba(255,255,255,.88)}section{padding:34px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}.stat strong{display:block;font-size:2.3rem;color:var(--blue);line-height:1}.stat span{display:block;color:var(--muted);font-weight:850;margin-top:6px}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:14px}.bad{background:var(--redSoft);color:var(--red)}.ok{background:var(--greenSoft);color:var(--green)}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font:inherit;background:#fbfdff}textarea{min-height:110px;resize:vertical}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.72rem;font-weight:900;text-transform:capitalize}.pill.pending{background:var(--goldSoft);color:#704800}.pill.approved{background:var(--greenSoft);color:var(--green)}.pill.rejected,.pill.suspended{background:var(--redSoft);color:var(--red)}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
-@media(max-width:900px){.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
-</style>
-</head><body><header class="nav"><div class="container nav-inner">
-<a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>School Portal</p></div></a>
-<nav class="nav-links">
-<a class="btn softBtn" href="school-dashboard.html">Dashboard</a>
-<a class="btn softBtn" href="school-users.html">Users</a>
-<a class="btn softBtn" href="school-profile.html">Profile</a>
-<a class="btn softBtn" href="e-library.html">E-Library</a>
-<a class="btn softBtn" href="speakhub.html">SpeakHub</a>
-<a class="btn dark" href="portal.html">Portal</a>
-</nav></div></header>
-<main>
-<section class="hero"><div class="container"><span class="kicker">Approved School Portal</span><h1 id="schoolName">School Dashboard</h1><p id="schoolMeta">Loading school information...</p></div></section>
-<section><div class="container"><div id="statusBox" class="notice">Checking school access...</div>
-<div class="grid g4">
-<div class="card stat"><strong id="teacherCount">0</strong><span>Teachers</span></div>
-<div class="card stat"><strong id="parentCount">0</strong><span>Parents</span></div>
-<div class="card stat"><strong id="studentCount">0</strong><span>Students</span></div>
-<div class="card stat"><strong id="pendingCount">0</strong><span>Pending Approval</span></div>
-</div>
-<div class="grid g3" style="margin-top:18px">
-<a class="card" href="school-users.html"><h3>Manage Users</h3><p>Add and approve teachers, parents and students under your school.</p><span class="btn primary">Open Users</span></a>
-<a class="card" href="speakhub.html"><h3>Teacher & Student Training</h3><p>Access SpeakHub courses assigned to your school community.</p><span class="btn softBtn">Open SpeakHub</span></a>
-<a class="card" href="certificate-center.html"><h3>Certificates</h3><p>View certificates for school trainings, teachers, parents and students.</p><span class="btn gold">Open Certificates</span></a>
-</div></div></section>
-</main><footer class="footer"><div class="container">SpeakOut School Portal</div></footer>
-<script type="module" src="school-portal-guard.js"></script>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:820px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:110px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}}
+</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a><nav class="nav-links"><a class="btn soft" href="portal.html">Portal</a><a class="btn soft" href="profile.html">Profile</a><a class="btn soft" href="e-library.html">E-Library</a><a class="btn soft" href="speakhub.html">SpeakHub</a><a class="btn dark" href="auth.html">Login</a></nav></div></header>
+<main><section class="hero"><div class="container"><span class="kicker">student Dashboard</span><h1>Student Dashboard</h1><p>Access your profile, courses, books, Kiddies resources and certificates.</p><div id="pills"></div></div></section><section><div class="container"><div id="statusBox" class="notice">Checking access...</div><div class="grid g3"><a class="card" href="profile.html"><h3>My Profile</h3><p>Update personal info and learning goals.</p><span class="btn primary">Open Profile</span></a><a class="card" href="e-library.html"><h3>E-Library</h3><p>Read books and guides.</p><span class="btn soft">Open Library</span></a><a class="card" href="speakhub.html"><h3>SpeakHub</h3><p>Take courses and track learning.</p><span class="btn gold">Open Courses</span></a><a class="card" href="kiddies.html"><h3>Kiddies</h3><p>Access child-friendly resources.</p><span class="btn soft">Open Kiddies</span></a><a class="card" href="parent-child-link.html"><h3>Parent Link</h3><p>Share your user ID with your parent.</p><span class="btn primary">View ID</span></a></div></div></section></main><footer class="footer"><div class="container">SpeakOut Portal</div></footer>
 <script type="module">
-import { db } from "./firebase-config.js";
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { requireSchoolAdmin } from "./school-portal-guard.js";
-
-const statusBox = document.getElementById("statusBox");
-const setText = (id, val) => document.getElementById(id).textContent = val;
-
-function show(msg,type="info"){statusBox.textContent=msg;statusBox.className="notice "+(type==="error"?"bad":type==="success"?"ok":"");}
-
-requireSchoolAdmin(async (user, profile, school) => {
-  if(!school){ show("No school profile found. Contact SpeakOut admin.","error"); return; }
-
-  setText("schoolName", school.schoolName || "School Dashboard");
-  setText("schoolMeta", `${school.schoolCode || "No code"} • ${school.city || ""} ${school.state || ""} • Status: ${school.status || "pending"}`);
-
-  if((school.status || "").toLowerCase() !== "approved"){
-    show("This school is not approved yet. Contact SpeakOut admin.","error");
-    return;
-  }
-
-  const snap = await getDocs(query(collection(db,"users"), where("schoolId","==", school.id)));
-  let teachers=0, parents=0, students=0, pending=0;
-
-  snap.forEach(d => {
-    const u = d.data();
-    const role = (u.role || "").toLowerCase();
-    const status = (u.status || "").toLowerCase();
-    if(role === "teacher") teachers++;
-    if(role === "parent") parents++;
-    if(role === "student") students++;
-    if(status !== "approved") pending++;
-  });
-
-  setText("teacherCount", teachers);
-  setText("parentCount", parents);
-  setText("studentCount", students);
-  setText("pendingCount", pending);
-  show("School access verified.","success");
-});
+import { auth, db } from "./firebase-config.js";import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const statusBox=document.getElementById("statusBox"),pills=document.getElementById("pills");function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t}function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${v||"—"}</span>`}
+onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return;}const s=await getDoc(doc(db,"users",user.uid));if(!s.exists()){show("No profile found.","bad");return;}const p=s.data();const r=(p.role||"").toLowerCase();if(r!=="student"&&r!=="admin"&&r!=="super_admin"){show("Access denied. This dashboard is for student.","bad");return;}if((p.status||"").toLowerCase()!=="approved"){show("Your account is pending approval.","warn");return;}pills.innerHTML=pill(p.role)+pill(p.status)+pill(p.schoolCode);show("Dashboard loaded successfully.","ok");});
 </script></body></html>
