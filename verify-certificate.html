@@ -1,64 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verify Certificate | SpeakOut</title>
-<link rel="icon" type="image/png" href="icons/logo.png">
+<!DOCTYPE html><html><head><title>Verify Certificate | SpeakOut</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--green:#0f8f6f;--red:#b42318;--bg:#f7f9fc;--line:#e5edf6;--muted:#637083}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}.container{width:min(900px,92%);margin:auto}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:70px 0;text-align:center}.hero h1{font-size:clamp(2.2rem,5vw,4.5rem);margin:0 0 12px}.hero p{color:rgba(255,255,255,.86);line-height:1.6}.card{background:white;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 16px 44px rgba(7,21,43,.08);margin-top:30px}.field{display:flex;gap:10px;flex-wrap:wrap}.field input{flex:1;min-height:46px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit}.btn{border:0;border-radius:999px;background:var(--blue);color:white;padding:12px 18px;font-weight:900;cursor:pointer}.result{display:none;margin-top:18px;padding:18px;border-radius:18px}.valid{background:#e9fbf5;color:var(--green)}.invalid{background:#fff1f0;color:var(--red)}.result h2{margin-top:0}.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:8px 0;color:#111827}.detail strong{display:block;color:var(--navy);font-size:.78rem;text-transform:uppercase}.back{display:inline-block;margin-top:22px;color:var(--blue);font-weight:900;text-decoration:none}
-</style>
-</head>
-<body>
-<section class="hero"><div class="container"><h1>Verify Certificate</h1><p>Enter the certificate number to confirm if it was issued by SpeakOut Mental Health Outreach.</p></div></section>
-<main class="container">
-  <div class="card">
-    <div class="field">
-      <input id="certNumber" placeholder="Example: SO-2026-000001">
-      <button class="btn" id="verifyBtn">Verify</button>
-    </div>
-    <div id="validResult" class="result valid">
-      <h2>✅ Certificate Verified</h2>
-      <div class="detail"><strong>Recipient</strong><span id="rName"></span></div>
-      <div class="detail"><strong>Program</strong><span id="rProgram"></span></div>
-      <div class="detail"><strong>School / Organization</strong><span id="rSchool"></span></div>
-      <div class="detail"><strong>Date Issued</strong><span id="rDate"></span></div>
-      <div class="detail"><strong>Status</strong><span id="rStatus"></span></div>
-    </div>
-    <div id="invalidResult" class="result invalid">
-      <h2>❌ Certificate Not Found</h2>
-      <p>Please check the certificate number and try again.</p>
-    </div>
-    <a class="back" href="https://speakoutmentalhealth.org/">← Back to SpeakOut</a>
-  </div>
-</main>
-
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.valid,.active{background:var(--greenSoft);color:var(--green)}.pending{background:var(--goldSoft);color:#704800}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:110px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cert{background:#fff;border:10px solid #0a5fbf;border-radius:18px;padding:36px;text-align:center;box-shadow:var(--shadow)}.cert h2{font-size:2.4rem}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media print{.nav,.hero,.footer,.no-print{display:none}.cert{box-shadow:none;border-color:#07152b}}@media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}}
+</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a><nav class="nav-links"><a class="btn soft" href="portal.html">Portal</a><a class="btn soft" href="profile.html">Profile</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Login</a></nav></div></header>
+<main><section class="hero"><div class="container"><span class="kicker">Public Verification</span><h1>Verify Certificate</h1><p>Confirm whether a SpeakOut certificate is valid using the verification code.</p></div></section>
+<section><div class="container"><div class="panel"><form id="verifyForm"><div class="form-grid"><input id="codeInput" placeholder="Enter certificate code" required><button class="btn primary" type="submit">Verify</button></div></form></div><div id="result" style="margin-top:18px"></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
 <script type="module">
 import { db } from "./firebase-config.js";
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-const input=document.getElementById("certNumber"), valid=document.getElementById("validResult"), invalid=document.getElementById("invalidResult");
-document.getElementById("verifyBtn").onclick=verify;
-input.addEventListener("keydown",e=>{if(e.key==="Enter")verify()});
-
-async function verify(){
-  const number=input.value.trim();
-  valid.style.display="none"; invalid.style.display="none";
-  if(!number){invalid.style.display="block";return}
-  const q=query(collection(db,"certificates"),where("certificateNumber","==",number));
-  const snap=await getDocs(q);
-  if(snap.empty){invalid.style.display="block";return}
-  const cert=snap.docs[0].data();
-  if(cert.status!=="issued"){invalid.style.display="block";return}
-  document.getElementById("rName").textContent=cert.recipientName||"—";
-  document.getElementById("rProgram").textContent=cert.programTitle||"—";
-  document.getElementById("rSchool").textContent=cert.schoolName||"—";
-  document.getElementById("rDate").textContent=cert.issueDate||"—";
-  document.getElementById("rStatus").textContent=cert.status||"—";
-  valid.style.display="block";
-}
-</script>
-</body>
-</html>
+import { collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const params=new URLSearchParams(location.search);const result=document.getElementById("result");const codeInput=document.getElementById("codeInput");
+if(params.get("code")){codeInput.value=params.get("code");verifyCode(params.get("code"));}
+verifyForm.addEventListener("submit",e=>{e.preventDefault();verifyCode(codeInput.value.trim());});
+async function verifyCode(code){result.innerHTML="<div class='notice'>Checking...</div>";try{const q=query(collection(db,"certificates"),where("verificationCode","==",code));const snap=await getDocs(q);if(snap.empty){result.innerHTML="<div class='notice bad'>Certificate not found or invalid.</div>";return;}let html="";snap.forEach(d=>{const c=d.data();html+=`<div class="card"><span class="pill valid">Valid Certificate</span><h2>${c.title||"Certificate"}</h2><p><b>Name:</b> ${c.recipientName||"—"}</p><p><b>Issued:</b> ${c.issueDate||"—"}</p><p><b>Certificate No:</b> ${c.certificateNumber||c.verificationCode}</p><p><b>Status:</b> ${c.status||"active"}</p></div>`;});result.innerHTML=html;}catch(e){console.error(e);result.innerHTML="<div class='notice bad'>Verification failed. Check Firestore rules.</div>";}}
+</script></body></html>
