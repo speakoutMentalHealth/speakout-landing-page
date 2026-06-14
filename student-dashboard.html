@@ -1,10 +1,132 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Student Dashboard | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Dashboard | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.profile-grid,.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:100px;resize:vertical}.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 18px}.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}.photo-help{color:var(--muted);font-size:.88rem;line-height:1.5}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.profile-grid,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Student Dashboard</p></div></a><nav class="links" id="roleNav"></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">Student Dashboard</span><h1>Welcome to your dashboard</h1><p>Students can update their profile, access learning resources, track premium requests and earn certificates.</p><div id="pills"></div></div></section><section><div class="container"><div id="statusBox" class="notice">Loading dashboard...</div><div class="grid g3" style="margin-bottom:18px"><div class="card stat"><strong id="nameBox">—</strong><span>Name</span></div><div class="card stat"><strong>student</strong><span>Account Type</span></div><div class="card stat"><strong id="schoolBox">—</strong><span>School / Access</span></div></div><div class="grid g2"><div class="panel"><span class="label">My Profile</span><h2>Profile & Bio</h2><p>Update your details and profile picture. This uses Firestore only, not Firebase Storage.</p><div class="photo-row"><img id="profilePhotoPreview" class="avatar" src="logo.png" alt="Profile photo"><div><input id="profilePhoto" type="file" accept="image/*"><div class="photo-help">Upload a clear photo. It will be compressed before saving.</div></div></div><form id="profileForm"><div class="profile-grid"><input id="firstName" placeholder="First Name"><input id="lastName" placeholder="Last Name"><input id="phone" placeholder="Phone"><input id="country" placeholder="Country"><input id="state" placeholder="State"><input id="city" placeholder="City"><input id="occupation" placeholder="Class / Level"></div><textarea id="bio" placeholder="Short bio, interests, learning goals or support needs"></textarea><button class="btn primary" type="submit">Update Profile</button></form></div><div class="panel"><span class="label">Quick Actions</span><h2>What you can do</h2><div class="grid"><a class="card" href="speakhub.html?audience=student"><h3>My Courses</h3><p>Continue learning through SpeakHub.</p><span class="btn primary">Open Courses</span></a><a class="card" href="student-library.html"><h3>Student Library</h3><p>Open resources selected for students.</p><span class="btn soft">Open Library</span></a><a class="card" href="kiddies.html"><h3>Kiddies Corner</h3><p>Open child-friendly resources.</p><span class="btn gold">Open Kiddies</span></a><a class="card" href="certificate-center.html"><h3>Certificates</h3><p>View certificates you earn.</p><span class="btn soft">Open Certificates</span></a><a class="card" href="payment-history.html"><h3>Premium Access</h3><p>Track payment requests.</p><span class="btn gold">Payment History</span></a></div></div></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer><script type="module">
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.profile-grid,.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:100px;resize:vertical}.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 18px}.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}.photo-help{color:var(--muted);font-size:.88rem;line-height:1.5}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}.mini-list{display:grid;gap:10px}.mini-item{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:12px}.hidden{display:none!important}@media(max-width:900px){.g4,.g3,.g2,.profile-grid,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>Student Dashboard</p></div></a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Student Dashboard</span>
+    <h1>Welcome to your dashboard</h1>
+    <p>Update your profile, view your Student ID, access learning resources, approve parent link requests, track progress and view certificates.</p>
+    <div id="pills"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="statusBox" class="notice">Loading dashboard...</div>
+    <div id="profileWarning" class="notice warn hidden">Please complete your profile information to get the best experience.</div>
+
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="card stat"><strong id="nameBox">—</strong><span>Name</span></div>
+      <div class="card stat"><strong id="studentIdBox">—</strong><span>Student ID</span></div>
+      <div class="card stat"><strong id="schoolBox">—</strong><span>School / Access</span></div>
+      <div class="card stat"><strong id="certificateCount">0</strong><span>Certificates Earned</span></div>
+    </div>
+
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="card stat"><strong id="courseStartedCount">0</strong><span>Courses Started</span></div>
+      <div class="card stat"><strong id="courseCompletedCount">0</strong><span>Courses Completed</span></div>
+      <div class="card stat"><strong id="pendingParentCount">0</strong><span>Parent Requests</span></div>
+      <div class="card stat"><strong>student</strong><span>Account Type</span></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="panel">
+        <span class="label">My Profile</span>
+        <h2>Profile & Bio</h2>
+        <p>Update your details and profile picture. Photo is compressed and saved in Firestore only.</p>
+
+        <div class="photo-row">
+          <img id="profilePhotoPreview" class="avatar" src="logo.png" alt="Profile photo">
+          <div>
+            <input id="profilePhoto" type="file" accept="image/*">
+            <div class="photo-help">Upload a clear photo. Recommended: small square image.</div>
+          </div>
+        </div>
+
+        <form id="profileForm">
+          <div class="profile-grid">
+            <input id="firstName" placeholder="First Name">
+            <input id="lastName" placeholder="Last Name">
+            <input id="phone" placeholder="Phone">
+            <input id="country" placeholder="Country">
+            <input id="state" placeholder="State">
+            <input id="city" placeholder="City">
+            <input id="occupation" placeholder="Class / Level">
+          </div>
+          <textarea id="bio" placeholder="Short bio, interests, learning goals or support needs"></textarea>
+          <button class="btn primary" type="submit">Update Profile</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <span class="label">Quick Actions</span>
+        <h2>What you can do</h2>
+        <div class="grid">
+          <a class="card" href="speakhub.html?audience=student"><h3>My Courses</h3><p>Continue learning through SpeakHub.</p><span class="btn primary">Open Courses</span></a>
+          <a class="card" href="student-library.html"><h3>Student Library</h3><p>Open resources selected for students.</p><span class="btn soft">Open Library</span></a>
+          <a class="card" href="kiddies.html"><h3>Kiddies Corner</h3><p>Open child-friendly resources.</p><span class="btn gold">Open Kiddies</span></a>
+          <a class="card" href="certificate-center.html"><h3>Certificates</h3><p>View certificates you earn.</p><span class="btn soft">Open Certificates</span></a>
+          <a class="card" href="student-link-requests.html"><h3>Parent Requests</h3><p>Approve or reject parent link requests.</p><span class="btn primary">Manage Requests</span></a>
+          <a class="card" href="payment-history.html"><h3>My Payments</h3><p>Track premium access and payment requests.</p><span class="btn gold">Payment History</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:18px">
+      <div class="panel">
+        <span class="label">Recent Progress</span>
+        <h2>Learning Progress</h2>
+        <div id="progressList" class="mini-list"><div class="notice">Loading progress...</div></div>
+      </div>
+      <div class="panel">
+        <span class="label">Certificates</span>
+        <h2>Recent Certificates</h2>
+        <div id="certificateList" class="mini-list"><div class="notice">Loading certificates...</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
+
+<script type="module">
 import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
 import { db } from "./firebase-config.js";
-import { doc, setDoc, serverTimestamp, collection, getDocs, query, where, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc, setDoc, serverTimestamp, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let currentUser=null;
+let profile=null;
+
+function show(message,type=""){
+  statusBox.textContent=message;
+  statusBox.className="notice "+type;
+}
+
+function safe(value){return value || "—";}
+function pill(value){return `<span class="pill ${(value||"").toLowerCase()}">${safe(value)}</span>`;}
+function setVal(id,value){const el=document.getElementById(id); if(el) el.value=value||"";}
+function generateStudentId(){return "STU-" + Date.now().toString().slice(-6);}
+
 async function compressPhoto(file){
   return new Promise((resolve,reject)=>{
     if(!file.type.startsWith("image/")) return reject(new Error("Please upload an image file."));
@@ -13,14 +135,13 @@ async function compressPhoto(file){
     reader.onload=e=>{img.src=e.target.result;};
     img.onload=()=>{
       const max=300;
-      let w=img.width, h=img.height;
+      let w=img.width,h=img.height;
       if(w>h && w>max){h=Math.round(h*max/w);w=max;}
       else if(h>w && h>max){w=Math.round(w*max/h);h=max;}
       else if(w>max){w=max;h=max;}
       const canvas=document.createElement("canvas");
       canvas.width=w;canvas.height=h;
-      const ctx=canvas.getContext("2d");
-      ctx.drawImage(img,0,0,w,h);
+      canvas.getContext("2d").drawImage(img,0,0,w,h);
       const data=canvas.toDataURL("image/jpeg",0.65);
       if(data.length>260000) return reject(new Error("Image is still too large. Please choose a smaller photo."));
       resolve(data);
@@ -30,14 +151,104 @@ async function compressPhoto(file){
   });
 }
 
-let currentUser=null, profile=null;
-function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t;}
-function safe(v){return v||"—";}
-function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${safe(v)}</span>`;}
-function setVal(id,v){const el=document.getElementById(id); if(el) el.value=v||"";}
-function loadProfile(user,p){currentUser=user;profile=p;renderRoleNav(p,"Dashboard");document.getElementById("pills").innerHTML=pill(p.role)+pill(p.status)+pill(p.schoolCode||"individual");nameBox.textContent=(p.firstName||p.fullName||user.email||"User")+" "+(p.lastName||"");schoolBox.textContent=p.schoolName||p.schoolCode||"Individual Access";["firstName","lastName","phone","country","state","city","occupation","bio"].forEach(k=>setVal(k,p[k]||""));profilePhotoPreview.src=p.photoData||p.photoURL||"logo.png";show("Dashboard loaded.","ok");}
-profilePhoto.addEventListener("change",async()=>{if(profilePhoto.files&&profilePhoto.files[0]){try{profilePhotoPreview.src=await compressPhoto(profilePhoto.files[0]);}catch(e){show(e.message,"bad");}}});
-profileForm.addEventListener("submit",async e=>{e.preventDefault();try{let photoData=profile.photoData||"";if(profilePhoto.files&&profilePhoto.files[0]) photoData=await compressPhoto(profilePhoto.files[0]);await setDoc(doc(db,"users",currentUser.uid),{firstName:firstName.value.trim(),lastName:lastName.value.trim(),phone:phone.value.trim(),country:country.value.trim(),state:state.value.trim(),city:city.value.trim(),occupation:occupation.value.trim(),bio:bio.value.trim(),photoData,updatedAt:serverTimestamp()},{merge:true});show("Profile updated successfully.","ok");}catch(err){console.error(err);show(err.message||"Profile update failed.","bad");}});
-window.loadChildren=async()=>{const box=document.getElementById("childrenBox");if(!box||!profile||profile.role!=="parent")return;try{const snap=await getDocs(query(collection(db,"parentStudentLinks"),where("parentId","==",currentUser.uid)));let html="";for(const d of snap.docs){const link=d.data();let studentName="Student",studentPhoto="logo.png";try{const s=await getDoc(doc(db,"users",link.studentId));if(s.exists()){const st=s.data();studentName=(st.firstName||"Student")+" "+(st.lastName||"");studentPhoto=st.photoData||st.photoURL||"logo.png";}}catch(e){}html+=`<div class="card"><img class="avatar" src="${studentPhoto}"><h3>${studentName}</h3><p><b>Student ID:</b> ${link.studentId}</p><p><b>Relationship:</b> ${link.relationship||"Guardian"}</p><span class="pill ${link.status}">${link.status||"approved"}</span></div>`;}box.innerHTML=html||"<div class='notice warn'>No child linked yet.</div>";}catch(e){box.innerHTML="<div class='notice bad'>Could not load linked children.</div>";}};
-requireRoles(["student"], async (user,p)=>{loadProfile(user,p); if("student"==="parent") await window.loadChildren();});
-</script></body></html>
+async function ensureStudentId(user,p){
+  if(p.studentId) return p.studentId;
+  const newId=generateStudentId();
+  await setDoc(doc(db,"users",user.uid),{studentId:newId,updatedAt:serverTimestamp()},{merge:true});
+  p.studentId=newId;
+  return newId;
+}
+
+function renderProfile(user,p){
+  currentUser=user;
+  profile=p;
+  renderRoleNav(p,"Dashboard");
+  pills.innerHTML=pill(p.role)+pill(p.status)+pill(p.schoolCode||"individual");
+  nameBox.textContent=((p.firstName||p.fullName||user.email||"User")+" "+(p.lastName||"")).trim();
+  studentIdBox.textContent=p.studentId||"Not Assigned";
+  schoolBox.textContent=p.schoolName||p.schoolCode||"Individual Access";
+  ["firstName","lastName","phone","country","state","city","occupation","bio"].forEach(k=>setVal(k,p[k]||""));
+  profilePhotoPreview.src=p.photoData||p.photoURL||"logo.png";
+  profileWarning.classList.toggle("hidden",!!p.profileCompleted);
+}
+
+async function loadStats(){
+  try{
+    const certSnap=await getDocs(query(collection(db,"certificates"),where("recipientId","==",currentUser.uid)));
+    certificateCount.textContent=certSnap.size;
+    let certHtml="";
+    certSnap.forEach(d=>{
+      const c=d.data();
+      certHtml+=`<div class="mini-item"><strong>${safe(c.title||c.courseTitle||"Certificate")}</strong><p>${safe(c.issueDate||c.createdAt?.toDate?.().toLocaleDateString?.())}</p>${pill(c.status||"active")}</div>`;
+    });
+    certificateList.innerHTML=certHtml||"<div class='notice warn'>No certificate yet.</div>";
+  }catch(e){certificateList.innerHTML="<div class='notice bad'>Could not load certificates.</div>";}
+
+  try{
+    const progressSnap=await getDocs(query(collection(db,"userProgress"),where("userId","==",currentUser.uid)));
+    let started=0,completed=0,html="";
+    progressSnap.forEach(d=>{
+      const p=d.data();
+      started++;
+      const status=(p.status||"").toLowerCase();
+      if(status==="completed"||status==="complete"||Number(p.progressPercent||p.progress||0)>=100) completed++;
+      html+=`<div class="mini-item"><strong>${safe(p.title||p.courseTitle||"Learning Item")}</strong><p>Progress: ${safe(p.progressPercent||p.progress||0)}%</p>${pill(p.status||"in progress")}</div>`;
+    });
+    courseStartedCount.textContent=started;
+    courseCompletedCount.textContent=completed;
+    progressList.innerHTML=html||"<div class='notice warn'>No learning progress yet.</div>";
+  }catch(e){progressList.innerHTML="<div class='notice bad'>Could not load progress.</div>";}
+
+  try{
+    const reqSnap=await getDocs(query(collection(db,"parentStudentLinks"),where("studentId","==",currentUser.uid),where("status","==","pending")));
+    pendingParentCount.textContent=reqSnap.size;
+  }catch(e){pendingParentCount.textContent="0";}
+}
+
+profilePhoto.addEventListener("change",async()=>{
+  if(profilePhoto.files&&profilePhoto.files[0]){
+    try{profilePhotoPreview.src=await compressPhoto(profilePhoto.files[0]);}
+    catch(e){show(e.message,"bad");}
+  }
+});
+
+profileForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  try{
+    let photoData=profile.photoData||"";
+    if(profilePhoto.files&&profilePhoto.files[0]) photoData=await compressPhoto(profilePhoto.files[0]);
+
+    const updated={
+      firstName:firstName.value.trim(),
+      lastName:lastName.value.trim(),
+      phone:phone.value.trim(),
+      country:country.value.trim(),
+      state:state.value.trim(),
+      city:city.value.trim(),
+      occupation:occupation.value.trim(),
+      bio:bio.value.trim(),
+      photoData,
+      profileCompleted:true,
+      updatedAt:serverTimestamp()
+    };
+
+    await setDoc(doc(db,"users",currentUser.uid),updated,{merge:true});
+    profile={...profile,...updated};
+    renderProfile(currentUser,profile);
+    show("Profile updated successfully.","ok");
+  }catch(err){console.error(err);show(err.message||"Profile update failed.","bad");}
+});
+
+requireRoles(["student"],async(user,p)=>{
+  if((p.role||"").toLowerCase()!=="student"){
+    location.href="auth.html";
+    return;
+  }
+  await ensureStudentId(user,p);
+  renderProfile(user,p);
+  await loadStats();
+  show("Dashboard loaded.","ok");
+});
+</script>
+</body>
+</html>
