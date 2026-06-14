@@ -1,42 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Progress | SpeakOut Admin</title>
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin-shared.css">
+
+<style>
+:root{
+--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;
+--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--ink:#111827;
+--shadow:0 18px 44px rgba(7,21,43,.10)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+.container{width:min(1240px,92%);margin:auto}
+.nav{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand div{font-weight:900;color:var(--blue);line-height:1}
+.brand small{display:block;color:#d98200;font-size:.62rem;font-weight:900;margin-top:4px}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.menu{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:10px 14px;font-weight:900}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.86rem}
+.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.success{background:var(--greenSoft);color:var(--green)}.danger{background:var(--redSoft);color:var(--red)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:52px 0}
+.hero h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:12px 0}
+.hero p{max-width:850px;line-height:1.65;color:rgba(255,255,255,.88)}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.kicker{background:rgba(255,255,255,.14)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.panel,.card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
+.panel p,.card p{color:var(--muted);line-height:1.6}
+.metric strong,.stat strong{display:block;color:var(--blue);font-size:2.25rem}
+.metric span,.stat span{color:var(--muted);font-weight:800}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:14px}
+.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
+.form-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px}
+input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:separate;border-spacing:0 10px}
+th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase;white-space:nowrap}
+td,th{padding:10px;vertical-align:top}
+tr.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px;text-transform:capitalize}
+.completed,.certified{background:var(--greenSoft);color:var(--green)}.in_progress,.pending{background:var(--goldSoft);color:#704800}.not_started,.inactive{background:#eef2f7;color:#475569}.failed,.rejected{background:var(--redSoft);color:var(--red)}
+.progress-wrap{height:10px;background:#e5edf6;border-radius:999px;overflow:hidden;min-width:140px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--blue));width:0%}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.mini-list{display:grid;gap:10px}
+.mini-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fbfdff}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);padding:40px;overflow:auto;z-index:9999}
+.modal .panel{max-width:900px;margin:auto}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.detail b{display:block;color:var(--navy);font-size:.8rem;text-transform:uppercase}
+.detail span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
+@media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.menu{display:block}.nav-links{display:none}.menu-open .nav-links{display:flex;position:absolute;top:72px;left:0;right:0;background:#fff;padding:14px;flex-direction:column;border-bottom:1px solid var(--line)}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}table{font-size:.85rem}}
+</style>
 </head>
+
 <body>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Admin Control</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="admin-dashboard.html">Home</a>
-<a class="btn soft" href="admin-users.html">Users</a>
-<a class="btn soft" href="admin-schools.html">Schools</a>
-<a class="btn soft" href="admin-books.html">Books</a>
-<a class="btn soft" href="admin-courses.html">Courses</a>
-<a class="btn soft" href="admin-certificates.html">Certificates</a>
-<a class="btn soft" href="admin-activities.html">Activities</a>
-<a class="btn soft" href="admin-reports.html">Reports</a>
-<a class="btn gold" href="executive-dashboard.html">Executive</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="admin-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div>SpeakOut<small>Admin Control</small></div>
+    </a>
+    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="nav-links">
+      <a class="btn soft" href="admin-dashboard.html">Home</a>
+      <a class="btn soft" href="admin-users.html">Users</a>
+      <a class="btn soft" href="admin-schools.html">Schools</a>
+      <a class="btn soft" href="admin-courses.html">Courses</a>
+      <a class="btn dark" href="admin-progress.html">Progress</a>
+      <a class="btn soft" href="admin-certificates.html">Certificates</a>
+      <a class="btn gold" href="executive-dashboard.html">Executive</a>
+      <button class="btn danger" id="logoutBtn">Logout</button>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="container"><span class="kicker">Admin Area</span><h1>Admin Progress</h1><p>Track user course progress, certificates and learning activity.</p></div></section>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Learning Analytics</span>
+    <h1>Admin Progress</h1>
+    <p>Track learner activity, course progress, completion trends, certificate readiness and recent learning performance across SpeakHub.</p>
+  </div>
+</section>
 
-<section><div class="container grid g4"><div class="card metric"><strong id="users">0</strong><span>Users</span></div><div class="card metric"><strong id="progress">0</strong><span>Progress Records</span></div><div class="card metric"><strong id="courses">0</strong><span>Courses</span></div><div class="card metric"><strong id="certs">0</strong><span>Certificates</span></div></div></section>
-<section><div class="container"><div class="panel"><span class="label">Progress Tracking</span><p>This page summarizes progress records. Later, connect this to detailed userProgress by course and certificate.</p><div class="table-wrap"><table><thead><tr><th>User</th><th>Course</th><th>Status</th><th>Progress</th><th>Updated</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section>
+<section>
+  <div class="container">
+    <div id="statusBox" class="notice">Checking admin access...</div>
 
+    <div class="grid g5">
+      <div class="card metric"><strong id="usersCount">0</strong><span>Users</span></div>
+      <div class="card metric"><strong id="activeLearners">0</strong><span>Active Learners</span></div>
+      <div class="card metric"><strong id="progressCount">0</strong><span>Progress Records</span></div>
+      <div class="card metric"><strong id="completedCount">0</strong><span>Completed</span></div>
+      <div class="card metric"><strong id="certsCount">0</strong><span>Certificates</span></div>
+    </div>
+
+    <div class="grid g4" style="margin-top:16px">
+      <div class="card metric"><strong id="coursesCount">0</strong><span>Courses</span></div>
+      <div class="card metric"><strong id="avgCompletion">0%</strong><span>Avg Completion</span></div>
+      <div class="card metric"><strong id="inProgressCount">0</strong><span>In Progress</span></div>
+      <div class="card metric"><strong id="notStartedCount">0</strong><span>Not Started</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g2">
+    <div class="panel">
+      <span class="label">Filters</span>
+      <h2>Search Progress</h2>
+      <div class="form-grid">
+        <input id="searchInput" placeholder="Search user, email, course...">
+        <select id="statusFilter">
+          <option value="all">All Status</option>
+          <option value="not_started">Not Started</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+          <option value="certified">Certified</option>
+        </select>
+        <select id="courseFilter">
+          <option value="all">All Courses</option>
+        </select>
+      </div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn gold" id="exportBtn">Export CSV</button>
+        <button class="btn soft" id="refreshBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="label">Recent Completions</span>
+      <h2>Latest Completed Courses</h2>
+      <div id="recentCompletions" class="mini-list"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g2">
+    <div class="panel">
+      <span class="label">Top Courses</span>
+      <h2>Most Active Courses</h2>
+      <div id="topCourses" class="mini-list"></div>
+    </div>
+
+    <div class="panel">
+      <span class="label">Learners</span>
+      <h2>Most Active Learners</h2>
+      <div id="topLearners" class="mini-list"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="panel">
+      <span class="label">Progress Tracking</span>
+      <h2>User Progress Records</h2>
+      <p>Review individual course completion, last activity and certificate eligibility.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Course</th>
+              <th>Progress</th>
+              <th>Lessons</th>
+              <th>Status</th>
+              <th>Certificate</th>
+              <th>Updated</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
-<footer class="footer"><div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div></footer>
-<script type="module" src="auth-guard.js"></script>
+
+<div id="progressModal" class="modal">
+  <div class="panel">
+    <h2>Progress Details</h2>
+    <div id="modalContent" class="detail-grid"></div>
+    <div class="actions" style="margin-top:18px">
+      <a id="modalCourseLink" class="btn primary" href="#" target="_blank">Open Course</a>
+      <button class="btn dark" id="closeModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div>
+</footer>
+
 <script type="module">
-import { SO } from "./admin-shared.js";
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-async function load(){const [u,p,c,cert]=await Promise.all([SO.getAll("users"),SO.getAll("userProgress"),SO.getAll("courses"),SO.getAll("certificates")]);users.textContent=SO.num(u.length);progress.textContent=SO.num(p.length);courses.textContent=SO.num(c.length);certs.textContent=SO.num(cert.length);rows.innerHTML=p.length?p.map(r=>`<tr><td>${SO.safe(r.userEmail||r.userName)}</td><td>${SO.safe(r.courseTitle)}</td><td>${SO.badge(r.status)}</td><td>${SO.num(r.percent||0)}%</td><td>${SO.safe(r.updatedAt)}</td></tr>`).join(""):`<tr><td colspan="5">No progress records yet.</td></tr>`}load();
+let USERS = [];
+let PROGRESS = [];
+let COURSES = [];
+let CERTS = [];
 
+let unsubUsers = null;
+let unsubProgress = null;
+let unsubCourses = null;
+let unsubCerts = null;
+
+function safe(value){return value || "—";}
+function normalize(value){return (value || "").toString().toLowerCase().trim();}
+function num(value){return Number(value || 0).toLocaleString();}
+function dateText(value){
+  if(!value) return "—";
+  if(value.seconds) return new Date(value.seconds * 1000).toLocaleString();
+  return String(value);
+}
+function statusFromRecord(r){
+  const raw = normalize(r.status);
+  if(raw) return raw;
+  const pct = Number(r.percent || r.progress || 0);
+  if(pct >= 100) return "completed";
+  if(pct > 0) return "in_progress";
+  return "not_started";
+}
+function badge(status){
+  return `<span class="pill ${normalize(status)}">${safe(String(status).replaceAll("_"," "))}</span>`;
+}
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = "notice " + type;
+}
+
+async function requireAdmin(callback){
+  onAuthStateChanged(auth, async user=>{
+    if(!user){location.href="auth.html";return;}
+
+    const snap = await getDoc(doc(db,"users",user.uid));
+    if(!snap.exists()){location.href="auth.html#pending";return;}
+
+    const profile = {uid:user.uid,...snap.data()};
+    const role = normalize(profile.role);
+    const status = normalize(profile.status);
+
+    if(status !== "approved"){location.href="auth.html#pending";return;}
+    if(role !== "admin" && role !== "super_admin"){location.href="index.html";return;}
+
+    callback(user,profile);
+  });
+}
+
+function getCourseTitle(r){
+  if(r.courseTitle) return r.courseTitle;
+  const c = COURSES.find(x=>x.id === r.courseId);
+  return c?.title || r.itemTitle || "—";
+}
+
+function getUserName(r){
+  if(r.userName) return r.userName;
+  const u = USERS.find(x=>x.id === r.userId);
+  const name = `${u?.firstName || ""} ${u?.lastName || ""}`.trim();
+  return name || u?.fullName || "—";
+}
+
+function getUserEmail(r){
+  if(r.userEmail) return r.userEmail;
+  const u = USERS.find(x=>x.id === r.userId);
+  return u?.email || "—";
+}
+
+function updateCourseFilter(){
+  const current = courseFilter.value;
+  const options = COURSES.map(c=>`<option value="${c.id}">${safe(c.title || c.id)}</option>`).join("");
+  courseFilter.innerHTML = `<option value="all">All Courses</option>${options}`;
+  if([...courseFilter.options].some(o=>o.value===current)) courseFilter.value = current;
+}
+
+function filteredProgress(){
+  const search = normalize(searchInput.value);
+  const status = statusFilter.value;
+  const course = courseFilter.value;
+
+  return PROGRESS.filter(r=>{
+    const s = statusFromRecord(r);
+    const text = `${getUserName(r)} ${getUserEmail(r)} ${getCourseTitle(r)} ${r.courseId || ""} ${s}`.toLowerCase();
+    return (!search || text.includes(search)) &&
+      (status === "all" || s === status) &&
+      (course === "all" || r.courseId === course);
+  });
+}
+
+function updateStats(){
+  const activeUserIds = new Set(PROGRESS.map(x=>x.userId).filter(Boolean));
+  const completed = PROGRESS.filter(r=>statusFromRecord(r)==="completed" || Number(r.percent || r.progress || 0) >= 100);
+  const inProgress = PROGRESS.filter(r=>statusFromRecord(r)==="in_progress");
+  const notStarted = PROGRESS.filter(r=>statusFromRecord(r)==="not_started");
+  const avg = PROGRESS.length ? Math.round(PROGRESS.reduce((s,r)=>s + Number(r.percent || r.progress || 0),0) / PROGRESS.length) : 0;
+
+  usersCount.textContent = num(USERS.length);
+  activeLearners.textContent = num(activeUserIds.size);
+  progressCount.textContent = num(PROGRESS.length);
+  completedCount.textContent = num(completed.length);
+  certsCount.textContent = num(CERTS.length);
+  coursesCount.textContent = num(COURSES.length);
+  avgCompletion.textContent = avg + "%";
+  inProgressCount.textContent = num(inProgress.length);
+  notStartedCount.textContent = num(notStarted.length);
+}
+
+function renderRows(){
+  const data = filteredProgress();
+
+  rows.innerHTML = data.map(r=>{
+    const pct = Math.max(0,Math.min(100,Number(r.percent || r.progress || 0)));
+    const status = statusFromRecord(r);
+    const lessons = `${num(r.lessonsCompleted || r.completedLessons?.length || 0)} / ${num(r.totalLessons || r.lessonCount || 0)}`;
+    const cert = r.certificateIssued || r.certified || status === "certified" ? "Issued" : (pct >= 100 ? "Eligible" : "Not Ready");
+
+    return `
+      <tr class="row">
+        <td>${safe(getUserName(r))}</td>
+        <td>${safe(getUserEmail(r))}</td>
+        <td>${safe(getCourseTitle(r))}</td>
+        <td><div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div><strong>${pct}%</strong></td>
+        <td>${lessons}</td>
+        <td>${badge(status)}</td>
+        <td>${safe(cert)}</td>
+        <td>${dateText(r.updatedAt || r.completedAt || r.createdAt)}</td>
+        <td><button class="btn gold" data-view="${r.id}">View</button></td>
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="9">No progress records found.</td></tr>`;
+
+  rows.querySelectorAll("[data-view]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const r = PROGRESS.find(x=>x.id === btn.dataset.view);
+      if(!r) return;
+      modalContent.innerHTML = detailHTML(r);
+      modalCourseLink.href = r.courseId ? `course-details.html?id=${encodeURIComponent(r.courseId)}` : "#";
+      progressModal.style.display = "block";
+    };
+  });
+}
+
+function detail(label,value){
+  return `<div class="detail"><b>${label}</b><span>${safe(value)}</span></div>`;
+}
+
+function detailHTML(r){
+  return [
+    detail("User",getUserName(r)),
+    detail("Email",getUserEmail(r)),
+    detail("Course",getCourseTitle(r)),
+    detail("Course ID",r.courseId),
+    detail("Progress",`${Number(r.percent || r.progress || 0)}%`),
+    detail("Status",statusFromRecord(r)),
+    detail("Lessons Completed",r.lessonsCompleted || r.completedLessons?.length),
+    detail("Total Lessons",r.totalLessons || r.lessonCount),
+    detail("Last Lesson",r.lastLesson || r.lastLessonTitle),
+    detail("Certificate",r.certificateIssued || r.certified ? "Issued" : "Not issued"),
+    detail("Updated",dateText(r.updatedAt || r.completedAt || r.createdAt)),
+    detail("Progress ID",r.id)
+  ].join("");
+}
+
+function renderAnalytics(){
+  const completed = [...PROGRESS].filter(r=>statusFromRecord(r)==="completed" || Number(r.percent || r.progress || 0) >= 100)
+    .sort((a,b)=>(b.updatedAt?.seconds || b.completedAt?.seconds || 0) - (a.updatedAt?.seconds || a.completedAt?.seconds || 0))
+    .slice(0,8);
+
+  recentCompletions.innerHTML = completed.map(r=>`
+    <div class="mini-item">
+      <strong>${safe(getUserName(r))}</strong><br>
+      <small>${safe(getCourseTitle(r))} • ${dateText(r.updatedAt || r.completedAt)}</small>
+    </div>
+  `).join("") || `<div class="notice warn">No completed courses yet.</div>`;
+
+  const byCourse = {};
+  PROGRESS.forEach(r=>{
+    const k = r.courseId || "unknown";
+    if(!byCourse[k]) byCourse[k] = {title:getCourseTitle(r),count:0,avg:0,total:0};
+    byCourse[k].count++;
+    byCourse[k].total += Number(r.percent || r.progress || 0);
+  });
+
+  topCourses.innerHTML = Object.values(byCourse).sort((a,b)=>b.count-a.count).slice(0,8).map(x=>`
+    <div class="mini-item">
+      <strong>${safe(x.title)}</strong><br>
+      <small>${num(x.count)} learners • ${Math.round(x.total/x.count)}% avg progress</small>
+    </div>
+  `).join("") || `<div class="notice warn">No course activity yet.</div>`;
+
+  const byLearner = {};
+  PROGRESS.forEach(r=>{
+    const k = r.userId || getUserEmail(r) || "unknown";
+    if(!byLearner[k]) byLearner[k] = {name:getUserName(r),email:getUserEmail(r),count:0,total:0};
+    byLearner[k].count++;
+    byLearner[k].total += Number(r.percent || r.progress || 0);
+  });
+
+  topLearners.innerHTML = Object.values(byLearner).sort((a,b)=>b.count-a.count).slice(0,8).map(x=>`
+    <div class="mini-item">
+      <strong>${safe(x.name)}</strong><br>
+      <small>${safe(x.email)} • ${num(x.count)} records • ${Math.round(x.total/x.count)}% avg</small>
+    </div>
+  `).join("") || `<div class="notice warn">No learner activity yet.</div>`;
+}
+
+function renderAll(){
+  updateCourseFilter();
+  updateStats();
+  renderRows();
+  renderAnalytics();
+  show("Progress dashboard loaded.","ok");
+}
+
+function startRealtime(){
+  if(unsubUsers) unsubUsers();
+  if(unsubProgress) unsubProgress();
+  if(unsubCourses) unsubCourses();
+  if(unsubCerts) unsubCerts();
+
+  unsubUsers = onSnapshot(collection(db,"users"),snap=>{
+    USERS=[]; snap.forEach(d=>USERS.push({id:d.id,...d.data()})); renderAll();
+  });
+
+  unsubProgress = onSnapshot(collection(db,"userProgress"),snap=>{
+    PROGRESS=[]; snap.forEach(d=>PROGRESS.push({id:d.id,...d.data()})); renderAll();
+  });
+
+  unsubCourses = onSnapshot(collection(db,"courses"),snap=>{
+    COURSES=[]; snap.forEach(d=>COURSES.push({id:d.id,...d.data()})); renderAll();
+  });
+
+  unsubCerts = onSnapshot(collection(db,"certificates"),snap=>{
+    CERTS=[]; snap.forEach(d=>CERTS.push({id:d.id,...d.data()})); renderAll();
+  });
+}
+
+function exportCSV(){
+  const data = filteredProgress();
+  const lines = [["User","Email","Course","CourseId","Progress","Status","Updated"]];
+
+  data.forEach(r=>{
+    lines.push([
+      getUserName(r),
+      getUserEmail(r),
+      getCourseTitle(r),
+      r.courseId || "",
+      Number(r.percent || r.progress || 0) + "%",
+      statusFromRecord(r),
+      dateText(r.updatedAt || r.completedAt || r.createdAt)
+    ]);
+  });
+
+  const csv = lines.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "speakout-progress-report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+searchInput.addEventListener("input",renderRows);
+statusFilter.addEventListener("change",renderRows);
+courseFilter.addEventListener("change",renderRows);
+exportBtn.addEventListener("click",exportCSV);
+refreshBtn.addEventListener("click",startRealtime);
+closeModal.addEventListener("click",()=>progressModal.style.display="none");
+logoutBtn.addEventListener("click",async()=>{await signOut(auth);location.href="auth.html";});
+
+requireAdmin(startRealtime);
 </script>
 </body>
 </html>
