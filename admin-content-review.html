@@ -1,62 +1,183 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Content Review | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content Review | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1220px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2.25rem}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.actions{display:flex;gap:8px;flex-wrap:wrap}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Admin Command Center</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn soft" href="admin-schools.html">Schools</a><a class="btn soft" href="admin-users.html">Users</a><a class="btn soft" href="admin-content-review.html">Content</a><a class="btn soft" href="admin-payments.html">Payments</a><a class="btn dark" href="portal.html">Portal</a></nav></div></header>
-<main><section class="hero"><div class="container"><span class="kicker">Admin</span><h1>Content Review</h1><p>Review books and courses before publishing.</p></div></section>
-<section><div class="container"><div id="statusBox" class="notice">Checking admin access...</div>
-<div class="grid g2"><div class="panel"><span class="label">Books</span><h2>Book Review</h2><div id="booksBox"></div></div><div class="panel"><span class="label">Courses</span><h2>Course Review</h2><div id="coursesBox"></div></div></div>
-</div></section></main><footer class="footer"><div class="container">SpeakOut Admin Command Center</div></footer><script type="module">
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.container{width:min(1220px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.active,.approved{background:var(--greenSoft);color:var(--green)}.pending,.draft,.review{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}
+.stat strong{display:block;color:var(--blue);font-size:2.25rem}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.form-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px}input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
+.content-card{display:flex;flex-direction:column;min-height:260px}.content-card .meta{margin-top:auto}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);padding:40px;overflow:auto;z-index:9999}.modal .panel{max-width:850px;margin:auto}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}.detail b{display:block;color:var(--navy);font-size:.8rem;text-transform:uppercase}.detail span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>Admin Command Center</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn soft" href="admin-schools.html">Schools</a><a class="btn soft" href="admin-users.html">Users</a><a class="btn dark" href="admin-content-review.html">Content</a><a class="btn soft" href="admin-payments.html">Payments</a><a class="btn danger" href="auth.html" id="logoutLink">Logout</a></nav></div></header>
+
+<main>
+<section class="hero"><div class="container"><span class="kicker">Admin</span><h1>Content Review</h1><p>Review, publish, reject, preview and manage books and courses before they appear in the SpeakOut learning ecosystem.</p></div></section>
+
+<section><div class="container">
+<div id="statusBox" class="notice">Checking admin access...</div>
+
+<div class="grid g5" style="margin-bottom:18px">
+<div class="card stat"><strong id="totalCount">0</strong><span>Total Content</span></div>
+<div class="card stat"><strong id="bookCount">0</strong><span>Books</span></div>
+<div class="card stat"><strong id="courseCount">0</strong><span>Courses</span></div>
+<div class="card stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
+<div class="card stat"><strong id="activeCount">0</strong><span>Published</span></div>
+</div>
+
+<div class="panel">
+<span class="label">Filters</span>
+<div class="form-grid">
+<input id="searchInput" placeholder="Search title, description, audience, category...">
+<select id="statusFilter"><option value="all">All Status</option><option value="pending">Pending</option><option value="active">Published / Active</option><option value="rejected">Rejected</option><option value="draft">Draft</option></select>
+<select id="typeFilter"><option value="all">All Types</option><option value="books">Books</option><option value="courses">Courses</option></select>
+</div>
+<div class="actions"><button class="btn gold" id="exportBtn">Export CSV</button><button class="btn soft" id="refreshBtn">Refresh</button></div>
+</div>
+
+<div class="grid g2" style="margin-top:18px">
+<div class="panel"><span class="label">Books</span><h2>Book Review</h2><div id="booksBox" class="grid"></div></div>
+<div class="panel"><span class="label">Courses</span><h2>Course Review</h2><div id="coursesBox" class="grid"></div></div>
+</div>
+</div></section>
+</main>
+
+<div id="contentModal" class="modal"><div class="panel"><h2>Content Details</h2><div id="modalContent" class="detail-grid"></div><div class="actions" style="margin-top:18px"><button class="btn dark" id="closeModal">Close</button></div></div></div>
+
+<footer class="footer"><div class="container">SpeakOut Admin Command Center</div></footer>
+
+<script type="module">
 import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-window.ADM = { auth, db, collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp };
+let BOOKS=[], COURSES=[], unsubBooks=null, unsubCourses=null;
 
-window.show = function(m,t=""){
- const el=document.getElementById("statusBox");
- if(el){ el.textContent=m; el.className="notice "+t; }
-};
+function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t}
+function safe(v){return v||"—"}
+function normalize(v){return (v||"").toLowerCase().trim()}
+function pill(v){return `<span class="pill ${normalize(v)}">${safe(v)}</span>`}
 
-window.safe = function(v){ return v || "—"; };
-window.pill = function(v){ return `<span class="pill ${(v||"").toLowerCase()}">${window.safe(v)}</span>`; };
-
-window.requireAdmin = function(callback){
+async function requireAdmin(callback){
  onAuthStateChanged(auth, async user=>{
-   if(!user){ location.href="auth.html"; return; }
+   if(!user){location.href="auth.html";return}
    const snap=await getDoc(doc(db,"users",user.uid));
-   if(!snap.exists()){ location.href="auth.html#pending"; return; }
+   if(!snap.exists()){location.href="auth.html#pending";return}
    const profile={uid:user.uid,...snap.data()};
-   const role=(profile.role||"").toLowerCase().trim();
-   const status=(profile.status||"").toLowerCase().trim();
-
-   if(status!=="approved"){ location.href="portal.html"; return; }
-
-   if(role!=="admin" && role!=="super_admin"){
-     location.href="portal.html";
-     return;
-   }
-
+   const role=normalize(profile.role), status=normalize(profile.status);
+   if(status!=="approved"){location.href="auth.html#pending";return}
+   if(role!=="admin"&&role!=="super_admin"){location.href="index.html";return}
    callback(user,profile);
  });
-};
-</script>
-<script type="module">
-async function loadCol(col, box){
- const api=window.ADM;
- const snap=await api.getDocs(api.collection(api.db,col));
- let html="";
- snap.forEach(d=>{
-   const item={id:d.id,...d.data()};
-   html+=`<div class="card"><h3>${window.safe(item.title)}</h3><p>${window.safe(item.description)}</p>${window.pill(item.status||"pending")} ${window.pill(item.audience||"all")}<div class="actions"><button class="btn success" data-col="${col}" data-id="${item.id}" data-status="active">Publish</button><button class="btn danger" data-col="${col}" data-id="${item.id}" data-status="rejected">Reject</button><button class="btn soft" data-col="${col}" data-id="${item.id}" data-status="pending">Pending</button></div></div>`;
- });
- box.innerHTML=html||"<div class='notice warn'>No content found.</div>";
- box.querySelectorAll("button[data-id]").forEach(b=>b.onclick=async()=>{
-   const api=window.ADM;
-   await api.updateDoc(api.doc(api.db,b.dataset.col,b.dataset.id),{status:b.dataset.status,updatedAt:api.serverTimestamp()});
-   await loadAll();
+}
+
+function allItems(){return [...BOOKS.map(x=>({...x,type:"books"})),...COURSES.map(x=>({...x,type:"courses"}))]}
+
+function updateStats(){
+ const all=allItems();
+ totalCount.textContent=all.length;
+ bookCount.textContent=BOOKS.length;
+ courseCount.textContent=COURSES.length;
+ pendingCount.textContent=all.filter(x=>normalize(x.status||"pending")==="pending").length;
+ activeCount.textContent=all.filter(x=>normalize(x.status)==="active").length;
+}
+
+function filtered(items,type){
+ const s=normalize(searchInput.value), sf=statusFilter.value, tf=typeFilter.value;
+ return items.filter(item=>{
+  const text=`${item.title||""} ${item.description||""} ${item.audience||""} ${item.category||""} ${item.status||""} ${item.authorName||""}`.toLowerCase();
+  return (!s||text.includes(s)) && (sf==="all"||normalize(item.status||"pending")===sf) && (tf==="all"||tf===type);
  });
 }
-async function loadAll(){await loadCol("books",booksBox);await loadCol("courses",coursesBox);}
-window.requireAdmin(async()=>{await loadAll();window.show("Content loaded.","ok");});
-</script></body></html>
+
+function renderCard(item,col){
+ return `<article class="card content-card"><div>${pill(item.status||"pending")} ${pill(item.audience||"all")} ${pill(item.category||"general")}</div><h3>${safe(item.title||"Untitled")}</h3><p>${safe(item.description||"No description yet.")}</p><p><b>Access:</b> ${safe(item.accessType||"free")}</p><div class="meta"><div class="actions"><button class="btn gold" data-view="${col}:${item.id}">View</button><button class="btn success" data-col="${col}" data-id="${item.id}" data-status="active">Publish</button><button class="btn danger" data-col="${col}" data-id="${item.id}" data-status="rejected">Reject</button><button class="btn soft" data-col="${col}" data-id="${item.id}" data-status="pending">Pending</button></div></div></article>`
+}
+
+function render(){
+ booksBox.innerHTML=filtered(BOOKS,"books").map(x=>renderCard(x,"books")).join("")||"<div class='notice warn'>No books found.</div>";
+ coursesBox.innerHTML=filtered(COURSES,"courses").map(x=>renderCard(x,"courses")).join("")||"<div class='notice warn'>No courses found.</div>";
+
+ document.querySelectorAll("button[data-id]").forEach(btn=>{
+  btn.onclick=async()=>{await updateDoc(doc(db,btn.dataset.col,btn.dataset.id),{status:btn.dataset.status,reviewedAt:serverTimestamp(),updatedAt:serverTimestamp()});show("Content status updated.","ok")};
+ });
+
+ document.querySelectorAll("[data-view]").forEach(btn=>{
+  btn.onclick=()=>{
+   const [col,id]=btn.dataset.view.split(":");
+   const item=(col==="books"?BOOKS:COURSES).find(x=>x.id===id);
+   if(!item)return;
+   modalContent.innerHTML=detailHTML(item,col);
+   contentModal.style.display="block";
+  };
+ });
+}
+
+function detail(label,value){return `<div class="detail"><b>${label}</b><span>${safe(value)}</span></div>`}
+function detailHTML(item,col){
+ return [
+  detail("Type",col==="books"?"Book":"Course"),
+  detail("Title",item.title),
+  detail("Status",item.status||"pending"),
+  detail("Audience",item.audience||"all"),
+  detail("Category",item.category),
+  detail("Access Type",item.accessType||"free"),
+  detail("Author / Contributor",item.authorName||item.contributorName),
+  detail("Description",item.description),
+  detail("Content URL",item.contentUrl||item.fileUrl||item.url)
+ ].join("");
+}
+
+function startRealtime(){
+ if(unsubBooks)unsubBooks(); if(unsubCourses)unsubCourses();
+ unsubBooks=onSnapshot(collection(db,"books"),snap=>{BOOKS=[];snap.forEach(d=>BOOKS.push({id:d.id,...d.data()}));updateStats();render();show("Content loaded.","ok")},e=>{console.error(e);show("Could not load books.","bad")});
+ unsubCourses=onSnapshot(collection(db,"courses"),snap=>{COURSES=[];snap.forEach(d=>COURSES.push({id:d.id,...d.data()}));updateStats();render()},e=>{console.error(e);show("Could not load courses.","bad")});
+}
+
+function exportCSV(){
+ const rows=[["Type","Title","Status","Audience","Category","AccessType"]];
+ allItems().forEach(x=>rows.push([x.type,x.title||"",x.status||"",x.audience||"",x.category||"",x.accessType||""]));
+ const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+ const blob=new Blob([csv],{type:"text/csv"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="speakout-content-review.csv"; a.click(); URL.revokeObjectURL(url);
+}
+
+searchInput.addEventListener("input",render);
+statusFilter.addEventListener("change",render);
+typeFilter.addEventListener("change",render);
+refreshBtn.addEventListener("click",startRealtime);
+exportBtn.addEventListener("click",exportCSV);
+closeModal.addEventListener("click",()=>contentModal.style.display="none");
+logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html"});
+
+requireAdmin(startRealtime);
+</script>
+</body>
+</html>
