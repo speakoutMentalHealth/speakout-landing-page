@@ -1,17 +1,292 @@
-<!DOCTYPE html><html><head><title>Certificate Center | SpeakOut</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Certificate Center | SpeakOut</title>
 <link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:48px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.valid,.active{background:var(--greenSoft);color:var(--green)}.pending{background:var(--goldSoft);color:#704800}input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:110px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cert{background:#fff;border:10px solid #0a5fbf;border-radius:18px;padding:36px;text-align:center;box-shadow:var(--shadow)}.cert h2{font-size:2.4rem}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media print{.nav,.hero,.footer,.no-print{display:none}.cert{box-shadow:none;border-color:#07152b}}@media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a><nav class="nav-links"><a class="btn soft" href="portal.html">Portal</a><a class="btn soft" href="profile.html">Profile</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Login</a></nav></div></header>
-<main><section class="hero"><div class="container"><span class="kicker">Certificate Center</span><h1>My Certificates</h1><p>View and download certificates earned from SpeakOut courses, workshops, school programs and ambassador training.</p></div></section>
-<section><div class="container"><div id="statusBox" class="notice">Loading certificates...</div><div id="certGrid" class="grid g3"></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px;height:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.nav-links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:48px 0}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.14)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1.05;margin:14px 0}
+h2,h3{line-height:1.05;color:var(--navy)}
+.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+section{padding:36px 0}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
+.card p,.panel p{color:var(--muted);line-height:1.6}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
+.valid,.active{background:var(--greenSoft);color:var(--green)}
+.pending{background:var(--goldSoft);color:#704800}
+.revoked,.invalid{background:var(--redSoft);color:var(--red)}
+.stat strong{display:block;color:var(--blue);font-size:2.1rem}
+input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
+.form-grid{display:grid;grid-template-columns:1fr auto;gap:12px}
+.cert-card{display:flex;flex-direction:column;min-height:260px}
+.cert-card .meta{margin-top:auto;padding-top:12px}
+.verify-result{margin-top:16px}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media print{.nav,.hero,.footer,.no-print{display:none!important}.card,.panel{box-shadow:none}}
+@media(max-width:900px){.g4,.g3,.form-grid{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>Certificate Center</p>
+      </div>
+    </a>
+    <nav class="nav-links" id="roleNav"></nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Certificate Center</span>
+    <h1>My Certificates</h1>
+    <p>View, verify and print certificates earned from SpeakOut courses, workshops, school programs and ambassador training.</p>
+    <div id="pills"></div>
+  </div>
+</section>
+
+<section class="no-print">
+  <div class="container">
+    <div id="statusBox" class="notice">Loading certificates...</div>
+
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="card stat"><strong id="totalCertificates">0</strong><span>Total Certificates</span></div>
+      <div class="card stat"><strong id="validCertificates">0</strong><span>Valid Certificates</span></div>
+      <div class="card stat"><strong id="pendingCertificates">0</strong><span>Pending Review</span></div>
+      <div class="card stat"><strong id="revokedCertificates">0</strong><span>Revoked / Invalid</span></div>
+    </div>
+
+    <div class="panel">
+      <span class="label">Verify Certificate</span>
+      <h2>Certificate Verification</h2>
+      <p>Enter a certificate number or verification code to confirm authenticity.</p>
+      <div class="form-grid">
+        <input id="verifyCode" placeholder="Certificate Number or Verification Code">
+        <button class="btn primary" id="verifyBtn" type="button">Verify</button>
+      </div>
+      <div id="verifyResult" class="verify-result"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="panel">
+      <span class="label">Certificates</span>
+      <h2>Your earned certificates</h2>
+      <div id="certGrid" class="grid g3"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">SpeakOut Mental Health Outreach</div>
+</footer>
+
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-const statusBox=document.getElementById("statusBox"),certGrid=document.getElementById("certGrid");
-function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t}
-onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return;}try{const q=query(collection(db,"certificates"),where("recipientId","==",user.uid));const snap=await getDocs(q);let html="";snap.forEach(d=>{const c={id:d.id,...d.data()};html+=`<article class="card"><span class="pill ${c.status||"active"}">${c.status||"active"}</span><h3>${c.title||"Certificate"}</h3><p><b>Recipient:</b> ${c.recipientName||"—"}</p><p><b>Certificate No:</b> ${c.certificateNumber||c.verificationCode||"—"}</p><p><b>Issued:</b> ${c.issueDate||"—"}</p><a class="btn primary" href="certificate-view.html?id=${encodeURIComponent(c.id)}">View Certificate</a></article>`;});certGrid.innerHTML=html||"<div class='notice warn'>No certificate yet.</div>";show("Certificates loaded.","ok");}catch(e){console.error(e);show("Failed to load certificates. Check Firestore rules.","bad");}});
-</script></body></html>
+import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let certificates = [];
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = "notice " + type;
+}
+
+function safe(value){
+  return value || "—";
+}
+
+function pill(value){
+  return `<span class="pill ${(value || "").toLowerCase()}">${safe(value)}</span>`;
+}
+
+function renderRoleNav(profile){
+  const role = (profile.role || "").toLowerCase().trim();
+  let dashboard = "index.html";
+
+  if(role === "admin" || role === "super_admin") dashboard = "admin-dashboard.html";
+  if(role === "school_admin") dashboard = "school-dashboard.html";
+  if(role === "teacher") dashboard = "teacher-dashboard.html";
+  if(role === "parent") dashboard = "parent-dashboard.html";
+  if(role === "student") dashboard = "student-dashboard.html";
+
+  roleNav.innerHTML = `
+    <a class="btn soft" href="${dashboard}">Dashboard</a>
+    <a class="btn dark" href="certificate-center.html">Certificates</a>
+    <a class="btn soft" href="auth.html">Login</a>
+  `;
+}
+
+function updateStats(){
+  totalCertificates.textContent = certificates.length;
+  validCertificates.textContent = certificates.filter(c => ["active","valid","approved"].includes((c.status || "active").toLowerCase())).length;
+  pendingCertificates.textContent = certificates.filter(c => ["pending","review"].includes((c.status || "").toLowerCase())).length;
+  revokedCertificates.textContent = certificates.filter(c => ["revoked","invalid"].includes((c.status || "").toLowerCase())).length;
+}
+
+function certificateCard(c){
+  const certNo = c.certificateNumber || c.verificationCode || c.id || "—";
+  const title = c.title || c.courseTitle || c.programTitle || "Certificate";
+  const recipient = c.recipientName || c.fullName || c.name || "—";
+  const issued = c.issueDate || c.issuedAtText || c.dateIssued || "—";
+  const status = c.status || "active";
+
+  return `
+    <article class="card cert-card">
+      ${pill(status)}
+      <h3>${safe(title)}</h3>
+      <p><b>Recipient:</b> ${safe(recipient)}</p>
+      <p><b>Certificate No:</b> ${safe(certNo)}</p>
+      <p><b>Issued:</b> ${safe(issued)}</p>
+      <div class="meta">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn primary" href="certificate-view.html?id=${encodeURIComponent(c.id)}">View</a>
+          <button class="btn gold" onclick="window.print()" type="button">Print</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderCertificates(){
+  certGrid.innerHTML =
+    certificates.map(certificateCard).join("") ||
+    `<div class="card"><h3>No Certificates Yet</h3><p>Complete courses, workshops, ambassador training or school programs to earn certificates.</p></div>`;
+}
+
+async function loadProfile(user){
+  const snap = await getDoc(doc(db,"users",user.uid));
+  if(!snap.exists()){
+    return {uid:user.uid,role:"user",status:"unknown",email:user.email};
+  }
+  return {uid:user.uid,...snap.data()};
+}
+
+async function loadCertificates(user){
+  try{
+    const q = query(collection(db,"certificates"),where("recipientId","==",user.uid));
+    const snap = await getDocs(q);
+    certificates = [];
+    snap.forEach(d => certificates.push({id:d.id,...d.data()}));
+    updateStats();
+    renderCertificates();
+    show("Certificates loaded.","ok");
+  }catch(error){
+    console.error(error);
+    show("Failed to load certificates. Check Firestore rules.","bad");
+  }
+}
+
+async function verifyCertificate(){
+  const code = verifyCode.value.trim();
+  if(!code){
+    verifyResult.innerHTML = "<div class='notice warn'>Enter a certificate number or verification code.</div>";
+    return;
+  }
+
+  verifyResult.innerHTML = "<div class='notice'>Checking certificate...</div>";
+
+  try{
+    let found = null;
+
+    const byVerification = await getDocs(query(collection(db,"certificates"),where("verificationCode","==",code)));
+    if(!byVerification.empty){
+      found = {id:byVerification.docs[0].id,...byVerification.docs[0].data()};
+    }
+
+    if(!found){
+      const byNumber = await getDocs(query(collection(db,"certificates"),where("certificateNumber","==",code)));
+      if(!byNumber.empty){
+        found = {id:byNumber.docs[0].id,...byNumber.docs[0].data()};
+      }
+    }
+
+    if(!found){
+      verifyResult.innerHTML = "<div class='notice bad'>Certificate not found.</div>";
+      return;
+    }
+
+    verifyResult.innerHTML = `
+      <div class="notice ok">
+        Certificate Verified ✅<br><br>
+        <b>Recipient:</b> ${safe(found.recipientName || found.fullName || found.name)}<br>
+        <b>Certificate:</b> ${safe(found.title || found.courseTitle || found.programTitle)}<br>
+        <b>Certificate No:</b> ${safe(found.certificateNumber || found.verificationCode)}<br>
+        <b>Status:</b> ${safe(found.status || "active")}<br>
+        <b>Issued:</b> ${safe(found.issueDate || found.issuedAtText || found.dateIssued)}
+      </div>
+    `;
+  }catch(error){
+    console.error(error);
+    verifyResult.innerHTML = "<div class='notice bad'>Verification failed. Check Firestore rules.</div>";
+  }
+}
+
+verifyBtn.addEventListener("click", verifyCertificate);
+
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    location.href = "auth.html";
+    return;
+  }
+
+  const profile = await loadProfile(user);
+  renderRoleNav(profile);
+
+  pills.innerHTML =
+    pill(profile.role) +
+    pill(profile.status) +
+    pill(profile.schoolCode || "individual");
+
+  await loadCertificates(user);
+});
+</script>
+
+</body>
+</html>
