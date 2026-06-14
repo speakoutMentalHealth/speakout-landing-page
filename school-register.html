@@ -4,256 +4,358 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Register Your School | SpeakOut</title>
-
+<link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-body{
-margin:0;
-font-family:Outfit,sans-serif;
-background:#f7f9fc;
-color:#07152b;
-}
-
-.container{
-width:min(900px,92%);
-margin:50px auto;
-}
-
-.card{
-background:#fff;
-padding:30px;
-border-radius:24px;
-box-shadow:0 16px 40px rgba(7,21,43,.08);
-}
-
-h1{
-margin-top:0;
-font-size:clamp(2rem,5vw,4rem);
-}
-
-.form-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-}
-
-input,select,textarea{
-width:100%;
-padding:14px;
-border:1px solid #dbe3ef;
-border-radius:14px;
-font-size:15px;
-box-sizing:border-box;
-}
-
-textarea{
-min-height:120px;
-resize:vertical;
-}
-
-button{
-border:0;
-background:#0a5fbf;
-color:#fff;
-padding:16px 24px;
-border-radius:999px;
-font-weight:900;
-cursor:pointer;
-margin-top:20px;
-}
-
-.notice{
-margin-top:20px;
-padding:16px;
-border-radius:14px;
-display:none;
-}
-
-.success{
-background:#e9fbf5;
-color:#0f8f6f;
-}
-
-.error{
-background:#fee2e2;
-color:#991b1b;
-}
-
-@media(max-width:700px){
-.form-grid{
-grid-template-columns:1fr;
-}
-}
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:58px 0}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.14)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}
+h2,h3{line-height:1.05;color:var(--navy)}
+.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+section{padding:38px 0}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px}
+.card p,.panel p{color:var(--muted);line-height:1.6}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+input,textarea,select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:#fbfdff}
+textarea{min-height:110px;resize:vertical}
+.notice{margin-top:16px;padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;display:none}
+.success{display:block;background:var(--greenSoft);color:var(--green)}
+.error{display:block;background:var(--redSoft);color:var(--red)}
+.warn{display:block;background:var(--goldSoft);color:#704800}
+.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:8px 0 16px}
+.logo-preview{width:96px;height:96px;border-radius:22px;object-fit:contain;border:4px solid var(--soft);background:#f1f5f9}
+.help{font-size:.88rem;color:var(--muted);line-height:1.5}
+.check{list-style:none;padding:0;margin:16px 0}
+.check li{padding-left:28px;position:relative;font-weight:800;color:#344054;margin:10px 0}
+.check li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:900}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.full{grid-column:auto}}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>School Registration</p>
+      </div>
+    </a>
 
-<div class="card">
+    <nav class="links">
+      <a class="btn soft" href="index.html">Home</a>
+      <a class="btn soft" href="auth.html">Member Login</a>
+      <a class="btn dark" href="certificate-center.html">Certificates</a>
+    </nav>
+  </div>
+</header>
 
-<h1>Register Your School</h1>
+<main>
 
-<p>
-Complete this form to apply for the SpeakOut School Mental Health Club Program.
-Applications are reviewed by SpeakOut before approval.
-</p>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">School Partnership Application</span>
+    <h1>Register your school with SpeakOut</h1>
+    <p>Apply to join the SpeakOut School Mental Health Club Program. Approved schools receive access to school dashboards, student resources, parent engagement tools, teacher workshops and certificate-ready learning programs.</p>
+  </div>
+</section>
 
-<form id="schoolForm">
+<section>
+  <div class="container grid g2">
 
-<div class="form-grid">
+    <div class="panel">
+      <span class="label">School Application</span>
+      <h2>Complete the registration form</h2>
+      <p>Applications are reviewed by SpeakOut before access is granted. Once approved, your school will receive a school code for onboarding teachers, parents and students.</p>
 
-<input
-type="text"
-id="schoolName"
-placeholder="School Name"
-required>
+      <form id="schoolForm">
 
-<select id="schoolType" required>
-<option value="">School Type</option>
-<option>Primary School</option>
-<option>Secondary School</option>
-<option>College</option>
-<option>University</option>
-</select>
+        <div class="photo-row">
+          <img id="schoolLogoPreview" class="logo-preview" src="logo.png" alt="School logo preview">
+          <div>
+            <input id="schoolLogo" type="file" accept="image/*">
+            <div class="help">Optional school logo. It will be compressed and saved in Firestore, not Firebase Storage.</div>
+          </div>
+        </div>
 
-<input
-type="text"
-id="principalName"
-placeholder="Principal / Coordinator Name"
-required>
+        <div class="form-grid">
 
-<input
-type="email"
-id="email"
-placeholder="School Email"
-required>
+          <input type="text" id="schoolName" placeholder="School Name" required>
 
-<input
-type="text"
-id="phone"
-placeholder="Phone Number"
-required>
+          <select id="schoolType" required>
+            <option value="">School Type</option>
+            <option>Primary School</option>
+            <option>Secondary School</option>
+            <option>College</option>
+            <option>University</option>
+            <option>Faith-Based School</option>
+            <option>Community School</option>
+          </select>
 
-<input
-type="text"
-id="state"
-placeholder="State"
-required>
+          <select id="ownership" required>
+            <option value="">Ownership Type</option>
+            <option>Private</option>
+            <option>Public</option>
+            <option>Faith-Based</option>
+            <option>Community</option>
+            <option>NGO / Mission</option>
+          </select>
 
-<input
-type="text"
-id="city"
-placeholder="City"
-required>
+          <select id="schoolSize" required>
+            <option value="">School Size</option>
+            <option>Under 100 Students</option>
+            <option>100 - 500 Students</option>
+            <option>500 - 1000 Students</option>
+            <option>1000+ Students</option>
+          </select>
 
-<input
-type="number"
-id="students"
-placeholder="Estimated Students">
+          <input type="text" id="principalName" placeholder="Principal / Head Teacher Name" required>
+          <input type="text" id="coordinatorName" placeholder="Mental Health Club Coordinator">
 
-</div>
+          <input type="email" id="email" placeholder="School Email" required>
+          <input type="text" id="phone" placeholder="Phone Number" required>
 
-<textarea
-id="reason"
-placeholder="Why does your school want to join SpeakOut?"
-required></textarea>
+          <input type="text" id="whatsapp" placeholder="WhatsApp Number">
+          <input type="url" id="schoolWebsite" placeholder="School Website">
 
-<button type="submit">
-Submit Application
-</button>
+          <input type="text" id="state" placeholder="State" required>
+          <input type="text" id="city" placeholder="City" required>
 
-</form>
+          <input type="number" id="students" placeholder="Estimated Number of Students">
+          <input type="text" id="country" placeholder="Country" value="Nigeria">
 
-<div id="message" class="notice"></div>
+          <textarea class="full" id="address" placeholder="Full School Address" required></textarea>
 
-</div>
+          <textarea class="full" id="existingPrograms" placeholder="Existing counselling, wellbeing, student support or club programs"></textarea>
 
-</div>
+          <textarea class="full" id="reason" placeholder="Why does your school want to join SpeakOut?" required></textarea>
+
+        </div>
+
+        <button class="btn primary" type="submit">Submit Application</button>
+
+      </form>
+
+      <div id="message" class="notice"></div>
+    </div>
+
+    <div class="panel">
+      <span class="label">What Happens Next</span>
+      <h2>Approval workflow</h2>
+
+      <ul class="check">
+        <li>Your school submits an application</li>
+        <li>SpeakOut reviews the school details</li>
+        <li>Approved schools receive a school code</li>
+        <li>The school admin gets dashboard access</li>
+        <li>The school can onboard teachers, parents and students</li>
+        <li>Workshops, resources, clubs and certificates become available</li>
+      </ul>
+
+      <div class="card" style="margin-top:18px">
+        <h3>School Code</h3>
+        <p>Each application receives a generated school code. Full access starts after SpeakOut approval.</p>
+        <p><strong id="generatedCodePreview">SCH-XXXXXX</strong></p>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>Mental Health Club Program</h3>
+        <p>Schools can use SpeakOut to run student clubs, parent seminars, teacher workshops and school wellbeing activities.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">SpeakOut Mental Health Outreach</div>
+</footer>
 
 <script type="module">
-
 import { db } from "./firebase-config.js";
 
 import {
-collection,
-addDoc,
-serverTimestamp
-}
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const form = document.getElementById("schoolForm");
-
 const message = document.getElementById("message");
 
-form.addEventListener("submit", async (e)=>{
+let logoData = "";
 
-e.preventDefault();
-
-try{
-
-await addDoc(
-collection(db,"schools"),
-{
-schoolName:
-schoolName.value,
-
-schoolType:
-schoolType.value,
-
-principalName:
-principalName.value,
-
-email:
-email.value,
-
-phone:
-phone.value,
-
-state:
-state.value,
-
-city:
-city.value,
-
-estimatedStudents:
-Number(students.value||0),
-
-reason:
-reason.value,
-
-status:
-"pending",
-
-createdAt:
-serverTimestamp()
-}
-);
-
-message.style.display="block";
-message.className="notice success";
-
-message.innerHTML=
-"Application submitted successfully. SpeakOut will review your application and contact you.";
-
-form.reset();
-
-}catch(error){
-
-console.error(error);
-
-message.style.display="block";
-message.className="notice error";
-
-message.innerHTML=
-"Application failed. Please try again.";
-
+function generateSchoolCode(){
+  return "SCH-" + Math.random().toString(36).substring(2,8).toUpperCase();
 }
 
+let generatedSchoolCode = generateSchoolCode();
+generatedCodePreview.textContent = generatedSchoolCode;
+
+function val(id){
+  return document.getElementById(id)?.value?.trim() || "";
+}
+
+function show(messageText,type){
+  message.style.display = "block";
+  message.className = "notice " + type;
+  message.innerHTML = messageText;
+}
+
+async function compressLogo(file){
+  return new Promise((resolve,reject)=>{
+    if(!file.type.startsWith("image/")){
+      return reject(new Error("Please upload an image file."));
+    }
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      img.src = e.target.result;
+    };
+
+    img.onload = () => {
+      const max = 350;
+      let w = img.width;
+      let h = img.height;
+
+      if(w > h && w > max){
+        h = Math.round(h * max / w);
+        w = max;
+      }else if(h > w && h > max){
+        w = Math.round(w * max / h);
+        h = max;
+      }else if(w > max){
+        w = max;
+        h = max;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img,0,0,w,h);
+
+      const data = canvas.toDataURL("image/jpeg",0.68);
+
+      if(data.length > 300000){
+        return reject(new Error("Logo is still too large. Please choose a smaller image."));
+      }
+
+      resolve(data);
+    };
+
+    img.onerror = () => reject(new Error("Could not read logo image."));
+    reader.readAsDataURL(file);
+  });
+}
+
+schoolLogo.addEventListener("change", async ()=>{
+  if(schoolLogo.files && schoolLogo.files[0]){
+    try{
+      logoData = await compressLogo(schoolLogo.files[0]);
+      schoolLogoPreview.src = logoData;
+    }catch(error){
+      logoData = "";
+      show(error.message,"error");
+    }
+  }
 });
 
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if(!val("schoolName") || !val("principalName") || !val("email") || !val("phone")){
+    show("Please complete all required fields.","error");
+    return;
+  }
+
+  try{
+    const payload = {
+      schoolName: val("schoolName"),
+      schoolType: val("schoolType"),
+      ownership: val("ownership"),
+      schoolSize: val("schoolSize"),
+
+      principalName: val("principalName"),
+      coordinatorName: val("coordinatorName"),
+
+      email: val("email").toLowerCase(),
+      phone: val("phone"),
+      whatsapp: val("whatsapp"),
+      schoolWebsite: val("schoolWebsite"),
+
+      country: val("country") || "Nigeria",
+      state: val("state"),
+      city: val("city"),
+      address: val("address"),
+
+      estimatedStudents: Number(val("students") || 0),
+
+      existingPrograms: val("existingPrograms"),
+      reason: val("reason"),
+
+      schoolCode: generatedSchoolCode,
+      logoData,
+
+      status: "pending",
+      role: "school",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    await addDoc(collection(db,"schools"), payload);
+
+    show(
+      "Application submitted successfully. Your school code is <strong>" +
+      generatedSchoolCode +
+      "</strong>. SpeakOut will review your application before dashboard access is granted.",
+      "success"
+    );
+
+    form.reset();
+    schoolLogoPreview.src = "logo.png";
+    logoData = "";
+    generatedSchoolCode = generateSchoolCode();
+    generatedCodePreview.textContent = generatedSchoolCode;
+
+  }catch(error){
+    console.error(error);
+    show("Application failed. Please try again or contact SpeakOut.","error");
+  }
+});
 </script>
 
 </body>
