@@ -1,4 +1,111 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School Dashboard | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Dashboard | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.profile-grid,.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:100px;resize:vertical}.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 18px}.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}.photo-help{color:var(--muted);font-size:.88rem;line-height:1.5}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.profile-grid,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>School Dashboard</p></div></a><nav class="links" id="roleNav"></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">School Management</span><h1 id="schoolName">School Dashboard</h1><p id="schoolMeta">Loading school information...</p><div id="pills"></div></div></section><section><div class="container"><div id="statusBox" class="notice">Checking school access...</div><div class="grid g4"><div class="card stat"><strong id="teacherCount">0</strong><span>Teachers</span></div><div class="card stat"><strong id="parentCount">0</strong><span>Parents</span></div><div class="card stat"><strong id="studentCount">0</strong><span>Students</span></div><div class="card stat"><strong id="pendingCount">0</strong><span>Pending</span></div></div><div class="grid g3" style="margin-top:18px"><a class="card" href="school-students.html"><h3>Students</h3><p>Manage students and student IDs.</p><span class="btn primary">Open Students</span></a><a class="card" href="school-parents.html"><h3>Parents</h3><p>Manage parents.</p><span class="btn soft">Open Parents</span></a><a class="card" href="school-teachers.html"><h3>Teachers</h3><p>Manage teachers.</p><span class="btn soft">Open Teachers</span></a><a class="card" href="school-workshops.html"><h3>Workshops</h3><p>Create school workshops.</p><span class="btn gold">Open Workshops</span></a><a class="card" href="school-resource-center.html"><h3>School Resources</h3><p>Policy, club and report resources.</p><span class="btn soft">Open Resources</span></a><a class="card" href="certificate-center.html"><h3>Certificates</h3><p>Review school certificates.</p><span class="btn primary">Certificates</span></a></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer><script type="module">import { requireRoles, renderRoleNav } from "./launch-role-guard.js";import { db } from "./firebase-config.js";import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${v||"—"}</span>`}function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t;}requireRoles(["school_admin"],async(user,profile)=>{renderRoleNav(profile,"Dashboard");if(!profile.schoolId){show("No schoolId linked to this account.","bad");return;}const s=await getDoc(doc(db,"schools",profile.schoolId));if(!s.exists()){show("School record not found.","bad");return;}const school={id:s.id,...s.data()};schoolName.textContent=school.schoolName||"School Dashboard";schoolMeta.textContent=(school.schoolCode||"No code")+" • "+(school.city||"")+" "+(school.state||"")+" • "+(school.status||"pending");pills.innerHTML=pill(school.status)+pill(school.schoolCode);const snap=await getDocs(query(collection(db,"users"),where("schoolId","==",school.id)));let teachers=0,parents=0,students=0,pending=0;snap.forEach(d=>{const u=d.data();const r=(u.role||"").toLowerCase();const st=(u.status||"").toLowerCase();if(r==="teacher")teachers++;if(r==="parent")parents++;if(r==="student")students++;if(st!=="approved")pending++;});teacherCount.textContent=teachers;parentCount.textContent=parents;studentCount.textContent=students;pendingCount.textContent=pending;show("School dashboard loaded.","ok");});</script></body></html>
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.info-list{display:grid;gap:10px}.info-item{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:12px}.info-item b{display:block;color:var(--navy);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}.info-item span{display:block;color:var(--muted);margin-top:4px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:1000px){.g5,.g4,.g3,.g2{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>School Dashboard</p></div></a><nav class="links" id="roleNav"></nav></div></header>
+<main>
+<section class="hero"><div class="container"><span class="kicker">School Management</span><h1 id="schoolName">School Dashboard</h1><p id="schoolMeta">Loading school information...</p><div id="pills"></div></div></section>
+<section><div class="container">
+<div id="statusBox" class="notice">Checking school access...</div>
+<div class="grid g5">
+<div class="card stat"><strong id="teacherCount">0</strong><span>Teachers</span></div>
+<div class="card stat"><strong id="parentCount">0</strong><span>Parents</span></div>
+<div class="card stat"><strong id="studentCount">0</strong><span>Students</span></div>
+<div class="card stat"><strong id="pendingCount">0</strong><span>Pending Users</span></div>
+<div class="card stat"><strong id="linkedParentCount">0</strong><span>Linked Parents</span></div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel"><span class="label">School Profile</span><h2>School Information</h2><div class="info-list">
+<div class="info-item"><b>School Name</b><span id="infoSchoolName">—</span></div>
+<div class="info-item"><b>School Code</b><span id="infoSchoolCode">—</span></div>
+<div class="info-item"><b>Status</b><span id="infoSchoolStatus">—</span></div>
+<div class="info-item"><b>Location</b><span id="infoSchoolLocation">—</span></div>
+<div class="info-item"><b>Contact</b><span id="infoSchoolContact">—</span></div>
+</div></div>
+<div class="panel"><span class="label">Launch Actions</span><h2>Manage your school ecosystem</h2><div class="grid">
+<a class="card" href="school-students.html"><h3>Students</h3><p>Manage students, student IDs, approval status and student access.</p><span class="btn primary">Open Students</span></a>
+<a class="card" href="school-parents.html"><h3>Parents</h3><p>Manage parents and review parent access under your school.</p><span class="btn soft">Open Parents</span></a>
+<a class="card" href="school-teachers.html"><h3>Teachers</h3><p>Manage teachers, departments and teacher training access.</p><span class="btn soft">Open Teachers</span></a>
+</div></div>
+</div>
+<div class="grid g3" style="margin-top:18px">
+<a class="card" href="school-workshops.html"><h3>Workshops</h3><p>Create and manage workshops for students, parents and teachers.</p><span class="btn gold">Open Workshops</span></a>
+<a class="card" href="school-resource-center.html"><h3>School Resources</h3><p>Access policies, club guides, report templates and wellbeing frameworks.</p><span class="btn soft">Open Resources</span></a>
+<a class="card" href="certificate-center.html"><h3>Certificates</h3><p>Review school certificates and training records.</p><span class="btn primary">Open Certificates</span></a>
+<a class="card" href="school-reports.html"><h3>Reports</h3><p>View participation counts, activity summaries and progress records.</p><span class="btn soft">Open Reports</span></a>
+<a class="card" href="school-users.html"><h3>All School Users</h3><p>View all teachers, parents and students under your school in one place.</p><span class="btn dark">Open Users</span></a>
+<a class="card" href="club-dashboard.html"><h3>Mental Health Club</h3><p>Prepare club members, activities, executives and wellbeing programs.</p><span class="btn gold">Open Club</span></a>
+</div>
+</div></section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
+<script type="module">
+import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
+import { db } from "./firebase-config.js";
+import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+function show(message,type=""){statusBox.textContent=message;statusBox.className="notice "+type;}
+function safe(value){return value||"—";}
+function pill(value){return `<span class="pill ${(value||"").toLowerCase()}">${safe(value)}</span>`;}
+function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=safe(value);}
+
+async function loadLinkedParentCount(schoolId){
+  try{
+    const snap=await getDocs(query(collection(db,"parentStudentLinks"),where("schoolId","==",schoolId),where("status","==","approved")));
+    linkedParentCount.textContent=snap.size||0;
+  }catch(error){linkedParentCount.textContent=0;}
+}
+
+async function loadSchoolDashboard(profile){
+  if(!profile.schoolId){show("No schoolId linked to this school admin account.","bad");return;}
+  const schoolSnap=await getDoc(doc(db,"schools",profile.schoolId));
+  if(!schoolSnap.exists()){show("School record not found.","bad");return;}
+  const school={id:schoolSnap.id,...schoolSnap.data()};
+  const schoolDisplayName=school.schoolName||school.name||"School Dashboard";
+  schoolName.textContent=schoolDisplayName;
+  schoolMeta.textContent=(school.schoolCode||"No code")+" • "+(school.city||"")+" "+(school.state||"")+" • "+(school.status||"pending");
+  pills.innerHTML=pill(school.status||"pending")+pill(school.schoolCode||"No Code")+pill(profile.role||"school_admin");
+  setText("infoSchoolName",schoolDisplayName);
+  setText("infoSchoolCode",school.schoolCode||"No code assigned");
+  setText("infoSchoolStatus",school.status||"pending");
+  setText("infoSchoolLocation",[school.city,school.state,school.country].filter(Boolean).join(", ")||school.location||"—");
+  setText("infoSchoolContact",school.email||school.phone||school.whatsapp||"—");
+
+  const usersSnap=await getDocs(query(collection(db,"users"),where("schoolId","==",school.id)));
+  let teachers=0,parents=0,students=0,pending=0;
+  usersSnap.forEach(d=>{
+    const user=d.data();
+    const role=(user.role||"").toLowerCase().trim();
+    const status=(user.status||"").toLowerCase().trim();
+    if(role==="teacher")teachers++;
+    if(role==="parent")parents++;
+    if(role==="student")students++;
+    if(status!=="approved")pending++;
+  });
+  teacherCount.textContent=teachers;
+  parentCount.textContent=parents;
+  studentCount.textContent=students;
+  pendingCount.textContent=pending;
+  await loadLinkedParentCount(school.id);
+  show("School dashboard loaded.","ok");
+}
+
+requireRoles(["school_admin"],async(user,profile)=>{
+  const role=(profile.role||"").toLowerCase().trim();
+  if(role!=="school_admin"&&role!=="admin"&&role!=="super_admin"){location.href="auth.html";return;}
+  renderRoleNav(profile,"Dashboard");
+  await loadSchoolDashboard(profile);
+});
+</script>
+</body>
+</html>
