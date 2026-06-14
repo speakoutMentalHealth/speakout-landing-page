@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Partnership Hub | SpeakOut Mental Health Outreach</title>
+<meta name="description" content="Official SpeakOut School Partnership Hub for school wellness clubs, student leadership, digital learning and partner onboarding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--navy:#07152b;--blue:#0a5fbf;--sky:#eaf4ff;--gold:#f4a21c;--green:#0f8f6f;
+--muted:#65748a;--line:#e4edf8;--bg:#f7faff;--white:#fff;
+--shadow:0 18px 45px rgba(7,21,43,.11);--r:24px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--navy);line-height:1.55}
+a{text-decoration:none;color:inherit}
+.container{width:min(1140px,92%);margin:auto}
+.topbar{background:var(--navy);color:#dbeafe;font-size:.9rem}
+.topbar .container{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:9px 0}
+.topbar a{text-decoration:underline;text-underline-offset:3px}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);box-shadow:0 8px 28px rgba(7,21,43,.06)}
+.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900}
+.brand img{width:52px;height:52px;object-fit:contain}
+.brand-title{font-size:1.1rem;color:var(--blue);line-height:1}
+.brand-title small{display:block;color:#d98200;font-size:.64rem;margin-top:5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.navlinks{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.navlinks a{font-weight:800;color:#32445d;font-size:.94rem}
+.menu{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:11px 14px;font-weight:900}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 18px;font-weight:900;cursor:pointer;text-align:center;transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--gold);color:#241400;box-shadow:0 12px 26px rgba(244,162,28,.26)}
+.btn.dark{background:var(--navy);color:#fff}
+.btn.soft{background:var(--sky);color:var(--blue)}
+.hero{background:linear-gradient(135deg,#fff,#eff7ff 60%,#fff4df);padding:72px 0 52px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:38px;align-items:center}
+.badge{display:inline-flex;padding:8px 14px;border-radius:999px;background:#fff;color:var(--blue);font-weight:900;box-shadow:0 10px 24px rgba(7,21,43,.08);font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px}
+h1{font-size:clamp(2.3rem,5vw,4.8rem);line-height:.98;letter-spacing:-.07em;margin:0 0 16px}
+.hero p{font-size:1.08rem;color:#45556d;max-width:660px;margin:0 0 24px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.official-card{background:#fff;border:1px solid var(--line);border-radius:32px;padding:26px;box-shadow:var(--shadow)}
+.official-card h3{margin:0 0 8px;font-size:1.35rem}
+.official-card p{margin:0;color:var(--muted)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:16px}
+.stat b{display:block;font-size:1.65rem;line-height:1;color:var(--blue)}
+.stat span{display:block;margin-top:7px;color:var(--muted);font-size:.86rem}
+section{padding:56px 0}
+.section-title{max-width:720px;margin-bottom:28px}
+.section-title.center{text-align:center;margin-left:auto;margin-right:auto}
+.section-title h2{font-size:clamp(1.85rem,4vw,3rem);line-height:1.06;letter-spacing:-.05em;margin:0 0 10px}
+.section-title p{color:var(--muted);font-size:1rem;margin:0}
+.grid{display:grid;gap:20px}.three{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:repeat(2,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:0 12px 32px rgba(7,21,43,.06)}
+.card h3{margin:0 0 8px;font-size:1.2rem}
+.card p{color:var(--muted);margin:0 0 16px}
+.icon{font-size:1.9rem;margin-bottom:10px}
+.tag{display:inline-flex;width:max-content;background:#e8fbf5;color:var(--green);font-weight:900;border-radius:999px;padding:6px 10px;font-size:.8rem;margin-bottom:12px}
+.tag.blue{background:var(--sky);color:var(--blue)}.tag.gold{background:#fff4df;color:#8a5600}
+.doc-card{display:flex;flex-direction:column;justify-content:space-between;min-height:230px}
+.dark{background:linear-gradient(135deg,var(--navy),#0a2347);color:#fff}
+.dark .section-title p,.dark .card p{color:#d9e7f8}.dark .card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);box-shadow:none}
+.feature-list{padding:0;margin:0;list-style:none;display:grid;gap:12px}
+.feature-list li{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-weight:800;color:#34445c}
+.feature-list li:before{content:"✓";color:var(--green);font-weight:900;margin-right:10px}
+.finance-box{background:#fff;border:1px solid var(--line);border-radius:30px;padding:26px;box-shadow:var(--shadow)}
+.finance-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.finance-item{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:17px}
+.finance-item b{font-size:1.5rem;color:var(--blue);display:block;line-height:1}
+.finance-item span{color:var(--muted);display:block;margin-top:8px}
+.process{counter-reset:step}.process .card{position:relative;padding-left:72px}.process .card:before{counter-increment:step;content:counter(step);position:absolute;left:24px;top:25px;width:34px;height:34px;border-radius:50%;background:var(--gold);display:grid;place-items:center;font-weight:900;color:#201200}
+.cta{background:linear-gradient(135deg,var(--blue),var(--green));border-radius:34px;color:#fff;padding:36px;display:grid;grid-template-columns:1.3fr .7fr;gap:24px;align-items:center;box-shadow:var(--shadow)}
+.cta h2{margin:0 0 8px;font-size:clamp(1.9rem,4vw,2.8rem);letter-spacing:-.05em;line-height:1.06}.cta p{margin:0;color:#eaf6ff}
+footer{background:var(--navy);color:#cfd9e8;padding:34px 0}
+footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}footer b{color:#fff}
+@media(max-width:1000px){.finance-row{grid-template-columns:1fr}}
+@media(max-width:900px){.hero-grid,.three,.two,.cta{grid-template-columns:1fr}.menu{display:inline-flex}.navlinks{display:none}body.menu-open .navlinks{display:flex;position:absolute;left:0;right:0;top:76px;background:#fff;border-bottom:1px solid var(--line);padding:18px 4%;flex-direction:column;align-items:stretch}body.menu-open .navlinks a{padding:12px;border-radius:14px;background:var(--bg)}section{padding:46px 0}.hero{padding:54px 0 40px}.stat-grid{grid-template-columns:1fr}.btn{width:100%}}
+</style>
+</head>
+
+<body>
+<div class="topbar">
+  <div class="container">
+    <span>Official School Partnership Page</span>
+    <span><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a> | <a href="https://wa.me/2348118103510" target="_blank" rel="noopener">+234 811 810 3510</a></span>
+  </div>
+</div>
+
+<header>
+  <div class="container nav">
+    <a class="brand" href="#top">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div class="brand-title">SpeakOut<small>School Partnership</small></div>
+    </a>
+    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="navlinks">
+      <a href="#documents">Documents</a>
+      <a href="#benefits">Benefits</a>
+      <a href="#financials">Financials</a>
+      <a href="#steps">Next Steps</a>
+      <a class="btn primary" href="YOUR_GOOGLE_DRIVE_FOLDER_LINK_HERE" target="_blank" rel="noopener">Access Documents</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="badge">SpeakOut Mental Health Outreach</span>
+      <h1>School Partnership Hub</h1>
+      <p>Official documents and onboarding information for schools interested in student wellness clubs, leadership development and digital support.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="YOUR_GOOGLE_DRIVE_FOLDER_LINK_HERE" target="_blank" rel="noopener">Open Partnership Documents</a>
+        <a class="btn dark" href="#documents">Review Key Documents</a>
+      </div>
+    </div>
+
+    <aside class="official-card">
+      <h3>For School Management</h3>
+      <p>A simple resource page for directors, principals, proprietors and school coordinators.</p>
+      <div class="stat-grid">
+        <div class="stat"><b>30%</b><span>School retention for club continuity</span></div>
+        <div class="stat"><b>70%</b><span>NGO platform and materials support</span></div>
+        <div class="stat"><b>₦2k+</b><span>Minimum support per student</span></div>
+        <div class="stat"><b>4</b><span>Student, parent, teacher and admin views</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="documents">
+  <div class="container">
+    <div class="section-title">
+      <h2>Key Partnership Documents</h2>
+      <p>Review the main documents needed to understand and begin the partnership process.</p>
+    </div>
+
+    <div class="grid three">
+      <article class="card doc-card">
+        <div><span class="tag blue">Proposal</span><h3>Executive Partnership Proposal</h3><p>Full partnership overview, value, rollout plan and sustainability model.</p></div>
+        <a class="btn soft" href="YOUR_EXECUTIVE_PROPOSAL_LINK_HERE" target="_blank" rel="noopener">Open Proposal</a>
+      </article>
+
+      <article class="card doc-card">
+        <div><span class="tag gold">Letter</span><h3>Introductory Letter</h3><p>Official letter introducing the partnership to school management.</p></div>
+        <a class="btn soft" href="YOUR_INTRODUCTORY_LETTER_LINK_HERE" target="_blank" rel="noopener">Open Letter</a>
+      </article>
+
+      <article class="card doc-card">
+        <div><span class="tag">Agreement</span><h3>Partnership MoU</h3><p>Roles, responsibilities, expectations and agreement structure.</p></div>
+        <a class="btn soft" href="YOUR_MOU_LINK_HERE" target="_blank" rel="noopener">Open MoU</a>
+      </article>
+
+      <article class="card doc-card">
+        <div><span class="tag gold">Onboarding</span><h3>School Registration Form</h3><p>Submit school details and indicate interest in joining the partner school network.</p></div>
+        <a class="btn primary" href="YOUR_REGISTRATION_FORM_LINK_HERE" target="_blank" rel="noopener">Register School</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="benefits">
+  <div class="container">
+    <div class="section-title">
+      <h2>What Schools Gain</h2>
+      <p>A practical support model for student wellbeing, leadership and school visibility.</p>
+    </div>
+
+    <div class="grid two">
+      <ul class="feature-list">
+        <li>Student wellness club setup</li>
+        <li>Student ambassador program</li>
+        <li>Leadership and confidence development</li>
+        <li>Teacher and parent sensitization support</li>
+      </ul>
+      <ul class="feature-list">
+        <li>MindCheck access and awareness tools</li>
+        <li>SpeakHub and E-Library learning support</li>
+        <li>Website and social media visibility support</li>
+        <li>Monitoring and impact reporting</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ecosystem" class="dark">
+  <div class="container">
+    <div class="section-title">
+      <h2>SpeakOut Ecosystem</h2>
+      <p>Simple tools and support systems schools can connect with.</p>
+    </div>
+
+    <div class="grid three">
+      <div class="card"><div class="icon">🧠</div><h3>MindCheck</h3><p>Mental health awareness and self-reflection support.</p></div>
+      <div class="card"><div class="icon">📚</div><h3>E-Library</h3><p>Wellness, leadership and learning resources.</p></div>
+      <div class="card"><div class="icon">🚀</div><h3>SpeakHub</h3><p>Skills development and future-readiness learning.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="financials">
+  <div class="container">
+    <div class="section-title center">
+      <h2>Sustainability Structure</h2>
+      <p>Clear, simple and designed for continuity.</p>
+    </div>
+
+    <div class="finance-box">
+      <div class="finance-row">
+        <div class="finance-item"><b>₦2,000+</b><span>Minimum support per student.</span></div>
+        <div class="finance-item"><b>30%</b><span>Retained by the school for club continuity.</span></div>
+        <div class="finance-item"><b>70%</b><span>Supports NGO platform, materials and implementation.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="steps">
+  <div class="container">
+    <div class="section-title">
+      <h2>Next Steps</h2>
+      <p>Simple process for interested schools.</p>
+    </div>
+
+    <div class="grid two process">
+      <div class="card"><h3>Review Documents</h3><p>Read the proposal, letter and MoU.</p></div>
+      <div class="card"><h3>Register Interest</h3><p>Complete the school registration form.</p></div>
+      <div class="card"><h3>Meet SpeakOut</h3><p>Schedule a short partnership discussion.</p></div>
+      <div class="card"><h3>Start Pilot</h3><p>Appoint a coordinator and begin onboarding.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta">
+      <div><h2>Ready to review the documents?</h2><p>Open the official folder or start with the registration form.</p></div>
+      <a class="btn primary" href="YOUR_GOOGLE_DRIVE_FOLDER_LINK_HERE" target="_blank" rel="noopener">Access Documents</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div><b>SpeakOut Mental Health Outreach</b><br>School Wellness, Leadership & Digital Support</div>
+    <div>www.speakoutmentalhealth.org<br>speaaakout@gmail.com | +234 811 810 3510</div>
+  </div>
+</footer>
+</body>
+</html>
