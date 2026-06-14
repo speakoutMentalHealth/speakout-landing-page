@@ -1,54 +1,60 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School Workshops | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Workshops | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium{background:var(--goldSoft);color:#704800}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:95px;resize:vertical}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>School Workshops</p></div></a><nav class="links" id="roleNav"></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">School Workshops</span><h1>Manage Workshops</h1><p>Create workshops and seminars for your school community.</p></div></section><section><div class="container"><div id="statusBox" class="notice">Loading...</div><div class="grid g2"><div class="panel"><span class="label">Create Workshop</span><h2>New Workshop</h2><form id="workshopForm"><div class="form-grid"><input id="title" placeholder="Workshop title" required><select id="audience"><option value="all">All School Users</option><option value="students">Students</option><option value="parents">Parents</option><option value="teachers">Teachers</option></select><input id="date" type="date" required><input id="time" type="time"><input id="locationField" placeholder="Location / Online link"></div><textarea id="description" placeholder="Description"></textarea><button class="btn primary" type="submit">Create Workshop</button></form></div><div class="panel"><span class="label">Upcoming</span><h2>School Workshops</h2><div id="workshopGrid" class="grid"></div></div></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer><script type="module">import { requireRoles, renderRoleNav } from "./launch-role-guard.js";import { db } from "./firebase-config.js";
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.cancelled,.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:95px;resize:vertical}.searchbar{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:18px}.workshop-card{display:flex;flex-direction:column;min-height:250px}.workshop-card .meta{margin-top:auto;padding-top:12px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.form-grid,.searchbar{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>School Workshops</p></div></a><nav class="links" id="roleNav"></nav></div></header>
+<main>
+<section class="hero"><div class="container"><span class="kicker">School Workshops</span><h1 id="schoolName">Manage Workshops</h1><p>Create and manage workshops, seminars and wellbeing sessions for students, parents, teachers and the wider school community.</p><div id="pills"></div></div></section>
+<section><div class="container">
+<div id="statusBox" class="notice">Loading workshops...</div>
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat"><strong id="totalCount">0</strong><span>Total Workshops</span></div>
+<div class="card stat"><strong id="studentCount">0</strong><span>Student Sessions</span></div>
+<div class="card stat"><strong id="parentCount">0</strong><span>Parent Sessions</span></div>
+<div class="card stat"><strong id="teacherCount">0</strong><span>Teacher Sessions</span></div>
+</div>
+<div class="grid g2">
+<div class="panel"><span class="label">Create Workshop</span><h2>New Workshop</h2><p>Add school workshops, seminars, awareness sessions or training programs.</p>
+<form id="workshopForm"><div class="form-grid">
+<input id="title" placeholder="Workshop title" required>
+<select id="audience"><option value="all">All School Users</option><option value="students">Students</option><option value="parents">Parents</option><option value="teachers">Teachers</option><option value="school_admin">School Administrators</option></select>
+<select id="category"><option value="Mental Health">Mental Health</option><option value="Leadership">Leadership</option><option value="Parent Education">Parent Education</option><option value="Teacher Wellbeing">Teacher Wellbeing</option><option value="Safeguarding">Safeguarding</option><option value="School Club">School Club</option></select>
+<select id="deliveryMode"><option value="physical">Physical</option><option value="online">Online</option><option value="hybrid">Hybrid</option></select>
+<input id="date" type="date" required><input id="time" type="time"><input id="duration" placeholder="Duration e.g. 2 hours"><input id="facilitator" placeholder="Facilitator / Speaker"><input id="locationField" placeholder="Location / Online link"><input id="capacity" type="number" placeholder="Expected Participants">
+</div><textarea id="description" placeholder="Description, objectives and expected outcomes"></textarea><button class="btn primary" type="submit">Create Workshop</button></form></div>
+<div class="panel"><span class="label">Find Workshops</span><h2>Filter sessions</h2><div class="searchbar"><input id="searchInput" placeholder="Search title, description, facilitator..."><select id="audienceFilter"><option value="all">All Audiences</option><option value="students">Students</option><option value="parents">Parents</option><option value="teachers">Teachers</option><option value="school_admin">School Admin</option></select><select id="categoryFilter"><option value="all">All Categories</option></select></div><div class="notice warn">Workshops created here are linked to your school and visible to relevant users based on audience.</div></div>
+</div>
+<div class="panel" style="margin-top:18px"><span class="label">Upcoming</span><h2>School Workshops</h2><div id="workshopGrid" class="grid g3"></div></div>
+</div></section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
+<script type="module">
+import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
+import { db } from "./firebase-config.js";
 import { collection, getDocs, query, where, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-window.loadWorkshops = async function(profile){
- const box=document.getElementById("workshopGrid");
- const status=document.getElementById("statusBox");
- try{
-   const schoolId=profile.schoolId||"";
-   const role=(profile.role||"").toLowerCase();
-   const snap=await getDocs(query(collection(db,"workshops"),where("status","==","active")));
-   let items=[];
-   snap.forEach(d=>{
-     const w={id:d.id,...d.data()};
-     const aud=(w.audience||"all").toLowerCase();
-     const sameSchool=!w.schoolId || w.schoolId===schoolId || w.schoolId==="all";
-     const rightAudience=aud==="all"||aud===role||aud===role+"s";
-     if(sameSchool && rightAudience) items.push(w);
-   });
-   box.innerHTML=items.map(w=>`<article class="card"><span class="pill active">${w.audience||"all"}</span><h3>${w.title||"Workshop"}</h3><p>${w.description||"No description yet."}</p><p><b>Date:</b> ${w.date||"TBA"} ${w.time||""}</p><p><b>Location:</b> ${w.location||"TBA"}</p></article>`).join("")||"<div class='notice warn'>No upcoming workshop for your role yet.</div>";
-   status.textContent="Workshops loaded."; status.className="notice ok";
- }catch(e){console.error(e);status.textContent="Could not load workshops.";status.className="notice bad";}
-}
-
-window.createWorkshop = async function(profile){
- const payload={
-   title:title.value.trim(),
-   description:description.value.trim(),
-   date:date.value,
-   time:time.value,
-   location:locationField.value.trim(),
-   audience:audience.value,
-   schoolId:profile.schoolId||"",
-   schoolCode:profile.schoolCode||"",
-   status:"active",
-   createdBy:profile.uid,
-   createdAt:serverTimestamp()
- };
- await addDoc(collection(db,"workshops"),payload);
-}
-window.pageReady=async(user,profile)=>{
- await window.loadWorkshops(profile);
- workshopForm.addEventListener("submit",async e=>{
-   e.preventDefault();
-   await window.createWorkshop(profile);
-   workshopForm.reset();
-   await window.loadWorkshops(profile);
-   document.getElementById("statusBox").textContent="Workshop created.";
-   document.getElementById("statusBox").className="notice ok";
- });
-};requireRoles(["school_admin"], async (user, profile)=>{renderRoleNav(profile,"Workshops"); if(window.pageReady) window.pageReady(user,profile);});</script></body></html>
+let workshops=[];let currentProfile=null;
+function show(message,type=""){statusBox.textContent=message;statusBox.className="notice "+type}
+function safe(value){return value||"—"}
+function pill(value){return `<span class="pill ${(value||"").toLowerCase()}">${safe(value)}</span>`}
+function val(id){return document.getElementById(id)?.value?.trim()||""}
+function updateStats(items){totalCount.textContent=items.length;studentCount.textContent=items.filter(w=>(w.audience||"").toLowerCase()==="students").length;parentCount.textContent=items.filter(w=>(w.audience||"").toLowerCase()==="parents").length;teacherCount.textContent=items.filter(w=>(w.audience||"").toLowerCase()==="teachers").length}
+function buildCategoryFilter(items){const categories=[...new Set(items.map(w=>w.category||"General"))].sort();categoryFilter.innerHTML=`<option value="all">All Categories</option>`+categories.map(c=>`<option value="${c}">${c}</option>`).join("")}
+function workshopCard(w){return `<article class="card workshop-card"><div>${pill(w.status||"active")} ${pill(w.audience||"all")} ${pill(w.category||"General")}</div><h3>${safe(w.title||"Workshop")}</h3><p>${safe(w.description||"No description yet.")}</p><p><b>Date:</b> ${safe(w.date||"TBA")} ${safe(w.time||"")}</p><p><b>Location:</b> ${safe(w.location||"TBA")}</p><p><b>Facilitator:</b> ${safe(w.facilitator||"TBA")}</p><div class="meta"><span class="pill">${safe(w.deliveryMode||"physical")}</span><span class="pill">${safe(w.duration||"Duration TBA")}</span></div></article>`}
+function render(){const search=(searchInput.value||"").toLowerCase().trim();const audience=audienceFilter.value;const category=categoryFilter.value;const filtered=workshops.filter(w=>{const text=`${w.title||""} ${w.description||""} ${w.facilitator||""} ${w.category||""}`.toLowerCase();return(!search||text.includes(search))&&(audience==="all"||(w.audience||"all")===audience)&&(category==="all"||(w.category||"General")===category)});workshopGrid.innerHTML=filtered.map(workshopCard).join("")||"<div class='notice warn'>No workshop matches this filter yet.</div>"}
+async function loadWorkshops(profile){try{const schoolId=profile.schoolId||"";const snap=await getDocs(query(collection(db,"workshops"),where("status","==","active")));workshops=[];snap.forEach(d=>{const w={id:d.id,...d.data()};const sameSchool=!w.schoolId||w.schoolId===schoolId||w.schoolId==="all";if(sameSchool)workshops.push(w)});workshops.sort((a,b)=>(a.date||"").localeCompare(b.date||""));updateStats(workshops);buildCategoryFilter(workshops);render();show("Workshops loaded.","ok")}catch(error){console.error(error);show("Could not load workshops.","bad")}}
+async function createWorkshop(profile){if(!val("title")||!val("date")){show("Workshop title and date are required.","bad");return}const payload={title:val("title"),description:val("description"),date:val("date"),time:val("time"),location:val("locationField"),audience:val("audience"),category:val("category"),deliveryMode:val("deliveryMode"),duration:val("duration"),facilitator:val("facilitator"),capacity:Number(val("capacity")||0),schoolId:profile.schoolId||"",schoolCode:profile.schoolCode||"",schoolName:profile.schoolName||"",status:"active",createdBy:profile.uid||"",createdByRole:profile.role||"school_admin",createdAt:serverTimestamp(),updatedAt:serverTimestamp()};await addDoc(collection(db,"workshops"),payload)}
+searchInput.addEventListener("input",render);audienceFilter.addEventListener("change",render);categoryFilter.addEventListener("change",render);
+requireRoles(["school_admin"],async(user,profile)=>{const role=(profile.role||"").toLowerCase().trim();if(role!=="school_admin"&&role!=="admin"&&role!=="super_admin"){location.href="auth.html";return}currentProfile={uid:user.uid,...profile};renderRoleNav(currentProfile,"Workshops");schoolName.textContent=profile.schoolName||"Manage Workshops";pills.innerHTML=pill(profile.role)+pill(profile.status)+pill(profile.schoolCode||"individual");await loadWorkshops(currentProfile);workshopForm.addEventListener("submit",async e=>{e.preventDefault();try{await createWorkshop(currentProfile);workshopForm.reset();await loadWorkshops(currentProfile);show("Workshop created successfully.","ok")}catch(error){console.error(error);show(error.message||"Could not create workshop.","bad")}})})
+</script>
+</body>
+</html>
