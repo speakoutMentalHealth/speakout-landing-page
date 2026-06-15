@@ -1,58 +1,1674 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SpeakOut Mental Health Outreach | Youth Mental Health, School Clubs & Community Support</title>
-<meta name="description" content="SpeakOut Mental Health Outreach promotes youth mental health awareness, school mental health clubs, parent and teacher education, digital wellness learning, and community support across Nigeria and Africa.">
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}html,body{margin:0;width:100%;overflow-x:hidden;scroll-behavior:smooth}body{font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}
-.strip{background:linear-gradient(90deg,var(--navy),var(--blue));color:white;text-align:center;padding:9px;font-weight:800}.strip a{background:rgba(255,255,255,.15);padding:6px 10px;border-radius:999px;margin-left:8px}
-.nav{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line)}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:46px;height:46px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:2px 0 0;color:#d98200;font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.links{display:flex;gap:8px;flex-wrap:wrap}.menu{display:none;border:0;background:var(--navy);color:#fff;width:42px;height:42px;border-radius:14px;font-size:1.2rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;text-align:center}.primary{background:var(--blue);color:#fff}.dark{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.light{background:#fff;color:var(--navy)}.outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}
-.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.94),rgba(7,21,43,.78),rgba(7,21,43,.38)),url('images/hero-africa.png') center/cover no-repeat}.hero .container{padding:78px 0 68px}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-h1,h2,h3{line-height:1.05;letter-spacing:-.045em}h1{font-size:clamp(2.7rem,6vw,5.8rem);margin:16px 0;max-width:980px}h2{font-size:clamp(2rem,4vw,4rem);color:var(--navy);margin:0 0 12px}.hero p{font-size:1.1rem;line-height:1.66;color:rgba(255,255,255,.9);max-width:760px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
-section{padding:66px 0}.section-title{text-align:center;max-width:880px;margin:0 auto 34px}.section-title p{color:var(--muted);line-height:1.65}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:22px}.card p,.panel p{color:var(--muted);line-height:1.62}.icon{width:54px;height:54px;border-radius:18px;background:var(--soft);color:var(--blue);display:grid;place-items:center;font-size:1.45rem;margin-bottom:15px}
-.check{list-style:none;padding:0;margin:20px 0}.check li{padding-left:28px;position:relative;font-weight:800;color:#344054;margin:10px 0}.check li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:900}.split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
-.dark-section{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.dark-section h2,.dark-section h3{color:#fff}.dark-section .section-title p,.dark-section .card p,.dark-section .check li{color:rgba(255,255,255,.84)}.dark-section .card{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#fff}
-.stat{text-align:center}.stat strong{display:block;font-size:clamp(2rem,4vw,3.4rem);color:var(--blue);line-height:1}.stat span{display:block;color:var(--muted);font-weight:850;margin-top:10px}.impact{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.donate{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.donate-card{background:linear-gradient(135deg,#fff,#f8fbff);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);padding:28px}.bank-box{background:#f7f9fc;border:1px dashed #c9d7ea;border-radius:20px;padding:18px}.bank-box strong{color:var(--navy)}
-.final{background:linear-gradient(135deg,var(--navy),#0b2344);color:#fff;text-align:center}.final h2{color:#fff}.final p{max-width:820px;margin:auto;color:rgba(255,255,255,.84);line-height:1.7}
-.footer{background:#061126;color:rgba(255,255,255,.74);padding:46px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:22px}.footer img{width:48px;background:#fff;border-radius:14px;padding:4px}.footer h3,.footer h4{color:#fff}.footer a{display:block;color:rgba(255,255,255,.72);margin:8px 0}.float{position:fixed;right:16px;bottom:16px;background:#25d366;color:#fff;padding:11px 16px;border-radius:999px;font-weight:900;box-shadow:0 16px 35px rgba(0,0,0,.22)}
-.partnership-card{padding:0;overflow:hidden;border:2px solid rgba(10,95,191,.16)}.partnership-top{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:30px;border-radius:24px 24px 0 0}.partnership-top h3{color:#fff;font-size:clamp(1.8rem,3vw,2.7rem);margin:12px 0}.partnership-top p{color:rgba(255,255,255,.88);max-width:760px}.partnership-body{padding:24px}#partnership-hub{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}#partnership-hub .card{box-shadow:0 12px 32px rgba(7,21,43,.07)}
-@media(max-width:1160px){.menu{display:block}.links{display:none;position:absolute;top:82px;left:4%;right:4%;background:#fff;border:1px solid var(--line);border-radius:20px;padding:12px;box-shadow:var(--shadow);flex-direction:column}.open .links{display:flex}.links a{width:100%;border-radius:14px}}
-@media(max-width:1000px){.split{grid-template-columns:1fr}.g4,.g3{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:720px){.container{width:calc(100% - 28px)}.hero .container{padding:50px 0}.g4,.g3,.g2,.footer-grid{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px;white-space:normal}.float{left:16px;right:16px;text-align:center;border-radius:14px}.strip{font-size:.75rem}.partnership-top{padding:24px}.partnership-body{padding:18px}}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>SpeakOut Mental Health Outreach | MindCheck, Resources & Youth Wellness</title>
+  <meta name="description" content="SpeakOut Mental Health Outreach expands access to youth mental wellness through MindCheck, Resources & Help, education, school outreach, community support and partnerships across Nigeria and Africa." />
+  <meta name="keywords" content="SpeakOut Mental Health Outreach, MindCheck, mental health Nigeria, youth mental wellness, mental health resources, school outreach, SpeakHub, e-library, protected portal" />
+  <meta name="author" content="SpeakOut Mental Health Outreach" />
+  <meta name="theme-color" content="#0a5fbf" />
+  <link rel="canonical" href="https://mindcheck.speakoutmentalhealth.org/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SpeakOut Mental Health Outreach" />
+  <meta property="og:description" content="Youth wellness, MindCheck, Resources & Help, education and community mental health outreach across Nigeria and Africa." />
+  <meta property="og:url" content="https://mindcheck.speakoutmentalhealth.org/" />
+  <meta property="og:image" content="https://mindcheck.speakoutmentalhealth.org/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SpeakOut Mental Health Outreach" />
+  <meta name="twitter:description" content="Accessible youth mental wellness support through technology, education and community outreach." />
+  <meta name="twitter:image" content="https://mindcheck.speakoutmentalhealth.org/logo.png" />
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --navy:#07152b;
+      --navy-2:#0b2344;
+      --blue:#0a5fbf;
+      --blue-2:#074f9f;
+      --blue-soft:#eaf3ff;
+      --gold:#f4a21c;
+      --gold-2:#d98200;
+      --gold-soft:#fff4df;
+      --green:#0f8f6f;
+      --ink:#111827;
+      --muted:#637083;
+      --line:#e5edf6;
+      --bg:#f7f9fc;
+      --white:#ffffff;
+      --shadow:0 24px 70px rgba(7,21,43,.12);
+      --shadow-soft:0 16px 44px rgba(7,21,43,.08);
+      --radius:30px;
+    }
+
+    *{box-sizing:border-box;max-width:100%}
+    html{scroll-behavior:smooth;width:100%;max-width:100%;overflow-x:hidden}
+    body{
+      margin:0;
+      font-family:"Outfit",Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block}
+    a{text-decoration:none;color:inherit}
+    button,input,select,textarea{font:inherit}
+    .container{width:min(1180px,92%);margin:auto}
+
+    .skip-link{
+      position:absolute;
+      left:-999px;
+      top:auto;
+      width:1px;
+      height:1px;
+      overflow:hidden;
+    }
+    .skip-link:focus{
+      left:18px;
+      top:18px;
+      width:auto;
+      height:auto;
+      background:#fff;
+      color:var(--navy);
+      padding:12px 16px;
+      border-radius:999px;
+      z-index:3000;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .scrollbar{
+      position:fixed;
+      top:0;
+      left:0;
+      height:4px;
+      background:linear-gradient(90deg,var(--gold),var(--blue));
+      width:0;
+      z-index:3000;
+    }
+
+    .support-strip{
+      background:linear-gradient(90deg,var(--navy),var(--blue));
+      color:#fff;
+      font-weight:800;
+      font-size:.86rem;
+      padding:9px 0;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .support-strip .container{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-align:center;
+      flex-wrap:wrap;
+    }
+    .support-strip a{
+      color:#fff;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:900;
+    }
+
+    .nav{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      min-height:70px;
+      padding:8px 0;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(7,21,43,.08);
+      width:100%;
+      max-width:100%;
+    }
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      position:relative;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      flex:0 1 auto;
+    }
+    .brand img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
+    .brand-text{min-width:0}
+    .brand h2{margin:0;color:var(--blue);font-size:1.05rem;line-height:1;font-weight:900;white-space:nowrap}
+    .brand p{margin:4px 0 0;color:var(--gold-2);font-size:.56rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      margin-left:auto;
+      font-weight:800;
+      color:#374151;
+      font-size:.78rem;
+      min-width:0;
+      flex-wrap:wrap;
+    }
+    .nav-links a:hover{color:var(--blue)}
+
+    .menu-toggle{
+      display:none;
+      border:0;
+      background:var(--navy);
+      color:#fff;
+      border-radius:14px;
+      width:42px;
+      height:42px;
+      padding:0;
+      font-size:1.25rem;
+      cursor:pointer;
+      flex:0 0 42px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      min-height:38px;
+      padding:9px 14px;
+      border-radius:999px;
+      font-weight:850;
+      border:0;
+      cursor:pointer;
+      transition:.25s ease;
+      white-space:nowrap;
+      line-height:1.05;
+      font-size:.84rem;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(7,21,43,.14)}
+    .btn-primary{background:var(--blue);color:#fff}
+    .btn-primary:hover{background:var(--blue-2)}
+    .btn-dark{background:var(--navy);color:#fff}
+    .btn-light{background:#fff;color:var(--navy)}
+    .btn-outline{border:1px solid rgba(255,255,255,.45);color:#fff;background:transparent}
+    .btn-soft{background:var(--blue-soft);color:var(--blue)}
+    .btn-gold{background:var(--gold);color:#201100}
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      min-height:74vh;
+      display:grid;
+      align-items:center;
+      background:
+        linear-gradient(90deg,rgba(7,21,43,.86),rgba(7,21,43,.58) 45%,rgba(7,21,43,.18)),
+        url('images/hero-africa.png') center/cover no-repeat;
+      color:#fff;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(244,162,28,.22),transparent 30%),
+        radial-gradient(circle at 85% 15%,rgba(10,95,191,.30),transparent 35%);
+      pointer-events:none;
+    }
+    .hero .container{position:relative;z-index:2;padding:58px 0}
+    .hero-content{max-width:890px}
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.20);
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:#fff;
+    }
+    h1,h2,h3{margin-top:0;line-height:1.05;letter-spacing:-.045em}
+    h1{font-size:clamp(2.75rem,6vw,5.6rem);margin:16px 0;max-width:1040px}
+    .hero p{font-size:1.05rem;line-height:1.65;max-width:700px;color:rgba(255,255,255,.90);margin:18px 0 22px}
+    .hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+    .hero-trust{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;color:#fff}
+    .hero-trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-weight:800;font-size:.85rem}
+
+    section{padding:68px 0}
+    .section-title{max-width:880px;margin:0 auto 32px;text-align:center}
+    .section-title .label,
+    .label{
+      display:inline-flex;
+      padding:7px 11px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      margin-bottom:16px;
+    }
+    .section-title h2{font-size:clamp(1.9rem,3.8vw,3.7rem);margin:0 0 10px;color:var(--navy)}
+    .section-title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+
+    /* PUBLIC / PORTAL DEMARCATION */
+    .public-portal-section{
+      background:
+        radial-gradient(circle at 12% 18%, rgba(244,162,28,.12), transparent 28%),
+        linear-gradient(180deg,#ffffff,var(--bg));
+      border-bottom:1px solid var(--line);
+    }
+    .public-portal-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+      align-items:stretch;
+    }
+    .public-portal-card{
+      position:relative;
+      overflow:hidden;
+      padding:28px;
+      border-radius:28px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+    }
+    .public-portal-card::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      right:-100px;
+      top:-100px;
+      background:var(--blue);
+      opacity:.11;
+    }
+    .protected-side{
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      color:#fff;
+      border-color:rgba(255,255,255,.14);
+    }
+    .protected-side::after{
+      background:var(--gold);
+      opacity:.16;
+    }
+    .portal-card-icon{
+      width:52px;
+      height:52px;
+      border-radius:17px;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-size:1.35rem;
+      margin-bottom:14px;
+    }
+    .protected-side .portal-card-icon{
+      background:rgba(255,255,255,.14);
+      color:#fff;
+    }
+    .portal-status{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+    .portal-status.open{
+      background:#e9fbf5;
+      color:var(--green);
+    }
+    .portal-status.locked{
+      background:rgba(244,162,28,.18);
+      color:#ffd27a;
+      border:1px solid rgba(244,162,28,.24);
+    }
+    .public-portal-card h3{
+      color:var(--navy);
+      font-size:clamp(1.5rem,3vw,2.45rem);
+      margin:0 0 10px;
+    }
+    .protected-side h3{color:#fff}
+    .public-portal-card p{
+      color:var(--muted);
+      line-height:1.65;
+      margin:0 0 18px;
+    }
+    .protected-side p{color:rgba(255,255,255,.84)}
+    .portal-list{
+      list-style:none;
+      margin:0 0 22px;
+      padding:0;
+      display:grid;
+      gap:10px;
+    }
+    .portal-list li{
+      position:relative;
+      padding-left:25px;
+      color:#344054;
+      font-weight:800;
+      line-height:1.45;
+    }
+    .protected-side .portal-list li{color:rgba(255,255,255,.88)}
+    .portal-list li::before{
+      content:"✓";
+      position:absolute;
+      left:0;
+      top:1px;
+      width:17px;
+      height:17px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#e9fbf5;
+      color:var(--green);
+      font-size:.68rem;
+      font-weight:900;
+    }
+    .protected-side .portal-list li::before{
+      background:rgba(244,162,28,.22);
+      color:#ffd27a;
+    }
+    .portal-card-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .portal-note{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--gold-soft);
+      border:1px solid rgba(244,162,28,.28);
+      color:#704800;
+      font-weight:750;
+      line-height:1.6;
+    }
+
+    .impact{background:#fff;border-bottom:1px solid var(--line)}
+    .impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .impact-card{
+      padding:20px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:linear-gradient(180deg,#fff,#f8fbff);
+      box-shadow:var(--shadow-soft);
+      text-align:center;
+      min-height:120px;
+      display:grid;
+      place-items:center;
+    }
+    .impact-card strong{display:block;font-size:clamp(2rem,4vw,3.5rem);color:var(--blue);letter-spacing:-.05em;line-height:1}
+    .impact-card span{display:block;margin-top:10px;color:var(--muted);font-weight:800}
+
+    .vision{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;position:relative;overflow:hidden}
+    .vision::before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-120px;top:-140px;background:rgba(244,162,28,.16);filter:blur(4px);animation:float 8s ease-in-out infinite}
+    .vision-card{position:relative;z-index:2;display:grid;grid-template-columns:.8fr 1.2fr;gap:28px;align-items:center}
+    .vision h2{font-size:clamp(2.4rem,5vw,5rem);margin:0;color:#fff}
+    .vision p{font-size:1.05rem;line-height:1.65;color:rgba(255,255,255,.86);margin:0}
+
+    .program-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .program-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-soft);transition:.35s ease}
+    .program-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+    .program-card img{height:205px;width:100%;object-fit:cover;transition:.45s ease}
+    .program-card:hover img{transform:scale(1.04)}
+    .program-body{padding:20px}
+    .program-body h3{font-size:1.25rem;color:var(--navy);margin:0 0 12px}
+    .program-body p{color:var(--muted);line-height:1.55;margin:0 0 18px;font-size:.95rem}
+    .learn{font-weight:900;color:var(--blue)}
+
+    .mindcheck{background:#fff}
+    .mindcheck-wrap{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:36px;
+      align-items:center;
+      background:linear-gradient(135deg,#f8fbff,#fff8ee);
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:30px;
+      box-shadow:var(--shadow);
+    }
+    .device{background:var(--navy);border-radius:32px;padding:20px;box-shadow:0 35px 80px rgba(7,21,43,.25);transform:rotate(-1.5deg)}
+    .device-screen{background:#fff;border-radius:22px;padding:26px;min-height:320px}
+    .screen-line{height:14px;border-radius:99px;background:#e6edf5;margin:14px 0}
+    .screen-line.short{width:60%}
+    .screen-line.gold{background:var(--gold-soft)}
+    .screen-card{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+    .screen-card div{height:80px;border-radius:18px;background:var(--blue-soft)}
+    .mindcheck h2{font-size:clamp(2.2rem,4vw,4rem);color:var(--navy);margin:0 0 16px}
+    .mindcheck p{color:var(--muted);line-height:1.62;font-size:.98rem}
+
+    .ecosystem{
+      background:#fff;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+    .ecosystem-intro{
+      max-width:900px;
+      margin:0 auto 52px;
+      text-align:center;
+    }
+    .ecosystem-intro h2{
+      font-size:clamp(2.25rem,4.5vw,4.5rem);
+      color:var(--navy);
+      margin:0 0 16px;
+    }
+    .ecosystem-intro p{
+      color:var(--muted);
+      font-size:1.1rem;
+      line-height:1.75;
+      margin:0;
+    }
+    .ecosystem-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:28px;
+      align-items:center;
+      margin-bottom:46px;
+    }
+    .ecosystem-grid:last-child{margin-bottom:0}
+    .ecosystem-grid.reverse{direction:rtl}
+    .ecosystem-grid.reverse > *{direction:ltr}
+    .ecosystem-image{
+      position:relative;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:var(--blue-soft);
+      min-height:360px;
+    }
+    .ecosystem-image img{
+      width:100%;
+      height:360px;
+      object-fit:cover;
+      transition:.5s ease;
+    }
+    .ecosystem-image:hover img{transform:scale(1.04)}
+    .ecosystem-image::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,transparent 55%,rgba(7,21,43,.28));
+      pointer-events:none;
+    }
+    .ecosystem-content{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:26px;
+      box-shadow:var(--shadow-soft);
+    }
+    .ecosystem-content h2{
+      font-size:clamp(2rem,4vw,3.6rem);
+      color:var(--navy);
+      margin:14px 0 16px;
+    }
+    .ecosystem-content p{
+      color:var(--muted);
+      line-height:1.8;
+      font-size:1.06rem;
+      margin:0 0 20px;
+    }
+    .ecosystem-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+      margin:18px 0 22px;
+      padding:0;
+      list-style:none;
+    }
+    .ecosystem-list li{
+      background:#f8fbff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px 12px;
+      color:var(--navy);
+      font-weight:800;
+      font-size:.85rem;
+    }
+    .ecosystem-list li::before{
+      content:"✓";
+      color:var(--blue);
+      font-weight:900;
+      margin-right:8px;
+    }
+
+    .resources-help{
+      background:linear-gradient(135deg,#fff,#f8fbff);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      overflow:hidden;
+    }
+    .resources-help-wrap{
+      display:grid;
+      grid-template-columns:minmax(320px,.95fr) minmax(360px,1.05fr);
+      gap:38px;
+      align-items:stretch;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:30px;
+      box-shadow:var(--shadow);
+    }
+    .resources-alert{
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      color:#fff;
+      border-radius:24px;
+      padding:30px;
+      min-height:280px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 22px 54px rgba(7,21,43,.18);
+    }
+    .resources-alert::before{
+      content:"";
+      position:absolute;
+      width:280px;
+      height:280px;
+      right:-90px;
+      top:-100px;
+      border-radius:50%;
+      background:rgba(244,162,28,.20);
+      filter:blur(2px);
+    }
+    .resources-alert::after{
+      content:"";
+      position:absolute;
+      inset:22px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:24px;
+      pointer-events:none;
+    }
+    .resources-alert > *{position:relative;z-index:2}
+    .resources-alert strong{
+      display:block;
+      font-size:clamp(2rem,4vw,3.8rem);
+      line-height:1.02;
+      letter-spacing:-.06em;
+      margin-bottom:18px;
+    }
+    .resources-alert p{
+      color:rgba(255,255,255,.88);
+      line-height:1.62;
+      font-size:.98rem;
+      margin:0 0 26px;
+      max-width:560px;
+    }
+    .resources-help-copy{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      min-width:0;
+    }
+    .resources-help h2{
+      font-size:clamp(2.25rem,4.2vw,4.25rem);
+      color:var(--navy);
+      margin:0 0 16px;
+    }
+    .resources-help p{color:var(--muted);line-height:1.62;font-size:.98rem}
+    .resource-chip-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin:26px 0 30px;
+    }
+    .resource-chip{
+      border:1px solid var(--line);
+      background:#f8fbff;
+      border-radius:20px;
+      padding:20px;
+      font-weight:900;
+      color:var(--navy);
+      box-shadow:var(--shadow-soft);
+      min-height:auto;
+    }
+    .resource-chip span{display:block;color:var(--muted);font-size:.9rem;font-weight:700;margin-top:6px;line-height:1.52}
+    .quick-help-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      margin-top:28px;
+      grid-column:1 / -1;
+    }
+    .quick-help-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:20px;
+      box-shadow:var(--shadow-soft);
+      min-width:0;
+    }
+    .quick-help-card span{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:var(--blue);
+      font-weight:900;
+      margin-bottom:14px;
+    }
+    .quick-help-card h3{color:var(--navy);font-size:1.15rem;margin:0 0 8px;letter-spacing:-.02em}
+    .quick-help-card p{color:var(--muted);line-height:1.65;margin:0;font-size:.98rem}
+
+    .testimonials{background:var(--bg)}
+    .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .quote-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
+    .quote-mark{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);color:#9a5f00;font-size:2rem;font-weight:900;margin-bottom:18px}
+    .quote-card p{color:#374151;line-height:1.75;font-size:1.05rem}
+    .quote-card strong{display:block;color:var(--navy);margin-top:20px}
+    .quote-card small{color:var(--muted);font-weight:800}
+
+    .partners{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .logo-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .partner-logo{
+      height:110px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:#fff;
+      display:grid;
+      place-items:center;
+      padding:16px;
+      box-shadow:var(--shadow-soft);
+      transition:.3s ease;
+    }
+    .partner-logo:hover{transform:translateY(-6px)}
+    .partner-logo img{max-height:70px;object-fit:contain}
+
+    .projects{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+    .projects .section-title h2,.projects .section-title p{color:#fff}
+    .projects .section-title p{opacity:.84}
+    .projects .section-title .label{background:rgba(255,255,255,.13);color:#fff}
+    .project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .project-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:20px;backdrop-filter:blur(12px);transition:.35s ease}
+    .project-card:hover{transform:translateY(-8px);background:rgba(255,255,255,.13)}
+    .project-card h3{font-size:1.25rem;color:#fff;margin:0 0 12px}
+    .project-card p{color:rgba(255,255,255,.82);line-height:1.55;font-size:.95rem}
+    .project-card small{color:var(--gold);font-weight:900}
+
+    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .gallery-item{position:relative;border-radius:20px;overflow:hidden;height:230px;box-shadow:var(--shadow-soft)}
+    .gallery-item img{width:100%;height:100%;object-fit:cover;transition:.5s ease}
+    .gallery-item:hover img{transform:scale(1.06)}
+    .gallery-item span{
+      position:absolute;
+      left:18px;
+      bottom:18px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(7,21,43,.76);
+      color:#fff;
+      font-weight:800;
+      font-size:.9rem;
+    }
+
+    .why-matters{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .why-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:38px;align-items:center}
+    .why-box{background:var(--navy);color:#fff;border-radius:26px;padding:28px;box-shadow:var(--shadow)}
+    .why-box h2{font-size:clamp(2.1rem,4vw,4rem);color:#fff;margin-bottom:18px}
+    .why-box p{color:rgba(255,255,255,.84);line-height:1.65;font-size:1rem}
+    .why-list{display:grid;gap:16px}
+    .why-list div{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
+    .why-list h3{color:var(--navy);margin:0 0 8px;font-size:1.3rem}
+    .why-list p{margin:0;color:var(--muted);line-height:1.7}
+
+    .founder{background:#fff}
+    .founder-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:30px}
+    .founder-photo{border-radius:30px;overflow:hidden;height:380px;background:var(--blue-soft)}
+    .founder-photo img{width:100%;height:100%;object-fit:cover}
+    .founder h2{font-size:clamp(2.2rem,4vw,4rem);color:var(--navy);margin:0 0 16px}
+    .founder p{color:var(--muted);line-height:1.8;font-size:1.08rem}
+
+    .reports{background:var(--bg)}
+    .report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .report-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft);transition:.3s ease}
+    .report-card:hover{transform:translateY(-7px);box-shadow:var(--shadow)}
+    .report-card h3{color:var(--navy);font-size:1.2rem;margin-bottom:8px}
+    .report-card p{color:var(--muted);line-height:1.55;font-size:.95rem;margin:0 0 14px}
+    .report-card strong{color:var(--blue)}
+
+    .contact-section{background:#fff}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+    .contact-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow-soft)}
+    .contact-card h3{color:var(--navy);font-size:1.4rem;margin-bottom:10px}
+    .contact-card p{color:var(--muted);line-height:1.55;font-size:.95rem;margin:0 0 18px}
+    .contact-options{display:grid;gap:14px}
+    .contact-option{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--line);border-radius:16px;padding:14px;background:#fbfdff}
+    .contact-option span{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-weight:900;flex:0 0 auto;font-size:.82rem}
+    .contact-option strong{display:block;color:var(--navy);margin-bottom:4px}
+    .contact-option a{color:var(--blue);font-weight:900}
+    .contact-form{display:grid;gap:14px}
+    .contact-form input,.contact-form textarea,.contact-form select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:13px;
+      padding:12px 14px;
+      font:inherit;
+      outline:none;
+      background:#fbfdff;
+    }
+    .contact-form textarea{min-height:110px;resize:vertical}
+    .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(10,95,191,.10);
+    }
+
+    .final-cta{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;text-align:center}
+    .final-cta::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 10%,rgba(244,162,28,.2),transparent 32%),radial-gradient(circle at 90% 20%,rgba(10,95,191,.26),transparent 34%)}
+    .final-cta .container{position:relative;z-index:2}
+    .final-cta h2{font-size:clamp(2.5rem,5vw,5rem);color:#fff;margin:0 0 18px}
+    .final-cta p{max-width:760px;margin:0 auto 28px;color:rgba(255,255,255,.86);line-height:1.75;font-size:1.12rem}
+    .cta-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+    .floating-help{position:fixed;right:16px;bottom:16px;z-index:999;background:#25d366;color:#fff;padding:10px 16px;border-radius:999px;font-weight:900;box-shadow:0 16px 35px rgba(0,0,0,.22);font-size:.86rem}
+
+    .footer{background:#061126;color:rgba(255,255,255,.74);padding:46px 0 24px}
+    .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:22px}
+    .footer-brand{display:flex;align-items:center;gap:12px}
+    .footer-brand img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:14px;padding:4px}
+    .footer h3,.footer h4{color:#fff;margin:0 0 12px}
+    .footer a{display:block;color:rgba(255,255,255,.72);margin:8px 0}
+    .footer-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .footer-badges span{border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:7px 10px;color:rgba(255,255,255,.80);font-weight:800;font-size:.85rem}
+    .footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+    .microcopy{font-size:.92rem;color:rgba(255,255,255,.58);line-height:1.6;margin-top:14px}
+
+    .reveal{opacity:.12;transform:translateY(52px) scale(.98);transition:opacity .75s ease,transform .75s cubic-bezier(.22,1,.36,1);will-change:transform,opacity}
+    .reveal.active{opacity:1;transform:translateY(0) scale(1)}
+    .reveal.exit{opacity:.35;transform:translateY(-28px) scale(.99)}
+    .float-soft{animation:premiumFloat 6s ease-in-out infinite}
+    @keyframes premiumFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-24px)}}
+
+    @media(max-width:1180px){
+      .menu-toggle{display:inline-flex}
+      .nav-links{
+        display:none;
+        position:absolute;
+        top:calc(100% + 10px);
+        left:0;
+        right:0;
+        width:100%;
+        background:#fff;
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:12px;
+        box-shadow:0 22px 55px rgba(7,21,43,.16);
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        z-index:2500;
+      }
+      body.menu-open .nav-links{display:flex}
+      .nav-links a,.nav-links .btn{
+        width:100%;
+        min-height:38px;
+        padding:10px 12px;
+        font-size:.82rem;
+        justify-content:center;
+        white-space:normal;
+        text-align:center;
+      }
+    }
+
+    @media(max-width:1000px){
+      .program-grid,.testimonial-grid,.project-grid,.gallery-grid,.impact-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:repeat(2,1fr)}
+      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
+      .resources-alert{min-height:auto}
+      .resource-chip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero{background-position:center}
+      .founder-photo{height:360px}
+      .public-portal-grid{grid-template-columns:1fr}
+      .public-portal-card{padding:22px;border-radius:22px}
+      .portal-card-actions .btn{width:100%;border-radius:14px}
+    }
+
+    @media(max-width:760px){
+      .support-strip{font-size:.76rem;padding:7px 0}
+      .support-strip a{padding:5px 8px}
+      .container{width:min(100% - 28px,1180px)}
+      section{padding:48px 0}
+      .nav{min-height:64px}
+      .brand{max-width:calc(100% - 58px)}
+      .brand img{width:40px;height:40px}
+      .brand h2{font-size:.95rem}
+      .brand p{font-size:.5rem}
+      .menu-toggle{width:42px;height:42px}
+      .nav-links{
+        top:calc(100% + 10px);
+        max-height:calc(100vh - 110px);
+        overflow-y:auto;
+      }
+
+      .hero{min-height:auto;background-position:center}
+      .hero .container{padding:46px 0 70px}
+      h1{font-size:clamp(2.45rem,11vw,3.65rem);line-height:1.02}
+      .hero p{font-size:.98rem;line-height:1.55;margin:16px 0 18px}
+      .hero-actions{flex-direction:row!important;flex-wrap:wrap;gap:8px;margin-top:18px}
+      .hero-actions .btn{
+        width:auto!important;
+        flex:1 1 calc(33.333% - 8px);
+        min-width:0;
+        min-height:40px;
+        padding:10px 8px;
+        font-size:.72rem;
+        white-space:normal;
+      }
+      .hero-trust{gap:7px;margin-top:18px}
+      .hero-trust span{padding:7px 9px;font-size:.76rem}
+
+      .impact-grid,.program-grid,.testimonial-grid,.project-grid,.gallery-grid,.logo-wall,.footer-grid,.report-grid,.quick-help-grid{grid-template-columns:1fr}
+      .mindcheck-wrap,.vision-card,.founder-wrap,.why-wrap,.contact-grid,.ecosystem-grid,.ecosystem-grid.reverse,.resources-help-wrap{grid-template-columns:1fr;direction:ltr}
+      .mindcheck-wrap,.founder-wrap,.why-box,.ecosystem-content,.resources-help-wrap,.resources-alert{padding:20px;border-radius:22px}
+      .program-card img{height:180px}
+      .gallery-item{height:205px}
+      .ecosystem-image,.ecosystem-image img{height:260px;min-height:260px}
+      .resource-chip-grid,.ecosystem-list{grid-template-columns:1fr}
+      .founder-photo{height:300px}
+      .contact-option{flex-direction:column}
+      .floating-help{left:18px;right:18px;bottom:12px;text-align:center;width:auto;min-height:38px;padding:10px 14px;font-size:.82rem}
+      .portal-list li{font-size:.9rem}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation:none!important;transition:none!important}
+      .reveal,.reveal.active,.reveal.exit{opacity:1;transform:none}
+    }
+  
+.social-icons{display:flex;gap:10px;align-items:center}
+.social-icons a{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#eaf3ff;color:#0a5fbf;font-weight:900}
+.media-hub{background:#fff;border-top:1px solid #e5edf6;border-bottom:1px solid #e5edf6}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.media-card{background:#fff;border:1px solid #e5edf6;border-radius:20px;padding:20px;box-shadow:0 16px 44px rgba(7,21,43,.08)}
+.media-card iframe,.media-card audio{width:100%}
+
 </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "SpeakOut Mental Health Outreach",
+    "url": "https://mindcheck.speakoutmentalhealth.org/",
+    "logo": "https://mindcheck.speakoutmentalhealth.org/logo.png",
+    "description": "Youth mental wellness outreach, MindCheck digital wellbeing tools, resources, education and community partnerships.",
+    "areaServed": "Nigeria",
+    "sameAs": ["https://instagram.com/speaaakout"],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "General Support",
+      "email": "speaaakout@gmail.com",
+      "telephone": "+2348118103510"
+    }
+  }
+  </script>
 </head>
+
 <body>
-<div class="strip">In immediate danger or crisis? Contact local emergency services now. <a href="auth.html">Get Support Access</a></div>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>Mental Health Outreach</p></div></a><button class="menu" aria-label="Open menu">☰</button><nav class="links"><a class="btn soft" href="#about">About</a><a class="btn soft" href="#problem">Why It Matters</a><a class="btn soft" href="#programs">Programs</a><a class="btn soft" href="#schools">Schools</a><a class="btn soft" href="#partnership-hub">Partner Schools</a><a class="btn soft" href="#donate">Donate</a><a class="btn dark" href="auth.html">Login</a></nav></div></header>
-<main>
-<section class="hero"><div class="container"><span class="kicker">Youth Mental Health • School Support • Community Education</span><h1>Helping young people speak, heal and thrive.</h1><p>SpeakOut Mental Health Outreach makes mental health education accessible, practical and stigma-free for students, parents, teachers, schools and communities.</p><div class="actions"><a class="btn gold" href="#about">Learn About SpeakOut</a><a class="btn primary" href="school-register.html">Register a School</a><a class="btn gold" href="school-proposal-hub.html">Partnership Hub</a><a class="btn light" href="auth.html">Member Login</a><a class="btn outline" href="#donate">Donate</a></div></div></section>
-<section class="impact"><div class="container"><div class="grid g4"><div class="card stat"><strong>21</strong><span>Schools Reached</span></div><div class="card stat"><strong>10,000+</strong><span>Students Targeted</span></div><div class="card stat"><strong>500+</strong><span>Youth Trained</span></div><div class="card stat"><strong>30+</strong><span>Volunteers & Ambassadors</span></div></div></div></section>
-<section id="about"><div class="container split"><div><span class="label">Who We Are</span><h2>SpeakOut is building a safer mental health culture for young people.</h2><p>We work with schools, communities, parents, teachers and youth leaders to reduce stigma, promote early support, and create safe spaces where young people can learn, speak and receive guidance.</p><ul class="check"><li>Mental health awareness and education</li><li>School mental health clubs</li><li>Parent and teacher workshops</li><li>Digital learning through SpeakHub, E-Library and Kiddies Corner</li><li>Certificates for trainings and programs</li></ul></div><div class="panel"><h3>Our belief</h3><p>Mental health support should not begin only when a young person is already in crisis. It should begin with awareness, safe conversations, trusted adults, practical tools and early guidance.</p><p><strong>SpeakOut turns mental health education into a structured school and community ecosystem.</strong></p></div></div></section>
-<section id="problem" class="dark-section"><div class="container"><div class="section-title"><span class="kicker">Why It Matters</span><h2>Mental health silence is costing young people too much.</h2><p>Many students struggle with stress, fear, bullying, low confidence, anxiety, family pressure, academic pressure and emotional pain without knowing where to turn.</p></div><div class="grid g3"><div class="card"><div class="icon">😔</div><h3>Students suffer quietly</h3><p>Many young people do not speak because of shame, fear, punishment or lack of trusted support.</p></div><div class="card"><div class="icon">🏫</div><h3>Schools need structure</h3><p>Schools may care deeply but still lack a simple, organized model for mental health education and club activities.</p></div><div class="card"><div class="icon">👨‍👩‍👧</div><h3>Adults need tools</h3><p>Parents and teachers need practical guidance to identify warning signs, support children and respond without stigma.</p></div></div></div></section>
-<section id="programs"><div class="container"><div class="section-title"><span class="label">What We Do</span><h2>Programs that educate, support and connect.</h2><p>SpeakOut combines community outreach, school engagement, digital learning, parent/teacher education and youth leadership.</p></div><div class="grid g3"><div class="card"><div class="icon">🧠</div><h3>MindCheck</h3><p>Digital screening and awareness tools that help people reflect on wellbeing and seek early support.</p></div><div class="card"><div class="icon">🏫</div><h3>School Mental Health Clubs</h3><p>A structured school model for awareness activities, student leadership, reporting and wellbeing engagement.</p></div><div class="card"><div class="icon">🎤</div><h3>Leadership Development Summit</h3><p>Student-focused leadership and mental health sessions that build confidence, purpose and resilience.</p></div><div class="card"><div class="icon">👩‍🏫</div><h3>Teacher Wellbeing Training</h3><p>Training to help teachers identify concerns, support students and build emotionally safer classrooms.</p></div><div class="card"><div class="icon">👨‍👩‍👧</div><h3>Parent Support Sessions</h3><p>Seminars and resources that help parents support children’s emotional wellbeing and development.</p></div><div class="card"><div class="icon">🎓</div><h3>Certificates & Learning</h3><p>Structured learning through SpeakHub, E-Library, Kiddies Corner and certificate-based programs.</p></div></div></div></section>
-<section><div class="container"><div class="section-title"><span class="label">How It Works</span><h2>A clear pathway for every user.</h2><p>Each group gets the tools, resources and access that match their role.</p></div><div class="grid g4"><div class="card"><div class="icon">🎒</div><h3>Students</h3><p>Access student resources, courses, certificates, workshops and mental health learning activities.</p></div><div class="card"><div class="icon">👨‍👩‍👧</div><h3>Parents</h3><p>Link to their child, access parent resources, attend seminars and monitor approved child progress.</p></div><div class="card"><div class="icon">👩‍🏫</div><h3>Teachers</h3><p>Access classroom wellbeing resources, teacher training, workshops and school support tools.</p></div><div class="card"><div class="icon">🏫</div><h3>Schools</h3><p>Manage students, parents, teachers, workshops, reports, certificates and mental health club activities.</p></div></div></div></section>
-<section id="schools"><div class="container split"><div class="panel"><span class="label">For Schools</span><h2>A complete school ecosystem, not just a one-day talk.</h2><p>SpeakOut helps schools create a sustainable mental health structure that includes students, teachers, parents and school leadership.</p><ul class="check"><li>School applies and gets approved by SpeakOut</li><li>School receives a school code and dashboard</li><li>School adds teachers, parents and students</li><li>School approves its own members</li><li>School tracks learning, workshops and certificates</li></ul><div class="actions"><a class="btn primary" href="school-register.html">Register Your School</a><a class="btn soft" href="auth.html">Member Access</a></div></div><div class="grid g2"><div class="card stat"><strong>21</strong><span>Schools Reached</span></div><div class="card stat"><strong>10,000+</strong><span>Students Targeted</span></div><div class="card stat"><strong>30+</strong><span>Volunteers & Ambassadors</span></div><div class="card stat"><strong>500+</strong><span>Youth Trained</span></div></div></div></section>
-<section id="partnership-hub"><div class="container"><div class="section-title"><span class="label">Partner Schools</span><h2>School Partnership Hub</h2><p>Access the official SpeakOut school partnership package, onboarding documents and implementation framework.</p></div><div class="card partnership-card"><div class="partnership-top"><span class="kicker">Official School Resource Center</span><h3>Everything your school needs in one place.</h3><p>Review the proposal, partnership agreement, school registration form, club framework and school transformation resources.</p><div class="actions"><a class="btn gold" href="school-partnership-hub.html">Open Partnership Hub</a><a class="btn light" href="school-register.html">Become a Partner School</a></div></div><div class="partnership-body"><div class="grid g3"><div class="card"><div class="icon">📄</div><h3>Executive Proposal</h3><p>Review the complete partnership framework and value proposition.</p></div><div class="card"><div class="icon">🤝</div><h3>Partnership Agreement</h3><p>Understand responsibilities, expectations and collaboration structure.</p></div><div class="card"><div class="icon">🚀</div><h3>School Transformation</h3><p>Digital visibility, student wellbeing, leadership and growth resources.</p></div></div></div></div></div></section>
-<section class="impact"><div class="container"><div class="section-title"><span class="label">Learning Areas</span><h2>Free learning first. Deeper learning for approved users.</h2><p>Visitors can learn from the public site. Approved users access richer materials after login.</p></div><div class="grid g3"><div class="card"><div class="icon">🧒</div><h3>Kiddies Corner</h3><p>Child-friendly lessons with stories, activities, animations, parent guides and teacher guides.</p></div><div class="card"><div class="icon">📖</div><h3>E-Library</h3><p>Mental health, leadership, parenting, teacher support and personal development books.</p></div><div class="card"><div class="icon">🎓</div><h3>SpeakHub</h3><p>Structured courses for students, parents, teachers, ambassadors and contributors.</p></div></div></div></section>
-<section id="donate" class="donate"><div class="container"><div class="donate-card"><div class="section-title"><span class="label">Support Our Mission</span><h2>Help us reach more young people.</h2><p>Your donation supports school mental health clubs, youth leadership training, parent education, teacher workshops, digital resources and community outreach programs.</p></div><div class="grid g4"><div class="card stat"><strong>₦5,000</strong><span>Student Awareness Materials</span></div><div class="card stat"><strong>₦10,000</strong><span>Community Outreach Support</span></div><div class="card stat"><strong>₦25,000</strong><span>School Club Resources</span></div><div class="card stat"><strong>₦50,000+</strong><span>Workshops & Training</span></div></div><div class="grid g2" style="margin-top:22px"><div class="bank-box"><h3>Donate Online</h3><p>Use our secure Paystack donation link.</p><a class="btn gold" href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate via Paystack</a></div><div class="bank-box"><h3>Bank Transfer</h3><p><strong>Account Name:</strong><br>SpeakOut Mental Health Outreach</p><p><strong>Zenith Bank:</strong><br>1229664088</p><p><strong>OPay:</strong><br>6117106366</p></div></div><div class="panel" style="margin-top:22px"><h3>How donations are used</h3><ul class="check"><li>School Mental Health Clubs</li><li>Youth Leadership Training</li><li>Parent Education Programs</li><li>Teacher Workshops</li><li>Community Outreach Activities</li><li>Digital Learning Resources</li></ul></div></div></div></section>
-<section class="dark-section"><div class="container split"><div><span class="kicker">Contributors & Partners</span><h2>We welcome educators, authors, sponsors and partners.</h2><p>SpeakOut is building a controlled learning marketplace where approved contributors can publish books and courses after admin review.</p><ul class="check"><li>Contributors apply before publishing</li><li>Admin reviews content before approval</li><li>Free and premium content can be offered</li><li>Revenue sharing can support both contributors and SpeakOut</li></ul><div class="actions"><a class="btn gold" href="contributor.html">Become a Contributor</a><a class="btn outline" href="#donate">Sponsor the Mission</a></div></div><div class="card"><h3>Partnership opportunities</h3><p>Schools, NGOs, health professionals, foundations, media partners and sponsors can support school clubs, parent seminars, teacher workshops, student resources and outreach activities.</p></div></div></section>
-<section class="final"><div class="container"><span class="kicker">Start Here</span><h2>Learn first. Join when ready.</h2><p>SpeakOut is open for public awareness, school partnerships, approved member access and contributor collaboration.</p><div class="actions" style="justify-content:center"><a class="btn gold" href="school-register.html">Register a School</a><a class="btn light" href="auth.html">Member Login</a><a class="btn outline" href="#donate">Donate</a></div></div></section>
-</main>
-<a class="float" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Need Help?</a>
-<footer class="footer"><div class="container"><div class="footer-grid"><div><img src="logo.png" alt=""><h3>SpeakOut</h3><p>Building safer mental health ecosystems for schools, students, parents, teachers and communities.</p></div><div><h4>Learn</h4><a href="#about">About</a><a href="#problem">Why It Matters</a><a href="#programs">Programs</a><a href="#donate">Donate</a></div><div><h4>Member Access</h4><a href="auth.html">Login / Apply</a><a href="school-register.html">School Registration</a><a href="certificate-center.html">Certificates</a></div><div><h4>Get Involved</h4><a href="school-partnership-hub.html">School Partnership Hub</a><a href="contributor.html">Become Contributor</a><a href="#donate">Donate</a><a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp</a></div></div><p style="margin-top:30px;color:rgba(255,255,255,.55)">© 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.</p></div></footer>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scrollbar" id="scrollbar"></div>
+
+  <div class="support-strip" role="note" aria-label="Emergency support note">
+    <div class="container">
+      <span>In immediate danger or crisis? Contact local emergency services now.</span>
+      <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" rel="noopener">Open Resources & Help</a>
+    </div>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="SpeakOut Home">
+        <img src="logo.png" alt="SpeakOut Logo" />
+        <div class="brand-text">
+          <h2>SpeakOut</h2>
+          <p>Mental Health Outreach</p>
+        </div>
+      </a>
+
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" onclick="document.body.classList.toggle('menu-open'); this.setAttribute('aria-expanded', document.body.classList.contains('menu-open') ? 'true' : 'false')">☰</button>
+
+      <div class="social-icons"><a href="https://instagram.com/speaaakout" target="_blank">IG</a><a href="https://youtube.com" target="_blank">YT</a><a href="https://facebook.com" target="_blank">FB</a></div><nav class="nav-links" aria-label="Primary navigation">
+        <a href="#impact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Impact</a>
+        <a href="#programs" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Programs</a>
+        <a href="#mindcheck" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">MindCheck</a>
+        <a href="#resources-help" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Get Help</a>
+        <a href="#public-portal" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Public / Portal</a>
+        <a href="#partners" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Partners</a>
+        <a href="#contact" class="btn btn-primary" onclick="document.body.classList.remove('menu-open')">Contact</a>
+        <a href="login.html" class="btn btn-dark" onclick="document.body.classList.remove('menu-open')">Portal Login</a>
+        <a href="register.html" class="btn btn-gold" onclick="document.body.classList.remove('menu-open')">Apply Access</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content reveal">
+          <span class="kicker">Youth Wellness • Technology • Community Impact</span>
+          <h1>Mental Health Support For Every Young Person.</h1>
+          <p>Building Africa’s most accessible mental wellness ecosystem through technology, education, school outreach and community partnerships.</p>
+
+          <div class="hero-actions">
+            <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" class="btn btn-primary" rel="noopener">MindCheck</a>
+            <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" class="btn btn-gold" rel="noopener">Get Help</a>
+            <a href="#contact" class="btn btn-light">Partner</a>
+          </div>
+
+          <div class="hero-trust" aria-label="Trust signals">
+            <span>Evidence-informed tools</span>
+            <span>School outreach</span>
+            <span>Partnership ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="public-portal-section" id="public-portal">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Public Website vs Protected Portal</span>
+          <h2>Choose the right access path.</h2>
+          <p>
+            SpeakOut now has two clear areas: the public website for everyone, and a protected learning portal
+            for approved students, schools, teachers, ambassadors and administrators.
+          </p>
+        </div>
+
+        <div class="public-portal-grid">
+          <article class="public-portal-card public-side reveal">
+            <div class="portal-card-icon">🌍</div>
+            <span class="portal-status open">Open to Everyone</span>
+            <h3>Public Website</h3>
+            <p>
+              This side is for visitors, partners, sponsors, parents, media, volunteers and anyone who wants to
+              learn about SpeakOut or access general support information.
+            </p>
+
+            <ul class="portal-list">
+              <li>About SpeakOut and our mission</li>
+              <li>Programs and outreach activities</li>
+              <li>MindCheck information</li>
+              <li>Resources & Help</li>
+              <li>Partnerships, sponsorships and donations</li>
+              <li>Contact and volunteer interest</li>
+            </ul>
+
+            <div class="portal-card-actions">
+              <a href="#programs" class="btn btn-primary">Explore Public Website</a>
+              <a href="#contact" class="btn btn-soft">Partner With Us</a>
+            </div>
+          </article>
+
+          <article class="public-portal-card protected-side reveal">
+            <div class="portal-card-icon">🔐</div>
+            <span class="portal-status locked">Approval Required</span>
+            <h3>Protected Portal</h3>
+            <p>
+              This side is for approved users only. It gives access to learning tools, school resources,
+              dashboards, certificates and progress tracking.
+            </p>
+
+            <ul class="portal-list">
+              <li>Student, school and admin dashboards</li>
+              <li>E-Library books and learning resources</li>
+              <li>SpeakHub courses and training center</li>
+              <li>Kiddies Corner for primary and secondary students</li>
+              <li>Certificates and verification tools</li>
+              <li>Progress tracking and school resources</li>
+            </ul>
+
+            <div class="portal-card-actions">
+              <a href="login.html" class="btn btn-light">Login to Portal</a>
+              <a href="register.html" class="btn btn-gold">Apply for Access</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="portal-note reveal">
+          <strong>Important:</strong>
+          SpeakHub, E-Library, Kiddies Corner, school dashboards and certificates are part of the protected portal.
+          Users must register and be approved before accessing them.
+        </div>
+      </div>
+    </section>
+
+    <section class="impact" id="impact" aria-label="Impact statistics">
+      <div class="container impact-grid">
+        <div class="impact-card reveal"><div><strong data-count="5000">0</strong><span>Youth Reached / Targeted</span></div></div>
+        <div class="impact-card reveal"><div><strong data-count="500">0</strong><span>Mental Health Screenings</span></div></div>
+        <div class="impact-card reveal"><div><strong data-count="30">0</strong><span>Volunteers & Ambassadors</span></div></div>
+        <div class="impact-card reveal"><div><strong data-count="5">0</strong><span>States Reached</span></div></div>
+      </div>
+    </section>
+
+    <section class="vision">
+      <div class="container vision-card reveal">
+        <h2>Our Vision for Africa</h2>
+        <p>We envision an Africa where every young person has access to mental health education, early support systems and safe spaces to speak, heal and thrive.</p>
+      </div>
+    </section>
+
+    <section id="programs">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">What We Do</span>
+          <h2>Programs Designed for Real Community Impact</h2>
+          <p>SpeakOut combines mental health education, digital wellness tools, youth leadership and institutional partnerships into one practical ecosystem.</p>
+        </div>
+
+        <div class="program-grid">
+          <article class="program-card reveal">
+            <img src="images/outreach-1.png" alt="Mental health awareness session" />
+            <div class="program-body">
+              <h3>Mental Health Awareness</h3>
+              <p>School, campus and community programs that reduce stigma and encourage early help-seeking.</p>
+              <a href="#contact" class="learn">Learn more →</a>
+            </div>
+          </article>
+
+          <article class="program-card reveal">
+            <img src="images/outreach-2.png" alt="Digital mental wellness support" />
+            <div class="program-body">
+              <h3>MindCheck Platform</h3>
+              <p>Private mental wellness screening, coping resources and education designed for young people.</p>
+              <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" class="learn" rel="noopener">Launch MindCheck →</a>
+            </div>
+          </article>
+
+          <article class="program-card reveal">
+            <img src="images/outreach-3.png" alt="Youth leadership workshop" />
+            <div class="program-body">
+              <h3>Youth Leadership</h3>
+              <p>Volunteer and ambassador pathways that train young people to lead mental health advocacy.</p>
+              <a href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" class="learn" rel="noopener">Become an ambassador →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-matters">
+      <div class="container why-wrap">
+        <div class="why-box reveal">
+          <span class="kicker">Why it matters</span>
+          <h2>Mental health should not stay silent.</h2>
+          <p>Many young people carry stress, anxiety, trauma, loneliness and pressure without a safe space to talk. SpeakOut exists to make awareness, early support and referral pathways accessible.</p>
+        </div>
+
+        <div class="why-list">
+          <div class="reveal">
+            <h3>Early awareness saves futures</h3>
+            <p>We help students and young adults recognize emotional stress before it becomes a crisis.</p>
+          </div>
+          <div class="reveal">
+            <h3>Digital tools reduce barriers</h3>
+            <p>MindCheck gives users a private, low-pressure way to understand their wellbeing and access resources.</p>
+          </div>
+          <div class="reveal">
+            <h3>Youth leadership multiplies impact</h3>
+            <p>Volunteers and ambassadors help carry the message into schools, campuses and communities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mindcheck" id="mindcheck">
+      <div class="container mindcheck-wrap reveal">
+        <div>
+          <span class="label">Digital Wellness Portal</span>
+          <h2>MindCheck makes early support easier.</h2>
+          <p>A private mental wellness portal where users can check in, learn coping skills, access educational resources and connect with support pathways.</p>
+          <div class="hero-actions">
+            <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" class="btn btn-primary" rel="noopener">Launch MindCheck</a>
+            <a href="#programs" class="btn btn-soft">Explore programs</a>
+          </div>
+        </div>
+
+        <div class="device float-soft" aria-label="MindCheck mockup">
+          <div class="device-screen">
+            <strong style="color:var(--blue);font-size:1.3rem">MindCheck</strong>
+            <div class="screen-line"></div>
+            <div class="screen-line short gold"></div>
+            <div class="screen-card"><div></div><div></div><div></div><div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="resources-help" id="resources-help">
+      <div class="container resources-help-wrap reveal">
+        <div class="resources-alert">
+          <span class="kicker">Resources & Help</span>
+          <strong>Need support fast?</strong>
+          <p>Open SpeakOut’s help page to find emergency guidance, clinics, local support options and trusted contacts you can save or share.</p>
+          <div class="hero-actions">
+            <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" class="btn btn-light" rel="noopener">Open Resources & Help</a>
+            <a href="https://wa.me/2348118103510" target="_blank" class="btn btn-outline" rel="noopener">WhatsApp Support</a>
+          </div>
+        </div>
+
+        <div class="resources-help-copy">
+          <span class="label">Clinics • Emergency Help • Referrals</span>
+          <h2>Trusted help should be easy to find.</h2>
+          <p>The Resources & Help page gives visitors a simple way to access Nigeria emergency guidance, regional clinics, support contacts, referral options and shareable help information.</p>
+
+          <div class="resource-chip-grid">
+            <div class="resource-chip">Emergency guidance <span>Clear instruction to call 112 in urgent situations.</span></div>
+            <div class="resource-chip">Clinics directory <span>Federal and local options across key regions.</span></div>
+            <div class="resource-chip">Save contacts <span>Visitors can save useful contacts privately on their device.</span></div>
+            <div class="resource-chip">Shareable support <span>Easy to send the page to someone who needs help.</span></div>
+          </div>
+
+          <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" rel="noopener" class="btn btn-primary">View Resources & Help</a>
+        </div>
+
+        <div class="quick-help-grid reveal" aria-label="Quick help pathways">
+          <article class="quick-help-card">
+            <span>1</span>
+            <h3>Immediate danger</h3>
+            <p>Use emergency services first. The website should never delay urgent medical or safety support.</p>
+          </article>
+          <article class="quick-help-card">
+            <span>2</span>
+            <h3>Need guidance</h3>
+            <p>Open Resources & Help for support options, contacts and referral direction.</p>
+          </article>
+          <article class="quick-help-card">
+            <span>3</span>
+            <h3>Self check-in</h3>
+            <p>Use MindCheck privately to understand stress, mood and wellbeing patterns.</p>
+          </article>
+          <article class="quick-help-card">
+            <span>4</span>
+            <h3>School or group support</h3>
+            <p>Contact SpeakOut for outreach, awareness sessions or partnership discussion.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="ecosystem" id="ecosystem">
+      <div class="container">
+        <div class="ecosystem-intro reveal">
+          <span class="label">Learning & Growth Ecosystem</span>
+          <h2>Beyond awareness. Building skills, knowledge and opportunities.</h2>
+          <p>SpeakOut connects mental wellness with practical learning, digital knowledge, leadership growth and youth development.</p>
+        </div>
+
+        <div class="ecosystem-grid reveal">
+          <div class="ecosystem-image">
+            <img src="images/speakhub.png" alt="African youth learning digital skills through SpeakHub">
+          </div>
+
+          <div class="ecosystem-content">
+            <span class="label">Protected Skills Development Center</span>
+            <h2>SpeakHub 🔐</h2>
+            <p>SpeakHub is our protected skills development center for approved students, schools, teachers and ambassadors. It supports digital skills, leadership training, professional development, certifications and career growth.</p>
+
+            <ul class="ecosystem-list">
+              <li>Digital Skills</li>
+              <li>Leadership Training</li>
+              <li>Career Growth</li>
+              <li>Certification Programs</li>
+              <li>Professional Development</li>
+              <li>Youth Empowerment</li>
+            </ul>
+
+            <a href="login.html" class="btn btn-primary">Login to Access SpeakHub 🔐</a>
+          </div>
+        </div>
+
+        <div class="ecosystem-grid reverse reveal">
+          <div class="ecosystem-image">
+            <img src="images/elibrary.png" alt="African students using books and tablets in a digital library">
+          </div>
+
+          <div class="ecosystem-content">
+            <span class="label">Protected Digital Knowledge Center</span>
+            <h2>E-Library 🔐</h2>
+            <p>The E-Library is now part of the protected portal. Approved users can access curated books, educational resources, mental health materials, leadership content and personal development tools.</p>
+
+            <ul class="ecosystem-list">
+              <li>Mental Health Resources</li>
+              <li>Leadership Books</li>
+              <li>Personal Development</li>
+              <li>Academic Materials</li>
+              <li>Wellness Education</li>
+              <li>Digital Learning</li>
+            </ul>
+
+            <a href="login.html" class="btn btn-primary">Login to Access E-Library 🔐</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Voices of Impact</span>
+          <h2>What people are saying</h2>
+          <p>Sample testimonials to show the kind of impact SpeakOut is building. Replace these with real quotes as programs grow.</p>
+        </div>
+
+        <div class="testimonial-grid">
+          <article class="quote-card reveal">
+            <div class="quote-mark">“</div>
+            <p>SpeakOut helped me understand that mental health conversations can be practical, relatable and life-changing.</p>
+            <strong>Chiamaka Okafor</strong>
+            <small>University Student</small>
+          </article>
+
+          <article class="quote-card reveal">
+            <div class="quote-mark">“</div>
+            <p>The outreach program opened my eyes to emotional wellbeing. I left feeling informed, empowered and hopeful.</p>
+            <strong>Musa Ibrahim</strong>
+            <small>Community Volunteer</small>
+          </article>
+
+          <article class="quote-card reveal">
+            <div class="quote-mark">“</div>
+            <p>MindCheck made it easier to understand my mental wellness and take proactive steps toward self-care.</p>
+            <strong>Adebayo Adeyemi</strong>
+            <small>Young Professional</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="partners" id="partners">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Partners & Collaborators</span>
+          <h2>Building with institutions that care</h2>
+        </div>
+
+        <div class="logo-wall">
+          <div class="partner-logo reveal"><img src="images/partner-synia.png" alt="Synia Aid Foundation"></div>
+          <div class="partner-logo reveal"><img src="images/partner-qualitycare.png" alt="Quality Care Foundation"></div>
+          <div class="partner-logo reveal"><img src="images/partner-nascohst.png" alt="NASCOHST"></div>
+          <div class="partner-logo reveal"><img src="images/partner-nysc.PNG" alt="NYSC Reproductive Health CDS"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="projects">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Open for Support</span>
+          <h2>Current Projects Seeking Partnership</h2>
+          <p>Programs ready for sponsorship, institutional support, media partnership and grant collaboration.</p>
+        </div>
+
+        <div class="project-grid">
+          <a class="project-card reveal" href="https://drive.google.com/file/d/1tUu7wqgufla4UIJtqs9ryygkCuWBdbDn/view?usp=sharing" target="_blank" rel="noopener">
+            <h3>Campus Mental Health Tour</h3>
+            <p>Seeking transport sponsors, school partners, media support and wellness educators.</p>
+            <small>View proposal ↗</small>
+          </a>
+
+          <a class="project-card reveal" href="https://drive.google.com/file/d/1tUu7wqgufla4UIJtqs9ryygkCuWBdbDn/view?usp=sharing" target="_blank" rel="noopener">
+            <h3>MindCheck Expansion</h3>
+            <p>Seeking digital health partners, technology support, grant funding and content collaborators.</p>
+            <small>View proposal ↗</small>
+          </a>
+
+          <a class="project-card reveal" href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" rel="noopener">
+            <h3>Youth Ambassador Network</h3>
+            <p>Seeking training sponsors, institutional partners and volunteer development support.</p>
+            <small>Apply / partner ↗</small>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Outreach Gallery</span>
+          <h2>Community work in action</h2>
+          <p>Generic image placeholders are used here. Replace them with your actual outreach photos when ready.</p>
+        </div>
+
+        <div class="gallery-grid">
+          <div class="gallery-item reveal"><img src="images/outreach-1.png" alt="Classroom mental health session"><span>School Outreach</span></div>
+          <div class="gallery-item reveal"><img src="images/outreach-2.png" alt="MindCheck digital platform session"><span>MindCheck Platform</span></div>
+          <div class="gallery-item reveal"><img src="images/outreach-3.png" alt="Youth leadership workshop"><span>Youth Leadership</span></div>
+          <div class="gallery-item reveal"><img src="images/outreach-4.png" alt="Mental health awareness booth"><span>Awareness Booth</span></div>
+          <div class="gallery-item reveal"><img src="images/outreach-5.png" alt="Wellness activities"><span>Wellness Activities</span></div>
+          <div class="gallery-item reveal"><img src="images/outreach-6.png" alt="Volunteer network meeting"><span>Volunteer Network</span></div>
+        </div>
+      </div>
+    </section>
+
+    
+<section class="media-hub" id="media-hub">
+<div class="container">
+<div class="section-title">
+<span class="label">Media Hub</span>
+<h2>Podcasts, Videos & Audio Resources</h2>
+<p>Connect YouTube videos, podcasts, spoken word recordings and downloadable audio resources.</p>
+</div>
+<div class="media-grid">
+<div class="media-card">
+<h3>YouTube Featured Video</h3>
+<iframe height="250" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" allowfullscreen></iframe>
+</div>
+<div class="media-card">
+<h3>Podcast Player</h3>
+<audio controls>
+<source src="audio/podcast-episode.mp3" type="audio/mpeg">
+</audio>
+<p>Replace with your podcast audio file or embed Spotify/Apple Podcasts.</p>
+</div>
+<div class="media-card">
+<h3>Music & Spoken Word Library</h3>
+<audio controls>
+<source src="audio/speakout-track.mp3" type="audio/mpeg">
+</audio>
+<p>Add Google Drive, Firebase Storage or GitHub-hosted audio files.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="founder">
+      <div class="container founder-wrap reveal">
+        <div class="founder-photo">
+          <img src="images/founder.jpg" alt="Founder of SpeakOut Mental Health Outreach">
+        </div>
+
+        <div>
+          <span class="label">Founder Vision</span>
+          <h2>Building a generation that can speak, heal and thrive.</h2>
+          <p>SpeakOut exists to make mental wellness conversations normal, accessible and practical for young people. Through partnerships, sponsorships and community collaboration, this support can reach more schools, communities and families across Africa.</p>
+          <strong>— SpeakOut Mental Health Outreach</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="reports" id="documents">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Transparency & Accountability</span>
+          <h2>Documents for partners, sponsors and institutions</h2>
+          <p>Make it easy for serious partners to review your profile, reports, proposals and governance materials.</p>
+        </div>
+
+        <div class="report-grid">
+          <a class="report-card reveal" href="https://drive.google.com/drive/folders/13J2Fp_6ArIO0L64wpn3OlUc4NEGP4EGz?usp=drive_link" target="_blank" rel="noopener">
+            <h3>Organization Profile</h3>
+            <p>Mission, vision, programs, leadership and impact structure.</p>
+            <strong>Open folder ↗</strong>
+          </a>
+
+          <a class="report-card reveal" href="https://drive.google.com/drive/folders/1JwMaSuI6nvUP-86arhTbOnMd2QILaNrJ?usp=drive_link" target="_blank" rel="noopener">
+            <h3>Official Documents</h3>
+            <p>Registration, administrative and selected institutional records.</p>
+            <strong>Open folder ↗</strong>
+          </a>
+
+          <a class="report-card reveal" href="https://drive.google.com/drive/folders/1uv_DF0Dlax4OKCpjhEm_XS0EnDVve9SX?usp=drive_link" target="_blank" rel="noopener">
+            <h3>Reports & Proposals</h3>
+            <p>Concept notes, outreach reports and funding proposals.</p>
+            <strong>Open folder ↗</strong>
+          </a>
+
+          <a class="report-card reveal" href="#contact">
+            <h3>Request Information</h3>
+            <p>For schools, donors, foundations and healthcare collaborators.</p>
+            <strong>Contact us →</strong>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="section-title reveal">
+          <span class="label">Contact SpeakOut</span>
+          <h2>Let’s build healthier communities together</h2>
+          <p>Whether you are a school, organization, sponsor, healthcare professional, media partner or volunteer, we would love to hear from you.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card reveal">
+            <h3>Direct contact channels</h3>
+            <p>Choose the option that best fits your inquiry.</p>
+
+            <div class="contact-options">
+              <div class="contact-option">
+                <span>01</span>
+                <div>
+                  <strong>Partnership & Sponsorship</strong>
+                  <a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp: +234 811 810 3510</a>
+                </div>
+              </div>
+
+              <div class="contact-option">
+                <span>02</span>
+                <div>
+                  <strong>Volunteer & Ambassador Program</strong>
+                  <a href="https://mindcheck.speakoutmentalhealth.org/volunteers.html" target="_blank" rel="noopener">Become a Volunteer</a>
+                  <a href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" rel="noopener">Become an Ambassador</a>
+                </div>
+              </div>
+
+              <div class="contact-option">
+                <span>03</span>
+                <div>
+                  <strong>Media & Outreach</strong>
+                  <a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">Instagram: @speaaakout</a>
+                </div>
+              </div>
+
+              <div class="contact-option">
+                <span>04</span>
+                <div>
+                  <strong>General Support</strong>
+                  <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-card reveal">
+            <h3>Send a quick message</h3>
+            <p>This form opens your email app. For a live form, connect it later to Formspree, Google Forms or your backend.</p>
+
+            <form class="contact-form" action="mailto:speaaakout@gmail.com" method="post" enctype="text/plain">
+              <input type="text" name="Name" placeholder="Full name" required>
+              <input type="email" name="Email" placeholder="Email address" required>
+              <select name="Inquiry Type" required>
+                <option value="">Select inquiry type</option>
+                <option>Partnership</option>
+                <option>Sponsorship</option>
+                <option>Volunteer / Ambassador</option>
+                <option>School Outreach</option>
+                <option>Media</option>
+                <option>General Support</option>
+              </select>
+              <textarea name="Message" placeholder="Write your message..." required></textarea>
+              <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container reveal">
+        <span class="kicker">Fund the mission</span>
+        <h2>Ready to transform mental health access?</h2>
+        <p>Join schools, organizations, professionals and volunteers building healthier communities through awareness, technology and practical support systems.</p>
+
+        <div class="cta-actions">
+          <a href="https://paystack.shop/pay/speakout-donate" target="_blank" class="btn btn-light" rel="noopener">Donate / Sponsor</a>
+          <a href="https://drive.google.com/drive/folders/1MleVn15GU05lNebKfT2rSAAJcfhGK332?usp=drive_link" target="_blank" class="btn btn-outline" rel="noopener">View Partnership Deck</a>
+          <a href="https://wa.me/2348118103510" target="_blank" class="btn btn-outline" rel="noopener">WhatsApp Us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a href="https://wa.me/2348118103510" class="floating-help" target="_blank" aria-label="Get support on WhatsApp" rel="noopener">Need Help?</a>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="logo.png" alt="SpeakOut Logo">
+            <div>
+              <h3>SpeakOut</h3>
+              <p>Mental Health Outreach</p>
+            </div>
+          </div>
+          <p>Building a healthier, safer and more emotionally aware generation across Nigeria and Africa.</p>
+          <div class="footer-badges">
+            <span>Nigeria</span>
+            <span>Founded 2025</span>
+            <span>30+ Volunteers</span>
+            <span>5,000+ Youth</span>
+          </div>
+        </div>
+
+        <div>
+          <h4>Explore</h4>
+          <a href="#impact">Impact</a>
+          <a href="#programs">Programs</a>
+          <a href="#resources-help">Resources & Help</a>
+          <a href="#public-portal">Public / Portal</a>
+          <a href="#partners">Partners</a>
+          <a href="#documents">Documents</a>
+          <a href="#contact">Contact</a>
+        </div>
+
+        <div>
+          <h4>Action</h4>
+          <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/resources.html" target="_blank" rel="noopener">Resources & Help</a>
+          <a href="login.html">Portal Login</a>
+          <a href="register.html">Apply for Portal Access</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/ambassador.html" target="_blank" rel="noopener">Ambassador Program</a>
+          <a href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate / Sponsor</a>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp: +234 811 810 3510</a>
+          <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
+          <a href="https://instagram.com/speaak_out" target="_blank" rel="noopener">Instagram: @speaaakout</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 SpeakOut Mental Health Outreach. Building healthier minds across Africa.</p>
+        <p class="microcopy">MindCheck and SpeakOut resources are for education and early support only. They do not replace professional medical care, diagnosis or emergency services.</p>
+      </div>
+    </div>
+  </footer>
+
 <script>
-const menu=document.querySelector('.menu');
-if(menu){menu.addEventListener('click',()=>document.body.classList.toggle('open'));}
-document.querySelectorAll('.links a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('open')));
+  const revealItems = document.querySelectorAll('.reveal');
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('active');
+        entry.target.classList.remove('exit');
+      } else {
+        entry.target.classList.remove('active');
+        entry.target.classList.add('exit');
+      }
+    });
+  }, {threshold:.16, rootMargin:'0px 0px -8% 0px'});
+
+  revealItems.forEach(item => revealObserver.observe(item));
+
+  const counters = document.querySelectorAll('[data-count]');
+
+  function animateCounter(counter){
+    if(counter.dataset.animating === 'true') return;
+    counter.dataset.animating = 'true';
+
+    const target = Number(counter.dataset.count);
+    const duration = 1500;
+    const start = performance.now();
+
+    function update(now){
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.floor(eased * target);
+
+      counter.textContent = value.toLocaleString() + '+';
+
+      if(progress < 1){
+        requestAnimationFrame(update);
+      } else {
+        counter.textContent = target.toLocaleString() + '+';
+        setTimeout(() => counter.dataset.animating = 'false', 500);
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  const counterObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting) animateCounter(entry.target);
+    });
+  }, {threshold:.55});
+
+  counters.forEach(c => counterObserver.observe(c));
+
+  const bar = document.getElementById('scrollbar');
+
+  window.addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = pct + '%';
+  }, {passive:true});
+
+  document.addEventListener('keydown', (event) => {
+    if(event.key === 'Escape') document.body.classList.remove('menu-open');
+  });
+
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => document.body.classList.remove('menu-open'));
+  });
 </script>
 </body>
 </html>
+
 
