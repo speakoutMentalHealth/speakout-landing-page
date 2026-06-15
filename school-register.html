@@ -43,7 +43,7 @@ section{padding:38px 0}
 .full{grid-column:1/-1}
 input,textarea,select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:#fbfdff}
 textarea{min-height:110px;resize:vertical}
-.notice{margin-top:16px;padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;display:none}
+.notice{margin-top:16px;padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;display:none;line-height:1.55}
 .success{display:block;background:var(--greenSoft);color:var(--green)}
 .error{display:block;background:var(--redSoft);color:var(--red)}
 .warn{display:block;background:var(--goldSoft);color:#704800}
@@ -54,6 +54,7 @@ textarea{min-height:110px;resize:vertical}
 .check li{padding-left:28px;position:relative;font-weight:800;color:#344054;margin:10px 0}
 .check li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:900}
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+.password-note{font-size:.86rem;color:var(--muted);margin-top:-6px}
 @media(max-width:900px){.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.full{grid-column:auto}}
 </style>
 </head>
@@ -84,7 +85,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="container">
     <span class="kicker">School Partnership Application</span>
     <h1>Register your school with SpeakOut</h1>
-    <p>Apply to join the SpeakOut School Mental Health Club Program. Approved schools receive access to school dashboards, student resources, parent engagement tools, teacher workshops and certificate-ready learning programs.</p>
+    <p>Apply to join the SpeakOut School Mental Health Club Program. Your school login account will be created now, but dashboard access starts after SpeakOut approval.</p>
   </div>
 </section>
 
@@ -94,7 +95,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="panel">
       <span class="label">School Application</span>
       <h2>Complete the registration form</h2>
-      <p>Applications are reviewed by SpeakOut before access is granted. Once approved, your school will receive a school code for onboarding teachers, parents and students.</p>
+      <p>Use an official school email and create a password. After approval, the school can log in using this email and password.</p>
 
       <form id="schoolForm">
 
@@ -140,8 +141,12 @@ textarea{min-height:110px;resize:vertical}
           <input type="text" id="principalName" placeholder="Principal / Head Teacher Name" required>
           <input type="text" id="coordinatorName" placeholder="Mental Health Club Coordinator">
 
-          <input type="email" id="email" placeholder="School Email" required>
+          <input type="email" id="email" placeholder="School Email / Login Email" required>
           <input type="text" id="phone" placeholder="Phone Number" required>
+
+          <input type="password" id="password" placeholder="Create Login Password" required>
+          <input type="password" id="confirmPassword" placeholder="Confirm Login Password" required>
+          <div class="password-note full">Password must be at least 6 characters. This is the password the school will use to log in after approval.</div>
 
           <input type="text" id="whatsapp" placeholder="WhatsApp Number">
           <input type="url" id="schoolWebsite" placeholder="School Website">
@@ -160,7 +165,7 @@ textarea{min-height:110px;resize:vertical}
 
         </div>
 
-        <button class="btn primary" type="submit">Submit Application</button>
+        <button class="btn primary" id="submitBtn" type="submit">Submit Application & Create Login</button>
 
       </form>
 
@@ -173,9 +178,9 @@ textarea{min-height:110px;resize:vertical}
 
       <ul class="check">
         <li>Your school submits an application</li>
+        <li>A school login account is created immediately</li>
         <li>SpeakOut reviews the school details</li>
-        <li>Approved schools receive a school code</li>
-        <li>The school admin gets dashboard access</li>
+        <li>Approved schools receive dashboard access</li>
         <li>The school can onboard teachers, parents and students</li>
         <li>Workshops, resources, clubs and certificates become available</li>
       </ul>
@@ -187,8 +192,8 @@ textarea{min-height:110px;resize:vertical}
       </div>
 
       <div class="card" style="margin-top:18px">
-        <h3>Mental Health Club Program</h3>
-        <p>Schools can use SpeakOut to run student clubs, parent seminars, teacher workshops and school wellbeing activities.</p>
+        <h3>Login After Approval</h3>
+        <p>The school will log in through <strong>auth.html</strong> using the school email and password created on this form.</p>
       </div>
     </div>
 
@@ -202,16 +207,24 @@ textarea{min-height:110px;resize:vertical}
 </footer>
 
 <script type="module">
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
+
+import {
+  createUserWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
   collection,
   addDoc,
+  doc,
+  setDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const form = document.getElementById("schoolForm");
 const message = document.getElementById("message");
+const submitBtn = document.getElementById("submitBtn");
 
 let logoData = "";
 
@@ -302,8 +315,33 @@ form.addEventListener("submit", async e => {
     return;
   }
 
+  const password = val("password");
+  const confirmPassword = val("confirmPassword");
+  const schoolEmail = val("email").toLowerCase();
+
+  if(password.length < 6){
+    show("Password must be at least 6 characters.","error");
+    return;
+  }
+
+  if(password !== confirmPassword){
+    show("Passwords do not match.","error");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
   try{
-    const payload = {
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      schoolEmail,
+      password
+    );
+
+    const authUser = credential.user;
+
+    const schoolPayload = {
       schoolName: val("schoolName"),
       schoolType: val("schoolType"),
       ownership: val("ownership"),
@@ -312,7 +350,7 @@ form.addEventListener("submit", async e => {
       principalName: val("principalName"),
       coordinatorName: val("coordinatorName"),
 
-      email: val("email").toLowerCase(),
+      email: schoolEmail,
       phone: val("phone"),
       whatsapp: val("whatsapp"),
       schoolWebsite: val("schoolWebsite"),
@@ -330,18 +368,50 @@ form.addEventListener("submit", async e => {
       schoolCode: generatedSchoolCode,
       logoData,
 
+      authUid: authUser.uid,
+      adminUserId: authUser.uid,
+
       status: "pending",
       role: "school",
+
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     };
 
-    await addDoc(collection(db,"schools"), payload);
+    const schoolRef = await addDoc(collection(db,"schools"), schoolPayload);
+
+    await setDoc(doc(db,"users",authUser.uid), {
+      uid: authUser.uid,
+      email: schoolEmail,
+
+      firstName: val("principalName"),
+      lastName: "",
+      fullName: val("principalName"),
+
+      phone: val("phone"),
+      country: val("country") || "Nigeria",
+      state: val("state"),
+      city: val("city"),
+
+      role: "school_admin",
+      status: "pending",
+
+      schoolId: schoolRef.id,
+      schoolCode: generatedSchoolCode,
+      schoolName: val("schoolName"),
+
+      photoData: logoData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge:true });
+
+    await signOut(auth);
 
     show(
-      "Application submitted successfully. Your school code is <strong>" +
-      generatedSchoolCode +
-      "</strong>. SpeakOut will review your application before dashboard access is granted.",
+      "Application submitted successfully.<br><br>" +
+      "Your school code is <strong>" + generatedSchoolCode + "</strong>.<br><br>" +
+      "Your school login account has been created with <strong>" + schoolEmail + "</strong>.<br>" +
+      "Dashboard access will become active after SpeakOut approval.",
       "success"
     );
 
@@ -353,7 +423,19 @@ form.addEventListener("submit", async e => {
 
   }catch(error){
     console.error(error);
-    show("Application failed. Please try again or contact SpeakOut.","error");
+
+    if(error.code === "auth/email-already-in-use"){
+      show("An account already exists with this email. Please use another school email or log in through Member Login.","error");
+    }else if(error.code === "auth/invalid-email"){
+      show("Please enter a valid email address.","error");
+    }else if(error.code === "auth/weak-password"){
+      show("Password is too weak. Use at least 6 characters.","error");
+    }else{
+      show(error.message || "Application failed. Please try again or contact SpeakOut.","error");
+    }
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Application & Create Login";
   }
 });
 </script>
