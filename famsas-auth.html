@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAMSAS Mental Health Club Access</title>
+<link rel="icon" type="image/png" href="images/famsas/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="famsas-mental-health-club.css">
+<style>
+.auth-page{min-height:100vh;background:linear-gradient(135deg,#f7fbff,#ffffff);padding:40px 0}
+.auth-card{max-width:1100px;margin:auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:22px}
+.auth-panel{background:white;border:1px solid var(--line);border-radius:30px;padding:26px;box-shadow:var(--shadow)}
+.auth-brand{display:flex;gap:14px;align-items:center;margin-bottom:24px}
+.auth-brand img{width:64px;height:64px;object-fit:contain}
+.auth-brand h1{margin:0;color:var(--navy);font-size:2rem;line-height:1.02}
+.auth-brand p{margin:6px 0 0;color:var(--muted)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+input,select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:16px;padding:12px 14px;font:inherit;background:#fbfdff}
+textarea{min-height:100px;resize:vertical}
+.message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800}
+.message.ok{display:block;background:#e8fbf5;color:#0f8f6f}
+.message.bad{display:block;background:#fee2e2;color:#991b1b}
+.message.warn{display:block;background:#fff4df;color:#704800}
+.role-note{display:grid;gap:12px;margin-top:18px}
+.role-note div{padding:14px;border-radius:18px;background:#f7fbff;border:1px solid var(--line)}
+.role-note strong{color:var(--navy)}
+@media(max-width:900px){.auth-card,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<section class="auth-page">
+  <div class="container auth-card">
+    <div class="auth-panel">
+      <div class="auth-brand">
+        <img src="images/famsas/logo.png" alt="FAMSAS Logo">
+        <div>
+          <h1>FAMSAS Mental Health Club</h1>
+          <p>Login or apply for role-based access.</p>
+        </div>
+      </div>
+
+      <a class="btn primary full" href="famsas-mental-health-club.html">← Back to Landing Page</a>
+
+      <div class="role-note">
+        <div><strong>Students</strong><br>Access learning resources, activities and certificates.</div>
+        <div><strong>Teachers</strong><br>Support students and participate in club activities.</div>
+        <div><strong>Parents</strong><br>Follow child wellbeing resources and approved progress.</div>
+        <div><strong>School Admin</strong><br>Manage club access and approvals.</div>
+      </div>
+    </div>
+
+    <div class="auth-panel">
+      <span class="section-kicker">Access</span>
+      <h2 style="color:var(--navy);margin-top:8px">Login</h2>
+      <form class="form-grid" id="loginForm">
+        <input class="full" id="loginEmail" type="email" placeholder="Email" required>
+        <input class="full" id="loginPassword" type="password" placeholder="Password" required>
+        <button class="btn primary full" type="submit">Login</button>
+      </form>
+      <div id="loginMsg" class="message"></div>
+
+      <hr style="border:0;border-top:1px solid var(--line);margin:28px 0">
+
+      <h2 style="color:var(--navy)">Apply Access</h2>
+      <form class="form-grid" id="registerForm">
+        <input id="firstName" placeholder="First Name" required>
+        <input id="lastName" placeholder="Last Name" required>
+        <input id="email" type="email" placeholder="Email" required>
+        <input id="phone" placeholder="Phone / WhatsApp">
+
+        <select id="role" required>
+          <option value="">Select role</option>
+          <option value="student">Student</option>
+          <option value="parent">Parent</option>
+          <option value="teacher">Teacher</option>
+          <option value="school_admin">School Administrator</option>
+        </select>
+
+        <input id="schoolCode" placeholder="School Code">
+        <input id="password" type="password" placeholder="Password" required>
+        <input id="confirmPassword" type="password" placeholder="Confirm Password" required>
+        <textarea class="full" id="reason" placeholder="Why do you need access?"></textarea>
+        <button class="btn coral full" type="submit">Submit Application</button>
+      </form>
+      <div id="regMsg" class="message"></div>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+import { doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
+
+const msg=(id,text,type='ok')=>{const e=document.getElementById(id);e.textContent=text;e.className='message '+type;e.style.display='block'};
+const val=id=>document.getElementById(id)?.value?.trim()||'';
+
+async function route(user){
+  const s=await getDoc(doc(db,'users',user.uid));
+  if(!s.exists()){msg('loginMsg','Profile missing. Contact admin.','bad');return;}
+  const p=s.data();
+  const role=(p.role||'').toLowerCase();
+  const status=(p.status||'').toLowerCase();
+
+  if(status!=='approved'){msg('loginMsg','Your account is pending approval.','warn');await signOut(auth);return;}
+
+  const routes={
+    admin:'admin-dashboard.html',
+    super_admin:'admin-dashboard.html',
+    school_admin:'school-dashboard.html',
+    teacher:'teacher-dashboard.html',
+    parent:'parent-dashboard.html',
+    student:'student-dashboard.html'
+  };
+
+  location.href=routes[role]||'famsas-mental-health-club.html';
+}
+
+loginForm.onsubmit=async e=>{
+  e.preventDefault();
+  try{
+    const r=await signInWithEmailAndPassword(auth,val('loginEmail'),loginPassword.value);
+    msg('loginMsg','Login successful. Redirecting...','ok');
+    await route(r.user);
+  }catch(err){msg('loginMsg',err.message||'Login failed.','bad')}
+};
+
+registerForm.onsubmit=async e=>{
+  e.preventDefault();
+  if(password.value!==confirmPassword.value){msg('regMsg','Passwords do not match.','bad');return;}
+  try{
+    const fullName=`${val('firstName')} ${val('lastName')}`.trim();
+    const r=await createUserWithEmailAndPassword(auth,val('email'),password.value);
+    await updateProfile(r.user,{displayName:fullName});
+    await setDoc(doc(db,'users',r.user.uid),{
+      uid:r.user.uid,
+      firstName:val('firstName'),
+      lastName:val('lastName'),
+      fullName,
+      email:val('email'),
+      phone:val('phone'),
+      role:val('role'),
+      schoolCode:val('schoolCode'),
+      schoolName:'FAMSAS College of Health Science & Technology, Keffi',
+      reason:val('reason'),
+      status:'pending',
+      profileCompleted:false,
+      source:'famsas-mental-health-club',
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    await signOut(auth);
+    msg('regMsg','Application submitted. Please wait for approval.','ok');
+    registerForm.reset();
+  }catch(err){msg('regMsg',err.message||'Registration failed.','bad')}
+};
+</script>
+</body>
+</html>
