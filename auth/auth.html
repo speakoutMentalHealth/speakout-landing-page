@@ -2,79 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SpeakOut Member Access</title>
-<meta name="description" content="SpeakOut login and registration page.">
+<title>SpeakOut Member Access | Login or Apply</title>
+<meta name="description" content="Login or apply for SpeakOut Mental Health Outreach member access for students, parents, teachers, school administrators and ambassadors.">
 <link rel="icon" type="image/png" href="../images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/speakout-main.css">
+<link rel="stylesheet" href="../css/auth-extra.css">
 </head>
 <body>
+<div class="top">In immediate danger or crisis? Contact local emergency services now. <a href="../pages/resources.html">Get Help</a></div>
 
-<div class="notice-strip">In immediate danger or crisis? Contact local emergency services now. <a href="../pages/resources.html">Get Help</a></div>
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="../index.html">
-      <img src="../images/logo.png" alt="SpeakOut Logo">
-      <div><strong>SpeakOut</strong><small>Mental Health Outreach</small></div>
-    </a>
-    <button class="menu">☰</button>
-    <nav class="nav-links">
-      <a class="btn soft" href="../pages/about.html">About</a>
-      <a class="btn soft" href="../pages/programs.html">Programs</a>
-      <a class="btn soft" href="../pages/schools.html">Schools</a>
-      <a class="btn soft" href="../pages/resources.html">Resources</a>
-      <a class="btn soft" href="../pages/donate.html">Donate</a>
-      <a class="btn soft" href="../pages/contact.html">Contact</a>
-      <a class="btn dark" href="../auth/auth.html">Login</a>
+    <a class="brand" href="../index.html"><img src="../images/logo.png" alt="SpeakOut Logo"><div><strong>SpeakOut</strong><small>Mental Health Outreach</small></div></a>
+    <button class="menu" aria-label="Open menu">☰</button>
+    <nav class="links">
+      <a class="btn softb" href="../index.html">Home</a>
+      <a class="btn softb" href="../pages/about.html">About</a>
+      <a class="btn softb" href="../pages/programs.html">Programs</a>
+      <a class="btn softb" href="../pages/resources.html">Resources</a>
+      <a class="btn softb" href="../pages/impact.html">Impact</a>
+      <a class="btn softb" href="../pages/news.html">News & Events</a>
+      <a class="btn softb" href="../pages/contact.html">Contact</a>
+      <a class="btn dark active" href="../auth/auth.html">Portal Login</a>
     </nav>
   </div>
 </header>
 
-
 <main>
-<section class="page-hero"><div class="container"><span class="kicker">Member Access</span><h1>Login or apply for access.</h1><p>Approved users can access role-based dashboards, resources, courses, certificates and school tools.</p></div></section>
-<section><div class="container grid g2">
-<div class="panel"><h2>Login</h2><form><input type="email" placeholder="Email"><input type="password" placeholder="Password"><button class="btn primary" type="button">Login</button></form><p>This page is ready for your Firebase auth script integration.</p></div>
-<div class="panel"><h2>Apply Access</h2><form><input placeholder="Full name"><input type="email" placeholder="Email"><select><option>Student</option><option>Parent</option><option>Teacher</option><option>School Admin</option></select><input placeholder="School code"><button class="btn gold" type="button">Submit Application</button></form></div>
-</div></section>
+<section class="page-hero auth-hero">
+  <div class="container">
+    <span class="kicker">Member Access</span>
+    <h1>Login or apply for SpeakOut access.</h1>
+    <p>Approved members can access role-based resources, school tools, workshops, learning materials, certificates and dashboard features designed for their role.</p>
+    <div class="actions">
+      <a class="btn gold" href="#login">Login</a>
+      <a class="btn light" href="#apply">Apply Access</a>
+      <a class="btn outline" href="../pages/contact.html">Need Help?</a>
+    </div>
+    <div class="badges"><span>Students</span><span>Parents</span><span>Teachers</span><span>Schools</span><span>Ambassadors</span></div>
+  </div>
+</section>
+
+<section class="access-intro">
+  <div class="container">
+    <div class="section-title"><span class="label">Choose your access path</span><h2>One platform. Different experiences for every role.</h2><p>SpeakOut gives each approved user access based on their role. Students see student resources, parents see parent resources, teachers see teacher resources, and schools see school tools.</p></div>
+    <div class="role-grid">
+      <article><div class="icon">🎓</div><h3>Students</h3><p>Access learning resources, wellbeing guidance, workshops, activities and certificates.</p></article>
+      <article><div class="icon">👨‍👩‍👧</div><h3>Parents</h3><p>Access parent guidance, emotional support resources and child wellbeing education.</p></article>
+      <article><div class="icon">👩‍🏫</div><h3>Teachers</h3><p>Access teacher resources, workshop updates and school support materials.</p></article>
+      <article><div class="icon">🏫</div><h3>School Admins</h3><p>Manage school users, workshop schedules, resources, participation and reports.</p></article>
+      <article><div class="icon">🙋</div><h3>Ambassadors</h3><p>Access outreach tools, ambassador training, volunteer updates and campaign resources.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="auth-forms">
+  <div class="container auth-grid">
+    <article class="auth-panel" id="login">
+      <span class="label">Login</span>
+      <h2>Welcome back</h2>
+      <p>Use your approved email and password to access your SpeakOut dashboard.</p>
+      <form id="loginForm" class="auth-form">
+        <label>Email Address<input id="loginEmail" type="email" placeholder="name@example.com" required></label>
+        <label>Password<input id="loginPassword" type="password" placeholder="Enter password" required></label>
+        <button class="btn primary" type="submit">Login to Dashboard</button>
+        <div class="form-links"><a href="#" id="forgotPasswordLink">Forgot password?</a><a href="#apply">Need an account?</a></div>
+      </form>
+      <div id="loginMsg" class="message"></div>
+    </article>
+
+    <article class="auth-panel" id="apply">
+      <span class="label">Apply Access</span>
+      <h2>Create your account</h2>
+      <p>New accounts are reviewed before dashboard access is approved. Select the role that best describes you.</p>
+      <form id="registerForm" class="auth-form">
+        <div class="form-two">
+          <label>Full Name<input id="fullName" type="text" placeholder="Full name" required></label>
+          <label>Email Address<input id="email" type="email" placeholder="name@example.com" required></label>
+        </div>
+        <div class="form-two">
+          <label>Phone / WhatsApp<input id="phone" type="tel" placeholder="+234..."></label>
+          <label>Role<select id="role" required><option value="">Select role</option><option value="student">Student</option><option value="parent">Parent</option><option value="teacher">Teacher</option><option value="school_admin">School Admin</option><option value="ambassador">Ambassador</option></select></label>
+        </div>
+        <div class="form-two">
+          <label>School / Organization<input id="schoolName" type="text" placeholder="School or organization name"></label>
+          <label>School Code<input id="schoolCode" type="text" placeholder="Optional school code"></label>
+        </div>
+        <div class="form-two">
+          <label>Location / State<input id="location" type="text" placeholder="City / State"></label>
+          <label>Access Purpose<select id="accessPurpose"><option value="">Select purpose</option><option>School mental health club</option><option>Student resources</option><option>Parent resources</option><option>Teacher resources</option><option>Volunteer / ambassador</option><option>Partnership</option></select></label>
+        </div>
+        <div class="form-two">
+          <label>Password<input id="password" type="password" placeholder="Create password" required></label>
+          <label>Confirm Password<input id="confirmPassword" type="password" placeholder="Confirm password" required></label>
+        </div>
+        <label>Tell us briefly why you need access<textarea id="reason" placeholder="Example: I am a teacher coordinator for my school mental health club."></textarea></label>
+        <button class="btn gold" type="submit">Submit Application</button>
+      </form>
+      <div id="regMsg" class="message"></div>
+    </article>
+  </div>
+</section>
+
+<section class="approval-section">
+  <div class="container">
+    <div class="approval-card">
+      <div><span class="label">Approval Process</span><h2>What happens after you apply?</h2><p>SpeakOut reviews new applications so each person receives the right dashboard and the right resources. If your school is already registered, use your school code where available.</p></div>
+      <div class="steps"><div><strong>01</strong><span>Submit application</span></div><div><strong>02</strong><span>SpeakOut reviews role</span></div><div><strong>03</strong><span>Account is approved</span></div><div><strong>04</strong><span>Dashboard access opens</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="auth-help">
+  <div class="container grid g3">
+    <article class="card"><div class="icon">🏫</div><h3>School not registered yet?</h3><p>Schools can request onboarding before students, parents and teachers are added.</p><a class="btn primary" href="../school-register.html">Register School</a></article>
+    <article class="card"><div class="icon">💬</div><h3>Need help with access?</h3><p>Contact SpeakOut if you are unsure which role to select or you need approval support.</p><a class="btn softb" href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp Support</a></article>
+    <article class="card"><div class="icon">📚</div><h3>Want to learn first?</h3><p>Explore public resources before applying for role-based dashboard access.</p><a class="btn softb" href="../pages/resources.html">Open Resources</a></article>
+  </div>
+</section>
 </main>
 
-
 <a class="float" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Need Help?</a>
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <img src="../images/logo.png" alt="SpeakOut Logo">
-        <h3>SpeakOut</h3>
-        <p>Building safer mental health ecosystems for schools, students, parents, teachers and communities.</p>
-      </div>
-      <div>
-        <h4>Learn</h4>
-        <a href="../pages/about.html">About</a>
-        <a href="../pages/programs.html">Programs</a>
-        <a href="../pages/schools.html">Schools</a>
-        <a href="../pages/resources.html">Resources</a>
-      </div>
-      <div>
-        <h4>Action</h4>
-        <a href="../auth/auth.html">Login / Apply</a>
-        <a href="../school-register.html">Register School</a>
-        <a href="../certificate-center.html">Certificates</a>
-        <a href="../pages/donate.html">Donate</a>
-      </div>
-      <div>
-        <h4>Contact</h4>
-        <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
-        <a href="https://wa.me/2348118103510">WhatsApp</a>
-        <a href="../pages/partners.html">Partners</a>
-        <a href="../pages/contact.html">Contact Form</a>
-      </div>
-    </div>
-    <p style="margin-top:30px;color:rgba(255,255,255,.55)">© 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.</p>
-  </div>
-</footer>
+<footer class="footer"><div class="container"><div class="footer-grid">
+<div><img src="../images/logo.png" alt="SpeakOut Logo"><h3>SpeakOut</h3><p>Building safer mental health ecosystems for schools, students, parents, teachers and communities.</p></div>
+<div><h4>Explore</h4><a href="../index.html">Home</a><a href="../pages/about.html">About</a><a href="../pages/programs.html">Programs</a><a href="../pages/impact.html">Impact</a></div>
+<div><h4>Access</h4><a href="../auth/auth.html">Portal Login / Apply</a><a href="../school-register.html">School Registration</a><a href="../certificate-center.html">Certificate Check</a><a href="../pages/donate.html">Donate</a></div>
+<div><h4>Contact</h4><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a><a href="https://wa.me/2348118103510">WhatsApp</a><a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">@speaaakout</a><a href="../pages/contact.html">Contact Form</a></div>
+</div><p style="margin-top:30px;color:rgba(255,255,255,.55)">© 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.</p></div></footer>
 <script src="../js/main.js"></script>
-
+<!-- Later connect Firebase logic here: <script type="module" src="../js/auth.js"></script> -->
 </body>
 </html>
