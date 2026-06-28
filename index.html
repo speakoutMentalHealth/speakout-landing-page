@@ -3,43 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>SpeakOut Mental Health Outreach | Youth Wellness, School Clubs & Community Support</title>
-<meta name="description" content="SpeakOut Mental Health Outreach educates, mobilizes and supports young people, schools, parents and communities through mental health awareness, school clubs, MindCheck, outreach, media and partnerships.">
-
+<title>SpeakOut | Youth Mental Health, Schools & SpeakHub Academy</title>
+<meta name="description" content="SpeakOut is building a youth mental health, education and future skills ecosystem through school clubs, MindCheck, SpeakHub Academy, resources, research and community support.">
 <link rel="icon" href="images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/speakout-main.css">
+<link rel="stylesheet" href="css/home-v4.css">
 </head>
-
 <body>
 
-<div class="top">
-  In immediate danger or crisis? Contact local emergency services now.
-  <a href="pages/resources.html">Get Help</a>
+<div class="announcement-bar">
+  <span>🎓 SpeakHub Academy enrollment, school partnerships and mental health resources are now open.</span>
+  <a href="pages/contact.html">Get Started</a>
 </div>
 
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="index.html">
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a href="index.html" class="brand">
       <img src="images/logo.png" alt="SpeakOut Logo">
-      <div>
-        <strong>SpeakOut</strong>
-        <small>Mental Health Outreach</small>
-      </div>
+      <div><strong>SpeakOut</strong><small>Building healthier minds. Brighter futures.</small></div>
     </a>
 
-    <button class="menu" aria-label="Open menu">☰</button>
+    <button class="menu-btn" aria-label="Open menu">☰</button>
 
-    <nav class="links">
-      <a class="btn softb active" href="index.html">Home</a>
-      <a class="btn softb" href="pages/about.html">About</a>
-      <a class="btn softb" href="pages/programs.html">Programs</a>
-      <a class="btn softb" href="pages/resources.html">Resources</a>
-      <a class="btn softb" href="pages/impact.html">Impact</a>
-      <a class="btn softb" href="pages/news.html">News & Events</a>
-      <a class="btn softb" href="pages/contact.html">Contact</a>
-      <a class="btn dark" href="auth/auth.html">Portal Login</a>
+    <nav class="main-nav">
+      <a class="active" href="index.html">Home</a>
+      <a href="pages/about.html">About</a>
+      <a href="pages/programs.html">Programs</a>
+      <a href="pages/schools.html">Schools</a>
+      <a href="pages/academy.html">Academy</a>
+
+      <div class="nav-dropdown">
+        <button type="button">Resources ▾</button>
+        <div class="dropdown-panel">
+          <a href="pages/resources.html">Mental Health Library</a>
+          <a href="pages/resources.html#students">Student Resources</a>
+          <a href="pages/resources.html#parents">Parent Resources</a>
+          <a href="pages/resources.html#teachers">Teacher Resources</a>
+          <a href="pages/research.html">Research & Publications</a>
+          <a href="pages/news.html">News & Events</a>
+          <a href="pages/media.html">Media Centre</a>
+          <a href="pages/downloads.html">Downloads</a>
+        </div>
+      </div>
+
+      <a href="pages/impact.html">Impact</a>
+      <a href="pages/contact.html">Contact</a>
+      <a class="nav-login" href="auth/auth.html">Portal Login</a>
+      <a class="nav-donate" href="pages/donate.html">Donate</a>
     </nav>
   </div>
 </header>
@@ -47,355 +57,196 @@
 <main>
 
 <section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Mental Health • Schools • Technology • Future Skills</span>
+      <h1>Changing how Africa understands mental health.</h1>
+      <p>SpeakOut helps students, schools, parents and communities build healthier minds through mental health education, school clubs, digital wellbeing tools, resources, research and future-ready learning.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="pages/programs.html">Explore Our Work</a>
+        <a class="btn btn-blue" href="pages/academy.html">Join SpeakHub Academy</a>
+        <a class="btn btn-white" href="pages/media.html">Watch Our Story</a>
+      </div>
+      <div class="hero-pills">
+        <span>School Mental Health Clubs</span><span>MindCheck</span><span>SpeakHub Academy</span><span>Parent & Teacher Support</span>
+      </div>
+    </div>
+
+    <div class="hero-dashboard">
+      <div class="dashboard-card main">
+        <span>SpeakOut Ecosystem</span>
+        <h3>One platform. Many pathways.</h3>
+        <p>Healthier minds, stronger schools and future-ready skills.</p>
+      </div>
+      <div class="mini-grid">
+        <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">😊 MindCheck</a>
+        <a href="pages/resources.html">📚 Resources</a>
+        <a href="pages/academy.html">🎓 SpeakHub</a>
+        <a href="pages/schools.html">🏫 School Clubs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="partners-strip">
   <div class="container">
-    <span class="kicker">Youth Wellness • School Mental Health Clubs • Community Support</span>
-    <h1>Helping young people speak, heal and thrive.</h1>
-    <p>
-      SpeakOut Mental Health Outreach educates, mobilizes and connects schools, families,
-      volunteers and partners around one urgent mission: making mental health support visible,
-      practical and accessible for young people.
-    </p>
-
-    <div class="actions">
-      <a class="btn gold" href="pages/about.html">Discover Our Story</a>
-      <a class="btn primary" href="pages/programs.html">Explore Programs</a>
-      <a class="btn light" href="auth/auth.html">Login / Apply</a>
-      <a class="btn outline" href="pages/donate.html">Sponsor the Mission</a>
-    </div>
-
-    <div class="badges">
-      <span>School Clubs</span>
-      <span>MindCheck</span>
-      <span>Parent Support</span>
-      <span>Teacher Development</span>
-      <span>Youth Leadership</span>
+    <p>Working with schools, healthcare professionals, NGOs, volunteers and communities.</p>
+    <div class="partner-track">
+      <span>Schools</span><span>NGOs</span><span>Healthcare Partners</span><span>Volunteers</span><span>Parents</span><span>Teachers</span><span>Communities</span>
     </div>
   </div>
 </section>
 
-<section class="impact">
-  <div class="container grid g4">
-    <div class="card stat">
-      <strong>21</strong>
-      <span>Schools Reached</span>
-    </div>
-
-    <div class="card stat">
-      <strong>10,000+</strong>
-      <span>Students Targeted</span>
-    </div>
-
-    <div class="card stat">
-      <strong>500+</strong>
-      <span>Youth Engaged</span>
-    </div>
-
-    <div class="card stat">
-      <strong>30+</strong>
-      <span>Volunteers & Ambassadors</span>
-    </div>
-  </div>
-</section>
-
-<section>
+<section class="section about-preview">
   <div class="container split">
+    <div class="image-panel"><img src="images/about-story.jpg" alt="SpeakOut school outreach"></div>
     <div>
-      <span class="label">Featured Campaign</span>
-      <h2>School mental health clubs that outlive one-day awareness talks.</h2>
-      <p>
-        Awareness matters, but schools need more than one event. SpeakOut helps schools build
-        mental health clubs where students, teachers and parents can keep learning, discussing,
-        reporting concerns, joining workshops and participating in wellbeing activities.
-      </p>
-      <p>
-        The goal is simple: make emotional wellbeing a normal part of school life, not a hidden
-        topic students only talk about when things become serious.
-      </p>
-
-      <ul class="check">
-        <li>Student-led awareness activities</li>
-        <li>Teacher coordinator support</li>
-        <li>Parent engagement and education</li>
-        <li>Workshops, certificates and school reports</li>
+      <span class="label">About SpeakOut</span>
+      <h2>We are building a safer ecosystem for young people to speak, learn and thrive.</h2>
+      <p>SpeakOut began with one belief: young people should not have to reach crisis before someone notices they are struggling. Our work connects mental health awareness, early support, education, media, school structures and digital access.</p>
+      <ul class="check-list">
+        <li>Mental health education that is simple and practical</li>
+        <li>School clubs that keep the conversation alive</li>
+        <li>Digital tools and resources for role-based support</li>
+        <li>Future skills through SpeakHub Academy</li>
       </ul>
-
-      <div class="actions">
-        <a class="btn primary" href="pages/programs.html">See the School Club Model</a>
-        <a class="btn gold" href="pages/contact.html">Invite SpeakOut</a>
-      </div>
-    </div>
-
-    <div class="video-box">
-      <div>
-        <span class="kicker">Watch</span>
-        <h3>Featured Program Video</h3>
-        <p>
-          Add your YouTube school visit recap, leadership summit video, radio interview
-          or campaign highlight here.
-        </p>
-        <a class="btn light" href="pages/news.html">Watch Programs</a>
-      </div>
+      <a class="btn btn-blue" href="pages/about.html">Read Our Story</a>
     </div>
   </div>
 </section>
 
-<section class="band">
+<section class="section ecosystem-section">
   <div class="container">
     <div class="section-title">
-      <span class="label">Mental Health Education</span>
-      <h2>What every young person should know.</h2>
-      <p>
-        Mental health is not only about crisis. It is about how young people think, feel,
-        cope, relate with others, respond to pressure and ask for support when life becomes heavy.
-      </p>
+      <span class="label">Our Ecosystem</span>
+      <h2>Everything connects under one SpeakOut platform.</h2>
+      <p>Mental health is the foundation. Education, technology, research, media and school support are the pathways that help young people become healthier and future-ready.</p>
     </div>
-
-    <div class="grid g3">
-      <article class="card">
-        <div class="icon">🧠</div>
-        <h3>Stress is a signal</h3>
-        <p>
-          Stress can show up as headaches, tiredness, anger, fear, silence, poor sleep or loss
-          of interest. It is the body and mind asking for attention.
-        </p>
-        <a class="btn softb" href="pages/resources.html">Learn Stress Signs</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">💬</div>
-        <h3>Speaking early helps</h3>
-        <p>
-          Many young people wait until they are overwhelmed before talking. Speaking early can
-          prevent isolation and help someone find safer next steps.
-        </p>
-        <a class="btn softb" href="pages/resources.html">Find Help Pathways</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">🤝</div>
-        <h3>Support is strength</h3>
-        <p>
-          Asking for help is not weakness. It is a responsible step toward healing, clarity,
-          stability and better decision-making.
-        </p>
-        <a class="btn softb" href="pages/contact.html">Talk to SpeakOut</a>
-      </article>
+    <div class="ecosystem-grid">
+      <a href="pages/programs.html" class="eco-card">❤️<strong>Mental Health Clubs</strong><span>School-based awareness and support</span></a>
+      <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener" class="eco-card">🧠<strong>MindCheck</strong><span>Digital wellbeing pathway</span></a>
+      <a href="pages/academy.html" class="eco-card">🎓<strong>SpeakHub Academy</strong><span>Coding, AI, robotics and skills</span></a>
+      <a href="pages/resources.html" class="eco-card">📚<strong>Resources Hub</strong><span>Students, parents and teachers</span></a>
+      <a href="pages/schools.html" class="eco-card">🏫<strong>School Platform</strong><span>Schools, clubs and reporting</span></a>
+      <a href="pages/research.html" class="eco-card">🔬<strong>Research</strong><span>Reports, surveys and policy briefs</span></a>
+      <a href="pages/media.html" class="eco-card">🎙️<strong>Media Centre</strong><span>Videos, radio and stories</span></a>
+      <a href="pages/contact.html" class="eco-card">🤝<strong>Partners</strong><span>CSR, NGOs and institutions</span></a>
     </div>
   </div>
 </section>
 
-<section>
+<section class="section programs-showcase">
   <div class="container">
     <div class="section-title">
-      <span class="label">Explore SpeakOut</span>
-      <h2>Learn, watch, read, listen, register and support.</h2>
-      <p>
-        SpeakOut is designed to keep visitors informed and engaged while guiding students,
-        parents, teachers, schools and partners to the right next step.
-      </p>
+      <span class="label">Featured Programs</span>
+      <h2>Practical programs for schools, families and communities.</h2>
     </div>
-
-    <div class="grid g3">
-      <a class="card" href="pages/resources.html">
-        <div class="icon">📚</div>
-        <h3>Read Mental Health Guides</h3>
-        <p>
-          Simple, practical education for students, parents, teachers and communities.
-          Learn signs, safe conversations and support steps.
-        </p>
-        <span class="btn softb">Open Resources</span>
-      </a>
-
-      <a class="card" href="pages/news.html">
-        <div class="icon">🎥</div>
-        <h3>Watch & Listen</h3>
-        <p>
-          Access YouTube updates, radio conversations, podcast episodes, social media highlights
-          and school outreach stories.
-        </p>
-        <span class="btn softb">Media & Events</span>
-      </a>
-
-      <a class="card" href="auth/auth.html">
-        <div class="icon">🔐</div>
-        <h3>Join the Learning Portal</h3>
-        <p>
-          Students, parents, teachers and schools can apply for access to structured learning,
-          workshops, certificates and role-based resources.
-        </p>
-        <span class="btn primary">Login / Apply</span>
-      </a>
+    <div class="program-row">
+      <article><img src="images/school-club.jpg" alt="School Mental Health Club"><div><h3>School Mental Health Clubs</h3><p>Structured school clubs that keep mental health education active beyond one-day awareness programs.</p><a href="pages/programs.html">Learn more →</a></div></article>
+      <article><img src="images/speakhub.jpg" alt="SpeakHub Academy"><div><h3>SpeakHub Academy</h3><p>Coding, AI, robotics, digital skills, parent education and teacher development under one academy.</p><a href="pages/academy.html">Explore academy →</a></div></article>
+      <article><img src="images/community.jpg" alt="Community Outreach"><div><h3>Community Outreach</h3><p>Media, school visits, youth dialogues and practical education for healthier communities.</p><a href="pages/news.html">View activities →</a></div></article>
     </div>
   </div>
 </section>
 
-<section class="dark-section">
+<section class="insight-section">
+  <div class="container insight-card">
+    <span class="label">Today’s Mental Wellness Insight</span>
+    <h2>Strong people ask for help before they reach breaking point.</h2>
+    <p>A simple conversation can interrupt isolation. Ask gently, listen patiently, and help the person identify one safe next step.</p>
+    <div class="insight-actions">
+      <a class="btn btn-white" href="pages/resources.html">Read More</a>
+      <a class="btn btn-outline" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Share / Get Support</a>
+    </div>
+  </div>
+</section>
+
+<section class="section media-preview">
   <div class="container">
     <div class="section-title">
-      <span class="kicker">Mental Health Tip of the Week</span>
-      <h2>Don’t wait for a breakdown before asking “Are you okay?”</h2>
-      <p>
-        A simple check-in can interrupt isolation. Ask gently, listen without rushing,
-        and help the person identify one safe next step.
-      </p>
+      <span class="label">Media Centre</span>
+      <h2>Watch, listen and follow the movement.</h2>
+      <p>Bring YouTube, podcast, radio, Instagram and news updates into one visible platform.</p>
     </div>
-
-    <div class="grid g3">
-      <div class="panel">
-        <h3>For Students</h3>
-        <p>
-          When pressure feels heavy, talk to one trusted person today. Silence makes stress
-          feel stronger, but support can help you breathe again.
-        </p>
-        <a class="btn primary" href="auth/auth.html">Student Resources</a>
-      </div>
-
-      <div class="panel">
-        <h3>For Parents</h3>
-        <p>
-          Children may hide distress behind anger, withdrawal or poor performance.
-          Listen first. Correct later. Connection opens the door.
-        </p>
-        <a class="btn primary" href="auth/auth.html">Parent Resources</a>
-      </div>
-
-      <div class="panel">
-        <h3>For Teachers</h3>
-        <p>
-          A change in behavior is communication. Notice, document, support and refer
-          when necessary.
-        </p>
-        <a class="btn primary" href="auth/auth.html">Teacher Resources</a>
+    <div class="media-grid">
+      <div class="video-preview"><h3>Featured Video</h3><p>Embed your latest YouTube video, school visit recap or campaign story here.</p><a class="btn btn-white" href="pages/media.html">Open Media Centre</a></div>
+      <div class="media-list">
+        <a href="pages/news.html"><strong>📰 Latest News</strong><span>School visits, campaigns and partner updates</span></a>
+        <a href="pages/media.html"><strong>🎙 Podcast & Radio</strong><span>Conversations on youth wellbeing</span></a>
+        <a href="https://instagram.com/speaaakout" target="_blank" rel="noopener"><strong>📷 Instagram</strong><span>@speaaakout live updates</span></a>
       </div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="container split">
-    <div class="featured">
-      <span class="label">Media & Live Updates</span>
-      <h2>Follow the work as it happens.</h2>
-      <p>
-        SpeakOut uses media to educate beyond the classroom. Radio, YouTube, Instagram,
-        Facebook and community conversations help us reach people who may never attend
-        a physical event.
-      </p>
-
-      <div class="social-grid mini">
-        <a class="social-card" href="https://instagram.com/speaaakout" target="_blank" rel="noopener">
-          <div class="icon">📸</div>
-          <strong>Instagram</strong>
-          <p>@speaaakout</p>
-        </a>
-
-        <a class="social-card" href="https://youtube.com/" target="_blank" rel="noopener">
-          <div class="icon">▶️</div>
-          <strong>YouTube</strong>
-          <p>Videos</p>
-        </a>
-      </div>
-    </div>
-
-    <div class="audio-box">
-      <span class="label">Radio / Podcast</span>
-      <h2>Listen to mental health conversations.</h2>
-      <p>
-        Feature your latest radio program, podcast episode or awareness message here.
-        Replace the audio file path when ready.
-      </p>
-      <audio controls style="width:100%">
-        <source src="audio/latest-episode.mp3" type="audio/mpeg">
-      </audio>
-      <div class="actions">
-        <a class="btn primary" href="pages/news.html">Open Media Room</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="band">
+<section class="section impact-section">
   <div class="container">
-    <div class="section-title">
-      <span class="label">Upcoming Opportunities</span>
-      <h2>There is a place for every supporter.</h2>
-      <p>
-        Whether you are a school, donor, parent, teacher, student, professional or volunteer,
-        there is a practical way to join the work.
-      </p>
+    <div class="section-title"><span class="label">Impact</span><h2>Real work. Real communities. Measurable growth.</h2></div>
+    <div class="impact-grid">
+      <a href="pages/impact.html"><strong>21</strong><span>Schools Reached</span></a>
+      <a href="pages/impact.html"><strong>10,000+</strong><span>Students Targeted</span></a>
+      <a href="pages/impact.html"><strong>30+</strong><span>Volunteers & Ambassadors</span></a>
+      <a href="pages/impact.html"><strong>5+</strong><span>Regions / Growth Pathways</span></a>
     </div>
+  </div>
+</section>
 
-    <div class="grid g4">
-      <a class="card" href="school-register.html">
-        <h3>Register a School</h3>
-        <p>Bring SpeakOut Mental Health Club to your school.</p>
-      </a>
+<section class="section academy-preview">
+  <div class="container split reverse">
+    <div>
+      <span class="label">SpeakHub Academy</span>
+      <h2>Future-ready skills for children, teens, adults, parents and teachers.</h2>
+      <p>SpeakHub Academy helps learners build practical skills in coding, AI, robotics, cloud, cybersecurity, design, entrepreneurship, digital parenting and teacher technology.</p>
+      <div class="course-tags"><span>Coding for Kids</span><span>Robotics</span><span>AI</span><span>Web Development</span><span>Cloud</span><span>Home Classes</span><span>Holiday Bootcamps</span></div>
+      <a class="btn btn-blue" href="pages/academy.html">Explore SpeakHub</a>
+    </div>
+    <div class="academy-card">
+      <h3>Learn Anywhere</h3>
+      <p>Online classes, hybrid practicals, school programs and private home classes.</p>
+      <ul class="check-list"><li>Parent booking</li><li>Certificates</li><li>Projects and showcases</li><li>Weekend and holiday classes</li></ul>
+    </div>
+  </div>
+</section>
 
-      <a class="card" href="pages/donate.html">
-        <h3>Sponsor a School</h3>
-        <p>Fund school clubs, workshops, materials and digital access.</p>
-      </a>
+<section class="section movement-section">
+  <div class="container">
+    <div class="section-title"><span class="label">Become Part of the Movement</span><h2>There is a place for every supporter.</h2></div>
+    <div class="movement-grid">
+      <a href="school-register.html">🏫<strong>Register a School</strong><span>Bring SpeakOut to your school.</span></a>
+      <a href="pages/donate.html">❤️<strong>Sponsor the Mission</strong><span>Fund clubs, resources and learning.</span></a>
+      <a href="auth/auth.html">🙋<strong>Volunteer</strong><span>Support outreach and events.</span></a>
+      <a href="pages/contact.html">🤝<strong>Partner With Us</strong><span>CSR, NGO and institutional partnerships.</span></a>
+    </div>
+  </div>
+</section>
 
-      <a class="card" href="auth/auth.html">
-        <h3>Become a Volunteer</h3>
-        <p>Support outreach, media, events and youth engagement.</p>
-      </a>
-
-      <a class="card" href="pages/contact.html">
-        <h3>Book a Speaker</h3>
-        <p>Invite SpeakOut for events, campaigns and awareness sessions.</p>
-      </a>
+<section class="donation-banner">
+  <div class="container donation-card">
+    <div>
+      <span class="label">Invest in Healthier Futures</span>
+      <h2>Support a generation that can speak, heal, learn and lead.</h2>
+      <p>Your donation helps fund school clubs, mental health education, resources, training and digital access.</p>
+    </div>
+    <div class="donation-actions">
+      <a class="btn btn-gold" href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate via Paystack</a>
+      <a class="btn btn-white" href="pages/donate.html">Other Ways to Give</a>
     </div>
   </div>
 </section>
 
 </main>
 
-<a class="float" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Need Help?</a>
-
 <footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <img src="images/logo.png" alt="SpeakOut Logo">
-        <h3>SpeakOut</h3>
-        <p>
-          Building safer mental health ecosystems for schools, students, parents,
-          teachers and communities.
-        </p>
-      </div>
-
-      <div>
-        <h4>Explore</h4>
-        <a href="index.html">Home</a>
-        <a href="pages/about.html">About</a>
-        <a href="pages/programs.html">Programs</a>
-        <a href="pages/impact.html">Impact</a>
-      </div>
-
-      <div>
-        <h4>Access</h4>
-        <a href="auth/auth.html">Portal Login / Apply</a>
-        <a href="school-register.html">School Registration</a>
-        <a href="certificate-center.html">Certificate Check</a>
-        <a href="pages/donate.html">Donate</a>
-      </div>
-
-      <div>
-        <h4>Contact</h4>
-        <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
-        <a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp</a>
-        <a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">@speaaakout</a>
-        <a href="pages/contact.html">Contact Form</a>
-      </div>
-    </div>
-
-    <p style="margin-top:30px;color:rgba(255,255,255,.55)">
-      © 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.
-    </p>
+  <div class="container footer-grid">
+    <div><img src="images/logo.png" alt="SpeakOut Logo"><h3>SpeakOut</h3><p>Building healthier minds, stronger schools and brighter futures across Africa.</p></div>
+    <div><h4>Organization</h4><a href="pages/about.html">About</a><a href="pages/programs.html">Programs</a><a href="pages/impact.html">Impact</a><a href="pages/contact.html">Contact</a></div>
+    <div><h4>Resources</h4><a href="pages/resources.html">Mental Health Library</a><a href="pages/research.html">Research</a><a href="pages/media.html">Media Centre</a><a href="pages/news.html">News & Events</a></div>
+    <div><h4>Get Involved</h4><a href="school-register.html">Register School</a><a href="auth/auth.html">Portal Login</a><a href="pages/donate.html">Donate</a><a href="https://wa.me/2348118103510" target="_blank" rel="noopener">WhatsApp</a></div>
+    <div><h4>Contact</h4><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a><a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">@speaaakout</a><a href="https://wa.me/2348118103510" target="_blank" rel="noopener">+234 811 810 3510</a></div>
   </div>
+  <div class="container footer-bottom"><p>© 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.</p></div>
 </footer>
 
-<script src="js/main.js"></script>
+<script src="js/home-v4.js"></script>
 </body>
 </html>
