@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>User Management</title><link rel="icon" href="../../images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../css/admin-cms.css"></head><body data-required-role="admin"><div class="admin-shell"><aside class="admin-sidebar">
+  <div class="admin-brand"><img src="../../images/logo.png" alt="SpeakOut"><div><strong>SpeakOut Admin</strong><small>CMS Control</small></div></div>
+  <nav class="admin-menu"><a class="" href="index.html">📊 Dashboard</a>
+<a class="active" href="users.html">👥 Users</a>
+<a class="" href="schools.html">🏫 Schools</a>
+<a class="" href="news.html">📰 News & Events</a>
+<a class="" href="media.html">🎥 Media</a>
+<a class="" href="resources.html">📚 Resources</a>
+<a class="" href="settings.html">⚙️ Settings</a><button class="logout-btn" data-logout>🚪 Logout</button></nav>
+</aside><main class="admin-main"><header class="admin-topbar"><h1>User Management</h1><div class="admin-user">Signed in as <strong data-user-name>Admin</strong></div></header><section class="admin-content"><div class="toolbar"><div><h2>User Approval Center</h2><p>Approve, suspend and review member access requests.</p></div><div class="search-row"><select id="roleFilter"><option value="">All Roles</option><option value="student">Student</option><option value="parent">Parent</option><option value="teacher">Teacher</option><option value="school_admin">School Admin</option><option value="ambassador">Ambassador</option></select><select id="statusFilter"><option value="">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="suspended">Suspended</option></select></div></div>
+<div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>School</th><th>Status</th><th>Created</th><th>Action</th></tr></thead><tbody id="usersTable"></tbody></table></div></section></main></div><script type="module" src="../../js/admin-cms.js"></script><script type="module" src="../../js/admin-users.js"></script></body></html>
