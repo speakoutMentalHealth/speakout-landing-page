@@ -1,2 +1,275 @@
 rules_version = '2';
-service cloud.firestore { match /databases/{database}/documents { match /{document=**} { allow read, write: if false; } } }
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userExists() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userRole() {
+      return userExists() ? userDoc().data.role : "";
+    }
+
+    function userSchoolId() {
+      return userExists() ? userDoc().data.schoolId : "";
+    }
+
+    function isApproved() {
+      return userExists() &&
+        userDoc().data.approved == true &&
+        userDoc().data.status == "approved";
+    }
+
+    function isSuperAdmin() {
+      return isApproved() &&
+        (userRole() == "super_admin" || userRole() == "admin");
+    }
+
+    function isSchoolAdmin() {
+      return isApproved() && userRole() == "school_admin";
+    }
+
+    function isTeacher() {
+      return isApproved() && userRole() == "teacher";
+    }
+
+    function isParent() {
+      return isApproved() && userRole() == "parent";
+    }
+
+    function isStudent() {
+      return isApproved() && userRole() == "student";
+    }
+
+    function isAmbassador() {
+      return isApproved() && userRole() == "ambassador";
+    }
+
+    match /users/{userId} {
+      allow create: if isSignedIn() && request.auth.uid == userId;
+
+      allow read: if isApproved() &&
+        (
+          request.auth.uid == userId ||
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            resource.data.schoolId == userSchoolId()
+          )
+        );
+
+      allow update: if isApproved() &&
+        (
+          request.auth.uid == userId ||
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            resource.data.schoolId == userSchoolId()
+          )
+        );
+
+      allow delete: if isSuperAdmin();
+    }
+
+    match /schools/{schoolId} {
+      allow create: if isSignedIn();
+
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            userSchoolId() == schoolId
+          ) ||
+          (
+            (isTeacher() || isParent() || isStudent()) &&
+            userSchoolId() == schoolId
+          )
+        );
+
+      allow update: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          userSchoolId() == schoolId
+        );
+
+      allow delete: if isSuperAdmin();
+    }
+
+    match /parentStudentLinks/{linkId} {
+      allow create: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin());
+
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          isSchoolAdmin() ||
+          resource.data.parentId == request.auth.uid ||
+          resource.data.studentId == request.auth.uid
+        );
+
+      allow update, delete: if isSuperAdmin() || isSchoolAdmin();
+    }
+
+    match /books/{bookId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /parentResources/{resourceId} {
+      allow read: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /teacherResources/{resourceId} {
+      allow read: if isApproved() && (isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /studentResources/{resourceId} {
+      allow read: if isApproved() && (isStudent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /schoolResources/{resourceId} {
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (
+            resource.data.schoolId == userSchoolId() &&
+            (isSchoolAdmin() || isTeacher() || isParent() || isStudent())
+          )
+        );
+
+      allow write: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          request.resource.data.schoolId == userSchoolId()
+        );
+    }
+
+    match /workshops/{workshopId} {
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (
+            resource.data.schoolId == userSchoolId() &&
+            (isSchoolAdmin() || isTeacher() || isParent() || isStudent())
+          )
+        );
+
+      allow create, update, delete: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          request.resource.data.schoolId == userSchoolId()
+        );
+    }
+
+    match /courses/{courseId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /courseModules/{moduleId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /courseLessons/{lessonId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /userProgress/{progressId} {
+      allow read, write: if isApproved() &&
+        (
+          resource.data.userId == request.auth.uid ||
+          request.resource.data.userId == request.auth.uid ||
+          isSuperAdmin()
+        );
+    }
+
+    match /certificates/{certificateId} {
+      allow read: if true;
+
+      allow create: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          request.resource.data.userId == request.auth.uid
+        );
+
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /certificateTemplates/{templateId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /contributors/{contributorId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /contributorApplications/{applicationId} {
+      allow create: if isSignedIn();
+
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /kiddiesResources/{resourceId} {
+      allow read: if isApproved() && (isStudent() || isParent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /homepageMedia/{mediaId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /newsEvents/{eventId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow create: if isSignedIn();
+
+      allow read: if isSuperAdmin() ||
+        (
+          isApproved() &&
+          resource.data.userId == request.auth.uid
+        );
+
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /donations/{donationId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /contactMessages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /schoolApplications/{applicationId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}
