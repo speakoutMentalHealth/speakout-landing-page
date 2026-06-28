@@ -1,1 +1,20 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Folder Ready</title><link rel="stylesheet" href="../../css/speakout-main.css"></head><body><section class="page-hero"><div class="container"><h1>Folder Ready</h1><p>Move the finalized page here.</p></div></section></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Dashboard</title><link rel="icon" href="../../images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="../../css/admin-cms.css"></head><body data-required-role="admin"><div class="admin-shell"><aside class="admin-sidebar">
+  <div class="admin-brand"><img src="../../images/logo.png" alt="SpeakOut"><div><strong>SpeakOut Admin</strong><small>CMS Control</small></div></div>
+  <nav class="admin-menu"><a class="active" href="index.html">📊 Dashboard</a>
+<a class="" href="users.html">👥 Users</a>
+<a class="" href="schools.html">🏫 Schools</a>
+<a class="" href="news.html">📰 News & Events</a>
+<a class="" href="media.html">🎥 Media</a>
+<a class="" href="resources.html">📚 Resources</a>
+<a class="" href="settings.html">⚙️ Settings</a><button class="logout-btn" data-logout>🚪 Logout</button></nav>
+</aside><main class="admin-main"><header class="admin-topbar"><h1>Admin Dashboard</h1><div class="admin-user">Signed in as <strong data-user-name>Admin</strong></div></header><section class="admin-content"><div class="grid g4">
+<div class="card stat"><strong id="statUsers">0</strong><span>Total Users</span></div>
+<div class="card stat"><strong id="statSchools">0</strong><span>Schools</span></div>
+<div class="card stat"><strong id="statNews">0</strong><span>News / Events</span></div>
+<div class="card stat"><strong id="statResources">0</strong><span>Resources</span></div>
+</div>
+<div class="grid g2" style="margin-top:22px">
+<div class="panel"><h2>Quick Actions</h2><p>Approve users, add schools, publish news, upload media and organize resources.</p><div class="toolbar"><a class="btn primary" href="users.html">Approve Users</a><a class="btn gold" href="schools.html">Add School</a><a class="btn soft" href="news.html">Publish News</a></div></div>
+<div class="panel"><h2>Admin Priorities</h2><p>Start with pending users, school setup, media items and public resources. These power the platform experience.</p></div>
+</div>
+<div class="panel" style="margin-top:22px"><h2>Latest Users</h2><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th></tr></thead><tbody id="latestUsers"></tbody></table></div></div></section></main></div><script type="module" src="../../js/admin-cms.js"></script><script type="module" src="../../js/admin-dashboard.js"></script></body></html>
