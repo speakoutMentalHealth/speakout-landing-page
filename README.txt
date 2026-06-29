@@ -1,0 +1,1 @@
+Upload all files into the matching folders. Requires existing css/speakout-main.css, js/main.js, and images/logo.png.
