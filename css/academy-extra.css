@@ -1,0 +1,343 @@
+.academy-hero{
+  min-height:calc(100vh - 98px);
+  display:grid;
+  align-items:center;
+  color:#fff;
+  background:
+    linear-gradient(90deg,rgba(6,21,47,.92),rgba(6,21,47,.72),rgba(6,21,47,.28)),
+    url("../images/academy-hero.png") center center / cover no-repeat;
+}
+
+.academy-hero-grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:46px;
+  align-items:center;
+  padding:92px 0;
+}
+
+.academy-hero h1{
+  color:#fff;
+  font-size:clamp(3rem,6vw,5.9rem);
+  max-width:900px;
+  margin:16px 0;
+}
+
+.academy-hero p{
+  max-width:760px;
+  color:rgba(255,255,255,.9);
+  font-size:1.1rem;
+  line-height:1.75;
+}
+
+.academy-hero-card{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(18px);
+  border-radius:34px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+
+.academy-hero-card span{
+  color:#ffd78a;
+  font-weight:900;
+  text-transform:uppercase;
+  font-size:.75rem;
+  letter-spacing:.08em;
+}
+
+.academy-hero-card h3{
+  color:#fff;
+  font-size:2rem;
+}
+
+.academy-stats{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  padding:22px 0;
+}
+
+.academy-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.academy-stats-grid div{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  text-align:center;
+  box-shadow:var(--soft-shadow);
+}
+
+.academy-stats-grid strong{
+  display:block;
+  color:var(--blue);
+  font-size:2.2rem;
+}
+
+.academy-stats-grid span{
+  display:block;
+  color:var(--muted);
+  font-weight:850;
+  margin-top:8px;
+}
+
+.academy-section,
+.learner-pathways,
+.course-section,
+.certificate-section,
+.academy-faq-section{
+  padding:78px 0;
+}
+
+.academy-section,
+.course-section,
+.academy-faq-section{
+  background:#fff;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.learner-pathways,
+.certificate-section{
+  background:var(--bg);
+}
+
+.academy-benefit-grid,
+.course-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.academy-benefit-grid article,
+.course-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  box-shadow:var(--soft-shadow);
+  padding:24px;
+  transition:.25s ease;
+}
+
+.academy-benefit-grid article:hover,
+.course-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+
+.academy-benefit-grid div{
+  width:58px;
+  height:58px;
+  border-radius:20px;
+  background:var(--sky);
+  color:var(--blue);
+  display:grid;
+  place-items:center;
+  font-size:1.55rem;
+  margin-bottom:16px;
+}
+
+.pathway-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:24px;
+}
+
+.pathway-card{
+  display:grid;
+  grid-template-columns:.85fr 1.15fr;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--soft-shadow);
+}
+
+.pathway-card img{
+  width:100%;
+  height:100%;
+  min-height:330px;
+  object-fit:cover;
+  background:var(--sky);
+}
+
+.pathway-card div{
+  padding:30px;
+}
+
+.pathway-card span,
+.course-card span{
+  display:inline-flex;
+  color:var(--blue);
+  font-weight:900;
+  text-transform:uppercase;
+  font-size:.72rem;
+  letter-spacing:.08em;
+  margin-bottom:10px;
+}
+
+.hybrid-section,
+.learning-journey,
+.instructor-section,
+.academy-final-cta{
+  background:
+    radial-gradient(circle at 12% 18%,rgba(245,166,35,.16),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:78px 0;
+}
+
+.hybrid-section h2,
+.hybrid-section h3,
+.learning-journey h2,
+.learning-journey h3,
+.instructor-section h2,
+.academy-final-cta h2{
+  color:#fff;
+}
+
+.hybrid-section p,
+.learning-journey p,
+.instructor-section p,
+.academy-final-cta p{
+  color:rgba(255,255,255,.84);
+}
+
+.hybrid-grid,
+.journey-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.journey-grid{
+  grid-template-columns:repeat(6,1fr);
+}
+
+.hybrid-grid article,
+.journey-grid div,
+.instructor-card{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:24px;
+  padding:22px;
+}
+
+.hybrid-grid div{
+  font-size:2rem;
+}
+
+.journey-grid strong{
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:rgba(245,166,35,.22);
+  color:#ffd78a;
+  margin-bottom:16px;
+}
+
+.course-card small{
+  display:block;
+  color:var(--muted);
+  font-weight:800;
+  margin:14px 0;
+}
+
+.certificate-preview{
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  background:var(--sky);
+}
+
+.certificate-preview img{
+  width:100%;
+  height:430px;
+  object-fit:cover;
+}
+
+.academy-faq-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.academy-faq-grid details{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--soft-shadow);
+  padding:18px;
+}
+
+.academy-faq-grid summary{
+  cursor:pointer;
+  font-weight:900;
+  color:var(--navy);
+}
+
+.academy-final-cta{
+  text-align:center;
+}
+
+.academy-final-cta .container{
+  max-width:980px;
+}
+
+.academy-final-cta h2{
+  font-size:clamp(2.2rem,5vw,4.8rem);
+}
+
+.academy-final-cta .actions{
+  justify-content:center;
+}
+
+@media(max-width:1180px){
+  .academy-hero-grid,
+  .pathway-card{
+    grid-template-columns:1fr;
+  }
+
+  .academy-stats-grid,
+  .academy-benefit-grid,
+  .course-grid,
+  .academy-faq-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .journey-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:760px){
+  .academy-hero{min-height:auto}
+  .academy-hero-grid{padding:58px 0}
+  .academy-hero h1{font-size:clamp(2.5rem,12vw,3.9rem)}
+
+  .academy-stats-grid,
+  .academy-benefit-grid,
+  .course-grid,
+  .hybrid-grid,
+  .journey-grid,
+  .academy-faq-grid{
+    grid-template-columns:1fr;
+  }
+
+  .pathway-card img,
+  .certificate-preview img{
+    height:260px;
+    min-height:260px;
+  }
+
+  .academy-final-cta .actions{
+    flex-direction:column;
+  }
+}
