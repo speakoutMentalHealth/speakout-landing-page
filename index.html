@@ -11,46 +11,64 @@
 </head>
 <body>
 
-<div class="announcement-bar">
-  <span>🎓 SpeakHub Academy enrollment, school partnerships and mental health resources are now open.</span>
+<!-- FILE: index.html -->
+<!-- ACTION: Replace only your current <div class="top">...</div> and <header class="nav">...</header> section with this block. -->
+
+<div class="top">
+  <span>SpeakHub Academy enrollment, school partnerships and mental health resources are now open.</span>
   <a href="pages/contact.html">Get Started</a>
 </div>
 
-<header class="site-header">
-  <div class="container nav-wrap">
-    <a href="index.html" class="brand">
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
       <img src="images/logo.png" alt="SpeakOut Logo">
-      <div><strong>SpeakOut</strong><small>Building healthier minds. Brighter futures.</small></div>
+      <div>
+        <strong>SpeakOut</strong>
+        <small>Mental Health Outreach</small>
+      </div>
     </a>
 
-    <button class="menu-btn" aria-label="Open menu">☰</button>
+    <button class="menu" aria-label="Open menu" type="button">☰</button>
 
-    <nav class="main-nav">
+    <nav class="links" aria-label="Main navigation">
       <a class="active" href="index.html">Home</a>
       <a href="pages/about.html">About</a>
-      <a href="pages/programs.html">Programs</a>
-      <a href="pages/schools.html">Schools</a>
-      <a href="pages/academy.html">Academy</a>
 
-      <div class="nav-dropdown">
+      <div class="drop">
+        <button type="button">Programs ▾</button>
+        <div class="drop-menu">
+          <a href="pages/programs.html">All Programs</a>
+          <a href="pages/programs.html#school-clubs">School Mental Health Clubs</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a>
+          <a href="pages/academy.html">SpeakHub Academy</a>
+          <a href="pages/programs.html#community">Community Outreach</a>
+          <a href="pages/programs.html#teachers">Teacher Development</a>
+          <a href="pages/programs.html#parents">Parent Support</a>
+        </div>
+      </div>
+
+      <a href="pages/academy.html">Academy</a>
+      <a href="pages/schools.html">Schools</a>
+
+      <div class="drop">
         <button type="button">Resources ▾</button>
-        <div class="dropdown-panel">
+        <div class="drop-menu">
           <a href="pages/resources.html">Mental Health Library</a>
-          <a href="pages/resources.html#students">Student Resources</a>
-          <a href="pages/resources.html#parents">Parent Resources</a>
-          <a href="pages/resources.html#teachers">Teacher Resources</a>
-          <a href="pages/research.html">Research & Publications</a>
           <a href="pages/news.html">News & Events</a>
           <a href="pages/media.html">Media Centre</a>
+          <a href="pages/research.html">Research</a>
           <a href="pages/downloads.html">Downloads</a>
         </div>
       </div>
 
-      <a href="pages/impact.html">Impact</a>
       <a href="pages/contact.html">Contact</a>
-      <a class="nav-login" href="auth/auth.html">Portal Login</a>
-      <a class="nav-donate" href="pages/donate.html">Donate</a>
     </nav>
+
+    <div class="nav-actions">
+      <a class="portal-btn" href="auth/auth.html">Portal</a>
+      <a class="donate-btn" href="pages/donate.html">Donate</a>
+    </div>
   </div>
 </header>
 
