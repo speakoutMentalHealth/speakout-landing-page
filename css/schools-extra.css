@@ -1,0 +1,362 @@
+.schools-hero{
+  min-height:calc(100vh - 98px);
+  display:grid;
+  align-items:center;
+  color:#fff;
+  background:
+    linear-gradient(90deg,rgba(6,21,47,.92),rgba(6,21,47,.72),rgba(6,21,47,.28)),
+    url("../images/schools-hero.jpg") center center / cover no-repeat;
+}
+
+.schools-hero-grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:46px;
+  align-items:center;
+  padding:92px 0;
+}
+
+.schools-hero h1{
+  color:#fff;
+  font-size:clamp(3rem,6vw,5.9rem);
+  max-width:900px;
+  margin:16px 0;
+}
+
+.schools-hero p{
+  max-width:760px;
+  color:rgba(255,255,255,.9);
+  font-size:1.1rem;
+  line-height:1.75;
+}
+
+.schools-hero-card{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(18px);
+  border-radius:34px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+
+.schools-hero-card span{
+  color:#ffd78a;
+  font-weight:900;
+  text-transform:uppercase;
+  font-size:.75rem;
+  letter-spacing:.08em;
+}
+
+.schools-hero-card h3{
+  color:#fff;
+  font-size:2rem;
+  margin:12px 0;
+}
+
+.school-stats{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  padding:22px 0;
+}
+
+.school-stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.school-stats-grid div{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  text-align:center;
+  box-shadow:var(--soft-shadow);
+}
+
+.school-stats-grid strong{
+  display:block;
+  color:var(--blue);
+  font-size:2.2rem;
+  line-height:1;
+}
+
+.school-stats-grid span{
+  display:block;
+  color:var(--muted);
+  font-weight:850;
+  margin-top:8px;
+}
+
+.schools-section,
+.school-receives-section,
+.school-dashboard-section,
+.school-packages-section,
+.school-faq-section{
+  padding:78px 0;
+}
+
+.schools-section,
+.school-dashboard-section,
+.school-faq-section{
+  background:#fff;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.school-receives-section,
+.school-packages-section{
+  background:var(--bg);
+}
+
+.school-benefit-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.school-benefit-grid article,
+.package-grid article{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:26px;
+  box-shadow:var(--soft-shadow);
+  padding:24px;
+  transition:.25s ease;
+}
+
+.school-benefit-grid article:hover,
+.package-grid article:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+
+.school-benefit-grid div{
+  width:58px;
+  height:58px;
+  border-radius:20px;
+  background:var(--sky);
+  color:var(--blue);
+  display:grid;
+  place-items:center;
+  font-size:1.55rem;
+  margin-bottom:16px;
+}
+
+.school-image-card{
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  background:var(--sky);
+}
+
+.school-image-card img{
+  width:100%;
+  height:430px;
+  object-fit:cover;
+}
+
+.journey-section,
+.school-final-cta{
+  background:
+    radial-gradient(circle at 12% 18%,rgba(245,166,35,.16),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:78px 0;
+}
+
+.journey-section h2,
+.journey-section h3,
+.school-final-cta h2{
+  color:#fff;
+}
+
+.journey-section p,
+.school-final-cta p{
+  color:rgba(255,255,255,.84);
+}
+
+.school-journey-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:14px;
+}
+
+.school-journey-grid div{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:24px;
+  padding:18px;
+  min-height:178px;
+}
+
+.school-journey-grid strong{
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:rgba(245,166,35,.22);
+  color:#ffd78a;
+  margin-bottom:16px;
+}
+
+.dashboard-preview{
+  background:#07152b;
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.dash-top{
+  display:flex;
+  gap:8px;
+  padding:18px;
+  background:#0b2448;
+}
+
+.dash-top span{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:#fff;
+  opacity:.45;
+}
+
+.dash-body{
+  padding:28px;
+  color:#fff;
+}
+
+.dash-body h3{
+  color:#fff;
+  font-size:2rem;
+}
+
+.dash-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:22px;
+}
+
+.dash-grid div{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  padding:18px;
+}
+
+.dash-grid strong{
+  display:block;
+  color:#ffd78a;
+  font-size:1.15rem;
+}
+
+.dash-grid span{
+  color:rgba(255,255,255,.78);
+}
+
+.package-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.package-grid article span{
+  display:inline-flex;
+  color:var(--blue);
+  font-weight:900;
+  text-transform:uppercase;
+  font-size:.72rem;
+  letter-spacing:.08em;
+  margin-bottom:10px;
+}
+
+.featured-package{
+  background:linear-gradient(180deg,#fff,#fff8e9)!important;
+  border-color:rgba(245,166,35,.35)!important;
+}
+
+.school-faq-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.school-faq-grid details{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--soft-shadow);
+  padding:18px;
+}
+
+.school-faq-grid summary{
+  cursor:pointer;
+  font-weight:900;
+  color:var(--navy);
+}
+
+.school-final-cta{
+  text-align:center;
+}
+
+.school-final-cta .container{
+  max-width:980px;
+}
+
+.school-final-cta h2{
+  font-size:clamp(2.2rem,5vw,4.8rem);
+}
+
+.school-final-cta .actions{
+  justify-content:center;
+}
+
+@media(max-width:1180px){
+  .schools-hero-grid,
+  .school-benefit-grid,
+  .package-grid{
+    grid-template-columns:1fr;
+  }
+
+  .school-stats-grid,
+  .school-faq-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .school-journey-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:760px){
+  .schools-hero{
+    min-height:auto;
+  }
+
+  .schools-hero-grid{
+    padding:58px 0;
+  }
+
+  .schools-hero h1{
+    font-size:clamp(2.5rem,12vw,3.9rem);
+  }
+
+  .school-stats-grid,
+  .school-faq-grid,
+  .school-journey-grid,
+  .dash-grid{
+    grid-template-columns:1fr;
+  }
+
+  .school-image-card img{
+    height:260px;
+  }
+
+  .school-final-cta .actions{
+    flex-direction:column;
+  }
+}
