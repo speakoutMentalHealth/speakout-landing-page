@@ -22,7 +22,7 @@
 
 <header class="nav" id="siteNav">
   <div class="container nav-inner">
-    <a class="brand" href="../index.html" aria-label="SpeakOut Home">
+    <a class="brand" href="../index.html">
       <img src="../images/logo.png" alt="SpeakOut Logo">
       <div>
         <strong>SpeakOut</strong>
@@ -32,20 +32,18 @@
 
     <button class="menu" aria-label="Open menu" aria-expanded="false" type="button">☰</button>
 
-    <nav class="links" aria-label="Main navigation">
+    <nav class="links">
       <a href="../index.html">Home</a>
       <a class="active" href="../pages/about.html">About</a>
 
       <div class="drop">
-        <button type="button" aria-expanded="false">Programs ▾</button>
+        <button class="drop-toggle" type="button">Programs <span>▾</span></button>
         <div class="drop-menu">
           <a href="../pages/programs.html">All Programs</a>
           <a href="../pages/programs.html#school-clubs">School Mental Health Clubs</a>
-          <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank">MindCheck</a>
           <a href="../pages/academy.html">SpeakHub Academy</a>
           <a href="../pages/programs.html#community">Community Outreach</a>
-          <a href="../pages/programs.html#teachers">Teacher Development</a>
-          <a href="../pages/programs.html#parents">Parent Support</a>
         </div>
       </div>
 
@@ -53,24 +51,12 @@
       <a href="../pages/schools.html">Schools</a>
 
       <div class="drop">
-        <button type="button" aria-expanded="false">Resources ▾</button>
+        <button class="drop-toggle" type="button">Resources <span>▾</span></button>
         <div class="drop-menu">
           <a href="../pages/resources.html">Mental Health Library</a>
           <a href="../pages/news.html">News & Events</a>
           <a href="../pages/media.html">Media Centre</a>
           <a href="../pages/research.html">Research</a>
-          <a href="../pages/downloads.html">Downloads</a>
-        </div>
-      </div>
-
-      <div class="drop">
-        <button type="button" aria-expanded="false">Get Involved ▾</button>
-        <div class="drop-menu">
-          <a href="../school-register.html">Register a School</a>
-          <a href="../pages/contact.html">Partner With Us</a>
-          <a href="../auth/auth.html">Volunteer / Ambassador</a>
-          <a href="../pages/donate.html">Sponsor a School</a>
-          <a href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate Online</a>
         </div>
       </div>
 
@@ -79,7 +65,7 @@
 
     <div class="nav-actions">
       <a class="portal-btn" href="../auth/auth.html">Portal</a>
-      <a class="donate-btn" href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate</a>
+      <a class="donate-btn" href="../pages/donate.html">Donate</a>
     </div>
   </div>
 </header>
