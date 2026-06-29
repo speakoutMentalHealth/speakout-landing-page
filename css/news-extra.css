@@ -5,11 +5,11 @@
   color:#fff;
   background:
     linear-gradient(90deg,rgba(6,21,47,.92),rgba(6,21,47,.72),rgba(6,21,47,.28)),
-    url("../images/news-hero.jpg") center center / cover no-repeat;
+    url("../images/news-hero.png") center center / cover no-repeat;
 }
 
 .news-hero-grid{
-  display:grid;
+  display:grid
   grid-template-columns:1.05fr .95fr;
   gap:46px;
   align-items:center;
