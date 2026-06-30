@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile | SpeakOut Student Portal</title>
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/student-portal.css">
+</head>
+<body>
+<div class="student-shell">
+<aside class="student-sidebar">
+  <a class="student-brand" href="../index.html">
+    <img src="../images/logo.png" alt="SpeakOut Logo">
+    <div><strong>SpeakOut</strong><small>Student Portal</small></div>
+  </a>
+  <nav class="student-menu"><a class="" href="student-dashboard.html"><span>🏠</span>Dashboard</a>
+<a class="" href="student-courses.html"><span>🎓</span>Courses</a>
+<a class="" href="student-library.html"><span>📚</span>Library</a>
+<a class="" href="student-certificates.html"><span>🏅</span>Certificates</a>
+<a class="" href="student-mindcheck.html"><span>🧠</span>MindCheck</a>
+<a class="active" href="student-profile.html"><span>👤</span>Profile</a><a href="../auth/login.html"><span>🚪</span>Logout</a></nav>
+</aside>
+<div class="student-main">
+<header class="student-topbar">
+  <button class="btn dark mobile-menu" data-mobile-menu>☰</button>
+  <h2>Student Profile</h2>
+  <div class="student-user"><span>Student</span><div class="avatar">S</div></div>
+</header>
+<main class="student-content">
+<section class="student-hero"><h1>Your student profile.</h1><p>Keep your contact details, school information and learning preferences updated.</p></section>
+<section class="profile-grid">
+  <aside class="profile-card"><div class="avatar" style="width:84px;height:84px;font-size:2rem">S</div><h3>Student Name</h3><p>Student learner</p><span class="badge">Active</span></aside>
+  <form class="profile-card form"><h3>Profile Details</h3><input placeholder="Full name"><input type="email" placeholder="Email address"><input placeholder="School name"><select><option>Learning interest</option><option>Coding</option><option>Wellbeing</option><option>Leadership</option><option>Creative skills</option></select><textarea placeholder="What do you want to learn?"></textarea><button class="btn primary" type="button">Save Profile</button></form>
+</section>
+</main>
+</div>
+</div>
+<script src="../js/student-portal.js"></script>
+</body>
+</html>

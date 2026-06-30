@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | SpeakOut Student Portal</title>
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/student-portal.css">
+</head>
+<body>
+<div class="student-shell">
+<aside class="student-sidebar">
+  <a class="student-brand" href="../index.html">
+    <img src="../images/logo.png" alt="SpeakOut Logo">
+    <div><strong>SpeakOut</strong><small>Student Portal</small></div>
+  </a>
+  <nav class="student-menu"><a class="active" href="student-dashboard.html"><span>🏠</span>Dashboard</a>
+<a class="" href="student-courses.html"><span>🎓</span>Courses</a>
+<a class="" href="student-library.html"><span>📚</span>Library</a>
+<a class="" href="student-certificates.html"><span>🏅</span>Certificates</a>
+<a class="" href="student-mindcheck.html"><span>🧠</span>MindCheck</a>
+<a class="" href="student-profile.html"><span>👤</span>Profile</a><a href="../auth/login.html"><span>🚪</span>Logout</a></nav>
+</aside>
+<div class="student-main">
+<header class="student-topbar">
+  <button class="btn dark mobile-menu" data-mobile-menu>☰</button>
+  <h2>Student Dashboard</h2>
+  <div class="student-user"><span>Student</span><div class="avatar">S</div></div>
+</header>
+<main class="student-content">
+<section class="student-hero">
+  <h1>Welcome back to your learning and wellbeing space.</h1>
+  <p>Continue your courses, explore mental health resources, check your certificates, and reflect on your wellbeing through MindCheck.</p>
+  <div class="actions"><a class="btn gold" href="student-courses.html">Continue Learning</a><a class="btn light" href="student-mindcheck.html">Open MindCheck</a></div>
+</section>
+<section class="grid g4">
+  <article class="card stat"><strong>3</strong><span>Active Courses</span></article>
+  <article class="card stat"><strong>68%</strong><span>Learning Progress</span></article>
+  <article class="card stat"><strong>2</strong><span>Certificates</span></article>
+  <article class="card stat"><strong>8</strong><span>Saved Resources</span></article>
+</section>
+<div class="section-title"><span>Continue</span><h2>Your current learning path.</h2></div>
+<section class="grid g3">
+  <article class="course-card"><img src="../images/coding-kids.png"><span class="badge">In Progress</span><h3>Coding for Beginners</h3><p>Build confidence in logic, creativity and simple programming.</p><div class="progress-bar" data-progress="68"></div><a class="btn primary" href="student-courses.html">Continue</a></article>
+  <article class="course-card"><img src="../images/student-resources.png"><span class="badge">Wellbeing</span><h3>Stress & Exam Pressure</h3><p>Learn how to notice pressure early and build healthier study habits.</p><div class="progress-bar" data-progress="45"></div><a class="btn primary" href="student-library.html">Open</a></article>
+  <article class="course-card"><img src="../images/leadership.png"><span class="badge">Leadership</span><h3>Confidence & Public Speaking</h3><p>Practice communication, storytelling and self-expression.</p><div class="progress-bar" data-progress="25"></div><a class="btn primary" href="student-courses.html">Start</a></article>
+</section>
+</main>
+</div>
+</div>
+<script src="../js/student-portal.js"></script>
+</body>
+</html>
