@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Certificates | SpeakOut</title>
+<link rel="icon" href="../../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.container{width:min(1220px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:48px 0}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.14)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:14px 0}
+h2,h3{line-height:1.05;color:var(--navy)}
+.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+section{padding:34px 0}
+.grid{display:grid;gap:16px}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
+.card p,.panel p{color:var(--muted);line-height:1.6}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
+.approved,.active,.valid{background:var(--greenSoft);color:var(--green)}
+.pending,.pending_school_approval,.review{background:var(--goldSoft);color:#704800}
+.rejected,.suspended,.revoked,.invalid{background:var(--redSoft);color:var(--red)}
+.stat strong{display:block;color:var(--blue);font-size:2.25rem}
+.table{width:100%;border-collapse:separate;border-spacing:0 10px}
+.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase;white-space:nowrap}
+.table td,.table th{padding:10px;vertical-align:top}
+.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.form-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px}
+input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);padding:40px;overflow:auto;z-index:9999}
+.modal .panel{max-width:820px;margin:auto}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.detail b{display:block;color:var(--navy);font-size:.8rem;text-transform:uppercase}
+.detail span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
+</style>
+</head>
+
+<body data-required-role="admin">
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="../../images/logo.png" alt="SpeakOut Logo">
+      <div><h2>SpeakOut</h2><p>Admin Command Center</p></div>
+    </a>
+    <nav class="links">
+      <a class="btn soft" href="index.html">Dashboard</a>
+      <a class="btn soft" href="schools.html">Schools</a>
+      <a class="btn soft" href="users.html">Users</a>
+      <a class="btn soft" href="content-review.html">Content</a>
+      <a class="btn dark" href="certificates.html">Certificates</a>
+      <a class="btn soft" href="payments.html">Payments</a>
+      <a class="btn danger" href="../../auth/auth.html" id="logoutLink">Logout</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Admin</span>
+    <h1>Admin Certificates</h1>
+    <p>Review certificates, verify records, approve or revoke certificates and export certificate data.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="statusBox" class="notice">Checking admin access...</div>
+
+    <div class="grid g5" style="margin-bottom:18px">
+      <div class="card stat"><strong id="totalCount">0</strong><span>Total Certificates</span></div>
+      <div class="card stat"><strong id="activeCount">0</strong><span>Active / Valid</span></div>
+      <div class="card stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
+      <div class="card stat"><strong id="revokedCount">0</strong><span>Revoked / Invalid</span></div>
+      <div class="card stat"><strong id="schoolCount">0</strong><span>Schools</span></div>
+    </div>
+
+    <div class="panel">
+      <span class="label">Filters</span>
+      <div class="form-grid">
+        <input id="searchInput" placeholder="Search recipient, title, certificate no, school...">
+        <select id="statusFilter">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="active">Active</option>
+          <option value="valid">Valid</option>
+          <option value="rejected">Rejected</option>
+          <option value="revoked">Revoked</option>
+          <option value="invalid">Invalid</option>
+          <option value="suspended">Suspended</option>
+        </select>
+        <select id="typeFilter">
+          <option value="all">All Types</option>
+          <option value="course">Course</option>
+          <option value="workshop">Workshop</option>
+          <option value="ambassador">Ambassador</option>
+          <option value="school">School Program</option>
+        </select>
+      </div>
+
+      <div class="actions" style="margin-top:14px">
+        <button class="btn gold" id="exportBtn">Export CSV</button>
+        <button class="btn soft" id="refreshBtn">Refresh</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:18px">
+      <div style="overflow:auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Title</th>
+              <th>Cert No</th>
+              <th>School</th>
+              <th>Issued</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="certificateModal" class="modal">
+  <div class="panel">
+    <h2>Certificate Details</h2>
+    <div id="modalContent" class="detail-grid"></div>
+    <div class="actions" style="margin-top:18px">
+      <a class="btn primary" id="modalViewLink" href="#" target="_blank" rel="noopener">Open Certificate</a>
+      <button class="btn dark" id="closeModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">SpeakOut Admin Command Center</div>
+</footer>
+
+<script type="module">
+import { auth, db } from "../../js/firebase-config.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  doc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let ITEMS = [];
+let unsubscribeCertificates = null;
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = "notice " + type;
+}
+
+function safe(value){
+  return value || "—";
+}
+
+function normalize(value){
+  return (value || "").toString().toLowerCase().trim();
+}
+
+function pill(value){
+  return `<span class="pill ${normalize(value)}">${safe(value)}</span>`;
+}
+
+async function requireAdmin(callback){
+  onAuthStateChanged(auth, async user => {
+    if(!user){
+      location.href = "auth.html";
+      return;
+    }
+
+    const snap = await getDoc(doc(db,"users",user.uid));
+
+    if(!snap.exists()){
+      location.href = "auth.html#pending";
+      return;
+    }
+
+    const profile = {
+      uid:user.uid,
+      ...snap.data()
+    };
+
+    const role = normalize(profile.role);
+    const status = normalize(profile.status);
+
+    if(status !== "approved"){
+      location.href = "auth.html#pending";
+      return;
+    }
+
+    if(role !== "admin" && role !== "super_admin"){
+      location.href = "index.html";
+      return;
+    }
+
+    callback(user,profile);
+  });
+}
+
+function isActiveStatus(status){
+  const s = normalize(status || "active");
+  return ["active","approved","valid"].includes(s);
+}
+
+function updateStats(){
+  totalCount.textContent = ITEMS.length;
+  activeCount.textContent = ITEMS.filter(x => isActiveStatus(x.status)).length;
+  pendingCount.textContent = ITEMS.filter(x => normalize(x.status || "pending") === "pending").length;
+  revokedCount.textContent = ITEMS.filter(x => ["revoked","invalid","rejected","suspended"].includes(normalize(x.status))).length;
+  schoolCount.textContent = new Set(ITEMS.map(x => x.schoolCode || x.schoolId || x.schoolName).filter(Boolean)).size;
+}
+
+function filteredItems(){
+  const search = normalize(searchInput.value);
+  const status = statusFilter.value;
+  const type = typeFilter.value;
+
+  return ITEMS.filter(item => {
+    const text = `
+      ${item.recipientName || ""}
+      ${item.fullName || ""}
+      ${item.title || ""}
+      ${item.courseTitle || ""}
+      ${item.programTitle || ""}
+      ${item.certificateNumber || ""}
+      ${item.verificationCode || ""}
+      ${item.schoolCode || ""}
+      ${item.schoolName || ""}
+      ${item.issueDate || ""}
+      ${item.status || ""}
+      ${item.type || ""}
+    `.toLowerCase();
+
+    return (!search || text.includes(search)) &&
+      (status === "all" || normalize(item.status || "pending") === status) &&
+      (type === "all" || normalize(item.type || item.certificateType) === type);
+  });
+}
+
+function render(){
+  const data = filteredItems();
+
+  rows.innerHTML = data.map(item => {
+    const recipient = item.recipientName || item.fullName || item.name || "Recipient";
+    const title = item.title || item.courseTitle || item.programTitle || "Certificate";
+    const certNo = item.certificateNumber || item.verificationCode || item.id;
+    const school = item.schoolName || item.schoolCode || "—";
+    const issued = item.issueDate || item.issuedAtText || item.dateIssued || "—";
+    const status = item.status || "active";
+
+    return `
+      <tr class="row">
+        <td>${safe(recipient)}</td>
+        <td>${safe(title)}</td>
+        <td>${safe(certNo)}</td>
+        <td>${safe(school)}</td>
+        <td>${safe(issued)}</td>
+        <td>${pill(status)}</td>
+        <td>
+          <div class="actions">
+            <button class="btn gold" data-view="${item.id}">View</button>
+            <button class="btn success" data-id="${item.id}" data-status="active">Activate</button>
+            <button class="btn soft" data-id="${item.id}" data-status="pending">Pending</button>
+            <button class="btn danger" data-id="${item.id}" data-status="revoked">Revoke</button>
+            <button class="btn dark" data-id="${item.id}" data-status="invalid">Invalid</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("") || "<tr><td colspan='7'>No certificate records found.</td></tr>";
+
+  rows.querySelectorAll("button[data-id]").forEach(btn => {
+    btn.onclick = async () => {
+      await updateCertificateStatus(btn.dataset.id, btn.dataset.status);
+    };
+  });
+
+  rows.querySelectorAll("[data-view]").forEach(btn => {
+    btn.onclick = () => {
+      const item = ITEMS.find(x => x.id === btn.dataset.view);
+      if(!item) return;
+      modalContent.innerHTML = detailHTML(item);
+      modalViewLink.href = `certificate-view.html?id=${encodeURIComponent(item.id)}`;
+      certificateModal.style.display = "block";
+    };
+  });
+}
+
+function detail(label,value){
+  return `<div class="detail"><b>${label}</b><span>${safe(value)}</span></div>`;
+}
+
+function detailHTML(item){
+  return [
+    detail("Recipient",item.recipientName || item.fullName || item.name),
+    detail("Title",item.title || item.courseTitle || item.programTitle),
+    detail("Certificate No",item.certificateNumber || item.verificationCode || item.id),
+    detail("Verification Code",item.verificationCode),
+    detail("Type",item.type || item.certificateType),
+    detail("Status",item.status || "active"),
+    detail("Issued",item.issueDate || item.issuedAtText || item.dateIssued),
+    detail("Recipient ID",item.recipientId),
+    detail("School",item.schoolName || item.schoolCode),
+    detail("School ID",item.schoolId),
+    detail("Course ID",item.courseId),
+    detail("Workshop ID",item.workshopId),
+    detail("Issued By",item.issuedBy || item.createdBy),
+    detail("Notes",item.notes || item.description)
+  ].join("");
+}
+
+async function updateCertificateStatus(id,status){
+  await updateDoc(doc(db,"certificates",id),{
+    status,
+    updatedAt:serverTimestamp(),
+    reviewedAt:serverTimestamp()
+  });
+
+  show("Certificate status updated.","ok");
+}
+
+function startRealtime(){
+  if(unsubscribeCertificates) unsubscribeCertificates();
+
+  unsubscribeCertificates = onSnapshot(
+    collection(db,"certificates"),
+    snapshot => {
+      ITEMS = [];
+      snapshot.forEach(d => ITEMS.push({id:d.id,...d.data()}));
+      ITEMS.sort((a,b) => (b.createdAt?.seconds || b.issuedAt?.seconds || 0) - (a.createdAt?.seconds || a.issuedAt?.seconds || 0));
+      updateStats();
+      render();
+      show("Admin Certificates loaded.","ok");
+    },
+    error => {
+      console.error(error);
+      show("Could not load certificates.","bad");
+    }
+  );
+}
+
+function exportCSV(){
+  const data = filteredItems();
+  const headers = ["Recipient","Title","CertificateNumber","VerificationCode","Type","Status","School","Issued"];
+  const lines = [headers.join(",")];
+
+  data.forEach(item => {
+    const row = [
+      item.recipientName || item.fullName || item.name || "",
+      item.title || item.courseTitle || item.programTitle || "",
+      item.certificateNumber || "",
+      item.verificationCode || "",
+      item.type || item.certificateType || "",
+      item.status || "",
+      item.schoolName || item.schoolCode || "",
+      item.issueDate || item.issuedAtText || item.dateIssued || ""
+    ].map(v => `"${String(v).replaceAll('"','""')}"`);
+
+    lines.push(row.join(","));
+  });
+
+  const blob = new Blob([lines.join("\n")],{type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "speakout-certificates.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+searchInput.addEventListener("input",render);
+statusFilter.addEventListener("change",render);
+typeFilter.addEventListener("change",render);
+refreshBtn.addEventListener("click",startRealtime);
+exportBtn.addEventListener("click",exportCSV);
+closeModal.addEventListener("click",()=>certificateModal.style.display="none");
+logoutLink.addEventListener("click",async e => {
+  e.preventDefault();
+  await signOut(auth);
+  location.href = "auth.html";
+});
+
+requireAdmin(startRealtime);
+</script>
+<script type="module" src="../../js/auth-guard.js"></script>
+</body>
+</html>
