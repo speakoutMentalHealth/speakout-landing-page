@@ -245,3 +245,4 @@ if (pageType === "login" || pageType === "auth") {
     if (user) await redirectByUserRole(user);
   });
 }
+
