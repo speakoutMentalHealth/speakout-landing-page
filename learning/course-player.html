@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Player Pro | SpeakOut</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--bg:#f7f9fc;
+--line:#e5edf6;--soft:#eaf3ff;--shadow:0 20px 50px rgba(7,21,43,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,sans-serif;background:var(--bg)}
+.hero{background:linear-gradient(135deg,#07152b,#0a5fbf);color:#fff;padding:40px}
+.container{width:min(1300px,95%);margin:auto}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:20px;padding:20px}
+.sidebar,.content{background:#fff;border-radius:24px;box-shadow:var(--shadow)}
+.sidebar{padding:20px}
+.content{overflow:hidden}
+.slide-image{height:320px;background:linear-gradient(135deg,#07152b,#0a5fbf);display:flex;align-items:end;padding:30px;color:#fff}
+.slide-body{padding:30px;line-height:1.8}
+.progress{height:12px;background:#e5edf6;border-radius:999px;overflow:hidden}
+.progress div{height:100%;background:linear-gradient(90deg,#f4a21c,#0a5fbf);width:35%}
+.module{padding:12px;border:1px solid #e5edf6;border-radius:12px;margin-bottom:10px;cursor:pointer}
+.module.active{background:#0a5fbf;color:#fff}
+.btn{padding:12px 16px;border-radius:999px;border:none;font-weight:700}
+.primary{background:#0a5fbf;color:#fff}
+.gold{background:#f4a21c}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<div class="container">
+<h1>Upgraded Interactive Course Player</h1>
+<p>Enhanced LMS experience with modules, progress tracking, quizzes, worksheets and certificates.</p>
+</div>
+</div>
+
+<div class="container">
+<div class="layout">
+
+<div class="sidebar">
+<h3>Course Progress</h3>
+<div class="progress"><div></div></div>
+<p>35% Complete</p>
+
+<h3>Modules</h3>
+<div class="module active">1. Introduction</div>
+<div class="module">2. Core Concepts</div>
+<div class="module">3. Practical Activities</div>
+<div class="module">4. Knowledge Check</div>
+<div class="module">5. Final Assessment</div>
+
+<h3>Course Features</h3>
+<ul>
+<li>Progress Tracking</li>
+<li>Interactive Lessons</li>
+<li>Embedded Videos</li>
+<li>Worksheets</li>
+<li>Quizzes</li>
+<li>Certificates</li>
+</ul>
+</div>
+
+<div class="content">
+<div class="slide-image">
+<h2>Welcome to Your Interactive Learning Experience</h2>
+</div>
+
+<div class="slide-body">
+<h2>Lesson Overview</h2>
+<p>This upgraded player is designed for the SpeakOut Learning Management System.</p>
+
+<h3>Learning Outcomes</h3>
+<ul>
+<li>Understand key concepts</li>
+<li>Apply lessons in real-world scenarios</li>
+<li>Complete assessments</li>
+<li>Earn certificates</li>
+</ul>
+
+<div style="margin-top:20px">
+<button class="btn gold">Previous</button>
+<button class="btn primary">Next Lesson</button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<script type="module" src="../js/protected-page-guard.js"></script>
+</body>
+</html>

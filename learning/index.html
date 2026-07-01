@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Learning Hub | SpeakOut</title>
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/speakout-main.css">
+<link rel="stylesheet" href="../css/student-portal.css">
+</head>
+<body data-required-role="">
+<div class="student-shell">
+  <header class="student-top">
+    <div class="student-nav">
+      <a class="student-brand" href="../index.html">
+        <img src="../images/logo.png" alt="SpeakOut Logo">
+        <div><strong>SpeakOut</strong><small>Learning Hub</small></div>
+      </a>
+      <button class="btn dark mobile-menu" type="button" data-student-menu>☰</button>
+      <nav class="student-links" data-student-links>
+        <a class="active" href="index.html">Hub</a>
+        <a href="courses.html">Courses</a>
+        <a href="library.html">E-Library</a>
+        <a href="kiddies.html">Kiddies</a>
+        <a href="my-courses.html">My Courses</a>
+        <a href="my-library.html">My Library</a>
+        <a href="../dashboards/portal-dashboard.html">Portal</a>
+      </nav>
+    </div>
+  </header>
+  <main class="student-main">
+    <section class="student-hero">
+      <div>
+        <span class="label">Shared Learning Platform</span>
+        <h1>One learning system for students, parents, teachers and schools.</h1>
+        <p>Access courses, books, Kiddies resources, certificates, progress tracking and role-based learning materials from one shared platform.</p>
+        <div class="student-actions">
+          <a class="btn gold" href="courses.html">Open Courses</a>
+          <a class="btn light" href="library.html">Open E-Library</a>
+          <a class="btn soft" href="kiddies.html">Kiddies Corner</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <h3>Shared, not duplicated</h3>
+        <p>Dashboards should link here instead of keeping separate course and library pages for each role.</p>
+      </aside>
+    </section>
+    <section class="stats-grid">
+      <article class="student-card stat"><strong>1</strong><span>Shared Course Platform</span></article>
+      <article class="student-card stat"><strong>1</strong><span>Shared E-Library</span></article>
+      <article class="student-card stat"><strong>All</strong><span>Approved Roles</span></article>
+      <article class="student-card stat"><strong>∞</strong><span>Expandable Resources</span></article>
+    </section>
+    <div class="section-title"><span class="label">Explore</span><h2>Choose where to start.</h2></div>
+    <section class="dashboard-grid">
+      <article class="student-card"><div class="course-thumb">🎓</div><h3>Courses</h3><p>Browse all approved SpeakHub courses and learning paths.</p><a class="btn primary" href="courses.html">Open Courses</a></article>
+      <article class="student-card"><div class="course-thumb">📚</div><h3>E-Library</h3><p>Read books, guides, workbooks and educational materials.</p><a class="btn primary" href="library.html">Open Library</a></article>
+      <article class="student-card"><div class="course-thumb">👶</div><h3>Kiddies Corner</h3><p>Child-friendly learning materials, stories and activities.</p><a class="btn primary" href="kiddies.html">Open Kiddies</a></article>
+      <article class="student-card"><div class="course-thumb">📈</div><h3>My Courses</h3><p>Track course progress and continue enrolled courses.</p><a class="btn soft" href="my-courses.html">View My Courses</a></article>
+      <article class="student-card"><div class="course-thumb">📖</div><h3>My Library</h3><p>View saved and accessed books or resources.</p><a class="btn soft" href="my-library.html">View My Library</a></article>
+      <article class="student-card"><div class="course-thumb">🏅</div><h3>Certificates</h3><p>Track learning certificates and verifications.</p><a class="btn soft" href="certificates.html">View Certificates</a></article>
+    </section>
+  </main>
+</div>
+<script type="module" src="../js/protected-page-guard.js"></script>
+<script>
+const menuBtn=document.querySelector("[data-student-menu]");
+const links=document.querySelector("[data-student-links]");
+if(menuBtn&&links){menuBtn.addEventListener("click",()=>links.classList.toggle("open"));}
+</script>
+</body>
+</html>

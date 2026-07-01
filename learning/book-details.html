@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book Details | SpeakOut</title>
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;
+  --line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--softShadow:0 10px 28px rgba(7,21,43,.07);--r:22px
+}
+*{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden;scroll-behavior:smooth}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;font-size:.86rem;cursor:pointer;text-align:center}
+.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.softBtn{background:var(--soft);color:var(--blue)}.light{background:#fff;color:var(--navy)}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}
+
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}
+.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}
+.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
+
+.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.95),rgba(7,21,43,.78) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue));position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}
+.hero .container{position:relative;z-index:2;padding:60px 0 54px}
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:14px}
+h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}
+h1{font-size:clamp(2.25rem,6vw,5rem);margin:18px 0}
+.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:800px;color:rgba(255,255,255,.9)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
+
+section{padding:52px 0}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--softShadow);padding:18px;position:relative;overflow:hidden}
+.card p,.panel p{color:var(--muted);line-height:1.62}
+.card h3,.panel h2,.panel h3{color:var(--navy)}
+.loading,.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900}
+.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--soft);color:var(--blue);text-transform:capitalize}
+.pill.gold{background:var(--goldSoft);color:#8a5600}.pill.green{background:var(--greenSoft);color:var(--green)}.pill.red{background:var(--redSoft);color:var(--red)}
+
+.book-head{display:grid;grid-template-columns:300px 1fr;gap:24px}
+.big-cover{min-height:390px;border-radius:28px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:24px;display:flex;align-items:flex-end;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.big-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.big-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.62))}
+.big-cover strong{position:relative;z-index:2;text-shadow:0 4px 18px rgba(0,0,0,.45);font-size:1.35rem;line-height:1.1}
+.meta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}
+.meta{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.meta b{display:block;color:var(--navy);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}.meta span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
+.reader{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:clamp(18px,4vw,42px);line-height:1.8;color:#243044}
+.reader h1,.reader h2,.reader h3{color:var(--navy)}.reader img{max-width:100%;border-radius:18px}
+.stat{text-align:center;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--softShadow)}
+.stat strong{display:block;color:var(--blue);font-size:2rem}.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
+.progress-track{height:10px;background:#eef3fb;border-radius:999px;overflow:hidden}.progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));width:0%}.progress-text{font-size:.8rem;font-weight:900;color:var(--muted);margin-top:6px}
+.share-grid{display:flex;gap:8px;flex-wrap:wrap}.share-grid .btn{flex:1;min-width:130px}
+.related-card{transition:.24s}.related-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}.footer h3,.footer h4{color:#fff;margin:0 0 10px}
+
+@media(max-width:1000px){.g4,.g3,.footer-grid{grid-template-columns:repeat(2,1fr)}.book-head{grid-template-columns:1fr}.big-cover{min-height:320px}}
+@media(max-width:760px){
+  .menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}
+  body.menu-open .nav-links{display:flex}.nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}
+  section{padding:44px 0}.hero .container{padding:50px 0}.g4,.g3,.g2,.footer-grid,.meta-list{grid-template-columns:1fr}
+  .actions,.share-grid{flex-direction:column}.btn{width:100%;border-radius:14px}.card,.panel{padding:16px;border-radius:19px}.big-cover{min-height:260px}
+}
+</style>
+</head>
+
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <img src="../images/logo.png" alt="SpeakOut Logo">
+      <div><h2>SpeakOut</h2><p>Book Details</p></div>
+    </a>
+    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <nav class="nav-links" id="roleNav">
+      <a href="../index.html">Home</a>
+      <a href="student-library.html">Student Library</a>
+      <a href="parent-library.html">Parent Library</a>
+      <a href="teacher-library.html">Teacher Library</a>
+      <a href="courses.html">SpeakHub</a>
+      <a href="../auth/auth.html">Login</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Book Details • Protected Library • SpeakOut</span>
+    <h1 id="heroTitle">Loading book...</h1>
+    <p id="heroDesc">Preparing resource information.</p>
+    <div class="actions" id="heroActions"></div>
+    <div class="trust">
+      <span id="trustAudience">Audience</span>
+      <span id="trustAccess">Access</span>
+      <span id="trustCategory">Category</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="loading" class="loading">Loading book details...</div>
+
+    <div id="bookArea" class="book-head" style="display:none">
+      <div>
+        <div class="big-cover" id="bookCover">
+          <strong id="coverText">Book</strong>
+        </div>
+
+        <div class="panel" style="margin-top:16px">
+          <span class="label">Reading Progress</span>
+          <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+          <div class="progress-text" id="progressText">0% complete</div>
+          <div class="actions">
+            <button class="btn softBtn" id="markStartedBtn" type="button">Mark Started</button>
+            <button class="btn success" id="markCompleteBtn" type="button">Mark Complete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <span class="label" id="categoryLabel">Category</span>
+        <h2 id="title">Book Title</h2>
+        <p><strong>Author:</strong> <span id="author">SpeakOut</span></p>
+        <div class="pills" id="pills"></div>
+        <p id="description">No description.</p>
+
+        <div class="meta-list">
+          <div class="meta"><b>Audience</b><span id="audienceMeta">—</span></div>
+          <div class="meta"><b>Access</b><span id="accessMeta">—</span></div>
+          <div class="meta"><b>Level</b><span id="levelMeta">—</span></div>
+          <div class="meta"><b>Format</b><span id="formatMeta">—</span></div>
+          <div class="meta"><b>Language</b><span id="languageMeta">—</span></div>
+          <div class="meta"><b>Estimated Read</b><span id="readTimeMeta">—</span></div>
+        </div>
+
+        <h3>Key Lessons</h3>
+        <ul id="keyLessons"></ul>
+
+        <div id="actions" class="actions"></div>
+        <div id="premiumNote" class="notice warn" style="display:none;margin-top:14px">Premium unlock is required for full access. Admin-approved payment access can be connected from Payment History.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="readerSection" style="display:none">
+  <div class="container">
+    <div class="reader" id="readerContent"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g2">
+    <div class="panel">
+      <span class="label">Share Resource</span>
+      <h2>Share this book</h2>
+      <p>Send this book to students, parents, teachers or school leaders.</p>
+      <div class="share-grid">
+        <a class="btn success" id="whatsappShare" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn softBtn" id="emailShare">Email</a>
+        <button class="btn gold" id="copyLinkBtn" type="button">Copy Link</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="label">Support SpeakOut</span>
+      <h2>Donate</h2>
+      <p>Support school clubs, resources and mental health education outreach.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://paystack.shop/pay/speakout-donate" target="_blank" rel="noopener">Donate with Paystack</a>
+      </div>
+      <p><strong>Zenith:</strong> 1229664088<br><strong>OPay:</strong> 6117106366</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="panel">
+      <span class="label">Related</span>
+      <h2>Related books</h2>
+      <div id="relatedGrid" class="grid g3"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><h3>SpeakOut</h3><p>Book details and protected learning resource center.</p></div>
+    <div><h4>Libraries</h4><a href="student-library.html">Student Library</a><a href="parent-library.html">Parent Library</a><a href="teacher-library.html">Teacher Library</a></div>
+    <div><h4>Access</h4><a href="../auth/auth.html">Login / Apply</a><a href="courses.html">SpeakHub</a><a href="../certificate-center.html">Certificates</a></div>
+  </div>
+</footer>
+
+<script type="module">
+import { db, auth } from "../js/firebase-config.js";
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const id = new URLSearchParams(location.search).get("id");
+const preview = new URLSearchParams(location.search).get("preview") === "1";
+let currentBook = null;
+let currentUser = null;
+let currentProfile = null;
+let progressDocId = null;
+
+function safe(v){return v || "—";}
+function pretty(v){return (v || "—").toString().replaceAll("-"," ");}
+function normalize(v){return (v || "").toString().toLowerCase().trim();}
+function escapeAttr(v){return String(v || "").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function money(i){return normalize(i.accessType || "free") === "free" ? "Free" : `${i.currency || "₦"}${Number(i.price || 0).toLocaleString()}`;}
+function dashboardFor(profile){
+  const role = normalize(profile?.role || "");
+  if(role === "admin" || role === "super_admin") return "admin-dashboard.html";
+  if(role === "school_admin") return "school-dashboard.html";
+  if(role === "teacher") return "teacher-dashboard.html";
+  if(role === "parent") return "parent-dashboard.html";
+  if(role === "student") return "student-dashboard.html";
+  return "auth.html";
+}
+function renderNav(profile){
+  const dashboard = dashboardFor(profile);
+  roleNav.innerHTML = `
+    <a href="${dashboard}">Dashboard</a>
+    <a href="student-library.html">Student Library</a>
+    <a href="parent-library.html">Parent Library</a>
+    <a href="teacher-library.html">Teacher Library</a>
+    <a href="courses.html">SpeakHub</a>
+    <a href="../auth/auth.html">Login</a>
+  `;
+}
+async function loadProfile(user){
+  if(!user) return null;
+  try{
+    const snap = await getDoc(doc(db,"users",user.uid));
+    return snap.exists() ? {uid:user.uid,...snap.data()} : {uid:user.uid,email:user.email,role:"user"};
+  }catch(e){
+    return {uid:user.uid,email:user.email,role:"user"};
+  }
+}
+function canAccess(book){
+  const access = normalize(book.accessType || "free");
+  if(access === "free") return true;
+  if(preview) return false;
+  if(currentProfile?.premiumAccess || currentProfile?.premium === true) return true;
+  if(["admin","super_admin"].includes(normalize(currentProfile?.role))) return true;
+  return false;
+}
+function renderBook(book){
+  document.title = `${safe(book.title)} | SpeakOut`;
+  heroTitle.textContent = safe(book.title || "Book Details");
+  heroDesc.textContent = safe(book.shortDescription || book.description || "SpeakOut learning resource.");
+  title.textContent = safe(book.title || "Untitled");
+  author.textContent = safe(book.author || book.authorName || "SpeakOut");
+  categoryLabel.textContent = pretty(book.category || "General");
+  description.textContent = safe(book.fullDescription || book.shortDescription || book.description || "No description yet.");
+  coverText.textContent = safe(book.title);
+  audienceMeta.textContent = pretty(book.audience || "all");
+  accessMeta.textContent = money(book);
+  levelMeta.textContent = pretty(book.level || "general");
+  formatMeta.textContent = pretty(book.format || "online");
+  languageMeta.textContent = pretty(book.language || "English");
+  readTimeMeta.textContent = safe(book.readTime || book.estimatedRead || "Self-paced");
+
+  trustAudience.textContent = `Audience: ${pretty(book.audience || "all")}`;
+  trustAccess.textContent = `Access: ${money(book)}`;
+  trustCategory.textContent = `Category: ${pretty(book.category || "General")}`;
+
+  if(book.coverUrl){
+    bookCover.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" alt="${escapeAttr(book.title)}"><strong>${safe(book.title)}</strong>`;
+  }
+
+  const access = normalize(book.accessType || "free");
+  pills.innerHTML = `
+    <span class="pill">${pretty(book.category || "General")}</span>
+    <span class="pill ${access === "free" ? "green" : "gold"}">${money(book)}</span>
+    <span class="pill">${pretty(book.audience || "all")}</span>
+    ${book.featured ? '<span class="pill green">Featured</span>' : ""}
+  `;
+
+  const lessons = Array.isArray(book.keyLessons) ? book.keyLessons : [];
+  keyLessons.innerHTML = lessons.length ? lessons.map(x=>`<li>${safe(x)}</li>`).join("") : "<li>Read this book to discover the key lessons.</li>";
+
+  const allowed = canAccess(book);
+  const bookId = encodeURIComponent(book.id);
+
+  heroActions.innerHTML = allowed
+    ? `<a class="btn primary" href="book-reader.html?id=${bookId}">Read Online</a><a class="btn gold" href="#readerSection">Preview Below</a>`
+    : `<a class="btn gold" href="payment-history.html">Request Premium Access</a><a class="btn light" href="book-reader.html?id=${bookId}&preview=1">Preview</a>`;
+
+  actions.innerHTML = allowed
+    ? `<a class="btn primary" href="book-reader.html?id=${bookId}">Read Online</a>${book.downloadUrl ? `<a class="btn softBtn" href="${book.downloadUrl}" target="_blank" rel="noopener">Download PDF</a>` : ""}<button class="btn ghost" type="button" onclick="history.back()">Back</button>`
+    : `<a class="btn gold" href="payment-history.html">Request Premium Access</a><a class="btn softBtn" href="book-reader.html?id=${bookId}&preview=1">Preview</a><button class="btn ghost" type="button" onclick="history.back()">Back</button>`;
+
+  if(!allowed) premiumNote.style.display = "block";
+
+  const content = book.contentHtml || book.content || "";
+  if(content){
+    readerSection.style.display = "block";
+    readerContent.innerHTML = allowed ? content : `<h2>${safe(book.title)}</h2><p>${safe(book.description)}</p><p><strong>Preview mode:</strong> Full content requires premium access.</p>`;
+  }
+
+  const pageUrl = location.href;
+  whatsappShare.href = `https://wa.me/?text=${encodeURIComponent(book.title + " - " + pageUrl)}`;
+  emailShare.href = `mailto:?subject=${encodeURIComponent(book.title)}&body=${encodeURIComponent(pageUrl)}`;
+
+  loading.style.display = "none";
+  bookArea.style.display = "grid";
+}
+async function loadProgress(){
+  if(!currentUser || !id) return;
+  try{
+    const snap = await getDocs(query(collection(db,"userProgress"),where("userId","==",currentUser.uid),where("bookId","==",id)));
+    if(!snap.empty){
+      const d = snap.docs[0];
+      progressDocId = d.id;
+      const p = d.data();
+      const percent = Number(p.percent || p.progress || 0);
+      progressBar.style.width = percent + "%";
+      progressText.textContent = percent + "% complete";
+    }
+  }catch(e){}
+}
+async function saveProgress(percent){
+  if(!currentUser || !id){alert("Please login to track progress.");return;}
+  const refId = progressDocId || `${currentUser.uid}_${id}`;
+  await setDoc(doc(db,"userProgress",refId),{
+    userId:currentUser.uid,
+    bookId:id,
+    type:"book",
+    percent,
+    progress:percent,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+  progressDocId = refId;
+  progressBar.style.width = percent + "%";
+  progressText.textContent = percent + "% complete";
+}
+async function loadRelated(book){
+  try{
+    const snap = await getDocs(query(collection(db,"books"),where("status","==","active")));
+    const related = [];
+    snap.forEach(d=>{
+      if(d.id === book.id) return;
+      const item = {id:d.id,...d.data()};
+      if(item.category === book.category || item.audience === book.audience) related.push(item);
+    });
+    relatedGrid.innerHTML = related.slice(0,3).map(item=>`
+      <a class="card related-card" href="book-details.html?id=${encodeURIComponent(item.id)}">
+        <h3>${safe(item.title)}</h3>
+        <p>${safe(item.description || item.shortDescription || "Open this related resource.")}</p>
+        <div class="pills"><span class="pill">${pretty(item.category)}</span><span class="pill ${normalize(item.accessType)==="free"?"green":"gold"}">${money(item)}</span></div>
+      </a>
+    `).join("") || "<div class='notice warn'>No related books found yet.</div>";
+  }catch(e){
+    relatedGrid.innerHTML = "<div class='notice warn'>Related books could not be loaded.</div>";
+  }
+}
+async function loadBook(){
+  if(!id){loading.textContent = "No book ID provided.";loading.className="loading bad";return;}
+  try{
+    const snap = await getDoc(doc(db,"books",id));
+    if(!snap.exists()){loading.textContent="Book not found.";loading.className="loading bad";return;}
+    currentBook = {id:snap.id,...snap.data()};
+    renderBook(currentBook);
+    await loadProgress();
+    await loadRelated(currentBook);
+  }catch(e){
+    console.error(e);
+    loading.textContent = "Failed to load book. Check Firestore rules.";
+    loading.className = "loading bad";
+  }
+}
+markStartedBtn.addEventListener("click",()=>saveProgress(10));
+markCompleteBtn.addEventListener("click",()=>saveProgress(100));
+copyLinkBtn.addEventListener("click",async()=>{
+  await navigator.clipboard.writeText(location.href);
+  copyLinkBtn.textContent = "Copied";
+  setTimeout(()=>copyLinkBtn.textContent="Copy Link",1600);
+});
+
+onAuthStateChanged(auth, async user=>{
+  currentUser = user;
+  currentProfile = await loadProfile(user);
+  renderNav(currentProfile);
+  await loadBook();
+});
+</script>
+</body>
+</html><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Book Details | SpeakOut</title><link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.1);--r:22px}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem}.primary{background:var(--blue);color:#fff}.softBtn{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:56px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:14px}h1,h2,h3{line-height:1.05;letter-spacing:-.04em}h1{font-size:clamp(2.3rem,6vw,5rem);margin:16px 0}.hero p{max-width:760px;line-height:1.65;color:rgba(255,255,255,.88)}section{padding:52px 0}.panel,.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.controls{background:#fff;border-bottom:1px solid var(--line)}.controls-grid{display:grid;grid-template-columns:1.2fr .7fr .7fr .6fr;gap:10px}.input,.select,.textarea{width:100%;min-height:42px;border:1px solid var(--line);border-radius:14px;padding:11px;background:#fbfdff}.textarea{min-height:140px}.cover{height:180px;border-radius:18px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:16px;display:flex;align-items:flex-end;position:relative;overflow:hidden;margin-bottom:12px}.cover img,.big-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.cover strong,.big-cover strong{position:relative;z-index:2;text-shadow:0 4px 18px rgba(0,0,0,.4)}.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.pill{padding:5px 9px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.68rem;font-weight:900;text-transform:capitalize}.pill.green{background:var(--greenSoft);color:var(--green)}.pill.gold{background:var(--goldSoft);color:#8a5600}.loading,.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.empty{display:none;background:var(--goldSoft);color:#704800}.book-head{display:grid;grid-template-columns:280px 1fr;gap:24px}.big-cover{min-height:360px;border-radius:26px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:24px;display:flex;align-items:flex-end;position:relative;overflow:hidden}.reader{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:clamp(18px,4vw,42px);line-height:1.75}.reader h1,.reader h2,.reader h3{color:var(--navy)}.form{display:grid;gap:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.admin-item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff;margin-top:10px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:36px 0;margin-top:30px}
+@media(max-width:900px){.g3,.g2,.controls-grid,.book-head,.row{grid-template-columns:1fr}.nav-links{display:none}.big-cover{min-height:260px}.btn{width:100%;border-radius:14px}}
+</style>
+</head><body>
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="../dashboards/portal-dashboard.html"><img src="../images/logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a>
+<nav class="nav-links">
+<a class="btn softBtn" href="../dashboards/portal-dashboard.html">Portal</a>
+<a class="btn softBtn" href="library.html">E-Library</a>
+<a class="btn softBtn" href="courses.html">SpeakHub</a>
+<a class="btn dark" href="../auth/auth.html">Login</a>
+</nav></div></header>
+
+<main><section class="hero"><div class="container"><span class="kicker">Book Details</span><h1 id="heroTitle">Loading...</h1><p id="heroDesc"></p></div></section>
+<section><div class="container"><div id="loading" class="loading">Loading book...</div><div id="bookArea" class="book-head" style="display:none"><div class="big-cover" id="bookCover"><strong id="coverText"></strong></div><div class="panel"><span class="label" id="categoryLabel"></span><h2 id="title"></h2><p><strong>Author:</strong> <span id="author"></span></p><div class="pills" id="pills"></div><p id="description"></p><h3>Key Lessons</h3><ul id="keyLessons"></ul><div id="actions" style="display:flex;gap:10px;flex-wrap:wrap"></div><div id="premiumNote" class="notice" style="display:none;background:var(--goldSoft);color:#704800">Premium unlock will be connected later with Paystack/Stripe.</div></div></div></div></section></main><footer class="footer"><div class="container">SpeakOut Portal • <a href="../dashboards/portal-dashboard.html">Back to Portal</a></div></footer>
+<script type="module" src="../js/protected-page-guard.js"></script>
+<script type="module">
+import { db } from "../js/firebase-config.js"; import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const id=new URLSearchParams(location.search).get("id"), loading=document.getElementById("loading"), area=document.getElementById("bookArea"); const pretty=v=>(v||"—").toString().replaceAll("-"," "); const money=i=>(i.accessType||"free")==="free"?"Free":`${i.currency||"₦"}${Number(i.price||0).toLocaleString()}`;
+async function load(){if(!id){loading.textContent="No book ID provided.";return}try{const s=await getDoc(doc(db,"books",id));if(!s.exists()){loading.textContent="Book not found.";return}const i={id:s.id,...s.data()};document.title=`${i.title} | SpeakOut`;heroTitle.textContent=i.title||"Book Details";heroDesc.textContent=i.shortDescription||i.description||"";title.textContent=i.title||"Untitled";author.textContent=i.author||"SpeakOut";categoryLabel.textContent=pretty(i.category);description.textContent=i.fullDescription||i.shortDescription||i.description||"No description.";coverText.textContent=i.title||"";if(i.coverUrl)bookCover.innerHTML=`<img src="${i.coverUrl}" alt="${i.title}"><strong>${i.title}</strong>`;const a=i.accessType||"free";pills.innerHTML=`<span class="pill">${pretty(i.category)}</span><span class="pill ${a==="free"?"green":"gold"}">${money(i)}</span>${i.featured?'<span class="pill">Featured</span>':""}`;const lessons=Array.isArray(i.keyLessons)?i.keyLessons:[];keyLessons.innerHTML=lessons.length?lessons.map(x=>`<li>${x}</li>`).join(""):"<li>Read this book to discover the key lessons.</li>";actions.innerHTML=a==="free"?`<a class="btn primary" href="book-reader.html?id=${encodeURIComponent(i.id)}">Read Online</a>${i.downloadUrl?`<a class="btn softBtn" href="${i.downloadUrl}" target="_blank">Download PDF</a>`:""}<a class="btn ghost" href="library.html">Back</a>`:`<button class="btn gold" onclick="alert('Payment unlock coming later.')">Buy / Unlock Later</button><a class="btn softBtn" href="book-reader.html?id=${encodeURIComponent(i.id)}&preview=1">Preview</a><a class="btn ghost" href="library.html">Back</a>`;if(a!=="free")premiumNote.style.display="block";loading.style.display="none";area.style.display="grid"}catch(e){console.error(e);loading.textContent="Failed to load book."}}load();
+</script></body></html>

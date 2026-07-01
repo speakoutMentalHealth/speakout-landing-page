@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiddies Corner | Protected Student Resources</title>
+<link rel="icon" type="image/png" href="../images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px}
+*{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:9px 14px;border-radius:999px;border:0;font-weight:850;font-size:.84rem;cursor:pointer;text-align:center}
+.primary{background:var(--blue);color:#fff}
+.gold{background:var(--gold);color:#241300}
+.soft{background:var(--blueSoft);color:var(--blue)}
+.light{background:#fff;color:var(--navy)}
+.dark{background:var(--navy);color:#fff}
+.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}
+.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}
+.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
+
+.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.92),rgba(7,21,43,.72) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue));position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}
+.hero .container{position:relative;z-index:2;padding:64px 0 58px}
+
+.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}
+.label{background:var(--blueSoft);color:var(--blue);margin-bottom:14px}
+
+h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}
+h1{font-size:clamp(2.35rem,6vw,5.3rem);margin:18px 0}
+.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:760px;color:rgba(255,255,255,.9)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
+
+section{padding:58px 0}
+.title{max-width:850px;margin:0 auto 30px;text-align:center}
+.title h2{font-size:clamp(1.85rem,4vw,3.5rem);margin:0 0 12px;color:var(--navy)}
+.title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--soft);padding:18px;position:relative;overflow:hidden;transition:.25s}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.card h3{font-size:1.05rem;color:var(--navy);margin:0 0 8px}
+.card p{color:var(--muted);line-height:1.55;margin:0 0 10px;font-size:.9rem}
+
+.stats{background:#fff;border-bottom:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--soft);text-align:center}
+.stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1}
+.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
+
+.controls{background:#fff;border-bottom:1px solid var(--line)}
+.controls-grid{display:grid;grid-template-columns:1.2fr .7fr .7fr;gap:10px;margin-top:14px}
+.input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}
+.empty{margin-top:14px;padding:13px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800;display:none;font-size:.9rem}
+
+.thumb{height:130px;border-radius:17px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));padding:14px;display:flex;align-items:flex-end;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb strong{position:relative;z-index:2;font-size:.95rem;line-height:1.15;max-width:86%;text-shadow:0 3px 18px rgba(0,0,0,.35)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--blueSoft);color:var(--blue);text-transform:capitalize}
+.pill.gold{background:var(--goldSoft);color:#8a5600}
+.pill.green{background:var(--greenSoft);color:var(--green)}
+.loading{padding:18px;border-radius:18px;background:var(--blueSoft);color:var(--blue);font-weight:900;text-align:center}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(7,21,43,.78);z-index:9999;padding:18px;overflow:auto}
+.modal-box{background:#fff;border-radius:26px;max-width:900px;margin:28px auto;box-shadow:0 30px 80px rgba(0,0,0,.28);overflow:hidden}
+.modal-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;z-index:2}
+.modal-title{font-size:1.25rem;font-weight:950;color:var(--navy)}
+.close-btn{background:#fee2e2;color:#991b1b;border:0;border-radius:16px;padding:12px 18px;font-weight:950;cursor:pointer}
+.modal-content{padding:26px;color:#1f2937;font-size:1rem;line-height:1.8}
+.modal-content h2{font-size:2rem;color:var(--navy);margin:0 0 14px}
+.modal-content h3{font-size:1.25rem;color:var(--navy);margin:28px 0 10px}
+.modal-content p{margin:0 0 14px}
+.modal-content ul,.modal-content ol{padding-left:24px;margin:0 0 16px}
+.modal-content li{margin:7px 0}
+.modal-actions{border-top:1px solid var(--line);padding:18px;display:flex;gap:10px;flex-wrap:wrap;background:#fbfdff}
+.modal-actions .btn{flex:1;min-width:180px}
+
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}
+.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}
+.footer h3,.footer h4{color:#fff;margin:0 0 10px}
+
+@media(max-width:1000px){
+  .g3,.stats-grid,.footer-grid{grid-template-columns:repeat(2,1fr)}
+  .controls-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  .menu{display:block}
+  .nav-inner{min-height:68px}
+  .nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}
+  body.menu-open .nav-links{display:flex}
+  .nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}
+  section{padding:48px 0}
+  .hero .container{padding:52px 0}
+  .g3,.stats-grid,.footer-grid,.controls-grid{grid-template-columns:1fr}
+  .actions{flex-direction:column}
+  .btn{width:100%;border-radius:14px}
+  .card,.panel{padding:16px;border-radius:19px}
+  .modal{padding:10px}
+  .modal-box{margin:12px auto;border-radius:22px}
+  .modal-head{grid-template-columns:1fr}
+  .close-btn{width:100%}
+  .modal-content{padding:20px;font-size:.98rem}
+  .modal-content h2{font-size:1.65rem}
+}
+</style>
+</head>
+
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="../dashboards/portal-dashboard.html" class="brand">
+      <img src="../images/logo.png" alt="SpeakOut Logo">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>Kiddies Corner</p>
+      </div>
+    </a>
+
+    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
+
+    <nav class="nav-links">
+      <a href="../dashboards/portal-dashboard.html">Portal</a>
+      <a href="courses.html">SpeakHub</a>
+      <a href="library.html">E-Library</a>
+      <a href="kiddies.html">Kiddies</a>
+      <a href="ambassador.html">Ambassador</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Protected Access • Firestore Powered • Expandable</span>
+    <h1>Kiddies Corner | Protected Student Resources</h1>
+    <p>Age-appropriate emotional wellbeing, safety, character, study skills and confidence-building resources for primary and secondary school learners.</p>
+
+    <div class="actions">
+      <a href="#items" class="btn primary">Browse Resources</a>
+      <a href="#filters" class="btn light">Search</a>
+      <a href="../dashboards/portal-dashboard.html" class="btn gold">Back to Portal</a>
+    </div>
+
+    <div class="trust">
+      <span>Pre-installed</span>
+      <span>Admin expandable</span>
+      <span>Approved users only</span>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat"><strong id="totalCount">0</strong><span>Total Resources</span></div>
+    <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+    <div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
+    <div class="stat"><strong id="audCount">0</strong><span>Age Groups</span></div>
+  </div>
+</section>
+
+<section class="controls" id="filters">
+  <div class="container">
+    <div class="panel">
+      <span class="label">Search</span>
+      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right resource</h2>
+      <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, category, audience, topic or keyword.</p>
+
+      <div class="controls-grid">
+        <input type="text" id="searchInput" class="input" placeholder="Search resources...">
+
+        <select id="categoryFilter" class="select">
+          <option value="all">All Categories</option>
+          <option value="literacy">Literacy</option>
+          <option value="numeracy">Numeracy</option>
+          <option value="early-learning">Early Learning</option>
+          <option value="emotions">Emotions</option>
+          <option value="safety">Safety</option>
+          <option value="character">Character</option>
+          <option value="wellness">Wellness</option>
+          <option value="confidence">Confidence</option>
+          <option value="leadership">Leadership</option>
+          <option value="science">Science</option>
+          <option value="creativity">Creativity</option>
+          <option value="environment">Environment</option>
+        </select>
+
+        <select id="audienceFilter" class="select">
+          <option value="all">All Ages</option>
+          <option value="ages-3-5">Ages 3–5</option>
+          <option value="ages-6-9">Ages 6–9</option>
+          <option value="ages-10-13">Ages 10–13</option>
+          <option value="primary">Primary</option>
+          <option value="junior-secondary">Junior Secondary</option>
+          <option value="senior-secondary">Senior Secondary</option>
+        </select>
+      </div>
+
+      <div class="empty" id="emptyState">No matching resource found. Try another keyword or filter.</div>
+    </div>
+  </div>
+</section>
+
+<section id="items">
+  <div class="container">
+    <div class="title">
+      <span class="label">Live Resources</span>
+      <h2>Pre-installed resources plus admin additions</h2>
+      <p>Only resources marked <strong>active</strong> appear here.</p>
+    </div>
+
+    <div id="loading" class="loading">Loading resources...</div>
+    <div class="grid g3" id="itemGrid"></div>
+  </div>
+</section>
+</main>
+
+<div class="modal" id="resourceModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="resourceModalTitle">Resource</div>
+      <button class="close-btn" type="button" onclick="closeKiddiesResource()">Close</button>
+    </div>
+
+    <div class="modal-content" id="resourceModalContent"></div>
+
+    <div class="modal-actions">
+      <a class="btn soft" id="resourceSourceBtn" href="#" target="_blank" rel="noopener" style="display:none;">Open Source</a>
+      <a class="btn gold" id="resourceDownloadBtn" href="#" target="_blank" rel="noopener" style="display:none;">Download / Source Page</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <h3>SpeakOut</h3>
+      <p>Kiddies Corner protected resource center.</p>
+    </div>
+
+    <div>
+      <h4>Portal</h4>
+      <a href="../dashboards/portal-dashboard.html">Main Portal</a>
+      <a href="courses.html">SpeakHub</a>
+      <a href="library.html">E-Library</a>
+    </div>
+
+    <div>
+      <h4>Contact</h4>
+      <a href="https://wa.me/2348118103510">WhatsApp</a>
+      <a href="mailto:speaaakout@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+
+<script type="module" src="../js/protected-page-guard.js"></script>
+
+<script type="module">
+import { db } from "../js/firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let allItems = [];
+
+const grid = document.getElementById("itemGrid");
+const loading = document.getElementById("loading");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const audienceFilter = document.getElementById("audienceFilter");
+const emptyState = document.getElementById("emptyState");
+
+function safe(value){
+  return value || "—";
+}
+
+function pretty(value){
+  return (value || "—").toString().replaceAll("-", " ");
+}
+
+function escapeAttr(value){
+  return String(value || "").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
+function stat(id, value){
+  const el = document.getElementById(id);
+  if(el) el.textContent = Number(value || 0).toLocaleString();
+}
+
+function updateStats(items){
+  stat("totalCount", items.length);
+  stat("featuredCount", items.filter(i => i.featured === true).length);
+  stat("catCount", new Set(items.map(i => i.category).filter(Boolean)).size);
+  stat("audCount", new Set(items.map(i => i.audience || i.ageGroup).filter(Boolean)).size);
+}
+
+function card(item){
+  const cover = item.coverUrl ? `<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title)}">` : "";
+
+  return `
+    <article class="card">
+      <div class="thumb">
+        ${cover}
+        <strong>${safe(item.title)}</strong>
+      </div>
+
+      <div class="pills">
+        <span class="pill">${pretty(item.category)}</span>
+        <span class="pill gold">${pretty(item.ageGroup || item.audience)}</span>
+        ${item.featured ? `<span class="pill green">Featured</span>` : ""}
+      </div>
+
+      <h3>${safe(item.title)}</h3>
+      <p>${safe(item.description)}</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn primary" href="kiddies-reader.html?id=${encodeURIComponent(item.id)}">
+          🚀 Start Interactive Lesson
+        </a>
+
+        <button class="btn soft" type="button" onclick="openKiddiesResource('${escapeAttr(item.id)}')">
+          Preview
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function isActiveResource(item){
+  return (
+    item.status === "active" ||
+    item.active === true ||
+    item.approved === true
+  );
+}
+
+async function loadItems(){
+  try{
+    const snap = await getDocs(collection(db, "kiddiesResources"));
+    allItems = [];
+
+    snap.forEach(docSnap => {
+      const item = { id: docSnap.id, ...docSnap.data() };
+
+      if(isActiveResource(item)){
+        allItems.push(item);
+      }
+    });
+
+    allItems.sort((a,b) => {
+      if(a.featured && !b.featured) return -1;
+      if(!a.featured && b.featured) return 1;
+      return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+    });
+
+    loading.style.display = "none";
+    updateStats(allItems);
+    renderItems();
+
+  }catch(error){
+    console.error("Kiddies resources load failed:", error);
+
+    loading.textContent = "Failed to load resources. Check Firestore rules, collection name, and admin approval.";
+    loading.style.background = "var(--goldSoft)";
+    loading.style.color = "#704800";
+  }
+}
+
+function renderItems(){
+  const s = searchInput.value.toLowerCase().trim();
+  const cat = categoryFilter.value;
+  const aud = audienceFilter.value;
+
+  const filtered = allItems.filter(item => {
+    const searchable = `
+      ${item.title || ""}
+      ${item.author || ""}
+      ${item.category || ""}
+      ${item.audience || ""}
+      ${item.ageGroup || ""}
+      ${item.description || ""}
+      ${item.keywords || ""}
+      ${item.topic || ""}
+      ${item.contentHtml || ""}
+    `.toLowerCase();
+
+    const okS = !s || searchable.includes(s);
+    const okC = cat === "all" || item.category === cat;
+    const okA = aud === "all" || item.audience === aud || item.ageGroup === aud;
+
+    return okS && okC && okA;
+  });
+
+  grid.innerHTML = filtered.map(card).join("");
+  emptyState.style.display = filtered.length === 0 ? "block" : "none";
+}
+
+window.openKiddiesResource = function(id){
+  const item = allItems.find(x => x.id === id);
+
+  if(!item){
+    alert("Resource not found.");
+    return;
+  }
+
+  document.getElementById("resourceModalTitle").textContent = item.title || "Resource";
+
+  document.getElementById("resourceModalContent").innerHTML = item.contentHtml || `
+    <h2>${safe(item.title)}</h2>
+    <p>${safe(item.description)}</p>
+    <p>No full content has been added yet.</p>
+  `;
+
+  const sourceBtn = document.getElementById("resourceSourceBtn");
+  const downloadBtn = document.getElementById("resourceDownloadBtn");
+
+  const sourceUrl = item.sourceUrl || item.resourceUrl || item.url || "";
+  const downloadUrl = item.downloadUrl || item.fileUrl || item.resourceUrl || "";
+
+  if(sourceUrl){
+    sourceBtn.href = sourceUrl;
+    sourceBtn.style.display = "inline-flex";
+  }else{
+    sourceBtn.style.display = "none";
+  }
+
+  if(downloadUrl){
+    downloadBtn.href = downloadUrl;
+    downloadBtn.style.display = "inline-flex";
+  }else{
+    downloadBtn.style.display = "none";
+  }
+
+  document.getElementById("resourceModal").style.display = "block";
+  document.body.style.overflow = "hidden";
+};
+
+window.closeKiddiesResource = function(){
+  document.getElementById("resourceModal").style.display = "none";
+  document.body.style.overflow = "";
+};
+
+document.getElementById("resourceModal").addEventListener("click", function(e){
+  if(e.target.id === "resourceModal"){
+    closeKiddiesResource();
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closeKiddiesResource();
+  }
+});
+
+searchInput.addEventListener("input", renderItems);
+categoryFilter.addEventListener("change", renderItems);
+audienceFilter.addEventListener("change", renderItems);
+
+loadItems();
+</script>
+</body>
+</html>

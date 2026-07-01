@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Course Viewer | SpeakHub</title>
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;
+--bg:#f7f9fc;--line:#e5edf6;--muted:#637083;--shadow:0 18px 44px rgba(7,21,43,.10)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:10}
+.inner{width:min(1200px,92%);margin:auto;min-height:72px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:999px;padding:10px 15px;background:var(--blue);color:#fff;font-weight:900;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:40px}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.success{background:var(--greenSoft);color:var(--green)}
+.danger{background:var(--redSoft);color:var(--red)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{width:min(1200px,92%);margin:auto;padding:40px 0}
+.hero h1{font-size:clamp(2rem,5vw,4rem);margin:10px 0;line-height:1.05}
+.hero p{max-width:850px;line-height:1.6;color:rgba(255,255,255,.88)}
+.wrap{width:min(1200px,92%);margin:26px auto;display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start}
+.side,.main{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+.side{position:sticky;top:92px;max-height:calc(100vh - 115px);overflow:auto}
+.lesson{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border-radius:14px;border:1px solid var(--line);background:#f8fbff;cursor:pointer;font-weight:900;color:var(--navy)}
+.lesson.active{background:var(--blue);color:#fff}
+.lesson.done{border-color:#b7eadc;background:var(--greenSoft)}
+h1,h2,h3{color:var(--navy);line-height:1.08}
+.muted{color:var(--muted)}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900}
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+.progress{height:12px;background:#e5edf6;border-radius:999px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:linear-gradient(90deg,var(--gold),var(--blue));width:0%;transition:.25s}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
+.card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:14px;margin:14px 0}
+.lesson-content{line-height:1.8}
+.lesson-content img{max-width:100%;border-radius:18px}
+.quiz{margin-top:18px;padding:16px;border-radius:16px;background:var(--greenSoft);color:var(--green);font-weight:800}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+.footer .container{width:min(1200px,92%);margin:auto}
+@media(max-width:900px){
+.wrap{grid-template-columns:1fr}.side{position:static;max-height:none}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="inner">
+    <a class="brand" href="courses.html">
+      <img src="../images/logo.png" alt="SpeakOut">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>Course Viewer</p>
+      </div>
+    </a>
+
+    <nav class="links" id="roleNav">
+      <a class="btn soft" href="courses.html">SpeakHub</a>
+      <a class="btn soft" href="../certificate-center.html">Certificates</a>
+      <a class="btn dark" href="../auth/auth.html">Login</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <span class="pill">Interactive Course Viewer</span>
+    <h1 id="heroTitle">Loading Course...</h1>
+    <p id="heroDesc">Structured lessons, progress tracking, quiz pathway and certificate readiness.</p>
+    <div class="actions">
+      <a class="btn gold" id="detailsLink" href="courses.html">Course Details</a>
+      <a class="btn soft" href="courses.html">Back to SpeakHub</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <aside class="side">
+    <h3>Course Progress</h3>
+    <div class="progress"><div id="progressBar"></div></div>
+    <p id="progressText" class="muted">0% complete</p>
+
+    <h3>Lessons</h3>
+    <div id="lessonList">Loading...</div>
+  </aside>
+
+  <main class="main">
+    <div id="status" class="notice">Loading course...</div>
+
+    <article id="lessonBody" class="lesson-content" style="display:none"></article>
+
+    <div id="quizBox" class="quiz" style="display:none"></div>
+
+    <div class="actions" id="lessonActions" style="display:none">
+      <button class="btn soft" id="prevBtn" type="button">Previous</button>
+      <button class="btn success" id="completeBtn" type="button">Mark Complete</button>
+      <button class="btn" id="nextBtn" type="button">Next Lesson</button>
+      <a class="btn gold" id="certificateLink" href="../certificate-center.html" style="display:none">View Certificate Pathway</a>
+    </div>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="container">SpeakOut Mental Health Outreach</div>
+</footer>
+
+<script type="module">
+import { auth, db } from "../js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const id = new URLSearchParams(location.search).get("id");
+
+let course = null;
+let lessons = [];
+let active = 0;
+let completed = new Set();
+let currentUser = null;
+let currentProfile = null;
+
+function safe(v){return v || "—";}
+function normalize(v){return (v || "").toString().toLowerCase().trim();}
+
+function dashboardFor(profile){
+  const role = normalize(profile?.role || "");
+  if(role === "admin" || role === "super_admin") return "admin-dashboard.html";
+  if(role === "school_admin") return "school-dashboard.html";
+  if(role === "teacher") return "teacher-dashboard.html";
+  if(role === "parent") return "parent-dashboard.html";
+  if(role === "student") return "student-dashboard.html";
+  return "auth.html";
+}
+
+function renderNav(profile){
+  roleNav.innerHTML = `
+    <a class="btn soft" href="${dashboardFor(profile)}">Dashboard</a>
+    <a class="btn soft" href="courses.html">SpeakHub</a>
+    <a class="btn soft" href="../certificate-center.html">Certificates</a>
+    <a class="btn dark" href="../auth/auth.html">Login</a>
+  `;
+}
+
+async function loadProfile(user){
+  if(!user) return null;
+  try{
+    const snap = await getDoc(doc(db,"users",user.uid));
+    return snap.exists() ? {uid:user.uid,...snap.data()} : {uid:user.uid,email:user.email,role:"user"};
+  }catch(e){
+    return {uid:user.uid,email:user.email,role:"user"};
+  }
+}
+
+function updateProgress(){
+  const pct = lessons.length ? Math.round((completed.size / lessons.length) * 100) : 0;
+  progressBar.style.width = pct + "%";
+  progressText.textContent = pct + "% complete";
+  certificateLink.style.display = pct >= 100 ? "inline-flex" : "none";
+}
+
+async function saveProgress(){
+  if(!currentUser || !course) return;
+
+  await setDoc(doc(db,"userProgress",`${currentUser.uid}_course_${course.id}`),{
+    userId:currentUser.uid,
+    courseId:course.id,
+    itemId:course.id,
+    type:"course",
+    completedLessons:[...completed],
+    completedSlides:[...completed],
+    percent:lessons.length ? Math.round((completed.size / lessons.length) * 100) : 0,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+}
+
+function render(){
+  if(!course || !lessons.length) return;
+
+  const lesson = lessons[active];
+
+  document.getElementById("topTitle")?.remove;
+
+  heroTitle.textContent = course.title || "Course Viewer";
+  heroDesc.textContent = course.shortDescription || course.description || "Interactive course learning.";
+  detailsLink.href = `course-details.html?id=${encodeURIComponent(course.id)}`;
+
+  lessonList.innerHTML = lessons.map((l,i)=>`
+    <button class="lesson ${i===active ? "active" : ""} ${completed.has(i) ? "done" : ""}" onclick="selectLesson(${i})">
+      ${completed.has(i) ? "✓ " : ""}${i+1}. ${safe(l.title)}
+    </button>
+  `).join("");
+
+  lessonBody.innerHTML = `
+    <div>
+      <span class="pill">${safe(course.category)}</span>
+      <span class="pill">${safe(course.level || course.difficulty || "Beginner")}</span>
+      <span class="pill">${safe(course.duration || "Self-paced")}</span>
+    </div>
+
+    <h1>${safe(course.title)}</h1>
+    <p class="muted">${safe(course.category)} • ${safe(course.level || course.difficulty || "Beginner")} • ${safe(course.duration || "Self-paced")}</p>
+    <hr>
+
+    <h2>${safe(lesson.title)}</h2>
+    ${lesson.contentHtml || lesson.content || "<p>No lesson content yet.</p>"}
+
+    ${lesson.activity ? `<div class="card"><h3>Activity</h3><p>${lesson.activity}</p></div>` : ""}
+    ${lesson.quizPrompt ? `<div class="card"><h3>Knowledge Check</h3><p>${lesson.quizPrompt}</p></div>` : ""}
+  `;
+
+  status.style.display = "none";
+  lessonBody.style.display = "block";
+  lessonActions.style.display = "flex";
+
+  prevBtn.disabled = active === 0;
+  nextBtn.textContent = active === lessons.length - 1 ? "Finish" : "Next Lesson";
+
+  if(active === lessons.length - 1){
+    quizBox.style.display = "block";
+    quizBox.innerHTML = "Final lesson reached. Complete this course to unlock the certificate pathway.";
+  }else{
+    quizBox.style.display = "none";
+  }
+
+  updateProgress();
+}
+
+window.selectLesson = i => {
+  active = i;
+  render();
+};
+
+window.nextLesson = async () => {
+  completed.add(active);
+  await saveProgress();
+
+  if(active < lessons.length - 1){
+    active++;
+    render();
+  }else{
+    updateProgress();
+    quizBox.scrollIntoView({behavior:"smooth"});
+  }
+};
+
+async function loadProgress(){
+  if(!currentUser || !id) return;
+
+  try{
+    const snap = await getDoc(doc(db,"userProgress",`${currentUser.uid}_course_${id}`));
+    if(snap.exists()){
+      const data = snap.data();
+      completed = new Set(data.completedLessons || data.completedSlides || []);
+    }
+  }catch(e){}
+}
+
+async function loadLessons(){
+  let result = [];
+
+  const q1 = query(collection(db,"courseLessons"),where("courseId","==",id));
+  const snap1 = await getDocs(q1);
+  snap1.forEach(d => result.push({id:d.id,...d.data()}));
+
+  if(!result.length){
+    const q2 = query(collection(db,"lessons"),where("courseId","==",id));
+    const snap2 = await getDocs(q2);
+    snap2.forEach(d => result.push({id:d.id,...d.data()}));
+  }
+
+  result.sort((a,b)=>(a.order || a.lessonNumber || 0) - (b.order || b.lessonNumber || 0));
+  return result;
+}
+
+async function load(){
+  if(!id){
+    status.textContent = "No course selected.";
+    status.className = "notice bad";
+    return;
+  }
+
+  const cSnap = await getDoc(doc(db,"courses",id));
+
+  if(!cSnap.exists()){
+    status.textContent = "Course not found.";
+    status.className = "notice bad";
+    return;
+  }
+
+  course = {id:cSnap.id,...cSnap.data()};
+  lessons = await loadLessons();
+
+  if(!lessons.length){
+    status.textContent = "No lessons found for this course yet.";
+    status.className = "notice warn";
+    lessonList.innerHTML = "No lessons yet.";
+    return;
+  }
+
+  await loadProgress();
+  render();
+}
+
+prevBtn.onclick = () => {
+  if(active > 0){
+    active--;
+    render();
+  }
+};
+
+nextBtn.onclick = async () => {
+  await window.nextLesson();
+};
+
+completeBtn.onclick = async () => {
+  completed.add(active);
+  await saveProgress();
+  updateProgress();
+};
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  currentProfile = await loadProfile(user);
+  renderNav(currentProfile);
+
+  try{
+    await load();
+  }catch(error){
+    console.error(error);
+    status.textContent = "Could not load course. Check Firestore rules.";
+    status.className = "notice bad";
+  }
+});
+</script>
+
+<script type="module" src="../js/protected-page-guard.js"></script>
+</body>
+</html>
