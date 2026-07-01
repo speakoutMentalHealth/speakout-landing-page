@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Auth | SpeakOut Member Access</title>
-<link rel="icon" href="logo.png">
+
+<link rel="icon" href="../images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="speakout-style.css">
+<link rel="stylesheet" href="../css/speakout-main.css">
 
 <style>
 .message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800;line-height:1.5}
@@ -24,19 +26,22 @@
 </style>
 </head>
 
-<body>
+<body data-auth-page="auth">
 
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>SpeakOut<small>Member Access</small></div>
+    <a class="brand" href="../index.html">
+      <img src="../images/logo.png" alt="SpeakOut Logo">
+      <div>
+        <strong>SpeakOut</strong>
+        <small>Member Access</small>
+      </div>
     </a>
 
-    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+    <button class="menu" type="button">☰</button>
 
-    <nav class="nav-links">
-      <a class="btn soft" href="index.html">Home</a>
+    <nav class="links">
+      <a class="btn softb" href="../index.html">Home</a>
       <a class="btn dark" href="#login">Login</a>
       <a class="btn gold" href="#register">Apply</a>
     </nav>
@@ -45,7 +50,7 @@
 
 <main>
 
-<section class="hero">
+<section class="page-hero">
   <div class="container">
     <span class="kicker">Member Access</span>
     <h1>Login or Apply</h1>
@@ -61,15 +66,15 @@
       <h2>Welcome back</h2>
       <p class="help-text">After login, you will be routed to the right dashboard based on your approved role.</p>
 
-      <form class="form-grid" id="loginForm">
-        <input class="full" id="loginEmail" type="email" placeholder="Email" required>
-        <input class="full" id="loginPassword" type="password" placeholder="Password" required>
+      <form class="form-grid" id="loginForm" data-login-form>
+        <input class="full" id="loginEmail" data-login-email type="email" placeholder="Email" required>
+        <input class="full" id="loginPassword" data-login-password type="password" placeholder="Password" required>
         <button class="btn primary full" type="submit">Login</button>
       </form>
 
       <a href="#" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
 
-      <div id="loginMsg" class="message"></div>
+      <div id="loginMsg" class="message" data-login-message></div>
     </div>
 
     <div class="panel" id="register">
@@ -77,15 +82,15 @@
       <h2>Create account</h2>
       <p class="help-text">If you have a school code, enter it. If not, you can still apply as an individual user.</p>
 
-      <form class="form-grid" id="registerForm">
+      <form class="form-grid" id="registerForm" data-register-form>
 
         <input id="firstName" placeholder="First Name" required>
         <input id="lastName" placeholder="Last Name" required>
 
-        <input id="email" type="email" placeholder="Email" required>
+        <input id="email" data-register-email type="email" placeholder="Email" required>
         <input id="phone" placeholder="Phone / WhatsApp">
 
-        <select id="role" required>
+        <select id="role" data-register-role required>
           <option value="">Select role</option>
           <option value="student">Student</option>
           <option value="parent">Parent</option>
@@ -108,7 +113,7 @@
           <option value="research">Research</option>
         </select>
 
-        <input id="password" type="password" placeholder="Password" required>
+        <input id="password" data-register-password type="password" placeholder="Password" required>
         <input id="confirmPassword" type="password" placeholder="Confirm password" required>
 
         <textarea class="full" id="reason" placeholder="Why do you need access?"></textarea>
@@ -121,7 +126,7 @@
         <button class="btn gold full" type="submit">Submit Application</button>
       </form>
 
-      <div id="regMsg" class="message"></div>
+      <div id="regMsg" class="message" data-register-message></div>
 
       <div class="role-info">
         <div><strong>Students</strong> Access learning resources, courses, certificates and school activities.</div>
@@ -148,248 +153,8 @@
 
 </main>
 
-<script type="module">
-import { auth, db } from './firebase-config.js';
-
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  signOut,
-  sendPasswordResetEmail
-} from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
-
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp,
-  collection,
-  query,
-  where,
-  getDocs
-} from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
-
-const msg = (id, text, type = 'ok') => {
-  const e = document.getElementById(id);
-  e.textContent = text;
-  e.className = 'message ' + type;
-  e.style.display = 'block';
-};
-
-function normalizeRole(role){
-  const r = (role || '').toLowerCase().trim();
-  if(r === 'school') return 'school_admin';
-  return r;
-}
-
-function val(id){
-  return document.getElementById(id)?.value?.trim() || '';
-}
-
-function generateStudentId(){
-  return 'STU-' + Date.now().toString().slice(-6);
-}
-
-async function findSchoolByCode(code, role){
-  if(!code) return { schoolId:'', schoolName:'', schoolCode:'' };
-
-  const q = query(
-    collection(db, 'schools'),
-    where('schoolCode', '==', code)
-  );
-
-  const snap = await getDocs(q);
-
-  if(snap.empty){
-    if(['student','parent','teacher','school_admin'].includes(role)){
-      throw new Error('School code not found. Please confirm the code from your school.');
-    }
-
-    return { schoolId:'', schoolName:'', schoolCode:code };
-  }
-
-  const schoolDoc = snap.docs[0];
-  const school = schoolDoc.data();
-
-  return {
-    schoolId: schoolDoc.id,
-    schoolName: school.schoolName || school.name || '',
-    schoolCode: school.schoolCode || code
-  };
-}
-
-async function route(user){
-  const s = await getDoc(doc(db, 'users', user.uid));
-
-  if(!s.exists()){
-    msg('loginMsg', 'Your login exists, but your profile is missing. Contact admin.', 'bad');
-    await signOut(auth);
-    return;
-  }
-
-  const p = s.data();
-  const role = normalizeRole(p.role);
-  const status = (p.status || '').toLowerCase().trim();
-
-  if(!role){
-    msg('loginMsg', 'Your role is missing. Contact administrator.', 'bad');
-    await signOut(auth);
-    return;
-  }
-
-  if(status !== 'approved'){
-    msg('loginMsg', 'Your account is awaiting approval. Please contact SpeakOut or your school administrator if urgent.', 'warn');
-    await signOut(auth);
-    return;
-  }
-
-  const routes = {
-    admin: 'admin-dashboard.html',
-    super_admin: 'admin-dashboard.html',
-    school_admin: 'school-dashboard.html',
-    teacher: 'teacher-dashboard.html',
-    parent: 'parent-dashboard.html',
-    student: 'student-dashboard.html',
-    ambassador: 'ambassador.html',
-    contributor: 'contributor-dashboard.html'
-  };
-
-  location.href = routes[role] || 'index.html';
-}
-
-loginForm.onsubmit = async e => {
-  e.preventDefault();
-
-  try{
-    const r = await signInWithEmailAndPassword(
-      auth,
-      val('loginEmail'),
-      loginPassword.value
-    );
-
-    msg('loginMsg', 'Login successful. Checking approval...', 'ok');
-    await route(r.user);
-
-  }catch(err){
-    console.error(err);
-    msg('loginMsg', err.message || 'Login failed.', 'bad');
-  }
-};
-
-forgotPasswordLink.onclick = async e => {
-  e.preventDefault();
-
-  const email = val('loginEmail');
-
-  if(!email){
-    msg('loginMsg', 'Enter your email first, then click Forgot Password.', 'warn');
-    return;
-  }
-
-  try{
-    await sendPasswordResetEmail(auth, email);
-    msg('loginMsg', 'Password reset link sent. Please check your email.', 'ok');
-  }catch(err){
-    console.error(err);
-    msg('loginMsg', err.message || 'Could not send password reset email.', 'bad');
-  }
-};
-
-registerForm.onsubmit = async e => {
-  e.preventDefault();
-
-  if(password.value !== confirmPassword.value){
-    msg('regMsg', 'Passwords do not match.', 'bad');
-    return;
-  }
-
-  if(password.value.length < 6){
-    msg('regMsg', 'Password must be at least 6 characters.', 'bad');
-    return;
-  }
-
-  try{
-    const cleanEmail = val('email');
-    const cleanRole = normalizeRole(val('role'));
-    const fullName = `${val('firstName')} ${val('lastName')}`.trim();
-
-    const schoolInfo = await findSchoolByCode(val('schoolCode'), cleanRole);
-
-    const r = await createUserWithEmailAndPassword(
-      auth,
-      cleanEmail,
-      password.value
-    );
-
-    await updateProfile(r.user, {
-      displayName: fullName
-    });
-
-    const userData = {
-      uid: r.user.uid,
-
-      firstName: val('firstName'),
-      lastName: val('lastName'),
-      fullName,
-
-      email: cleanEmail,
-      phone: val('phone'),
-
-      role: cleanRole,
-      status: 'pending',
-
-      schoolId: schoolInfo.schoolId,
-      schoolCode: schoolInfo.schoolCode,
-      schoolName: schoolInfo.schoolName || val('schoolName'),
-
-      location: val('location'),
-      reason: val('reason'),
-      contentType: val('contentType'),
-
-      bio: '',
-      country: '',
-      state: '',
-      city: '',
-      occupation: '',
-      photoData: '',
-
-      profileCompleted: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-
-    if(cleanRole === 'student'){
-      userData.studentId = generateStudentId();
-    }
-
-    await setDoc(doc(db, 'users', r.user.uid), userData);
-
-    await signOut(auth);
-
-    msg(
-      'regMsg',
-      schoolInfo.schoolId
-        ? 'Application submitted successfully under ' + userData.schoolName + '. Please wait for school approval.'
-        : 'Application submitted successfully. You will receive access once approved by SpeakOut or the relevant school administrator.',
-      'ok'
-    );
-
-    registerForm.reset();
-
-  }catch(err){
-    console.error(err);
-
-    let cleanMessage = err.message || 'Registration failed.';
-
-    if(cleanMessage.includes('email-already-in-use')){
-      cleanMessage = 'This email already has an account. Please login instead.';
-    }
-
-    msg('regMsg', cleanMessage, 'bad');
-  }
-};
-</script>
+<script src="../js/main.js"></script>
+<script type="module" src="../js/auth.js"></script>
 
 </body>
 </html>
