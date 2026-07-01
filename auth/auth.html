@@ -1,3 +1,160 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SpeakOut Member Access</title><link rel="icon" href="../images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="../css/auth.css"></head>
-<body><main class="auth-shell"><section class="auth-brand-panel"><a class="auth-brand" href="../index.html"><img src="../images/logo.png" alt="SpeakOut Logo"><div><strong>SpeakOut</strong><small>Mental Health Outreach</small></div></a><div class="auth-copy"><h1>SpeakHub Portal</h1><p>Role-based access for students, parents, teachers, schools, volunteers and administrators.</p><div class="auth-pills"><span>Courses</span><span>Resources</span><span>Certificates</span><span>Dashboards</span></div></div><p>© 2026 SpeakOut Mental Health Outreach</p></section><section class="auth-card-wrap"><div class="auth-card"><h2>Welcome back</h2><p>Login or create access to continue into the SpeakOut portal.</p><form class="auth-form"><input type="email" placeholder="Email address"><input type="password" placeholder="Password"><div class="auth-row"><label><input type="checkbox"> Remember me</label><a href="forgot-password.html">Forgot password?</a></div><button class="btn primary full" type="button" data-demo-login>Login</button></form><div class="auth-divider">or</div><a class="btn soft full" href="register.html">Create an account</a><p style="text-align:center"><a href="../index.html">← Back to website</a></p></div></section></main><script src="../js/auth.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Auth | SpeakOut Member Access</title>
+
+<link rel="icon" href="../images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/speakout-main.css">
+
+<style>
+.message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800;line-height:1.5}
+.message.ok{display:block;background:#e9fbf5;color:#0f8f6f}
+.message.bad{display:block;background:#fee2e2;color:#991b1b}
+.message.warn{display:block;background:#fff4df;color:#704800}
+.notice{background:#fff;border:1px solid #e5edf6;border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(7,21,43,.08)}
+.help-text{font-size:.88rem;color:#637083;line-height:1.55;margin-top:8px}
+.terms{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
+.terms input{width:auto;min-height:auto;margin-top:4px}
+.role-info{margin-top:18px;display:grid;gap:10px}
+.role-info div{background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
+.role-info strong{display:block;color:#07152b}
+.forgot-link{display:inline-block;margin-top:12px;font-weight:800;color:#0a5fbf}
+</style>
+</head>
+
+<body data-auth-page="auth">
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../images/logo.png" alt="SpeakOut Logo">
+      <div>
+        <strong>SpeakOut</strong>
+        <small>Member Access</small>
+      </div>
+    </a>
+
+    <button class="menu" type="button">☰</button>
+
+    <nav class="links">
+      <a class="btn softb" href="../index.html">Home</a>
+      <a class="btn dark" href="#login">Login</a>
+      <a class="btn gold" href="#register">Apply</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="page-hero">
+  <div class="container">
+    <span class="kicker">Member Access</span>
+    <h1>Login or Apply</h1>
+    <p>New users are created as pending until approved by SpeakOut or the school they belong to.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container grid g2">
+
+    <div class="panel" id="login">
+      <span class="label">Login</span>
+      <h2>Welcome back</h2>
+      <p class="help-text">After login, you will be routed to the right dashboard based on your approved role.</p>
+
+      <form class="form-grid" id="loginForm" data-login-form>
+        <input class="full" id="loginEmail" data-login-email type="email" placeholder="Email" required>
+        <input class="full" id="loginPassword" data-login-password type="password" placeholder="Password" required>
+        <button class="btn primary full" type="submit">Login</button>
+      </form>
+
+      <a href="#" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
+
+      <div id="loginMsg" class="message" data-login-message></div>
+    </div>
+
+    <div class="panel" id="register">
+      <span class="label">Apply Access</span>
+      <h2>Create account</h2>
+      <p class="help-text">If you have a school code, enter it. If not, you can still apply as an individual user.</p>
+
+      <form class="form-grid" id="registerForm" data-register-form>
+
+        <input id="firstName" placeholder="First Name" required>
+        <input id="lastName" placeholder="Last Name" required>
+
+        <input id="email" data-register-email type="email" placeholder="Email" required>
+        <input id="phone" placeholder="Phone / WhatsApp">
+
+        <select id="role" data-register-role required>
+          <option value="">Select role</option>
+          <option value="student">Student</option>
+          <option value="parent">Parent</option>
+          <option value="teacher">Teacher</option>
+          <option value="school_admin">School Administrator</option>
+          <option value="ambassador">Ambassador</option>
+          <option value="contributor">Contributor / Publisher</option>
+        </select>
+
+        <input id="schoolCode" placeholder="School Code (Optional)">
+        <input id="schoolName" placeholder="School / Organization (Optional)">
+        <input id="location" placeholder="Location / State">
+
+        <select id="contentType">
+          <option value="">Contributor Content Type (Optional)</option>
+          <option value="books">Books</option>
+          <option value="courses">Courses</option>
+          <option value="worksheets">Worksheets</option>
+          <option value="videos">Videos</option>
+          <option value="research">Research</option>
+        </select>
+
+        <input id="password" data-register-password type="password" placeholder="Password" required>
+        <input id="confirmPassword" type="password" placeholder="Confirm password" required>
+
+        <textarea class="full" id="reason" placeholder="Why do you need access?"></textarea>
+
+        <label class="terms full">
+          <input id="terms" type="checkbox" required>
+          <span>I confirm that the information provided is accurate and I agree to use SpeakOut responsibly for learning, support and community wellbeing.</span>
+        </label>
+
+        <button class="btn gold full" type="submit">Submit Application</button>
+      </form>
+
+      <div id="regMsg" class="message" data-register-message></div>
+
+      <div class="role-info">
+        <div><strong>Students</strong> Access learning resources, courses, certificates and school activities.</div>
+        <div><strong>Parents</strong> Link to children, access parent resources and monitor approved child progress.</div>
+        <div><strong>Teachers</strong> Access teacher resources, workshops and school wellbeing tools.</div>
+        <div><strong>Schools</strong> School administrators manage students, parents, teachers, workshops and reports after approval.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="pending">
+  <div class="container">
+    <div class="notice">
+      <span class="label">Pending Approval</span>
+      <h3>If your account is pending</h3>
+      <p>Your application has been received successfully, but full access is enabled only after approval.</p>
+      <p>School-linked users may be approved by their school administrator. Contributors, ambassadors and school administrators may be approved by SpeakOut admin.</p>
+      <p><strong>Urgent?</strong> Contact SpeakOut on WhatsApp.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="../js/main.js"></script>
+<script type="module" src="../js/auth.js"></script>
+
+</body>
+</html>
