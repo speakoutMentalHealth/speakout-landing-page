@@ -1,0 +1,2 @@
+const b=document.querySelector('[data-portal-menu]'),l=document.querySelector('[data-portal-links]');if(b&&l)b.onclick=()=>l.classList.toggle('open');
+document.querySelectorAll('[data-logout]').forEach(x=>x.onclick=e=>{e.preventDefault();location.href='../../auth/auth.html';});
