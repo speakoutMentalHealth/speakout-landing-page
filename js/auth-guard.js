@@ -76,14 +76,13 @@ onAuthStateChanged(auth, async (user) => {
     const profile = snap.data();
     const role = clean(profile.role).toLowerCase();
     const status = clean(profile.status).toLowerCase();
-    const approved = profile.approved === true;
     const requiredRole = getRequiredRole();
 
-    if (!approved || status !== "approved") {
-      await signOut(auth);
-      showAccessDenied("Your account is still pending approval. Please contact SpeakOut admin if you believe this is an error.");
-      return;
-    }
+if (status !== "approved") {
+  await signOut(auth);
+  showAccessDenied("Your account is still pending approval. Please contact SpeakOut admin if you believe this is an error.");
+  return;
+}
 
     if (!roleAllowed(requiredRole, role)) {
       showAccessDenied("You do not have permission to view this dashboard.");
