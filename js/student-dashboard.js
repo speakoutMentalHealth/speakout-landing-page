@@ -133,3 +133,4 @@ onAuthStateChanged(auth, async (user) => {
     console.error("Student dashboard error:", error);
   }
 });
+
