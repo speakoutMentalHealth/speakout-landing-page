@@ -1,11 +1,10 @@
+
 import { auth, db } from "./firebase-config.js";
 
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile,
+  signInWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
@@ -13,119 +12,82 @@ import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp,
-  collection,
-  query,
-  where,
-  getDocs
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+const ROLE_DASHBOARDS = {
+  student: "../dashboards/student/",
+  parent: "../dashboards/parent/",
+  teacher: "../dashboards/teacher/",
+  school: "../dashboards/school/",
+  school_admin: "../dashboards/school/",
+  admin: "../dashboards/admin/",
+  super_admin: "../dashboards/admin/",
+  ambassador: "../dashboards/student/",
+  volunteer: "../dashboards/student/"
+};
+
+function clean(value) {
+  return (value || "").toString().trim();
+}
+
 function normalizeRole(role) {
-  const r = (role || "").toLowerCase().trim().replace(/\s+/g, "_");
-  if (r === "school") return "school_admin";
-  return r;
-}
-
-function val(id) {
-  return document.getElementById(id)?.value?.trim() || "";
-}
-
-function msg(id, text, type = "ok") {
-  const e = document.getElementById(id);
-  if (!e) {
-    alert(text);
-    return;
-  }
-
-  e.textContent = text;
-  e.className = "message " + type;
-  e.style.display = "block";
+  return clean(role).toLowerCase().replace(/\s+/g, "_");
 }
 
 function dashboardForRole(role) {
-  const routes = {
-    admin: "../dashboards/admin/index.html",
-    super_admin: "../dashboards/admin/index.html",
-
-    school_admin: "../dashboards/school/index.html",
-
-    teacher: "../dashboards/teacher/index.html",
-
-    parent: "../dashboards/parent/index.html",
-
-    student: "../dashboards/student/index.html",
-
-    ambassador: "../dashboards/student/index.html",
-
-    contributor: "../dashboards/contributor/index.html"
-  };
-
-  return routes[normalizeRole(role)] || "../auth/auth.html";
+  return ROLE_DASHBOARDS[normalizeRole(role)] || "../auth/auth.html";
 }
 
-function generateStudentId() {
-  return "STU-" + Date.now().toString().slice(-6);
+function getInput(...selectors) {
+  for (const selector of selectors) {
+    const el = document.querySelector(selector);
+    if (el) return el;
+  }
+  return null;
 }
 
-async function findSchoolByCode(code, role) {
-  if (!code) {
-    return {
-      schoolId: "",
-      schoolName: "",
-      schoolCode: ""
-    };
+function getValue(...selectors) {
+  return clean(getInput(...selectors)?.value);
+}
+
+function showAuthMessage(message, type = "info") {
+  const target =
+    document.querySelector("[data-auth-message]") ||
+    document.querySelector("#authMessage") ||
+    document.querySelector(".auth-message");
+
+  if (target) {
+    target.textContent = message;
+    target.dataset.type = type;
+    target.style.display = "block";
+    return;
   }
 
-  const q = query(
-    collection(db, "schools"),
-    where("schoolCode", "==", code)
-  );
-
-  const snap = await getDocs(q);
-
-  if (snap.empty) {
-    if (["student", "parent", "teacher", "school_admin"].includes(role)) {
-      throw new Error("School code not found. Please confirm the code from your school.");
-    }
-
-    return {
-      schoolId: "",
-      schoolName: "",
-      schoolCode: code
-    };
-  }
-
-  const schoolDoc = snap.docs[0];
-  const school = schoolDoc.data();
-
-  return {
-    schoolId: schoolDoc.id,
-    schoolName: school.schoolName || school.name || "",
-    schoolCode: school.schoolCode || code
-  };
+  alert(message);
 }
 
-async function routeUser(user) {
-  const snap = await getDoc(doc(db, "users", user.uid));
+async function getUserProfile(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  if (!snap.exists()) return null;
+  return snap.data();
+}
 
-  if (!snap.exists()) {
-    msg("loginMsg", "Your login exists, but your profile is missing. Contact admin.", "bad");
+async function redirectByUserRole(user) {
+  const profile = await getUserProfile(user.uid);
+
+  if (!profile) {
+    showAuthMessage("Your account exists, but your profile was not found. Please contact SpeakOut admin.", "error");
     await signOut(auth);
     return;
   }
 
-  const profile = snap.data();
   const role = normalizeRole(profile.role);
-  const status = (profile.status || "").toLowerCase().trim();
+  const status = normalizeRole(profile.status);
+  const approved = profile.approved === true;
 
-  if (!role) {
-    msg("loginMsg", "Your role is missing. Contact administrator.", "bad");
-    await signOut(auth);
-    return;
-  }
-
-  if (status !== "approved") {
-    msg("loginMsg", "Your account is awaiting approval. Please contact SpeakOut or your school administrator if urgent.", "warn");
+  if (!approved || status !== "approved") {
+    showAuthMessage("Your account is pending approval. Please contact SpeakOut admin if this is urgent.", "warning");
     await signOut(auth);
     return;
   }
@@ -133,157 +95,153 @@ async function routeUser(user) {
   window.location.href = dashboardForRole(role);
 }
 
-const loginForm = document.getElementById("loginForm");
+async function handleLogin(event) {
+  event?.preventDefault();
 
-if (loginForm) {
-  loginForm.onsubmit = async (e) => {
-    e.preventDefault();
+  const email = getValue(
+    "[data-login-email]",
+    "#loginEmail",
+    "#email",
+    "input[type='email']",
+    "input[name='email']"
+  );
 
-    try {
-      const result = await signInWithEmailAndPassword(
-        auth,
-        val("loginEmail"),
-        val("loginPassword")
-      );
+  const password = getValue(
+    "[data-login-password]",
+    "#loginPassword",
+    "#password",
+    "input[type='password']",
+    "input[name='password']"
+  );
 
-      msg("loginMsg", "Login successful. Checking approval...", "ok");
-      await routeUser(result.user);
+  if (!email || !password) {
+    showAuthMessage("Enter your email and password.", "error");
+    return;
+  }
 
-    } catch (err) {
-      console.error(err);
-      msg("loginMsg", err.message || "Login failed.", "bad");
-    }
-  };
+  try {
+    showAuthMessage("Signing you in...", "info");
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    await redirectByUserRole(credential.user);
+  } catch (error) {
+    console.error("Login error:", error);
+    showAuthMessage(error.message || "Login failed. Please check your details.", "error");
+  }
 }
 
-const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+async function handleRegister(event) {
+  event?.preventDefault();
 
-if (forgotPasswordLink) {
-  forgotPasswordLink.onclick = async (e) => {
-    e.preventDefault();
+  const fullName = getValue(
+    "[data-register-name]",
+    "#fullName",
+    "#name",
+    "input[name='fullName']",
+    "input[name='name']"
+  );
 
-    const email = val("loginEmail");
+  const email = getValue(
+    "[data-register-email]",
+    "#registerEmail",
+    "#email",
+    "input[type='email']",
+    "input[name='email']"
+  );
 
-    if (!email) {
-      msg("loginMsg", "Enter your email first, then click Forgot Password.", "warn");
-      return;
-    }
+  const password = getValue(
+    "[data-register-password]",
+    "#registerPassword",
+    "#password",
+    "input[type='password']",
+    "input[name='password']"
+  );
 
-    try {
-      await sendPasswordResetEmail(auth, email);
-      msg("loginMsg", "Password reset link sent. Please check your email.", "ok");
-    } catch (err) {
-      console.error(err);
-      msg("loginMsg", err.message || "Could not send password reset email.", "bad");
-    }
-  };
+  const role = normalizeRole(getValue(
+    "[data-register-role]",
+    "#role",
+    "select[name='role']"
+  ) || "student");
+
+  const schoolName = getValue(
+    "[data-register-school]",
+    "#schoolName",
+    "input[name='schoolName']"
+  );
+
+  if (!fullName || !email || !password) {
+    showAuthMessage("Enter your name, email and password.", "error");
+    return;
+  }
+
+  try {
+    showAuthMessage("Creating your account...", "info");
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", credential.user.uid), {
+      uid: credential.user.uid,
+      fullName,
+      email,
+      role,
+      schoolName,
+      approved: false,
+      status: "pending",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    await signOut(auth);
+    showAuthMessage("Account created. Your access is pending SpeakOut approval.", "success");
+  } catch (error) {
+    console.error("Registration error:", error);
+    showAuthMessage(error.message || "Registration failed.", "error");
+  }
 }
 
-const registerForm = document.getElementById("registerForm");
-
-if (registerForm) {
-  registerForm.onsubmit = async (e) => {
-    e.preventDefault();
-
-    if (val("password") !== val("confirmPassword")) {
-      msg("regMsg", "Passwords do not match.", "bad");
-      return;
-    }
-
-    if (val("password").length < 6) {
-      msg("regMsg", "Password must be at least 6 characters.", "bad");
-      return;
-    }
-
-    try {
-      const cleanEmail = val("email");
-      const cleanRole = normalizeRole(val("role"));
-      const fullName = `${val("firstName")} ${val("lastName")}`.trim();
-
-      const schoolInfo = await findSchoolByCode(val("schoolCode"), cleanRole);
-
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        cleanEmail,
-        val("password")
-      );
-
-      await updateProfile(result.user, {
-        displayName: fullName
-      });
-
-      const userData = {
-        uid: result.user.uid,
-
-        firstName: val("firstName"),
-        lastName: val("lastName"),
-        fullName,
-
-        email: cleanEmail,
-        phone: val("phone"),
-
-        role: cleanRole,
-        status: "pending",
-        approved: false,
-
-        schoolId: schoolInfo.schoolId,
-        schoolCode: schoolInfo.schoolCode,
-        schoolName: schoolInfo.schoolName || val("schoolName"),
-
-        location: val("location"),
-        reason: val("reason"),
-        contentType: val("contentType"),
-
-        bio: "",
-        country: "",
-        state: "",
-        city: "",
-        occupation: "",
-        photoData: "",
-
-        profileCompleted: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      };
-
-      if (cleanRole === "student") {
-        userData.studentId = generateStudentId();
-      }
-
-      await setDoc(doc(db, "users", result.user.uid), userData);
-
-      await signOut(auth);
-
-      msg(
-        "regMsg",
-        schoolInfo.schoolId
-          ? "Application submitted successfully under " + userData.schoolName + ". Please wait for school approval."
-          : "Application submitted successfully. You will receive access once approved by SpeakOut or the relevant school administrator.",
-        "ok"
-      );
-
-      registerForm.reset();
-
-    } catch (err) {
-      console.error(err);
-
-      let cleanMessage = err.message || "Registration failed.";
-
-      if (cleanMessage.includes("email-already-in-use")) {
-        cleanMessage = "This email already has an account. Please login instead.";
-      }
-
-      msg("regMsg", cleanMessage, "bad");
-    }
-  };
+async function handleLogout(event) {
+  event?.preventDefault();
+  try {
+    await signOut(auth);
+    window.location.href = "../auth/auth.html";
+  } catch (error) {
+    console.error("Logout error:", error);
+    showAuthMessage("Logout failed. Please try again.", "error");
+  }
 }
+
+document.querySelectorAll("[data-login-form], #loginForm, form.login-form").forEach(form => {
+  form.addEventListener("submit", handleLogin);
+});
+
+document.querySelectorAll("[data-login-button], #loginButton").forEach(btn => {
+  btn.addEventListener("click", handleLogin);
+});
+
+document.querySelectorAll("[data-register-form], #registerForm, form.register-form").forEach(form => {
+  form.addEventListener("submit", handleRegister);
+});
+
+document.querySelectorAll("[data-register-button], #registerButton").forEach(btn => {
+  btn.addEventListener("click", handleRegister);
+});
+
+document.querySelectorAll("[data-logout], #logoutButton, .logout").forEach(btn => {
+  btn.addEventListener("click", handleLogout);
+});
+
+document.querySelectorAll("[data-demo-login]").forEach(btn => {
+  btn.addEventListener("click", handleLogin);
+});
+
+document.querySelectorAll("[data-role]").forEach(card => {
+  card.addEventListener("click", () => {
+    localStorage.setItem("speakoutRole", card.dataset.role);
+  });
+});
 
 const pageType = document.body?.dataset?.authPage || "";
 
-if (pageType === "auth" || pageType === "login") {
+if (pageType === "login" || pageType === "auth") {
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      await routeUser(user);
-    }
+    if (user) await redirectByUserRole(user);
   });
 }
