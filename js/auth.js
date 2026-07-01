@@ -84,9 +84,8 @@ async function redirectByUserRole(user) {
 
   const role = normalizeRole(profile.role);
   const status = normalizeRole(profile.status);
-  const approved = profile.approved === true;
 
-  if (!approved || status !== "approved") {
+  if (status !== "approved") {
     showAuthMessage("Your account is pending approval. Please contact SpeakOut admin if this is urgent.", "warning");
     await signOut(auth);
     return;
