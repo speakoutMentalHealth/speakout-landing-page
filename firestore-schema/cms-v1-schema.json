@@ -1,0 +1,37 @@
+{
+  "books": {
+    "title": "string",
+    "category": "string",
+    "audience": "string|array",
+    "author": "string",
+    "description": "string",
+    "status": "active|draft|archived"
+  },
+  "courses": {
+    "title": "string",
+    "category": "string",
+    "audience": "string|array",
+    "description": "string",
+    "status": "active|draft|archived"
+  },
+  "media": {
+    "title": "string",
+    "type": "image|pdf|video|audio",
+    "category": "string",
+    "url": "string",
+    "status": "active|draft"
+  },
+  "schools": {
+    "schoolName": "string",
+    "schoolCode": "string",
+    "schoolType": "string",
+    "partnershipStatus": "pilot|active|pending"
+  },
+  "users": {
+    "fullName": "string",
+    "email": "string",
+    "role": "student|teacher|parent|school_admin|admin",
+    "status": "approved|pending",
+    "schoolCode": "string"
+  }
+}
