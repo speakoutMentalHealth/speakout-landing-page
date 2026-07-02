@@ -1,0 +1,1 @@
+const b=document.querySelector('[data-teacher-menu]'),l=document.querySelector('[data-teacher-links]');if(b&&l)b.onclick=()=>l.classList.toggle('open');document.querySelectorAll('[data-fill-date]').forEach(e=>e.textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
