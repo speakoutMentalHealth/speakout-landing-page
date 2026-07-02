@@ -1,0 +1,24 @@
+[
+  {
+    "title": "Welcome to the SpeakOut School Wellness Platform",
+    "audience": [
+      "school",
+      "teacher",
+      "student",
+      "parent"
+    ],
+    "description": "FAMSA has been provisionally prepared for the SpeakOut School Wellness Platform pilot.",
+    "status": "active",
+    "schoolCode": "FAMSA001"
+  },
+  {
+    "title": "Mental Health Club Starter Resources Available",
+    "audience": [
+      "school",
+      "teacher"
+    ],
+    "description": "The Mental Health Club Starter Handbook and coordinator training are available in the Learning Centre.",
+    "status": "active",
+    "schoolCode": "FAMSA001"
+  }
+]

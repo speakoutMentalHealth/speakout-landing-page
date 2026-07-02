@@ -1,0 +1,119 @@
+[
+  {
+    "title": "Understanding Stress: A Student Guide",
+    "category": "mental-health",
+    "audience": [
+      "student",
+      "school"
+    ],
+    "author": "SpeakOut Mental Health Outreach",
+    "description": "A practical student guide to understanding stress, recognizing early warning signs, and using healthy coping strategies.",
+    "tags": [
+      "stress",
+      "students",
+      "wellbeing",
+      "coping"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "20 minutes",
+    "featured": true
+  },
+  {
+    "title": "Emotional Intelligence for Young Leaders",
+    "category": "leadership",
+    "audience": [
+      "student",
+      "school"
+    ],
+    "author": "SpeakOut Leadership Academy",
+    "description": "A youth-focused workbook on self-awareness, empathy, communication, and responsible leadership.",
+    "tags": [
+      "leadership",
+      "emotional intelligence",
+      "communication"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "30 minutes",
+    "featured": true
+  },
+  {
+    "title": "Digital Safety and Social Media Pressure",
+    "category": "digital-literacy",
+    "audience": [
+      "student",
+      "parent",
+      "teacher"
+    ],
+    "author": "SpeakOut Digital Learning Team",
+    "description": "A guide on online pressure, comparison, cyberbullying, and healthy digital boundaries.",
+    "tags": [
+      "digital safety",
+      "social media",
+      "cyberbullying"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "25 minutes",
+    "featured": true
+  },
+  {
+    "title": "Teacher Guide: Recognizing Student Warning Signs",
+    "category": "teacher-training",
+    "audience": [
+      "teacher",
+      "school"
+    ],
+    "author": "SpeakOut Mental Health Outreach",
+    "description": "A practical guide for teachers on noticing behavioral changes, responding safely, and escalating concerns.",
+    "tags": [
+      "teachers",
+      "safeguarding",
+      "warning signs",
+      "referral"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "35 minutes",
+    "featured": true
+  },
+  {
+    "title": "Parent Guide: Listening Without Shaming",
+    "category": "parenting",
+    "audience": [
+      "parent",
+      "school"
+    ],
+    "author": "SpeakOut Parent Academy",
+    "description": "A guide helping parents build trust, listen calmly, and support children through difficult emotions.",
+    "tags": [
+      "parenting",
+      "communication",
+      "family wellbeing"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "25 minutes",
+    "featured": true
+  },
+  {
+    "title": "Mental Health Club Starter Handbook",
+    "category": "school-club",
+    "audience": [
+      "school",
+      "teacher"
+    ],
+    "author": "SpeakOut Mental Health Outreach",
+    "description": "A starter handbook for launching a school mental health club, selecting coordinators, planning meetings, and documenting impact.",
+    "tags": [
+      "school club",
+      "mental health club",
+      "implementation"
+    ],
+    "status": "active",
+    "accessType": "free",
+    "readingTime": "40 minutes",
+    "featured": true
+  }
+]
