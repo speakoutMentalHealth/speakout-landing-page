@@ -1,0 +1,43 @@
+
+SpeakOut auth-guard.js approval check patch
+
+Use this logic inside your existing auth-guard.js.
+
+Your Firestore user documents currently use:
+status: "approved"
+
+They do not always use:
+approved: true
+
+So the guard should allow approved users based on status only.
+
+Replace any approval check like this:
+
+const approved = profile.approved === true;
+
+if (!approved || status !== "approved") {
+  await signOut(auth);
+  showAccessDenied("Your account is still pending approval.");
+  return;
+}
+
+With this:
+
+const status = (profile.status || "").toLowerCase().trim();
+
+if (status !== "approved") {
+  await signOut(auth);
+  showAccessDenied(
+    "Your account is still pending approval. Please contact SpeakOut admin if you believe this is an error."
+  );
+  return;
+}
+
+Also make sure school admin role matching accepts:
+school_admin
+
+If your page has:
+<body data-required-role="school_admin">
+
+Then your auth-guard role check must allow:
+role === "school_admin"
