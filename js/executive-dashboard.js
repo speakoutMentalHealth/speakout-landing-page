@@ -1,0 +1,1 @@
+const b=document.querySelector('[data-exec-menu]'),l=document.querySelector('[data-exec-links]');if(b&&l)b.onclick=()=>l.classList.toggle('open');
