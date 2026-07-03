@@ -1,4 +1,3 @@
-
 import { auth, db } from "./firebase-config.js";
 
 import {
@@ -91,7 +90,7 @@ async function redirectByUserRole(user) {
     return;
   }
 
-  window.location.href = dashboardForRole(role);
+  window.location.replace(dashboardForRole(role));
 }
 
 async function handleLogin(event) {
@@ -112,6 +111,22 @@ async function handleLogin(event) {
     "input[type='password']",
     "input[name='password']"
   );
+
+  if (!email || !password) {
+    showAuthMessage("Enter your email and password.", "error");
+    return;
+  }
+
+  try {
+    sessionStorage.removeItem("speakoutManualLogout");
+    showAuthMessage("Signing you in...", "info");
+
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    await redirectByUserRole(credential.user);
+  } catch (error) {
+    console.error("Login error:", error);
+    showAuthMessage("Login failed. Please check your email and password.", "error");
+  }
 }
 
 async function handleRegister(event) {
@@ -160,6 +175,7 @@ async function handleRegister(event) {
 
   try {
     showAuthMessage("Creating your account...", "info");
+
     const credential = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", credential.user.uid), {
@@ -168,13 +184,14 @@ async function handleRegister(event) {
       email,
       role,
       schoolName,
-      approved: false,
       status: "pending",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     }, { merge: true });
 
+    sessionStorage.setItem("speakoutManualLogout", "true");
     await signOut(auth);
+
     showAuthMessage("Account created. Your access is pending SpeakOut approval.", "success");
   } catch (error) {
     console.error("Registration error:", error);
@@ -184,9 +201,18 @@ async function handleRegister(event) {
 
 async function handleLogout(event) {
   event?.preventDefault();
+
   try {
+    sessionStorage.setItem("speakoutManualLogout", "true");
+
+    localStorage.removeItem("speakoutRole");
+    localStorage.removeItem("speakoutUser");
+    localStorage.removeItem("speakoutSchoolCode");
+    localStorage.removeItem("speakoutSchoolName");
+
     await signOut(auth);
-    window.location.href = "../auth/auth.html";
+
+    window.location.replace("../auth/auth.html?loggedOut=1");
   } catch (error) {
     console.error("Logout error:", error);
     showAuthMessage("Logout failed. Please try again.", "error");
@@ -228,6 +254,7 @@ const pageType = document.body?.dataset?.authPage || "";
 if (pageType === "login" || pageType === "auth") {
   onAuthStateChanged(auth, async (user) => {
     const params = new URLSearchParams(window.location.search);
+
     const justLoggedOut =
       params.get("loggedOut") === "1" ||
       sessionStorage.getItem("speakoutManualLogout") === "true";
@@ -242,5 +269,3 @@ if (pageType === "login" || pageType === "auth") {
     }
   });
 }
-}
-
