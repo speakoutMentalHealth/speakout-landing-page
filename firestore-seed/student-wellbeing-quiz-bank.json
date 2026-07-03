@@ -1,0 +1,389 @@
+{
+  "title": "Student Wellbeing Foundations Quiz Bank",
+  "questions": [
+    {
+      "chapter": 1,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 1: Welcome to SpeakOut?",
+      "options": [
+        "Your Wellbeing Journey Begins",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Your Wellbeing Journey Begins"
+    },
+    {
+      "chapter": 1,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 1,
+      "type": "reflection",
+      "question": "What does wellbeing mean to you?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 2,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 2: What Is Mental Health??",
+      "options": [
+        "Understanding the foundation",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Understanding the foundation"
+    },
+    {
+      "chapter": 2,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 2,
+      "type": "reflection",
+      "question": "What mental health myths have you heard?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 3,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 3: Knowing Yourself?",
+      "options": [
+        "Self-awareness and growth",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Self-awareness and growth"
+    },
+    {
+      "chapter": 3,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 3,
+      "type": "reflection",
+      "question": "What are three strengths you have?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 4,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 4: Understanding Emotions?",
+      "options": [
+        "Naming, accepting, and managing feelings",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Naming, accepting, and managing feelings"
+    },
+    {
+      "chapter": 4,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 4,
+      "type": "reflection",
+      "question": "Which emotion do you find hardest to express?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 5,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 5: Managing Stress?",
+      "options": [
+        "Pressure, coping, and balance",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Pressure, coping, and balance"
+    },
+    {
+      "chapter": 5,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 5,
+      "type": "reflection",
+      "question": "What are your top three stress triggers?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 6,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 6: Anxiety and Worry?",
+      "options": [
+        "Calming the mind",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Calming the mind"
+    },
+    {
+      "chapter": 6,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 6,
+      "type": "reflection",
+      "question": "What does worry feel like in your body?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 7,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 7: Building Resilience?",
+      "options": [
+        "Recovering from setbacks",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Recovering from setbacks"
+    },
+    {
+      "chapter": 7,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 7,
+      "type": "reflection",
+      "question": "Describe a setback you survived.",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 8,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 8: Healthy Relationships?",
+      "options": [
+        "Respect, boundaries, and communication",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Respect, boundaries, and communication"
+    },
+    {
+      "chapter": 8,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 8,
+      "type": "reflection",
+      "question": "What does respect look like in friendship?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 9,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 9: Self-Esteem and Confidence?",
+      "options": [
+        "Seeing yourself with value",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Seeing yourself with value"
+    },
+    {
+      "chapter": 9,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 9,
+      "type": "reflection",
+      "question": "What negative thought do you need to challenge?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 10,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 10: Digital Wellbeing?",
+      "options": [
+        "Social media, safety, and balance",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Social media, safety, and balance"
+    },
+    {
+      "chapter": 10,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 10,
+      "type": "reflection",
+      "question": "How does social media affect your mood?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 11,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 11: Study Skills and Balance?",
+      "options": [
+        "Learning without burnout",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Learning without burnout"
+    },
+    {
+      "chapter": 11,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 11,
+      "type": "reflection",
+      "question": "What study habit works best for you?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 12,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 12: Physical Health and Mental Health?",
+      "options": [
+        "The body-mind connection",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "The body-mind connection"
+    },
+    {
+      "chapter": 12,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 12,
+      "type": "reflection",
+      "question": "How many hours do you sleep on most nights?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 13,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 13: Purpose and Goals?",
+      "options": [
+        "Direction, motivation, and meaning",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Direction, motivation, and meaning"
+    },
+    {
+      "chapter": 13,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 13,
+      "type": "reflection",
+      "question": "What kind of person do you want to become?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 14,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 14: Helping a Friend?",
+      "options": [
+        "Support without carrying everything alone",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Support without carrying everything alone"
+    },
+    {
+      "chapter": 14,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 14,
+      "type": "reflection",
+      "question": "How can you listen better?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 15,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 15: Asking for Help?",
+      "options": [
+        "Strength, safety, and support",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Strength, safety, and support"
+    },
+    {
+      "chapter": 15,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 15,
+      "type": "reflection",
+      "question": "What signs show someone may need help?",
+      "answer": "Reflection-based"
+    },
+    {
+      "chapter": 16,
+      "type": "multiple_choice",
+      "question": "What is the main focus of Chapter 16: Your Personal Wellbeing Plan?",
+      "options": [
+        "Turning learning into action",
+        "Avoiding all problems",
+        "Ignoring emotions",
+        "Competing with others"
+      ],
+      "answer": "Turning learning into action"
+    },
+    {
+      "chapter": 16,
+      "type": "true_false",
+      "question": "Wellbeing can be strengthened through small consistent actions.",
+      "answer": "True"
+    },
+    {
+      "chapter": 16,
+      "type": "reflection",
+      "question": "What are your early warning signs?",
+      "answer": "Reflection-based"
+    }
+  ]
+}

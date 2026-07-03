@@ -1,0 +1,100 @@
+{
+  "id": "student-wellbeing-handbook-v1",
+  "title": "SpeakOut Student Wellbeing Handbook",
+  "subtitle": "A practical guide to mental health, confidence, resilience, relationships, and personal growth",
+  "academy": "Mental Health & Wellbeing Academy",
+  "audience": [
+    "student",
+    "school"
+  ],
+  "version": "1.0",
+  "author": "SpeakOut Mental Health Outreach",
+  "status": "active",
+  "accessType": "free",
+  "category": "mental-health",
+  "readingTime": "4\u20135 hours",
+  "certificate": "Student Wellbeing Foundations",
+  "description": "A flagship SpeakOut handbook designed to help students understand wellbeing, manage stress, build confidence, develop healthy relationships, and create a personal wellbeing plan.",
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Welcome to SpeakOut",
+      "subtitle": "Your Wellbeing Journey Begins"
+    },
+    {
+      "number": 2,
+      "title": "What Is Mental Health?",
+      "subtitle": "Understanding the foundation"
+    },
+    {
+      "number": 3,
+      "title": "Knowing Yourself",
+      "subtitle": "Self-awareness and growth"
+    },
+    {
+      "number": 4,
+      "title": "Understanding Emotions",
+      "subtitle": "Naming, accepting, and managing feelings"
+    },
+    {
+      "number": 5,
+      "title": "Managing Stress",
+      "subtitle": "Pressure, coping, and balance"
+    },
+    {
+      "number": 6,
+      "title": "Anxiety and Worry",
+      "subtitle": "Calming the mind"
+    },
+    {
+      "number": 7,
+      "title": "Building Resilience",
+      "subtitle": "Recovering from setbacks"
+    },
+    {
+      "number": 8,
+      "title": "Healthy Relationships",
+      "subtitle": "Respect, boundaries, and communication"
+    },
+    {
+      "number": 9,
+      "title": "Self-Esteem and Confidence",
+      "subtitle": "Seeing yourself with value"
+    },
+    {
+      "number": 10,
+      "title": "Digital Wellbeing",
+      "subtitle": "Social media, safety, and balance"
+    },
+    {
+      "number": 11,
+      "title": "Study Skills and Balance",
+      "subtitle": "Learning without burnout"
+    },
+    {
+      "number": 12,
+      "title": "Physical Health and Mental Health",
+      "subtitle": "The body-mind connection"
+    },
+    {
+      "number": 13,
+      "title": "Purpose and Goals",
+      "subtitle": "Direction, motivation, and meaning"
+    },
+    {
+      "number": 14,
+      "title": "Helping a Friend",
+      "subtitle": "Support without carrying everything alone"
+    },
+    {
+      "number": 15,
+      "title": "Asking for Help",
+      "subtitle": "Strength, safety, and support"
+    },
+    {
+      "number": 16,
+      "title": "Your Personal Wellbeing Plan",
+      "subtitle": "Turning learning into action"
+    }
+  ]
+}
