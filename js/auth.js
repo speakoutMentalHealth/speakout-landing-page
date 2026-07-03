@@ -269,3 +269,4 @@ if (pageType === "login" || pageType === "auth") {
     }
   });
 }
+
