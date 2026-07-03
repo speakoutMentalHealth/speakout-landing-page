@@ -112,20 +112,6 @@ async function handleLogin(event) {
     "input[type='password']",
     "input[name='password']"
   );
-
-  if (!email || !password) {
-    showAuthMessage("Enter your email and password.", "error");
-    return;
-  }
-
-  try {
-    showAuthMessage("Signing you in...", "info");
-    const credential = await signInWithEmailAndPassword(auth, email, password);
-    await redirectByUserRole(credential.user);
-  } catch (error) {
-    console.error("Login error:", error);
-    showAuthMessage(error.message || "Login failed. Please check your details.", "error");
-  }
 }
 
 async function handleRegister(event) {
@@ -241,7 +227,20 @@ const pageType = document.body?.dataset?.authPage || "";
 
 if (pageType === "login" || pageType === "auth") {
   onAuthStateChanged(auth, async (user) => {
-    if (user) await redirectByUserRole(user);
+    const params = new URLSearchParams(window.location.search);
+    const justLoggedOut =
+      params.get("loggedOut") === "1" ||
+      sessionStorage.getItem("speakoutManualLogout") === "true";
+
+    if (justLoggedOut) {
+      sessionStorage.removeItem("speakoutManualLogout");
+      return;
+    }
+
+    if (user) {
+      await redirectByUserRole(user);
+    }
   });
+}
 }
 
