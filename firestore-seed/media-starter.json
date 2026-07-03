@@ -1,0 +1,32 @@
+[
+  {
+    "title": "SpeakOut Official Logo",
+    "type": "image",
+    "category": "brand",
+    "url": "images/logo.png",
+    "status": "active",
+    "audience": [
+      "all"
+    ]
+  },
+  {
+    "title": "FAMSA Mental Health Club Banner",
+    "type": "image",
+    "category": "school-club",
+    "url": "images/famsa-mental-health-club.png",
+    "status": "draft",
+    "audience": [
+      "school"
+    ]
+  },
+  {
+    "title": "Leadership Summit Gallery",
+    "type": "image-gallery",
+    "category": "impact",
+    "url": "images/leadership-summit.png",
+    "status": "active",
+    "audience": [
+      "all"
+    ]
+  }
+]

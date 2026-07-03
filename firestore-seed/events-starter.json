@@ -1,0 +1,34 @@
+[
+  {
+    "title": "FAMSA Mental Health Club Activation",
+    "date": "2026-07-05",
+    "audience": [
+      "school"
+    ],
+    "description": "Initial activation and guided setup session for the FAMSA School Wellness Platform.",
+    "status": "planned",
+    "schoolCode": "FAMSA001"
+  },
+  {
+    "title": "Teacher Coordinator Orientation",
+    "date": "2026-07-10",
+    "audience": [
+      "teacher",
+      "school"
+    ],
+    "description": "Orientation session for designated teachers and mental health club coordinators.",
+    "status": "planned",
+    "schoolCode": "FAMSA001"
+  },
+  {
+    "title": "Student Leadership and Wellbeing Launch Session",
+    "date": "2026-07-18",
+    "audience": [
+      "student",
+      "school"
+    ],
+    "description": "Student-facing launch introducing wellbeing, leadership, and SpeakOut learning resources.",
+    "status": "planned",
+    "schoolCode": "FAMSA001"
+  }
+]
