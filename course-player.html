@@ -63,342 +63,75 @@ body{
   color:#fff;
 }
 
-.hero .container{
-  padding:32px 0;
-}
+.hero .container{padding:32px 0}
+.hero h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,3rem)}
+.hero p{margin:0;opacity:.9;max-width:850px;line-height:1.6}
 
-.hero h1{
-  margin:0 0 8px;
-  font-size:clamp(1.8rem,4vw,3rem);
-}
+.course-provider{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.hero-pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.17);font-size:.75rem;font-weight:800}
 
-.hero p{
-  margin:0;
-  opacity:.9;
-  max-width:850px;
-  line-height:1.6;
-}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:22px 0 50px}
+.sidebar,.content{background:#fff;border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.sidebar{padding:20px;align-self:start;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow:auto}
+.content{overflow:hidden}
 
-.course-provider{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:13px;
-}
+.progress{height:12px;background:#e5edf6;border-radius:999px;overflow:hidden}
+.progress div{height:100%;background:linear-gradient(90deg,#f4a21c,#0a5fbf);width:0%;transition:width .25s ease}
+.progress-text{color:var(--muted);font-size:.9rem;margin:8px 0 20px}
 
-.hero-pill{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.17);
-  font-size:.75rem;
-  font-weight:800;
-}
+.module-group{margin-bottom:18px}
+.module-title{font-weight:900;margin-bottom:8px;color:var(--navy)}
+.module-description{color:var(--muted);font-size:.78rem;line-height:1.4;margin:-2px 0 9px}
 
-.layout{
-  display:grid;
-  grid-template-columns:340px 1fr;
-  gap:20px;
-  padding:22px 0 50px;
-}
+.lesson-item{padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;font-size:.92rem;line-height:1.35;background:#fff}
+.lesson-item:hover{background:#f8fbff}
+.lesson-item.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.lesson-item.completed:not(.active){background:var(--greenSoft);border-color:#bde8db}
+.lesson-item.locked{opacity:.55;cursor:not-allowed}
+.lesson-meta{display:block;font-size:.75rem;opacity:.72;margin-top:3px}
+.assessment-item{background:var(--goldSoft);border-color:#f8d79d;color:#704800;cursor:default}
 
-.sidebar,
-.content{
-  background:#fff;
-  border-radius:24px;
-  box-shadow:var(--shadow);
-  border:1px solid var(--line);
-}
+.slide-image{min-height:260px;background:linear-gradient(135deg,#07152b,#0a5fbf);display:flex;align-items:flex-end;padding:30px;color:#fff;position:relative;overflow:hidden}
+.slide-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide-image::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(7,21,43,.9),rgba(7,21,43,.1))}
+.slide-image h2{position:relative;z-index:2;margin:0;max-width:850px;font-size:clamp(1.5rem,3vw,2.3rem)}
 
-.sidebar{
-  padding:20px;
-  align-self:start;
-  position:sticky;
-  top:20px;
-  max-height:calc(100vh - 40px);
-  overflow:auto;
-}
+.slide-body{padding:30px;line-height:1.8}
+.lesson-content{min-height:180px}
+.lesson-content img,.lesson-content video,.lesson-content iframe{max-width:100%}
+.lesson-content iframe{width:100%;min-height:360px;border:0;border-radius:16px}
 
-.content{
-  overflow:hidden;
-}
+.notice{padding:14px 16px;border-radius:14px;background:var(--soft);color:#173b65;margin-bottom:18px;line-height:1.55}
+.notice.warning{background:var(--goldSoft);color:#684000;border:1px solid #f8d79d}
+.notice.success{background:var(--greenSoft);color:#075e49;border:1px solid #bde8db}
+.notice.error{background:var(--redSoft);color:var(--red);border:1px solid #fecaca}
 
-.progress{
-  height:12px;
-  background:#e5edf6;
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress div{
-  height:100%;
-  background:linear-gradient(90deg,#f4a21c,#0a5fbf);
-  width:0%;
-  transition:width .25s ease;
-}
-
-.progress-text{
-  color:var(--muted);
-  font-size:.9rem;
-  margin:8px 0 20px;
-}
-
-.module-group{
-  margin-bottom:18px;
-}
-
-.module-title{
-  font-weight:900;
-  margin-bottom:8px;
-  color:var(--navy);
-}
-
-.module-description{
-  color:var(--muted);
-  font-size:.78rem;
-  line-height:1.4;
-  margin:-2px 0 9px;
-}
-
-.lesson-item{
-  padding:11px 12px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  margin-bottom:8px;
-  cursor:pointer;
-  font-size:.92rem;
-  line-height:1.35;
-  background:#fff;
-}
-
-.lesson-item:hover{
-  background:#f8fbff;
-}
-
-.lesson-item.active{
-  background:var(--blue);
-  color:#fff;
-  border-color:var(--blue);
-}
-
-.lesson-item.completed:not(.active){
-  background:var(--greenSoft);
-  border-color:#bde8db;
-}
-
-.lesson-item.locked{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-.lesson-meta{
-  display:block;
-  font-size:.75rem;
-  opacity:.72;
-  margin-top:3px;
-}
-
-.assessment-item{
-  background:var(--goldSoft);
-  border-color:#f8d79d;
-  color:#704800;
-}
-
-.slide-image{
-  min-height:260px;
-  background:linear-gradient(135deg,#07152b,#0a5fbf);
-  display:flex;
-  align-items:flex-end;
-  padding:30px;
-  color:#fff;
-  position:relative;
-  overflow:hidden;
-}
-
-.slide-image img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.slide-image::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to top,rgba(7,21,43,.9),rgba(7,21,43,.1));
-}
-
-.slide-image h2{
-  position:relative;
-  z-index:2;
-  margin:0;
-  max-width:850px;
-  font-size:clamp(1.5rem,3vw,2.3rem);
-}
-
-.slide-body{
-  padding:30px;
-  line-height:1.8;
-}
-
-.lesson-content{
-  min-height:180px;
-}
-
-.lesson-content img,
-.lesson-content video,
-.lesson-content iframe{
-  max-width:100%;
-}
-
-.lesson-content iframe{
-  width:100%;
-  min-height:360px;
-  border:0;
-  border-radius:16px;
-}
-
-.notice{
-  padding:14px 16px;
-  border-radius:14px;
-  background:var(--soft);
-  color:#173b65;
-  margin-bottom:18px;
-  line-height:1.55;
-}
-
-.notice.warning{
-  background:var(--goldSoft);
-  color:#684000;
-  border:1px solid #f8d79d;
-}
-
-.notice.success{
-  background:var(--greenSoft);
-  color:#075e49;
-  border:1px solid #bde8db;
-}
-
-.notice.error{
-  background:var(--redSoft);
-  color:var(--red);
-  border:1px solid #fecaca;
-}
-
-.btn-row{
-  margin-top:25px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  padding:12px 17px;
-  border-radius:999px;
-  border:none;
-  font-weight:800;
-  font-family:inherit;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.btn:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
+.btn-row{margin-top:25px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:12px 17px;border-radius:999px;border:none;font-weight:800;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 .primary{background:var(--blue);color:#fff}
 .gold{background:var(--gold);color:#241300}
 .soft{background:var(--soft);color:var(--blue)}
 .green{background:var(--green);color:#fff}
 
-.quiz-box{
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  margin-top:20px;
-  background:#fbfdff;
-}
+.quiz-box{border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:20px;background:#fbfdff}
+.quiz-question{padding:16px;border:1px solid var(--line);border-radius:14px;margin:12px 0}
+.quiz-question h4{margin:0 0 10px;color:var(--navy)}
+.quiz-option{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.quiz-result{margin-top:14px;padding:13px;border-radius:13px;background:var(--soft)}
 
-.quiz-question{
-  padding:16px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  margin:12px 0;
-}
-
-.quiz-question h4{
-  margin:0 0 10px;
-  color:var(--navy);
-}
-
-.quiz-option{
-  display:flex;
-  gap:8px;
-  align-items:flex-start;
-  margin:8px 0;
-}
-
-.quiz-result{
-  margin-top:14px;
-  padding:13px;
-  border-radius:13px;
-  background:var(--soft);
-}
-
-.feature-list{
-  padding-left:18px;
-  line-height:1.8;
-  color:var(--muted);
-}
-
-.loading{
-  margin:25px 0;
-  padding:20px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-}
-
-.source-note{
-  color:var(--muted);
-  font-size:.78rem;
-  margin-top:12px;
-}
+.feature-list{padding-left:18px;line-height:1.8;color:var(--muted)}
+.loading{margin:25px 0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.source-note{color:var(--muted);font-size:.78rem;margin-top:12px}
 
 @media(max-width:900px){
-  .layout{
-    grid-template-columns:1fr;
-  }
-
-  .sidebar{
-    position:static;
-    max-height:none;
-  }
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;max-height:none}
 }
-
 @media(max-width:620px){
-  .slide-body{
-    padding:20px;
-  }
-
-  .slide-image{
-    min-height:220px;
-    padding:22px;
-  }
-
-  .btn{
-    width:100%;
-    border-radius:14px;
-  }
+  .slide-body{padding:20px}
+  .slide-image{min-height:220px;padding:22px}
+  .btn{width:100%;border-radius:14px}
 }
 </style>
 </head>
@@ -409,7 +142,6 @@ body{
   <div class="container">
     <h1 id="courseTitle">Loading Course...</h1>
     <p id="courseSummary">Preparing your SpeakHub learning experience.</p>
-
     <div class="course-provider" id="courseProvider" style="display:none">
       <span class="hero-pill" id="providerPill"></span>
       <span class="hero-pill" id="levelPill"></span>
@@ -419,31 +151,18 @@ body{
 </section>
 
 <div class="container">
-
-  <div id="loading" class="loading">
-    Loading course content...
-  </div>
+  <div id="loading" class="loading">Loading course content...</div>
 
   <div id="playerArea" class="layout" style="display:none">
-
     <aside class="sidebar">
-
       <h3>Course Progress</h3>
-
-      <div class="progress">
-        <div id="progressBar"></div>
-      </div>
-
-      <p id="progressText" class="progress-text">
-        0% Complete
-      </p>
+      <div class="progress"><div id="progressBar"></div></div>
+      <p id="progressText" class="progress-text">0% Complete</p>
 
       <h3>Course Content</h3>
-
       <div id="moduleMenu"></div>
 
       <h3>Course Features</h3>
-
       <ul class="feature-list">
         <li>Progress Tracking</li>
         <li>Interactive Lessons</li>
@@ -452,85 +171,32 @@ body{
         <li>Certificate Eligibility</li>
       </ul>
 
-      <a
-        class="btn soft"
-        id="detailsButton"
-        href="#"
-      >
-        Course Details
-      </a>
-
+      <a class="btn soft" id="detailsButton" href="#">Course Details</a>
       <div class="source-note" id="sourceNote"></div>
-
     </aside>
 
     <main class="content">
-
-      <div
-        class="slide-image"
-        id="lessonCover"
-      >
+      <div class="slide-image" id="lessonCover">
         <h2 id="lessonTitle">Lesson</h2>
       </div>
 
       <div class="slide-body">
-
-        <div
-          id="courseNotice"
-          class="notice"
-          style="display:none"
-        ></div>
-
-        <div
-          id="lessonContent"
-          class="lesson-content"
-        ></div>
-
+        <div id="courseNotice" class="notice" style="display:none"></div>
+        <div id="lessonContent" class="lesson-content"></div>
         <div id="quizArea"></div>
 
         <div class="btn-row">
-
-          <button
-            class="btn gold"
-            id="previousButton"
-            type="button"
-          >
-            Previous
-          </button>
-
-          <button
-            class="btn green"
-            id="completeButton"
-            type="button"
-          >
-            Mark Complete
-          </button>
-
-          <button
-            class="btn primary"
-            id="nextButton"
-            type="button"
-          >
-            Next Lesson
-          </button>
-
+          <button class="btn gold" id="previousButton" type="button">Previous</button>
+          <button class="btn green" id="completeButton" type="button">Mark Complete</button>
+          <button class="btn primary" id="nextButton" type="button">Next Lesson</button>
         </div>
-
       </div>
-
     </main>
-
   </div>
-
 </div>
 
-
 <script type="module">
-
-import {
-  db,
-  auth
-} from "./firebase-config.js";
+import { db, auth } from "./firebase-config.js";
 
 import {
   doc,
@@ -543,88 +209,33 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
+const params = new URLSearchParams(location.search);
+const courseId = params.get("id");
+const previewMode = params.get("preview") === "1";
 
-/* =========================================================
-   PAGE STATE
-========================================================= */
-
-const params =
-  new URLSearchParams(location.search);
-
-const courseId =
-  params.get("id");
-
-const previewMode =
-  params.get("preview") === "1";
-
-
-const loading =
-  document.getElementById("loading");
-
-const playerArea =
-  document.getElementById("playerArea");
-
-const courseTitle =
-  document.getElementById("courseTitle");
-
-const courseSummary =
-  document.getElementById("courseSummary");
-
-const courseProvider =
-  document.getElementById("courseProvider");
-
-const providerPill =
-  document.getElementById("providerPill");
-
-const levelPill =
-  document.getElementById("levelPill");
-
-const durationPill =
-  document.getElementById("durationPill");
-
-const moduleMenu =
-  document.getElementById("moduleMenu");
-
-const lessonTitle =
-  document.getElementById("lessonTitle");
-
-const lessonContent =
-  document.getElementById("lessonContent");
-
-const quizArea =
-  document.getElementById("quizArea");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const progressText =
-  document.getElementById("progressText");
-
-const previousButton =
-  document.getElementById("previousButton");
-
-const nextButton =
-  document.getElementById("nextButton");
-
-const completeButton =
-  document.getElementById("completeButton");
-
-const detailsButton =
-  document.getElementById("detailsButton");
-
-const courseNotice =
-  document.getElementById("courseNotice");
-
-const lessonCover =
-  document.getElementById("lessonCover");
-
-const sourceNote =
-  document.getElementById("sourceNote");
-
+const loading = document.getElementById("loading");
+const playerArea = document.getElementById("playerArea");
+const courseTitle = document.getElementById("courseTitle");
+const courseSummary = document.getElementById("courseSummary");
+const courseProvider = document.getElementById("courseProvider");
+const providerPill = document.getElementById("providerPill");
+const levelPill = document.getElementById("levelPill");
+const durationPill = document.getElementById("durationPill");
+const moduleMenu = document.getElementById("moduleMenu");
+const lessonTitle = document.getElementById("lessonTitle");
+const lessonContent = document.getElementById("lessonContent");
+const quizArea = document.getElementById("quizArea");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const previousButton = document.getElementById("previousButton");
+const nextButton = document.getElementById("nextButton");
+const completeButton = document.getElementById("completeButton");
+const detailsButton = document.getElementById("detailsButton");
+const courseNotice = document.getElementById("courseNotice");
+const lessonCover = document.getElementById("lessonCover");
+const sourceNote = document.getElementById("sourceNote");
 
 let course = null;
 let modules = [];
@@ -635,1841 +246,793 @@ let completedLessons = new Set();
 let currentUser = null;
 let contentSource = "unknown";
 
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
 function escapeHtml(value){
-
   return String(value ?? "")
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
-
 }
-
 
 function normalize(value){
-
-  return String(value || "")
-    .trim()
-    .toLowerCase();
-
+  return String(value || "").trim().toLowerCase();
 }
-
 
 function pretty(value){
-
-  if(!value){
-    return "—";
-  }
-
-  return String(value)
-    .replaceAll("-"," ")
-    .replace(/\b\w/g,letter=>letter.toUpperCase());
-
+  if(!value) return "—";
+  return String(value).replaceAll("-"," ").replace(/\b\w/g,letter=>letter.toUpperCase());
 }
-
 
 function isExternalCourse(courseData){
-
-  return (
-    normalize(courseData?.courseType) === "external" ||
-    normalize(courseData?.completionMethod) === "certificate-upload"
-  );
-
+  return normalize(courseData?.courseType) === "external" ||
+         normalize(courseData?.completionMethod) === "certificate-upload";
 }
-
 
 function isInstructorLed(courseData){
-
-  return normalize(
-    courseData?.courseType
-  ) === "instructor-led";
-
+  return normalize(courseData?.courseType) === "instructor-led";
 }
 
+function lessonHtml(lesson){
+  return (
+    lesson.contentHtml ||
+    lesson.html ||
+    lesson.content ||
+    lesson.body ||
+    lesson.lessonContent ||
+    lesson.description ||
+    ""
+  );
+}
 
-function normalizeLesson(
-  lesson,
-  moduleIndex,
-  lessonIndex,
-  moduleTitle,
-  moduleId
-){
+function normalizeLesson(lesson,moduleIndex,lessonIndex,moduleTitle,moduleId){
+  const title = lesson.title || `Lesson ${lessonIndex+1}`;
+  const rawContent = lessonHtml(lesson);
 
   return {
     ...lesson,
-
-    id:
-      lesson.id ||
-      `${courseId}-m${moduleIndex+1}-l${lessonIndex+1}`,
-
+    id: lesson.id || `${courseId}-m${moduleIndex+1}-l${lessonIndex+1}`,
     courseId,
-
     moduleIndex,
-
-    moduleId:
-      lesson.moduleId ||
-      moduleId,
-
-    moduleTitle:
-      lesson.moduleTitle ||
-      moduleTitle,
-
-    lessonIndex:
-      lesson.lessonIndex ??
-      lessonIndex,
-
-    order:
-      lesson.order ??
-      lessonIndex + 1,
-
-    title:
-      lesson.title ||
-      `Lesson ${lessonIndex+1}`,
-
-    duration:
-      lesson.duration ||
-      "",
-
-    content:
-      lesson.content ||
-      `<h2>${escapeHtml(
-        lesson.title ||
-        `Lesson ${lessonIndex+1}`
-      )}</h2>
-      <p>Lesson content is being prepared.</p>`,
-
-    videoUrl:
-      lesson.videoUrl ||
-      "",
-
-    worksheetUrl:
-      lesson.worksheetUrl ||
-      "",
-
-    coverUrl:
-      lesson.coverUrl ||
-      lesson.imageUrl ||
-      ""
+    moduleId: lesson.moduleId || moduleId,
+    moduleTitle: lesson.moduleTitle || moduleTitle,
+    lessonIndex: lesson.lessonIndex ?? lessonIndex,
+    order: lesson.order ?? lesson.lessonIndex ?? lessonIndex + 1,
+    title,
+    duration: lesson.duration || lesson.estimatedDuration || "",
+    content: rawContent || `<h2>${escapeHtml(title)}</h2><p>Lesson content is being prepared.</p>`,
+    videoUrl: lesson.videoUrl || lesson.video || "",
+    worksheetUrl: lesson.worksheetUrl || lesson.resourceUrl || "",
+    coverUrl: lesson.coverUrl || lesson.imageUrl || lesson.thumbnailUrl || ""
   };
-
 }
-
 
 function normalizeModules(rawModules){
+  return (rawModules || []).map((module,moduleIndex)=>{
+    const moduleTitle = module.title || `Module ${moduleIndex+1}`;
+    const moduleId = module.id || `${courseId}-module-${moduleIndex+1}`;
+    const rawLessons = Array.isArray(module.lessons) ? module.lessons : [];
 
-  return (rawModules || [])
-    .map((module,moduleIndex)=>{
-
-      const moduleTitle =
-        module.title ||
-        `Module ${moduleIndex+1}`;
-
-      const moduleId =
-        module.id ||
-        `${courseId}-module-${moduleIndex+1}`;
-
-      const rawLessons =
-        Array.isArray(module.lessons)
-        ? module.lessons
-        : [];
-
-      return {
-        ...module,
-
-        id:
-          moduleId,
-
-        title:
-          moduleTitle,
-
-        description:
-          module.description ||
-          "",
-
-        moduleIndex,
-
-        quiz:
-          module.quiz ||
-          null,
-
-        finalAssessment:
-          module.finalAssessment ||
-          null,
-
-        lessons:
-          rawLessons.map(
-            (lesson,lessonIndex)=>
-              normalizeLesson(
-                lesson,
-                moduleIndex,
-                lessonIndex,
-                moduleTitle,
-                moduleId
-              )
-          )
-      };
-
-    });
-
+    return {
+      ...module,
+      id: moduleId,
+      title: moduleTitle,
+      description: module.description || "",
+      moduleIndex: Number(module.moduleIndex ?? module.order ?? moduleIndex),
+      quiz: module.quiz || null,
+      finalAssessment: module.finalAssessment || null,
+      lessons: rawLessons.map((lesson,lessonIndex)=>
+        normalizeLesson(lesson,moduleIndex,lessonIndex,moduleTitle,moduleId)
+      )
+    };
+  });
 }
 
-
-/* =========================================================
-   CONTENT LOADERS
-========================================================= */
-
-async function loadLessonsCollection(){
-
-  const snap =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "lessons"
-        ),
-        where(
-          "courseId",
-          "==",
-          courseId
-        )
-      )
-    );
-
-
-  if(snap.empty){
-    return [];
+async function safeGetDocs(q,label){
+  try{
+    return await getDocs(q);
+  }catch(error){
+    console.warn(`${label} could not be loaded:`,error);
+    return null;
   }
+}
 
-
-  const rows =
-    snap.docs.map(docSnap=>({
-      id:docSnap.id,
-      ...docSnap.data()
-    }));
-
-
-  rows.sort(
-    (a,b)=>
-      Number(
-        a.moduleIndex || 0
-      ) -
-      Number(
-        b.moduleIndex || 0
-      ) ||
-      Number(
-        a.order ??
-        a.lessonIndex ??
-        0
-      ) -
-      Number(
-        b.order ??
-        b.lessonIndex ??
-        0
-      )
+async function loadStandaloneLessons(){
+  const snap = await safeGetDocs(
+    query(collection(db,"lessons"),where("courseId","==",courseId)),
+    "lessons collection"
   );
 
+  if(!snap || snap.empty) return [];
 
-  const grouped =
-    new Map();
+  const rows = snap.docs.map(d=>({id:d.id,...d.data()}));
 
+  rows.sort((a,b)=>
+    Number(a.moduleIndex ?? 0) - Number(b.moduleIndex ?? 0) ||
+    Number(a.order ?? a.lessonIndex ?? 0) - Number(b.order ?? b.lessonIndex ?? 0)
+  );
 
-  rows.forEach((row,index)=>{
-
-    const moduleIndex =
-      Number(
-        row.moduleIndex ?? 0
-      );
-
-    const moduleTitle =
-      row.moduleTitle ||
-      `Module ${moduleIndex+1}`;
-
-    const moduleId =
-      row.moduleId ||
-      `${courseId}-module-${moduleIndex+1}`;
-
-
-    if(!grouped.has(moduleId)){
-
-      grouped.set(
-        moduleId,
-        {
-          id:moduleId,
-          title:moduleTitle,
-          description:
-            row.moduleDescription ||
-            "",
-          moduleIndex,
-          lessons:[]
-        }
-      );
-
-    }
-
-
-    const target =
-      grouped.get(moduleId);
-
-
-    target.lessons.push(
-      normalizeLesson(
-        row,
-        moduleIndex,
-        Number(
-          row.lessonIndex ??
-          target.lessons.length
-        ),
-        moduleTitle,
-        moduleId
-      )
-    );
-
-  });
-
-
-  return [...grouped.values()]
-    .sort(
-      (a,b)=>
-        a.moduleIndex -
-        b.moduleIndex
-    );
-
+  return rows;
 }
-
 
 async function loadLegacyCourseModules(){
-
-  const snap =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "courseModules"
-        ),
-        where(
-          "courseId",
-          "==",
-          courseId
-        )
-      )
-    );
-
-
-  if(snap.empty){
-    return [];
-  }
-
-
-  const rows =
-    snap.docs.map(docSnap=>({
-      id:docSnap.id,
-      ...docSnap.data()
-    }));
-
-
-  rows.sort(
-    (a,b)=>
-      Number(a.order || 0) -
-      Number(b.order || 0)
+  const snap = await safeGetDocs(
+    query(collection(db,"courseModules"),where("courseId","==",courseId)),
+    "courseModules collection"
   );
 
+  if(!snap || snap.empty) return [];
 
-  return normalizeModules(
-    rows
-  );
+  const rows = snap.docs.map(d=>({id:d.id,...d.data()}));
+  rows.sort((a,b)=>Number(a.order ?? a.moduleIndex ?? 0)-Number(b.order ?? b.moduleIndex ?? 0));
 
+  return normalizeModules(rows);
 }
-
 
 async function loadCourseQuizzes(){
-
-  try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "quizzes"
-          ),
-          where(
-            "courseId",
-            "==",
-            courseId
-          )
-        )
-      );
-
-
-    quizzes =
-      snap.docs.map(docSnap=>({
-        id:docSnap.id,
-        ...docSnap.data()
-      }));
-
-
-    quizzes.sort(
-      (a,b)=>
-        Number(a.moduleIndex || 0) -
-        Number(b.moduleIndex || 0)
-    );
-
-
-  }catch(error){
-
-    console.warn(
-      "Could not load quizzes:",
-      error
-    );
-
-    quizzes = [];
-
-  }
-
-}
-
-
-function attachQuizzesToModules(){
-
-  modules.forEach(module=>{
-
-    const moduleQuiz =
-      quizzes.find(
-        quiz =>
-          normalize(
-            quiz.assessmentType
-          ) === "module-quiz" &&
-          Number(
-            quiz.moduleIndex ?? -1
-          ) === Number(
-            module.moduleIndex
-          )
-      );
-
-
-    const finalAssessment =
-      quizzes.find(
-        quiz =>
-          normalize(
-            quiz.assessmentType
-          ) === "final-assessment" &&
-          (
-            quiz.courseId === courseId ||
-            Number(
-              quiz.moduleIndex ?? -1
-            ) === Number(
-              module.moduleIndex
-            )
-          )
-      );
-
-
-    if(
-      !module.quiz &&
-      moduleQuiz
-    ){
-      module.quiz =
-        moduleQuiz;
-    }
-
-
-    if(
-      !module.finalAssessment &&
-      finalAssessment
-    ){
-      module.finalAssessment =
-        finalAssessment;
-    }
-
-  });
-
-}
-
-
-async function resolveCourseContent(){
-
-  if(
-    Array.isArray(course.modules) &&
-    course.modules.length
-  ){
-
-    contentSource =
-      "Embedded course modules";
-
-    modules =
-      normalizeModules(
-        course.modules
-      );
-
-    await loadCourseQuizzes();
-
-    attachQuizzesToModules();
-
-    return;
-
-  }
-
-
-  const seededLessons =
-    await loadLessonsCollection();
-
-
-  if(seededLessons.length){
-
-    contentSource =
-      "Firestore lessons collection";
-
-    modules =
-      seededLessons;
-
-    await loadCourseQuizzes();
-
-    attachQuizzesToModules();
-
-    return;
-
-  }
-
-
-  const legacy =
-    await loadLegacyCourseModules();
-
-
-  if(legacy.length){
-
-    contentSource =
-      "Legacy courseModules collection";
-
-    modules =
-      legacy;
-
-    await loadCourseQuizzes();
-
-    attachQuizzesToModules();
-
-    return;
-
-  }
-
-
-  contentSource =
-    "No lesson source found";
-
-  modules = [];
-
-}
-
-
-/* =========================================================
-   PROGRESS
-========================================================= */
-
-function flattenLessons(){
-
-  lessons = [];
-
-  modules.forEach(module=>{
-
-    module.lessons.forEach(lesson=>{
-      lessons.push(lesson);
-    });
-
-  });
-
-}
-
-
-function localProgressKey(){
-
-  return `speakhub-progress-${courseId}`;
-
-}
-
-
-function readLocalProgress(){
-
-  try{
-
-    const raw =
-      localStorage.getItem(
-        localProgressKey()
-      );
-
-
-    if(!raw){
-      return null;
-    }
-
-
-    return JSON.parse(raw);
-
-  }catch(error){
-
-    console.warn(
-      "Could not read local progress:",
-      error
-    );
-
-    return null;
-
-  }
-
-}
-
-
-function applyProgressData(data){
-
-  if(!data){
-    return;
-  }
-
-
-  if(
-    Array.isArray(
-      data.completedLessons
-    )
-  ){
-
-    completedLessons =
-      new Set(
-        data.completedLessons
-      );
-
-  }
-
-
-  if(
-    Number.isInteger(
-      data.currentLessonIndex
-    )
-  ){
-
-    currentLessonIndex =
-      Math.min(
-        data.currentLessonIndex,
-        Math.max(
-          lessons.length - 1,
-          0
-        )
-      );
-
-  }
-
-}
-
-
-async function loadProgress(){
-
-  const local =
-    readLocalProgress();
-
-
-  if(local){
-    applyProgressData(
-      local
-    );
-  }
-
-
-  if(
-    !currentUser ||
-    previewMode
-  ){
-    return;
-  }
-
-
-  try{
-
-    const progressId =
-      `${currentUser.uid}_${courseId}`;
-
-
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "userProgress",
-          progressId
-        )
-      );
-
-
-    if(snap.exists()){
-
-      const remote =
-        snap.data();
-
-
-      const mergedCompleted =
-        new Set([
-          ...completedLessons,
-          ...(
-            Array.isArray(
-              remote.completedLessons
-            )
-            ? remote.completedLessons
-            : []
-          )
-        ]);
-
-
-      completedLessons =
-        mergedCompleted;
-
-
-      if(
-        Number.isInteger(
-          remote.currentLessonIndex
-        )
-      ){
-
-        currentLessonIndex =
-          Math.min(
-            remote.currentLessonIndex,
-            Math.max(
-              lessons.length - 1,
-              0
-            )
-          );
-
-      }
-
-    }
-
-
-  }catch(error){
-
-    console.warn(
-      "Could not load Firestore progress:",
-      error
-    );
-
-  }
-
-}
-
-
-function progressPayload(){
-
-  const total =
-    lessons.length;
-
-  const completed =
-    [...completedLessons]
-      .filter(
-        id=>
-          lessons.some(
-            lesson =>
-              lesson.id === id
-          )
-      )
-      .length;
-
-  const percent =
-    total
-    ? Math.round(
-        (completed / total) * 100
-      )
-    : 0;
-
-
-  return {
-    userId:
-      currentUser?.uid || null,
-
-    courseId,
-
-    completedLessons:
-      Array.from(
-        completedLessons
-      ),
-
-    currentLessonIndex,
-
-    completedCount:
-      completed,
-
-    totalLessons:
-      total,
-
-    percent,
-
-    progress:
-      percent,
-
-    completed:
-      percent === 100,
-
-    updatedAt:
-      new Date().toISOString()
-  };
-
-}
-
-
-async function saveProgress(){
-
-  if(previewMode){
-    return;
-  }
-
-
-  const payload =
-    progressPayload();
-
-
-  localStorage.setItem(
-    localProgressKey(),
-    JSON.stringify(
-      payload
-    )
+  const snap = await safeGetDocs(
+    query(collection(db,"quizzes"),where("courseId","==",courseId)),
+    "quizzes collection"
   );
 
+  quizzes = snap
+    ? snap.docs.map(d=>({id:d.id,...d.data()}))
+    : [];
 
-  if(!currentUser){
-    return;
-  }
-
-
-  try{
-
-    const progressId =
-      `${currentUser.uid}_${courseId}`;
-
-
-    await setDoc(
-      doc(
-        db,
-        "userProgress",
-        progressId
-      ),
-      {
-        ...payload,
-
-        userId:
-          currentUser.uid,
-
-        updatedAt:
-          serverTimestamp()
-      },
-      {
-        merge:true
-      }
-    );
-
-
-  }catch(error){
-
-    console.warn(
-      "Could not save Firestore progress:",
-      error
-    );
-
-  }
-
+  quizzes.sort((a,b)=>
+    Number(a.moduleIndex ?? 0)-Number(b.moduleIndex ?? 0)
+  );
 }
 
+function findModuleForLesson(moduleList,row){
+  const rowModuleId = String(row.moduleId || "");
+  const rowModuleIndex = Number(row.moduleIndex ?? -1);
+  const rowModuleTitle = normalize(row.moduleTitle);
 
-/* =========================================================
-   RENDER
-========================================================= */
+  let match = null;
 
-function renderModuleMenu(){
+  if(rowModuleId){
+    match = moduleList.find(m=>String(m.id)===rowModuleId);
+  }
 
-  moduleMenu.innerHTML =
-    "";
+  if(!match && rowModuleIndex >= 0){
+    match = moduleList.find(m=>Number(m.moduleIndex)===rowModuleIndex);
+  }
 
+  if(!match && rowModuleTitle){
+    match = moduleList.find(m=>normalize(m.title)===rowModuleTitle);
+  }
 
-  modules.forEach(module=>{
+  return match;
+}
 
-    const wrapper =
-      document.createElement(
-        "div"
-      );
+function attachStandaloneLessons(moduleList,standaloneLessons){
+  standaloneLessons.forEach((row,rowIndex)=>{
+    let target = findModuleForLesson(moduleList,row);
 
+    if(!target){
+      const moduleIndex = Number(row.moduleIndex ?? 0);
+      const moduleId = row.moduleId || `${courseId}-module-${moduleIndex+1}`;
+      const moduleTitle = row.moduleTitle || `Module ${moduleIndex+1}`;
 
-    wrapper.className =
-      "module-group";
+      target = {
+        id: moduleId,
+        title: moduleTitle,
+        description: row.moduleDescription || "",
+        moduleIndex,
+        quiz:null,
+        finalAssessment:null,
+        lessons:[]
+      };
 
-
-    const heading =
-      document.createElement(
-        "div"
-      );
-
-
-    heading.className =
-      "module-title";
-
-
-    heading.textContent =
-      module.title;
-
-
-    wrapper.appendChild(
-      heading
-    );
-
-
-    if(module.description){
-
-      const description =
-        document.createElement(
-          "div"
-        );
-
-
-      description.className =
-        "module-description";
-
-
-      description.textContent =
-        module.description;
-
-
-      wrapper.appendChild(
-        description
-      );
-
+      moduleList.push(target);
     }
 
+    const lessonIndex = Number(
+      row.lessonIndex ??
+      row.order ??
+      target.lessons.length
+    );
 
-    module.lessons.forEach(lesson=>{
+    const normalizedLesson = normalizeLesson(
+      row,
+      Number(target.moduleIndex ?? 0),
+      lessonIndex,
+      target.title,
+      target.id
+    );
 
-      const globalIndex =
-        lessons.findIndex(
-          item =>
-            item.id ===
-            lesson.id
-        );
+    const exists = target.lessons.some(existing=>existing.id===normalizedLesson.id);
 
+    if(!exists){
+      target.lessons.push(normalizedLesson);
+    }
+  });
 
-      const item =
-        document.createElement(
-          "div"
-        );
+  moduleList.forEach(module=>{
+    module.lessons.sort((a,b)=>
+      Number(a.order ?? a.lessonIndex ?? 0) -
+      Number(b.order ?? b.lessonIndex ?? 0)
+    );
+  });
 
+  moduleList.sort((a,b)=>
+    Number(a.moduleIndex ?? 0)-Number(b.moduleIndex ?? 0)
+  );
 
-      item.className =
-        "lesson-item";
+  return moduleList;
+}
 
+function attachQuizzesToModules(){
+  modules.forEach(module=>{
+    const moduleQuiz = quizzes.find(quiz =>
+      normalize(quiz.assessmentType)==="module-quiz" &&
+      (
+        String(quiz.moduleId || "")===String(module.id || "") ||
+        Number(quiz.moduleIndex ?? -1)===Number(module.moduleIndex)
+      )
+    );
 
-      if(
-        completedLessons.has(
-          lesson.id
-        )
-      ){
+    const finalAssessment = quizzes.find(quiz =>
+      normalize(quiz.assessmentType)==="final-assessment"
+    );
 
-        item.classList.add(
-          "completed"
-        );
+    if(!module.quiz && moduleQuiz) module.quiz = moduleQuiz;
 
+    const lastModuleIndex = Math.max(...modules.map(m=>Number(m.moduleIndex ?? 0)));
+    if(
+      !module.finalAssessment &&
+      finalAssessment &&
+      Number(module.moduleIndex ?? 0)===lastModuleIndex
+    ){
+      module.finalAssessment = finalAssessment;
+    }
+  });
+}
+
+async function resolveCourseContent(){
+  const sources = [];
+
+  let moduleStructure = [];
+
+  if(Array.isArray(course.modules) && course.modules.length){
+    moduleStructure = normalizeModules(course.modules);
+    sources.push("embedded modules");
+  }
+
+  const standaloneLessons = await loadStandaloneLessons();
+
+  if(standaloneLessons.length){
+    sources.push(`${standaloneLessons.length} seeded lessons`);
+  }
+
+  if(!moduleStructure.length){
+    const legacyModules = await loadLegacyCourseModules();
+
+    if(legacyModules.length){
+      moduleStructure = legacyModules;
+      sources.push("legacy module structure");
+    }
+  }
+
+  if(!moduleStructure.length && standaloneLessons.length){
+    moduleStructure = [];
+  }
+
+  modules = attachStandaloneLessons(moduleStructure,standaloneLessons);
+
+  await loadCourseQuizzes();
+  attachQuizzesToModules();
+
+  const lessonCount = modules.reduce(
+    (sum,module)=>sum+(Array.isArray(module.lessons)?module.lessons.length:0),
+    0
+  );
+
+  if(!lessonCount && moduleStructure.length){
+    contentSource = `${sources.join(" + ") || "module structure"} — modules found, but no lesson records`;
+  }else if(lessonCount){
+    contentSource = sources.join(" + ") || "course content";
+  }else{
+    contentSource = "No lesson source found";
+  }
+}
+
+function flattenLessons(){
+  lessons = [];
+  modules.forEach(module=>{
+    (module.lessons || []).forEach(lesson=>lessons.push(lesson));
+  });
+}
+
+function localProgressKey(){
+  return `speakhub-progress-${courseId}`;
+}
+
+function readLocalProgress(){
+  try{
+    const raw = localStorage.getItem(localProgressKey());
+    return raw ? JSON.parse(raw) : null;
+  }catch(error){
+    console.warn("Could not read local progress:",error);
+    return null;
+  }
+}
+
+function applyProgressData(data){
+  if(!data) return;
+
+  if(Array.isArray(data.completedLessons)){
+    completedLessons = new Set(data.completedLessons);
+  }
+
+  if(Number.isInteger(data.currentLessonIndex)){
+    currentLessonIndex = Math.min(
+      data.currentLessonIndex,
+      Math.max(lessons.length-1,0)
+    );
+  }
+}
+
+async function loadProgress(){
+  applyProgressData(readLocalProgress());
+
+  if(!currentUser || previewMode) return;
+
+  const candidateIds = [
+    `${currentUser.uid}_${courseId}`,
+    `${currentUser.uid}_course_${courseId}`
+  ];
+
+  for(const progressId of candidateIds){
+    try{
+      const snap = await getDoc(doc(db,"userProgress",progressId));
+
+      if(snap.exists()){
+        const remote = snap.data();
+
+        completedLessons = new Set([
+          ...completedLessons,
+          ...(Array.isArray(remote.completedLessons)?remote.completedLessons:[])
+        ]);
+
+        if(Number.isInteger(remote.currentLessonIndex)){
+          currentLessonIndex = Math.min(
+            remote.currentLessonIndex,
+            Math.max(lessons.length-1,0)
+          );
+        }
       }
+    }catch(error){
+      console.warn("Could not load Firestore progress:",error);
+    }
+  }
+}
 
+function progressPayload(){
+  const validIds = new Set(lessons.map(l=>l.id));
+  const completed = [...completedLessons].filter(id=>validIds.has(id)).length;
+  const total = lessons.length;
+  const percent = total ? Math.round((completed/total)*100) : 0;
 
-      if(
-        globalIndex ===
-        currentLessonIndex
-      ){
+  return {
+    userId: currentUser?.uid || null,
+    type:"course",
+    itemId:courseId,
+    courseId,
+    title:course?.title || "",
+    completedLessons:Array.from(completedLessons),
+    currentLessonIndex,
+    completedCount:completed,
+    totalLessons:total,
+    percent,
+    progress:percent,
+    progressPercent:percent,
+    status:percent===100 ? "completed" : (percent>0 ? "started" : "not_started"),
+    completed:percent===100,
+    updatedAt:new Date().toISOString()
+  };
+}
 
-        item.classList.add(
-          "active"
-        );
+async function saveProgress(){
+  if(previewMode) return;
 
-      }
+  const payload = progressPayload();
+  localStorage.setItem(localProgressKey(),JSON.stringify(payload));
 
+  if(!currentUser) return;
+
+  try{
+    await setDoc(
+      doc(db,"userProgress",`${currentUser.uid}_${courseId}`),
+      {
+        ...payload,
+        userId:currentUser.uid,
+        updatedAt:serverTimestamp()
+      },
+      {merge:true}
+    );
+  }catch(error){
+    console.warn("Could not save Firestore progress:",error);
+  }
+}
+
+function renderModuleMenu(){
+  moduleMenu.innerHTML = "";
+
+  modules.forEach(module=>{
+    const wrapper = document.createElement("div");
+    wrapper.className = "module-group";
+
+    const heading = document.createElement("div");
+    heading.className = "module-title";
+    heading.textContent = module.title;
+    wrapper.appendChild(heading);
+
+    if(module.description){
+      const description = document.createElement("div");
+      description.className = "module-description";
+      description.textContent = module.description;
+      wrapper.appendChild(description);
+    }
+
+    (module.lessons || []).forEach(lesson=>{
+      const globalIndex = lessons.findIndex(item=>item.id===lesson.id);
+      const item = document.createElement("div");
+      item.className = "lesson-item";
+
+      if(completedLessons.has(lesson.id)) item.classList.add("completed");
+      if(globalIndex===currentLessonIndex) item.classList.add("active");
 
       item.innerHTML = `
         ${escapeHtml(lesson.title)}
-        ${
-          lesson.duration
-          ? `<span class="lesson-meta">${escapeHtml(lesson.duration)}</span>`
-          : ""
-        }
+        ${lesson.duration?`<span class="lesson-meta">${escapeHtml(lesson.duration)}</span>`:""}
       `;
 
+      item.addEventListener("click",async()=>{
+        currentLessonIndex = globalIndex;
+        await saveProgress();
+        renderCurrentLesson();
+      });
 
-      item.addEventListener(
-        "click",
-        async ()=>{
-
-          currentLessonIndex =
-            globalIndex;
-
-
-          await saveProgress();
-
-          renderCurrentLesson();
-
-        }
-      );
-
-
-      wrapper.appendChild(
-        item
-      );
-
+      wrapper.appendChild(item);
     });
 
+    if(!(module.lessons || []).length){
+      const empty = document.createElement("div");
+      empty.className = "lesson-item locked";
+      empty.textContent = "No lesson records in this module yet";
+      wrapper.appendChild(empty);
+    }
 
     if(module.quiz){
-
-      const quizItem =
-        document.createElement(
-          "div"
-        );
-
-
-      quizItem.className =
-        "lesson-item assessment-item";
-
-
+      const quizItem = document.createElement("div");
+      quizItem.className = "lesson-item assessment-item";
       quizItem.innerHTML = `
-        ${escapeHtml(
-          module.quiz.title ||
-          `${module.title} Quiz`
-        )}
+        ${escapeHtml(module.quiz.title || `${module.title} Quiz`)}
         <span class="lesson-meta">
-          ${
-            Array.isArray(
-              module.quiz.questions
-            )
-            ? module.quiz.questions.length
-            : module.quiz.questions || 0
-          }
-          questions
+          ${Array.isArray(module.quiz.questions)?module.quiz.questions.length:Number(module.quiz.questions||0)} questions
         </span>
       `;
-
-
-      wrapper.appendChild(
-        quizItem
-      );
-
+      wrapper.appendChild(quizItem);
     }
-
 
     if(module.finalAssessment){
-
-      const finalItem =
-        document.createElement(
-          "div"
-        );
-
-
-      finalItem.className =
-        "lesson-item assessment-item";
-
-
+      const finalItem = document.createElement("div");
+      finalItem.className = "lesson-item assessment-item";
       finalItem.innerHTML = `
-        ${escapeHtml(
-          module.finalAssessment.title ||
-          "Final Assessment"
-        )}
+        ${escapeHtml(module.finalAssessment.title || "Final Assessment")}
         <span class="lesson-meta">
-          ${
-            Array.isArray(
-              module.finalAssessment.questions
-            )
-            ? module.finalAssessment.questions.length
-            : module.finalAssessment.questions || 0
-          }
-          questions
+          ${Array.isArray(module.finalAssessment.questions)?module.finalAssessment.questions.length:Number(module.finalAssessment.questions||0)} questions
         </span>
       `;
-
-
-      wrapper.appendChild(
-        finalItem
-      );
-
+      wrapper.appendChild(finalItem);
     }
 
-
-    moduleMenu.appendChild(
-      wrapper
-    );
-
+    moduleMenu.appendChild(wrapper);
   });
-
 }
 
+function renderQuiz(assessment,assessmentType){
+  if(!assessment) return "";
 
-function renderQuiz(
-  assessment,
-  assessmentType
-){
-
-  if(!assessment){
-    return "";
-  }
-
-
-  const questions =
-    Array.isArray(
-      assessment.questions
-    )
-    ? assessment.questions
-    : [];
-
-
-  const count =
-    questions.length ||
-    Number(
-      assessment.questions || 0
-    );
-
+  const questions = Array.isArray(assessment.questions)?assessment.questions:[];
+  const count = questions.length || Number(assessment.questionCount || assessment.questions || 0);
+  const assessmentId = assessment.id || assessment.title || assessmentType;
 
   let html = `
-    <div
-      class="quiz-box"
-      data-assessment-id="${escapeHtml(
-        assessment.id ||
-        assessment.title ||
-        assessmentType
-      )}"
-    >
-
-      <h3>
-        ${escapeHtml(
-          assessment.title ||
-          (
-            assessmentType ===
-            "final-assessment"
-            ? "Final Assessment"
-            : "Module Quiz"
-          )
-        )}
-      </h3>
-
-      <p>
-        ${count} questions •
-        Pass mark:
-        ${
-          assessment.passMark ||
-          70
-        }%
-      </p>
+    <div class="quiz-box" data-assessment-id="${escapeHtml(assessmentId)}">
+      <h3>${escapeHtml(assessment.title || (assessmentType==="final-assessment"?"Final Assessment":"Module Quiz"))}</h3>
+      <p>${count} questions • Pass mark: ${assessment.passMark || 70}%</p>
   `;
 
-
   if(!questions.length){
-
     html += `
       <div class="notice">
         This assessment is registered in the learning engine.
-        Question content will appear here when the quiz bank includes
-        structured questions for this assessment.
+        Structured questions will appear here when they are included in the quiz record.
       </div>
     `;
-
   }else{
-
-    html += questions
-      .map(
-        (question,index)=>{
-
-          const options =
-            Array.isArray(
-              question.options
-            )
-            ? question.options
-            : [];
-
-
-          return `
-            <div class="quiz-question">
-
-              <h4>
-                ${index+1}.
-                ${escapeHtml(
-                  question.question ||
-                  question.text ||
-                  "Question"
-                )}
-              </h4>
-
-              ${
-                options
-                  .map(
-                    (option,optionIndex)=>`
-                      <label class="quiz-option">
-                        <input
-                          type="radio"
-                          name="quiz-${escapeHtml(
-                            assessment.id ||
-                            assessmentType
-                          )}-${index}"
-                          value="${optionIndex}"
-                        >
-                        <span>
-                          ${escapeHtml(
-                            typeof option === "object"
-                            ? option.text ||
-                              option.label ||
-                              ""
-                            : option
-                          )}
-                        </span>
-                      </label>
-                    `
-                  )
-                  .join("")
-              }
-
-            </div>
-          `;
-
-        }
-      )
-      .join("");
-
+    html += questions.map((question,index)=>{
+      const options = Array.isArray(question.options)?question.options:[];
+      return `
+        <div class="quiz-question">
+          <h4>${index+1}. ${escapeHtml(question.question || question.text || "Question")}</h4>
+          ${options.map((option,optionIndex)=>`
+            <label class="quiz-option">
+              <input
+                type="radio"
+                name="quiz-${escapeHtml(assessmentId)}-${index}"
+                value="${optionIndex}"
+              >
+              <span>${escapeHtml(typeof option==="object" ? (option.text || option.label || "") : option)}</span>
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }).join("");
 
     html += `
-      <button
-        class="btn primary"
-        type="button"
-        data-submit-assessment="${escapeHtml(
-          assessment.id ||
-          assessmentType
-        )}"
-      >
+      <button class="btn primary" type="button" data-submit-assessment="${escapeHtml(assessmentId)}">
         Submit Assessment
       </button>
 
       <div
         class="quiz-result"
-        data-assessment-result="${escapeHtml(
-          assessment.id ||
-          assessmentType
-        )}"
+        data-assessment-result="${escapeHtml(assessmentId)}"
         style="display:none"
       ></div>
     `;
-
   }
 
-
-  html += `
-    </div>
-  `;
-
-
+  html += "</div>";
   return html;
-
 }
 
-
 function renderCurrentLesson(){
-
   if(!lessons.length){
-
-    lessonTitle.textContent =
-      "Course Content";
-
+    lessonTitle.textContent = "Course Content";
+    lessonCover.innerHTML = "<h2>Course Content</h2>";
 
     lessonContent.innerHTML = `
       <div class="notice warning">
-        No lessons are currently available for this course.
+        <strong>The course exists, but no lesson records are available yet.</strong><br><br>
+        The module headings loaded successfully, but the player could not find lessons for
+        <strong>${escapeHtml(courseId || "")}</strong> in the <code>lessons</code> collection or inside the course modules.
+        Re-run the learning seeder after confirming Firestore allows the seeder to write the
+        <code>lessons</code> collection.
       </div>
     `;
 
-
-    previousButton.disabled =
-      true;
-
-
-    nextButton.disabled =
-      true;
-
-
-    completeButton.disabled =
-      true;
-
+    previousButton.disabled = true;
+    nextButton.disabled = true;
+    completeButton.disabled = true;
 
     renderModuleMenu();
-
     updateProgress();
-
     return;
-
   }
 
+  const lesson = lessons[currentLessonIndex];
+  lessonTitle.textContent = lesson.title;
 
-  const lesson =
-    lessons[currentLessonIndex];
+  lessonCover.innerHTML = lesson.coverUrl
+    ? `<img src="${escapeHtml(lesson.coverUrl)}" alt="${escapeHtml(lesson.title)}"><h2>${escapeHtml(lesson.title)}</h2>`
+    : `<h2>${escapeHtml(lesson.title)}</h2>`;
 
-
-  lessonTitle.textContent =
-    lesson.title;
-
-
-  if(lesson.coverUrl){
-
-    lessonCover.innerHTML = `
-      <img
-        src="${escapeHtml(lesson.coverUrl)}"
-        alt="${escapeHtml(lesson.title)}"
-      >
-      <h2>${escapeHtml(lesson.title)}</h2>
-    `;
-
-  }else{
-
-    lessonCover.innerHTML = `
-      <h2>${escapeHtml(lesson.title)}</h2>
-    `;
-
-  }
-
-
-  let html =
-    lesson.content || "";
-
+  let html = lesson.content || "";
 
   if(lesson.videoUrl){
-
     html += `
       <div style="margin-top:20px">
-        <a
-          class="btn primary"
-          href="${escapeHtml(lesson.videoUrl)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a class="btn primary" href="${escapeHtml(lesson.videoUrl)}" target="_blank" rel="noopener noreferrer">
           Watch Lesson Video
         </a>
       </div>
     `;
-
   }
 
-
   if(lesson.worksheetUrl){
-
     html += `
       <div style="margin-top:12px">
-        <a
-          class="btn soft"
-          href="${escapeHtml(lesson.worksheetUrl)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a class="btn soft" href="${escapeHtml(lesson.worksheetUrl)}" target="_blank" rel="noopener noreferrer">
           Open Worksheet
         </a>
       </div>
     `;
-
   }
 
-
-  lessonContent.innerHTML =
-    html;
-
-
-  quizArea.innerHTML =
-    "";
-
+  lessonContent.innerHTML = html;
+  quizArea.innerHTML = "";
 
   const currentModule =
-    modules.find(
-      module =>
-        Number(module.moduleIndex) ===
-        Number(lesson.moduleIndex)
-    ) ||
-    modules[lesson.moduleIndex];
-
+    modules.find(module=>String(module.id)===String(lesson.moduleId)) ||
+    modules.find(module=>Number(module.moduleIndex)===Number(lesson.moduleIndex));
 
   if(currentModule){
+    const lastLesson = currentModule.lessons[currentModule.lessons.length-1];
 
-    const lastLesson =
-      currentModule.lessons[
-        currentModule.lessons.length - 1
-      ];
-
-
-    if(
-      lastLesson &&
-      lastLesson.id === lesson.id
-    ){
-
-      quizArea.innerHTML +=
-        renderQuiz(
-          currentModule.quiz,
-          "module-quiz"
-        );
-
-
-      quizArea.innerHTML +=
-        renderQuiz(
-          currentModule.finalAssessment,
-          "final-assessment"
-        );
-
+    if(lastLesson && lastLesson.id===lesson.id){
+      quizArea.innerHTML += renderQuiz(currentModule.quiz,"module-quiz");
+      quizArea.innerHTML += renderQuiz(currentModule.finalAssessment,"final-assessment");
     }
-
   }
-
 
   bindAssessmentButtons();
 
+  previousButton.disabled = currentLessonIndex===0;
+  nextButton.disabled = currentLessonIndex===lessons.length-1;
+  completeButton.disabled = previewMode;
 
-  previousButton.disabled =
-    currentLessonIndex === 0;
-
-
-  nextButton.disabled =
-    currentLessonIndex ===
-    lessons.length - 1;
-
-
-  completeButton.disabled =
-    previewMode;
-
-
-  completeButton.textContent =
-    previewMode
+  completeButton.textContent = previewMode
     ? "Preview Mode"
-    : completedLessons.has(
-        lesson.id
-      )
+    : completedLessons.has(lesson.id)
       ? "Completed ✓"
       : "Mark Complete";
 
-
   renderModuleMenu();
-
   updateProgress();
-
 }
-
 
 function bindAssessmentButtons(){
-
-  document
-    .querySelectorAll(
-      "[data-submit-assessment]"
-    )
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        ()=>{
-
-          const assessmentId =
-            button.dataset.submitAssessment;
-
-
-          const result =
-            document.querySelector(
-              `[data-assessment-result="${CSS.escape(assessmentId)}"]`
-            );
-
-
-          if(!result){
-            return;
-          }
-
-
-          /*
-            Full scoring requires answer keys in the quiz-bank records.
-            For safety, do not fabricate a score when no answer key exists.
-          */
-
-          result.style.display =
-            "block";
-
-
-          result.textContent =
-            "Your responses were captured on this page. Automatic scoring will activate when the quiz-bank record includes answer keys.";
-
-        }
+  document.querySelectorAll("[data-submit-assessment]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const assessmentId = button.dataset.submitAssessment;
+      const result = document.querySelector(
+        `[data-assessment-result="${CSS.escape(assessmentId)}"]`
       );
 
-    });
+      if(!result) return;
 
+      result.style.display = "block";
+      result.textContent =
+        "Your responses were captured on this page. Automatic scoring will activate when the quiz record includes answer keys.";
+    });
+  });
 }
 
-
 function updateProgress(){
+  const validIds = new Set(lessons.map(l=>l.id));
+  const completed = [...completedLessons].filter(id=>validIds.has(id)).length;
+  const total = lessons.length;
+  const percent = total ? Math.round((completed/total)*100) : 0;
 
-  const validCompleted =
-    [...completedLessons]
-      .filter(
-        id =>
-          lessons.some(
-            lesson =>
-              lesson.id === id
-          )
-      );
-
-
-  const total =
-    lessons.length;
-
-
-  const completed =
-    validCompleted.length;
-
-
-  const percent =
-    total
-    ? Math.round(
-        (completed / total) * 100
-      )
-    : 0;
-
-
-  progressBar.style.width =
-    `${percent}%`;
-
-
-  progressText.textContent =
-    `${percent}% Complete (${completed}/${total} lessons)`;
-
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${percent}% Complete (${completed}/${total} lessons)`;
 
   if(
-    percent === 100 &&
-    (
-      course?.certificateEligible ||
-      course?.certificate?.available
-    )
+    percent===100 &&
+    (course?.certificateEligible || course?.certificate?.available)
   ){
+    courseNotice.style.display = "block";
+    courseNotice.className = "notice success";
 
-    courseNotice.style.display =
-      "block";
-
-
-    courseNotice.className =
-      "notice success";
-
-
-    const issuer =
-      course.certificate?.issuer ||
-      course.provider ||
-      "SpeakHub Academy";
-
+    const issuer = course.certificate?.issuer || course.provider || "SpeakHub Academy";
 
     courseNotice.innerHTML = `
       <strong>Course lessons complete.</strong>
       You have completed all available lessons.
-      ${
-        course.certificateEligible ||
-        course.certificate?.available
-        ? `Certificate eligibility is enabled for this course. Issuer: ${escapeHtml(issuer)}. Any required quiz or final assessment must also be satisfied before issuance.`
-        : ""
-      }
+      Certificate eligibility is enabled for this course. Issuer: ${escapeHtml(issuer)}.
+      Any required quiz or final assessment must also be satisfied before issuance.
     `;
-
   }
-
 }
 
-
-/* =========================================================
-   COURSE LOAD
-========================================================= */
-
 async function loadCourse(){
-
   try{
-
     if(!courseId){
-
-      loading.textContent =
-        "No course ID was provided.";
-
+      loading.textContent = "No course ID was provided.";
       return;
-
     }
 
-
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "courses",
-          courseId
-        )
-      );
-
+    const snap = await getDoc(doc(db,"courses",courseId));
 
     if(!snap.exists()){
-
-      loading.textContent =
-        "Course not found.";
-
+      loading.textContent = "Course not found.";
       return;
-
     }
 
-
-    course = {
-      id:snap.id,
-      ...snap.data()
-    };
-
+    course = {id:snap.id,...snap.data()};
 
     if(isExternalCourse(course)){
-
-      const provider =
-        course.provider ||
-        "an external provider";
-
-
       loading.innerHTML = `
-        <strong>External course detected.</strong>
+        <strong>External course detected.</strong><br><br>
+        This course is delivered by ${escapeHtml(course.provider || "an external provider")}.
+        External courses are launched from the course details page, not inside the SpeakHub internal course player.
         <br><br>
-        This course is delivered by
-        ${escapeHtml(provider)}.
-        External courses are launched from the course details page,
-        not inside the SpeakHub internal course player.
-        <br><br>
-        <a
-          class="btn primary"
-          href="course-details.html?id=${encodeURIComponent(courseId)}"
-        >
+        <a class="btn primary" href="course-details.html?id=${encodeURIComponent(courseId)}">
           Return to Course Details
         </a>
       `;
-
       return;
-
     }
 
-
     if(isInstructorLed(course)){
-
       loading.innerHTML = `
-        <strong>Instructor-led course.</strong>
+        <strong>Instructor-led course.</strong><br><br>
+        This programme is managed through enrollment rather than the self-paced course player.
         <br><br>
-        This programme is managed through enrollment rather than the
-        self-paced course player.
-        <br><br>
-        <a
-          class="btn primary"
-          href="course-details.html?id=${encodeURIComponent(courseId)}"
-        >
+        <a class="btn primary" href="course-details.html?id=${encodeURIComponent(courseId)}">
           View Enrollment Details
         </a>
       `;
-
       return;
-
     }
 
-
-    courseTitle.textContent =
-      course.title ||
-      "SpeakHub Course";
-
-
+    courseTitle.textContent = course.title || "SpeakHub Course";
     courseSummary.textContent =
       course.shortDescription ||
       course.description ||
       "Interactive SpeakHub Academy learning experience.";
 
+    providerPill.textContent = `Provider: ${course.provider || "SpeakHub Academy"}`;
+    levelPill.textContent = `Level: ${pretty(course.difficulty || course.level || "beginner")}`;
+    durationPill.textContent = `Duration: ${course.duration || "Self-paced"}`;
+    courseProvider.style.display = "flex";
 
-    providerPill.textContent =
-      `Provider: ${
-        course.provider ||
-        "SpeakHub Academy"
-      }`;
-
-
-    levelPill.textContent =
-      `Level: ${
-        pretty(
-          course.difficulty ||
-          course.level ||
-          "beginner"
-        )
-      }`;
-
-
-    durationPill.textContent =
-      `Duration: ${
-        course.duration ||
-        "Self-paced"
-      }`;
-
-
-    courseProvider.style.display =
-      "flex";
-
-
-    detailsButton.href =
-      `course-details.html?id=${encodeURIComponent(courseId)}`;
-
+    detailsButton.href = `course-details.html?id=${encodeURIComponent(courseId)}`;
 
     if(previewMode){
-
-      courseNotice.style.display =
-        "block";
-
-
-      courseNotice.className =
-        "notice warning";
-
-
+      courseNotice.style.display = "block";
+      courseNotice.className = "notice warning";
       courseNotice.innerHTML = `
         <strong>Preview Mode.</strong>
         Progress changes and certificate completion are disabled while previewing.
       `;
-
     }
-
 
     await resolveCourseContent();
-
-
     flattenLessons();
-
-
     await loadProgress();
 
-
-    sourceNote.textContent =
-      `Content source: ${contentSource}`;
-
-
-    renderModuleMenu();
+    sourceNote.textContent = `Content source: ${contentSource}`;
 
     renderCurrentLesson();
 
-
-    loading.style.display =
-      "none";
-
-
-    playerArea.style.display =
-      "grid";
-
+    loading.style.display = "none";
+    playerArea.style.display = "grid";
 
   }catch(error){
-
-    console.error(
-      "Course player error:",
-      error
-    );
-
-
-    loading.textContent =
-      "Failed to load this course. Please try again.";
-
+    console.error("Course player error:",error);
+    loading.textContent = error?.message || "Failed to load this course. Please try again.";
+    loading.className = "loading";
   }
-
 }
 
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-previousButton.addEventListener(
-  "click",
-  async ()=>{
-
-    if(currentLessonIndex > 0){
-
-      currentLessonIndex--;
-
-      await saveProgress();
-
-      renderCurrentLesson();
-
-      window.scrollTo({
-        top:0,
-        behavior:"smooth"
-      });
-
-    }
-
-  }
-);
-
-
-nextButton.addEventListener(
-  "click",
-  async ()=>{
-
-    if(
-      currentLessonIndex <
-      lessons.length - 1
-    ){
-
-      currentLessonIndex++;
-
-      await saveProgress();
-
-      renderCurrentLesson();
-
-      window.scrollTo({
-        top:0,
-        behavior:"smooth"
-      });
-
-    }
-
-  }
-);
-
-
-completeButton.addEventListener(
-  "click",
-  async ()=>{
-
-    if(
-      !lessons.length ||
-      previewMode
-    ){
-      return;
-    }
-
-
-    const lesson =
-      lessons[currentLessonIndex];
-
-
-    completedLessons.add(
-      lesson.id
-    );
-
-
+previousButton.addEventListener("click",async()=>{
+  if(currentLessonIndex>0){
+    currentLessonIndex--;
     await saveProgress();
-
     renderCurrentLesson();
-
+    window.scrollTo({top:0,behavior:"smooth"});
   }
-);
+});
 
-
-/* =========================================================
-   AUTH + START
-========================================================= */
-
-onAuthStateChanged(
-  auth,
-  async user=>{
-
-    currentUser =
-      user || null;
-
-
-    await loadCourse();
-
+nextButton.addEventListener("click",async()=>{
+  if(currentLessonIndex<lessons.length-1){
+    currentLessonIndex++;
+    await saveProgress();
+    renderCurrentLesson();
+    window.scrollTo({top:0,behavior:"smooth"});
   }
-);
+});
 
+completeButton.addEventListener("click",async()=>{
+  if(!lessons.length || previewMode) return;
+
+  const lesson = lessons[currentLessonIndex];
+  completedLessons.add(lesson.id);
+
+  await saveProgress();
+  renderCurrentLesson();
+});
+
+onAuthStateChanged(auth,async user=>{
+  currentUser = user || null;
+  await loadCourse();
+});
 </script>
 
 </body>
 </html>
-
