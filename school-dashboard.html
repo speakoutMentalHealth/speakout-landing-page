@@ -3,109 +3,1806 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>School Dashboard | SpeakOut</title>
+
+<meta
+  name="description"
+  content="SpeakOut school dashboard for students, teachers, parents, workshops, learning activity, certificates, announcements and school wellbeing management."
+>
+
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
+
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.info-list{display:grid;gap:10px}.info-item{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:12px}.info-item b{display:block;color:var(--navy);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}.info-item span{display:block;color:var(--muted);margin-top:4px}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:1000px){.g5,.g4,.g3,.g2{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
+section{padding:36px 0}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.g5{grid-template-columns:repeat(5,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.card{
+  transition:.22s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+
+.card p,.panel p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+}
+
+.approved,.active,.completed,.verified{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.premium,.pending,.pending_school_approval,.planned,.in-progress{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.rejected,.suspended,.revoked,.cancelled,.canceled{
+  background:var(--redSoft);
+  color:var(--red);
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:1.8rem;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:.84rem;
+}
+
+.info-list{
+  display:grid;
+  gap:10px;
+}
+
+.info-item{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+}
+
+.info-item b{
+  display:block;
+  color:var(--navy);
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.info-item span{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.mini-list{
+  display:grid;
+  gap:10px;
+}
+
+.mini-item{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+}
+
+.item-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.item-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+
+.item-meta span{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:.72rem;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.progress-track{
+  height:9px;
+  background:#e8eef6;
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0 5px;
+}
+
+.progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--green));
+}
+
+.progress-label{
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-end;
+  margin-bottom:14px;
+}
+
+.section-head h2{
+  margin:0;
+}
+
+.section-head p{
+  margin:5px 0 0;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+@media(max-width:1000px){
+  .g5,.g4,.g3,.g2{
+    grid-template-columns:1fr;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
 </style>
 </head>
+
 <body>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="school-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>School Dashboard</p></div></a><nav class="links" id="roleNav"></nav></div></header>
+
+<header class="nav">
+  <div class="container nav-inner">
+
+    <a class="brand" href="school-dashboard.html">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>School Dashboard</p>
+      </div>
+    </a>
+
+    <nav class="links" id="roleNav"></nav>
+
+  </div>
+</header>
+
+
 <main>
-<section class="hero"><div class="container"><span class="kicker">School Management</span><h1 id="schoolName">School Dashboard</h1><p id="schoolMeta">Loading school information...</p><div id="pills"></div></div></section>
-<section><div class="container">
-<div id="statusBox" class="notice">Checking school access...</div>
-<div class="grid g5">
-<div class="card stat"><strong id="teacherCount">0</strong><span>Teachers</span></div>
-<div class="card stat"><strong id="parentCount">0</strong><span>Parents</span></div>
-<div class="card stat"><strong id="studentCount">0</strong><span>Students</span></div>
-<div class="card stat"><strong id="pendingCount">0</strong><span>Pending Users</span></div>
-<div class="card stat"><strong id="linkedParentCount">0</strong><span>Linked Parents</span></div>
-</div>
-<div class="grid g2" style="margin-top:18px">
-<div class="panel"><span class="label">School Profile</span><h2>School Information</h2><div class="info-list">
-<div class="info-item"><b>School Name</b><span id="infoSchoolName">—</span></div>
-<div class="info-item"><b>School Code</b><span id="infoSchoolCode">—</span></div>
-<div class="info-item"><b>Status</b><span id="infoSchoolStatus">—</span></div>
-<div class="info-item"><b>Location</b><span id="infoSchoolLocation">—</span></div>
-<div class="info-item"><b>Contact</b><span id="infoSchoolContact">—</span></div>
-</div></div>
-<div class="panel"><span class="label">Launch Actions</span><h2>Manage your school ecosystem</h2><div class="grid">
-<a class="card" href="school-students.html"><h3>Students</h3><p>Manage students, student IDs, approval status and student access.</p><span class="btn primary">Open Students</span></a>
-<a class="card" href="school-parents.html"><h3>Parents</h3><p>Manage parents and review parent access under your school.</p><span class="btn soft">Open Parents</span></a>
-<a class="card" href="school-teachers.html"><h3>Teachers</h3><p>Manage teachers, departments and teacher training access.</p><span class="btn soft">Open Teachers</span></a>
-</div></div>
-</div>
-<div class="grid g3" style="margin-top:18px">
-<a class="card" href="school-workshops.html"><h3>Workshops</h3><p>Create and manage workshops for students, parents and teachers.</p><span class="btn gold">Open Workshops</span></a>
-<a class="card" href="school-resource-center.html"><h3>School Resources</h3><p>Access policies, club guides, report templates and wellbeing frameworks.</p><span class="btn soft">Open Resources</span></a>
-<a class="card" href="certificate-center.html"><h3>Certificates</h3><p>Review school certificates and training records.</p><span class="btn primary">Open Certificates</span></a>
-<a class="card" href="school-reports.html"><h3>Reports</h3><p>View participation counts, activity summaries and progress records.</p><span class="btn soft">Open Reports</span></a>
-<a class="card" href="school-users.html"><h3>All School Users</h3><p>View all teachers, parents and students under your school in one place.</p><span class="btn dark">Open Users</span></a>
-<a class="card" href="club-dashboard.html"><h3>Mental Health Club</h3><p>Prepare club members, activities, executives and wellbeing programs.</p><span class="btn gold">Open Club</span></a>
-</div>
-</div></section>
+
+<section class="hero">
+  <div class="container">
+
+    <span class="kicker">
+      School Management
+    </span>
+
+    <h1 id="schoolName">
+      School Dashboard
+    </h1>
+
+    <p id="schoolMeta">
+      Loading school information...
+    </p>
+
+    <div id="pills"></div>
+
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div id="statusBox" class="notice">
+      Checking school access...
+    </div>
+
+
+    <div class="grid g5">
+
+      <div class="card stat">
+        <strong id="teacherCount">0</strong>
+        <span>Teachers</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="parentCount">0</strong>
+        <span>Parents</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="studentCount">0</strong>
+        <span>Students</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="pendingCount">0</strong>
+        <span>Pending Users</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="linkedParentCount">0</strong>
+        <span>Approved Parent Links</span>
+      </div>
+
+    </div>
+
+
+    <div class="grid g4" style="margin-top:18px">
+
+      <div class="card stat">
+        <strong id="activeCourseCount">0</strong>
+        <span>Active Courses</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="courseActivityCount">0</strong>
+        <span>Course Learners</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="certificateCount">0</strong>
+        <span>School Certificates</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="workshopCount">0</strong>
+        <span>Upcoming Workshops</span>
+      </div>
+
+    </div>
+
+
+    <div class="grid g2" style="margin-top:18px">
+
+      <div class="panel">
+
+        <span class="label">
+          School Profile
+        </span>
+
+        <h2>
+          School Information
+        </h2>
+
+        <div class="info-list">
+
+          <div class="info-item">
+            <b>School Name</b>
+            <span id="infoSchoolName">—</span>
+          </div>
+
+          <div class="info-item">
+            <b>School Code</b>
+            <span id="infoSchoolCode">—</span>
+          </div>
+
+          <div class="info-item">
+            <b>Status</b>
+            <span id="infoSchoolStatus">—</span>
+          </div>
+
+          <div class="info-item">
+            <b>Location</b>
+            <span id="infoSchoolLocation">—</span>
+          </div>
+
+          <div class="info-item">
+            <b>Contact</b>
+            <span id="infoSchoolContact">—</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <span class="label">
+          Launch Actions
+        </span>
+
+        <h2>
+          Manage your school ecosystem
+        </h2>
+
+        <div class="grid">
+
+          <a class="card" href="school-students.html">
+            <h3>Students</h3>
+            <p>
+              Manage student records, Student IDs, approvals and learner access.
+            </p>
+            <span class="btn primary">
+              Open Students
+            </span>
+          </a>
+
+
+          <a class="card" href="school-parents.html">
+            <h3>Parents</h3>
+            <p>
+              Manage parent accounts and family access linked to your school.
+            </p>
+            <span class="btn soft">
+              Open Parents
+            </span>
+          </a>
+
+
+          <a class="card" href="school-teachers.html">
+            <h3>Teachers</h3>
+            <p>
+              Manage teachers, departments and professional development access.
+            </p>
+            <span class="btn soft">
+              Open Teachers
+            </span>
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="grid g3" style="margin-top:18px">
+
+      <a class="card" href="school-workshops.html">
+        <h3>Workshops</h3>
+        <p>
+          Create and manage sessions for students, parents and teachers.
+        </p>
+        <span class="btn gold">
+          Open Workshops
+        </span>
+      </a>
+
+
+      <a class="card" href="school-resource-center.html">
+        <h3>School Resources</h3>
+        <p>
+          Access policies, club guides, report templates and wellbeing frameworks.
+        </p>
+        <span class="btn soft">
+          Open Resources
+        </span>
+      </a>
+
+
+      <a class="card" href="certificate-center.html">
+        <h3>Certificates</h3>
+        <p>
+          Review school-linked certificates and training records.
+        </p>
+        <span class="btn primary">
+          Open Certificates
+        </span>
+      </a>
+
+
+      <a class="card" href="school-reports.html">
+        <h3>Reports</h3>
+        <p>
+          View participation, activity summaries and learning progress.
+        </p>
+        <span class="btn soft">
+          Open Reports
+        </span>
+      </a>
+
+
+      <a class="card" href="school-users.html">
+        <h3>All School Users</h3>
+        <p>
+          View teachers, parents and students under your school in one place.
+        </p>
+        <span class="btn dark">
+          Open Users
+        </span>
+      </a>
+
+
+      <a class="card" href="club-dashboard.html">
+        <h3>Mental Health Club</h3>
+        <p>
+          Manage club members, activities, executives and wellbeing programmes.
+        </p>
+        <span class="btn gold">
+          Open Club
+        </span>
+      </a>
+
+    </div>
+
+
+    <div class="grid g2" style="margin-top:18px">
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Learning Activity</span>
+            <h2>School Learning Snapshot</h2>
+            <p>
+              Course participation across students, teachers and parents linked to this school.
+            </p>
+          </div>
+        </div>
+
+        <div id="learningList" class="mini-list">
+          <div class="notice">
+            Loading learning activity...
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Workshops</span>
+            <h2>Upcoming Sessions</h2>
+            <p>
+              Upcoming school-linked workshops and programme activities.
+            </p>
+          </div>
+        </div>
+
+        <div id="workshopList" class="mini-list">
+          <div class="notice">
+            Loading workshops...
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="grid g2" style="margin-top:18px">
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Announcements</span>
+            <h2>School Updates</h2>
+            <p>
+              Current SpeakOut announcements relevant to your school community.
+            </p>
+          </div>
+        </div>
+
+        <div id="announcementList" class="mini-list">
+          <div class="notice">
+            Loading announcements...
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Certificates</span>
+            <h2>Recent School Credentials</h2>
+            <p>
+              Recent certificates issued to learners and staff linked to this school.
+            </p>
+          </div>
+        </div>
+
+        <div id="certificateList" class="mini-list">
+          <div class="notice">
+            Loading certificates...
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
 </main>
-<footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer>
+
+
+<footer class="footer">
+  <div class="container">
+    SpeakOut Mental Health Outreach • School Wellness Platform
+  </div>
+</footer>
+
+
 <script type="module">
-import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
-import { db } from "./firebase-config.js";
-import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-function show(message,type=""){statusBox.textContent=message;statusBox.className="notice "+type;}
-function safe(value){return value||"—";}
-function pill(value){return `<span class="pill ${(value||"").toLowerCase()}">${safe(value)}</span>`;}
-function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=safe(value);}
+import {
+  requireRoles,
+  renderRoleNav
+} from "./launch-role-guard.js";
 
-async function loadLinkedParentCount(schoolId){
-  try{
-    const snap=await getDocs(query(collection(db,"parentStudentLinks"),where("schoolId","==",schoolId),where("status","==","approved")));
-    linkedParentCount.textContent=snap.size||0;
-  }catch(error){linkedParentCount.textContent=0;}
+import {
+  db
+} from "./firebase-config.js";
+
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+let currentProfile = null;
+let currentSchool = null;
+let schoolUsers = [];
+
+
+const statusBox = document.getElementById("statusBox");
+const schoolName = document.getElementById("schoolName");
+const schoolMeta = document.getElementById("schoolMeta");
+const pills = document.getElementById("pills");
+
+const teacherCount = document.getElementById("teacherCount");
+const parentCount = document.getElementById("parentCount");
+const studentCount = document.getElementById("studentCount");
+const pendingCount = document.getElementById("pendingCount");
+const linkedParentCount = document.getElementById("linkedParentCount");
+const activeCourseCount = document.getElementById("activeCourseCount");
+const courseActivityCount = document.getElementById("courseActivityCount");
+const certificateCount = document.getElementById("certificateCount");
+const workshopCount = document.getElementById("workshopCount");
+
+const learningList = document.getElementById("learningList");
+const workshopList = document.getElementById("workshopList");
+const announcementList = document.getElementById("announcementList");
+const certificateList = document.getElementById("certificateList");
+
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = `notice ${type}`;
 }
+
+
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
+}
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function safe(value){
+  return (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) ? "—" : value;
+}
+
+
+function pretty(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
+
+function pill(value){
+  const className = normalize(value).replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+}
+
+
+function setText(id,value){
+  const el = document.getElementById(id);
+  if(el) el.textContent = safe(value);
+}
+
+
+function formatDate(value){
+  if(!value) return "—";
+
+  try{
+    const date = value?.toDate ? value.toDate() : new Date(value);
+
+    if(Number.isNaN(date.getTime())){
+      return String(value);
+    }
+
+    return date.toLocaleDateString(
+      undefined,
+      {
+        year:"numeric",
+        month:"short",
+        day:"numeric"
+      }
+    );
+
+  }catch{
+    return String(value);
+  }
+}
+
+
+function progressPercent(item){
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Number(
+        item.percent ??
+        item.progressPercent ??
+        item.progress ??
+        0
+      ) || 0
+    )
+  );
+}
+
+
+function isCourseProgress(item){
+  const type = normalize(item.type);
+
+  return (
+    type === "course" ||
+    type === "external-course" ||
+    Boolean(item.courseId)
+  );
+}
+
+
+function certificateCard(record,docId){
+
+  const publicId =
+    record.certificateId ||
+    record.certificateNumber ||
+    record.verificationCode ||
+    docId;
+
+  const status =
+    record.verificationStatus ||
+    record.status ||
+    "verified";
+
+  const issuer =
+    record.issuer ||
+    record.certificateIssuer ||
+    record.provider ||
+    "SpeakOut / SpeakHub";
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(
+              record.title ||
+              record.certificateTitle ||
+              record.courseTitle ||
+              record.trainingTitle ||
+              "Certificate"
+            )}
+          </strong>
+
+          <div class="item-meta">
+
+            <span>
+              ${escapeHtml(issuer)}
+            </span>
+
+            <span>
+              ${escapeHtml(
+                formatDate(
+                  record.issueDate ||
+                  record.issuedAt ||
+                  record.completionDate ||
+                  record.createdAt
+                )
+              )}
+            </span>
+
+            ${
+              record.recipientName
+                ? `<span>${escapeHtml(record.recipientName)}</span>`
+                : ""
+            }
+
+          </div>
+
+        </div>
+
+        ${pill(status)}
+
+      </div>
+
+
+      <div style="margin-top:10px">
+
+        <a
+          class="btn soft"
+          href="certificate-view.html?id=${encodeURIComponent(publicId)}"
+        >
+          View Certificate
+        </a>
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+function workshopCard(item){
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(
+              item.title ||
+              item.name ||
+              "Workshop"
+            )}
+          </strong>
+
+          <div class="item-meta">
+
+            <span>
+              ${escapeHtml(
+                formatDate(
+                  item.date ||
+                  item.startDate ||
+                  item.startAt ||
+                  item.createdAt
+                )
+              )}
+            </span>
+
+            ${
+              item.audience
+                ? `<span>${escapeHtml(
+                    Array.isArray(item.audience)
+                      ? item.audience.map(pretty).join(", ")
+                      : pretty(item.audience)
+                  )}</span>`
+                : ""
+            }
+
+          </div>
+
+        </div>
+
+        ${pill(item.status || "planned")}
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+function announcementCard(item){
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(
+              item.title ||
+              "Announcement"
+            )}
+          </strong>
+
+          <p>
+            ${escapeHtml(
+              item.description ||
+              item.message ||
+              ""
+            )}
+          </p>
+
+        </div>
+
+        ${pill(item.status || "active")}
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+async function loadLinkedParentCount(){
+
+  try{
+
+    let snap;
+
+    try{
+      snap = await getDocs(
+        query(
+          collection(db,"parentStudentLinks"),
+          where("schoolId","==",currentSchool.id),
+          where("status","==","approved")
+        )
+      );
+    }catch{
+      snap = null;
+    }
+
+    if(snap && !snap.empty){
+      linkedParentCount.textContent = snap.size;
+      return;
+    }
+
+    if(currentSchool.schoolCode){
+
+      const byCode = await getDocs(
+        query(
+          collection(db,"parentStudentLinks"),
+          where("schoolCode","==",currentSchool.schoolCode),
+          where("status","==","approved")
+        )
+      );
+
+      linkedParentCount.textContent = byCode.size;
+      return;
+    }
+
+    linkedParentCount.textContent = "0";
+
+  }catch(error){
+    console.warn("Linked parent count failed:",error);
+    linkedParentCount.textContent = "0";
+  }
+
+}
+
+
+async function loadSchoolUsers(){
+
+  let usersSnap;
+
+  try{
+    usersSnap = await getDocs(
+      query(
+        collection(db,"users"),
+        where("schoolId","==",currentSchool.id)
+      )
+    );
+  }catch{
+    usersSnap = null;
+  }
+
+  schoolUsers = [];
+
+  if(usersSnap){
+    schoolUsers = usersSnap.docs.map(
+      document=>({
+        id:document.id,
+        ...document.data()
+      })
+    );
+  }
+
+  if(
+    !schoolUsers.length &&
+    currentSchool.schoolCode
+  ){
+
+    const byCodeSnap = await getDocs(
+      query(
+        collection(db,"users"),
+        where("schoolCode","==",currentSchool.schoolCode)
+      )
+    );
+
+    schoolUsers = byCodeSnap.docs.map(
+      document=>({
+        id:document.id,
+        ...document.data()
+      })
+    );
+  }
+
+  let teachers = 0;
+  let parents = 0;
+  let students = 0;
+  let pending = 0;
+
+  schoolUsers.forEach(user=>{
+
+    const role = normalize(user.role);
+    const status = normalize(user.status);
+
+    if(role === "teacher") teachers++;
+    if(role === "parent") parents++;
+    if(role === "student") students++;
+
+    if(
+      status !== "approved" ||
+      user.approved === false
+    ){
+      pending++;
+    }
+
+  });
+
+  teacherCount.textContent = teachers;
+  parentCount.textContent = parents;
+  studentCount.textContent = students;
+  pendingCount.textContent = pending;
+}
+
+
+async function loadLearningActivity(){
+
+  try{
+
+    const schoolUserIds = new Set(
+      schoolUsers.map(user=>user.id)
+    );
+
+    const progressSnap = await getDocs(
+      collection(db,"userProgress")
+    );
+
+    const relevant = [];
+
+    progressSnap.forEach(document=>{
+
+      const item = {
+        id:document.id,
+        ...document.data()
+      };
+
+      if(
+        schoolUserIds.has(item.userId) &&
+        isCourseProgress(item)
+      ){
+        relevant.push(item);
+      }
+
+    });
+
+    const distinctLearners = new Set(
+      relevant
+        .map(item=>item.userId)
+        .filter(Boolean)
+    );
+
+    courseActivityCount.textContent =
+      distinctLearners.size;
+
+    const courseMap = new Map();
+
+    relevant.forEach(item=>{
+
+      const key =
+        item.courseId ||
+        item.itemId ||
+        item.title ||
+        "course";
+
+      if(!courseMap.has(key)){
+        courseMap.set(key,{
+          title:item.title || item.courseTitle || "Course",
+          learners:0,
+          completed:0,
+          percentTotal:0
+        });
+      }
+
+      const entry = courseMap.get(key);
+
+      entry.learners++;
+      entry.percentTotal += progressPercent(item);
+
+      if(
+        normalize(item.status) === "completed" ||
+        item.completed === true ||
+        progressPercent(item) >= 100
+      ){
+        entry.completed++;
+      }
+
+    });
+
+    const summaries = [...courseMap.values()]
+      .sort((a,b)=>b.learners-a.learners)
+      .slice(0,8);
+
+    learningList.innerHTML =
+      summaries.length
+        ? summaries.map(item=>{
+
+            const average = item.learners
+              ? Math.round(item.percentTotal / item.learners)
+              : 0;
+
+            return `
+              <div class="mini-item">
+
+                <strong>
+                  ${escapeHtml(item.title)}
+                </strong>
+
+                <div class="item-meta">
+                  <span>${item.learners} learners</span>
+                  <span>${item.completed} completed</span>
+                </div>
+
+                <div class="progress-track">
+                  <div
+                    class="progress-bar"
+                    style="width:${average}%"
+                  ></div>
+                </div>
+
+                <div class="progress-label">
+                  ${average}% average progress
+                </div>
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="notice warn">
+            No school-linked course activity yet.
+          </div>
+        `;
+
+  }catch(error){
+
+    console.error("Learning activity load failed:",error);
+
+    learningList.innerHTML = `
+      <div class="notice bad">
+        Could not load school learning activity.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadActiveCourses(){
+
+  try{
+
+    const snap = await getDocs(
+      query(
+        collection(db,"courses"),
+        where("status","==","active")
+      )
+    );
+
+    const items = [];
+
+    snap.forEach(document=>{
+
+      const course = {
+        id:document.id,
+        ...document.data()
+      };
+
+      const audiences = Array.isArray(course.audience)
+        ? course.audience.map(normalize)
+        : [normalize(course.audience)];
+
+      const schoolRelevant = audiences.some(
+        audience =>
+          [
+            "school",
+            "student",
+            "students",
+            "teacher",
+            "teachers",
+            "parent",
+            "parents",
+            "all",
+            "general",
+            ""
+          ].includes(audience)
+      );
+
+      if(schoolRelevant){
+        items.push(course);
+      }
+
+    });
+
+    activeCourseCount.textContent = items.length;
+
+  }catch(error){
+
+    console.warn("Course count failed:",error);
+    activeCourseCount.textContent = "0";
+
+  }
+
+}
+
+
+async function loadWorkshops(){
+
+  try{
+
+    const snap = await getDocs(
+      collection(db,"workshops")
+    );
+
+    const items = [];
+
+    snap.forEach(document=>{
+
+      const item = {
+        id:document.id,
+        ...document.data()
+      };
+
+      const sameSchool =
+        !item.schoolId &&
+        !item.schoolCode
+          ? false
+          : (
+              item.schoolId === currentSchool.id ||
+              (
+                currentSchool.schoolCode &&
+                item.schoolCode === currentSchool.schoolCode
+              )
+            );
+
+      if(sameSchool){
+        items.push(item);
+      }
+
+    });
+
+    items.sort((a,b)=>{
+
+      const dateA = new Date(a.date || a.startDate || 0).getTime();
+      const dateB = new Date(b.date || b.startDate || 0).getTime();
+
+      return dateA - dateB;
+    });
+
+    const upcoming = items.filter(
+      item =>
+        ![
+          "completed",
+          "cancelled",
+          "canceled"
+        ].includes(normalize(item.status))
+    );
+
+    workshopCount.textContent = upcoming.length;
+
+    workshopList.innerHTML =
+      upcoming.length
+        ? upcoming
+            .slice(0,6)
+            .map(workshopCard)
+            .join("")
+        : `
+          <div class="notice warn">
+            No upcoming school workshops found.
+          </div>
+        `;
+
+  }catch(error){
+
+    console.warn("Workshop load failed:",error);
+
+    workshopCount.textContent = "0";
+
+    workshopList.innerHTML = `
+      <div class="notice warn">
+        Workshop data is not available yet.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadAnnouncements(){
+
+  try{
+
+    const snap = await getDocs(
+      query(
+        collection(db,"announcements"),
+        where("status","==","active")
+      )
+    );
+
+    const items = [];
+
+    snap.forEach(document=>{
+
+      const item = {
+        id:document.id,
+        ...document.data()
+      };
+
+      const audiences = Array.isArray(item.audience)
+        ? item.audience.map(normalize)
+        : [normalize(item.audience)];
+
+      const schoolVisible = audiences.some(
+        audience =>
+          [
+            "school",
+            "teacher",
+            "teachers",
+            "parent",
+            "parents",
+            "student",
+            "students",
+            "all",
+            "general",
+            ""
+          ].includes(audience)
+      );
+
+      const sameSchool =
+        !item.schoolCode ||
+        item.schoolCode === currentSchool.schoolCode;
+
+      if(schoolVisible && sameSchool){
+        items.push(item);
+      }
+
+    });
+
+    announcementList.innerHTML =
+      items.length
+        ? items
+            .slice(0,8)
+            .map(announcementCard)
+            .join("")
+        : `
+          <div class="notice warn">
+            No active school announcements.
+          </div>
+        `;
+
+  }catch(error){
+
+    console.warn("Announcement load failed:",error);
+
+    announcementList.innerHTML = `
+      <div class="notice warn">
+        Announcement data is not available yet.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadCertificates(){
+
+  try{
+
+    const schoolUserIds = new Set(
+      schoolUsers.map(user=>user.id)
+    );
+
+    const snap = await getDocs(
+      collection(db,"certificates")
+    );
+
+    const relevant = [];
+
+    snap.forEach(document=>{
+
+      const record = {
+        id:document.id,
+        ...document.data()
+      };
+
+      const sameSchool =
+        record.schoolId === currentSchool.id ||
+        (
+          currentSchool.schoolCode &&
+          record.schoolCode === currentSchool.schoolCode
+        );
+
+      const linkedRecipient =
+        schoolUserIds.has(
+          record.recipientId ||
+          record.userId
+        );
+
+      if(sameSchool || linkedRecipient){
+        relevant.push(record);
+      }
+
+    });
+
+    certificateCount.textContent =
+      relevant.length;
+
+    certificateList.innerHTML =
+      relevant.length
+        ? relevant
+            .slice(0,8)
+            .map(
+              record=>
+                certificateCard(
+                  record,
+                  record.id
+                )
+            )
+            .join("")
+        : `
+          <div class="notice warn">
+            No school-linked certificates found.
+          </div>
+        `;
+
+  }catch(error){
+
+    console.warn("Certificate load failed:",error);
+
+    certificateCount.textContent = "0";
+
+    certificateList.innerHTML = `
+      <div class="notice warn">
+        Certificate data is not available yet.
+      </div>
+    `;
+
+  }
+
+}
+
 
 async function loadSchoolDashboard(profile){
-  if(!profile.schoolId){show("No schoolId linked to this school admin account.","bad");return;}
-  const schoolSnap=await getDoc(doc(db,"schools",profile.schoolId));
-  if(!schoolSnap.exists()){show("School record not found.","bad");return;}
-  const school={id:schoolSnap.id,...schoolSnap.data()};
-  const schoolDisplayName=school.schoolName||school.name||"School Dashboard";
-  schoolName.textContent=schoolDisplayName;
-  schoolMeta.textContent=(school.schoolCode||"No code")+" • "+(school.city||"")+" "+(school.state||"")+" • "+(school.status||"pending");
-  pills.innerHTML=pill(school.status||"pending")+pill(school.schoolCode||"No Code")+pill(profile.role||"school_admin");
-  setText("infoSchoolName",schoolDisplayName);
-  setText("infoSchoolCode",school.schoolCode||"No code assigned");
-  setText("infoSchoolStatus",school.status||"pending");
-  setText("infoSchoolLocation",[school.city,school.state,school.country].filter(Boolean).join(", ")||school.location||"—");
-  setText("infoSchoolContact",school.email||school.phone||school.whatsapp||"—");
 
-  const usersSnap=await getDocs(query(collection(db,"users"),where("schoolId","==",school.id)));
-  let teachers=0,parents=0,students=0,pending=0;
-  usersSnap.forEach(d=>{
-    const user=d.data();
-    const role=(user.role||"").toLowerCase().trim();
-    const status=(user.status||"").toLowerCase().trim();
-    if(role==="teacher")teachers++;
-    if(role==="parent")parents++;
-    if(role==="student")students++;
-    if(status!=="approved")pending++;
-  });
-  teacherCount.textContent=teachers;
-  parentCount.textContent=parents;
-  studentCount.textContent=students;
-  pendingCount.textContent=pending;
-  await loadLinkedParentCount(school.id);
-  show("School dashboard loaded.","ok");
+  currentProfile = profile;
+
+  if(!profile.schoolId && !profile.schoolCode){
+    show(
+      "No schoolId or schoolCode is linked to this school admin account.",
+      "bad"
+    );
+    return;
+  }
+
+  let schoolSnap = null;
+
+  if(profile.schoolId){
+
+    try{
+      const direct = await getDoc(
+        doc(
+          db,
+          "schools",
+          profile.schoolId
+        )
+      );
+
+      if(direct.exists()){
+        schoolSnap = direct;
+      }
+    }catch(error){
+      console.warn("Direct school lookup failed:",error);
+    }
+
+  }
+
+  if(
+    !schoolSnap &&
+    profile.schoolCode
+  ){
+
+    const byCode = await getDocs(
+      query(
+        collection(db,"schools"),
+        where("schoolCode","==",profile.schoolCode)
+      )
+    );
+
+    if(!byCode.empty){
+      schoolSnap = byCode.docs[0];
+    }
+
+  }
+
+  if(!schoolSnap){
+    show(
+      "School record not found.",
+      "bad"
+    );
+    return;
+  }
+
+  currentSchool = {
+    id:schoolSnap.id,
+    ...schoolSnap.data()
+  };
+
+  const displayName =
+    currentSchool.schoolName ||
+    currentSchool.name ||
+    "School Dashboard";
+
+  schoolName.textContent =
+    displayName;
+
+  schoolMeta.textContent = [
+    currentSchool.schoolCode || "No code",
+    [currentSchool.city,currentSchool.state].filter(Boolean).join(", "),
+    currentSchool.status || "pending"
+  ]
+  .filter(Boolean)
+  .join(" • ");
+
+  pills.innerHTML =
+    pill(currentSchool.status || "pending") +
+    pill(currentSchool.schoolCode || "No Code") +
+    pill(profile.role || "school_admin");
+
+  setText("infoSchoolName",displayName);
+  setText("infoSchoolCode",currentSchool.schoolCode || "No code assigned");
+  setText("infoSchoolStatus",currentSchool.status || "pending");
+
+  setText(
+    "infoSchoolLocation",
+    [
+      currentSchool.city,
+      currentSchool.state,
+      currentSchool.country
+    ]
+    .filter(Boolean)
+    .join(", ") ||
+    currentSchool.location ||
+    "—"
+  );
+
+  setText(
+    "infoSchoolContact",
+    currentSchool.email ||
+    currentSchool.phone ||
+    currentSchool.whatsapp ||
+    "—"
+  );
+
+  await loadSchoolUsers();
+
+  await Promise.all([
+    loadLinkedParentCount(),
+    loadActiveCourses(),
+    loadLearningActivity(),
+    loadWorkshops(),
+    loadAnnouncements(),
+    loadCertificates()
+  ]);
+
+  show(
+    "School dashboard loaded.",
+    "ok"
+  );
 }
 
-requireRoles(["school_admin"],async(user,profile)=>{
-  const role=(profile.role||"").toLowerCase().trim();
-  if(role!=="school_admin"&&role!=="admin"&&role!=="super_admin"){location.href="auth.html";return;}
-  renderRoleNav(profile,"Dashboard");
-  await loadSchoolDashboard(profile);
-});
+
+requireRoles(
+  ["school_admin"],
+  async (user,profile)=>{
+
+    const role = normalize(profile.role);
+
+    if(
+      role !== "school_admin" &&
+      role !== "admin" &&
+      role !== "super_admin"
+    ){
+      location.href = "auth.html";
+      return;
+    }
+
+    renderRoleNav(
+      profile,
+      "Dashboard"
+    );
+
+    await loadSchoolDashboard(
+      profile
+    );
+
+  }
+);
+
 </script>
+
 </body>
 </html>
+
