@@ -1,75 +1,1301 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Child Progress | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Child Progress | SpeakOut</title>
+
+<meta
+  name="description"
+  content="Secure parent view of an approved linked child's SpeakOut learning progress, certificates and profile."
+>
+
+<link rel="icon" href="logo.png">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
+
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:95px;resize:vertical}.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}.profile-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
-</style></head>
-<body><header class="nav"><div class="container nav-inner"><a class="brand" href="portal.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>Parent Student Link</p></div></a><nav class="links"><a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a><a class="btn soft" href="student-dashboard.html">Student Dashboard</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Logout</a></nav></div></header>
-<main>
-<section class="hero"><div class="container"><span class="kicker">Parent View</span><h1>Child Progress</h1><p>View your linked child's profile, certificates and learning progress.</p></div></section>
-<section><div class="container">
-<div id="statusBox" class="notice">Checking access...</div>
-<div id="profileBox"></div>
-<div class="grid g2" style="margin-top:18px">
-<div class="panel"><span class="label">Certificates</span><h2>Certificates Earned</h2><div id="certBox"></div></div>
-<div class="panel"><span class="label">Learning Progress</span><h2>Courses & Activities</h2><div id="progressBox"></div></div>
-</div>
-</div></section>
-</main><footer class="footer"><div class="container">SpeakOut Parent ↔ Student Linking</div></footer>
-<script type="module">
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, getDocs, query, where, doc, getDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-function show(m,t=""){
-  const el=document.getElementById("statusBox");
-  if(el){el.textContent=m;el.className="notice "+t;}
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
 }
-function safe(v){return v || "—";}
-function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${safe(v)}</span>`;}
 
-const params=new URLSearchParams(location.search);
-const targetStudentId=params.get("studentId");
-let currentUser=null, parentProfile=null;
+*{box-sizing:border-box}
 
-async function requireParentAccess(callback){
- onAuthStateChanged(auth,async user=>{
-  if(!user){location.href="auth.html";return;}
-  const ps=await getDoc(doc(db,"users",user.uid));
-  if(!ps.exists()){show("Profile missing.","bad");return;}
-  const p={uid:user.uid,...ps.data()};
-  const role=(p.role||"").toLowerCase();
-  if(role!=="parent" && role!=="admin" && role!=="super_admin"){location.href="portal.html";return;}
-  if(!targetStudentId){show("No student selected.","bad");return;}
-  if(role==="parent"){
-    const links=await getDocs(query(collection(db,"parentStudentLinks"),where("parentId","==",user.uid),where("studentId","==",targetStudentId),where("status","==","approved")));
-    if(links.empty){show("You do not have approved access to this student.","bad");return;}
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
+section{padding:36px 0}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+  text-transform:capitalize;
+}
+
+.approved,.active,.completed{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.pending,.pending_school_approval,.in-progress,.started{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.rejected,.suspended,.revoked{
+  background:var(--redSoft);
+  color:var(--red);
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:2rem;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.84rem;
+  font-weight:800;
+}
+
+.avatar{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid var(--soft);
+  background:#f1f5f9;
+}
+
+.profile-row{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.meta-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:16px;
+}
+
+.meta{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+}
+
+.meta b{
+  display:block;
+  color:var(--navy);
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.meta span{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.progress-track{
+  height:10px;
+  background:#edf3fb;
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--green));
+}
+
+.item-card{
+  margin-bottom:12px;
+}
+
+.item-card p{
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+@media(max-width:900px){
+  .g4,.g3,.g2,.meta-grid{
+    grid-template-columns:1fr;
   }
-  currentUser=user; parentProfile=p; callback(user,p);
- });
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
 }
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+
+    <a class="brand" href="parent-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>Child Progress</p>
+      </div>
+    </a>
+
+    <nav class="links">
+      <a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
+      <a class="btn soft" href="parent-child-link.html">My Children</a>
+      <a class="btn soft" href="parent-library.html">Parent Library</a>
+      <a class="btn soft" href="certificate-center.html">Certificates</a>
+      <a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="hero">
+  <div class="container">
+
+    <span class="kicker">
+      Approved Parent View
+    </span>
+
+    <h1>
+      Child Progress
+    </h1>
+
+    <p>
+      View learning progress and certificates for a child who has an approved parent link to your account.
+    </p>
+
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div id="statusBox" class="notice">
+      Checking access...
+    </div>
+
+
+    <div id="summaryStats" class="grid g4" style="display:none;margin-bottom:18px">
+
+      <div class="card stat">
+        <strong id="coursesStartedCount">0</strong>
+        <span>Courses Started</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="coursesCompletedCount">0</strong>
+        <span>Courses Completed</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="booksCount">0</strong>
+        <span>Books / Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="certificateCount">0</strong>
+        <span>Certificates</span>
+      </div>
+
+    </div>
+
+
+    <div id="profileBox"></div>
+
+
+    <div class="grid g2" style="margin-top:18px">
+
+      <div class="panel">
+
+        <span class="label">
+          Certificates
+        </span>
+
+        <h2>
+          Certificates Earned
+        </h2>
+
+        <div id="certBox">
+          <div class="notice">Loading certificates...</div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <span class="label">
+          Learning Progress
+        </span>
+
+        <h2>
+          Courses & Activities
+        </h2>
+
+        <div id="progressBox">
+          <div class="notice">Loading progress...</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    SpeakOut Parent ↔ Student Linking
+  </div>
+</footer>
+
+
+<script type="module">
+
+import {
+  auth,
+  db
+} from "./firebase-config.js";
+
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+const params =
+  new URLSearchParams(location.search);
+
+const targetStudentId =
+  params.get("studentId");
+
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const profileBox =
+  document.getElementById("profileBox");
+
+const certBox =
+  document.getElementById("certBox");
+
+const progressBox =
+  document.getElementById("progressBox");
+
+const summaryStats =
+  document.getElementById("summaryStats");
+
+const coursesStartedCount =
+  document.getElementById("coursesStartedCount");
+
+const coursesCompletedCount =
+  document.getElementById("coursesCompletedCount");
+
+const booksCount =
+  document.getElementById("booksCount");
+
+const certificateCount =
+  document.getElementById("certificateCount");
+
+const logoutLink =
+  document.getElementById("logoutLink");
+
+
+let currentUser = null;
+let parentProfile = null;
+let studentProfile = null;
+
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = `notice ${type}`;
+}
+
+
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
+}
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function pretty(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
+
+function pill(value){
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+}
+
+
+function formatDate(value){
+
+  if(!value) return "—";
+
+  try{
+
+    let date;
+
+    if(value?.toDate){
+      date = value.toDate();
+    }else{
+      date = new Date(value);
+    }
+
+    if(Number.isNaN(date.getTime())){
+      return String(value);
+    }
+
+    return date.toLocaleDateString(
+      undefined,
+      {
+        year:"numeric",
+        month:"short",
+        day:"numeric"
+      }
+    );
+
+  }catch{
+    return String(value);
+  }
+
+}
+
+
+function progressPercent(item){
+
+  const value =
+    Number(
+      item.percent ??
+      item.progressPercent ??
+      item.progress ??
+      0
+    ) || 0;
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      value
+    )
+  );
+
+}
+
+
+function isCompleted(item){
+
+  return (
+    normalize(item.status) === "completed" ||
+    normalize(item.status) === "complete" ||
+    item.completed === true ||
+    progressPercent(item) >= 100
+  );
+
+}
+
+
+async function verifyAccess(user,profile){
+
+  const role =
+    normalize(profile.role);
+
+
+  if(!targetStudentId){
+
+    show(
+      "No student was selected.",
+      "bad"
+    );
+
+    return false;
+  }
+
+
+  if(
+    role === "admin" ||
+    role === "super_admin"
+  ){
+    return true;
+  }
+
+
+  if(role !== "parent"){
+
+    location.href =
+      "parent-dashboard.html";
+
+    return false;
+  }
+
+
+  const accountStatus =
+    normalize(
+      profile.status
+    );
+
+
+  if(accountStatus !== "approved"){
+
+    show(
+      "Your parent account is not approved for child progress access.",
+      "warn"
+    );
+
+    return false;
+  }
+
+
+  const linkSnap =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "parentStudentLinks"
+        ),
+        where(
+          "parentId",
+          "==",
+          user.uid
+        ),
+        where(
+          "studentId",
+          "==",
+          targetStudentId
+        ),
+        where(
+          "status",
+          "==",
+          "approved"
+        )
+      )
+    );
+
+
+  if(linkSnap.empty){
+
+    show(
+      "You do not have approved access to this student.",
+      "bad"
+    );
+
+    return false;
+  }
+
+
+  return true;
+}
+
 
 async function loadStudent(){
- const ss=await getDoc(doc(db,"users",targetStudentId));
- if(!ss.exists()){show("Student profile not found.","bad");return;}
- const st={id:ss.id,...ss.data()};
- profileBox.innerHTML=`<div class="panel"><div class="profile-row"><img class="avatar" src="${st.photoData||st.photoURL||"logo.png"}" alt=""><div><span class="label">Student Profile</span><h2>${safe(st.firstName)} ${safe(st.lastName)}</h2><p><b>Student ID:</b> ${safe(st.studentId)}</p><p><b>Class:</b> ${safe(st.classLevel||st.occupation)}</p><p><b>School:</b> ${safe(st.schoolName||st.schoolCode)}</p>${pill(st.status)} ${pill(st.role)}</div></div></div>`;
+
+  const snapshot =
+    await getDoc(
+      doc(
+        db,
+        "users",
+        targetStudentId
+      )
+    );
+
+
+  if(!snapshot.exists()){
+
+    show(
+      "Student profile not found.",
+      "bad"
+    );
+
+    return false;
+  }
+
+
+  const student = {
+    id:snapshot.id,
+    ...snapshot.data()
+  };
+
+
+  if(
+    normalize(student.role) !==
+    "student"
+  ){
+
+    show(
+      "The selected account is not a student account.",
+      "bad"
+    );
+
+    return false;
+  }
+
+
+  studentProfile =
+    student;
+
+
+  const fullName =
+    `${student.firstName || student.fullName || "Student"} ${student.lastName || ""}`.trim();
+
+
+  profileBox.innerHTML =
+    `
+      <div class="panel">
+
+        <div class="profile-row">
+
+          <img
+            class="avatar"
+            src="${escapeHtml(student.photoData || student.photoURL || "logo.png")}"
+            alt="Student profile photo"
+          >
+
+          <div>
+
+            <span class="label">
+              Student Profile
+            </span>
+
+            <h2>
+              ${escapeHtml(fullName)}
+            </h2>
+
+            <div>
+              ${pill(student.status || "approved")}
+              ${pill(student.role || "student")}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="meta-grid">
+
+          <div class="meta">
+            <b>Student ID</b>
+            <span>${escapeHtml(student.studentId || "—")}</span>
+          </div>
+
+          <div class="meta">
+            <b>Class / Level</b>
+            <span>${escapeHtml(student.classLevel || student.occupation || "—")}</span>
+          </div>
+
+          <div class="meta">
+            <b>School</b>
+            <span>${escapeHtml(student.schoolName || student.schoolCode || "—")}</span>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+
+  document.title =
+    `${fullName} Progress | SpeakOut`;
+
+
+  return true;
 }
+
 
 async function loadCertificates(){
- const snap=await getDocs(query(collection(db,"certificates"),where("recipientId","==",targetStudentId)));
- let html="";
- snap.forEach(d=>{const c={id:d.id,...d.data()}; html+=`<div class="card"><h3>${safe(c.title)}</h3><p><b>Certificate No:</b> ${safe(c.certificateNumber||c.verificationCode)}</p><p><b>Issued:</b> ${safe(c.issueDate)}</p>${pill(c.status||"active")}</div>`;});
- certBox.innerHTML=html||"<div class='notice warn'>No certificate yet.</div>";
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "certificates"
+          ),
+          where(
+            "recipientId",
+            "==",
+            targetStudentId
+          )
+        )
+      );
+
+
+    const certificates =
+      snap.docs.map(
+        document=>({
+          id:document.id,
+          ...document.data()
+        })
+      );
+
+
+    certificateCount.textContent =
+      certificates.length;
+
+
+    certBox.innerHTML =
+      certificates.length
+        ? certificates.map(certificate=>{
+
+            const certificateId =
+              certificate.certificateId ||
+              certificate.certificateNumber ||
+              certificate.verificationCode ||
+              certificate.id;
+
+            return `
+              <div class="card item-card">
+
+                <h3>
+                  ${escapeHtml(
+                    certificate.title ||
+                    certificate.courseTitle ||
+                    certificate.programmeTitle ||
+                    "Certificate"
+                  )}
+                </h3>
+
+                <p>
+                  <b>Certificate No:</b>
+                  ${escapeHtml(certificateId || "—")}
+                </p>
+
+                <p>
+                  <b>Issued:</b>
+                  ${escapeHtml(
+                    formatDate(
+                      certificate.issueDate ||
+                      certificate.issuedAt ||
+                      certificate.createdAt
+                    )
+                  )}
+                </p>
+
+                <div>
+                  ${pill(certificate.status || certificate.verificationStatus || "active")}
+                </div>
+
+                ${
+                  certificateId
+                    ? `
+                      <div class="actions">
+                        <a
+                          class="btn soft"
+                          href="certificate-view.html?id=${encodeURIComponent(certificateId)}"
+                        >
+                          View Certificate
+                        </a>
+                      </div>
+                    `
+                    : ""
+                }
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="notice warn">
+            No certificate has been recorded yet.
+          </div>
+        `;
+
+
+  }catch(error){
+
+    console.error(
+      "Certificate load error:",
+      error
+    );
+
+
+    certificateCount.textContent =
+      "0";
+
+
+    certBox.innerHTML =
+      `
+        <div class="notice bad">
+          Could not load certificates.
+        </div>
+      `;
+
+  }
+
 }
+
 
 async function loadProgress(){
- const snap=await getDocs(query(collection(db,"userProgress"),where("userId","==",targetStudentId)));
- let html="";
- snap.forEach(d=>{const p={id:d.id,...d.data()}; html+=`<div class="card"><h3>${safe(p.title||p.courseTitle||"Learning Item")}</h3><p><b>Status:</b> ${safe(p.status||"In Progress")}</p><p><b>Progress:</b> ${safe(p.progressPercent||p.progress||0)}%</p></div>`;});
- progressBox.innerHTML=html||"<div class='notice warn'>No progress recorded yet.</div>";
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "userProgress"
+          ),
+          where(
+            "userId",
+            "==",
+            targetStudentId
+          )
+        )
+      );
+
+
+    const items =
+      snap.docs.map(
+        document=>({
+          id:document.id,
+          ...document.data()
+        })
+      );
+
+
+    const courses =
+      items.filter(item=>{
+
+        const type =
+          normalize(item.type);
+
+        return (
+          type === "course" ||
+          type === "external-course" ||
+          Boolean(item.courseId)
+        );
+
+      });
+
+
+    const books =
+      items.filter(item=>{
+
+        const type =
+          normalize(item.type);
+
+        return (
+          type === "book" ||
+          type === "resource" ||
+          Boolean(item.bookId)
+        );
+
+      });
+
+
+    coursesStartedCount.textContent =
+      courses.length;
+
+
+    coursesCompletedCount.textContent =
+      courses.filter(
+        isCompleted
+      ).length;
+
+
+    booksCount.textContent =
+      books.length;
+
+
+    const sorted =
+      [...items].sort(
+        (a,b)=>
+          (
+            b.updatedAt?.seconds ||
+            b.createdAt?.seconds ||
+            0
+          ) -
+          (
+            a.updatedAt?.seconds ||
+            a.createdAt?.seconds ||
+            0
+          )
+      );
+
+
+    progressBox.innerHTML =
+      sorted.length
+        ? sorted.map(item=>{
+
+            const percent =
+              progressPercent(item);
+
+            const title =
+              item.title ||
+              item.courseTitle ||
+              item.bookTitle ||
+              "Learning Item";
+
+            const status =
+              item.status ||
+              (
+                percent >= 100
+                  ? "completed"
+                  : percent > 0
+                    ? "in-progress"
+                    : "started"
+              );
+
+            return `
+              <div class="card item-card">
+
+                <h3>
+                  ${escapeHtml(title)}
+                </h3>
+
+                <div>
+                  ${pill(item.type || "learning")}
+                  ${pill(status)}
+                </div>
+
+                <p>
+                  <b>Progress:</b>
+                  ${percent}%
+                </p>
+
+                <div class="progress-track">
+                  <div
+                    class="progress-bar"
+                    style="width:${percent}%"
+                  ></div>
+                </div>
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="notice warn">
+            No learning progress has been recorded yet.
+          </div>
+        `;
+
+
+    summaryStats.style.display =
+      "grid";
+
+
+  }catch(error){
+
+    console.error(
+      "Progress load error:",
+      error
+    );
+
+
+    progressBox.innerHTML =
+      `
+        <div class="notice bad">
+          Could not load learning progress.
+        </div>
+      `;
+
+  }
+
 }
 
-requireParentAccess(async()=>{show("Access verified.","ok");await loadStudent();await loadCertificates();await loadProgress();});
+
+async function initialise(user,profile){
+
+  currentUser =
+    user;
+
+  parentProfile =
+    profile;
+
+
+  const access =
+    await verifyAccess(
+      user,
+      profile
+    );
+
+
+  if(!access){
+    return;
+  }
+
+
+  show(
+    "Approved access verified.",
+    "ok"
+  );
+
+
+  const studentLoaded =
+    await loadStudent();
+
+
+  if(!studentLoaded){
+    return;
+  }
+
+
+  await Promise.all([
+    loadCertificates(),
+    loadProgress()
+  ]);
+
+
+  show(
+    "Child progress loaded.",
+    "ok"
+  );
+
+}
+
+
+logoutLink.addEventListener(
+  "click",
+  async event=>{
+
+    event.preventDefault();
+
+    await signOut(auth);
+
+    location.href =
+      "auth.html";
+
+  }
+);
+
+
+onAuthStateChanged(
+  auth,
+  async user=>{
+
+    if(!user){
+
+      location.href =
+        "auth.html";
+
+      return;
+
+    }
+
+
+    try{
+
+      const profileSnap =
+        await getDoc(
+          doc(
+            db,
+            "users",
+            user.uid
+          )
+        );
+
+
+      if(!profileSnap.exists()){
+
+        show(
+          "Your user profile could not be found.",
+          "bad"
+        );
+
+        return;
+
+      }
+
+
+      const profile = {
+        uid:user.uid,
+        ...profileSnap.data()
+      };
+
+
+      await initialise(
+        user,
+        profile
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Child progress access error:",
+        error
+      );
+
+
+      show(
+        error.message ||
+        "Could not verify access to this child.",
+        "bad"
+      );
+
+    }
+
+  }
+);
+
 </script>
-</body></html>
+
+</body>
+</html>
+
