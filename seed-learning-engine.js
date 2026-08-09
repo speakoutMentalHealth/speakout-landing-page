@@ -1,58 +1,1782 @@
+/**
+ * SpeakHub Academy - Production Learning Engine Seeder
+ * ----------------------------------------------------
+ * Purpose:
+ * - Seeds/updates SpeakHub learning content in Firestore without duplicates.
+ * - Supports internal, external and instructor-led courses.
+ * - Loads data from the existing JSON seed files instead of keeping hundreds
+ *   of kilobytes of content embedded inside this JavaScript file.
+ * - Uses deterministic document IDs wherever possible.
+ * - Uses merge:true so existing admin-added fields are preserved.
+ * - Validates and normalizes legacy course records before writing.
+ * - Supports dry-run validation and collection-by-collection reporting.
+ *
+ * Expected project files:
+ *   ./firestore-seed/all-starter-content.json
+ *   ./firestore-seed/books-starter.json
+ *   ./firestore-seed/courses-starter.json
+ *   ./courses-seed.json
+ *   ./firestore-seed/student-wellbeing-book.json
+ *   ./firestore-seed/student-wellbeing-course.json
+ *   ./firestore-seed/student-wellbeing-quiz-bank.json
+ *   ./firestore-seed/student-wellbeing-workbook.json
+ *
+ * The seeder is safe to run more than once because deterministic IDs and
+ * Firestore merge writes are used.
+ */
+
 import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-const BOOKS = [{"id": "understanding-mental-health", "title": "Understanding Mental Health", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on understanding mental health with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Understanding Mental Health</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Understanding Mental Health</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Understanding Mental Health</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Understanding Mental Health</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Understanding Mental Health</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "mental-health-for-students", "title": "Mental Health for Students", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on mental health for students with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Mental Health for Students</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Mental Health for Students</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Mental Health for Students</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Mental Health for Students</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Mental Health for Students</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "anxiety-and-worry-management", "title": "Anxiety and Worry Management", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on anxiety and worry management with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Anxiety and Worry Management</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Anxiety and Worry Management</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Anxiety and Worry Management</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Anxiety and Worry Management</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Anxiety and Worry Management</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "understanding-depression", "title": "Understanding Depression", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on understanding depression with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Understanding Depression</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Understanding Depression</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Understanding Depression</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Understanding Depression</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Understanding Depression</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "stress-management-handbook", "title": "Stress Management Handbook", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on stress management handbook with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Stress Management Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Stress Management Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Stress Management Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Stress Management Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Stress Management Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "building-emotional-resilience", "title": "Building Emotional Resilience", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on building emotional resilience with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Building Emotional Resilience</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Building Emotional Resilience</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Building Emotional Resilience</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Building Emotional Resilience</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Building Emotional Resilience</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "psychological-first-aid-basics", "title": "Psychological First Aid Basics", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on psychological first aid basics with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Psychological First Aid Basics</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Psychological First Aid Basics</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Psychological First Aid Basics</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Psychological First Aid Basics</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Psychological First Aid Basics</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "suicide-prevention-awareness", "title": "Suicide Prevention Awareness", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on suicide prevention awareness with chapters, activities and reflection prompts.", "status": "active", "featured": true, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Suicide Prevention Awareness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Suicide Prevention Awareness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Suicide Prevention Awareness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Suicide Prevention Awareness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Suicide Prevention Awareness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "parent-mental-health-handbook", "title": "Parent Mental Health Handbook", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on parent mental health handbook with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Parent Mental Health Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Parent Mental Health Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Parent Mental Health Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Parent Mental Health Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Parent Mental Health Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "teacher-mental-health-guide", "title": "Teacher Mental Health Guide", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on teacher mental health guide with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Teacher Mental Health Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Teacher Mental Health Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Teacher Mental Health Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Teacher Mental Health Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Teacher Mental Health Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "foundations-of-leadership", "title": "Foundations of Leadership", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on foundations of leadership with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Foundations of Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Foundations of Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Foundations of Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Foundations of Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Foundations of Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "student-leadership-handbook", "title": "Student Leadership Handbook", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on student leadership handbook with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Student Leadership Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Student Leadership Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Student Leadership Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Student Leadership Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Student Leadership Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "servant-leadership", "title": "Servant Leadership", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on servant leadership with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Servant Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Servant Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Servant Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Servant Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Servant Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "ethical-leadership", "title": "Ethical Leadership", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on ethical leadership with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Ethical Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Ethical Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Ethical Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Ethical Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Ethical Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "community-leadership", "title": "Community Leadership", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on community leadership with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Community Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Community Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Community Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Community Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Community Leadership</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "goal-setting-workbook", "title": "Goal Setting Workbook", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on goal setting workbook with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Goal Setting Workbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Goal Setting Workbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Goal Setting Workbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Goal Setting Workbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Goal Setting Workbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "time-management-mastery", "title": "Time Management Mastery", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on time management mastery with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Time Management Mastery</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Time Management Mastery</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Time Management Mastery</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Time Management Mastery</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Time Management Mastery</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "building-confidence", "title": "Building Confidence", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on building confidence with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Building Confidence</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Building Confidence</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Building Confidence</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Building Confidence</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Building Confidence</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "personal-effectiveness", "title": "Personal Effectiveness", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on personal effectiveness with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Personal Effectiveness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Personal Effectiveness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Personal Effectiveness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Personal Effectiveness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Personal Effectiveness</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "self-discipline-guide", "title": "Self-Discipline Guide", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on self-discipline guide with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Self-Discipline Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Self-Discipline Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Self-Discipline Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Self-Discipline Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Self-Discipline Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "cv-writing-guide", "title": "CV Writing Guide", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on cv writing guide with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>CV Writing Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>CV Writing Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>CV Writing Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>CV Writing Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>CV Writing Guide</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "interview-success-manual", "title": "Interview Success Manual", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on interview success manual with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Interview Success Manual</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Interview Success Manual</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Interview Success Manual</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Interview Success Manual</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Interview Success Manual</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "linkedin-optimization", "title": "LinkedIn Optimization", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on linkedin optimization with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>LinkedIn Optimization</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>LinkedIn Optimization</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>LinkedIn Optimization</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>LinkedIn Optimization</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>LinkedIn Optimization</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "workplace-etiquette", "title": "Workplace Etiquette", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on workplace etiquette with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Workplace Etiquette</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Workplace Etiquette</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Workplace Etiquette</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Workplace Etiquette</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Workplace Etiquette</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "personal-branding", "title": "Personal Branding", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on personal branding with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Personal Branding</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Personal Branding</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Personal Branding</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Personal Branding</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Personal Branding</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "study-skills-handbook", "title": "Study Skills Handbook", "author": "SpeakOut Publishing", "category": "leadership", "audience": "secondary", "description": "Structured SpeakOut handbook on study skills handbook with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Study Skills Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Study Skills Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Study Skills Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Study Skills Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Study Skills Handbook</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "exam-success-blueprint", "title": "Exam Success Blueprint", "author": "SpeakOut Publishing", "category": "personal-development", "audience": "university", "description": "Structured SpeakOut handbook on exam success blueprint with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Exam Success Blueprint</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Exam Success Blueprint</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Exam Success Blueprint</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Exam Success Blueprint</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Exam Success Blueprint</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "effective-note-taking", "title": "Effective Note Taking", "author": "SpeakOut Publishing", "category": "career", "audience": "teachers", "description": "Structured SpeakOut handbook on effective note taking with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Effective Note Taking</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Effective Note Taking</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Effective Note Taking</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Effective Note Taking</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Effective Note Taking</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "research-skills", "title": "Research Skills", "author": "SpeakOut Publishing", "category": "study-skills", "audience": "parents", "description": "Structured SpeakOut handbook on research skills with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Research Skills</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Research Skills</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Research Skills</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Research Skills</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Research Skills</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}, {"id": "academic-writing", "title": "Academic Writing", "author": "SpeakOut Publishing", "category": "mental-health", "audience": "general", "description": "Structured SpeakOut handbook on academic writing with chapters, activities and reflection prompts.", "status": "active", "featured": false, "downloadable": true, "license": "SpeakOut original educational content", "readMode": "internal", "chapters": [{"title": "Introduction", "contentHtml": "<h2>Introduction</h2><p><strong>Academic Writing</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Core Concepts", "contentHtml": "<h2>Core Concepts</h2><p><strong>Academic Writing</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Practical Steps", "contentHtml": "<h2>Practical Steps</h2><p><strong>Academic Writing</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Application", "contentHtml": "<h2>Application</h2><p><strong>Academic Writing</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}, {"title": "Action Plan", "contentHtml": "<h2>Action Plan</h2><p><strong>Academic Writing</strong> is a SpeakOut original learning resource.</p><p>This chapter explains the topic in simple terms and gives practical steps learners can apply immediately.</p><ul><li>Understand the issue.</li><li>Reflect on your experience.</li><li>Take one safe action.</li><li>Ask for support when needed.</li></ul><p><strong>Activity:</strong> Write one thing you learned and one action you will take today.</p>"}]}];
-const COURSES = [{"id": "mental-health-foundations", "title": "Mental Health Foundations", "category": "mental-health", "audience": "secondary", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Mental Health Foundations. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "anxiety-management", "title": "Anxiety Management", "category": "mental-health", "audience": "university", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Anxiety Management. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "depression-awareness", "title": "Depression Awareness", "category": "mental-health", "audience": "teachers", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Depression Awareness. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "stress-management", "title": "Stress Management", "category": "mental-health", "audience": "parents", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Stress Management. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "psychological-first-aid", "title": "Psychological First Aid", "category": "mental-health", "audience": "general", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Psychological First Aid. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "leadership-foundations", "title": "Leadership Foundations", "category": "leadership", "audience": "secondary", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Leadership Foundations. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "student-leadership", "title": "Student Leadership", "category": "leadership", "audience": "university", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Student Leadership. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "community-leadership", "title": "Community Leadership", "category": "leadership", "audience": "teachers", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Community Leadership. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "team-leadership", "title": "Team Leadership", "category": "leadership", "audience": "parents", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Team Leadership. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "conflict-resolution", "title": "Conflict Resolution", "category": "leadership", "audience": "general", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Conflict Resolution. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "computer-basics", "title": "Computer Basics", "category": "digital-skills", "audience": "secondary", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Computer Basics. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "microsoft-word", "title": "Microsoft Word", "category": "digital-skills", "audience": "university", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Microsoft Word. Includes lessons, activities and quiz pathway.", "status": "active", "featured": true, "certificateEligible": true, "lessonCount": 6}, {"id": "microsoft-excel", "title": "Microsoft Excel", "category": "digital-skills", "audience": "teachers", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Microsoft Excel. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "canva-design", "title": "Canva Design", "category": "digital-skills", "audience": "parents", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Canva Design. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "cybersecurity-awareness", "title": "Cybersecurity Awareness", "category": "digital-skills", "audience": "general", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Cybersecurity Awareness. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "cv-writing", "title": "CV Writing", "category": "career", "audience": "secondary", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in CV Writing. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "interview-preparation", "title": "Interview Preparation", "category": "career", "audience": "university", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Interview Preparation. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "career-planning", "title": "Career Planning", "category": "career", "audience": "teachers", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Career Planning. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "workplace-communication", "title": "Workplace Communication", "category": "career", "audience": "parents", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Workplace Communication. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "personal-branding", "title": "Personal Branding", "category": "career", "audience": "general", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Personal Branding. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "personal-finance", "title": "Personal Finance", "category": "financial-literacy", "audience": "secondary", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Personal Finance. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "budgeting", "title": "Budgeting", "category": "financial-literacy", "audience": "university", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Budgeting. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "saving", "title": "Saving", "category": "financial-literacy", "audience": "teachers", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Saving. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "debt-management", "title": "Debt Management", "category": "financial-literacy", "audience": "parents", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Debt Management. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "financial-planning", "title": "Financial Planning", "category": "financial-literacy", "audience": "general", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Financial Planning. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "classroom-management", "title": "Classroom Management", "category": "teacher-training", "audience": "secondary", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Classroom Management. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "student-engagement", "title": "Student Engagement", "category": "teacher-training", "audience": "university", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Student Engagement. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "lesson-planning", "title": "Lesson Planning", "category": "teacher-training", "audience": "teachers", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Lesson Planning. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "mental-health-in-schools", "title": "Mental Health in Schools", "category": "teacher-training", "audience": "parents", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Mental Health in Schools. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "child-protection", "title": "Child Protection", "category": "teacher-training", "audience": "general", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Child Protection. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "positive-parenting", "title": "Positive Parenting", "category": "parent-training", "audience": "secondary", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Positive Parenting. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "child-development", "title": "Child Development", "category": "parent-training", "audience": "university", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Child Development. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "communication-with-children", "title": "Communication with Children", "category": "parent-training", "audience": "teachers", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Communication with Children. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "digital-safety-at-home", "title": "Digital Safety at Home", "category": "parent-training", "audience": "parents", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Digital Safety at Home. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "family-wellness", "title": "Family Wellness", "category": "parent-training", "audience": "general", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Family Wellness. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "speakout-orientation", "title": "SpeakOut Orientation", "category": "ambassador-training", "audience": "secondary", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in SpeakOut Orientation. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "mental-health-advocacy", "title": "Mental Health Advocacy", "category": "ambassador-training", "audience": "university", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Mental Health Advocacy. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "community-engagement", "title": "Community Engagement", "category": "ambassador-training", "audience": "teachers", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Community Engagement. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "event-coordination", "title": "Event Coordination", "category": "ambassador-training", "audience": "parents", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Event Coordination. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "reporting-and-documentation", "title": "Reporting and Documentation", "category": "ambassador-training", "audience": "general", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Reporting and Documentation. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "ngo-fundamentals", "title": "NGO Fundamentals", "category": "ngo-community", "audience": "secondary", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in NGO Fundamentals. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "community-mobilization", "title": "Community Mobilization", "category": "ngo-community", "audience": "university", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Community Mobilization. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "proposal-writing", "title": "Proposal Writing", "category": "ngo-community", "audience": "teachers", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Proposal Writing. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "grant-writing", "title": "Grant Writing", "category": "ngo-community", "audience": "parents", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Grant Writing. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "monitoring-and-evaluation", "title": "Monitoring and Evaluation", "category": "ngo-community", "audience": "general", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Monitoring and Evaluation. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "communication-skills", "title": "Communication Skills", "category": "public-speaking", "audience": "secondary", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Communication Skills. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "storytelling", "title": "Storytelling", "category": "public-speaking", "audience": "university", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Storytelling. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "presentation-design", "title": "Presentation Design", "category": "public-speaking", "audience": "teachers", "difficulty": "beginner", "duration": "4 weeks", "description": "Professional SpeakHub course in Presentation Design. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "persuasive-speaking", "title": "Persuasive Speaking", "category": "public-speaking", "audience": "parents", "difficulty": "intermediate", "duration": "4 weeks", "description": "Professional SpeakHub course in Persuasive Speaking. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}, {"id": "public-speaking-masterclass", "title": "Public Speaking Masterclass", "category": "public-speaking", "audience": "general", "difficulty": "advanced", "duration": "4 weeks", "description": "Professional SpeakHub course in Public Speaking Masterclass. Includes lessons, activities and quiz pathway.", "status": "active", "featured": false, "certificateEligible": true, "lessonCount": 6}];
-const LESSONS = [{"id": "mental-health-foundations-lesson-1", "courseId": "mental-health-foundations", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-foundations-lesson-2", "courseId": "mental-health-foundations", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-foundations-lesson-3", "courseId": "mental-health-foundations", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-foundations-lesson-4", "courseId": "mental-health-foundations", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-foundations-lesson-5", "courseId": "mental-health-foundations", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-foundations-lesson-6", "courseId": "mental-health-foundations", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Mental Health Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-1", "courseId": "anxiety-management", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-2", "courseId": "anxiety-management", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-3", "courseId": "anxiety-management", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-4", "courseId": "anxiety-management", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-5", "courseId": "anxiety-management", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "anxiety-management-lesson-6", "courseId": "anxiety-management", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Anxiety Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-1", "courseId": "depression-awareness", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-2", "courseId": "depression-awareness", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-3", "courseId": "depression-awareness", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-4", "courseId": "depression-awareness", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-5", "courseId": "depression-awareness", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "depression-awareness-lesson-6", "courseId": "depression-awareness", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Depression Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-1", "courseId": "stress-management", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-2", "courseId": "stress-management", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-3", "courseId": "stress-management", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-4", "courseId": "stress-management", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-5", "courseId": "stress-management", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "stress-management-lesson-6", "courseId": "stress-management", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Stress Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-1", "courseId": "psychological-first-aid", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-2", "courseId": "psychological-first-aid", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-3", "courseId": "psychological-first-aid", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-4", "courseId": "psychological-first-aid", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-5", "courseId": "psychological-first-aid", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "psychological-first-aid-lesson-6", "courseId": "psychological-first-aid", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Psychological First Aid</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-1", "courseId": "leadership-foundations", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-2", "courseId": "leadership-foundations", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-3", "courseId": "leadership-foundations", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-4", "courseId": "leadership-foundations", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-5", "courseId": "leadership-foundations", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "leadership-foundations-lesson-6", "courseId": "leadership-foundations", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Leadership Foundations</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-1", "courseId": "student-leadership", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-2", "courseId": "student-leadership", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-3", "courseId": "student-leadership", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-4", "courseId": "student-leadership", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-5", "courseId": "student-leadership", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-leadership-lesson-6", "courseId": "student-leadership", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Student Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-1", "courseId": "community-leadership", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-2", "courseId": "community-leadership", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-3", "courseId": "community-leadership", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-4", "courseId": "community-leadership", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-5", "courseId": "community-leadership", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-leadership-lesson-6", "courseId": "community-leadership", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Community Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-1", "courseId": "team-leadership", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-2", "courseId": "team-leadership", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-3", "courseId": "team-leadership", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-4", "courseId": "team-leadership", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-5", "courseId": "team-leadership", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "team-leadership-lesson-6", "courseId": "team-leadership", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Team Leadership</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-1", "courseId": "conflict-resolution", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-2", "courseId": "conflict-resolution", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-3", "courseId": "conflict-resolution", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-4", "courseId": "conflict-resolution", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-5", "courseId": "conflict-resolution", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "conflict-resolution-lesson-6", "courseId": "conflict-resolution", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Conflict Resolution</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-1", "courseId": "computer-basics", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-2", "courseId": "computer-basics", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-3", "courseId": "computer-basics", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-4", "courseId": "computer-basics", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-5", "courseId": "computer-basics", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "computer-basics-lesson-6", "courseId": "computer-basics", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Computer Basics</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-1", "courseId": "microsoft-word", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-2", "courseId": "microsoft-word", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-3", "courseId": "microsoft-word", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-4", "courseId": "microsoft-word", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-5", "courseId": "microsoft-word", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-word-lesson-6", "courseId": "microsoft-word", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Microsoft Word</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-1", "courseId": "microsoft-excel", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-2", "courseId": "microsoft-excel", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-3", "courseId": "microsoft-excel", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-4", "courseId": "microsoft-excel", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-5", "courseId": "microsoft-excel", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "microsoft-excel-lesson-6", "courseId": "microsoft-excel", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Microsoft Excel</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-1", "courseId": "canva-design", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-2", "courseId": "canva-design", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-3", "courseId": "canva-design", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-4", "courseId": "canva-design", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-5", "courseId": "canva-design", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "canva-design-lesson-6", "courseId": "canva-design", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Canva Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-1", "courseId": "cybersecurity-awareness", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-2", "courseId": "cybersecurity-awareness", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-3", "courseId": "cybersecurity-awareness", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-4", "courseId": "cybersecurity-awareness", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-5", "courseId": "cybersecurity-awareness", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cybersecurity-awareness-lesson-6", "courseId": "cybersecurity-awareness", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Cybersecurity Awareness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-1", "courseId": "cv-writing", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-2", "courseId": "cv-writing", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-3", "courseId": "cv-writing", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-4", "courseId": "cv-writing", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-5", "courseId": "cv-writing", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "cv-writing-lesson-6", "courseId": "cv-writing", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>CV Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-1", "courseId": "interview-preparation", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-2", "courseId": "interview-preparation", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-3", "courseId": "interview-preparation", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-4", "courseId": "interview-preparation", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-5", "courseId": "interview-preparation", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "interview-preparation-lesson-6", "courseId": "interview-preparation", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Interview Preparation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-1", "courseId": "career-planning", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-2", "courseId": "career-planning", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-3", "courseId": "career-planning", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-4", "courseId": "career-planning", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-5", "courseId": "career-planning", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "career-planning-lesson-6", "courseId": "career-planning", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Career Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-1", "courseId": "workplace-communication", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-2", "courseId": "workplace-communication", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-3", "courseId": "workplace-communication", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-4", "courseId": "workplace-communication", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-5", "courseId": "workplace-communication", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "workplace-communication-lesson-6", "courseId": "workplace-communication", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Workplace Communication</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-1", "courseId": "personal-branding", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-2", "courseId": "personal-branding", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-3", "courseId": "personal-branding", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-4", "courseId": "personal-branding", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-5", "courseId": "personal-branding", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-branding-lesson-6", "courseId": "personal-branding", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Personal Branding</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-1", "courseId": "personal-finance", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-2", "courseId": "personal-finance", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-3", "courseId": "personal-finance", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-4", "courseId": "personal-finance", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-5", "courseId": "personal-finance", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "personal-finance-lesson-6", "courseId": "personal-finance", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Personal Finance</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-1", "courseId": "budgeting", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-2", "courseId": "budgeting", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-3", "courseId": "budgeting", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-4", "courseId": "budgeting", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-5", "courseId": "budgeting", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "budgeting-lesson-6", "courseId": "budgeting", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Budgeting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-1", "courseId": "saving", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-2", "courseId": "saving", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-3", "courseId": "saving", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-4", "courseId": "saving", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-5", "courseId": "saving", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "saving-lesson-6", "courseId": "saving", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Saving</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-1", "courseId": "debt-management", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-2", "courseId": "debt-management", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-3", "courseId": "debt-management", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-4", "courseId": "debt-management", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-5", "courseId": "debt-management", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "debt-management-lesson-6", "courseId": "debt-management", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Debt Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-1", "courseId": "financial-planning", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-2", "courseId": "financial-planning", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-3", "courseId": "financial-planning", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-4", "courseId": "financial-planning", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-5", "courseId": "financial-planning", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "financial-planning-lesson-6", "courseId": "financial-planning", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Financial Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-1", "courseId": "classroom-management", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-2", "courseId": "classroom-management", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-3", "courseId": "classroom-management", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-4", "courseId": "classroom-management", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-5", "courseId": "classroom-management", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "classroom-management-lesson-6", "courseId": "classroom-management", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Classroom Management</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-1", "courseId": "student-engagement", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-2", "courseId": "student-engagement", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-3", "courseId": "student-engagement", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-4", "courseId": "student-engagement", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-5", "courseId": "student-engagement", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "student-engagement-lesson-6", "courseId": "student-engagement", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Student Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-1", "courseId": "lesson-planning", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-2", "courseId": "lesson-planning", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-3", "courseId": "lesson-planning", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-4", "courseId": "lesson-planning", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-5", "courseId": "lesson-planning", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "lesson-planning-lesson-6", "courseId": "lesson-planning", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Lesson Planning</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-1", "courseId": "mental-health-in-schools", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-2", "courseId": "mental-health-in-schools", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-3", "courseId": "mental-health-in-schools", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-4", "courseId": "mental-health-in-schools", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-5", "courseId": "mental-health-in-schools", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-in-schools-lesson-6", "courseId": "mental-health-in-schools", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Mental Health in Schools</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-1", "courseId": "child-protection", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-2", "courseId": "child-protection", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-3", "courseId": "child-protection", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-4", "courseId": "child-protection", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-5", "courseId": "child-protection", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-protection-lesson-6", "courseId": "child-protection", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Child Protection</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-1", "courseId": "positive-parenting", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-2", "courseId": "positive-parenting", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-3", "courseId": "positive-parenting", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-4", "courseId": "positive-parenting", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-5", "courseId": "positive-parenting", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "positive-parenting-lesson-6", "courseId": "positive-parenting", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Positive Parenting</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-1", "courseId": "child-development", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-2", "courseId": "child-development", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-3", "courseId": "child-development", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-4", "courseId": "child-development", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-5", "courseId": "child-development", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "child-development-lesson-6", "courseId": "child-development", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Child Development</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-1", "courseId": "communication-with-children", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-2", "courseId": "communication-with-children", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-3", "courseId": "communication-with-children", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-4", "courseId": "communication-with-children", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-5", "courseId": "communication-with-children", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-with-children-lesson-6", "courseId": "communication-with-children", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Communication with Children</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-1", "courseId": "digital-safety-at-home", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-2", "courseId": "digital-safety-at-home", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-3", "courseId": "digital-safety-at-home", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-4", "courseId": "digital-safety-at-home", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-5", "courseId": "digital-safety-at-home", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "digital-safety-at-home-lesson-6", "courseId": "digital-safety-at-home", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Digital Safety at Home</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-1", "courseId": "family-wellness", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-2", "courseId": "family-wellness", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-3", "courseId": "family-wellness", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-4", "courseId": "family-wellness", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-5", "courseId": "family-wellness", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "family-wellness-lesson-6", "courseId": "family-wellness", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Family Wellness</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-1", "courseId": "speakout-orientation", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-2", "courseId": "speakout-orientation", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-3", "courseId": "speakout-orientation", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-4", "courseId": "speakout-orientation", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-5", "courseId": "speakout-orientation", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "speakout-orientation-lesson-6", "courseId": "speakout-orientation", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>SpeakOut Orientation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-1", "courseId": "mental-health-advocacy", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-2", "courseId": "mental-health-advocacy", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-3", "courseId": "mental-health-advocacy", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-4", "courseId": "mental-health-advocacy", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-5", "courseId": "mental-health-advocacy", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "mental-health-advocacy-lesson-6", "courseId": "mental-health-advocacy", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Mental Health Advocacy</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-1", "courseId": "community-engagement", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-2", "courseId": "community-engagement", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-3", "courseId": "community-engagement", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-4", "courseId": "community-engagement", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-5", "courseId": "community-engagement", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-engagement-lesson-6", "courseId": "community-engagement", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Community Engagement</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-1", "courseId": "event-coordination", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-2", "courseId": "event-coordination", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-3", "courseId": "event-coordination", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-4", "courseId": "event-coordination", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-5", "courseId": "event-coordination", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "event-coordination-lesson-6", "courseId": "event-coordination", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Event Coordination</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-1", "courseId": "reporting-and-documentation", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-2", "courseId": "reporting-and-documentation", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-3", "courseId": "reporting-and-documentation", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-4", "courseId": "reporting-and-documentation", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-5", "courseId": "reporting-and-documentation", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "reporting-and-documentation-lesson-6", "courseId": "reporting-and-documentation", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Reporting and Documentation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-1", "courseId": "ngo-fundamentals", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-2", "courseId": "ngo-fundamentals", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-3", "courseId": "ngo-fundamentals", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-4", "courseId": "ngo-fundamentals", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-5", "courseId": "ngo-fundamentals", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "ngo-fundamentals-lesson-6", "courseId": "ngo-fundamentals", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>NGO Fundamentals</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-1", "courseId": "community-mobilization", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-2", "courseId": "community-mobilization", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-3", "courseId": "community-mobilization", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-4", "courseId": "community-mobilization", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-5", "courseId": "community-mobilization", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "community-mobilization-lesson-6", "courseId": "community-mobilization", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Community Mobilization</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-1", "courseId": "proposal-writing", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-2", "courseId": "proposal-writing", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-3", "courseId": "proposal-writing", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-4", "courseId": "proposal-writing", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-5", "courseId": "proposal-writing", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "proposal-writing-lesson-6", "courseId": "proposal-writing", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Proposal Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-1", "courseId": "grant-writing", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-2", "courseId": "grant-writing", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-3", "courseId": "grant-writing", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-4", "courseId": "grant-writing", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-5", "courseId": "grant-writing", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "grant-writing-lesson-6", "courseId": "grant-writing", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Grant Writing</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-1", "courseId": "monitoring-and-evaluation", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-2", "courseId": "monitoring-and-evaluation", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-3", "courseId": "monitoring-and-evaluation", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-4", "courseId": "monitoring-and-evaluation", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-5", "courseId": "monitoring-and-evaluation", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "monitoring-and-evaluation-lesson-6", "courseId": "monitoring-and-evaluation", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Monitoring and Evaluation</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-1", "courseId": "communication-skills", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-2", "courseId": "communication-skills", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-3", "courseId": "communication-skills", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-4", "courseId": "communication-skills", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-5", "courseId": "communication-skills", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "communication-skills-lesson-6", "courseId": "communication-skills", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Communication Skills</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-1", "courseId": "storytelling", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-2", "courseId": "storytelling", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-3", "courseId": "storytelling", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-4", "courseId": "storytelling", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-5", "courseId": "storytelling", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "storytelling-lesson-6", "courseId": "storytelling", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Storytelling</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-1", "courseId": "presentation-design", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-2", "courseId": "presentation-design", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-3", "courseId": "presentation-design", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-4", "courseId": "presentation-design", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-5", "courseId": "presentation-design", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "presentation-design-lesson-6", "courseId": "presentation-design", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Presentation Design</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-1", "courseId": "persuasive-speaking", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-2", "courseId": "persuasive-speaking", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-3", "courseId": "persuasive-speaking", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-4", "courseId": "persuasive-speaking", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-5", "courseId": "persuasive-speaking", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "persuasive-speaking-lesson-6", "courseId": "persuasive-speaking", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Persuasive Speaking</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-1", "courseId": "public-speaking-masterclass", "lessonNumber": 1, "title": "Overview", "duration": "15 mins", "contentHtml": "<h2>Overview</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-2", "courseId": "public-speaking-masterclass", "lessonNumber": 2, "title": "Foundations", "duration": "15 mins", "contentHtml": "<h2>Foundations</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-3", "courseId": "public-speaking-masterclass", "lessonNumber": 3, "title": "Tools", "duration": "15 mins", "contentHtml": "<h2>Tools</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-4", "courseId": "public-speaking-masterclass", "lessonNumber": 4, "title": "Case Study", "duration": "15 mins", "contentHtml": "<h2>Case Study</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-5", "courseId": "public-speaking-masterclass", "lessonNumber": 5, "title": "Practice Activity", "duration": "15 mins", "contentHtml": "<h2>Practice Activity</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}, {"id": "public-speaking-masterclass-lesson-6", "courseId": "public-speaking-masterclass", "lessonNumber": 6, "title": "Final Review", "duration": "15 mins", "contentHtml": "<h2>Final Review</h2><p>This lesson is part of <strong>Public Speaking Masterclass</strong>.</p><h3>Learning Outcomes</h3><ul><li>Explain the key idea.</li><li>Identify a real example.</li><li>Apply one practical action.</li></ul><h3>Activity</h3><p>Write how this lesson can help you, your school, family or community.</p>"}];
-const QUIZZES = [{"id": "mental-health-foundations-quiz", "courseId": "mental-health-foundations", "title": "Mental Health Foundations Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "anxiety-management-quiz", "courseId": "anxiety-management", "title": "Anxiety Management Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "depression-awareness-quiz", "courseId": "depression-awareness", "title": "Depression Awareness Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "stress-management-quiz", "courseId": "stress-management", "title": "Stress Management Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "psychological-first-aid-quiz", "courseId": "psychological-first-aid", "title": "Psychological First Aid Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "leadership-foundations-quiz", "courseId": "leadership-foundations", "title": "Leadership Foundations Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "student-leadership-quiz", "courseId": "student-leadership", "title": "Student Leadership Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "community-leadership-quiz", "courseId": "community-leadership", "title": "Community Leadership Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "team-leadership-quiz", "courseId": "team-leadership", "title": "Team Leadership Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "conflict-resolution-quiz", "courseId": "conflict-resolution", "title": "Conflict Resolution Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "computer-basics-quiz", "courseId": "computer-basics", "title": "Computer Basics Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "microsoft-word-quiz", "courseId": "microsoft-word", "title": "Microsoft Word Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "microsoft-excel-quiz", "courseId": "microsoft-excel", "title": "Microsoft Excel Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "canva-design-quiz", "courseId": "canva-design", "title": "Canva Design Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "cybersecurity-awareness-quiz", "courseId": "cybersecurity-awareness", "title": "Cybersecurity Awareness Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "cv-writing-quiz", "courseId": "cv-writing", "title": "CV Writing Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "interview-preparation-quiz", "courseId": "interview-preparation", "title": "Interview Preparation Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "career-planning-quiz", "courseId": "career-planning", "title": "Career Planning Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "workplace-communication-quiz", "courseId": "workplace-communication", "title": "Workplace Communication Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "personal-branding-quiz", "courseId": "personal-branding", "title": "Personal Branding Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "personal-finance-quiz", "courseId": "personal-finance", "title": "Personal Finance Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "budgeting-quiz", "courseId": "budgeting", "title": "Budgeting Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "saving-quiz", "courseId": "saving", "title": "Saving Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "debt-management-quiz", "courseId": "debt-management", "title": "Debt Management Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "financial-planning-quiz", "courseId": "financial-planning", "title": "Financial Planning Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "classroom-management-quiz", "courseId": "classroom-management", "title": "Classroom Management Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "student-engagement-quiz", "courseId": "student-engagement", "title": "Student Engagement Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "lesson-planning-quiz", "courseId": "lesson-planning", "title": "Lesson Planning Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "mental-health-in-schools-quiz", "courseId": "mental-health-in-schools", "title": "Mental Health in Schools Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "child-protection-quiz", "courseId": "child-protection", "title": "Child Protection Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "positive-parenting-quiz", "courseId": "positive-parenting", "title": "Positive Parenting Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "child-development-quiz", "courseId": "child-development", "title": "Child Development Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "communication-with-children-quiz", "courseId": "communication-with-children", "title": "Communication with Children Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "digital-safety-at-home-quiz", "courseId": "digital-safety-at-home", "title": "Digital Safety at Home Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "family-wellness-quiz", "courseId": "family-wellness", "title": "Family Wellness Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "speakout-orientation-quiz", "courseId": "speakout-orientation", "title": "SpeakOut Orientation Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "mental-health-advocacy-quiz", "courseId": "mental-health-advocacy", "title": "Mental Health Advocacy Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "community-engagement-quiz", "courseId": "community-engagement", "title": "Community Engagement Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "event-coordination-quiz", "courseId": "event-coordination", "title": "Event Coordination Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "reporting-and-documentation-quiz", "courseId": "reporting-and-documentation", "title": "Reporting and Documentation Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "ngo-fundamentals-quiz", "courseId": "ngo-fundamentals", "title": "NGO Fundamentals Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "community-mobilization-quiz", "courseId": "community-mobilization", "title": "Community Mobilization Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "proposal-writing-quiz", "courseId": "proposal-writing", "title": "Proposal Writing Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "grant-writing-quiz", "courseId": "grant-writing", "title": "Grant Writing Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "monitoring-and-evaluation-quiz", "courseId": "monitoring-and-evaluation", "title": "Monitoring and Evaluation Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "communication-skills-quiz", "courseId": "communication-skills", "title": "Communication Skills Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "storytelling-quiz", "courseId": "storytelling", "title": "Storytelling Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "presentation-design-quiz", "courseId": "presentation-design", "title": "Presentation Design Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "persuasive-speaking-quiz", "courseId": "persuasive-speaking", "title": "Persuasive Speaking Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}, {"id": "public-speaking-masterclass-quiz", "courseId": "public-speaking-masterclass", "title": "Public Speaking Masterclass Final Quiz", "passingScore": 70, "questions": [{"question": "What is the first step in learning?", "options": ["Ignore", "Understand", "Rush", "Quit"], "answer": "Understand"}, {"question": "Why is practice important?", "options": ["It builds skill", "It wastes time", "It replaces learning", "It is optional"], "answer": "It builds skill"}, {"question": "What should you do when support is needed?", "options": ["Stay silent", "Seek support", "Hide it", "Blame others"], "answer": "Seek support"}]}];
-const KIDDIES = [{"id": "abc-adventures", "title": "ABC Adventures", "category": "numeracy", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on abc adventures.", "status": "active", "featured": true, "contentHtml": "<h2>ABC Adventures</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "numbers-fun", "title": "Numbers Fun", "category": "emotions", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on numbers fun.", "status": "active", "featured": true, "contentHtml": "<h2>Numbers Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "colors-and-shapes", "title": "Colors and Shapes", "category": "safety", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on colors and shapes.", "status": "active", "featured": true, "contentHtml": "<h2>Colors and Shapes</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "good-manners", "title": "Good Manners", "category": "character", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on good manners.", "status": "active", "featured": true, "contentHtml": "<h2>Good Manners</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "my-feelings", "title": "My Feelings", "category": "literacy", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on my feelings.", "status": "active", "featured": true, "contentHtml": "<h2>My Feelings</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "safety-first", "title": "Safety First", "category": "numeracy", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on safety first.", "status": "active", "featured": true, "contentHtml": "<h2>Safety First</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "healthy-habits", "title": "Healthy Habits", "category": "emotions", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on healthy habits.", "status": "active", "featured": false, "contentHtml": "<h2>Healthy Habits</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "story-time", "title": "Story Time", "category": "safety", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on story time.", "status": "active", "featured": false, "contentHtml": "<h2>Story Time</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "reading-club", "title": "Reading Club", "category": "character", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on reading club.", "status": "active", "featured": false, "contentHtml": "<h2>Reading Club</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "mathematics-fun", "title": "Mathematics Fun", "category": "literacy", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on mathematics fun.", "status": "active", "featured": false, "contentHtml": "<h2>Mathematics Fun</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "science-explorers", "title": "Science Explorers", "category": "numeracy", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on science explorers.", "status": "active", "featured": false, "contentHtml": "<h2>Science Explorers</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "creative-drawing", "title": "Creative Drawing", "category": "emotions", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on creative drawing.", "status": "active", "featured": false, "contentHtml": "<h2>Creative Drawing</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "public-speaking-for-kids", "title": "Public Speaking for Kids", "category": "safety", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on public speaking for kids.", "status": "active", "featured": false, "contentHtml": "<h2>Public Speaking for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "leadership-for-kids", "title": "Leadership for Kids", "category": "character", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on leadership for kids.", "status": "active", "featured": false, "contentHtml": "<h2>Leadership for Kids</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "emotional-intelligence", "title": "Emotional Intelligence", "category": "literacy", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on emotional intelligence.", "status": "active", "featured": false, "contentHtml": "<h2>Emotional Intelligence</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "environmental-awareness", "title": "Environmental Awareness", "category": "numeracy", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on environmental awareness.", "status": "active", "featured": false, "contentHtml": "<h2>Environmental Awareness</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "kind-words", "title": "Kind Words", "category": "emotions", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on kind words.", "status": "active", "featured": false, "contentHtml": "<h2>Kind Words</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "sharing-and-teamwork", "title": "Sharing and Teamwork", "category": "safety", "ageGroup": "ages-3-5", "description": "Child-friendly SpeakOut learning activity on sharing and teamwork.", "status": "active", "featured": false, "contentHtml": "<h2>Sharing and Teamwork</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "my-safety-circle", "title": "My Safety Circle", "category": "character", "ageGroup": "ages-6-9", "description": "Child-friendly SpeakOut learning activity on my safety circle.", "status": "active", "featured": false, "contentHtml": "<h2>My Safety Circle</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}, {"id": "calm-down-toolbox", "title": "Calm Down Toolbox", "category": "literacy", "ageGroup": "ages-10-13", "description": "Child-friendly SpeakOut learning activity on calm down toolbox.", "status": "active", "featured": false, "contentHtml": "<h2>Calm Down Toolbox</h2><p>A simple learning activity for children.</p><ol><li>Read with an adult.</li><li>Discuss one example.</li><li>Complete a short activity.</li><li>Share what you learned.</li></ol>"}];
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-async function isAdmin(user){
-  if(!user) return false;
-  const snap = await getDoc(doc(db, "users", user.uid));
-  if(!snap.exists()) return false;
-  const p = snap.data();
-  return p.role === "admin" && p.status === "approved";
-}
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  writeBatch,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-async function seedCollection(name, rows){
-  const batch = writeBatch(db);
-  let count = 0;
 
-  rows.forEach(row => {
-    const ref = row.id ? doc(db, name, row.id) : doc(collection(db, name));
+/* =========================================================
+   CONFIGURATION
+========================================================= */
 
-    batch.set(ref, {
-      ...row,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+const CONFIG = {
+  batchLimit: 450,
 
-    count++;
-  });
+  paths: {
+    allStarter: "./firestore-seed/all-starter-content.json",
+    booksStarter: "./firestore-seed/books-starter.json",
+    coursesStarter: "./firestore-seed/courses-starter.json",
+    coursesSeed: "./courses-seed.json",
 
-  if(count) await batch.commit();
-  return count;
-}
+    studentWellbeingBook:
+      "./firestore-seed/student-wellbeing-book.json",
 
-window.seedLearningEngine = async function(){
-  const user = auth.currentUser;
-  if(!await isAdmin(user)) throw new Error("Only approved admins can seed learning content.");
-  return {
-    books: await seedCollection("books", BOOKS),
-    courses: await seedCollection("courses", COURSES),
-    lessons: await seedCollection("lessons", LESSONS),
-    quizzes: await seedCollection("quizzes", QUIZZES),
-    kiddies: await seedCollection("kiddiesResources", KIDDIES)
-  };
+    studentWellbeingCourse:
+      "./firestore-seed/student-wellbeing-course.json",
+
+    studentWellbeingQuizBank:
+      "./firestore-seed/student-wellbeing-quiz-bank.json",
+
+    studentWellbeingWorkbook:
+      "./firestore-seed/student-wellbeing-workbook.json"
+  },
+
+  collections: {
+    books: "books",
+    courses: "courses",
+    lessons: "lessons",
+    quizzes: "quizzes",
+    workbooks: "workbooks",
+    announcements: "announcements",
+    events: "events",
+    media: "media",
+    kiddies: "kiddiesResources"
+  }
 };
 
-onAuthStateChanged(auth, async user => {
-  const status = document.getElementById("seedStatus");
-  const btn = document.getElementById("seedButton");
-  if(!status || !btn) return;
-  if(!user){ status.textContent = "Login as approved admin first."; btn.disabled = true; return; }
-  if(!await isAdmin(user)){ status.textContent = "This page is admin-only."; btn.disabled = true; return; }
-  status.textContent = "Admin verified. You can seed the learning engine.";
-  btn.disabled = false;
-});
+
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
+
+function normalize(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+
+function slugify(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+}
+
+
+function unique(values) {
+  return [...new Set(
+    (values || [])
+      .map(v => String(v || "").trim())
+      .filter(Boolean)
+  )];
+}
+
+
+function asArray(value) {
+  if(Array.isArray(value)) {
+    return value;
+  }
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return [];
+  }
+
+  return [value];
+}
+
+
+function stripUndefined(value) {
+  if(Array.isArray(value)) {
+    return value
+      .map(stripUndefined)
+      .filter(v => v !== undefined);
+  }
+
+  if(
+    value &&
+    typeof value === "object" &&
+    !(value instanceof Date)
+  ) {
+    const output = {};
+
+    Object.entries(value).forEach(([key, item]) => {
+      const clean = stripUndefined(item);
+
+      if(clean !== undefined) {
+        output[key] = clean;
+      }
+    });
+
+    return output;
+  }
+
+  return value === undefined
+    ? undefined
+    : value;
+}
+
+
+function safeDocumentId(row, prefix = "item") {
+  if(row?.id) {
+    return String(row.id);
+  }
+
+  const candidate =
+    row?.certificateId ||
+    row?.courseId ||
+    row?.bookId ||
+    row?.quizId ||
+    row?.lessonId ||
+    row?.slug ||
+    row?.title ||
+    row?.name;
+
+  const slug = slugify(candidate);
+
+  return slug ||
+    `${prefix}-${crypto.randomUUID()}`;
+}
+
+
+async function fetchJson(path, {
+  optional = true
+} = {}) {
+  try {
+    const response = await fetch(
+      `${path}?seed=${Date.now()}`,
+      {
+        cache: "no-store"
+      }
+    );
+
+    if(!response.ok) {
+      if(optional) {
+        console.info(
+          `[SpeakHub Seeder] Optional file unavailable: ${path}`
+        );
+
+        return null;
+      }
+
+      throw new Error(
+        `Could not load ${path}. HTTP ${response.status}`
+      );
+    }
+
+    return await response.json();
+
+  } catch(error) {
+    if(optional) {
+      console.info(
+        `[SpeakHub Seeder] Optional file skipped: ${path}`,
+        error
+      );
+
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+
+/* =========================================================
+   ADMIN ACCESS
+========================================================= */
+
+async function getAdminProfile(user) {
+  if(!user) {
+    return null;
+  }
+
+  const snap =
+    await getDoc(
+      doc(
+        db,
+        "users",
+        user.uid
+      )
+    );
+
+  if(!snap.exists()) {
+    return null;
+  }
+
+  return {
+    uid: user.uid,
+    ...snap.data()
+  };
+}
+
+
+async function isAdmin(user) {
+  const profile =
+    await getAdminProfile(user);
+
+  if(!profile) {
+    return false;
+  }
+
+  const role =
+    normalize(profile.role);
+
+  const status =
+    normalize(profile.status);
+
+  return (
+    (
+      role === "admin" ||
+      role === "super_admin"
+    ) &&
+    (
+      profile.approved === true ||
+      status === "approved"
+    )
+  );
+}
+
+
+/* =========================================================
+   COURSE NORMALIZATION
+========================================================= */
+
+const AUDIENCE_ALIASES = {
+  student: "secondary",
+  students: "secondary",
+  parent: "parents",
+  teacher: "teachers",
+  ambassador: "ambassadors",
+  adult: "adults",
+  "young professional": "young-professionals",
+  "young-professional": "young-professionals",
+  ngo: "ngo-professionals"
+};
+
+
+function normalizeAudience(value) {
+  const source =
+    asArray(value);
+
+  const mapped =
+    source.map(item => {
+      const key =
+        normalize(item);
+
+      return (
+        AUDIENCE_ALIASES[key] ||
+        key
+      );
+    });
+
+  return unique(
+    mapped.length
+      ? mapped
+      : ["general"]
+  );
+}
+
+
+function normalizeDifficulty(value) {
+  const level =
+    normalize(value);
+
+  if(
+    level === "advanced" ||
+    level === "intermediate" ||
+    level === "beginner"
+  ) {
+    return level;
+  }
+
+  if(
+    level === "introductory" ||
+    level === "intro" ||
+    level === "foundation" ||
+    level === "foundational"
+  ) {
+    return "beginner";
+  }
+
+  if(
+    level === "coordinator" ||
+    level === "professional"
+  ) {
+    return "intermediate";
+  }
+
+  return "beginner";
+}
+
+
+function normalizeCourseType(course) {
+  const type =
+    normalize(course.courseType);
+
+  if(
+    type === "external" ||
+    type === "instructor-led" ||
+    type === "internal"
+  ) {
+    return type;
+  }
+
+  if(
+    course.externalUrl ||
+    normalize(course.completionMethod) === "certificate-upload"
+  ) {
+    return "external";
+  }
+
+  return "internal";
+}
+
+
+function normalizeCertificate(course, provider) {
+  const raw =
+    course.certificate;
+
+  if(
+    raw &&
+    typeof raw === "object" &&
+    !Array.isArray(raw)
+  ) {
+    return {
+      available:
+        raw.available !== false,
+
+      issuer:
+        raw.issuer ||
+        course.certificateIssuer ||
+        provider,
+
+      verificationRequired:
+        Boolean(raw.verificationRequired),
+
+      uploadRequired:
+        Boolean(raw.uploadRequired)
+    };
+  }
+
+  const available =
+    course.certificateEligible === true ||
+    raw === true;
+
+  return {
+    available,
+
+    issuer:
+      course.certificateIssuer ||
+      provider,
+
+    verificationRequired:
+      normalizeCourseType(course) === "external",
+
+    uploadRequired:
+      normalizeCourseType(course) === "external"
+  };
+}
+
+
+function countCourseLessons(course) {
+  if(
+    Number.isFinite(
+      Number(course.lessonCount)
+    ) &&
+    Number(course.lessonCount) >= 0
+  ) {
+    return Number(course.lessonCount);
+  }
+
+  if(!Array.isArray(course.modules)) {
+    return 0;
+  }
+
+  return course.modules.reduce(
+    (total, module) =>
+      total +
+      (
+        Array.isArray(module.lessons)
+          ? module.lessons.length
+          : 0
+      ),
+    0
+  );
+}
+
+
+function normalizeCourse(rawCourse) {
+  const course =
+    structuredClone(rawCourse || {});
+
+  const courseType =
+    normalizeCourseType(course);
+
+  const provider =
+    course.provider ||
+    (
+      normalize(course.category) === "mental-health"
+        ? "SpeakOut Mental Health"
+        : "SpeakHub Academy"
+    );
+
+  const certificate =
+    normalizeCertificate(
+      course,
+      provider
+    );
+
+  const free =
+    course.free !== undefined
+      ? Boolean(course.free)
+      : normalize(course.accessType || "free") === "free";
+
+  const id =
+    course.id ||
+    slugify(course.title);
+
+  const normalized = {
+    ...course,
+
+    id,
+
+    title:
+      course.title ||
+      "Untitled Course",
+
+    courseType,
+
+    provider,
+
+    providerLogo:
+      course.providerLogo || "",
+
+    category:
+      normalize(course.category || "general"),
+
+    audience:
+      normalizeAudience(
+        course.audience
+      ),
+
+    difficulty:
+      normalizeDifficulty(
+        course.difficulty ||
+        course.level
+      ),
+
+    duration:
+      course.duration ||
+      course.estimatedDuration ||
+      "Self-paced",
+
+    description:
+      course.description ||
+      course.shortDescription ||
+      "",
+
+    status:
+      normalize(
+        course.status ||
+        "active"
+      ),
+
+    featured:
+      Boolean(course.featured),
+
+    free,
+
+    accessType:
+      free
+        ? "free"
+        : "premium",
+
+    certificateEligible:
+      certificate.available,
+
+    certificate,
+
+    completionMethod:
+      course.completionMethod ||
+      (
+        courseType === "external"
+          ? "certificate-upload"
+          : courseType === "instructor-led"
+            ? "instructor-led"
+            : "internal"
+      ),
+
+    lessonCount:
+      countCourseLessons(course)
+  };
+
+
+  if(courseType === "external") {
+    normalized.externalUrl =
+      course.externalUrl || "";
+
+    normalized.certificate.verificationRequired =
+      course.certificate?.verificationRequired !== undefined
+        ? Boolean(
+            course.certificate.verificationRequired
+          )
+        : true;
+
+    normalized.certificate.uploadRequired =
+      course.certificate?.uploadRequired !== undefined
+        ? Boolean(
+            course.certificate.uploadRequired
+          )
+        : true;
+  }
+
+
+  /*
+    Legacy fields are kept intentionally for backwards compatibility.
+    New pages should use difficulty, free, provider and certificate.
+  */
+
+  normalized.level =
+    normalized.difficulty;
+
+  return stripUndefined(
+    normalized
+  );
+}
+
+
+/* =========================================================
+   BOOK / RESOURCE NORMALIZATION
+========================================================= */
+
+function normalizeBook(rawBook) {
+  const book =
+    structuredClone(rawBook || {});
+
+  return stripUndefined({
+    ...book,
+
+    id:
+      book.id ||
+      slugify(book.title),
+
+    title:
+      book.title ||
+      "Untitled Resource",
+
+    category:
+      normalize(
+        book.category ||
+        "general"
+      ),
+
+    audience:
+      unique(
+        asArray(
+          book.audience
+        )
+        .map(normalize)
+      ),
+
+    author:
+      book.author ||
+      "SpeakOut Mental Health Outreach",
+
+    status:
+      normalize(
+        book.status ||
+        "active"
+      ),
+
+    accessType:
+      normalize(
+        book.accessType ||
+        "free"
+      ),
+
+    featured:
+      Boolean(book.featured),
+
+    tags:
+      unique(
+        asArray(book.tags)
+      )
+  });
+}
+
+
+/* =========================================================
+   GENERIC CONTENT NORMALIZATION
+========================================================= */
+
+function normalizeGeneric(raw, prefix) {
+  const item =
+    structuredClone(raw || {});
+
+  return stripUndefined({
+    ...item,
+
+    id:
+      item.id ||
+      slugify(
+        item.title ||
+        `${prefix}-${crypto.randomUUID()}`
+      )
+  });
+}
+
+
+/* =========================================================
+   MODULE / LESSON EXTRACTION
+========================================================= */
+
+function extractLessonsFromCourses(courseRows) {
+  const lessons = [];
+
+  courseRows.forEach(course => {
+    if(!Array.isArray(course.modules)) {
+      return;
+    }
+
+    course.modules.forEach(
+      (module, moduleIndex) => {
+
+        const moduleTitle =
+          module.title ||
+          `Module ${moduleIndex + 1}`;
+
+        const moduleId =
+          module.id ||
+          `${course.id}-module-${moduleIndex + 1}`;
+
+
+        asArray(module.lessons)
+          .forEach(
+            (lesson, lessonIndex) => {
+
+              const lessonId =
+                lesson.id ||
+                `${course.id}-m${moduleIndex + 1}-l${lessonIndex + 1}`;
+
+              lessons.push(
+                stripUndefined({
+                  ...lesson,
+
+                  id: lessonId,
+
+                  courseId:
+                    course.id,
+
+                  moduleId,
+
+                  moduleTitle,
+
+                  moduleIndex,
+
+                  lessonIndex,
+
+                  order:
+                    lesson.order ??
+                    lessonIndex + 1,
+
+                  title:
+                    lesson.title ||
+                    `Lesson ${lessonIndex + 1}`,
+
+                  status:
+                    lesson.status ||
+                    "active"
+                })
+              );
+            }
+          );
+      }
+    );
+  });
+
+  return lessons;
+}
+
+
+function extractQuizzesFromCourses(courseRows) {
+  const quizzes = [];
+
+  courseRows.forEach(course => {
+    if(!Array.isArray(course.modules)) {
+      return;
+    }
+
+    course.modules.forEach(
+      (module, moduleIndex) => {
+
+        if(module.quiz) {
+          quizzes.push(
+            stripUndefined({
+              ...module.quiz,
+
+              id:
+                module.quiz.id ||
+                `${course.id}-module-${moduleIndex + 1}-quiz`,
+
+              courseId:
+                course.id,
+
+              moduleIndex,
+
+              moduleTitle:
+                module.title ||
+                `Module ${moduleIndex + 1}`,
+
+              assessmentType:
+                "module-quiz",
+
+              status:
+                module.quiz.status ||
+                "active"
+            })
+          );
+        }
+
+
+        if(module.finalAssessment) {
+          quizzes.push(
+            stripUndefined({
+              ...module.finalAssessment,
+
+              id:
+                module.finalAssessment.id ||
+                `${course.id}-final-assessment`,
+
+              courseId:
+                course.id,
+
+              moduleIndex,
+
+              moduleTitle:
+                module.title ||
+                `Module ${moduleIndex + 1}`,
+
+              assessmentType:
+                "final-assessment",
+
+              status:
+                module.finalAssessment.status ||
+                "active"
+            })
+          );
+        }
+
+      }
+    );
+  });
+
+  return quizzes;
+}
+
+
+/* =========================================================
+   FIRESTORE WRITE ENGINE
+========================================================= */
+
+async function getExistingIds(
+  collectionName
+) {
+  const snap =
+    await getDocs(
+      collection(
+        db,
+        collectionName
+      )
+    );
+
+  return new Set(
+    snap.docs.map(
+      document =>
+        document.id
+    )
+  );
+}
+
+
+async function seedCollection(
+  collectionName,
+  rows,
+  {
+    dryRun = false,
+    preserveCreatedAt = true
+  } = {}
+) {
+  const cleanRows =
+    (rows || [])
+      .filter(Boolean);
+
+  if(!cleanRows.length) {
+    return {
+      collection:
+        collectionName,
+
+      total: 0,
+      created: 0,
+      updated: 0,
+      skipped: 0,
+      dryRun
+    };
+  }
+
+
+  const existingIds =
+    await getExistingIds(
+      collectionName
+    );
+
+
+  let created = 0;
+  let updated = 0;
+  let skipped = 0;
+
+
+  if(dryRun) {
+    cleanRows.forEach(row => {
+      const id =
+        safeDocumentId(
+          row,
+          collectionName
+        );
+
+      if(existingIds.has(id)) {
+        updated++;
+      } else {
+        created++;
+      }
+    });
+
+    return {
+      collection:
+        collectionName,
+
+      total:
+        cleanRows.length,
+
+      created,
+      updated,
+      skipped,
+      dryRun: true
+    };
+  }
+
+
+  /*
+    Firestore write batches are limited. Keep a margin below 500.
+  */
+
+  for(
+    let offset = 0;
+    offset < cleanRows.length;
+    offset += CONFIG.batchLimit
+  ) {
+    const chunk =
+      cleanRows.slice(
+        offset,
+        offset + CONFIG.batchLimit
+      );
+
+    const batch =
+      writeBatch(db);
+
+
+    chunk.forEach(row => {
+      try {
+        const id =
+          safeDocumentId(
+            row,
+            collectionName
+          );
+
+        const ref =
+          doc(
+            db,
+            collectionName,
+            id
+          );
+
+        const exists =
+          existingIds.has(id);
+
+        const payload =
+          stripUndefined({
+            ...row,
+
+            id,
+
+            updatedAt:
+              serverTimestamp(),
+
+            ...(
+              !exists &&
+              preserveCreatedAt
+                ? {
+                    createdAt:
+                      serverTimestamp()
+                  }
+                : {}
+            )
+          });
+
+
+        batch.set(
+          ref,
+          payload,
+          {
+            merge: true
+          }
+        );
+
+
+        if(exists) {
+          updated++;
+        } else {
+          created++;
+          existingIds.add(id);
+        }
+
+      } catch(error) {
+        skipped++;
+
+        console.error(
+          `[SpeakHub Seeder] Could not prepare ${collectionName} row`,
+          row,
+          error
+        );
+      }
+    });
+
+
+    await batch.commit();
+  }
+
+
+  return {
+    collection:
+      collectionName,
+
+    total:
+      cleanRows.length,
+
+    created,
+    updated,
+    skipped,
+    dryRun: false
+  };
+}
+
+
+/* =========================================================
+   SOURCE LOADING
+========================================================= */
+
+async function loadSeedSources() {
+  const [
+    allStarter,
+    booksStarter,
+    coursesStarter,
+    coursesSeed,
+    studentWellbeingBook,
+    studentWellbeingCourse,
+    studentWellbeingQuizBank,
+    studentWellbeingWorkbook
+  ] = await Promise.all([
+    fetchJson(
+      CONFIG.paths.allStarter
+    ),
+
+    fetchJson(
+      CONFIG.paths.booksStarter
+    ),
+
+    fetchJson(
+      CONFIG.paths.coursesStarter
+    ),
+
+    fetchJson(
+      CONFIG.paths.coursesSeed
+    ),
+
+    fetchJson(
+      CONFIG.paths.studentWellbeingBook
+    ),
+
+    fetchJson(
+      CONFIG.paths.studentWellbeingCourse
+    ),
+
+    fetchJson(
+      CONFIG.paths.studentWellbeingQuizBank
+    ),
+
+    fetchJson(
+      CONFIG.paths.studentWellbeingWorkbook
+    )
+  ]);
+
+
+  const rawBooks = [
+    ...asArray(
+      allStarter?.books
+    ),
+
+    ...asArray(
+      booksStarter
+    ),
+
+    ...asArray(
+      studentWellbeingBook
+    )
+  ];
+
+
+  const rawCourses = [
+    ...asArray(
+      allStarter?.courses
+    ),
+
+    ...asArray(
+      coursesStarter
+    ),
+
+    ...asArray(
+      coursesSeed
+    ),
+
+    ...asArray(
+      studentWellbeingCourse
+    )
+  ];
+
+
+  /*
+    Deduplicate by deterministic ID.
+    Later sources win, which allows courses-seed.json to override
+    starter/demo records.
+  */
+
+  const courseMap =
+    new Map();
+
+  rawCourses
+    .filter(Boolean)
+    .forEach(raw => {
+      const normalized =
+        normalizeCourse(raw);
+
+      if(normalized.id) {
+        courseMap.set(
+          normalized.id,
+          normalized
+        );
+      }
+    });
+
+
+  const courses =
+    [...courseMap.values()];
+
+
+  const bookMap =
+    new Map();
+
+  rawBooks
+    .filter(Boolean)
+    .forEach(raw => {
+      const normalized =
+        normalizeBook(raw);
+
+      if(normalized.id) {
+        bookMap.set(
+          normalized.id,
+          normalized
+        );
+      }
+    });
+
+
+  const books =
+    [...bookMap.values()];
+
+
+  const embeddedLessons =
+    extractLessonsFromCourses(
+      courses
+    );
+
+
+  const embeddedQuizzes =
+    extractQuizzesFromCourses(
+      courses
+    );
+
+
+  const quizBank =
+    asArray(
+      studentWellbeingQuizBank
+    )
+    .map(
+      item =>
+        normalizeGeneric(
+          item,
+          "quiz"
+        )
+    );
+
+
+  const workbooks =
+    asArray(
+      studentWellbeingWorkbook
+    )
+    .map(
+      item =>
+        normalizeGeneric(
+          item,
+          "workbook"
+        )
+    );
+
+
+  const announcements =
+    asArray(
+      allStarter?.announcements
+    )
+    .map(
+      item =>
+        normalizeGeneric(
+          item,
+          "announcement"
+        )
+    );
+
+
+  const events =
+    asArray(
+      allStarter?.events
+    )
+    .map(
+      item =>
+        normalizeGeneric(
+          item,
+          "event"
+        )
+    );
+
+
+  const media =
+    asArray(
+      allStarter?.media
+    )
+    .map(
+      item =>
+        normalizeGeneric(
+          item,
+          "media"
+        )
+    );
+
+
+  return {
+    books,
+    courses,
+    lessons:
+      embeddedLessons,
+
+    quizzes: [
+      ...embeddedQuizzes,
+      ...quizBank
+    ],
+
+    workbooks,
+    announcements,
+    events,
+    media
+  };
+}
+
+
+/* =========================================================
+   VALIDATION
+========================================================= */
+
+function validateCourse(course) {
+  const problems = [];
+
+  if(!course.id) {
+    problems.push(
+      "Missing course ID."
+    );
+  }
+
+  if(!course.title) {
+    problems.push(
+      "Missing title."
+    );
+  }
+
+  if(
+    ![
+      "internal",
+      "external",
+      "instructor-led"
+    ].includes(
+      course.courseType
+    )
+  ) {
+    problems.push(
+      "Invalid courseType."
+    );
+  }
+
+  if(
+    ![
+      "beginner",
+      "intermediate",
+      "advanced"
+    ].includes(
+      course.difficulty
+    )
+  ) {
+    problems.push(
+      "Invalid difficulty."
+    );
+  }
+
+  if(
+    !Array.isArray(
+      course.audience
+    )
+  ) {
+    problems.push(
+      "Audience must be an array."
+    );
+  }
+
+  if(
+    course.courseType === "external" &&
+    !course.externalUrl
+  ) {
+    problems.push(
+      "External course has no externalUrl."
+    );
+  }
+
+  return problems;
+}
+
+
+function validateSeedData(data) {
+  const errors = [];
+  const warnings = [];
+
+
+  data.courses.forEach(course => {
+    const issues =
+      validateCourse(course);
+
+    issues.forEach(issue => {
+      const entry = {
+        collection:
+          "courses",
+
+        id:
+          course.id,
+
+        issue
+      };
+
+      if(
+        issue ===
+        "External course has no externalUrl."
+      ) {
+        warnings.push(entry);
+      } else {
+        errors.push(entry);
+      }
+    });
+  });
+
+
+  const duplicateCheck = [
+    ["books", data.books],
+    ["courses", data.courses],
+    ["lessons", data.lessons],
+    ["quizzes", data.quizzes],
+    ["workbooks", data.workbooks]
+  ];
+
+
+  duplicateCheck.forEach(
+    ([name, rows]) => {
+
+      const ids =
+        new Set();
+
+      rows.forEach(row => {
+        const id =
+          safeDocumentId(
+            row,
+            name
+          );
+
+        if(ids.has(id)) {
+          errors.push({
+            collection:
+              name,
+
+            id,
+
+            issue:
+              "Duplicate document ID in seed data."
+          });
+        }
+
+        ids.add(id);
+      });
+
+    }
+  );
+
+
+  return {
+    valid:
+      errors.length === 0,
+
+    errors,
+    warnings
+  };
+}
+
+
+/* =========================================================
+   MAIN SEED OPERATION
+========================================================= */
+
+async function runLearningSeed({
+  dryRun = false
+} = {}) {
+  const user =
+    auth.currentUser;
+
+
+  if(
+    !await isAdmin(user)
+  ) {
+    throw new Error(
+      "Only approved admins or super admins can seed learning content."
+    );
+  }
+
+
+  const data =
+    await loadSeedSources();
+
+
+  const validation =
+    validateSeedData(data);
+
+
+  if(!validation.valid) {
+    console.error(
+      "[SpeakHub Seeder] Validation failed:",
+      validation.errors
+    );
+
+    throw new Error(
+      `Seed validation failed with ${validation.errors.length} error(s). Check the browser console.`
+    );
+  }
+
+
+  if(validation.warnings.length) {
+    console.warn(
+      "[SpeakHub Seeder] Validation warnings:",
+      validation.warnings
+    );
+  }
+
+
+  const results = {
+    dryRun,
+    validation,
+
+    books:
+      await seedCollection(
+        CONFIG.collections.books,
+        data.books,
+        { dryRun }
+      ),
+
+    courses:
+      await seedCollection(
+        CONFIG.collections.courses,
+        data.courses,
+        { dryRun }
+      ),
+
+    lessons:
+      await seedCollection(
+        CONFIG.collections.lessons,
+        data.lessons,
+        { dryRun }
+      ),
+
+    quizzes:
+      await seedCollection(
+        CONFIG.collections.quizzes,
+        data.quizzes,
+        { dryRun }
+      ),
+
+    workbooks:
+      await seedCollection(
+        CONFIG.collections.workbooks,
+        data.workbooks,
+        { dryRun }
+      ),
+
+    announcements:
+      await seedCollection(
+        CONFIG.collections.announcements,
+        data.announcements,
+        { dryRun }
+      ),
+
+    events:
+      await seedCollection(
+        CONFIG.collections.events,
+        data.events,
+        { dryRun }
+      ),
+
+    media:
+      await seedCollection(
+        CONFIG.collections.media,
+        data.media,
+        { dryRun }
+      )
+  };
+
+
+  console.table(
+    Object.entries(results)
+      .filter(
+        ([, value]) =>
+          value &&
+          typeof value === "object" &&
+          "collection" in value
+      )
+      .map(
+        ([key, value]) => ({
+          key,
+          collection:
+            value.collection,
+          total:
+            value.total,
+          created:
+            value.created,
+          updated:
+            value.updated,
+          skipped:
+            value.skipped,
+          dryRun:
+            value.dryRun
+        })
+      )
+  );
+
+
+  return results;
+}
+
+
+/* =========================================================
+   PUBLIC FUNCTIONS
+========================================================= */
+
+/*
+  Existing HTML can continue calling:
+      await window.seedLearningEngine();
+
+  Optional validation-only run:
+      await window.previewLearningSeed();
+*/
+
+window.seedLearningEngine =
+  async function() {
+    return await runLearningSeed({
+      dryRun: false
+    });
+  };
+
+
+window.previewLearningSeed =
+  async function() {
+    return await runLearningSeed({
+      dryRun: true
+    });
+  };
+
+
+window.validateLearningSeed =
+  async function() {
+    const data =
+      await loadSeedSources();
+
+    return validateSeedData(
+      data
+    );
+  };
+
+
+/* =========================================================
+   OPTIONAL PAGE UI INTEGRATION
+========================================================= */
+
+function setStatus(
+  message,
+  type = "info"
+) {
+  const status =
+    document.getElementById(
+      "seedStatus"
+    );
+
+  if(!status) {
+    return;
+  }
+
+  status.textContent =
+    message;
+
+  status.dataset.status =
+    type;
+}
+
+
+function setButtonBusy(
+  busy,
+  text
+) {
+  const btn =
+    document.getElementById(
+      "seedButton"
+    );
+
+  if(!btn) {
+    return;
+  }
+
+  btn.disabled =
+    Boolean(busy);
+
+  if(text) {
+    btn.textContent =
+      text;
+  }
+}
+
+
+async function seedFromPage() {
+  setButtonBusy(
+    true,
+    "Seeding..."
+  );
+
+  setStatus(
+    "Validating and seeding SpeakHub learning content...",
+    "loading"
+  );
+
+
+  try {
+    const result =
+      await window.seedLearningEngine();
+
+
+    const summary =
+      [
+        result.books,
+        result.courses,
+        result.lessons,
+        result.quizzes,
+        result.workbooks,
+        result.announcements,
+        result.events,
+        result.media
+      ]
+      .filter(Boolean)
+      .reduce(
+        (acc, item) => {
+          acc.total +=
+            item.total || 0;
+
+          acc.created +=
+            item.created || 0;
+
+          acc.updated +=
+            item.updated || 0;
+
+          acc.skipped +=
+            item.skipped || 0;
+
+          return acc;
+        },
+        {
+          total: 0,
+          created: 0,
+          updated: 0,
+          skipped: 0
+        }
+      );
+
+
+    setStatus(
+      `Seed complete. ${summary.created} created, ${summary.updated} updated, ${summary.skipped} skipped across ${summary.total} records.`,
+      "success"
+    );
+
+
+  } catch(error) {
+    console.error(
+      "[SpeakHub Seeder]",
+      error
+    );
+
+
+    setStatus(
+      error.message ||
+      "Learning seed failed.",
+      "error"
+    );
+
+
+  } finally {
+    setButtonBusy(
+      false,
+      "Seed Learning Engine"
+    );
+  }
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    const btn =
+      document.getElementById(
+        "seedButton"
+      );
+
+
+    if(!user) {
+      setStatus(
+        "Login as an approved admin first.",
+        "error"
+      );
+
+      if(btn) {
+        btn.disabled = true;
+      }
+
+      return;
+    }
+
+
+    if(
+      !await isAdmin(user)
+    ) {
+      setStatus(
+        "This page is admin-only.",
+        "error"
+      );
+
+      if(btn) {
+        btn.disabled = true;
+      }
+
+      return;
+    }
+
+
+    setStatus(
+      "Admin verified. The learning engine is ready to seed.",
+      "success"
+    );
+
+
+    if(btn) {
+      btn.disabled = false;
+
+      /*
+        Only attach the listener if inline onclick is not already used.
+      */
+
+      if(
+        !btn.dataset.seedListenerAttached &&
+        !btn.getAttribute("onclick")
+      ) {
+        btn.addEventListener(
+          "click",
+          seedFromPage
+        );
+
+        btn.dataset.seedListenerAttached =
+          "true";
+      }
+    }
+
+  }
+);
