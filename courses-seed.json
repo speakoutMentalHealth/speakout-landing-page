@@ -1,802 +1,618 @@
 [
   {
-“id”: “mental-health-foundations”,
-“title”: “Mental Health Foundations”,
-“category”: “mental-health”,
-“audience”: “secondary”,
-“difficulty”: “intermediate”,
-“duration”: “4 Weeks”,
-“description”: “A comprehensive introduction to mental health, emotional wellbeing, resilience, self-care, and mental health advocacy.”,
-“status”: “active”,
-“featured”: true,
-“certificateEligible”: true,
-“lessonCount”: 24,
+    "id": "mental-health-foundations",
+    "title": "Mental Health Foundations",
+    "courseType": "internal",
+    "provider": "SpeakOut Mental Health",
+    "providerLogo": "",
+    "category": "mental-health",
+    "audience": [
+      "secondary",
+      "university",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "duration": "4 weeks",
+    "description": "A comprehensive introduction to mental health, emotional wellbeing, resilience, self-care and mental health advocacy.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakOut Mental Health",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
+    "lessonCount": 24,
+    "modules": [
+      {
+        "title": "Module 1: Understanding Mental Health",
+        "description": "Build a strong foundation in mental health concepts.",
+        "lessons": [
+          {
+            "title": "What is Mental Health?",
+            "duration": "20 mins",
+            "content": "<h2>What is Mental Health?</h2><p>Mental health refers to our emotional, psychological, and social wellbeing. It influences how we think, feel, behave, make decisions, cope with stress, and relate to others.</p><p>Good mental health does not mean feeling happy every day. It means having the ability to manage life's challenges in healthy ways.</p><h3>Learning Objectives</h3><ul><li>Define mental health</li><li>Understand emotional wellbeing</li><li>Recognize the importance of mental wellness</li></ul>"
+          },
+          {
+            "title": "Mental Health vs Mental Illness",
+            "duration": "20 mins",
+            "content": "<h2>Mental Health vs Mental Illness</h2><p>Everyone has mental health, just as everyone has physical health. Mental illness refers to specific conditions that affect thinking, mood or behavior.</p><p>A person can have poor mental health without a diagnosed illness, and a person with a mental illness can still live a productive and meaningful life.</p>"
+          },
+          {
+            "title": "Common Mental Health Myths",
+            "duration": "20 mins",
+            "content": "<h2>Mental Health Myths</h2><ul><li>Myth: Mental illness is a sign of weakness.</li><li>Fact: Mental illness is a health condition.</li><li>Myth: People should just 'snap out of it'.</li><li>Fact: Recovery often requires support and treatment.</li></ul>"
+          },
+          {
+            "title": "Why Mental Health Matters",
+            "duration": "25 mins",
+            "content": "<h2>Why Mental Health Matters</h2><p>Mental health affects relationships, academic performance, productivity, decision-making and physical health.</p>"
+          }
+        ],
+        "quiz": {
+          "title": "Module 1 Quiz",
+          "questions": 10,
+          "passMark": 70
+        }
+      },
+      {
+        "title": "Module 2: Emotional Wellbeing",
+        "description": "Understanding emotions and self-awareness.",
+        "lessons": [
+          {
+            "title": "Understanding Emotions",
+            "duration": "25 mins"
+          },
+          {
+            "title": "Emotional Regulation",
+            "duration": "25 mins"
+          },
+          {
+            "title": "Building Resilience",
+            "duration": "25 mins"
+          },
+          {
+            "title": "Developing Self-Awareness",
+            "duration": "25 mins"
+          }
+        ],
+        "quiz": {
+          "title": "Module 2 Quiz",
+          "questions": 10,
+          "passMark": 70
+        }
+      },
+      {
+        "title": "Module 3: Stress and Anxiety",
+        "description": "Recognizing stress and anxiety and learning healthy coping strategies.",
+        "lessons": [
+          {
+            "title": "What is Stress?"
+          },
+          {
+            "title": "What is Anxiety?"
+          },
+          {
+            "title": "Signs and Symptoms"
+          },
+          {
+            "title": "Healthy Coping Skills"
+          }
+        ],
+        "quiz": {
+          "title": "Module 3 Quiz",
+          "questions": 10,
+          "passMark": 70
+        }
+      },
+      {
+        "title": "Module 4: Depression Awareness",
+        "description": "Recognizing warning signs and supporting others.",
+        "lessons": [
+          {
+            "title": "Understanding Depression"
+          },
+          {
+            "title": "Common Symptoms"
+          },
+          {
+            "title": "Risk Factors"
+          },
+          {
+            "title": "How to Support Someone"
+          }
+        ],
+        "quiz": {
+          "title": "Module 4 Quiz",
+          "questions": 10,
+          "passMark": 70
+        }
+      },
+      {
+        "title": "Module 5: Building Wellbeing",
+        "description": "Practical wellbeing habits.",
+        "lessons": [
+          {
+            "title": "Sleep and Mental Health"
+          },
+          {
+            "title": "Nutrition and Mood"
+          },
+          {
+            "title": "Exercise and Wellbeing"
+          },
+          {
+            "title": "Social Connection"
+          }
+        ],
+        "quiz": {
+          "title": "Module 5 Quiz",
+          "questions": 10,
+          "passMark": 70
+        }
+      },
+      {
+        "title": "Module 6: Mental Health Advocacy",
+        "description": "Using knowledge to support others and reduce stigma.",
+        "lessons": [
+          {
+            "title": "Becoming an Advocate"
+          },
+          {
+            "title": "Reducing Stigma"
+          },
+          {
+            "title": "Community Awareness"
+          },
+          {
+            "title": "Taking Action"
+          }
+        ],
+        "finalAssessment": {
+          "title": "Final Assessment",
+          "questions": 50,
+          "passMark": 70
+        }
+      }
+    ]
+  },
 
-“modules”: [
-
-{
-  "title": "Module 1: Understanding Mental Health",
-  "description": "Build a strong foundation in mental health concepts.",
-  "lessons": [
-    {
-      "title": "What is Mental Health?",
-      "duration": "20 mins",
-      "content": "<h2>What is Mental Health?</h2><p>Mental health refers to our emotional, psychological, and social wellbeing. It influences how we think, feel, behave, make decisions, cope with stress, and relate to others.</p><p>Good mental health does not mean feeling happy every day. It means having the ability to manage life's challenges in healthy ways.</p><h3>Learning Objectives</h3><ul><li>Define mental health</li><li>Understand emotional wellbeing</li><li>Recognize the importance of mental wellness</li></ul>"
-    },
-    {
-      "title": "Mental Health vs Mental Illness",
-      "duration": "20 mins",
-      "content": "<h2>Mental Health vs Mental Illness</h2><p>Everyone has mental health, just as everyone has physical health. Mental illness refers to specific conditions that affect thinking, mood, or behavior.</p><p>A person can have poor mental health without a diagnosed illness, and a person with a mental illness can still live a productive and meaningful life.</p>"
-    },
-    {
-      "title": "Common Mental Health Myths",
-      "duration": "20 mins",
-      "content": "<h2>Mental Health Myths</h2><ul><li>Myth: Mental illness is a sign of weakness.</li><li>Fact: Mental illness is a health condition.</li><li>Myth: People should just 'snap out of it'.</li><li>Fact: Recovery often requires support and treatment.</li></ul>"
-    },
-    {
-      "title": "Why Mental Health Matters",
-      "duration": "25 mins",
-      "content": "<h2>Why Mental Health Matters</h2><p>Mental health affects relationships, academic performance, productivity, decision-making, and physical health.</p>"
-    }
-  ],
-  "quiz": {
-    "title": "Module 1 Quiz",
-    "questions": 10,
-    "passMark": 70
-  }
-},
-{
-  "title": "Module 2: Emotional Wellbeing",
-  "description": "Understanding emotions and self-awareness.",
-  "lessons": [
-    {
-      "title": "Understanding Emotions",
-      "duration": "25 mins"
-    },
-    {
-      "title": "Emotional Regulation",
-      "duration": "25 mins"
-    },
-    {
-      "title": "Building Resilience",
-      "duration": "25 mins"
-    },
-    {
-      "title": "Developing Self-Awareness",
-      "duration": "25 mins"
-    }
-  ],
-  "quiz": {
-    "questions": 10,
-    "passMark": 70
-  }
-},
-{
-  "title": "Module 3: Stress and Anxiety",
-  "description": "Recognizing stress and anxiety and learning healthy coping strategies.",
-  "lessons": [
-    {
-      "title": "What is Stress?"
-    },
-    {
-      "title": "What is Anxiety?"
-    },
-    {
-      "title": "Signs and Symptoms"
-    },
-    {
-      "title": "Healthy Coping Skills"
-    }
-  ],
-  "quiz": {
-    "questions": 10,
-    "passMark": 70
-  }
-},
-{
-  "title": "Module 4: Depression Awareness",
-  "description": "Recognizing warning signs and supporting others.",
-  "lessons": [
-    {
-      "title": "Understanding Depression"
-    },
-    {
-      "title": "Common Symptoms"
-    },
-    {
-      "title": "Risk Factors"
-    },
-    {
-      "title": "How to Support Someone"
-    }
-  ],
-  "quiz": {
-    "questions": 10,
-    "passMark": 70
-  }
-},
-{
-  "title": "Module 5: Building Wellbeing",
-  "description": "Practical wellbeing habits.",
-  "lessons": [
-    {
-      "title": "Sleep and Mental Health"
-    },
-    {
-      "title": "Nutrition and Mood"
-    },
-    {
-      "title": "Exercise and Wellbeing"
-    },
-    {
-      "title": "Social Connection"
-    }
-  ],
-  "quiz": {
-    "questions": 10,
-    "passMark": 70
-  }
-},
-{
-  "title": "Module 6: Mental Health Advocacy",
-  "description": "Using knowledge to support others and reduce stigma.",
-  "lessons": [
-    {
-      "title": "Becoming an Advocate"
-    },
-    {
-      "title": "Reducing Stigma"
-    },
-    {
-      "title": "Community Awareness"
-    },
-    {
-      "title": "Taking Action"
-    }
-  ],
-  "finalAssessment": {
-    "questions": 50,
-    "passMark": 70
-  }
-}
-
-]
-}
   {
     "id": "anxiety-management",
     "title": "Anxiety Management",
+    "courseType": "internal",
+    "provider": "SpeakOut Mental Health",
+    "providerLogo": "",
     "category": "mental-health",
-    "audience": "university",
-    "difficulty": "advanced",
+    "audience": [
+      "university",
+      "adults",
+      "general"
+    ],
+    "difficulty": "intermediate",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Anxiety Management. Includes lessons, activities and quiz pathway.",
+    "description": "A structured SpeakHub course focused on understanding anxiety, recognizing symptoms and developing practical management strategies.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakOut Mental Health",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "depression-awareness",
     "title": "Depression Awareness",
+    "courseType": "internal",
+    "provider": "SpeakOut Mental Health",
+    "providerLogo": "",
     "category": "mental-health",
-    "audience": "teachers",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "parents",
+      "adults",
+      "general"
+    ],
     "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Depression Awareness. Includes lessons, activities and quiz pathway.",
+    "description": "Understand depression, recognize common warning signs and learn appropriate ways to support individuals experiencing emotional difficulties.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakOut Mental Health",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "stress-management",
     "title": "Stress Management",
+    "courseType": "internal",
+    "provider": "SpeakOut Mental Health",
+    "providerLogo": "",
     "category": "mental-health",
-    "audience": "parents",
-    "difficulty": "intermediate",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "parents",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Stress Management. Includes lessons, activities and quiz pathway.",
+    "description": "Learn how stress affects mental and physical wellbeing and develop practical techniques for managing everyday pressure.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakOut Mental Health",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "psychological-first-aid",
     "title": "Psychological First Aid",
+    "courseType": "internal",
+    "provider": "SpeakOut Mental Health",
+    "providerLogo": "",
     "category": "mental-health",
-    "audience": "general",
-    "difficulty": "advanced",
+    "audience": [
+      "teachers",
+      "ngo-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "intermediate",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Psychological First Aid. Includes lessons, activities and quiz pathway.",
+    "description": "Develop foundational skills for providing safe, practical and supportive assistance to people experiencing distress or crisis.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakOut Mental Health",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "leadership-foundations",
     "title": "Leadership Foundations",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "leadership",
-    "audience": "secondary",
+    "audience": [
+      "secondary",
+      "university",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
     "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Leadership Foundations. Includes lessons, activities and quiz pathway.",
+    "description": "Build the core skills required to lead effectively, communicate clearly, make decisions and positively influence others.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "student-leadership",
     "title": "Student Leadership",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "leadership",
-    "audience": "university",
-    "difficulty": "intermediate",
+    "audience": [
+      "secondary",
+      "university"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Student Leadership. Includes lessons, activities and quiz pathway.",
+    "description": "Develop confidence, communication, teamwork, responsibility and leadership skills for school and university environments.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "community-leadership",
     "title": "Community Leadership",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "leadership",
-    "audience": "teachers",
-    "difficulty": "advanced",
+    "audience": [
+      "university",
+      "young-professionals",
+      "ngo-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "intermediate",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Community Leadership. Includes lessons, activities and quiz pathway.",
+    "description": "Learn how to mobilize people, understand community needs, build partnerships and lead sustainable community initiatives.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "team-leadership",
     "title": "Team Leadership",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "leadership",
-    "audience": "parents",
-    "difficulty": "beginner",
+    "audience": [
+      "university",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "intermediate",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Team Leadership. Includes lessons, activities and quiz pathway.",
+    "description": "Learn how to build effective teams, delegate responsibilities, motivate people and improve team performance.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "conflict-resolution",
     "title": "Conflict Resolution",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "leadership",
-    "audience": "general",
-    "difficulty": "intermediate",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "parents",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Conflict Resolution. Includes lessons, activities and quiz pathway.",
+    "description": "Develop practical communication, negotiation and problem-solving skills for resolving disagreements constructively.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "computer-basics",
     "title": "Computer Basics",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "digital-skills",
-    "audience": "secondary",
-    "difficulty": "advanced",
+    "audience": [
+      "secondary",
+      "university",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Computer Basics. Includes lessons, activities and quiz pathway.",
+    "description": "Learn essential computer skills including basic computer operations, file management, internet use and digital productivity.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "microsoft-word",
     "title": "Microsoft Word",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "digital-skills",
-    "audience": "university",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
     "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Microsoft Word. Includes lessons, activities and quiz pathway.",
+    "description": "Learn how to create, format and manage professional documents using Microsoft Word.",
     "status": "active",
     "featured": true,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "microsoft-excel",
     "title": "Microsoft Excel",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "digital-skills",
-    "audience": "teachers",
-    "difficulty": "intermediate",
+    "audience": [
+      "university",
+      "teachers",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Microsoft Excel. Includes lessons, activities and quiz pathway.",
+    "description": "Learn spreadsheet fundamentals, formulas, data organization and practical Excel skills for school and work.",
     "status": "active",
     "featured": false,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "canva-design",
     "title": "Canva Design",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "digital-skills",
-    "audience": "parents",
-    "difficulty": "advanced",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "young-professionals",
+      "entrepreneurs",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Canva Design. Includes lessons, activities and quiz pathway.",
+    "description": "Learn how to create professional graphics, presentations, social media content and visual materials using Canva.",
     "status": "active",
     "featured": false,
+    "free": true,
     "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   },
+
   {
     "id": "cybersecurity-awareness",
     "title": "Cybersecurity Awareness",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
     "category": "digital-skills",
-    "audience": "general",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "parents",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
     "difficulty": "beginner",
     "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Cybersecurity Awareness. Includes lessons, activities and quiz pathway.",
+    "description": "Learn essential online safety, password security, phishing awareness, privacy protection and responsible digital behavior.",
     "status": "active",
     "featured": false,
+    "free": true,
     "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "cv-writing",
-    "title": "CV Writing",
-    "category": "career",
-    "audience": "secondary",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in CV Writing. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "interview-preparation",
-    "title": "Interview Preparation",
-    "category": "career",
-    "audience": "university",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Interview Preparation. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "career-planning",
-    "title": "Career Planning",
-    "category": "career",
-    "audience": "teachers",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Career Planning. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "workplace-communication",
-    "title": "Workplace Communication",
-    "category": "career",
-    "audience": "parents",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Workplace Communication. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "personal-branding",
-    "title": "Personal Branding",
-    "category": "career",
-    "audience": "general",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Personal Branding. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "personal-finance",
-    "title": "Personal Finance",
-    "category": "financial-literacy",
-    "audience": "secondary",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Personal Finance. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "budgeting",
-    "title": "Budgeting",
-    "category": "financial-literacy",
-    "audience": "university",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Budgeting. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "saving",
-    "title": "Saving",
-    "category": "financial-literacy",
-    "audience": "teachers",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Saving. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "debt-management",
-    "title": "Debt Management",
-    "category": "financial-literacy",
-    "audience": "parents",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Debt Management. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "financial-planning",
-    "title": "Financial Planning",
-    "category": "financial-literacy",
-    "audience": "general",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Financial Planning. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "classroom-management",
-    "title": "Classroom Management",
-    "category": "teacher-training",
-    "audience": "secondary",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Classroom Management. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "student-engagement",
-    "title": "Student Engagement",
-    "category": "teacher-training",
-    "audience": "university",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Student Engagement. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "lesson-planning",
-    "title": "Lesson Planning",
-    "category": "teacher-training",
-    "audience": "teachers",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Lesson Planning. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "mental-health-in-schools",
-    "title": "Mental Health in Schools",
-    "category": "teacher-training",
-    "audience": "parents",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Mental Health in Schools. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "child-protection",
-    "title": "Child Protection",
-    "category": "teacher-training",
-    "audience": "general",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Child Protection. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "positive-parenting",
-    "title": "Positive Parenting",
-    "category": "parent-training",
-    "audience": "secondary",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Positive Parenting. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "child-development",
-    "title": "Child Development",
-    "category": "parent-training",
-    "audience": "university",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Child Development. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "communication-with-children",
-    "title": "Communication with Children",
-    "category": "parent-training",
-    "audience": "teachers",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Communication with Children. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "digital-safety-at-home",
-    "title": "Digital Safety at Home",
-    "category": "parent-training",
-    "audience": "parents",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Digital Safety at Home. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "family-wellness",
-    "title": "Family Wellness",
-    "category": "parent-training",
-    "audience": "general",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Family Wellness. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "speakout-orientation",
-    "title": "SpeakOut Orientation",
-    "category": "ambassador-training",
-    "audience": "secondary",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in SpeakOut Orientation. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "mental-health-advocacy",
-    "title": "Mental Health Advocacy",
-    "category": "ambassador-training",
-    "audience": "university",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Mental Health Advocacy. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "community-engagement",
-    "title": "Community Engagement",
-    "category": "ambassador-training",
-    "audience": "teachers",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Community Engagement. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "event-coordination",
-    "title": "Event Coordination",
-    "category": "ambassador-training",
-    "audience": "parents",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Event Coordination. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "reporting-and-documentation",
-    "title": "Reporting and Documentation",
-    "category": "ambassador-training",
-    "audience": "general",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Reporting and Documentation. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "ngo-fundamentals",
-    "title": "NGO Fundamentals",
-    "category": "ngo-community",
-    "audience": "secondary",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in NGO Fundamentals. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "community-mobilization",
-    "title": "Community Mobilization",
-    "category": "ngo-community",
-    "audience": "university",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Community Mobilization. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "proposal-writing",
-    "title": "Proposal Writing",
-    "category": "ngo-community",
-    "audience": "teachers",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Proposal Writing. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "grant-writing",
-    "title": "Grant Writing",
-    "category": "ngo-community",
-    "audience": "parents",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Grant Writing. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "monitoring-and-evaluation",
-    "title": "Monitoring and Evaluation",
-    "category": "ngo-community",
-    "audience": "general",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Monitoring and Evaluation. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "communication-skills",
-    "title": "Communication Skills",
-    "category": "public-speaking",
-    "audience": "secondary",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Communication Skills. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "storytelling",
-    "title": "Storytelling",
-    "category": "public-speaking",
-    "audience": "university",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Storytelling. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "presentation-design",
-    "title": "Presentation Design",
-    "category": "public-speaking",
-    "audience": "teachers",
-    "difficulty": "beginner",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Presentation Design. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "persuasive-speaking",
-    "title": "Persuasive Speaking",
-    "category": "public-speaking",
-    "audience": "parents",
-    "difficulty": "intermediate",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Persuasive Speaking. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
-    "lessonCount": 6
-  },
-  {
-    "id": "public-speaking-masterclass",
-    "title": "Public Speaking Masterclass",
-    "category": "public-speaking",
-    "audience": "general",
-    "difficulty": "advanced",
-    "duration": "4 weeks",
-    "description": "Professional SpeakHub course in Public Speaking Masterclass. Includes lessons, activities and quiz pathway.",
-    "status": "active",
-    "featured": false,
-    "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
     "lessonCount": 6
   }
 ]
