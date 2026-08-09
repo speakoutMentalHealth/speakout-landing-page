@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seed External Courses | SpeakHub</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--bg:#f7f9fc;--line:#e5edf6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+.wrap{width:min(850px,92%);margin:55px auto;background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 18px 44px rgba(7,21,43,.10)}
+h1{color:var(--navy);font-size:clamp(2rem,5vw,3.6rem);line-height:1;margin:0 0 12px}
+p{line-height:1.6;color:#637083}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+.card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fbfdff}
+.card strong{display:block;color:var(--navy)}
+.card span{font-size:.85rem;color:#637083}
+button{border:0;border-radius:999px;background:var(--blue);color:#fff;padding:12px 18px;font-weight:900;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.box{margin-top:16px;padding:14px;border-radius:14px;background:var(--soft);color:var(--blue);font-weight:800;white-space:pre-line}
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:#fff4df;color:#704800}
+@media(max-width:700px){.grid{grid-template-columns:1fr}button{width:100%;border-radius:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Seed External Courses</h1>
+  <p>This adds four test external learning pathways to the existing <b>courses</b> collection. It does not delete your current SpeakHub courses.</p>
+
+  <div class="grid">
+    <div class="card"><strong>AI & Data</strong><span>Kaggle • Intro to Machine Learning</span></div>
+    <div class="card"><strong>Programming</strong><span>freeCodeCamp • Python Certification</span></div>
+    <div class="card"><strong>ICT / Cybersecurity</strong><span>Cisco • Introduction to Cybersecurity</span></div>
+    <div class="card"><strong>Leadership</strong><span>OpenLearn • Leadership and Followership</span></div>
+  </div>
+
+  <button id="seedButton" disabled>Install External Courses</button>
+
+  <div class="box" id="statusBox">Checking approved admin access...</div>
+
+  <div class="box warn">
+    Run this once for the test. Because records use fixed IDs, running it again updates the same four courses instead of creating duplicates.
+  </div>
+</div>
+
+<script type="module" src="seed-external-courses.js"></script>
+
+<script type="module">
+const button = document.getElementById("seedButton");
+const statusBox = document.getElementById("statusBox");
+
+window.addEventListener("external-seed-admin-ready",()=>{
+  button.disabled = false;
+  statusBox.className = "box ok";
+  statusBox.textContent = "Admin verified. Ready to install the four external courses.";
+});
+
+window.addEventListener("external-seed-admin-error",event=>{
+  button.disabled = true;
+  statusBox.className = "box bad";
+  statusBox.textContent = event.detail || "Admin verification failed.";
+});
+
+button.addEventListener("click",async()=>{
+  button.disabled = true;
+  statusBox.className = "box";
+  statusBox.textContent = "Installing external courses...";
+
+  try{
+    const result = await window.seedExternalCourses();
+    statusBox.className = "box ok";
+    statusBox.textContent =
+      `Done.\nExternal courses installed: ${result.courses}\n\n` +
+      result.ids.join("\n");
+  }catch(error){
+    statusBox.className = "box bad";
+    statusBox.textContent = error.message || "Could not seed external courses.";
+  }finally{
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
