@@ -1,4 +1,1851 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>School Users | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:52px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}h2,h3{line-height:1.05;color:var(--navy)}.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}.card p,.panel p{color:var(--muted);line-height:1.6}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}.approved,.active{background:var(--greenSoft);color:var(--green)}.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended{background:var(--redSoft);color:var(--red)}.stat strong{display:block;color:var(--blue);font-size:2rem}.profile-grid,.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}textarea{min-height:100px;resize:vertical}.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 18px}.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}.photo-help{color:var(--muted);font-size:.88rem;line-height:1.5}.table{width:100%;border-collapse:separate;border-spacing:0 10px}.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase}.table td,.table th{padding:10px}.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.actions{display:flex;gap:8px;flex-wrap:wrap}.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}@media(max-width:900px){.g4,.g3,.g2,.profile-grid,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
-</style></head><body><header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img src="logo.png"><div><h2>SpeakOut</h2><p>School Users</p></div></a><nav class="links" id="roleNav"></nav></div></header><main><section class="hero"><div class="container"><span class="kicker">School Management</span><h1>School Users</h1><p>Manage school users. This page is restricted to school admins.</p></div></section><section><div class="container"><div id="statusBox" class="notice">Checking access...</div><div class="grid g2"><div class="panel"><span class="label">Add User</span><h2>Add school member</h2><form id="addForm"><div class="form-grid"><input id="firstName" placeholder="First Name" required><input id="lastName" placeholder="Last Name" required><input id="email" type="email" placeholder="Email"><input id="phone" placeholder="Phone"><select id="role" required><option value="">Select Role</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="student">Student</option></select><input id="classLevel" placeholder="Class / Department / Notes"></div><textarea id="bio" placeholder="Optional note"></textarea><button class="btn primary" type="submit">Add User</button></form></div><div class="panel"><span class="label">Filter</span><h2>Find users</h2><div class="form-grid"><input id="searchInput" placeholder="Search..."><select id="statusFilter"><option value="all">All Status</option><option value="pending_school_approval">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div></div></div><div class="panel" style="margin-top:18px"><h2>Users</h2><div style="overflow:auto"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Student ID</th><th>Status</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section></main><footer class="footer"><div class="container">SpeakOut Mental Health Outreach</div></footer><script type="module">import { requireRoles, renderRoleNav } from "./launch-role-guard.js";import { db } from "./firebase-config.js";import { collection,getDocs,query,where,addDoc,doc,updateDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";let SCHOOL=null,USERS=[];const FILTER_ROLE="";function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t;}function safe(v){return v||"—";}function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${safe(v)}</span>`;}function generateStudentId(){return "STU-"+new Date().getFullYear()+"-"+Math.floor(1000+Math.random()*9000);}async function loadUsers(){const snap=await getDocs(query(collection(db,"users"),where("schoolId","==",SCHOOL.id)));USERS=[];snap.forEach(d=>{const u={id:d.id,...d.data()};if(!FILTER_ROLE||u.role===FILTER_ROLE)USERS.push(u);});render();}function render(){const s=searchInput.value.toLowerCase().trim();const sf=statusFilter.value;const filtered=USERS.filter(u=>{const text=`${u.firstName||""} ${u.lastName||""} ${u.email||""} ${u.role||""} ${u.studentId||""}`.toLowerCase();return(!s||text.includes(s))&&(sf==="all"||u.status===sf);});rows.innerHTML=filtered.map(u=>`<tr class="row"><td>${safe(u.firstName)} ${safe(u.lastName)}</td><td>${safe(u.email)}</td><td>${pill(u.role)}</td><td>${safe(u.studentId)}</td><td>${pill(u.status)}</td><td><div class="actions"><button class="btn success" data-id="${u.id}" data-status="approved">Approve</button><button class="btn danger" data-id="${u.id}" data-status="rejected">Reject</button><button class="btn soft" data-id="${u.id}" data-status="pending_school_approval">Pending</button></div></td></tr>`).join("")||"<tr><td colspan='6'>No users found.</td></tr>";rows.querySelectorAll("button[data-id]").forEach(b=>b.onclick=async()=>{await updateDoc(doc(db,"users",b.dataset.id),{status:b.dataset.status,updatedAt:serverTimestamp()});show("User updated.","ok");await loadUsers();});}addForm.addEventListener("submit",async e=>{e.preventDefault();const selectedRole=role.value;const userData={firstName:firstName.value.trim(),lastName:lastName.value.trim(),fullName:(firstName.value+" "+lastName.value).trim(),email:email.value.trim(),phone:phone.value.trim(),role:selectedRole,schoolId:SCHOOL.id,schoolCode:SCHOOL.schoolCode||"",schoolName:SCHOOL.schoolName||"",classLevel:classLevel.value.trim(),occupation:classLevel.value.trim(),bio:bio.value.trim(),status:"pending_school_approval",createdBySchool:true,createdAt:serverTimestamp(),updatedAt:serverTimestamp()};if(selectedRole==="student")userData.studentId=generateStudentId();await addDoc(collection(db,"users"),userData);addForm.reset();show("User added under this school.","ok");await loadUsers();});[searchInput,statusFilter].forEach(el=>{el.addEventListener("input",render);el.addEventListener("change",render);});requireRoles(["school_admin"],async(user,profile)=>{renderRoleNav(profile,"Users");SCHOOL={id:profile.schoolId,schoolCode:profile.schoolCode,schoolName:profile.schoolName};if(!SCHOOL.id){show("No school linked.","bad");return;}show("School verified.","ok");await loadUsers();});</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>School Users | SpeakOut</title>
+
+<meta
+  name="description"
+  content="Unified SpeakOut school user management for students, teachers and parents, including approval status, role filtering, school linkage and learning activity."
+>
+
+<link rel="icon" href="logo.png">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
+section{padding:36px 0}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.g5{grid-template-columns:repeat(5,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+}
+
+.approved,.active,.completed{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.pending,.pending_school_approval,.in-progress{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.rejected,.suspended{
+  background:var(--redSoft);
+  color:var(--red);
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:2rem;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.84rem;
+  font-weight:800;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+input,textarea,select{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#fbfdff;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:var(--blue);
+  outline:none;
+  box-shadow:0 0 0 4px rgba(10,95,191,.08);
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 10px;
+  min-width:1120px;
+}
+
+.table th{
+  text-align:left;
+  color:var(--muted);
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.table td,.table th{
+  padding:11px;
+  vertical-align:middle;
+}
+
+.table tbody tr{
+  background:#fff;
+  box-shadow:var(--shadowSoft);
+}
+
+.table tbody td:first-child{
+  border-radius:14px 0 0 14px;
+}
+
+.table tbody td:last-child{
+  border-radius:0 14px 14px 0;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.user-name{
+  font-weight:900;
+  color:var(--navy);
+}
+
+.user-sub{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.78rem;
+}
+
+.small-note{
+  color:var(--muted);
+  font-size:.85rem;
+  line-height:1.55;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+@media(max-width:1000px){
+  .g5,.g4,.g3,.g2,.form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+
+    <a class="brand" href="school-dashboard.html">
+      <img src="logo.png" alt="SpeakOut Logo">
+      <div>
+        <h2>SpeakOut</h2>
+        <p>School Users</p>
+      </div>
+    </a>
+
+    <nav class="links" id="roleNav"></nav>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="hero">
+  <div class="container">
+
+    <span class="kicker">
+      School Management
+    </span>
+
+    <h1>
+      All School Users
+    </h1>
+
+    <p id="schoolMeta">
+      Manage students, teachers and parents from one school-wide control centre.
+    </p>
+
+    <div id="schoolPills"></div>
+
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+
+    <div id="statusBox" class="notice">
+      Checking school access...
+    </div>
+
+
+    <div class="grid g5" style="margin-bottom:18px">
+
+      <div class="card stat">
+        <strong id="totalCount">0</strong>
+        <span>Total Users</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="studentCount">0</strong>
+        <span>Students</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="teacherCount">0</strong>
+        <span>Teachers</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="parentCount">0</strong>
+        <span>Parents</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="pendingCount">0</strong>
+        <span>Pending</span>
+      </div>
+
+    </div>
+
+
+    <div class="grid g2">
+
+      <div class="panel">
+
+        <span class="label">
+          Add School Member
+        </span>
+
+        <h2>
+          Create a school user record
+        </h2>
+
+        <p class="small-note">
+          This creates a Firestore user profile only. It does not create a Firebase Authentication account.
+          Students receive a SpeakOut Student ID automatically; teachers and parents do not.
+        </p>
+
+
+        <form id="addForm">
+
+          <div class="form-grid">
+
+            <input
+              id="firstName"
+              placeholder="First Name"
+              required
+            >
+
+            <input
+              id="lastName"
+              placeholder="Last Name"
+              required
+            >
+
+            <input
+              id="email"
+              type="email"
+              placeholder="Email, if available"
+            >
+
+            <input
+              id="phone"
+              placeholder="Phone, if available"
+            >
+
+            <select id="role" required>
+              <option value="">Select Role</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="parent">Parent</option>
+            </select>
+
+            <input
+              id="roleDetail"
+              placeholder="Class / Department / Parent Role"
+            >
+
+          </div>
+
+          <textarea
+            id="bio"
+            placeholder="Optional note"
+          ></textarea>
+
+          <button
+            class="btn primary"
+            type="submit"
+            id="addButton"
+          >
+            Add User
+          </button>
+
+        </form>
+
+      </div>
+
+
+      <div class="panel">
+
+        <span class="label">
+          Search & Filter
+        </span>
+
+        <h2>
+          Find school users
+        </h2>
+
+        <div class="form-grid">
+
+          <input
+            id="searchInput"
+            placeholder="Search name, email, ID, role, class..."
+          >
+
+          <select id="roleFilter">
+            <option value="all">All Roles</option>
+            <option value="student">Students</option>
+            <option value="teacher">Teachers</option>
+            <option value="parent">Parents</option>
+          </select>
+
+          <select id="statusFilter">
+            <option value="all">All Statuses</option>
+            <option value="pending_school_approval">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="suspended">Suspended</option>
+          </select>
+
+          <select id="activityFilter">
+            <option value="all">All Learning Activity</option>
+            <option value="active">Has Learning Activity</option>
+            <option value="none">No Learning Activity</option>
+          </select>
+
+        </div>
+
+
+        <div class="actions" style="margin-top:14px">
+
+          <a
+            class="btn soft"
+            href="school-dashboard.html"
+          >
+            Back to Dashboard
+          </a>
+
+          <a
+            class="btn primary"
+            href="school-students.html"
+          >
+            Students
+          </a>
+
+          <a
+            class="btn soft"
+            href="school-teachers.html"
+          >
+            Teachers
+          </a>
+
+          <a
+            class="btn gold"
+            href="school-parents.html"
+          >
+            Parents
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="panel"
+      style="margin-top:18px"
+    >
+
+      <h2>
+        School Users
+      </h2>
+
+      <p class="small-note">
+        This page is the unified school roster. Approval status and learning activity are shown without mixing student, teacher and parent-specific identifiers.
+      </p>
+
+      <div class="table-wrap">
+
+        <table class="table">
+
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Contact</th>
+              <th>Role Detail</th>
+              <th>Identifier</th>
+              <th>Status</th>
+              <th>Learning</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="rows"></tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    SpeakOut Mental Health Outreach • Unified School User Management
+  </div>
+</footer>
+
+
+<script type="module">
+
+import {
+  requireRoles,
+  renderRoleNav
+} from "./launch-role-guard.js";
+
+import {
+  db
+} from "./firebase-config.js";
+
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  addDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+let SCHOOL = null;
+let USERS = [];
+let PROGRESS = new Map();
+
+
+const statusBox = document.getElementById("statusBox");
+const schoolMeta = document.getElementById("schoolMeta");
+const schoolPills = document.getElementById("schoolPills");
+
+const totalCount = document.getElementById("totalCount");
+const studentCount = document.getElementById("studentCount");
+const teacherCount = document.getElementById("teacherCount");
+const parentCount = document.getElementById("parentCount");
+const pendingCount = document.getElementById("pendingCount");
+
+const addForm = document.getElementById("addForm");
+const addButton = document.getElementById("addButton");
+
+const firstName = document.getElementById("firstName");
+const lastName = document.getElementById("lastName");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+const role = document.getElementById("role");
+const roleDetail = document.getElementById("roleDetail");
+const bio = document.getElementById("bio");
+
+const searchInput = document.getElementById("searchInput");
+const roleFilter = document.getElementById("roleFilter");
+const statusFilter = document.getElementById("statusFilter");
+const activityFilter = document.getElementById("activityFilter");
+const rows = document.getElementById("rows");
+
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = `notice ${type}`;
+}
+
+
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
+}
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function pretty(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
+
+function pill(value){
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+}
+
+
+function generateStudentId(){
+
+  const year =
+    new Date().getFullYear();
+
+  const random =
+    Math.random()
+      .toString(36)
+      .slice(2,7)
+      .toUpperCase();
+
+  return `STU-${year}-${random}`;
+}
+
+
+function learningSummary(userId){
+
+  const items =
+    PROGRESS.get(userId) ||
+    [];
+
+  const courses =
+    items.filter(item=>{
+
+      const type =
+        normalize(item.type);
+
+      return (
+        type === "course" ||
+        type === "external-course" ||
+        Boolean(item.courseId)
+      );
+
+    });
+
+
+  const completed =
+    courses.filter(item=>{
+
+      const percent =
+        Number(
+          item.percent ??
+          item.progressPercent ??
+          item.progress ??
+          0
+        ) || 0;
+
+      return (
+        normalize(item.status) === "completed" ||
+        item.completed === true ||
+        percent >= 100
+      );
+
+    });
+
+
+  return {
+    started:courses.length,
+    completed:completed.length
+  };
+
+}
+
+
+function roleDetailFor(user){
+
+  const userRole =
+    normalize(user.role);
+
+  if(userRole === "student"){
+    return (
+      user.classLevel ||
+      user.occupation ||
+      user.admissionNumber ||
+      "—"
+    );
+  }
+
+  if(userRole === "teacher"){
+    return (
+      user.department ||
+      user.occupation ||
+      user.staffId ||
+      "—"
+    );
+  }
+
+  if(userRole === "parent"){
+    return (
+      user.relationship ||
+      user.parentRole ||
+      user.occupation ||
+      "—"
+    );
+  }
+
+  return (
+    user.occupation ||
+    "—"
+  );
+
+}
+
+
+function identifierFor(user){
+
+  const userRole =
+    normalize(user.role);
+
+  if(userRole === "student"){
+    return (
+      user.studentId ||
+      user.admissionNumber ||
+      "—"
+    );
+  }
+
+  if(userRole === "teacher"){
+    return (
+      user.staffId ||
+      "—"
+    );
+  }
+
+  return "—";
+}
+
+
+function rolePageFor(user){
+
+  const userRole =
+    normalize(user.role);
+
+  if(userRole === "student"){
+    return "school-students.html";
+  }
+
+  if(userRole === "teacher"){
+    return "school-teachers.html";
+  }
+
+  if(userRole === "parent"){
+    return "school-parents.html";
+  }
+
+  return "school-users.html";
+}
+
+
+function updateStats(){
+
+  totalCount.textContent =
+    USERS.length;
+
+  studentCount.textContent =
+    USERS.filter(
+      user =>
+        normalize(user.role) === "student"
+    ).length;
+
+  teacherCount.textContent =
+    USERS.filter(
+      user =>
+        normalize(user.role) === "teacher"
+    ).length;
+
+  parentCount.textContent =
+    USERS.filter(
+      user =>
+        normalize(user.role) === "parent"
+    ).length;
+
+  pendingCount.textContent =
+    USERS.filter(
+      user =>
+        [
+          "pending",
+          "pending_school_approval"
+        ].includes(
+          normalize(user.status)
+        )
+    ).length;
+
+}
+
+
+function render(){
+
+  const search =
+    normalize(
+      searchInput.value
+    );
+
+  const selectedRole =
+    normalize(
+      roleFilter.value
+    );
+
+  const selectedStatus =
+    normalize(
+      statusFilter.value
+    );
+
+  const selectedActivity =
+    normalize(
+      activityFilter.value
+    );
+
+
+  const filtered =
+    USERS.filter(user=>{
+
+      const summary =
+        learningSummary(user.id);
+
+      const searchable = [
+        user.firstName,
+        user.lastName,
+        user.fullName,
+        user.email,
+        user.phone,
+        user.role,
+        user.studentId,
+        user.admissionNumber,
+        user.classLevel,
+        user.department,
+        user.staffId,
+        user.relationship,
+        user.parentRole,
+        user.occupation
+      ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+
+      const matchesSearch =
+        !search ||
+        searchable.includes(search);
+
+
+      const matchesRole =
+        selectedRole === "all" ||
+        normalize(user.role) === selectedRole;
+
+
+      const matchesStatus =
+        selectedStatus === "all" ||
+        normalize(user.status) === selectedStatus;
+
+
+      const matchesActivity =
+        selectedActivity === "all" ||
+        (
+          selectedActivity === "active" &&
+          summary.started > 0
+        ) ||
+        (
+          selectedActivity === "none" &&
+          summary.started === 0
+        );
+
+
+      return (
+        matchesSearch &&
+        matchesRole &&
+        matchesStatus &&
+        matchesActivity
+      );
+
+    });
+
+
+  rows.innerHTML =
+    filtered.length
+      ? filtered.map(user=>{
+
+          const summary =
+            learningSummary(user.id);
+
+          const name =
+            `${user.firstName || user.fullName || "User"} ${user.lastName || ""}`.trim();
+
+          const status =
+            normalize(
+              user.status ||
+              "pending_school_approval"
+            );
+
+          const userRole =
+            normalize(
+              user.role ||
+              "user"
+            );
+
+          return `
+            <tr>
+
+              <td>
+                <span class="user-name">
+                  ${escapeHtml(name)}
+                </span>
+
+                ${
+                  user.accountSource
+                    ? `<span class="user-sub">${escapeHtml(pretty(user.accountSource))}</span>`
+                    : ""
+                }
+              </td>
+
+              <td>
+                ${pill(userRole)}
+              </td>
+
+              <td>
+                ${escapeHtml(user.email || user.phone || "—")}
+              </td>
+
+              <td>
+                ${escapeHtml(roleDetailFor(user))}
+              </td>
+
+              <td>
+                ${escapeHtml(identifierFor(user))}
+              </td>
+
+              <td>
+                ${pill(user.status || "pending_school_approval")}
+              </td>
+
+              <td>
+                <strong>${summary.started}</strong> started<br>
+                <span class="user-sub">${summary.completed} completed</span>
+              </td>
+
+              <td>
+
+                <div class="actions">
+
+                  ${
+                    status !== "approved"
+                      ? `
+                        <button
+                          class="btn success"
+                          data-id="${escapeHtml(user.id)}"
+                          data-status="approved"
+                        >
+                          Approve
+                        </button>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    status !== "pending_school_approval"
+                      ? `
+                        <button
+                          class="btn soft"
+                          data-id="${escapeHtml(user.id)}"
+                          data-status="pending_school_approval"
+                        >
+                          Pending
+                        </button>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    status !== "rejected"
+                      ? `
+                        <button
+                          class="btn danger"
+                          data-id="${escapeHtml(user.id)}"
+                          data-status="rejected"
+                        >
+                          Reject
+                        </button>
+                      `
+                      : ""
+                  }
+
+                  <a
+                    class="btn gold"
+                    href="${rolePageFor(user)}"
+                  >
+                    Open ${escapeHtml(pretty(userRole))}
+                  </a>
+
+                </div>
+
+              </td>
+
+            </tr>
+          `;
+
+        }).join("")
+      : `
+        <tr>
+          <td colspan="8">
+            <div class="notice warn">
+              No school users match your filters.
+            </div>
+          </td>
+        </tr>
+      `;
+
+
+  rows
+    .querySelectorAll(
+      "button[data-id]"
+    )
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        async ()=>{
+
+          try{
+
+            button.disabled =
+              true;
+
+            await updateDoc(
+              doc(
+                db,
+                "users",
+                button.dataset.id
+              ),
+              {
+                status:
+                  button.dataset.status,
+
+                approved:
+                  button.dataset.status ===
+                  "approved",
+
+                updatedAt:
+                  serverTimestamp()
+              }
+            );
+
+
+            show(
+              `User status updated to ${pretty(button.dataset.status)}.`,
+              "ok"
+            );
+
+
+            await loadUsers();
+
+
+          }catch(error){
+
+            console.error(error);
+
+
+            show(
+              error.message ||
+              "Could not update user.",
+              "bad"
+            );
+
+
+          }finally{
+
+            button.disabled =
+              false;
+
+          }
+
+        }
+      );
+
+    });
+
+}
+
+
+async function loadProgress(){
+
+  try{
+
+    const schoolUserIds =
+      new Set(
+        USERS.map(
+          user=>user.id
+        )
+      );
+
+
+    const snap =
+      await getDocs(
+        collection(
+          db,
+          "userProgress"
+        )
+      );
+
+
+    PROGRESS =
+      new Map();
+
+
+    snap.forEach(document=>{
+
+      const item = {
+        id:document.id,
+        ...document.data()
+      };
+
+
+      if(
+        item.userId &&
+        schoolUserIds.has(
+          item.userId
+        )
+      ){
+
+        if(
+          !PROGRESS.has(
+            item.userId
+          )
+        ){
+          PROGRESS.set(
+            item.userId,
+            []
+          );
+        }
+
+        PROGRESS
+          .get(item.userId)
+          .push(item);
+
+      }
+
+    });
+
+
+  }catch(error){
+
+    console.warn(
+      "School user progress load failed:",
+      error
+    );
+
+
+    PROGRESS =
+      new Map();
+
+  }
+
+}
+
+
+async function loadUsers(){
+
+  try{
+
+    let snap = null;
+
+
+    if(SCHOOL.id){
+
+      try{
+
+        snap =
+          await getDocs(
+            query(
+              collection(
+                db,
+                "users"
+              ),
+              where(
+                "schoolId",
+                "==",
+                SCHOOL.id
+              )
+            )
+          );
+
+      }catch(error){
+
+        console.warn(
+          "schoolId user query failed:",
+          error
+        );
+
+      }
+
+    }
+
+
+    USERS =
+      snap
+        ? snap.docs.map(
+            document=>({
+              id:document.id,
+              ...document.data()
+            })
+          )
+        : [];
+
+
+    if(
+      !USERS.length &&
+      SCHOOL.schoolCode
+    ){
+
+      const byCode =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "users"
+            ),
+            where(
+              "schoolCode",
+              "==",
+              SCHOOL.schoolCode
+            )
+          )
+        );
+
+
+      USERS =
+        byCode.docs.map(
+          document=>({
+            id:document.id,
+            ...document.data()
+          })
+        );
+
+    }
+
+
+    USERS =
+      USERS.filter(
+        user =>
+          [
+            "student",
+            "teacher",
+            "parent"
+          ].includes(
+            normalize(user.role)
+          )
+      );
+
+
+    USERS.sort(
+      (a,b)=>
+        (
+          a.firstName ||
+          a.fullName ||
+          ""
+        ).localeCompare(
+          b.firstName ||
+          b.fullName ||
+          ""
+        )
+    );
+
+
+    await loadProgress();
+
+    updateStats();
+
+    render();
+
+
+  }catch(error){
+
+    console.error(
+      "School user load failed:",
+      error
+    );
+
+
+    show(
+      "Could not load school users. Check Firestore permissions and indexes.",
+      "bad"
+    );
+
+  }
+
+}
+
+
+async function schoolRecordFromProfile(profile){
+
+  if(profile.schoolId){
+
+    try{
+
+      const direct =
+        await getDoc(
+          doc(
+            db,
+            "schools",
+            profile.schoolId
+          )
+        );
+
+
+      if(direct.exists()){
+
+        return {
+          id:direct.id,
+          ...direct.data()
+        };
+
+      }
+
+    }catch(error){
+
+      console.warn(
+        "Direct school lookup failed:",
+        error
+      );
+
+    }
+
+  }
+
+
+  if(profile.schoolCode){
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "schools"
+          ),
+          where(
+            "schoolCode",
+            "==",
+            profile.schoolCode
+          )
+        )
+      );
+
+
+    if(!snap.empty){
+
+      return {
+        id:snap.docs[0].id,
+        ...snap.docs[0].data()
+      };
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+addForm.addEventListener(
+  "submit",
+  async event=>{
+
+    event.preventDefault();
+
+
+    try{
+
+      addButton.disabled =
+        true;
+
+      addButton.textContent =
+        "Adding User...";
+
+
+      const first =
+        firstName.value.trim();
+
+      const last =
+        lastName.value.trim();
+
+      const emailValue =
+        email.value.trim().toLowerCase();
+
+      const selectedRole =
+        normalize(role.value);
+
+      const detail =
+        roleDetail.value.trim();
+
+
+      if(!first || !last){
+
+        throw new Error(
+          "First name and last name are required."
+        );
+
+      }
+
+
+      if(
+        ![
+          "student",
+          "teacher",
+          "parent"
+        ].includes(selectedRole)
+      ){
+
+        throw new Error(
+          "Select a valid role."
+        );
+
+      }
+
+
+      if(emailValue){
+
+        const emailCheck =
+          await getDocs(
+            query(
+              collection(
+                db,
+                "users"
+              ),
+              where(
+                "email",
+                "==",
+                emailValue
+              )
+            )
+          );
+
+
+        if(!emailCheck.empty){
+
+          throw new Error(
+            "A user record already exists with this email address."
+          );
+
+        }
+
+      }
+
+
+      const userData = {
+
+        firstName:first,
+
+        lastName:last,
+
+        fullName:
+          `${first} ${last}`.trim(),
+
+        email:
+          emailValue,
+
+        phone:
+          phone.value.trim(),
+
+        role:
+          selectedRole,
+
+        schoolId:
+          SCHOOL.id,
+
+        schoolCode:
+          SCHOOL.schoolCode ||
+          "",
+
+        schoolName:
+          SCHOOL.schoolName ||
+          SCHOOL.name ||
+          "",
+
+        bio:
+          bio.value.trim(),
+
+        status:
+          "pending_school_approval",
+
+        approved:
+          false,
+
+        accountSource:
+          "school-created-record",
+
+        createdBySchool:
+          true,
+
+        authLinked:
+          false,
+
+        createdAt:
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
+
+      };
+
+
+      if(selectedRole === "student"){
+
+        userData.studentId =
+          generateStudentId();
+
+        userData.classLevel =
+          detail;
+
+        userData.occupation =
+          detail;
+
+      }
+
+
+      if(selectedRole === "teacher"){
+
+        userData.department =
+          detail;
+
+        userData.occupation =
+          detail;
+
+      }
+
+
+      if(selectedRole === "parent"){
+
+        userData.relationship =
+          detail ||
+          "Parent / Guardian";
+
+        userData.parentRole =
+          detail ||
+          "Parent / Guardian";
+
+      }
+
+
+      await addDoc(
+        collection(
+          db,
+          "users"
+        ),
+        userData
+      );
+
+
+      addForm.reset();
+
+
+      show(
+        selectedRole === "student"
+          ? `Student record added. Student ID: ${userData.studentId}`
+          : `${pretty(selectedRole)} record added under this school.`,
+        "ok"
+      );
+
+
+      await loadUsers();
+
+
+    }catch(error){
+
+      console.error(error);
+
+
+      show(
+        error.message ||
+        "Could not add user.",
+        "bad"
+      );
+
+
+    }finally{
+
+      addButton.disabled =
+        false;
+
+      addButton.textContent =
+        "Add User";
+
+    }
+
+  }
+);
+
+
+[
+  searchInput,
+  roleFilter,
+  statusFilter,
+  activityFilter
+]
+.forEach(element=>{
+
+  element.addEventListener(
+    "input",
+    render
+  );
+
+  element.addEventListener(
+    "change",
+    render
+  );
+
+});
+
+
+requireRoles(
+  ["school_admin"],
+  async (user,profile)=>{
+
+    const currentRole =
+      normalize(
+        profile.role
+      );
+
+
+    if(
+      currentRole !== "school_admin" &&
+      currentRole !== "admin" &&
+      currentRole !== "super_admin"
+    ){
+
+      location.href =
+        "auth.html";
+
+      return;
+
+    }
+
+
+    renderRoleNav(
+      profile,
+      "Users"
+    );
+
+
+    SCHOOL =
+      await schoolRecordFromProfile(
+        profile
+      );
+
+
+    if(!SCHOOL){
+
+      show(
+        "No school record is linked to this account.",
+        "bad"
+      );
+
+      return;
+
+    }
+
+
+    schoolMeta.textContent =
+      `${SCHOOL.schoolName || SCHOOL.name || "School"} • ${SCHOOL.schoolCode || "No Code"}`;
+
+
+    schoolPills.innerHTML =
+      pill(
+        SCHOOL.status ||
+        "pending"
+      ) +
+      pill(
+        SCHOOL.schoolCode ||
+        "No Code"
+      ) +
+      pill(
+        profile.role ||
+        "school_admin"
+      );
+
+
+    show(
+      "School verified. Loading users...",
+      "ok"
+    );
+
+
+    await loadUsers();
+
+
+    show(
+      "School users loaded.",
+      "ok"
+    );
+
+  }
+);
+
+</script>
+
+</body>
+</html>
+
