@@ -3,2872 +3,417 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>SpeakHub Academy | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Explore SpeakHub Academy courses and curated learning from SpeakOut and approved external providers across mental health, leadership, AI, technology, career development, education, parenting, NGO development and more."
->
-
+<meta name="description" content="Explore SpeakHub Academy courses and curated learning from SpeakOut and approved external providers across mental health, leadership, AI, technology, career development, education, parenting, NGO development and more.">
 <link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#07152b;
-  --blue:#0a5fbf;
-  --blue2:#074f9f;
-  --soft:#eaf3ff;
-  --gold:#f4a21c;
-  --goldSoft:#fff4df;
-  --green:#0f8f6f;
-  --greenSoft:#e9fbf5;
-  --red:#991b1b;
-  --redSoft:#fee2e2;
-  --ink:#111827;
-  --muted:#637083;
-  --line:#e5edf6;
-  --bg:#f7f9fc;
-  --shadow:0 18px 44px rgba(7,21,43,.10);
-  --softShadow:0 10px 28px rgba(7,21,43,.07);
-  --r:22px;
+  --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--purple:#6b21a8;
+  --purpleSoft:#f3e8ff;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);--softShadow:0 10px 28px rgba(7,21,43,.07);--r:22px
 }
-
 *{box-sizing:border-box}
-
-html,body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-  scroll-behavior:smooth;
-}
-
-body{
-  margin:0;
-  font-family:Outfit,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-}
-
-a{text-decoration:none;color:inherit}
-button,input,select{font:inherit}
-
-.container{
-  width:min(1180px,92%);
-  margin:auto;
-}
-
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  min-height:40px;
-  padding:10px 15px;
-  border-radius:999px;
-  border:0;
-  font-weight:900;
-  font-size:.86rem;
-  cursor:pointer;
-  text-align:center;
-}
-
-.primary{background:var(--blue);color:#fff}
-.gold{background:var(--gold);color:#241300}
-.softBtn{background:var(--soft);color:var(--blue)}
-.light{background:#fff;color:var(--navy)}
-.dark{background:var(--navy);color:#fff}
-.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
-.greenBtn{background:var(--green);color:#fff}
-.danger{background:var(--redSoft);color:var(--red)}
-
-.nav{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(7,21,43,.08);
-}
-
-.nav-inner{
-  min-height:72px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-
-.brand img{
-  width:46px;
-  height:46px;
-  object-fit:contain;
-}
-
-.brand h2{
-  margin:0;
-  color:var(--blue);
-  font-size:1.08rem;
-  line-height:1;
-  font-weight:900;
-}
-
-.brand p{
-  margin:3px 0 0;
-  color:#d98200;
-  font-size:.62rem;
-  font-weight:900;
-  letter-spacing:.10em;
-  text-transform:uppercase;
-}
-
-.nav-links{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:800;
-  font-size:.84rem;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-
-.menu{
-  display:none;
-  background:var(--navy);
-  color:#fff;
-  border:0;
-  border-radius:13px;
-  width:42px;
-  height:42px;
-  font-size:1.15rem;
-  font-weight:900;
-}
-
-.hero{
-  color:#fff;
-  background:
-    linear-gradient(90deg,rgba(7,21,43,.95),rgba(7,21,43,.78) 50%,rgba(7,21,43,.35)),
-    linear-gradient(135deg,var(--navy),var(--blue));
-  position:relative;
-  overflow:hidden;
-}
-
-.hero:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),
-    radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%);
-}
-
-.hero .container{
-  position:relative;
-  z-index:2;
-  padding:66px 0 60px;
-}
-
-.kicker,.label{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:.7rem;
-  font-weight:900;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.kicker{
-  background:rgba(255,255,255,.13);
-  border:1px solid rgba(255,255,255,.20);
-}
-
-.label{
-  background:var(--soft);
-  color:var(--blue);
-  margin-bottom:14px;
-}
-
-h1,h2,h3{
-  margin-top:0;
-  line-height:1.06;
-  letter-spacing:-.04em;
-}
-
-h1{
-  font-size:clamp(2.35rem,6vw,5.3rem);
-  margin:18px 0;
-}
-
-.hero p{
-  font-size:clamp(.98rem,2vw,1.12rem);
-  line-height:1.65;
-  max-width:840px;
-  color:rgba(255,255,255,.9);
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:22px;
-}
-
-.trust{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:24px;
-}
-
-.trust span{
-  padding:8px 11px;
-  border-radius:999px;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.16);
-  font-size:.82rem;
-  font-weight:800;
-}
-
-section{padding:58px 0}
-
-.title{
-  max-width:850px;
-  margin:0 auto 30px;
-  text-align:center;
-}
-
-.title h2{
-  font-size:clamp(1.85rem,4vw,3.5rem);
-  margin:0 0 12px;
-  color:var(--navy);
-}
-
-.title p{
-  font-size:1rem;
-  line-height:1.65;
-  color:var(--muted);
-  margin:0;
-}
-
-.grid{display:grid;gap:16px}
-.g4{grid-template-columns:repeat(4,1fr)}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:repeat(2,1fr)}
-
-.card,.panel{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  box-shadow:var(--softShadow);
-  padding:18px;
-  position:relative;
-  overflow:hidden;
-  transition:.25s;
-}
-
-.card:hover{
-  transform:translateY(-5px);
-  box-shadow:var(--shadow);
-}
-
-.card h3{
-  font-size:1.08rem;
-  color:var(--navy);
-  margin:0 0 8px;
-}
-
-.card p{
-  color:var(--muted);
-  line-height:1.55;
-  margin:0 0 10px;
-  font-size:.92rem;
-}
-
-.stats{
-  background:#fff;
-  border-bottom:1px solid var(--line);
-}
-
-.stat{
-  text-align:center;
-  padding:18px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:linear-gradient(180deg,#fff,#f8fbff);
-  box-shadow:var(--softShadow);
-}
-
-.stat strong{
-  display:block;
-  color:var(--blue);
-  font-size:clamp(1.7rem,3vw,2.6rem);
-  line-height:1;
-}
-
-.stat span{
-  display:block;
-  margin-top:6px;
-  color:var(--muted);
-  font-weight:800;
-  font-size:.88rem;
-}
-
-.provider-strip{
-  background:#fff;
-  border-bottom:1px solid var(--line);
-}
-
-.provider-grid{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.provider-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  border:1px solid var(--line);
-  background:#fbfdff;
-  border-radius:999px;
-  padding:9px 12px;
-  font-weight:800;
-  font-size:.82rem;
-  color:#344255;
-}
-
-.provider-dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:var(--blue);
-}
-
-.controls{
-  background:#fff;
-  border-bottom:1px solid var(--line);
-}
-
-.controls-grid{
-  display:grid;
-  grid-template-columns:1.25fr .8fr .8fr .7fr;
-  gap:10px;
-  margin-top:14px;
-}
-
-.controls-grid.secondary{
-  grid-template-columns:1fr 1fr 1fr;
-}
-
-.input,.select{
-  width:100%;
-  min-height:42px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:#fbfdff;
-  color:var(--ink);
-  padding:11px 13px;
-  outline:none;
-  font-size:.92rem;
-}
-
-.input:focus,.select:focus{
-  border-color:var(--blue);
-  box-shadow:0 0 0 4px rgba(10,95,191,.08);
-}
-
-.empty{
-  margin-top:14px;
-  padding:13px;
-  border-radius:16px;
-  background:var(--goldSoft);
-  color:#704800;
-  font-weight:800;
-  display:none;
-  font-size:.9rem;
-}
-
-.cover{
-  height:178px;
-  border-radius:18px;
-  background:
-    radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),
-    linear-gradient(135deg,var(--navy),var(--blue));
-  padding:16px;
-  display:flex;
-  align-items:flex-end;
-  color:#fff;
-  margin-bottom:13px;
-  position:relative;
-  overflow:hidden;
-}
-
-.cover img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.cover:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.60));
-}
-
-.cover strong{
-  position:relative;
-  z-index:2;
-  font-size:1.05rem;
-  line-height:1.15;
-  max-width:90%;
-  text-shadow:0 4px 18px rgba(0,0,0,.42);
-}
-
-.cover-badge{
-  position:absolute;
-  z-index:3;
-  top:12px;
-  right:12px;
-  padding:6px 9px;
-  border-radius:999px;
-  font-size:.65rem;
-  font-weight:900;
-  background:rgba(255,255,255,.92);
-  color:var(--navy);
-  border:1px solid rgba(255,255,255,.75);
-}
-
-.pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin:0 0 10px;
-}
-
-.pill{
-  display:inline-flex;
-  padding:5px 9px;
-  border-radius:999px;
-  font-size:.68rem;
-  font-weight:900;
-  background:var(--soft);
-  color:var(--blue);
-  text-transform:capitalize;
-}
-
-.pill.gold{
-  background:var(--goldSoft);
-  color:#8a5600;
-}
-
-.pill.green{
-  background:var(--greenSoft);
-  color:var(--green);
-}
-
-.pill.red{
-  background:var(--redSoft);
-  color:var(--red);
-}
-
-.pill.external{
-  background:#f3e8ff;
-  color:#6b21a8;
-}
-
-.pill.provider{
-  background:#eef7ff;
-  color:#16416c;
-}
-
-.loading{
-  padding:18px;
-  border-radius:18px;
-  background:var(--soft);
-  color:var(--blue);
-  font-weight:900;
-  text-align:center;
-}
-
-.card-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.card-actions .btn{
-  flex:1;
-  min-width:120px;
-}
-
-.progress-wrap{
-  margin:12px 0 0;
-}
-
-.progress-track{
-  height:9px;
-  background:#eef3fb;
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  background:linear-gradient(90deg,var(--blue),var(--green));
-  width:0%;
-}
-
-.progress-text{
-  font-size:.76rem;
-  font-weight:900;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-.featured-section{
-  background:linear-gradient(180deg,#fff,var(--bg));
-  border-bottom:1px solid var(--line);
-}
-
-.course-meta{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  color:var(--muted);
-  font-size:.82rem;
-  font-weight:800;
-  margin:8px 0 10px;
-}
-
-.course-meta span{
-  background:#f8fbff;
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:6px 9px;
-}
-
-.pathways{
-  background:linear-gradient(180deg,var(--bg),#fff);
-  border-bottom:1px solid var(--line);
-}
-
-.path-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:var(--softShadow);
-}
-
-.path-card h3{
-  margin:0 0 8px;
-  color:var(--navy);
-}
-
-.path-card p{
-  margin:0 0 14px;
-  color:var(--muted);
-  line-height:1.55;
-}
-
-.path-steps{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-}
-
-.path-steps span{
-  padding:6px 9px;
-  border-radius:999px;
-  font-size:.72rem;
-  background:var(--soft);
-  color:var(--blue);
-  font-weight:800;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(7,21,43,.78);
-  z-index:9999;
-  padding:18px;
-  overflow:auto;
-}
-
-.modal-box{
-  background:#fff;
-  border-radius:26px;
-  max-width:920px;
-  margin:28px auto;
-  box-shadow:0 30px 80px rgba(0,0,0,.28);
-  overflow:hidden;
-}
-
-.modal-head{
-  position:sticky;
-  top:0;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  padding:18px;
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:12px;
-  align-items:center;
-  z-index:2;
-}
-
-.modal-title{
-  font-size:1.25rem;
-  font-weight:950;
-  color:var(--navy);
-}
-
-.close-btn{
-  background:#fee2e2;
-  color:#991b1b;
-  border:0;
-  border-radius:16px;
-  padding:12px 18px;
-  font-weight:950;
-  cursor:pointer;
-}
-
-.modal-content{
-  padding:26px;
-  color:#1f2937;
-  font-size:1rem;
-  line-height:1.8;
-}
-
-.modal-content h2{
-  font-size:2rem;
-  color:var(--navy);
-  margin:0 0 14px;
-}
-
-.modal-content h3{
-  font-size:1.25rem;
-  color:var(--navy);
-  margin:28px 0 10px;
-}
-
-.modal-content p{margin:0 0 14px}
-
-.modal-note{
-  margin-top:16px;
-  padding:14px 16px;
-  border-radius:15px;
-  background:var(--goldSoft);
-  border:1px solid #f8d79d;
-  color:#684000;
-}
-
-.modal-actions{
-  border-top:1px solid var(--line);
-  padding:18px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  background:#fbfdff;
-}
-
-.modal-actions .btn{
-  flex:1;
-  min-width:180px;
-}
-
-.footer{
-  background:#061126;
-  color:rgba(255,255,255,.74);
-  padding:44px 0 24px;
-}
-
-.footer-grid{
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  gap:26px;
-}
-
-.footer a{
-  display:block;
-  color:rgba(255,255,255,.72);
-  margin:7px 0;
-  font-size:.92rem;
-}
-
-.footer h3,.footer h4{
-  color:#fff;
-  margin:0 0 10px;
-}
-
-@media(max-width:1000px){
-  .g4,.g3,.footer-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .controls-grid,
-  .controls-grid.secondary{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media(max-width:760px){
-  .menu{display:block}
-
-  .nav-inner{min-height:68px}
-
-  .nav-links{
-    display:none;
-    position:fixed;
-    top:68px;
-    left:0;
-    right:0;
-    background:#fff;
-    border-bottom:1px solid var(--line);
-    padding:14px 6%;
-    flex-direction:column;
-    align-items:stretch;
-    gap:8px;
-  }
-
-  body.menu-open .nav-links{display:flex}
-
-  .nav-links a{
-    width:100%;
-    padding:10px 12px;
-    border-radius:13px;
-    background:#f8fbff;
-    text-align:center;
-  }
-
-  section{padding:48px 0}
-  .hero .container{padding:52px 0}
-
-  .g4,.g3,.g2,.footer-grid,
-  .controls-grid,.controls-grid.secondary{
-    grid-template-columns:1fr;
-  }
-
-  .actions{flex-direction:column}
-
-  .btn{
-    width:100%;
-    border-radius:14px;
-  }
-
-  .card,.panel{
-    padding:16px;
-    border-radius:19px;
-  }
-
-  .modal{padding:10px}
-
-  .modal-box{
-    margin:12px auto;
-    border-radius:22px;
-  }
-
-  .modal-head{grid-template-columns:1fr}
-  .close-btn{width:100%}
-
-  .modal-content{
-    padding:20px;
-    font-size:.98rem;
-  }
-
-  .modal-content h2{
-    font-size:1.65rem;
-  }
-}
+html,body{width:100%;max-width:100%;overflow-x:hidden;scroll-behavior:smooth}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}button,input,select{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;font-size:.86rem;cursor:pointer;text-align:center}
+.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.softBtn{background:var(--soft);color:var(--blue)}.light{background:#fff;color:var(--navy)}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}.greenBtn{background:var(--green);color:#fff}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(7,21,43,.08)}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:46px;height:46px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.08rem;line-height:1;font-weight:900}.brand p{margin:3px 0 0;color:#d98200;font-size:.62rem;font-weight:900;letter-spacing:.10em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.84rem;flex-wrap:wrap;justify-content:flex-end}.menu{display:none;background:var(--navy);color:#fff;border:0;border-radius:13px;width:42px;height:42px;font-size:1.15rem;font-weight:900}
+.hero{color:#fff;background:linear-gradient(90deg,rgba(7,21,43,.95),rgba(7,21,43,.78) 50%,rgba(7,21,43,.35)),linear-gradient(135deg,var(--navy),var(--blue));position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 16% 22%,rgba(244,162,28,.24),transparent 28%),radial-gradient(circle at 85% 18%,rgba(10,95,191,.32),transparent 32%)}
+.hero .container{position:relative;z-index:2;padding:66px 0 60px}.kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.kicker{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.20)}.label{background:var(--soft);color:var(--blue);margin-bottom:14px}
+h1,h2,h3{margin-top:0;line-height:1.06;letter-spacing:-.04em}h1{font-size:clamp(2.35rem,6vw,5.3rem);margin:18px 0}.hero p{font-size:clamp(.98rem,2vw,1.12rem);line-height:1.65;max-width:840px;color:rgba(255,255,255,.9)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}.trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.82rem;font-weight:800}
+section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:center}.title h2{font-size:clamp(1.85rem,4vw,3.5rem);margin:0 0 12px;color:var(--navy)}.title p{font-size:1rem;line-height:1.65;color:var(--muted);margin:0}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--softShadow);padding:18px;position:relative;overflow:hidden;transition:.25s}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.card h3{font-size:1.08rem;color:var(--navy);margin:0 0 8px}.card p{color:var(--muted);line-height:1.55;margin:0 0 10px;font-size:.92rem}
+.stats{background:#fff;border-bottom:1px solid var(--line)}.stat{text-align:center;padding:18px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:var(--softShadow)}.stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1}.stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
+.provider-strip{background:#fff;border-bottom:1px solid var(--line)}.provider-grid{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}.provider-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fbfdff;border-radius:999px;padding:9px 12px;font-weight:800;font-size:.82rem;color:#344255}.provider-dot{width:9px;height:9px;border-radius:50%;background:var(--blue)}
+.controls{background:#fff;border-bottom:1px solid var(--line)}.controls-grid{display:grid;grid-template-columns:1.25fr .8fr .8fr .7fr;gap:10px;margin-top:14px}.controls-grid.secondary{grid-template-columns:1fr 1fr 1fr}.input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}.input:focus,.select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.08)}.empty{margin-top:14px;padding:13px;border-radius:16px;background:var(--goldSoft);color:#704800;font-weight:800;display:none;font-size:.9rem}
+.cover{height:178px;border-radius:18px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.22),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));padding:16px;display:flex;align-items:flex-end;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.60))}.cover strong{position:relative;z-index:2;font-size:1.05rem;line-height:1.15;max-width:90%;text-shadow:0 4px 18px rgba(0,0,0,.42)}.cover-badge{position:absolute;z-index:3;top:12px;right:12px;padding:6px 9px;border-radius:999px;font-size:.65rem;font-weight:900;background:rgba(255,255,255,.92);color:var(--navy)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:.68rem;font-weight:900;background:var(--soft);color:var(--blue);text-transform:capitalize}.pill.gold{background:var(--goldSoft);color:#8a5600}.pill.green{background:var(--greenSoft);color:var(--green)}.pill.red{background:var(--redSoft);color:var(--red)}.pill.external{background:var(--purpleSoft);color:var(--purple)}.pill.provider{background:#eef7ff;color:#16416c}.pill.pending-review{background:var(--goldSoft);color:#704800}.pill.approved{background:var(--greenSoft);color:var(--green)}.pill.rejected{background:var(--redSoft);color:var(--red)}.pill.not-started{background:#f1f5f9;color:#475569}
+.loading{padding:18px;border-radius:18px;background:var(--soft);color:var(--blue);font-weight:900;text-align:center}.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.card-actions .btn{flex:1;min-width:120px}
+.progress-wrap{margin:12px 0 0}.progress-track{height:9px;background:#eef3fb;border-radius:999px;overflow:hidden}.progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));width:0%}.progress-text{font-size:.76rem;font-weight:900;color:var(--muted);margin-top:5px}
+.featured-section{background:linear-gradient(180deg,#fff,var(--bg));border-bottom:1px solid var(--line)}.course-meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.82rem;font-weight:800;margin:8px 0 10px}.course-meta span{background:#f8fbff;border:1px solid var(--line);border-radius:999px;padding:6px 9px}
+.pathways{background:linear-gradient(180deg,var(--bg),#fff);border-bottom:1px solid var(--line)}.path-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--softShadow)}.path-card h3{margin:0 0 8px;color:var(--navy)}.path-card p{margin:0 0 14px;color:var(--muted);line-height:1.55}.path-steps{display:flex;flex-wrap:wrap;gap:7px}.path-steps span{padding:6px 9px;border-radius:999px;font-size:.72rem;background:var(--soft);color:var(--blue);font-weight:800}
+.modal{display:none;position:fixed;inset:0;background:rgba(7,21,43,.78);z-index:9999;padding:18px;overflow:auto}.modal-box{background:#fff;border-radius:26px;max-width:920px;margin:28px auto;box-shadow:0 30px 80px rgba(0,0,0,.28);overflow:hidden}.modal-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:18px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;z-index:2}.modal-title{font-size:1.25rem;font-weight:950;color:var(--navy)}.close-btn{background:#fee2e2;color:#991b1b;border:0;border-radius:16px;padding:12px 18px;font-weight:950;cursor:pointer}.modal-content{padding:26px;color:#1f2937;font-size:1rem;line-height:1.8}.modal-content h2{font-size:2rem;color:var(--navy);margin:0 0 14px}.modal-content h3{font-size:1.25rem;color:var(--navy);margin:28px 0 10px}.modal-note{margin-top:16px;padding:14px 16px;border-radius:15px;background:var(--goldSoft);border:1px solid #f8d79d;color:#684000}.modal-actions{border-top:1px solid var(--line);padding:18px;display:flex;gap:10px;flex-wrap:wrap;background:#fbfdff}.modal-actions .btn{flex:1;min-width:160px}
+.footer{background:#061126;color:rgba(255,255,255,.74);padding:44px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:26px}.footer a{display:block;color:rgba(255,255,255,.72);margin:7px 0;font-size:.92rem}.footer h3,.footer h4{color:#fff;margin:0 0 10px}
+@media(max-width:1000px){.g4,.g3,.footer-grid{grid-template-columns:repeat(2,1fr)}.controls-grid,.controls-grid.secondary{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}section{padding:48px 0}.hero .container{padding:52px 0}.g4,.g3,.g2,.footer-grid,.controls-grid,.controls-grid.secondary{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}.card,.panel{padding:16px;border-radius:19px}.modal{padding:10px}.modal-box{margin:12px auto;border-radius:22px}.modal-head{grid-template-columns:1fr}.close-btn{width:100%}.modal-content{padding:20px;font-size:.98rem}.modal-content h2{font-size:1.65rem}}
 </style>
 </head>
-
 <body>
 
 <header class="nav">
   <div class="container nav-inner">
-
-    <a href="index.html" class="brand">
-      <img src="logo.png" alt="SpeakOut Logo">
-
-      <div>
-        <h2>SpeakOut</h2>
-        <p>SpeakHub Academy</p>
-      </div>
-    </a>
-
-    <button
-      class="menu"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-      id="menuButton"
-    >
-      ☰
-    </button>
-
+    <a href="index.html" class="brand"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
+    <button class="menu" type="button" aria-label="Open menu" aria-expanded="false" id="menuButton">☰</button>
     <nav class="nav-links" id="roleNav">
-      <a href="index.html">Home</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies</a>
-      <a href="certificate-center.html">Certificates</a>
-      <a href="auth.html">Login</a>
+      <a href="index.html">Home</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies</a><a href="certificate-center.html">Certificates</a><a href="auth.html">Login</a>
     </nav>
-
   </div>
 </header>
 
-
 <main>
-
 <section class="hero">
   <div class="container">
-
-    <span class="kicker">
-      Learning Hub • Courses • Pathways • Progress • Certificates
-    </span>
-
+    <span class="kicker">Learning Hub • Courses • Pathways • Progress • Certificates</span>
     <h1>SpeakHub Academy</h1>
-
-    <p>
-      One learning ecosystem for SpeakHub courses and carefully selected external
-      learning opportunities across mental health, leadership, AI, technology,
-      career development, education, parenting, NGO development and community impact.
-    </p>
-
-    <div class="actions">
-      <a href="#courses" class="btn primary">Browse Courses</a>
-      <a href="#filters" class="btn light">Search Courses</a>
-      <a href="certificate-center.html" class="btn gold">Certificates</a>
-    </div>
-
-    <div class="trust">
-      <span>SpeakHub + External Providers</span>
-      <span>Free + Premium</span>
-      <span>Certificate pathways</span>
-      <span>Progress tracking</span>
-      <span>Firestore powered</span>
-    </div>
-
+    <p>One learning ecosystem for SpeakHub courses and carefully selected external learning opportunities across mental health, leadership, AI, programming, ICT, cybersecurity, career development, education, parenting, NGO development and community impact.</p>
+    <div class="actions"><a href="#courses" class="btn primary">Browse Courses</a><a href="#filters" class="btn light">Search Courses</a><a href="certificate-center.html" class="btn gold">Certificates</a></div>
+    <div class="trust"><span>SpeakHub + External Providers</span><span>Free + Premium</span><span>Certificate pathways</span><span>Progress tracking</span><span>External proof review</span></div>
   </div>
 </section>
 
+<section class="stats"><div class="container grid g4">
+  <div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
+  <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+  <div class="stat"><strong id="certCount">0</strong><span>Certificate Available</span></div>
+  <div class="stat"><strong id="providerCount">0</strong><span>Learning Providers</span></div>
+</div></section>
 
-<section class="stats">
-  <div class="container grid g4">
+<section class="provider-strip"><div class="container">
+  <div class="title"><span class="label">Learning Ecosystem</span><h2>One academy. Multiple trusted sources.</h2><p>SpeakHub can deliver its own courses while guiding learners to approved external providers and recording verified achievements without misrepresenting the original certificate issuer.</p></div>
+  <div class="provider-grid" id="providerGrid"><span class="provider-chip"><span class="provider-dot"></span>SpeakHub Academy</span></div>
+</div></section>
 
-    <div class="stat">
-      <strong id="totalCount">0</strong>
-      <span>Total Courses</span>
-    </div>
+<section class="featured-section"><div class="container">
+  <div class="title"><span class="label">Recommended</span><h2>Featured courses</h2><p>Start with high-priority learning selected for personal development, professional growth and community impact.</p></div>
+  <div id="featuredGrid" class="grid g3"></div>
+</div></section>
 
-    <div class="stat">
-      <strong id="featuredCount">0</strong>
-      <span>Featured</span>
-    </div>
-
-    <div class="stat">
-      <strong id="certCount">0</strong>
-      <span>Certificate Available</span>
-    </div>
-
-    <div class="stat">
-      <strong id="providerCount">0</strong>
-      <span>Learning Providers</span>
-    </div>
-
+<section class="pathways"><div class="container">
+  <div class="title"><span class="label">Learning Pathways</span><h2>Build skills in a clear sequence</h2><p>Internal and external learning can sit inside one structured development ecosystem.</p></div>
+  <div class="grid g3">
+    <div class="path-card"><h3>AI, Programming & ICT</h3><p>Build digital confidence before progressing into programming, AI, data, cloud and cybersecurity.</p><div class="path-steps"><span>Computer Basics</span><span>Programming</span><span>AI & Data</span><span>Cybersecurity</span></div></div>
+    <div class="path-card"><h3>Leadership & Career</h3><p>Build leadership, communication, workplace readiness and career confidence.</p><div class="path-steps"><span>Leadership</span><span>Communication</span><span>Career Planning</span><span>Portfolio</span></div></div>
+    <div class="path-card"><h3>NGO & Community Impact</h3><p>Develop skills for advocacy, mobilisation, grant work and programme delivery.</p><div class="path-steps"><span>NGO Fundamentals</span><span>Mobilisation</span><span>Grant Writing</span><span>M&E</span></div></div>
   </div>
-</section>
+</div></section>
 
-
-<section class="provider-strip">
-  <div class="container">
-
-    <div class="title">
-      <span class="label">Learning Ecosystem</span>
-      <h2>One academy. Multiple trusted sources.</h2>
-      <p>
-        SpeakHub can deliver its own courses while also guiding learners to approved
-        external providers without presenting external credentials as SpeakHub-issued certificates.
-      </p>
-    </div>
-
-    <div class="provider-grid" id="providerGrid">
-      <span class="provider-chip"><span class="provider-dot"></span>SpeakHub Academy</span>
-    </div>
-
+<section class="controls" id="filters"><div class="container"><div class="panel">
+  <span class="label">Search Courses</span>
+  <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px">Find the right course</h2>
+  <p style="color:var(--muted);line-height:1.6;margin:0">Search by title, provider, category, audience, level, topic or keyword.</p>
+  <div class="controls-grid">
+    <input type="text" id="searchInput" class="input" placeholder="Search courses, topics or providers...">
+    <select id="categoryFilter" class="select"><option value="all">All Categories</option></select>
+    <select id="audienceFilter" class="select"><option value="all">All Audiences</option></select>
+    <select id="accessFilter" class="select"><option value="all">Free & Premium</option><option value="free">Free</option><option value="premium">Premium</option></select>
   </div>
-</section>
-
-
-<section class="featured-section">
-  <div class="container">
-
-    <div class="title">
-      <span class="label">Recommended</span>
-      <h2>Featured courses</h2>
-      <p>
-        Start with high-priority learning selected for personal development,
-        professional growth and community impact.
-      </p>
-    </div>
-
-    <div id="featuredGrid" class="grid g3"></div>
-
+  <div class="controls-grid secondary">
+    <select id="levelFilter" class="select"><option value="all">All Levels</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+    <select id="providerFilter" class="select"><option value="all">All Providers</option></select>
+    <select id="sortFilter" class="select"><option value="featured">Featured First</option><option value="newest">Newest</option><option value="title">Title A-Z</option><option value="certificate">Certificate Available</option><option value="provider">Provider A-Z</option></select>
   </div>
-</section>
+  <div class="empty" id="emptyState">No matching course found. Try another keyword or filter.</div>
+</div></div></section>
 
-
-<section class="pathways">
-
-  <div class="container">
-
-    <div class="title">
-      <span class="label">Learning Pathways</span>
-      <h2>Build skills in a clear sequence</h2>
-      <p>
-        Courses can be combined into structured SpeakHub pathways rather than
-        leaving learners to choose from an unconnected catalogue.
-      </p>
-    </div>
-
-    <div class="grid g3">
-
-      <div class="path-card">
-        <h3>AI & Digital Skills</h3>
-        <p>
-          Progress from digital confidence into AI, data, cloud and practical technology skills.
-        </p>
-        <div class="path-steps">
-          <span>Computer Basics</span>
-          <span>AI Foundations</span>
-          <span>Data</span>
-          <span>Projects</span>
-        </div>
-      </div>
-
-      <div class="path-card">
-        <h3>Leadership & Career</h3>
-        <p>
-          Build leadership, communication, workplace readiness and career confidence.
-        </p>
-        <div class="path-steps">
-          <span>Leadership</span>
-          <span>Communication</span>
-          <span>Career Planning</span>
-          <span>Portfolio</span>
-        </div>
-      </div>
-
-      <div class="path-card">
-        <h3>NGO & Community Impact</h3>
-        <p>
-          Develop practical skills for advocacy, community mobilisation, grant work and programme delivery.
-        </p>
-        <div class="path-steps">
-          <span>NGO Fundamentals</span>
-          <span>Mobilisation</span>
-          <span>Grant Writing</span>
-          <span>M&E</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<section class="controls" id="filters">
-  <div class="container">
-
-    <div class="panel">
-
-      <span class="label">Search Courses</span>
-
-      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">
-        Find the right course
-      </h2>
-
-      <p style="color:var(--muted);line-height:1.6;margin:0;">
-        Search by title, provider, category, audience, level, topic or keyword.
-      </p>
-
-
-      <div class="controls-grid">
-
-        <input
-          type="text"
-          id="searchInput"
-          class="input"
-          placeholder="Search courses, topics or providers..."
-        >
-
-        <select id="categoryFilter" class="select">
-          <option value="all">All Categories</option>
-        </select>
-
-        <select id="audienceFilter" class="select">
-          <option value="all">All Audiences</option>
-        </select>
-
-        <select id="accessFilter" class="select">
-          <option value="all">Free & Premium</option>
-          <option value="free">Free</option>
-          <option value="premium">Premium</option>
-        </select>
-
-      </div>
-
-
-      <div class="controls-grid secondary">
-
-        <select id="levelFilter" class="select">
-          <option value="all">All Levels</option>
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="advanced">Advanced</option>
-        </select>
-
-        <select id="providerFilter" class="select">
-          <option value="all">All Providers</option>
-        </select>
-
-        <select id="sortFilter" class="select">
-          <option value="featured">Featured First</option>
-          <option value="newest">Newest</option>
-          <option value="title">Title A-Z</option>
-          <option value="certificate">Certificate Available</option>
-          <option value="provider">Provider A-Z</option>
-        </select>
-
-      </div>
-
-
-      <div class="empty" id="emptyState">
-        No matching course found. Try another keyword or filter.
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<section id="courses">
-  <div class="container">
-
-    <div class="title">
-
-      <span class="label">Course Catalogue</span>
-
-      <h2>Available SpeakHub learning</h2>
-
-      <p>
-        Active SpeakHub courses and approved external learning opportunities appear
-        in one catalogue, with clear provider and certificate information.
-      </p>
-
-    </div>
-
-
-    <div id="loading" class="loading">
-      Loading courses...
-    </div>
-
-
-    <div
-      class="grid g3"
-      id="courseGrid"
-    ></div>
-
-  </div>
-</section>
-
+<section id="courses"><div class="container">
+  <div class="title"><span class="label">Course Catalogue</span><h2>Available SpeakHub learning</h2><p>Active SpeakHub courses and approved external learning opportunities appear in one catalogue, with clear provider, completion and certificate information.</p></div>
+  <div id="loading" class="loading">Loading courses...</div>
+  <div class="grid g3" id="courseGrid"></div>
+</div></section>
 </main>
 
+<div class="modal" id="courseModal"><div class="modal-box">
+  <div class="modal-head"><div class="modal-title" id="courseModalTitle">Course Preview</div><button class="close-btn" type="button" id="closeModalButton">Close</button></div>
+  <div class="modal-content" id="courseModalContent"></div>
+  <div class="modal-actions"><a class="btn primary" id="modalStartBtn" href="#">Start Course</a><a class="btn greenBtn" id="modalSubmitBtn" href="#" style="display:none">Submit Certificate</a><a class="btn gold" id="modalDetailsBtn" href="#">View Details</a></div>
+</div></div>
 
-<div class="modal" id="courseModal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <div
-        class="modal-title"
-        id="courseModalTitle"
-      >
-        Course Preview
-      </div>
-
-      <button
-        class="close-btn"
-        type="button"
-        id="closeModalButton"
-      >
-        Close
-      </button>
-
-    </div>
-
-
-    <div
-      class="modal-content"
-      id="courseModalContent"
-    ></div>
-
-
-    <div class="modal-actions">
-
-      <a
-        class="btn primary"
-        id="modalStartBtn"
-        href="#"
-      >
-        Start Course
-      </a>
-
-      <a
-        class="btn gold"
-        id="modalDetailsBtn"
-        href="#"
-      >
-        View Details
-      </a>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<footer class="footer">
-
-  <div class="container footer-grid">
-
-    <div>
-      <h3>SpeakOut</h3>
-      <p>
-        SpeakHub Academy connects structured SpeakOut learning with approved
-        external learning opportunities across wellbeing, education, technology
-        and professional development.
-      </p>
-    </div>
-
-    <div>
-      <h4>Learning</h4>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies Corner</a>
-      <a href="certificate-center.html">Certificates</a>
-    </div>
-
-    <div>
-      <h4>Support</h4>
-      <a href="auth.html">Login / Apply</a>
-      <a href="school-register.html">Register School</a>
-      <a href="contributor.html">Become Contributor</a>
-    </div>
-
-  </div>
-
-</footer>
-
+<footer class="footer"><div class="container footer-grid">
+  <div><h3>SpeakOut</h3><p>SpeakHub Academy connects structured SpeakOut learning with approved external learning opportunities across wellbeing, education, technology and professional development.</p></div>
+  <div><h4>Learning</h4><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies Corner</a><a href="certificate-center.html">Certificates</a></div>
+  <div><h4>Support</h4><a href="auth.html">Login / Apply</a><a href="school-register.html">Register School</a><a href="contributor.html">Become Contributor</a></div>
+</div></footer>
 
 <script type="module">
-
-import { db, auth } from "./firebase-config.js";
-
-import {
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
-
-let courses = [];
-let progressMap = {};
-let currentProfile = null;
-
-
-const grid =
-  document.getElementById("courseGrid");
-
-const featuredGrid =
-  document.getElementById("featuredGrid");
-
-const loading =
-  document.getElementById("loading");
-
-const searchInput =
-  document.getElementById("searchInput");
-
-const categoryFilter =
-  document.getElementById("categoryFilter");
-
-const audienceFilter =
-  document.getElementById("audienceFilter");
-
-const accessFilter =
-  document.getElementById("accessFilter");
-
-const levelFilter =
-  document.getElementById("levelFilter");
-
-const providerFilter =
-  document.getElementById("providerFilter");
-
-const sortFilter =
-  document.getElementById("sortFilter");
-
-const emptyState =
-  document.getElementById("emptyState");
-
-const providerGrid =
-  document.getElementById("providerGrid");
-
-const roleNav =
-  document.getElementById("roleNav");
-
-const menuButton =
-  document.getElementById("menuButton");
-
-const courseModal =
-  document.getElementById("courseModal");
-
-const courseModalTitle =
-  document.getElementById("courseModalTitle");
-
-const courseModalContent =
-  document.getElementById("courseModalContent");
-
-const modalStartBtn =
-  document.getElementById("modalStartBtn");
-
-const modalDetailsBtn =
-  document.getElementById("modalDetailsBtn");
-
-const closeModalButton =
-  document.getElementById("closeModalButton");
-
-
-function safe(value,fallback="—"){
-  return value ?? fallback;
-}
-
-
-function normalize(value){
-  return String(value || "")
-    .toLowerCase()
-    .trim();
-}
-
-
-function pretty(value){
-
-  if(value === null || value === undefined || value === ""){
-    return "—";
-  }
-
-  return String(value)
-    .replaceAll("-"," ")
-    .replace(/\b\w/g,letter=>letter.toUpperCase());
-
-}
-
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-function escapeAttr(value){
-  return escapeHtml(value);
-}
-
-
-function stat(id,value){
-
-  const el =
-    document.getElementById(id);
-
-  if(el){
-    el.textContent =
-      Number(value || 0)
-      .toLocaleString();
-  }
-
-}
-
-
-function isExternalCourse(item){
-
-  return (
-    normalize(item.courseType) === "external" ||
-    normalize(item.completionMethod) === "certificate-upload"
-  );
-
-}
-
-
-function isInstructorLed(item){
-
-  return normalize(item.courseType) === "instructor-led";
-
-}
-
-
-function isFreeCourse(item){
-
-  if(item.free === true){
-    return true;
-  }
-
-  if(item.free === false){
-    return false;
-  }
-
-  const access =
-    normalize(item.accessType || "free");
-
-  return access === "free";
-
-}
-
-
-function accessKey(item){
-  return isFreeCourse(item) ? "free" : "premium";
-}
-
-
-function money(item){
-
-  if(isFreeCourse(item)){
-    return "Free";
-  }
-
-  const currency =
-    item.currency || "₦";
-
-  const price =
-    Number(item.price || 0);
-
-  if(!price){
-    return "Premium";
-  }
-
-  return `${currency}${price.toLocaleString()}`;
-
-}
-
-
-function accessClass(item){
-  return isFreeCourse(item)
-    ? "green"
-    : "gold";
-}
-
-
-function audienceArray(item){
-
-  if(Array.isArray(item.audience)){
-    return item.audience.map(normalize).filter(Boolean);
-  }
-
-  const raw =
-    normalize(item.audience);
-
-  return raw ? [raw] : ["general"];
-}
-
-
-function providerName(item){
-
-  return (
-    item.provider ||
-    item.instructor ||
-    item.authorName ||
-    "SpeakHub Academy"
-  );
-
-}
-
-
-function levelValue(item){
-
-  return normalize(
-    item.difficulty ||
-    item.level ||
-    "beginner"
-  );
-
-}
-
-
-function certificateAvailable(item){
-
-  return (
-    item.certificateEligible === true ||
-    item.certificate?.available === true
-  );
-
-}
-
-
-function isActiveCourse(item){
-
-  const status =
-    normalize(item.status || "active");
-
-  return (
-    status === "active" ||
-    item.active === true ||
-    item.approved === true
-  );
-
-}
-
-
-function roleMatchesAudience(role,audience){
-
-  if(!role){
-    return true;
-  }
-
-  const r =
-    normalize(role);
-
-  const a =
-    normalize(audience);
-
-  if(
-    a === "general" ||
-    a === "all" ||
-    a === "adults" ||
-    a === "adult"
-  ){
-    return true;
-  }
-
-  const aliases = {
-    student:[
-      "student",
-      "students",
-      "secondary",
-      "university"
-    ],
-    parent:[
-      "parent",
-      "parents"
-    ],
-    teacher:[
-      "teacher",
-      "teachers"
-    ],
-    school_admin:[
-      "school",
-      "schools",
-      "school-admin",
-      "school_admin"
-    ],
-    ambassador:[
-      "ambassador",
-      "ambassadors"
-    ],
-    ngo_professional:[
-      "ngo-professionals",
-      "ngo-professional",
-      "ngo"
-    ],
-    user:[
-      "general",
-      "adults",
-      "adult"
-    ]
+import { db,auth } from "./firebase-config.js";
+import { collection,getDocs,doc,getDoc,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+let courses=[],progressMap={},externalRecordMap={},currentProfile=null;
+
+const $=id=>document.getElementById(id);
+const grid=$("courseGrid"),featuredGrid=$("featuredGrid"),loading=$("loading"),searchInput=$("searchInput"),
+categoryFilter=$("categoryFilter"),audienceFilter=$("audienceFilter"),accessFilter=$("accessFilter"),
+levelFilter=$("levelFilter"),providerFilter=$("providerFilter"),sortFilter=$("sortFilter"),emptyState=$("emptyState"),
+providerGrid=$("providerGrid"),roleNav=$("roleNav"),menuButton=$("menuButton"),courseModal=$("courseModal"),
+courseModalTitle=$("courseModalTitle"),courseModalContent=$("courseModalContent"),modalStartBtn=$("modalStartBtn"),
+modalSubmitBtn=$("modalSubmitBtn"),modalDetailsBtn=$("modalDetailsBtn"),closeModalButton=$("closeModalButton");
+
+function normalize(v){return String(v||"").toLowerCase().trim()}
+function pretty(v){if(v===null||v===undefined||v==="")return"—";return String(v).replaceAll("-"," ").replace(/\b\w/g,l=>l.toUpperCase())}
+function escapeHtml(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function escapeAttr(v){return escapeHtml(v)}
+function stat(id,value){const el=$(id);if(el)el.textContent=Number(value||0).toLocaleString()}
+function isExternalCourse(i){return normalize(i.courseType)==="external"||normalize(i.completionMethod)==="certificate-upload"||i.externalProvider===true}
+function isInstructorLed(i){return normalize(i.courseType)==="instructor-led"}
+function isFreeCourse(i){if(i.free===true)return true;if(i.free===false)return false;return normalize(i.accessType||"free")==="free"}
+function accessKey(i){return isFreeCourse(i)?"free":"premium"}
+function money(i){if(isFreeCourse(i))return"Free";const price=Number(i.price||0);return price?`${i.currency||"₦"}${price.toLocaleString()}`:"Premium"}
+function accessClass(i){return isFreeCourse(i)?"green":"gold"}
+function audienceArray(i){if(Array.isArray(i.audience))return i.audience.map(normalize).filter(Boolean);const raw=normalize(i.audience);return raw?[raw]:["general"]}
+function providerName(i){return i.provider||i.instructor||i.authorName||"SpeakHub Academy"}
+function levelValue(i){return normalize(i.difficulty||i.level||"beginner")}
+function certificateAvailable(i){return i.certificateEligible===true||i.certificate?.available===true}
+function isActiveCourse(i){const s=normalize(i.status||"active");return s==="active"||i.active===true||i.approved===true}
+
+function roleMatchesAudience(role,aud){
+  if(!role)return true;
+  const r=normalize(role),a=normalize(aud);
+  if(["general","all","adults","adult"].includes(a))return true;
+  const aliases={
+    student:["student","students","secondary","university"],
+    parent:["parent","parents"],
+    teacher:["teacher","teachers"],
+    school_admin:["school","schools","school-admin","school_admin"],
+    ambassador:["ambassador","ambassadors"],
+    ngo_professional:["ngo-professionals","ngo-professional","ngo"],
+    user:["general","adults","adult"]
   };
-
-  return (
-    aliases[r]?.includes(a) ||
-    r === a
-  );
-
+  return aliases[r]?.includes(a)||r===a;
 }
 
-
-function canSeeCourse(item){
-
-  /*
-    Public academy principle:
-    Do not hide general catalogue content simply because a visitor is logged out.
-    Logged-in roles can still see general and role-relevant content.
-  */
-
-  if(!currentProfile){
-    return true;
-  }
-
-  const audiences =
-    audienceArray(item);
-
-  if(
-    audiences.some(
-      a =>
-        a === "general" ||
-        a === "all" ||
-        a === "adults" ||
-        a === "adult"
-    )
-  ){
-    return true;
-  }
-
-  const role =
-    normalize(currentProfile.role || "");
-
-  if(
-    role === "admin" ||
-    role === "super_admin"
-  ){
-    return true;
-  }
-
-  return audiences.some(
-    audience =>
-      roleMatchesAudience(
-        role,
-        audience
-      )
-  );
-
+function canSeeCourse(i){
+  if(!currentProfile)return true;
+  const audiences=audienceArray(i);
+  if(audiences.some(a=>["general","all","adults","adult"].includes(a)))return true;
+  const role=normalize(currentProfile.role);
+  if(["admin","super_admin"].includes(role))return true;
+  return audiences.some(a=>roleMatchesAudience(role,a));
 }
-
 
 function updateStats(items){
-
-  stat(
-    "totalCount",
-    items.length
-  );
-
-  stat(
-    "featuredCount",
-    items.filter(
-      i=>i.featured === true
-    ).length
-  );
-
-  stat(
-    "certCount",
-    items.filter(
-      certificateAvailable
-    ).length
-  );
-
-  stat(
-    "providerCount",
-    new Set(
-      items
-        .map(providerName)
-        .filter(Boolean)
-    ).size
-  );
-
+  stat("totalCount",items.length);
+  stat("featuredCount",items.filter(i=>i.featured===true).length);
+  stat("certCount",items.filter(certificateAvailable).length);
+  stat("providerCount",new Set(items.map(providerName).filter(Boolean)).size);
 }
-
 
 function localProgressPercent(courseId){
-
   try{
-
-    const raw =
-      localStorage.getItem(
-        `speakhub-progress-${courseId}`
-      );
-
-    if(!raw){
-      return 0;
-    }
-
-    const parsed =
-      JSON.parse(raw);
-
-    const completed =
-      Array.isArray(parsed.completedLessons)
-      ? parsed.completedLessons.length
-      : 0;
-
-    const item =
-      courses.find(
-        c=>c.id === courseId
-      );
-
-    let total =
-      Number(item?.lessonCount || 0);
-
-    if(!total && Array.isArray(item?.modules)){
-
-      total =
-        item.modules.reduce(
-          (sum,module)=>
-            sum +
-            (
-              Array.isArray(module.lessons)
-              ? module.lessons.length
-              : 0
-            ),
-          0
-        );
-
-    }
-
-    if(!total){
-      return 0;
-    }
-
-    return Math.min(
-      100,
-      Math.round(
-        (completed / total) * 100
-      )
-    );
-
-  }catch{
-    return 0;
-  }
-
+    const raw=localStorage.getItem(`speakhub-progress-${courseId}`);
+    if(!raw)return 0;
+    const parsed=JSON.parse(raw);
+    const completed=Array.isArray(parsed.completedLessons)?parsed.completedLessons.length:0;
+    const item=courses.find(c=>c.id===courseId);
+    let total=Number(item?.lessonCount||0);
+    if(!total&&Array.isArray(item?.modules))total=item.modules.reduce((s,m)=>s+(Array.isArray(m.lessons)?m.lessons.length:0),0);
+    return total?Math.min(100,Math.round(completed/total*100)):0;
+  }catch{return 0}
+}
+function progressPercent(i){
+  const p=progressMap[i.id]||{};
+  return Math.max(Number(p.percent||p.progress||p.progressPercent||0),localProgressPercent(i.id));
 }
 
-
-function progressPercent(item){
-
-  const p =
-    progressMap[item.id] || {};
-
-  const firestorePercent =
-    Number(
-      p.percent ||
-      p.progress ||
-      p.progressPercent ||
-      0
-    );
-
-  const localPercent =
-    localProgressPercent(
-      item.id
-    );
-
-  return Math.max(
-    firestorePercent,
-    localPercent
-  );
-
+function externalRecord(item){return externalRecordMap[item.id]||null}
+function externalStatus(item){
+  const r=externalRecord(item);
+  if(!r)return{key:"not-started",label:"Not Submitted"};
+  const raw=normalize(r.verificationStatus||r.status||"pending_review");
+  if(["approved","verified"].includes(raw))return{key:"approved",label:"Approved"};
+  if(["rejected","revoked"].includes(raw))return{key:"rejected",label:pretty(raw)};
+  if(["pending","pending_review","submitted"].includes(raw))return{key:"pending-review",label:"Pending Review"};
+  return{key:"pending-review",label:pretty(raw)};
+}
+function externalSubmitLabel(item){
+  const s=externalStatus(item).key;
+  if(s==="approved")return"View Record";
+  if(s==="pending-review")return"View Submission";
+  if(s==="rejected")return"Resubmit Proof";
+  return"Submit Certificate";
 }
 
-
-function startUrl(item){
-
-  if(isExternalCourse(item)){
-
-    return (
-      item.externalUrl ||
-      `course-details.html?id=${encodeURIComponent(item.id)}`
-    );
-
-  }
-
-  if(isInstructorLed(item)){
-
-    return (
-      item.enrollmentUrl ||
-      item.contactUrl ||
-      `course-details.html?id=${encodeURIComponent(item.id)}`
-    );
-
-  }
-
-  return `course-player.html?id=${encodeURIComponent(item.id)}`;
-
+function startUrl(i){
+  if(isExternalCourse(i))return i.externalUrl||i.courseUrl||i.providerCourseUrl||`course-details.html?id=${encodeURIComponent(i.id)}`;
+  if(isInstructorLed(i))return i.enrollmentUrl||i.contactUrl||`course-details.html?id=${encodeURIComponent(i.id)}`;
+  return `course-player.html?id=${encodeURIComponent(i.id)}`;
 }
-
-
-function startLabel(item){
-
-  if(isExternalCourse(item)){
-    return item.externalUrl
-      ? "Start with Provider"
-      : "View Course";
-  }
-
-  if(isInstructorLed(item)){
-    return "Enrollment";
-  }
-
-  return progressPercent(item) > 0
-    ? "Continue Course"
-    : "Start Course";
-
+function startLabel(i){
+  if(isExternalCourse(i))return (i.externalUrl||i.courseUrl||i.providerCourseUrl)?"Start with Provider":"View Course";
+  if(isInstructorLed(i))return"Enrollment";
+  return progressPercent(i)>0?"Continue Course":"Start Course";
 }
-
-
-function certificateIssuer(item){
-
-  return (
-    item.certificate?.issuer ||
-    item.certificateIssuer ||
-    providerName(item)
-  );
-
-}
-
+function certificateIssuer(i){return i.certificate?.issuer||i.certificateIssuer||providerName(i)}
 
 function courseCard(item,featured=false){
-
-  const cover =
-    item.coverUrl
-    ? `<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title || "Course")}">`
+  const cover=item.coverUrl?`<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title||"Course")}">`:"";
+  const percent=Math.max(0,Math.min(100,progressPercent(item)));
+  const id=encodeURIComponent(item.id),external=isExternalCourse(item),instructorLed=isInstructorLed(item);
+  const provider=providerName(item),audiences=audienceArray(item),audienceText=audiences.slice(0,3).map(pretty).join(", "),more=audiences.length>3?` +${audiences.length-3}`:"";
+  const startHref=startUrl(item),target=external&&(item.externalUrl||item.courseUrl||item.providerCourseUrl)?`target="_blank" rel="noopener noreferrer"`:"";
+  const ext=externalStatus(item);
+  const progressBlock=external
+    ? `<div class="progress-wrap"><div class="progress-text">Complete with ${escapeHtml(provider)}, then return to SpeakHub to submit the provider certificate or proof of completion.</div></div>`
+    : `<div class="progress-wrap"><div class="progress-track"><div class="progress-bar" style="width:${percent}%"></div></div><div class="progress-text">${percent}% complete</div></div>`;
+  const submitButton=external
+    ? `<a class="btn greenBtn" href="external-learning-submit.html?courseId=${id}">${escapeHtml(externalSubmitLabel(item))}</a>`
     : "";
-
-  const percent =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        progressPercent(item)
-      )
-    );
-
-  const id =
-    encodeURIComponent(item.id);
-
-  const external =
-    isExternalCourse(item);
-
-  const instructorLed =
-    isInstructorLed(item);
-
-  const provider =
-    providerName(item);
-
-  const audiences =
-    audienceArray(item);
-
-  const audienceText =
-    audiences
-      .slice(0,3)
-      .map(pretty)
-      .join(", ");
-
-  const moreAudience =
-    audiences.length > 3
-    ? ` +${audiences.length - 3}`
-    : "";
-
-  const startHref =
-    startUrl(item);
-
-  const target =
-    external && item.externalUrl
-    ? `target="_blank" rel="noopener noreferrer"`
-    : "";
-
-  const progressBlock =
-    external
-    ? `
-      <div class="progress-wrap">
-        <div class="progress-text">
-          Complete with ${escapeHtml(provider)} and return to SpeakHub for certificate/progress recording where applicable.
-        </div>
-      </div>
-    `
-    : `
-      <div class="progress-wrap">
-        <div class="progress-track">
-          <div class="progress-bar" style="width:${percent}%"></div>
-        </div>
-        <div class="progress-text">
-          ${percent}% complete
-        </div>
-      </div>
-    `;
-
-
-  return `
-    <article class="card">
-
-      <div class="cover">
-
-        ${cover}
-
-        <span class="cover-badge">
-          ${
-            external
-            ? "External Provider"
-            : instructorLed
-              ? "Instructor-Led"
-              : "SpeakHub"
-          }
-        </span>
-
-        <strong>
-          ${escapeHtml(item.title || "Untitled Course")}
-        </strong>
-
-      </div>
-
-
-      <div class="pills">
-
-        <span class="pill">
-          ${escapeHtml(pretty(item.category || "general"))}
-        </span>
-
-        <span class="pill">
-          ${escapeHtml(pretty(levelValue(item)))}
-        </span>
-
-        <span class="pill ${accessClass(item)}">
-          ${escapeHtml(money(item))}
-        </span>
-
-        <span class="pill provider">
-          ${escapeHtml(provider)}
-        </span>
-
-        ${
-          external
-          ? `<span class="pill external">External</span>`
-          : ""
-        }
-
-        ${
-          certificateAvailable(item)
-          ? `<span class="pill gold">Certificate</span>`
-          : ""
-        }
-
-        ${
-          featured || item.featured
-          ? `<span class="pill green">Featured</span>`
-          : ""
-        }
-
-      </div>
-
-
-      <h3>
-        ${escapeHtml(item.title || "Untitled Course")}
-      </h3>
-
-
-      <div class="course-meta">
-
-        <span>
-          Provider:
-          ${escapeHtml(provider)}
-        </span>
-
-        <span>
-          Audience:
-          ${escapeHtml(audienceText || "General")}${escapeHtml(moreAudience)}
-        </span>
-
-        <span>
-          ${escapeHtml(item.duration || item.estimatedDuration || "Self-paced")}
-        </span>
-
-      </div>
-
-
-      <p>
-        ${escapeHtml(
-          item.shortDescription ||
-          item.description ||
-          "No course description yet."
-        )}
-      </p>
-
-
-      ${progressBlock}
-
-
-      <div class="card-actions">
-
-        <a
-          class="btn primary"
-          href="${escapeAttr(startHref)}"
-          ${target}
-        >
-          ${escapeHtml(startLabel(item))}
-        </a>
-
-        <button
-          class="btn softBtn"
-          type="button"
-          data-preview-id="${escapeAttr(item.id)}"
-        >
-          Preview
-        </button>
-
-        <a
-          class="btn ghost"
-          href="course-details.html?id=${id}"
-        >
-          Details
-        </a>
-
-      </div>
-
-    </article>
-  `;
-
+  return `<article class="card">
+    <div class="cover">${cover}<span class="cover-badge">${external?"External Provider":instructorLed?"Instructor-Led":"SpeakHub"}</span><strong>${escapeHtml(item.title||"Untitled Course")}</strong></div>
+    <div class="pills">
+      <span class="pill">${escapeHtml(pretty(item.category||"general"))}</span>
+      <span class="pill">${escapeHtml(pretty(levelValue(item)))}</span>
+      <span class="pill ${accessClass(item)}">${escapeHtml(money(item))}</span>
+      <span class="pill provider">${escapeHtml(provider)}</span>
+      ${external?`<span class="pill external">External</span><span class="pill ${ext.key}">${escapeHtml(ext.label)}</span>`:""}
+      ${certificateAvailable(item)?`<span class="pill gold">Certificate</span>`:""}
+      ${featured||item.featured?`<span class="pill green">Featured</span>`:""}
+    </div>
+    <h3>${escapeHtml(item.title||"Untitled Course")}</h3>
+    <div class="course-meta"><span>Provider: ${escapeHtml(provider)}</span><span>Audience: ${escapeHtml(audienceText||"General")}${escapeHtml(more)}</span><span>${escapeHtml(item.duration||item.estimatedDuration||"Self-paced")}</span></div>
+    <p>${escapeHtml(item.shortDescription||item.description||"No course description yet.")}</p>
+    ${progressBlock}
+    <div class="card-actions">
+      <a class="btn primary" href="${escapeAttr(startHref)}" ${target}>${escapeHtml(startLabel(item))}</a>
+      ${submitButton}
+      <button class="btn softBtn" type="button" data-preview-id="${escapeAttr(item.id)}">Preview</button>
+      <a class="btn ghost" href="course-details.html?id=${id}">Details</a>
+    </div>
+  </article>`;
 }
-
 
 function renderFeatured(){
-
-  const featured =
-    courses
-      .filter(
-        i=>i.featured === true
-      )
-      .slice(0,6);
-
-
-  featuredGrid.innerHTML =
-    featured.length
-    ? featured
-        .map(
-          i=>courseCard(i,true)
-        )
-        .join("")
-    : `
-      <div class="loading">
-        No featured courses yet.
-      </div>
-    `;
-
-
-  bindPreviewButtons(
-    featuredGrid
-  );
-
+  const items=courses.filter(i=>i.featured===true).slice(0,6);
+  featuredGrid.innerHTML=items.length?items.map(i=>courseCard(i,true)).join(""):`<div class="loading">No featured courses yet.</div>`;
+  bindPreviewButtons(featuredGrid);
 }
-
 
 function buildDynamicFilters(){
-
-  const categories =
-    [...new Set(
-      courses
-        .map(
-          item=>normalize(item.category)
-        )
-        .filter(Boolean)
-    )]
-    .sort();
-
-
-  categoryFilter.innerHTML =
-    `<option value="all">All Categories</option>` +
-    categories
-      .map(
-        value=>
-          `<option value="${escapeAttr(value)}">${escapeHtml(pretty(value))}</option>`
-      )
-      .join("");
-
-
-  const audiences =
-    [...new Set(
-      courses
-        .flatMap(
-          item=>audienceArray(item)
-        )
-        .filter(Boolean)
-    )]
-    .sort();
-
-
-  audienceFilter.innerHTML =
-    `<option value="all">All Audiences</option>` +
-    audiences
-      .map(
-        value=>
-          `<option value="${escapeAttr(value)}">${escapeHtml(pretty(value))}</option>`
-      )
-      .join("");
-
-
-  const providers =
-    [...new Set(
-      courses
-        .map(providerName)
-        .filter(Boolean)
-    )]
-    .sort(
-      (a,b)=>a.localeCompare(b)
-    );
-
-
-  providerFilter.innerHTML =
-    `<option value="all">All Providers</option>` +
-    providers
-      .map(
-        value=>
-          `<option value="${escapeAttr(normalize(value))}">${escapeHtml(value)}</option>`
-      )
-      .join("");
-
-
-  providerGrid.innerHTML =
-    providers.length
-    ? providers
-        .map(
-          provider=>`
-            <span class="provider-chip">
-              <span class="provider-dot"></span>
-              ${escapeHtml(provider)}
-            </span>
-          `
-        )
-        .join("")
-    : `
-      <span class="provider-chip">
-        <span class="provider-dot"></span>
-        SpeakHub Academy
-      </span>
-    `;
-
+  const cats=[...new Set(courses.map(i=>normalize(i.category)).filter(Boolean))].sort();
+  categoryFilter.innerHTML=`<option value="all">All Categories</option>`+cats.map(v=>`<option value="${escapeAttr(v)}">${escapeHtml(pretty(v))}</option>`).join("");
+  const auds=[...new Set(courses.flatMap(audienceArray).filter(Boolean))].sort();
+  audienceFilter.innerHTML=`<option value="all">All Audiences</option>`+auds.map(v=>`<option value="${escapeAttr(v)}">${escapeHtml(pretty(v))}</option>`).join("");
+  const providers=[...new Set(courses.map(providerName).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  providerFilter.innerHTML=`<option value="all">All Providers</option>`+providers.map(v=>`<option value="${escapeAttr(normalize(v))}">${escapeHtml(v)}</option>`).join("");
+  providerGrid.innerHTML=providers.length?providers.map(p=>`<span class="provider-chip"><span class="provider-dot"></span>${escapeHtml(p)}</span>`).join(""):`<span class="provider-chip"><span class="provider-dot"></span>SpeakHub Academy</span>`;
 }
-
 
 function render(){
-
-  const s =
-    normalize(
-      searchInput.value
-    );
-
-  const cat =
-    normalize(
-      categoryFilter.value
-    );
-
-  const aud =
-    normalize(
-      audienceFilter.value
-    );
-
-  const acc =
-    normalize(
-      accessFilter.value
-    );
-
-  const level =
-    normalize(
-      levelFilter.value
-    );
-
-  const provider =
-    normalize(
-      providerFilter.value
-    );
-
-  const sort =
-    normalize(
-      sortFilter.value
-    );
-
-
-  let filtered =
-    courses.filter(item=>{
-
-      const audiences =
-        audienceArray(item);
-
-      const searchable = [
-        item.title,
-        item.instructor,
-        item.authorName,
-        item.provider,
-        item.category,
-        audiences.join(" "),
-        item.difficulty,
-        item.level,
-        Array.isArray(item.tags)
-          ? item.tags.join(" ")
-          : item.tags,
-        item.shortDescription,
-        item.description,
-        Array.isArray(item.keywords)
-          ? item.keywords.join(" ")
-          : item.keywords
-      ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-
-
-      const okSearch =
-        !s ||
-        searchable.includes(s);
-
-      const okCategory =
-        cat === "all" ||
-        normalize(item.category) === cat;
-
-      const okAudience =
-        aud === "all" ||
-        audiences.includes(aud);
-
-      const okAccess =
-        acc === "all" ||
-        accessKey(item) === acc;
-
-      const okLevel =
-        level === "all" ||
-        levelValue(item) === level;
-
-      const okProvider =
-        provider === "all" ||
-        normalize(providerName(item)) === provider;
-
-
-      return (
-        okSearch &&
-        okCategory &&
-        okAudience &&
-        okAccess &&
-        okLevel &&
-        okProvider
-      );
-
-    });
-
-
-  if(sort === "featured"){
-
-    filtered.sort(
-      (a,b)=>
-        (b.featured === true) -
-        (a.featured === true) ||
-        (b.createdAt?.seconds || 0) -
-        (a.createdAt?.seconds || 0)
-    );
-
-  }
-
-
-  if(sort === "newest"){
-
-    filtered.sort(
-      (a,b)=>
-        (b.createdAt?.seconds || 0) -
-        (a.createdAt?.seconds || 0)
-    );
-
-  }
-
-
-  if(sort === "title"){
-
-    filtered.sort(
-      (a,b)=>
-        (a.title || "")
-        .localeCompare(
-          b.title || ""
-        )
-    );
-
-  }
-
-
-  if(sort === "certificate"){
-
-    filtered.sort(
-      (a,b)=>
-        Number(certificateAvailable(b)) -
-        Number(certificateAvailable(a))
-    );
-
-  }
-
-
-  if(sort === "provider"){
-
-    filtered.sort(
-      (a,b)=>
-        providerName(a)
-        .localeCompare(
-          providerName(b)
-        )
-    );
-
-  }
-
-
-  grid.innerHTML =
-    filtered
-      .map(
-        i=>courseCard(i)
-      )
-      .join("");
-
-
-  emptyState.style.display =
-    filtered.length
-    ? "none"
-    : "block";
-
-
-  bindPreviewButtons(
-    grid
-  );
-
+  const s=normalize(searchInput.value),cat=normalize(categoryFilter.value),aud=normalize(audienceFilter.value),acc=normalize(accessFilter.value),level=normalize(levelFilter.value),provider=normalize(providerFilter.value),sort=normalize(sortFilter.value);
+  let filtered=courses.filter(i=>{
+    const audiences=audienceArray(i);
+    const searchable=[i.title,i.instructor,i.authorName,i.provider,i.category,audiences.join(" "),i.difficulty,i.level,Array.isArray(i.tags)?i.tags.join(" "):i.tags,i.shortDescription,i.description,Array.isArray(i.keywords)?i.keywords.join(" "):i.keywords].filter(Boolean).join(" ").toLowerCase();
+    return(!s||searchable.includes(s))&&(cat==="all"||normalize(i.category)===cat)&&(aud==="all"||audiences.includes(aud))&&(acc==="all"||accessKey(i)===acc)&&(level==="all"||levelValue(i)===level)&&(provider==="all"||normalize(providerName(i))===provider);
+  });
+  if(sort==="featured")filtered.sort((a,b)=>(b.featured===true)-(a.featured===true)||(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  if(sort==="newest")filtered.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  if(sort==="title")filtered.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
+  if(sort==="certificate")filtered.sort((a,b)=>Number(certificateAvailable(b))-Number(certificateAvailable(a)));
+  if(sort==="provider")filtered.sort((a,b)=>providerName(a).localeCompare(providerName(b)));
+  grid.innerHTML=filtered.map(i=>courseCard(i)).join("");
+  emptyState.style.display=filtered.length?"none":"block";
+  bindPreviewButtons(grid);
 }
 
-
-function bindPreviewButtons(container){
-
-  container
-    .querySelectorAll("[data-preview-id]")
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        ()=>openCoursePreview(
-          button.dataset.previewId
-        )
-      );
-
-    });
-
-}
-
+function bindPreviewButtons(container){container.querySelectorAll("[data-preview-id]").forEach(b=>b.addEventListener("click",()=>openCoursePreview(b.dataset.previewId)))}
 
 async function loadProgress(user){
-
-  progressMap = {};
-
-
-  if(!user){
-    return;
-  }
-
-
+  progressMap={}; if(!user)return;
   try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "userProgress"
-          ),
-          where(
-            "userId",
-            "==",
-            user.uid
-          )
-        )
-      );
-
-
-    snap.forEach(docSnap=>{
-
-      const p =
-        docSnap.data();
-
-      if(p.courseId){
-
-        progressMap[p.courseId] =
-          p;
-
-      }
-
-    });
-
-
-  }catch(error){
-
-    console.warn(
-      "Could not load Firestore progress:",
-      error
-    );
-
-    progressMap = {};
-
-  }
-
+    const snap=await getDocs(query(collection(db,"userProgress"),where("userId","==",user.uid)));
+    snap.forEach(d=>{const p=d.data();const courseId=p.courseId||p.itemId;if(courseId&&["course","external-course"].includes(normalize(p.type||"course")))progressMap[courseId]=p});
+  }catch(e){console.warn("Could not load progress:",e)}
 }
 
+async function loadExternalRecords(user){
+  externalRecordMap={}; if(!user)return;
+  try{
+    const snap=await getDocs(query(collection(db,"externalLearningRecords"),where("userId","==",user.uid)));
+    snap.forEach(d=>{
+      const r={id:d.id,...d.data()};
+      if(!r.courseId)return;
+      const existing=externalRecordMap[r.courseId];
+      const currentTime=r.updatedAt?.seconds||r.submittedAt?.seconds||r.createdAt?.seconds||0;
+      const existingTime=existing?(existing.updatedAt?.seconds||existing.submittedAt?.seconds||existing.createdAt?.seconds||0):-1;
+      if(!existing||currentTime>=existingTime)externalRecordMap[r.courseId]=r;
+    });
+  }catch(e){console.warn("Could not load external learning records:",e)}
+}
 
 async function loadCourses(){
-
   try{
-
-    const snap =
-      await getDocs(
-        collection(
-          db,
-          "courses"
-        )
-      );
-
-
-    courses = [];
-
-
-    snap.forEach(docSnap=>{
-
-      const item = {
-        id:docSnap.id,
-        ...docSnap.data()
-      };
-
-
-      if(
-        isActiveCourse(item) &&
-        canSeeCourse(item)
-      ){
-
-        courses.push(item);
-
-      }
-
-    });
-
-
-    courses.sort(
-      (a,b)=>{
-
-        if(
-          a.featured &&
-          !b.featured
-        ){
-          return -1;
-        }
-
-        if(
-          !a.featured &&
-          b.featured
-        ){
-          return 1;
-        }
-
-        return (
-          (b.createdAt?.seconds || 0) -
-          (a.createdAt?.seconds || 0)
-        );
-
-      }
-    );
-
-
-    loading.style.display =
-      "none";
-
-
-    updateStats(
-      courses
-    );
-
-
-    buildDynamicFilters();
-
-    renderFeatured();
-
-    render();
-
-
-  }catch(error){
-
-    console.error(
-      "Course loading error:",
-      error
-    );
-
-
-    loading.textContent =
-      "Failed to load courses. Check Firestore rules and the courses collection.";
-
-
-    loading.style.background =
-      "var(--goldSoft)";
-
-
-    loading.style.color =
-      "#704800";
-
-  }
-
+    const snap=await getDocs(collection(db,"courses"));courses=[];
+    snap.forEach(d=>{const item={id:d.id,...d.data()};if(isActiveCourse(item)&&canSeeCourse(item))courses.push(item)});
+    courses.sort((a,b)=>a.featured&&!b.featured?-1:!a.featured&&b.featured?1:(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    loading.style.display="none";updateStats(courses);buildDynamicFilters();renderFeatured();render();
+  }catch(e){console.error(e);loading.textContent="Failed to load courses. Check Firestore rules and the courses collection.";loading.style.background="var(--goldSoft)";loading.style.color="#704800"}
 }
 
-
-function dashboardFor(profile){
-
-  const role =
-    normalize(
-      profile?.role || ""
-    );
-
-
-  if(
-    role === "admin" ||
-    role === "super_admin"
-  ){
-    return "admin-dashboard.html";
-  }
-
-
-  if(role === "school_admin"){
-    return "school-dashboard.html";
-  }
-
-
-  if(role === "teacher"){
-    return "teacher-dashboard.html";
-  }
-
-
-  if(role === "parent"){
-    return "parent-dashboard.html";
-  }
-
-
-  if(role === "student"){
-    return "student-dashboard.html";
-  }
-
-
-  return "auth.html";
-
+function dashboardFor(p){
+  const r=normalize(p?.role);
+  if(["admin","super_admin"].includes(r))return"admin-dashboard.html";
+  if(r==="school_admin")return"school-dashboard.html";
+  if(r==="teacher")return"teacher-dashboard.html";
+  if(r==="parent")return"parent-dashboard.html";
+  if(r==="student")return"student-dashboard.html";
+  return"auth.html";
 }
-
-
-function renderNav(profile){
-
-  const dashboard =
-    dashboardFor(profile);
-
-
-  if(profile){
-
-    roleNav.innerHTML = `
-      <a href="${escapeAttr(dashboard)}">Dashboard</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies</a>
-      <a href="certificate-center.html">Certificates</a>
-      <a href="profile.html">Profile</a>
-    `;
-
-  }else{
-
-    roleNav.innerHTML = `
-      <a href="index.html">Home</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies</a>
-      <a href="certificate-center.html">Certificates</a>
-      <a href="auth.html">Login</a>
-    `;
-
-  }
-
+function renderNav(p){
+  if(p)roleNav.innerHTML=`<a href="${escapeAttr(dashboardFor(p))}">Dashboard</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies</a><a href="certificate-center.html">Certificates</a><a href="profile.html">Profile</a>`;
+  else roleNav.innerHTML=`<a href="index.html">Home</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies</a><a href="certificate-center.html">Certificates</a><a href="auth.html">Login</a>`;
 }
-
-
 async function loadProfile(user){
-
-  if(!user){
-    return null;
-  }
-
-
-  try{
-
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "users",
-          user.uid
-        )
-      );
-
-
-    return snap.exists()
-      ? {
-          uid:user.uid,
-          ...snap.data()
-        }
-      : {
-          uid:user.uid,
-          email:user.email,
-          role:"user"
-        };
-
-
-  }catch(error){
-
-    console.warn(
-      "Could not load profile:",
-      error
-    );
-
-
-    return {
-      uid:user.uid,
-      email:user.email,
-      role:"user"
-    };
-
-  }
-
+  if(!user)return null;
+  try{const snap=await getDoc(doc(db,"users",user.uid));return snap.exists()?{uid:user.uid,...snap.data()}:{uid:user.uid,email:user.email,role:"user"}}
+  catch{return{uid:user.uid,email:user.email,role:"user"}}
 }
-
 
 function openCoursePreview(id){
-
-  const item =
-    courses.find(
-      x=>x.id === id
-    );
-
-
-  if(!item){
-    return;
-  }
-
-
-  const external =
-    isExternalCourse(item);
-
-  const instructorLed =
-    isInstructorLed(item);
-
-  const provider =
-    providerName(item);
-
-  const audiences =
-    audienceArray(item)
-      .map(pretty)
-      .join(", ");
-
-
-  courseModalTitle.textContent =
-    item.title ||
-    "Course Preview";
-
-
-  courseModalContent.innerHTML = `
-
-    <h2>
-      ${escapeHtml(item.title || "Course")}
-    </h2>
-
+  const item=courses.find(x=>x.id===id);if(!item)return;
+  const external=isExternalCourse(item),provider=providerName(item),audiences=audienceArray(item).map(pretty).join(", "),ext=externalStatus(item);
+  courseModalTitle.textContent=item.title||"Course Preview";
+  courseModalContent.innerHTML=`
+    <h2>${escapeHtml(item.title||"Course")}</h2>
     <div class="pills">
-
-      <span class="pill">
-        ${escapeHtml(pretty(item.category || "general"))}
-      </span>
-
-      <span class="pill">
-        ${escapeHtml(pretty(levelValue(item)))}
-      </span>
-
-      <span class="pill ${accessClass(item)}">
-        ${escapeHtml(money(item))}
-      </span>
-
-      <span class="pill provider">
-        ${escapeHtml(provider)}
-      </span>
-
-      ${
-        external
-        ? `<span class="pill external">External Provider</span>`
-        : ""
-      }
-
-      ${
-        instructorLed
-        ? `<span class="pill gold">Instructor-Led</span>`
-        : ""
-      }
-
-      ${
-        certificateAvailable(item)
-        ? `<span class="pill green">Certificate Available</span>`
-        : ""
-      }
-
+      <span class="pill">${escapeHtml(pretty(item.category||"general"))}</span>
+      <span class="pill">${escapeHtml(pretty(levelValue(item)))}</span>
+      <span class="pill ${accessClass(item)}">${escapeHtml(money(item))}</span>
+      <span class="pill provider">${escapeHtml(provider)}</span>
+      ${external?`<span class="pill external">External Provider</span><span class="pill ${ext.key}">${escapeHtml(ext.label)}</span>`:""}
+      ${certificateAvailable(item)?`<span class="pill green">Certificate Available</span>`:""}
     </div>
-
-
-    <p>
-      ${escapeHtml(
-        item.fullDescription ||
-        item.description ||
-        item.shortDescription ||
-        "No course description yet."
-      )}
-    </p>
-
-
+    <p>${escapeHtml(item.fullDescription||item.description||item.shortDescription||"No course description yet.")}</p>
     <h3>Course Information</h3>
-
-    <p>
-      <strong>Provider:</strong>
-      ${escapeHtml(provider)}
-    </p>
-
-    <p>
-      <strong>Category:</strong>
-      ${escapeHtml(pretty(item.category || "general"))}
-    </p>
-
-    <p>
-      <strong>Audience:</strong>
-      ${escapeHtml(audiences || "General")}
-    </p>
-
-    <p>
-      <strong>Level:</strong>
-      ${escapeHtml(pretty(levelValue(item)))}
-    </p>
-
-    <p>
-      <strong>Access:</strong>
-      ${escapeHtml(money(item))}
-    </p>
-
-    <p>
-      <strong>Duration:</strong>
-      ${escapeHtml(item.duration || item.estimatedDuration || "Self-paced")}
-    </p>
-
-    <p>
-      <strong>Certificate:</strong>
-      ${
-        certificateAvailable(item)
-        ? `Available • Issuer: ${escapeHtml(certificateIssuer(item))}`
-        : "Not currently enabled"
-      }
-    </p>
-
-
-    ${
-      external
-      ? `
-        <div class="modal-note">
-          This course is delivered by ${escapeHtml(provider)}.
-          SpeakHub can list the course, guide the learner to the provider
-          and record submitted completion evidence where configured.
-          The external provider remains the original issuer of its credential.
-        </div>
-      `
-      : ""
-    }
-
+    <p><strong>Provider:</strong> ${escapeHtml(provider)}</p>
+    <p><strong>Category:</strong> ${escapeHtml(pretty(item.category||"general"))}</p>
+    <p><strong>Audience:</strong> ${escapeHtml(audiences||"General")}</p>
+    <p><strong>Level:</strong> ${escapeHtml(pretty(levelValue(item)))}</p>
+    <p><strong>Access:</strong> ${escapeHtml(money(item))}</p>
+    <p><strong>Duration:</strong> ${escapeHtml(item.duration||item.estimatedDuration||"Self-paced")}</p>
+    <p><strong>Certificate:</strong> ${certificateAvailable(item)?`Available • Issuer: ${escapeHtml(certificateIssuer(item))}`:"Not currently enabled"}</p>
+    ${external?`<div class="modal-note"><strong>External course flow:</strong> Take the course on ${escapeHtml(provider)}'s official platform, obtain the provider's certificate or completion proof, then return to SpeakHub and submit it for review. The original provider remains the credential issuer.</div>`:""}
   `;
-
-
-  modalStartBtn.href =
-    startUrl(item);
-
-
-  modalStartBtn.textContent =
-    startLabel(item);
-
-
-  if(
-    external &&
-    item.externalUrl
-  ){
-
-    modalStartBtn.target =
-      "_blank";
-
-    modalStartBtn.rel =
-      "noopener noreferrer";
-
-  }else{
-
-    modalStartBtn.removeAttribute(
-      "target"
-    );
-
-    modalStartBtn.removeAttribute(
-      "rel"
-    );
-
-  }
-
-
-  modalDetailsBtn.href =
-    `course-details.html?id=${encodeURIComponent(item.id)}`;
-
-
-  courseModal.style.display =
-    "block";
-
-
-  document.body.style.overflow =
-    "hidden";
-
+  modalStartBtn.href=startUrl(item);modalStartBtn.textContent=startLabel(item);
+  if(external&&(item.externalUrl||item.courseUrl||item.providerCourseUrl)){modalStartBtn.target="_blank";modalStartBtn.rel="noopener noreferrer"}else{modalStartBtn.removeAttribute("target");modalStartBtn.removeAttribute("rel")}
+  modalDetailsBtn.href=`course-details.html?id=${encodeURIComponent(item.id)}`;
+  if(external){modalSubmitBtn.style.display="inline-flex";modalSubmitBtn.href=`external-learning-submit.html?courseId=${encodeURIComponent(item.id)}`;modalSubmitBtn.textContent=externalSubmitLabel(item)}else{modalSubmitBtn.style.display="none"}
+  courseModal.style.display="block";document.body.style.overflow="hidden";
 }
+function closeCoursePreview(){courseModal.style.display="none";document.body.style.overflow=""}
 
+menuButton.addEventListener("click",()=>{document.body.classList.toggle("menu-open");menuButton.setAttribute("aria-expanded",document.body.classList.contains("menu-open")?"true":"false")});
+closeModalButton.addEventListener("click",closeCoursePreview);
+courseModal.addEventListener("click",e=>{if(e.target.id==="courseModal")closeCoursePreview()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCoursePreview()});
+[searchInput,categoryFilter,audienceFilter,accessFilter,levelFilter,providerFilter,sortFilter].forEach(el=>{el.addEventListener("input",render);el.addEventListener("change",render)});
 
-function closeCoursePreview(){
-
-  courseModal.style.display =
-    "none";
-
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-menuButton.addEventListener(
-  "click",
-  ()=>{
-
-    document.body.classList.toggle(
-      "menu-open"
-    );
-
-    menuButton.setAttribute(
-      "aria-expanded",
-      document.body.classList.contains(
-        "menu-open"
-      )
-      ? "true"
-      : "false"
-    );
-
-  }
-);
-
-
-closeModalButton.addEventListener(
-  "click",
-  closeCoursePreview
-);
-
-
-courseModal.addEventListener(
-  "click",
-  event=>{
-
-    if(
-      event.target.id ===
-      "courseModal"
-    ){
-      closeCoursePreview();
-    }
-
-  }
-);
-
-
-document.addEventListener(
-  "keydown",
-  event=>{
-
-    if(event.key === "Escape"){
-      closeCoursePreview();
-    }
-
-  }
-);
-
-
-[
-  searchInput,
-  categoryFilter,
-  audienceFilter,
-  accessFilter,
-  levelFilter,
-  providerFilter,
-  sortFilter
-].forEach(el=>{
-
-  el.addEventListener(
-    "input",
-    render
-  );
-
-  el.addEventListener(
-    "change",
-    render
-  );
-
+onAuthStateChanged(auth,async user=>{
+  currentProfile=await loadProfile(user);
+  renderNav(currentProfile);
+  await Promise.all([loadProgress(user),loadExternalRecords(user)]);
+  await loadCourses();
 });
-
-
-onAuthStateChanged(
-  auth,
-  async user=>{
-
-    currentProfile =
-      await loadProfile(user);
-
-
-    renderNav(
-      currentProfile
-    );
-
-
-    await loadProgress(
-      user
-    );
-
-
-    await loadCourses();
-
-  }
-);
-
 </script>
-
 </body>
 </html>
 
