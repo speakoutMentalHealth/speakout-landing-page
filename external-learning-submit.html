@@ -8,11 +8,16 @@
 <link rel="icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+:root{
+  --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;
+  --purple:#6b21a8;--purpleSoft:#f3e8ff;--ink:#111827;--muted:#637083;
+  --line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)
+}
 *{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
 body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-a{text-decoration:none;color:inherit}
-.container{width:min(1050px,92%);margin:auto}
+a{text-decoration:none;color:inherit}.container{width:min(1050px,92%);margin:auto}
 .nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
 .nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
@@ -25,21 +30,25 @@ section{padding:38px 0}
 .panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:20px}
 .field{display:grid;gap:7px;margin-bottom:14px}.field label{font-weight:800;font-size:.88rem}
 input,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font:inherit;background:#fbfdff}
+input:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.08)}
 textarea{min-height:110px;resize:vertical}
 .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;text-decoration:none}
-.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.successBtn{background:var(--green);color:#fff}
 .notice{padding:14px;border-radius:14px;background:var(--soft);color:#1b4d80;line-height:1.55;margin-bottom:14px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
 .course-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fbfdff;margin-bottom:16px}.course-card h3{margin:0 0 7px;color:var(--navy)}.course-card p{margin:5px 0;color:var(--muted)}
 .preview{max-width:100%;max-height:320px;border-radius:16px;border:1px solid var(--line);margin-top:10px;display:none}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 .check{list-style:none;padding:0}.check li{padding:7px 0 7px 26px;position:relative;color:#46556a}.check li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+.status-pill{display:inline-flex;padding:7px 10px;border-radius:999px;font-size:.75rem;font-weight:900;text-transform:capitalize;margin-top:6px}.status-pill.pending{background:var(--goldSoft);color:#704800}.status-pill.approved{background:var(--greenSoft);color:var(--green)}.status-pill.rejected{background:var(--redSoft);color:var(--red)}.status-pill.none{background:#eef2f7;color:#475569}
+.review-box{display:none;margin-top:14px;padding:14px;border-radius:16px;border:1px solid var(--line);background:#fbfdff}.review-box h3{margin:0 0 8px;color:var(--navy)}.review-box p{margin:6px 0;color:var(--muted);line-height:1.55}
+.locked{opacity:.65;pointer-events:none}
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:32px 0;margin-top:20px}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
 </style>
 </head>
 
 <body>
-
 <header class="nav">
 <div class="container nav-inner">
   <a class="brand" href="speakhub.html">
@@ -57,18 +66,16 @@ textarea{min-height:110px;resize:vertical}
 <section class="hero">
 <div class="container">
   <span class="kicker">External Learning Record</span>
-  <h1>Submit your certificate or proof.</h1>
-  <p>Complete the course on the external provider's official platform, then return here and submit proof for SpeakHub review.</p>
+  <h1 id="heroTitle">Submit your certificate or proof.</h1>
+  <p id="heroText">Complete the course on the external provider's official platform, then return here and submit proof for SpeakHub review.</p>
 </div>
 </section>
 
 <section>
 <div class="container">
-
 <div id="statusBox" class="notice">Checking your account and course...</div>
 
 <div id="contentArea" class="grid" style="display:none">
-
 <main class="panel">
   <span class="label">Completion Submission</span>
   <h2 id="pageCourseTitle">External Course</h2>
@@ -77,13 +84,14 @@ textarea{min-height:110px;resize:vertical}
     <h3 id="courseTitle">—</h3>
     <p><b>Provider:</b> <span id="providerName">—</span></p>
     <p><b>Certificate issuer:</b> <span id="issuerName">—</span></p>
+    <p><b>Course category:</b> <span id="categoryName">—</span></p>
     <div class="actions">
       <a id="providerCourseLink" class="btn primary" target="_blank" rel="noopener noreferrer">Open Provider Course</a>
+      <a id="courseDetailsLink" class="btn soft">Course Details</a>
     </div>
   </div>
 
   <form id="submissionForm">
-
     <div class="field">
       <label for="completionDate">Completion date</label>
       <input id="completionDate" type="date" required>
@@ -101,9 +109,10 @@ textarea{min-height:110px;resize:vertical}
 
     <div class="field">
       <label for="proofFile">Upload certificate/proof image</label>
-      <input id="proofFile" type="file" accept="image/jpeg,image/png,image/webp" required>
+      <input id="proofFile" type="file" accept="image/jpeg,image/png,image/webp">
       <small style="color:var(--muted)">
-        Test version: JPG, PNG or WebP only. The image is compressed before being stored in Firestore.
+        JPG, PNG or WebP. The image is compressed before being stored in Firestore.
+        A new image is required for a first submission or rejected resubmission.
       </small>
       <img id="proofPreview" class="preview" alt="Certificate preview">
     </div>
@@ -118,7 +127,6 @@ textarea{min-height:110px;resize:vertical}
     </div>
 
     <button id="submitButton" class="btn gold" type="submit">Submit for Review</button>
-
   </form>
 
   <div id="resultBox" class="notice" style="display:none;margin-top:16px"></div>
@@ -127,7 +135,6 @@ textarea{min-height:110px;resize:vertical}
 <aside class="panel">
   <span class="label">Review Process</span>
   <h2>What happens next?</h2>
-
   <ul class="check">
     <li>Your submission is saved as Pending Review.</li>
     <li>SpeakHub checks the course, provider and submitted evidence.</li>
@@ -136,10 +143,20 @@ textarea{min-height:110px;resize:vertical}
   </ul>
 
   <div id="existingSubmission" class="notice" style="display:none"></div>
+
+  <div id="reviewBox" class="review-box">
+    <h3>Reviewer Feedback</h3>
+    <p id="reviewFeedback">—</p>
+    <p><b>Reviewed by:</b> <span id="reviewedBy">—</span></p>
+    <p><b>Reviewed:</b> <span id="reviewedAt">—</span></p>
+  </div>
+
+  <div class="actions">
+    <a id="backToCourse" class="btn soft">Back to Course</a>
+    <a class="btn soft" href="speakhub.html">Browse Courses</a>
+  </div>
 </aside>
-
 </div>
-
 </div>
 </section>
 
@@ -149,326 +166,264 @@ textarea{min-height:110px;resize:vertical}
 import { auth,db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-  serverTimestamp
+  doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-const courseId = new URLSearchParams(location.search).get("courseId");
+const courseId=new URLSearchParams(location.search).get("courseId");
+const $=id=>document.getElementById(id);
+const statusBox=$("statusBox"),contentArea=$("contentArea"),courseTitle=$("courseTitle"),pageCourseTitle=$("pageCourseTitle"),
+providerName=$("providerName"),issuerName=$("issuerName"),categoryName=$("categoryName"),providerCourseLink=$("providerCourseLink"),
+courseDetailsLink=$("courseDetailsLink"),backToCourse=$("backToCourse"),submissionForm=$("submissionForm"),proofFile=$("proofFile"),
+proofPreview=$("proofPreview"),submitButton=$("submitButton"),resultBox=$("resultBox"),existingSubmission=$("existingSubmission"),
+reviewBox=$("reviewBox"),reviewFeedback=$("reviewFeedback"),reviewedBy=$("reviewedBy"),reviewedAt=$("reviewedAt"),
+completionDate=$("completionDate"),certificateNumber=$("certificateNumber"),verificationUrl=$("verificationUrl"),learnerNote=$("learnerNote"),
+heroTitle=$("heroTitle"),heroText=$("heroText");
 
-const statusBox = document.getElementById("statusBox");
-const contentArea = document.getElementById("contentArea");
-const courseTitle = document.getElementById("courseTitle");
-const pageCourseTitle = document.getElementById("pageCourseTitle");
-const providerName = document.getElementById("providerName");
-const issuerName = document.getElementById("issuerName");
-const providerCourseLink = document.getElementById("providerCourseLink");
-const submissionForm = document.getElementById("submissionForm");
-const proofFile = document.getElementById("proofFile");
-const proofPreview = document.getElementById("proofPreview");
-const submitButton = document.getElementById("submitButton");
-const resultBox = document.getElementById("resultBox");
-const existingSubmission = document.getElementById("existingSubmission");
+let currentUser=null,currentProfile=null,course=null,existingRecord=null;
 
-let currentUser = null;
-let currentProfile = null;
-let course = null;
-
-function normalize(value){
-  return String(value || "").trim().toLowerCase();
+function normalize(v){return String(v||"").trim().toLowerCase()}
+function pretty(v){return String(v||"—").replaceAll("-"," ").replace(/\b\w/g,l=>l.toUpperCase())}
+function show(message,type=""){statusBox.textContent=message;statusBox.className=`notice ${type}`}
+function externalUrl(item){return item.externalUrl||item.courseUrl||item.providerCourseUrl||item.providerUrl||item.url||""}
+function isExternal(item){return normalize(item.courseType)==="external"||normalize(item.completionMethod)==="certificate-upload"||item.externalProvider===true}
+function recordStatus(record){
+  const s=normalize(record?.verificationStatus||record?.status||"");
+  if(["approved","verified"].includes(s))return"approved";
+  if(["rejected","revoked"].includes(s))return"rejected";
+  if(["pending","pending_review","submitted"].includes(s))return"pending";
+  return"none";
 }
-
-function show(message,type=""){
-  statusBox.textContent = message;
-  statusBox.className = `notice ${type}`;
+function formatDate(v){
+  if(!v)return"—";
+  try{
+    const d=v?.toDate?v.toDate():new Date(v);
+    return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString();
+  }catch{return String(v)}
 }
-
-function externalUrl(item){
-  return item.externalUrl || item.courseUrl || item.providerCourseUrl || item.providerUrl || item.url || "";
-}
-
-function isExternal(item){
-  return (
-    normalize(item.courseType) === "external" ||
-    normalize(item.completionMethod) === "certificate-upload" ||
-    item.externalProvider === true
-  );
-}
-
 function compressImage(file){
   return new Promise((resolve,reject)=>{
-    if(!file || !file.type.startsWith("image/")){
-      reject(new Error("Please select a JPG, PNG or WebP image."));
-      return;
+    if(!file||!["image/jpeg","image/png","image/webp"].includes(file.type)){
+      reject(new Error("Please select a JPG, PNG or WebP image."));return;
     }
-
-    const reader = new FileReader();
-    const image = new Image();
-
-    reader.onload = event=>{
-      image.src = event.target.result;
-    };
-
-    image.onload = ()=>{
-      const maxWidth = 1400;
-      const maxHeight = 1400;
-
-      let width = image.width;
-      let height = image.height;
-
-      const ratio = Math.min(
-        1,
-        maxWidth / width,
-        maxHeight / height
-      );
-
-      width = Math.round(width * ratio);
-      height = Math.round(height * ratio);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-
-      canvas.getContext("2d").drawImage(
-        image,
-        0,
-        0,
-        width,
-        height
-      );
-
-      let data = canvas.toDataURL("image/jpeg",0.72);
-
-      if(data.length > 700000){
-        data = canvas.toDataURL("image/jpeg",0.50);
-      }
-
-      if(data.length > 850000){
-        reject(new Error("Certificate image is too large. Please upload a smaller screenshot or image."));
-        return;
-      }
-
+    if(file.size>8*1024*1024){reject(new Error("The selected image is too large. Please use an image below 8 MB."));return;}
+    const reader=new FileReader(),image=new Image();
+    reader.onload=e=>image.src=e.target.result;
+    image.onload=()=>{
+      const maxWidth=1400,maxHeight=1400;
+      let width=image.width,height=image.height;
+      const ratio=Math.min(1,maxWidth/width,maxHeight/height);
+      width=Math.round(width*ratio);height=Math.round(height*ratio);
+      const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+      canvas.getContext("2d").drawImage(image,0,0,width,height);
+      let quality=.74,data=canvas.toDataURL("image/jpeg",quality);
+      while(data.length>780000&&quality>.40){quality-=.08;data=canvas.toDataURL("image/jpeg",quality);}
+      if(data.length>850000){reject(new Error("Certificate image is still too large after compression. Please upload a smaller screenshot."));return;}
       resolve(data);
     };
-
-    image.onerror = ()=>reject(new Error("Could not read the selected image."));
-    reader.onerror = ()=>reject(new Error("Could not read the selected file."));
+    image.onerror=()=>reject(new Error("Could not read the selected image."));
+    reader.onerror=()=>reject(new Error("Could not read the selected file."));
     reader.readAsDataURL(file);
   });
 }
 
-async function checkExisting(){
-  try{
-    const snap = await getDocs(
-      query(
-        collection(db,"externalLearningRecords"),
-        where("userId","==",currentUser.uid),
-        where("courseId","==",courseId)
-      )
-    );
+async function loadExisting(){
+  existingRecord=null;
+  const snap=await getDocs(query(collection(db,"externalLearningRecords"),where("userId","==",currentUser.uid),where("courseId","==",courseId)));
+  if(snap.empty){renderExisting();return;}
+  const records=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt?.seconds||b.submittedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.submittedAt?.seconds||a.createdAt?.seconds||0));
+  existingRecord=records[0];
+  renderExisting();
+}
 
-    if(snap.empty) return;
+function renderExisting(){
+  reviewBox.style.display="none";
+  submissionForm.classList.remove("locked");
+  submitButton.disabled=false;
+  submitButton.textContent="Submit for Review";
 
-    const records = snap.docs.map(d=>({id:d.id,...d.data()}));
-    records.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    const record = records[0];
+  if(!existingRecord){
+    existingSubmission.style.display="block";
+    existingSubmission.className="notice";
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill none">Not Submitted</span><br>Complete the provider course, then submit your proof here.`;
+    return;
+  }
 
-    existingSubmission.style.display = "block";
-    existingSubmission.className =
-      normalize(record.status) === "approved"
-        ? "notice ok"
-        : normalize(record.status) === "rejected"
-          ? "notice bad"
-          : "notice warn";
+  const status=recordStatus(existingRecord);
+  existingSubmission.style.display="block";
 
-    existingSubmission.textContent =
-      `Existing submission: ${record.status || "pending_review"}. ` +
-      `Submitted ${record.createdAt?.toDate ? record.createdAt.toDate().toLocaleDateString() : ""}`;
-  }catch(error){
-    console.warn("Existing submission check failed:",error);
+  if(status==="approved"){
+    existingSubmission.className="notice ok";
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill approved">Approved</span><br>Your external learning achievement has been approved and recorded.`;
+    submissionForm.classList.add("locked");
+    submitButton.disabled=true;
+    submitButton.textContent="Approved";
+  }else if(status==="pending"){
+    existingSubmission.className="notice warn";
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill pending">Pending Review</span><br>Your submission is awaiting review. Submitted: ${formatDate(existingRecord.submittedAt||existingRecord.createdAt)}`;
+    submissionForm.classList.add("locked");
+    submitButton.disabled=true;
+    submitButton.textContent="Awaiting Review";
+  }else if(status==="rejected"){
+    existingSubmission.className="notice bad";
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill rejected">Rejected</span><br>You may correct the evidence and resubmit.`;
+    submitButton.textContent="Resubmit for Review";
+  }
+
+  completionDate.value=existingRecord.completionDate||"";
+  certificateNumber.value=existingRecord.certificateNumber||"";
+  verificationUrl.value=existingRecord.verificationUrl||"";
+  learnerNote.value=existingRecord.learnerNote||"";
+
+  const feedback=existingRecord.reviewerFeedback||existingRecord.reviewNote||existingRecord.adminNote||"";
+  if(feedback||existingRecord.reviewedAt||existingRecord.reviewedBy){
+    reviewBox.style.display="block";
+    reviewFeedback.textContent=feedback||"No written feedback was provided.";
+    reviewedBy.textContent=existingRecord.reviewedByName||existingRecord.reviewedBy||"SpeakHub reviewer";
+    reviewedAt.textContent=formatDate(existingRecord.reviewedAt);
   }
 }
 
 proofFile.addEventListener("change",()=>{
-  const file = proofFile.files?.[0];
-
-  if(!file){
-    proofPreview.style.display = "none";
-    return;
-  }
-
-  const url = URL.createObjectURL(file);
-  proofPreview.src = url;
-  proofPreview.style.display = "block";
+  const file=proofFile.files?.[0];
+  if(!file){proofPreview.style.display="none";proofPreview.removeAttribute("src");return;}
+  const url=URL.createObjectURL(file);proofPreview.src=url;proofPreview.style.display="block";
+  proofPreview.onload=()=>URL.revokeObjectURL(url);
 });
 
 submissionForm.addEventListener("submit",async event=>{
   event.preventDefault();
+  if(!currentUser||!course)return;
 
-  if(!currentUser || !course){
-    return;
-  }
+  const status=recordStatus(existingRecord);
+  if(status==="approved")return;
+  if(status==="pending"){resultBox.style.display="block";resultBox.className="notice warn";resultBox.textContent="This submission is already awaiting review.";return;}
 
-  submitButton.disabled = true;
-  submitButton.textContent = "Submitting...";
-  resultBox.style.display = "block";
-  resultBox.className = "notice";
-  resultBox.textContent = "Compressing proof and submitting for review...";
+  submitButton.disabled=true;submitButton.textContent="Submitting...";
+  resultBox.style.display="block";resultBox.className="notice";resultBox.textContent="Preparing your evidence and submitting it for review...";
 
   try{
-    const file = proofFile.files?.[0];
+    const file=proofFile.files?.[0];
+    if(!file)throw new Error(status==="rejected"?"Upload corrected certificate/proof before resubmitting.":"Upload a certificate or proof image.");
 
-    if(!file){
-      throw new Error("Upload a certificate or proof image.");
+    if(!completionDate.value)throw new Error("Enter the course completion date.");
+
+    const verification=verificationUrl.value.trim();
+    if(verification){
+      try{new URL(verification)}catch{throw new Error("Enter a valid provider verification URL beginning with http:// or https://.");}
     }
 
-    const proofData = await compressImage(file);
+    const proofData=await compressImage(file);
+    const recordId=`${currentUser.uid}_${courseId}`;
+    const firstCreatedAt=existingRecord?.createdAt||serverTimestamp();
 
-    const recordId = `${currentUser.uid}_${courseId}`;
+    await setDoc(doc(db,"externalLearningRecords",recordId),{
+      userId:currentUser.uid,
+      userEmail:currentUser.email||currentProfile.email||"",
+      learnerName:currentProfile.fullName||`${currentProfile.firstName||""} ${currentProfile.lastName||""}`.trim(),
+      learnerRole:currentProfile.role||"user",
+      schoolId:currentProfile.schoolId||"",
+      schoolCode:currentProfile.schoolCode||"",
+      courseId:course.id,
+      courseTitle:course.title||"",
+      courseCategory:course.category||"",
+      courseType:"external",
+      provider:course.provider||"External Provider",
+      providerCourseUrl:externalUrl(course),
+      certificateIssuer:course.certificate?.issuer||course.certificateIssuer||course.provider||"External Provider",
+      completionDate:completionDate.value,
+      certificateNumber:certificateNumber.value.trim(),
+      verificationUrl:verification,
+      learnerNote:learnerNote.value.trim(),
+      proofType:"image",
+      proofData,
+      status:"pending_review",
+      verificationStatus:"pending",
+      submittedBy:currentUser.uid,
+      submittedAt:serverTimestamp(),
+      createdAt:firstCreatedAt,
+      updatedAt:serverTimestamp(),
+      resubmissionCount:(existingRecord?.resubmissionCount||0)+(status==="rejected"?1:0),
+      reviewerFeedback:"",
+      reviewedBy:"",
+      reviewedAt:null
+    },{merge:true});
 
-    await setDoc(
-      doc(db,"externalLearningRecords",recordId),
-      {
-        userId:currentUser.uid,
-        userEmail:currentUser.email || currentProfile.email || "",
-        learnerName:
-          currentProfile.fullName ||
-          `${currentProfile.firstName || ""} ${currentProfile.lastName || ""}`.trim(),
-        courseId:course.id,
-        courseTitle:course.title || "",
-        courseType:"external",
-        provider:course.provider || "External Provider",
-        providerCourseUrl:externalUrl(course),
-        certificateIssuer:
-          course.certificate?.issuer ||
-          course.certificateIssuer ||
-          course.provider ||
-          "External Provider",
-        completionDate:document.getElementById("completionDate").value,
-        certificateNumber:document.getElementById("certificateNumber").value.trim(),
-        verificationUrl:document.getElementById("verificationUrl").value.trim(),
-        learnerNote:document.getElementById("learnerNote").value.trim(),
-        proofType:"image",
-        proofData,
-        status:"pending_review",
-        verificationStatus:"pending",
-        submittedBy:currentUser.uid,
-        submittedAt:serverTimestamp(),
-        createdAt:serverTimestamp(),
-        updatedAt:serverTimestamp()
-      },
-      { merge:true }
-    );
+    await setDoc(doc(db,"userProgress",`${currentUser.uid}_external_${course.id}`),{
+      userId:currentUser.uid,
+      type:"external-course",
+      itemId:course.id,
+      courseId:course.id,
+      title:course.title||"",
+      provider:course.provider||"",
+      status:"pending_review",
+      progress:100,
+      percent:100,
+      proofSubmitted:true,
+      completionMethod:"certificate-upload",
+      updatedAt:serverTimestamp()
+    },{merge:true});
 
-    await setDoc(
-      doc(db,"userProgress",`${currentUser.uid}_external_${course.id}`),
-      {
-        userId:currentUser.uid,
-        type:"external-course",
-        itemId:course.id,
-        courseId:course.id,
-        title:course.title || "",
-        provider:course.provider || "",
-        status:"pending_review",
-        progress:100,
-        percent:100,
-        proofSubmitted:true,
-        updatedAt:serverTimestamp()
-      },
-      { merge:true }
-    );
-
-    resultBox.className = "notice ok";
-    resultBox.innerHTML =
-      `<strong>Submission received.</strong><br>` +
-      `Your external learning record is now pending review.`;
-
-    await checkExisting();
+    resultBox.className="notice ok";
+    resultBox.innerHTML="<strong>Submission received.</strong><br>Your external learning evidence is now pending SpeakHub review.";
+    proofFile.value="";proofPreview.style.display="none";proofPreview.removeAttribute("src");
+    await loadExisting();
 
   }catch(error){
-    console.error(error);
-    resultBox.className = "notice bad";
-    resultBox.textContent = error.message || "Could not submit your external learning record.";
+    console.error(error);resultBox.className="notice bad";resultBox.textContent=error.message||"Could not submit your external learning record.";
   }finally{
-    submitButton.disabled = false;
-    submitButton.textContent = "Submit for Review";
+    if(recordStatus(existingRecord)==="rejected"||recordStatus(existingRecord)==="none"){
+      submitButton.disabled=false;
+      submitButton.textContent=recordStatus(existingRecord)==="rejected"?"Resubmit for Review":"Submit for Review";
+    }
   }
 });
 
 onAuthStateChanged(auth,async user=>{
-  if(!user){
-    location.href = "auth.html";
-    return;
-  }
-
-  if(!courseId){
-    show("No external course was selected.","bad");
-    return;
-  }
+  if(!user){location.href="auth.html";return;}
+  if(!courseId){show("No external course was selected.","bad");return;}
 
   try{
-    currentUser = user;
+    currentUser=user;
+    const profileSnap=await getDoc(doc(db,"users",user.uid));
+    if(!profileSnap.exists()){show("Your learner profile could not be found.","bad");return;}
+    currentProfile={uid:user.uid,...profileSnap.data()};
 
-    const profileSnap = await getDoc(doc(db,"users",user.uid));
-
-    if(!profileSnap.exists()){
-      show("Your learner profile could not be found.","bad");
-      return;
+    if(normalize(currentProfile.status)!=="approved"){
+      show("Your account must be approved before submitting external learning evidence.","warn");return;
     }
 
-    currentProfile = {uid:user.uid,...profileSnap.data()};
+    const courseSnap=await getDoc(doc(db,"courses",courseId));
+    if(!courseSnap.exists()){show("External course not found.","bad");return;}
+    course={id:courseSnap.id,...courseSnap.data()};
 
-    const profileStatus = normalize(currentProfile.status);
+    if(!isExternal(course)){show("This course is not configured as an external learning pathway.","bad");return;}
 
-    if(profileStatus !== "approved"){
-      show("Your account must be approved before submitting external learning evidence.","warn");
-      return;
-    }
+    const url=externalUrl(course);
+    const provider=course.provider||"External Provider";
+    const issuer=course.certificate?.issuer||course.certificateIssuer||provider;
 
-    const courseSnap = await getDoc(doc(db,"courses",courseId));
+    document.title=`${course.title||"External Course"} | External Learning Submission`;
+    heroTitle.textContent=`Submit proof for ${course.title||"this course"}`;
+    heroText.textContent=`Complete the course with ${provider}, then submit the provider-issued certificate or accepted proof for SpeakHub review.`;
 
-    if(!courseSnap.exists()){
-      show("External course not found.","bad");
-      return;
-    }
+    courseTitle.textContent=course.title||"External Course";
+    pageCourseTitle.textContent=course.title||"External Course";
+    providerName.textContent=provider;
+    issuerName.textContent=issuer;
+    categoryName.textContent=pretty(course.category||"General");
+    courseDetailsLink.href=`course-details.html?id=${encodeURIComponent(course.id)}`;
+    backToCourse.href=`course-details.html?id=${encodeURIComponent(course.id)}`;
 
-    course = {id:courseSnap.id,...courseSnap.data()};
+    if(url)providerCourseLink.href=url;
+    else{providerCourseLink.style.display="none";}
 
-    if(!isExternal(course)){
-      show("This is not configured as an external course.","bad");
-      return;
-    }
-
-    const url = externalUrl(course);
-
-    courseTitle.textContent = course.title || "External Course";
-    pageCourseTitle.textContent = course.title || "External Course";
-    providerName.textContent = course.provider || "External Provider";
-    issuerName.textContent =
-      course.certificate?.issuer ||
-      course.certificateIssuer ||
-      course.provider ||
-      "External Provider";
-
-    if(url){
-      providerCourseLink.href = url;
-    }else{
-      providerCourseLink.style.display = "none";
-    }
-
-    contentArea.style.display = "grid";
+    contentArea.style.display="grid";
     show("External course verified. You can submit your completion evidence.","ok");
-
-    await checkExisting();
+    await loadExisting();
 
   }catch(error){
     console.error(error);
-    show(error.message || "Could not load the external learning submission page.","bad");
+    show(error.message||"Could not load the external learning submission page.","bad");
   }
 });
 </script>
