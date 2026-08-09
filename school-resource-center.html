@@ -3,59 +3,347 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>School Resource Center | SpeakOut</title>
+
+<meta
+  name="description"
+  content="School implementation resources for SpeakOut partner schools, including policies, mental health club guides, safeguarding tools, reporting templates, teacher resources and school wellbeing materials."
+>
+
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
 
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
+}
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
 a{text-decoration:none;color:inherit}
-.container{width:min(1180px,92%);margin:auto}
-.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:44px}
-.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
-.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
-.links{display:flex;gap:8px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+button,input,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
 .primary{background:var(--blue);color:#fff}
 .soft{background:var(--soft);color:var(--blue)}
 .gold{background:var(--gold);color:#241300}
 .dark{background:var(--navy);color:#fff}
-.danger{background:var(--redSoft);color:var(--red)}
 .success{background:var(--greenSoft);color:var(--green)}
-.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
-.hero .container{padding:52px 0}
-.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
-.kicker{background:rgba(255,255,255,.14)}
-.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}
-h2,h3{line-height:1.05;color:var(--navy)}
-.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
 section{padding:36px 0}
-.grid{display:grid;gap:16px}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.g5{grid-template-columns:repeat(5,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
-.card p,.panel p{color:var(--muted);line-height:1.6}
-.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.card{
+  transition:.22s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
 .ok{background:var(--greenSoft);color:var(--green)}
 .bad{background:var(--redSoft);color:var(--red)}
 .warn{background:var(--goldSoft);color:#704800}
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
-.approved,.active,.free{background:var(--greenSoft);color:var(--green)}
-.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}
-.searchbar{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:18px}
-input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
-.resource-card{display:flex;flex-direction:column;min-height:250px}
-.resource-card .meta{margin-top:auto;padding-top:12px}
-.icon{width:54px;height:54px;border-radius:18px;background:var(--soft);color:var(--blue);display:grid;place-items:center;font-size:1.35rem;margin-bottom:8px}
-.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
-@media(max-width:900px){.g4,.g3,.g2,.searchbar{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+}
+
+.free,.active,.approved{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.premium,.paid,.pending{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:2rem;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.84rem;
+  font-weight:800;
+}
+
+.search-grid{
+  display:grid;
+  grid-template-columns:1.3fr .8fr .8fr .8fr;
+  gap:12px;
+}
+
+input,select{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#fbfdff;
+}
+
+input:focus,select:focus{
+  border-color:var(--blue);
+  outline:none;
+  box-shadow:0 0 0 4px rgba(10,95,191,.08);
+}
+
+.resource-card{
+  display:flex;
+  flex-direction:column;
+  min-height:285px;
+}
+
+.resource-card p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.resource-card .meta{
+  margin-top:auto;
+  padding-top:12px;
+}
+
+.icon{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  background:var(--soft);
+  color:var(--blue);
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  margin-bottom:8px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.small-note{
+  color:var(--muted);
+  font-size:.85rem;
+  line-height:1.55;
+}
+
+.featured{
+  border:2px solid rgba(244,162,28,.40);
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+@media(max-width:1000px){
+  .g5,.g4,.g3,.g2,.search-grid{
+    grid-template-columns:1fr;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
+}
 </style>
 </head>
 
@@ -63,6 +351,7 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 
 <header class="nav">
   <div class="container nav-inner">
+
     <a class="brand" href="school-dashboard.html">
       <img src="logo.png" alt="SpeakOut Logo">
       <div>
@@ -70,77 +359,201 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
         <p>School Resource Center</p>
       </div>
     </a>
+
     <nav class="links" id="roleNav"></nav>
+
   </div>
 </header>
+
 
 <main>
 
 <section class="hero">
   <div class="container">
-    <span class="kicker">School Resource Center</span>
-    <h1 id="schoolName">School Resource Center</h1>
-    <p>Access policy templates, mental health club guides, school reports, safeguarding resources, teacher wellbeing materials and implementation toolkits.</p>
+
+    <span class="kicker">
+      School Resource Center
+    </span>
+
+    <h1 id="schoolName">
+      School Resource Center
+    </h1>
+
+    <p>
+      Access policies, mental health club implementation guides, safeguarding tools, school templates, teacher resources and practical wellbeing materials.
+    </p>
+
     <div id="pills"></div>
+
   </div>
 </section>
 
+
 <section>
   <div class="container">
-    <div class="grid g4">
-      <div class="card stat"><strong id="resourceCount">0</strong><span>Available Resources</span></div>
-      <div class="card stat"><strong id="freeCount">0</strong><span>Free Resources</span></div>
-      <div class="card stat"><strong id="premiumCount">0</strong><span>Premium Resources</span></div>
-      <div class="card stat"><strong id="categoryCount">0</strong><span>Categories</span></div>
+
+    <div id="statusBox" class="notice">
+      Loading school resources...
     </div>
+
+
+    <div class="grid g5">
+
+      <div class="card stat">
+        <strong id="resourceCount">0</strong>
+        <span>Available Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="featuredCount">0</strong>
+        <span>Featured</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="freeCount">0</strong>
+        <span>Free Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="premiumCount">0</strong>
+        <span>Premium Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="categoryCount">0</strong>
+        <span>Categories</span>
+      </div>
+
+    </div>
+
   </div>
 </section>
 
+
 <section>
   <div class="container">
-
-    <div id="statusBox" class="notice">Loading school resources...</div>
 
     <div class="panel">
-      <span class="label">Find School Resources</span>
-      <h2>Search and filter</h2>
-      <div class="searchbar">
-        <input id="searchInput" placeholder="Search policies, club guides, reports, safeguarding...">
+
+      <span class="label">
+        Find School Resources
+      </span>
+
+      <h2>
+        Search and filter
+      </h2>
+
+      <div class="search-grid">
+
+        <input
+          id="searchInput"
+          placeholder="Search policies, club guides, safeguarding, reporting..."
+        >
+
         <select id="categoryFilter">
           <option value="all">All Categories</option>
         </select>
+
         <select id="accessFilter">
-          <option value="all">Free and Premium</option>
+          <option value="all">Free & Premium</option>
           <option value="free">Free Only</option>
           <option value="premium">Premium Only</option>
         </select>
+
+        <select id="featuredFilter">
+          <option value="all">All Resources</option>
+          <option value="featured">Featured Only</option>
+        </select>
+
       </div>
+
+      <div class="actions" style="margin-top:14px">
+
+        <a
+          class="btn soft"
+          href="school-dashboard.html"
+        >
+          Back to Dashboard
+        </a>
+
+        <a
+          class="btn gold"
+          href="speakhub.html"
+        >
+          SpeakHub Academy
+        </a>
+
+      </div>
+
     </div>
 
-    <div class="panel" style="margin-top:18px">
-      <span class="label">Core School Toolkit</span>
-      <h2>Recommended implementation areas</h2>
+
+    <div
+      class="panel"
+      style="margin-top:18px"
+    >
+
+      <span class="label">
+        Core School Toolkit
+      </span>
+
+      <h2>
+        Recommended implementation areas
+      </h2>
+
       <div class="grid g3">
+
         <div class="card">
           <div class="icon">📋</div>
-          <h3>Policies</h3>
-          <p>Templates for safeguarding, referral processes, consent, club governance and wellbeing reporting.</p>
+          <h3>Policies & Safeguarding</h3>
+          <p>Referral pathways, consent, safeguarding, club governance and wellbeing procedures.</p>
         </div>
+
         <div class="card">
           <div class="icon">🏫</div>
           <h3>Mental Health Clubs</h3>
-          <p>Club setup guides, officer roles, activity plans, meeting templates and student engagement tools.</p>
+          <p>Club setup guides, officer roles, activity plans, meeting formats and student engagement tools.</p>
         </div>
+
         <div class="card">
           <div class="icon">📊</div>
-          <h3>Reports</h3>
-          <p>Monthly reports, school activity summaries, workshop attendance records and impact tracking templates.</p>
+          <h3>Monitoring & Documentation</h3>
+          <p>Attendance templates, activity summaries, implementation trackers and school impact documentation tools.</p>
         </div>
+
       </div>
+
     </div>
 
+
+    <div
+      class="panel"
+      style="margin-top:18px"
+    >
+
+      <span class="label">
+        Featured
+      </span>
+
+      <h2>
+        Recommended school resources
+      </h2>
+
+      <div
+        id="featuredGrid"
+        class="grid g3"
+      ></div>
+
+    </div>
+
+
     <div style="margin-top:18px">
-      <div id="resourceGrid" class="grid g3"></div>
+
+      <div
+        id="resourceGrid"
+        class="grid g3"
+      ></div>
+
     </div>
 
   </div>
@@ -148,167 +561,787 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 
 </main>
 
+
 <footer class="footer">
-  <div class="container">SpeakOut Mental Health Outreach</div>
+  <div class="container">
+    SpeakOut Mental Health Outreach • School Resource Center
+  </div>
 </footer>
 
+
 <script type="module">
-import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
-import { db } from "./firebase-config.js";
+
+import {
+  requireRoles,
+  renderRoleNav
+} from "./launch-role-guard.js";
+
+import {
+  db
+} from "./firebase-config.js";
+
 import {
   collection,
   getDocs,
   query,
-  where
+  where,
+  getDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-let resources = [];
+
+let RESOURCES = [];
+let SCHOOL = null;
+
+
+const statusBox = document.getElementById("statusBox");
+const schoolName = document.getElementById("schoolName");
+const pills = document.getElementById("pills");
+
+const resourceCount = document.getElementById("resourceCount");
+const featuredCount = document.getElementById("featuredCount");
+const freeCount = document.getElementById("freeCount");
+const premiumCount = document.getElementById("premiumCount");
+const categoryCount = document.getElementById("categoryCount");
+
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const accessFilter = document.getElementById("accessFilter");
+const featuredFilter = document.getElementById("featuredFilter");
+
+const featuredGrid = document.getElementById("featuredGrid");
+const resourceGrid = document.getElementById("resourceGrid");
+
 
 function show(message,type=""){
   statusBox.textContent = message;
-  statusBox.className = "notice " + type;
+  statusBox.className = `notice ${type}`;
 }
 
-function safe(value){
-  return value || "—";
+
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
 }
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function pretty(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
 
 function pill(value){
-  return `<span class="pill ${(value || "").toLowerCase()}">${safe(value)}</span>`;
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
 }
 
+
 function iconFor(category){
-  const c = (category || "").toLowerCase();
+
+  const c =
+    normalize(category);
+
   if(c.includes("policy")) return "📋";
   if(c.includes("club")) return "🏫";
   if(c.includes("report")) return "📊";
+  if(c.includes("monitor")) return "📈";
   if(c.includes("safeguard")) return "🛡️";
   if(c.includes("teacher")) return "👩‍🏫";
   if(c.includes("parent")) return "👨‍👩‍👧";
+  if(c.includes("leadership")) return "🏆";
+  if(c.includes("mental")) return "🧠";
+
   return "📚";
 }
 
-function canDisplayResource(resource){
-  const audience = (resource.audience || "all").toLowerCase().trim();
-  return audience === "all" || audience === "school" || audience === "schools" || audience === "school_admin";
+
+function normalizedAudience(value){
+
+  if(Array.isArray(value)){
+    return value.map(normalize);
+  }
+
+  if(!value){
+    return ["all"];
+  }
+
+  return [
+    normalize(value)
+  ];
 }
 
-function resourceCard(resource){
-  const access = (resource.accessType || "free").toLowerCase();
-  const category = resource.category || "School Resource";
-  const id = encodeURIComponent(resource.id);
+
+function schoolMatches(resource){
+
+  const resourceSchoolId =
+    resource.schoolId ||
+    "";
+
+  const resourceSchoolCode =
+    resource.schoolCode ||
+    "";
+
+  if(
+    !resourceSchoolId &&
+    !resourceSchoolCode
+  ){
+    return true;
+  }
+
+  if(
+    resourceSchoolId === "all" ||
+    resourceSchoolCode === "all"
+  ){
+    return true;
+  }
+
+  return (
+    resourceSchoolId === SCHOOL.id ||
+    (
+      SCHOOL.schoolCode &&
+      resourceSchoolCode === SCHOOL.schoolCode
+    )
+  );
+}
+
+
+function canDisplayResource(resource){
+
+  const audiences =
+    normalizedAudience(
+      resource.audience
+    );
+
+  const audienceAllowed =
+    audiences.some(
+      audience =>
+        [
+          "all",
+          "general",
+          "school",
+          "schools",
+          "school_admin",
+          "school-admin"
+        ].includes(audience)
+    );
+
+  return (
+    audienceAllowed &&
+    schoolMatches(resource)
+  );
+}
+
+
+function accessType(resource){
+
+  if(resource.free === true){
+    return "free";
+  }
+
+  const value =
+    normalize(
+      resource.accessType ||
+      resource.access ||
+      "free"
+    );
+
+  if(
+    value === "paid"
+  ){
+    return "premium";
+  }
+
+  return value || "free";
+}
+
+
+function resourceCard(resource,featured=false){
+
+  const access =
+    accessType(resource);
+
+  const category =
+    resource.category ||
+    "School Resource";
+
+  const id =
+    encodeURIComponent(
+      resource.id
+    );
+
+  const cover =
+    resource.coverUrl
+      ? `
+        <div style="height:160px;border-radius:16px;overflow:hidden;margin-bottom:12px">
+          <img
+            src="${escapeHtml(resource.coverUrl)}"
+            alt="${escapeHtml(resource.title || "Resource")}"
+            style="width:100%;height:100%;object-fit:cover"
+          >
+        </div>
+      `
+      : `
+        <div class="icon">
+          ${iconFor(category)}
+        </div>
+      `;
 
   return `
-    <article class="card resource-card">
-      <div class="icon">${iconFor(category)}</div>
-      <div>${pill(access)} ${pill(category)}</div>
-      <h3>${safe(resource.title || "Untitled Resource")}</h3>
-      <p>${safe(resource.description || "No description yet.")}</p>
-      <div class="meta">
-        <a class="btn primary" href="book-details.html?id=${id}">Open Resource</a>
+    <article class="card resource-card ${featured ? "featured" : ""}">
+
+      ${cover}
+
+      <div>
+        ${pill(access)}
+        ${pill(category)}
+        ${resource.featured === true ? pill("featured") : ""}
       </div>
+
+      <h3>
+        ${escapeHtml(resource.title || "Untitled Resource")}
+      </h3>
+
+      <p>
+        ${escapeHtml(
+          resource.description ||
+          resource.shortDescription ||
+          "No description yet."
+        )}
+      </p>
+
+      <div class="meta">
+
+        ${
+          resource.readingTime ||
+          resource.readTime
+            ? `
+              <span class="pill">
+                ${escapeHtml(resource.readingTime || resource.readTime)}
+              </span>
+            `
+            : ""
+        }
+
+        <div class="actions">
+
+          <a
+            class="btn primary"
+            href="book-details.html?id=${id}"
+          >
+            Open Resource
+          </a>
+
+          ${
+            resource.downloadUrl &&
+            access === "free"
+              ? `
+                <a
+                  class="btn soft"
+                  href="${escapeHtml(resource.downloadUrl)}"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Download
+                </a>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+
     </article>
   `;
 }
 
-function updateStats(items){
-  resourceCount.textContent = items.length;
-  freeCount.textContent = items.filter(i => (i.accessType || "free").toLowerCase() === "free").length;
-  premiumCount.textContent = items.filter(i => (i.accessType || "").toLowerCase() === "premium").length;
-  categoryCount.textContent = new Set(items.map(i => i.category || "School Resource")).size;
+
+function updateStats(){
+
+  resourceCount.textContent =
+    RESOURCES.length;
+
+  featuredCount.textContent =
+    RESOURCES.filter(
+      item =>
+        item.featured === true
+    ).length;
+
+  freeCount.textContent =
+    RESOURCES.filter(
+      item =>
+        accessType(item) === "free"
+    ).length;
+
+  premiumCount.textContent =
+    RESOURCES.filter(
+      item =>
+        accessType(item) === "premium"
+    ).length;
+
+  categoryCount.textContent =
+    new Set(
+      RESOURCES
+        .map(
+          item =>
+            item.category ||
+            "School Resource"
+        )
+    ).size;
+
 }
 
-function buildCategoryFilter(items){
-  const cats = [...new Set(items.map(i => i.category || "School Resource"))].sort();
+
+function buildCategoryFilter(){
+
+  const categories =
+    [
+      ...new Set(
+        RESOURCES
+          .map(
+            item =>
+              item.category ||
+              "School Resource"
+          )
+      )
+    ]
+    .sort();
+
   categoryFilter.innerHTML =
     `<option value="all">All Categories</option>` +
-    cats.map(c => `<option value="${c}">${c}</option>`).join("");
+    categories
+      .map(
+        category =>
+          `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`
+      )
+      .join("");
+
 }
+
+
+function renderFeatured(){
+
+  const featured =
+    RESOURCES
+      .filter(
+        item =>
+          item.featured === true
+      )
+      .slice(0,3);
+
+  featuredGrid.innerHTML =
+    featured.length
+      ? featured
+          .map(
+            item =>
+              resourceCard(
+                item,
+                true
+              )
+          )
+          .join("")
+      : `
+        <div class="notice warn">
+          No featured school resources yet.
+        </div>
+      `;
+
+}
+
 
 function render(){
-  const search = (searchInput.value || "").toLowerCase().trim();
-  const category = categoryFilter.value;
-  const access = accessFilter.value;
 
-  const filtered = resources.filter(item => {
-    const text = `${item.title || ""} ${item.description || ""} ${item.category || ""}`.toLowerCase();
-    const matchSearch = !search || text.includes(search);
-    const matchCategory = category === "all" || (item.category || "School Resource") === category;
-    const matchAccess = access === "all" || (item.accessType || "free").toLowerCase() === access;
-    return matchSearch && matchCategory && matchAccess;
-  });
-
-  resourceGrid.innerHTML =
-    filtered.map(resourceCard).join("") ||
-    `<div class="card"><h3>No Resources Found</h3><p>No school resources match your search yet.</p></div>`;
-}
-
-async function loadSchoolResources(){
-  try{
-    const snap = await getDocs(
-      query(
-        collection(db,"books"),
-        where("status","==","active")
-      )
+  const search =
+    normalize(
+      searchInput.value
     );
 
-    resources = [];
+  const selectedCategory =
+    categoryFilter.value;
 
-    snap.forEach(docSnap => {
-      const item = {
-        id:docSnap.id,
-        ...docSnap.data()
-      };
+  const selectedAccess =
+    normalize(
+      accessFilter.value
+    );
 
-      if(canDisplayResource(item)){
-        resources.push(item);
-      }
+  const featuredOnly =
+    featuredFilter.value ===
+    "featured";
+
+
+  const filtered =
+    RESOURCES.filter(item=>{
+
+      const searchable = [
+        item.title,
+        item.description,
+        item.shortDescription,
+        item.category,
+        item.author,
+        item.tags,
+        item.keywords
+      ]
+      .flat()
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+
+      const matchesSearch =
+        !search ||
+        searchable.includes(search);
+
+
+      const matchesCategory =
+        selectedCategory === "all" ||
+        (
+          item.category ||
+          "School Resource"
+        ) === selectedCategory;
+
+
+      const matchesAccess =
+        selectedAccess === "all" ||
+        accessType(item) === selectedAccess;
+
+
+      const matchesFeatured =
+        !featuredOnly ||
+        item.featured === true;
+
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesAccess &&
+        matchesFeatured
+      );
+
     });
 
-    resources.sort((a,b) => {
-      const af = (a.accessType || "free").toLowerCase() === "free" ? 0 : 1;
-      const bf = (b.accessType || "free").toLowerCase() === "free" ? 0 : 1;
-      return af - bf || (a.title || "").localeCompare(b.title || "");
-    });
 
-    updateStats(resources);
-    buildCategoryFilter(resources);
-    render();
+  resourceGrid.innerHTML =
+    filtered.length
+      ? filtered
+          .map(
+            item =>
+              resourceCard(item)
+          )
+          .join("")
+      : `
+        <div class="card">
+          <h3>No Resources Found</h3>
+          <p>No school resources match your current search or filters.</p>
+        </div>
+      `;
 
-    show("School resources loaded.","ok");
-
-  }catch(error){
-    console.error(error);
-    show("Could not load resources. Check Firestore rules.","bad");
-  }
 }
 
-searchInput.addEventListener("input", render);
-categoryFilter.addEventListener("change", render);
-accessFilter.addEventListener("change", render);
 
-requireRoles(["school_admin"], async (user, profile) => {
-  const role = (profile.role || "").toLowerCase().trim();
+async function schoolRecordFromProfile(profile){
 
-  if(role !== "school_admin" && role !== "admin" && role !== "super_admin"){
-    location.href = "auth.html";
-    return;
+  if(profile.schoolId){
+
+    try{
+
+      const direct =
+        await getDoc(
+          doc(
+            db,
+            "schools",
+            profile.schoolId
+          )
+        );
+
+      if(direct.exists()){
+        return {
+          id:direct.id,
+          ...direct.data()
+        };
+      }
+
+    }catch(error){
+
+      console.warn(
+        "Direct school lookup failed:",
+        error
+      );
+
+    }
+
   }
 
-  renderRoleNav(profile,"Resources");
 
-  schoolName.textContent =
-    profile.schoolName ||
-    "School Resource Center";
+  if(profile.schoolCode){
 
-  pills.innerHTML =
-    pill(profile.role) +
-    pill(profile.status) +
-    pill(profile.schoolCode || "individual");
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "schools"
+          ),
+          where(
+            "schoolCode",
+            "==",
+            profile.schoolCode
+          )
+        )
+      );
 
-  await loadSchoolResources();
+    if(!snap.empty){
+
+      return {
+        id:snap.docs[0].id,
+        ...snap.docs[0].data()
+      };
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+async function loadSchoolResources(){
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "books"
+          ),
+          where(
+            "status",
+            "==",
+            "active"
+          )
+        )
+      );
+
+
+    RESOURCES = [];
+
+
+    snap.forEach(document=>{
+
+      const item = {
+        id:document.id,
+        ...document.data()
+      };
+
+
+      if(
+        canDisplayResource(item)
+      ){
+        RESOURCES.push(item);
+      }
+
+    });
+
+
+    RESOURCES.sort(
+      (a,b)=>{
+
+        if(
+          a.featured === true &&
+          b.featured !== true
+        ){
+          return -1;
+        }
+
+        if(
+          b.featured === true &&
+          a.featured !== true
+        ){
+          return 1;
+        }
+
+        const aFree =
+          accessType(a) === "free"
+            ? 0
+            : 1;
+
+        const bFree =
+          accessType(b) === "free"
+            ? 0
+            : 1;
+
+        return (
+          aFree -
+          bFree ||
+          (
+            a.title ||
+            ""
+          ).localeCompare(
+            b.title ||
+            ""
+          )
+        );
+
+      }
+    );
+
+
+    updateStats();
+
+    buildCategoryFilter();
+
+    renderFeatured();
+
+    render();
+
+
+    show(
+      "School resources loaded.",
+      "ok"
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    show(
+      "Could not load resources. Check Firestore permissions and resource records.",
+      "bad"
+    );
+
+  }
+
+}
+
+
+[
+  searchInput,
+  categoryFilter,
+  accessFilter,
+  featuredFilter
+]
+.forEach(element=>{
+
+  element.addEventListener(
+    "input",
+    render
+  );
+
+  element.addEventListener(
+    "change",
+    render
+  );
+
 });
+
+
+requireRoles(
+  ["school_admin"],
+  async (user,profile)=>{
+
+    const role =
+      normalize(
+        profile.role
+      );
+
+
+    if(
+      role !== "school_admin" &&
+      role !== "admin" &&
+      role !== "super_admin"
+    ){
+
+      location.href =
+        "auth.html";
+
+      return;
+
+    }
+
+
+    renderRoleNav(
+      profile,
+      "Resources"
+    );
+
+
+    SCHOOL =
+      await schoolRecordFromProfile(
+        profile
+      );
+
+
+    if(!SCHOOL){
+
+      show(
+        "No school record is linked to this account.",
+        "bad"
+      );
+
+      return;
+
+    }
+
+
+    schoolName.textContent =
+      SCHOOL.schoolName ||
+      SCHOOL.name ||
+      "School Resource Center";
+
+
+    pills.innerHTML =
+      pill(
+        SCHOOL.status ||
+        "pending"
+      ) +
+      pill(
+        SCHOOL.schoolCode ||
+        "No Code"
+      ) +
+      pill(
+        profile.role ||
+        "school_admin"
+      );
+
+
+    show(
+      "School verified. Loading resources...",
+      "ok"
+    );
+
+
+    await loadSchoolResources();
+
+  }
+);
+
 </script>
 
 </body>
 </html>
+
