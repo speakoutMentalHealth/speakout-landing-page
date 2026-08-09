@@ -1,6 +1,7 @@
 {
   "books": [
     {
+      "id": "understanding-stress-student-guide",
       "title": "Understanding Stress: A Student Guide",
       "category": "mental-health",
       "audience": [
@@ -8,7 +9,7 @@
         "school"
       ],
       "author": "SpeakOut Mental Health Outreach",
-      "description": "A practical student guide to understanding stress, recognizing early warning signs, and using healthy coping strategies.",
+      "description": "A practical student guide to understanding stress, recognizing early warning signs and using healthy coping strategies.",
       "tags": [
         "stress",
         "students",
@@ -21,6 +22,7 @@
       "featured": true
     },
     {
+      "id": "emotional-intelligence-young-leaders",
       "title": "Emotional Intelligence for Young Leaders",
       "category": "leadership",
       "audience": [
@@ -28,7 +30,7 @@
         "school"
       ],
       "author": "SpeakOut Leadership Academy",
-      "description": "A youth-focused workbook on self-awareness, empathy, communication, and responsible leadership.",
+      "description": "A youth-focused workbook on self-awareness, empathy, communication and responsible leadership.",
       "tags": [
         "leadership",
         "emotional intelligence",
@@ -40,15 +42,16 @@
       "featured": true
     },
     {
+      "id": "digital-safety-social-media-pressure",
       "title": "Digital Safety and Social Media Pressure",
-      "category": "digital-literacy",
+      "category": "digital-skills",
       "audience": [
         "student",
         "parent",
         "teacher"
       ],
       "author": "SpeakOut Digital Learning Team",
-      "description": "A guide on online pressure, comparison, cyberbullying, and healthy digital boundaries.",
+      "description": "A guide on online pressure, comparison, cyberbullying and healthy digital boundaries.",
       "tags": [
         "digital safety",
         "social media",
@@ -60,6 +63,7 @@
       "featured": true
     },
     {
+      "id": "teacher-guide-student-warning-signs",
       "title": "Teacher Guide: Recognizing Student Warning Signs",
       "category": "teacher-training",
       "audience": [
@@ -67,7 +71,7 @@
         "school"
       ],
       "author": "SpeakOut Mental Health Outreach",
-      "description": "A practical guide for teachers on noticing behavioral changes, responding safely, and escalating concerns.",
+      "description": "A practical guide for teachers on noticing behavioral changes, responding safely and escalating concerns.",
       "tags": [
         "teachers",
         "safeguarding",
@@ -80,14 +84,15 @@
       "featured": true
     },
     {
+      "id": "parent-guide-listening-without-shaming",
       "title": "Parent Guide: Listening Without Shaming",
-      "category": "parenting",
+      "category": "parent-training",
       "audience": [
         "parent",
         "school"
       ],
       "author": "SpeakOut Parent Academy",
-      "description": "A guide helping parents build trust, listen calmly, and support children through difficult emotions.",
+      "description": "A guide helping parents build trust, listen calmly and support children through difficult emotions.",
       "tags": [
         "parenting",
         "communication",
@@ -99,6 +104,7 @@
       "featured": true
     },
     {
+      "id": "mental-health-club-starter-handbook",
       "title": "Mental Health Club Starter Handbook",
       "category": "school-club",
       "audience": [
@@ -106,7 +112,7 @@
         "teacher"
       ],
       "author": "SpeakOut Mental Health Outreach",
-      "description": "A starter handbook for launching a school mental health club, selecting coordinators, planning meetings, and documenting impact.",
+      "description": "A starter handbook for launching a school mental health club, selecting coordinators, planning meetings and documenting impact.",
       "tags": [
         "school club",
         "mental health club",
@@ -120,93 +126,171 @@
   ],
   "courses": [
     {
+      "id": "mental-health-awareness-students",
       "title": "Mental Health Awareness for Students",
+      "courseType": "internal",
+      "provider": "SpeakOut Mental Health",
+      "providerLogo": "",
       "category": "mental-health",
       "audience": [
-        "student",
+        "secondary",
         "school"
       ],
-      "description": "A foundational course helping students understand emotions, stress, peer pressure, and when to seek support.",
-      "status": "active",
-      "level": "Beginner",
+      "difficulty": "beginner",
       "duration": "2 hours",
-      "certificate": true,
-      "featured": true
+      "description": "A foundational course helping students understand emotions, stress, peer pressure and when to seek support.",
+      "status": "active",
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakOut Mental Health",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
     },
     {
+      "id": "student-leadership-foundations",
       "title": "Student Leadership Foundations",
+      "courseType": "internal",
+      "provider": "SpeakHub Academy",
+      "providerLogo": "",
       "category": "leadership",
       "audience": [
-        "student",
+        "secondary",
+        "university",
         "school"
       ],
-      "description": "A leadership course focused on confidence, communication, teamwork, service, and responsibility.",
-      "status": "active",
-      "level": "Beginner",
+      "difficulty": "beginner",
       "duration": "3 hours",
-      "certificate": true,
-      "featured": true
+      "description": "A leadership course focused on confidence, communication, teamwork, service and responsibility.",
+      "status": "active",
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakHub Academy",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
     },
     {
+      "id": "digital-literacy-essentials",
       "title": "Digital Literacy Essentials",
-      "category": "digital-literacy",
+      "courseType": "internal",
+      "provider": "SpeakHub Academy",
+      "providerLogo": "",
+      "category": "digital-skills",
       "audience": [
-        "student",
-        "teacher",
-        "school"
+        "secondary",
+        "university",
+        "teachers",
+        "school",
+        "general"
       ],
-      "description": "A practical introduction to digital tools, online safety, research skills, and responsible technology use.",
-      "status": "active",
-      "level": "Beginner",
+      "difficulty": "beginner",
       "duration": "3 hours",
-      "certificate": true,
-      "featured": true
+      "description": "A practical introduction to digital tools, online safety, research skills and responsible technology use.",
+      "status": "active",
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakHub Academy",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
     },
     {
+      "id": "teacher-mental-health-support-basics",
       "title": "Teacher Mental Health Support Basics",
+      "courseType": "internal",
+      "provider": "SpeakOut Mental Health",
+      "providerLogo": "",
       "category": "teacher-training",
       "audience": [
-        "teacher",
+        "teachers",
         "school"
       ],
-      "description": "A practical course for teachers on classroom wellbeing, warning signs, basic support, and referral pathways.",
-      "status": "active",
-      "level": "Introductory",
+      "difficulty": "beginner",
       "duration": "2.5 hours",
-      "certificate": true,
-      "featured": true
-    },
-    {
-      "title": "Parent Communication and Teen Support",
-      "category": "parenting",
-      "audience": [
-        "parent",
-        "school"
-      ],
-      "description": "A parent-focused course on listening, setting boundaries, digital safety, and supporting emotional wellbeing.",
+      "description": "A practical course for teachers on classroom wellbeing, warning signs, basic support and referral pathways.",
       "status": "active",
-      "level": "Introductory",
-      "duration": "2 hours",
-      "certificate": true,
-      "featured": true
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakOut Mental Health",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
     },
     {
+      "id": "parent-communication-teen-support",
+      "title": "Parent Communication and Teen Support",
+      "courseType": "internal",
+      "provider": "SpeakHub Academy",
+      "providerLogo": "",
+      "category": "parent-training",
+      "audience": [
+        "parents",
+        "school",
+        "general"
+      ],
+      "difficulty": "beginner",
+      "duration": "2 hours",
+      "description": "A parent-focused course on listening, setting boundaries, digital safety and supporting emotional wellbeing.",
+      "status": "active",
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakHub Academy",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
+    },
+    {
+      "id": "mental-health-club-coordinator-training",
       "title": "Mental Health Club Coordinator Training",
+      "courseType": "internal",
+      "provider": "SpeakOut Mental Health",
+      "providerLogo": "",
       "category": "school-club",
       "audience": [
-        "teacher",
-        "school"
+        "teachers",
+        "school",
+        "ambassadors"
       ],
-      "description": "Training for school coordinators on setting up club meetings, student ambassadors, reporting, and safeguarding.",
-      "status": "active",
-      "level": "Coordinator",
+      "difficulty": "intermediate",
       "duration": "4 hours",
-      "certificate": true,
-      "featured": true
+      "description": "Training for school coordinators on setting up club meetings, student ambassadors, reporting, safeguarding and referral pathways.",
+      "status": "active",
+      "featured": true,
+      "free": true,
+      "certificateEligible": true,
+      "certificate": {
+        "available": true,
+        "issuer": "SpeakOut Mental Health",
+        "verificationRequired": false,
+        "uploadRequired": false
+      },
+      "completionMethod": "internal"
     }
   ],
   "announcements": [
     {
+      "id": "welcome-school-wellness-platform",
       "title": "Welcome to the SpeakOut School Wellness Platform",
       "audience": [
         "school",
@@ -219,6 +303,7 @@
       "schoolCode": "FAMSA001"
     },
     {
+      "id": "mental-health-club-starter-resources",
       "title": "Mental Health Club Starter Resources Available",
       "audience": [
         "school",
@@ -231,6 +316,7 @@
   ],
   "events": [
     {
+      "id": "famsa-mental-health-club-activation",
       "title": "FAMSA Mental Health Club Activation",
       "date": "2026-07-05",
       "audience": [
@@ -241,6 +327,7 @@
       "schoolCode": "FAMSA001"
     },
     {
+      "id": "teacher-coordinator-orientation",
       "title": "Teacher Coordinator Orientation",
       "date": "2026-07-10",
       "audience": [
@@ -252,19 +339,21 @@
       "schoolCode": "FAMSA001"
     },
     {
+      "id": "student-leadership-wellbeing-launch",
       "title": "Student Leadership and Wellbeing Launch Session",
       "date": "2026-07-18",
       "audience": [
         "student",
         "school"
       ],
-      "description": "Student-facing launch introducing wellbeing, leadership, and SpeakOut learning resources.",
+      "description": "Student-facing launch introducing wellbeing, leadership and SpeakOut learning resources.",
       "status": "planned",
       "schoolCode": "FAMSA001"
     }
   ],
   "media": [
     {
+      "id": "speakout-official-logo",
       "title": "SpeakOut Official Logo",
       "type": "image",
       "category": "brand",
@@ -275,6 +364,7 @@
       ]
     },
     {
+      "id": "famsa-mental-health-club-banner",
       "title": "FAMSA Mental Health Club Banner",
       "type": "image",
       "category": "school-club",
@@ -285,6 +375,7 @@
       ]
     },
     {
+      "id": "leadership-summit-gallery",
       "title": "Leadership Summit Gallery",
       "type": "image-gallery",
       "category": "impact",
