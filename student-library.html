@@ -3,62 +3,350 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Student Library | SpeakOut</title>
+
+<meta
+  name="description"
+  content="Student-focused SpeakOut learning resources covering mental health, leadership, digital skills, study support and personal development."
+>
+
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
 
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
+}
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
 a{text-decoration:none;color:inherit}
-.container{width:min(1180px,92%);margin:auto}
-.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:44px}
-.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
-.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
-.links{display:flex;gap:8px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+button,input,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
 .primary{background:var(--blue);color:#fff}
 .soft{background:var(--soft);color:var(--blue)}
 .gold{background:var(--gold);color:#241300}
 .dark{background:var(--navy);color:#fff}
 .danger{background:var(--redSoft);color:var(--red)}
 .success{background:var(--greenSoft);color:var(--green)}
-.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
-.hero .container{padding:52px 0}
-.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
-.kicker{background:rgba(255,255,255,.14)}
-.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}
-h2,h3{line-height:1.05;color:var(--navy)}
-.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
 section{padding:36px 0}
-.grid{display:grid;gap:16px}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
 .g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
-.card p,.panel p{color:var(--muted);line-height:1.6}
-.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.card{
+  transition:.22s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+
+.card p,.panel p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
 .ok{background:var(--greenSoft);color:var(--green)}
 .bad{background:var(--redSoft);color:var(--red)}
 .warn{background:var(--goldSoft);color:#704800}
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+}
+
 .free{background:var(--greenSoft);color:var(--green)}
 .premium{background:var(--goldSoft);color:#704800}
 .active{background:var(--greenSoft);color:var(--green)}
-.searchbar{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:18px}
-input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
-.resource-card{display:flex;flex-direction:column;min-height:260px}
-.resource-card h3{margin-top:10px}
-.resource-card .meta{margin-top:auto;padding-top:12px}
-.icon{width:54px;height:54px;border-radius:18px;background:var(--soft);color:var(--blue);display:grid;place-items:center;font-size:1.35rem;margin-bottom:8px}
-.featured{border:2px solid rgba(244,162,28,.45)}
-.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
-@media(max-width:900px){.g4,.g3,.g2,.searchbar{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:2rem;
+}
+
+.stat span{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:.84rem;
+}
+
+.searchbar{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+input,select{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#fbfdff;
+}
+
+input:focus,select:focus{
+  border-color:var(--blue);
+  outline:none;
+  box-shadow:0 0 0 4px rgba(10,95,191,.08);
+}
+
+.resource-card{
+  display:flex;
+  flex-direction:column;
+  min-height:300px;
+}
+
+.resource-card h3{
+  margin:10px 0 8px;
+}
+
+.resource-card .meta{
+  margin-top:auto;
+  padding-top:12px;
+}
+
+.icon{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  background:var(--soft);
+  color:var(--blue);
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  margin-bottom:8px;
+}
+
+.featured{
+  border:2px solid rgba(244,162,28,.45);
+}
+
+.resource-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  color:var(--muted);
+  font-size:.76rem;
+  font-weight:800;
+  margin:8px 0 4px;
+}
+
+.resource-meta span{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+}
+
+.empty{
+  grid-column:1/-1;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+@media(max-width:900px){
+  .g4,.g3,.g2,.searchbar{
+    grid-template-columns:1fr;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+}
 </style>
 </head>
 
@@ -66,64 +354,164 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="student-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
+
+    <a
+      class="brand"
+      href="student-dashboard.html"
+    >
+      <img
+        src="logo.png"
+        alt="SpeakOut Logo"
+      >
+
       <div>
         <h2>SpeakOut</h2>
         <p>Student Library</p>
       </div>
     </a>
-    <nav class="links" id="roleNav"></nav>
+
+    <nav
+      class="links"
+      id="roleNav"
+    ></nav>
+
   </div>
 </header>
+
 
 <main>
 
 <section class="hero">
   <div class="container">
-    <span class="kicker">Student Library</span>
-    <h1>Student resources for mental health, leadership and success</h1>
-    <p>Access student-focused resources selected to help you understand emotions, manage stress, build confidence, study better and grow as a young leader.</p>
+
+    <span class="kicker">
+      Student Library
+    </span>
+
+    <h1>
+      Student resources for mental health, leadership and success
+    </h1>
+
+    <p>
+      Access student-focused books, guides and learning resources selected to
+      strengthen wellbeing, confidence, digital awareness, study skills and leadership.
+    </p>
+
     <div id="pills"></div>
+
   </div>
 </section>
+
 
 <section>
   <div class="container">
 
-    <div id="statusBox" class="notice">Loading student resources...</div>
-
-    <div class="grid g4" style="margin-bottom:18px">
-      <div class="card stat"><strong id="totalCount">0</strong><span>Total Resources</span></div>
-      <div class="card stat"><strong id="freeCount">0</strong><span>Free Resources</span></div>
-      <div class="card stat"><strong id="premiumCount">0</strong><span>Premium Resources</span></div>
-      <div class="card stat"><strong id="categoryCount">0</strong><span>Categories</span></div>
+    <div
+      id="statusBox"
+      class="notice"
+    >
+      Loading student resources...
     </div>
+
+
+    <div
+      class="grid g4"
+      style="margin-bottom:18px"
+    >
+
+      <div class="card stat">
+        <strong id="totalCount">0</strong>
+        <span>Total Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="freeCount">0</strong>
+        <span>Free Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="premiumCount">0</strong>
+        <span>Premium Resources</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="categoryCount">0</strong>
+        <span>Categories</span>
+      </div>
+
+    </div>
+
 
     <div class="panel">
-      <span class="label">Find Resources</span>
-      <h2>Search and filter</h2>
+
+      <span class="label">
+        Find Resources
+      </span>
+
+      <h2>
+        Search and filter
+      </h2>
+
       <div class="searchbar">
-        <input id="searchInput" placeholder="Search by title, topic or description...">
+
+        <input
+          id="searchInput"
+          placeholder="Search by title, author, topic or description..."
+        >
+
         <select id="categoryFilter">
-          <option value="all">All Categories</option>
+          <option value="all">
+            All Categories
+          </option>
         </select>
+
         <select id="accessFilter">
-          <option value="all">Free and Premium</option>
-          <option value="free">Free Only</option>
-          <option value="premium">Premium Only</option>
+          <option value="all">
+            Free and Premium
+          </option>
+
+          <option value="free">
+            Free Only
+          </option>
+
+          <option value="premium">
+            Premium Only
+          </option>
         </select>
+
       </div>
+
     </div>
 
-    <div class="panel" style="margin-top:18px">
-      <span class="label">Featured</span>
-      <h2>Recommended for students</h2>
-      <div id="featuredGrid" class="grid g3"></div>
+
+    <div
+      class="panel"
+      style="margin-top:18px"
+    >
+
+      <span class="label">
+        Featured
+      </span>
+
+      <h2>
+        Recommended for students
+      </h2>
+
+      <div
+        id="featuredGrid"
+        class="grid g3"
+      ></div>
+
     </div>
+
 
     <div style="margin-top:18px">
-      <div id="resourceGrid" class="grid g3"></div>
+
+      <div
+        id="resourceGrid"
+        class="grid g3"
+      ></div>
+
     </div>
 
   </div>
@@ -131,13 +519,25 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 
 </main>
 
+
 <footer class="footer">
-  <div class="container">SpeakOut Mental Health Outreach</div>
+  <div class="container">
+    SpeakOut Mental Health Outreach • SpeakHub Academy
+  </div>
 </footer>
 
+
 <script type="module">
-import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
-import { db } from "./firebase-config.js";
+
+import {
+  requireRoles,
+  renderRoleNav
+} from "./launch-role-guard.js";
+
+import {
+  db
+} from "./firebase-config.js";
+
 import {
   collection,
   getDocs,
@@ -145,157 +545,771 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+import {
+  trackBookOpen
+} from "./progress-tracker.js";
+
+
 let currentProfile = null;
 let resources = [];
 
-function show(message, type = ""){
-  statusBox.textContent = message;
-  statusBox.className = "notice " + type;
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const pills =
+  document.getElementById("pills");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const categoryFilter =
+  document.getElementById("categoryFilter");
+
+const accessFilter =
+  document.getElementById("accessFilter");
+
+const resourceGrid =
+  document.getElementById("resourceGrid");
+
+const featuredGrid =
+  document.getElementById("featuredGrid");
+
+const totalCount =
+  document.getElementById("totalCount");
+
+const freeCount =
+  document.getElementById("freeCount");
+
+const premiumCount =
+  document.getElementById("premiumCount");
+
+const categoryCount =
+  document.getElementById("categoryCount");
+
+
+function show(message,type=""){
+
+  statusBox.textContent =
+    message;
+
+  statusBox.className =
+    `notice ${type}`;
+
 }
 
-function safe(value){
-  return value || "—";
+
+function safe(value,fallback="—"){
+
+  return (
+    value === null ||
+    value === undefined ||
+    value === ""
+  )
+    ? fallback
+    : value;
+
 }
+
+
+function normalize(value){
+
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function pretty(value){
+
+  if(!value){
+    return "—";
+  }
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+
+}
+
 
 function pill(value){
-  return `<span class="pill ${(value || "").toLowerCase()}">${safe(value)}</span>`;
-}
 
-function iconFor(category){
-  const c = (category || "").toLowerCase();
-  if(c.includes("mental")) return "🧠";
-  if(c.includes("lead")) return "🏆";
-  if(c.includes("study") || c.includes("academic")) return "📘";
-  if(c.includes("stress")) return "🌿";
-  if(c.includes("confidence")) return "⭐";
-  return "📚";
-}
-
-function normalizeAudience(value){
-  return (value || "all").toLowerCase().trim();
-}
-
-function canDisplayBook(book){
-  const aud = normalizeAudience(book.audience);
-  return aud === "student" || aud === "students" || aud === "all" || aud === "general";
-}
-
-function bookCard(book, featured=false){
-  const access = (book.accessType || "free").toLowerCase();
-  const category = book.category || "General";
-  const id = encodeURIComponent(book.id);
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
 
   return `
-    <article class="card resource-card ${featured ? "featured" : ""}">
-      <div class="icon">${iconFor(category)}</div>
-      <div>${pill(access)} ${pill(category)}</div>
-      <h3>${safe(book.title || "Untitled Resource")}</h3>
-      <p>${safe(book.description || "No description yet.")}</p>
-      <div class="meta">
-        <a class="btn primary" href="book-details.html?id=${id}">View Resource</a>
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+
+}
+
+
+function iconFor(category){
+
+  const c =
+    normalize(category);
+
+  if(c.includes("mental")){
+    return "🧠";
+  }
+
+  if(c.includes("lead")){
+    return "🏆";
+  }
+
+  if(
+    c.includes("digital") ||
+    c.includes("technology")
+  ){
+    return "💻";
+  }
+
+  if(
+    c.includes("study") ||
+    c.includes("academic")
+  ){
+    return "📘";
+  }
+
+  if(c.includes("stress")){
+    return "🌿";
+  }
+
+  if(c.includes("confidence")){
+    return "⭐";
+  }
+
+  if(c.includes("career")){
+    return "🎯";
+  }
+
+  return "📚";
+
+}
+
+
+function audienceArray(value){
+
+  if(Array.isArray(value)){
+    return value
+      .map(normalize)
+      .filter(Boolean);
+  }
+
+  const normalized =
+    normalize(value);
+
+  return normalized
+    ? [normalized]
+    : ["all"];
+
+}
+
+
+function canDisplayBook(book){
+
+  const audiences =
+    audienceArray(
+      book.audience
+    );
+
+
+  const studentAudiences = [
+    "student",
+    "students",
+    "secondary",
+    "university",
+    "school",
+    "all",
+    "general"
+  ];
+
+
+  return audiences.some(
+    audience =>
+      studentAudiences.includes(
+        audience
+      )
+  );
+
+}
+
+
+function accessType(book){
+
+  return normalize(
+    book.accessType ||
+    "free"
+  );
+
+}
+
+
+function bookCard(book,featured=false){
+
+  const access =
+    accessType(book);
+
+  const category =
+    book.category ||
+    "general";
+
+  const id =
+    encodeURIComponent(
+      book.id
+    );
+
+  const audiences =
+    audienceArray(
+      book.audience
+    );
+
+
+  return `
+    <article
+      class="card resource-card ${
+        featured
+        ? "featured"
+        : ""
+      }"
+    >
+
+      <div class="icon">
+        ${iconFor(category)}
       </div>
+
+
+      <div>
+        ${pill(access)}
+        ${pill(category)}
+
+        ${
+          featured
+          ? pill("featured")
+          : ""
+        }
+      </div>
+
+
+      <h3>
+        ${escapeHtml(
+          book.title ||
+          "Untitled Resource"
+        )}
+      </h3>
+
+
+      <div class="resource-meta">
+
+        ${
+          book.author
+          ? `<span>${escapeHtml(book.author)}</span>`
+          : ""
+        }
+
+        ${
+          book.readingTime
+          ? `<span>${escapeHtml(book.readingTime)}</span>`
+          : ""
+        }
+
+        ${
+          audiences.length
+          ? `<span>${escapeHtml(audiences.slice(0,3).map(pretty).join(", "))}</span>`
+          : ""
+        }
+
+      </div>
+
+
+      <p>
+        ${escapeHtml(
+          book.description ||
+          "No description yet."
+        )}
+      </p>
+
+
+      <div class="meta">
+
+        <a
+          class="btn primary"
+          href="book-details.html?id=${id}"
+          data-book-open="${escapeHtml(book.id)}"
+        >
+          View Resource
+        </a>
+
+      </div>
+
     </article>
   `;
+
 }
+
 
 function updateStats(items){
-  totalCount.textContent = items.length;
-  freeCount.textContent = items.filter(i => (i.accessType || "free").toLowerCase() === "free").length;
-  premiumCount.textContent = items.filter(i => (i.accessType || "").toLowerCase() === "premium").length;
-  categoryCount.textContent = new Set(items.map(i => i.category || "General")).size;
+
+  totalCount.textContent =
+    items.length;
+
+
+  freeCount.textContent =
+    items.filter(
+      item =>
+        accessType(item) ===
+        "free"
+    ).length;
+
+
+  premiumCount.textContent =
+    items.filter(
+      item =>
+        accessType(item) ===
+        "premium"
+    ).length;
+
+
+  categoryCount.textContent =
+    new Set(
+      items.map(
+        item =>
+          normalize(
+            item.category ||
+            "general"
+          )
+      )
+    ).size;
+
 }
+
 
 function buildCategoryFilter(items){
-  const cats = [...new Set(items.map(i => i.category || "General"))].sort();
-  categoryFilter.innerHTML = `<option value="all">All Categories</option>` + cats.map(c => `<option value="${c}">${c}</option>`).join("");
+
+  const categories =
+    [...new Set(
+      items
+        .map(
+          item =>
+            normalize(
+              item.category ||
+              "general"
+            )
+        )
+        .filter(Boolean)
+    )]
+    .sort();
+
+
+  categoryFilter.innerHTML =
+    `<option value="all">All Categories</option>` +
+    categories
+      .map(
+        category=>`
+          <option value="${escapeHtml(category)}">
+            ${escapeHtml(pretty(category))}
+          </option>
+        `
+      )
+      .join("");
+
 }
+
+
+function bindBookTracking(container){
+
+  container
+    .querySelectorAll(
+      "[data-book-open]"
+    )
+    .forEach(link=>{
+
+      link.addEventListener(
+        "click",
+        ()=>{
+
+          const book =
+            resources.find(
+              item =>
+                item.id ===
+                link.dataset.bookOpen
+            );
+
+
+          if(book){
+
+            /*
+              Fire-and-forget so navigation is not delayed.
+              book-details.html can also track an open safely because
+              the upgraded tracker avoids double-counting first opens.
+            */
+
+            trackBookOpen(book)
+              .catch(
+                error=>
+                  console.warn(
+                    "Book tracking skipped:",
+                    error
+                  )
+              );
+
+          }
+
+        }
+      );
+
+    });
+
+}
+
 
 function render(){
-  const search = (searchInput.value || "").toLowerCase().trim();
-  const category = categoryFilter.value;
-  const access = accessFilter.value;
 
-  let filtered = resources.filter(item => {
-    const text = `${item.title || ""} ${item.description || ""} ${item.category || ""}`.toLowerCase();
-    const matchSearch = !search || text.includes(search);
-    const matchCategory = category === "all" || (item.category || "General") === category;
-    const matchAccess = access === "all" || (item.accessType || "free").toLowerCase() === access;
-    return matchSearch && matchCategory && matchAccess;
-  });
+  const search =
+    normalize(
+      searchInput.value
+    );
+
+  const category =
+    normalize(
+      categoryFilter.value
+    );
+
+  const access =
+    normalize(
+      accessFilter.value
+    );
+
+
+  const filtered =
+    resources.filter(
+      item=>{
+
+        const searchable = [
+          item.title,
+          item.description,
+          item.category,
+          item.author,
+          Array.isArray(item.tags)
+            ? item.tags.join(" ")
+            : item.tags
+        ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+
+        const matchSearch =
+          !search ||
+          searchable.includes(
+            search
+          );
+
+
+        const matchCategory =
+          category === "all" ||
+          normalize(
+            item.category ||
+            "general"
+          ) === category;
+
+
+        const matchAccess =
+          access === "all" ||
+          accessType(item) ===
+          access;
+
+
+        return (
+          matchSearch &&
+          matchCategory &&
+          matchAccess
+        );
+
+      }
+    );
+
 
   resourceGrid.innerHTML =
-    filtered.map(item => bookCard(item)).join("") ||
-    "<div class='notice warn'>No resources match your search.</div>";
+    filtered.length
+    ? filtered
+        .map(
+          item =>
+            bookCard(item)
+        )
+        .join("")
+    : `
+      <div class="notice warn empty">
+        No resources match your search.
+      </div>
+    `;
 
-  const featured = resources.slice(0,3);
+
+  const featured =
+    resources
+      .filter(
+        item =>
+          item.featured === true
+      )
+      .slice(0,6);
+
+
+  const featuredFallback =
+    featured.length
+      ? featured
+      : resources.slice(0,3);
+
+
   featuredGrid.innerHTML =
-    featured.map(item => bookCard(item,true)).join("") ||
-    "<div class='notice warn'>No featured resources yet.</div>";
+    featuredFallback.length
+    ? featuredFallback
+        .map(
+          item =>
+            bookCard(
+              item,
+              true
+            )
+        )
+        .join("")
+    : `
+      <div class="notice warn empty">
+        No featured resources yet.
+      </div>
+    `;
+
+
+  bindBookTracking(
+    resourceGrid
+  );
+
+
+  bindBookTracking(
+    featuredGrid
+  );
+
 }
 
+
 async function loadStudentResources(){
+
   try{
-    const snap = await getDocs(
-      query(
-        collection(db, "books"),
-        where("status", "==", "active")
-      )
-    );
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "books"
+          ),
+          where(
+            "status",
+            "==",
+            "active"
+          )
+        )
+      );
+
 
     resources = [];
 
-    snap.forEach(d => {
-      const item = {
-        id:d.id,
-        ...d.data()
-      };
 
-      if(canDisplayBook(item)){
-        resources.push(item);
+    snap.forEach(
+      document=>{
+
+        const item = {
+          id:
+            document.id,
+
+          ...document.data()
+        };
+
+
+        if(
+          canDisplayBook(
+            item
+          )
+        ){
+
+          resources.push(
+            item
+          );
+
+        }
+
       }
-    });
+    );
 
-    resources.sort((a,b) => {
-      const af = (a.accessType || "free").toLowerCase() === "free" ? 0 : 1;
-      const bf = (b.accessType || "free").toLowerCase() === "free" ? 0 : 1;
-      return af - bf || (a.title || "").localeCompare(b.title || "");
-    });
 
-    updateStats(resources);
-    buildCategoryFilter(resources);
+    resources.sort(
+      (a,b)=>{
+
+        if(
+          a.featured === true &&
+          b.featured !== true
+        ){
+          return -1;
+        }
+
+        if(
+          b.featured === true &&
+          a.featured !== true
+        ){
+          return 1;
+        }
+
+
+        const accessDifference =
+          (
+            accessType(a) ===
+            "free"
+            ? 0
+            : 1
+          ) -
+          (
+            accessType(b) ===
+            "free"
+            ? 0
+            : 1
+          );
+
+
+        if(accessDifference){
+          return accessDifference;
+        }
+
+
+        return (
+          a.title || ""
+        ).localeCompare(
+          b.title || ""
+        );
+
+      }
+    );
+
+
+    updateStats(
+      resources
+    );
+
+
+    buildCategoryFilter(
+      resources
+    );
+
+
     render();
 
-    show("Student library loaded.", "ok");
+
+    show(
+      "Student library loaded.",
+      "ok"
+    );
+
 
   }catch(error){
-    console.error(error);
-    show("Could not load student resources. Check Firestore rules.", "bad");
+
+    console.error(
+      "Student library error:",
+      error
+    );
+
+
+    show(
+      "Could not load student resources. Check Firestore rules.",
+      "bad"
+    );
+
   }
+
 }
 
-searchInput.addEventListener("input", render);
-categoryFilter.addEventListener("change", render);
-accessFilter.addEventListener("change", render);
 
-requireRoles(["student"], async (user, profile) => {
-  const role = (profile.role || "").toLowerCase().trim();
+searchInput.addEventListener(
+  "input",
+  render
+);
 
-  if(role !== "student" && role !== "admin" && role !== "super_admin"){
-    location.href = "auth.html";
-    return;
+
+categoryFilter.addEventListener(
+  "change",
+  render
+);
+
+
+accessFilter.addEventListener(
+  "change",
+  render
+);
+
+
+requireRoles(
+  ["student"],
+  async (user,profile)=>{
+
+    const role =
+      normalize(
+        profile.role
+      );
+
+
+    if(
+      role !== "student" &&
+      role !== "admin" &&
+      role !== "super_admin"
+    ){
+
+      location.href =
+        "auth.html";
+
+      return;
+
+    }
+
+
+    currentProfile =
+      profile;
+
+
+    renderRoleNav(
+      profile,
+      "Library"
+    );
+
+
+    pills.innerHTML =
+      pill(profile.role) +
+      pill(profile.status) +
+      pill(
+        profile.schoolCode ||
+        "individual"
+      );
+
+
+    await loadStudentResources();
+
   }
+);
 
-  currentProfile = profile;
-  renderRoleNav(profile, "Library");
-
-  pills.innerHTML =
-    pill(profile.role) +
-    pill(profile.status) +
-    pill(profile.schoolCode || "individual");
-
-  await loadStudentResources();
-});
 </script>
 
 </body>
 </html>
+
