@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Submit External Learning | SpeakHub</title>
+<meta name="description" content="Submit a certificate or proof of completion for an approved external SpeakHub learning pathway.">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+.container{width:min(1050px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.hero{background:radial-gradient(circle at 85% 20%,rgba(244,162,28,.22),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:54px 0}.hero h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.04;margin:14px 0}.hero p{max-width:800px;line-height:1.65;color:rgba(255,255,255,.9)}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+section{padding:38px 0}
+.grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:20px}
+.field{display:grid;gap:7px;margin-bottom:14px}.field label{font-weight:800;font-size:.88rem}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font:inherit;background:#fbfdff}
+textarea{min-height:110px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;text-decoration:none}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}
+.notice{padding:14px;border-radius:14px;background:var(--soft);color:#1b4d80;line-height:1.55;margin-bottom:14px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
+.course-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fbfdff;margin-bottom:16px}.course-card h3{margin:0 0 7px;color:var(--navy)}.course-card p{margin:5px 0;color:var(--muted)}
+.preview{max-width:100%;max-height:320px;border-radius:16px;border:1px solid var(--line);margin-top:10px;display:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.check{list-style:none;padding:0}.check li{padding:7px 0 7px 26px;position:relative;color:#46556a}.check li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:32px 0;margin-top:20px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
+</style>
+</head>
+
+<body>
+
+<header class="nav">
+<div class="container nav-inner">
+  <a class="brand" href="speakhub.html">
+    <img src="logo.png" alt="SpeakOut">
+    <div><h2>SpeakOut</h2><p>External Learning</p></div>
+  </a>
+  <nav class="links">
+    <a class="btn soft" href="speakhub.html">Courses</a>
+    <a class="btn soft" href="certificate-center.html">Certificates</a>
+    <a class="btn dark" href="auth.html">Portal</a>
+  </nav>
+</div>
+</header>
+
+<section class="hero">
+<div class="container">
+  <span class="kicker">External Learning Record</span>
+  <h1>Submit your certificate or proof.</h1>
+  <p>Complete the course on the external provider's official platform, then return here and submit proof for SpeakHub review.</p>
+</div>
+</section>
+
+<section>
+<div class="container">
+
+<div id="statusBox" class="notice">Checking your account and course...</div>
+
+<div id="contentArea" class="grid" style="display:none">
+
+<main class="panel">
+  <span class="label">Completion Submission</span>
+  <h2 id="pageCourseTitle">External Course</h2>
+
+  <div class="course-card">
+    <h3 id="courseTitle">—</h3>
+    <p><b>Provider:</b> <span id="providerName">—</span></p>
+    <p><b>Certificate issuer:</b> <span id="issuerName">—</span></p>
+    <div class="actions">
+      <a id="providerCourseLink" class="btn primary" target="_blank" rel="noopener noreferrer">Open Provider Course</a>
+    </div>
+  </div>
+
+  <form id="submissionForm">
+
+    <div class="field">
+      <label for="completionDate">Completion date</label>
+      <input id="completionDate" type="date" required>
+    </div>
+
+    <div class="field">
+      <label for="certificateNumber">Certificate / credential number (if available)</label>
+      <input id="certificateNumber" placeholder="Certificate or credential ID">
+    </div>
+
+    <div class="field">
+      <label for="verificationUrl">Provider verification URL (if available)</label>
+      <input id="verificationUrl" type="url" placeholder="https://...">
+    </div>
+
+    <div class="field">
+      <label for="proofFile">Upload certificate/proof image</label>
+      <input id="proofFile" type="file" accept="image/jpeg,image/png,image/webp" required>
+      <small style="color:var(--muted)">
+        Test version: JPG, PNG or WebP only. The image is compressed before being stored in Firestore.
+      </small>
+      <img id="proofPreview" class="preview" alt="Certificate preview">
+    </div>
+
+    <div class="field">
+      <label for="learnerNote">Optional note</label>
+      <textarea id="learnerNote" placeholder="Anything the reviewer should know"></textarea>
+    </div>
+
+    <div class="notice warn">
+      Submit only genuine proof belonging to you. External credentials remain issued by the original provider. SpeakHub records the achievement after review.
+    </div>
+
+    <button id="submitButton" class="btn gold" type="submit">Submit for Review</button>
+
+  </form>
+
+  <div id="resultBox" class="notice" style="display:none;margin-top:16px"></div>
+</main>
+
+<aside class="panel">
+  <span class="label">Review Process</span>
+  <h2>What happens next?</h2>
+
+  <ul class="check">
+    <li>Your submission is saved as Pending Review.</li>
+    <li>SpeakHub checks the course, provider and submitted evidence.</li>
+    <li>Approved learning is added to your external learning record.</li>
+    <li>The original provider remains the certificate issuer.</li>
+  </ul>
+
+  <div id="existingSubmission" class="notice" style="display:none"></div>
+</aside>
+
+</div>
+
+</div>
+</section>
+
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • SpeakHub Academy</div></footer>
+
+<script type="module">
+import { auth,db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const courseId = new URLSearchParams(location.search).get("courseId");
+
+const statusBox = document.getElementById("statusBox");
+const contentArea = document.getElementById("contentArea");
+const courseTitle = document.getElementById("courseTitle");
+const pageCourseTitle = document.getElementById("pageCourseTitle");
+const providerName = document.getElementById("providerName");
+const issuerName = document.getElementById("issuerName");
+const providerCourseLink = document.getElementById("providerCourseLink");
+const submissionForm = document.getElementById("submissionForm");
+const proofFile = document.getElementById("proofFile");
+const proofPreview = document.getElementById("proofPreview");
+const submitButton = document.getElementById("submitButton");
+const resultBox = document.getElementById("resultBox");
+const existingSubmission = document.getElementById("existingSubmission");
+
+let currentUser = null;
+let currentProfile = null;
+let course = null;
+
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
+}
+
+function show(message,type=""){
+  statusBox.textContent = message;
+  statusBox.className = `notice ${type}`;
+}
+
+function externalUrl(item){
+  return item.externalUrl || item.courseUrl || item.providerCourseUrl || item.providerUrl || item.url || "";
+}
+
+function isExternal(item){
+  return (
+    normalize(item.courseType) === "external" ||
+    normalize(item.completionMethod) === "certificate-upload" ||
+    item.externalProvider === true
+  );
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    if(!file || !file.type.startsWith("image/")){
+      reject(new Error("Please select a JPG, PNG or WebP image."));
+      return;
+    }
+
+    const reader = new FileReader();
+    const image = new Image();
+
+    reader.onload = event=>{
+      image.src = event.target.result;
+    };
+
+    image.onload = ()=>{
+      const maxWidth = 1400;
+      const maxHeight = 1400;
+
+      let width = image.width;
+      let height = image.height;
+
+      const ratio = Math.min(
+        1,
+        maxWidth / width,
+        maxHeight / height
+      );
+
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      canvas.getContext("2d").drawImage(
+        image,
+        0,
+        0,
+        width,
+        height
+      );
+
+      let data = canvas.toDataURL("image/jpeg",0.72);
+
+      if(data.length > 700000){
+        data = canvas.toDataURL("image/jpeg",0.50);
+      }
+
+      if(data.length > 850000){
+        reject(new Error("Certificate image is too large. Please upload a smaller screenshot or image."));
+        return;
+      }
+
+      resolve(data);
+    };
+
+    image.onerror = ()=>reject(new Error("Could not read the selected image."));
+    reader.onerror = ()=>reject(new Error("Could not read the selected file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function checkExisting(){
+  try{
+    const snap = await getDocs(
+      query(
+        collection(db,"externalLearningRecords"),
+        where("userId","==",currentUser.uid),
+        where("courseId","==",courseId)
+      )
+    );
+
+    if(snap.empty) return;
+
+    const records = snap.docs.map(d=>({id:d.id,...d.data()}));
+    records.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    const record = records[0];
+
+    existingSubmission.style.display = "block";
+    existingSubmission.className =
+      normalize(record.status) === "approved"
+        ? "notice ok"
+        : normalize(record.status) === "rejected"
+          ? "notice bad"
+          : "notice warn";
+
+    existingSubmission.textContent =
+      `Existing submission: ${record.status || "pending_review"}. ` +
+      `Submitted ${record.createdAt?.toDate ? record.createdAt.toDate().toLocaleDateString() : ""}`;
+  }catch(error){
+    console.warn("Existing submission check failed:",error);
+  }
+}
+
+proofFile.addEventListener("change",()=>{
+  const file = proofFile.files?.[0];
+
+  if(!file){
+    proofPreview.style.display = "none";
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  proofPreview.src = url;
+  proofPreview.style.display = "block";
+});
+
+submissionForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  if(!currentUser || !course){
+    return;
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+  resultBox.style.display = "block";
+  resultBox.className = "notice";
+  resultBox.textContent = "Compressing proof and submitting for review...";
+
+  try{
+    const file = proofFile.files?.[0];
+
+    if(!file){
+      throw new Error("Upload a certificate or proof image.");
+    }
+
+    const proofData = await compressImage(file);
+
+    const recordId = `${currentUser.uid}_${courseId}`;
+
+    await setDoc(
+      doc(db,"externalLearningRecords",recordId),
+      {
+        userId:currentUser.uid,
+        userEmail:currentUser.email || currentProfile.email || "",
+        learnerName:
+          currentProfile.fullName ||
+          `${currentProfile.firstName || ""} ${currentProfile.lastName || ""}`.trim(),
+        courseId:course.id,
+        courseTitle:course.title || "",
+        courseType:"external",
+        provider:course.provider || "External Provider",
+        providerCourseUrl:externalUrl(course),
+        certificateIssuer:
+          course.certificate?.issuer ||
+          course.certificateIssuer ||
+          course.provider ||
+          "External Provider",
+        completionDate:document.getElementById("completionDate").value,
+        certificateNumber:document.getElementById("certificateNumber").value.trim(),
+        verificationUrl:document.getElementById("verificationUrl").value.trim(),
+        learnerNote:document.getElementById("learnerNote").value.trim(),
+        proofType:"image",
+        proofData,
+        status:"pending_review",
+        verificationStatus:"pending",
+        submittedBy:currentUser.uid,
+        submittedAt:serverTimestamp(),
+        createdAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      },
+      { merge:true }
+    );
+
+    await setDoc(
+      doc(db,"userProgress",`${currentUser.uid}_external_${course.id}`),
+      {
+        userId:currentUser.uid,
+        type:"external-course",
+        itemId:course.id,
+        courseId:course.id,
+        title:course.title || "",
+        provider:course.provider || "",
+        status:"pending_review",
+        progress:100,
+        percent:100,
+        proofSubmitted:true,
+        updatedAt:serverTimestamp()
+      },
+      { merge:true }
+    );
+
+    resultBox.className = "notice ok";
+    resultBox.innerHTML =
+      `<strong>Submission received.</strong><br>` +
+      `Your external learning record is now pending review.`;
+
+    await checkExisting();
+
+  }catch(error){
+    console.error(error);
+    resultBox.className = "notice bad";
+    resultBox.textContent = error.message || "Could not submit your external learning record.";
+  }finally{
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit for Review";
+  }
+});
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    location.href = "auth.html";
+    return;
+  }
+
+  if(!courseId){
+    show("No external course was selected.","bad");
+    return;
+  }
+
+  try{
+    currentUser = user;
+
+    const profileSnap = await getDoc(doc(db,"users",user.uid));
+
+    if(!profileSnap.exists()){
+      show("Your learner profile could not be found.","bad");
+      return;
+    }
+
+    currentProfile = {uid:user.uid,...profileSnap.data()};
+
+    const profileStatus = normalize(currentProfile.status);
+
+    if(profileStatus !== "approved"){
+      show("Your account must be approved before submitting external learning evidence.","warn");
+      return;
+    }
+
+    const courseSnap = await getDoc(doc(db,"courses",courseId));
+
+    if(!courseSnap.exists()){
+      show("External course not found.","bad");
+      return;
+    }
+
+    course = {id:courseSnap.id,...courseSnap.data()};
+
+    if(!isExternal(course)){
+      show("This is not configured as an external course.","bad");
+      return;
+    }
+
+    const url = externalUrl(course);
+
+    courseTitle.textContent = course.title || "External Course";
+    pageCourseTitle.textContent = course.title || "External Course";
+    providerName.textContent = course.provider || "External Provider";
+    issuerName.textContent =
+      course.certificate?.issuer ||
+      course.certificateIssuer ||
+      course.provider ||
+      "External Provider";
+
+    if(url){
+      providerCourseLink.href = url;
+    }else{
+      providerCourseLink.style.display = "none";
+    }
+
+    contentArea.style.display = "grid";
+    show("External course verified. You can submit your completion evidence.","ok");
+
+    await checkExisting();
+
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not load the external learning submission page.","bad");
+  }
+});
+</script>
+</body>
+</html>
