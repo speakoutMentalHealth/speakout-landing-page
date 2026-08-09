@@ -3,167 +3,628 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Link Child | SpeakOut</title>
+
+<meta
+  name="description"
+  content="Secure parent-to-student linking for SpeakOut. Parents can find a child, send a link request, track approval status and access approved child progress."
+>
+
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
 
 <style>
 :root{
---navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
---green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;
---muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--ink:#111827;
---shadow:0 18px 44px rgba(7,21,43,.10)
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --goldSoft:#fff4df;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --ink:#111827;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
 }
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
 a{text-decoration:none;color:inherit}
-.container{width:min(1180px,92%);margin:auto}
-.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:44px;height:44px;object-fit:contain}
-.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
-.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
-.links{display:flex;gap:8px;flex-wrap:wrap}
-.menu{display:none;border:0;background:var(--navy);color:#fff;border-radius:14px;padding:10px 14px;font-weight:900}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
-.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.danger{background:var(--redSoft);color:var(--red)}.success{background:var(--greenSoft);color:var(--green)}
-.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
-.hero .container{padding:52px 0}
-.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
-.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}
-h2,h3{line-height:1.05;color:var(--navy)}
-.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
-section{padding:36px 0}.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
-.card p,.panel p{color:var(--muted);line-height:1.6}
-.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
-.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px;text-transform:capitalize}
-.approved,.active{background:var(--greenSoft);color:var(--green)}.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}.rejected,.suspended,.cancelled{background:var(--redSoft);color:var(--red)}
-.stat strong{display:block;color:var(--blue);font-size:2rem}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
-textarea{min-height:95px;resize:vertical}
-.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}
-.profile-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.table{width:100%;border-collapse:separate;border-spacing:0 10px}
-.table th{text-align:left;color:var(--muted);font-size:.8rem;text-transform:uppercase;white-space:nowrap}
-.table td,.table th{padding:10px;vertical-align:top}
-.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
-.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+button,input,textarea,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.menu{
+  display:none;
+  border:0;
+  background:var(--navy);
+  color:#fff;
+  border-radius:14px;
+  padding:10px 14px;
+  font-weight:900;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
+section{padding:36px 0}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+  text-transform:capitalize;
+}
+
+.approved,.active{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.pending,.pending_school_approval{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.rejected,.suspended,.cancelled{
+  background:var(--redSoft);
+  color:var(--red);
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:2rem;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:.84rem;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+input,textarea,select{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#fbfdff;
+}
+
+textarea{
+  min-height:95px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:var(--blue);
+  outline:none;
+  box-shadow:0 0 0 4px rgba(10,95,191,.08);
+}
+
+.avatar{
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid var(--soft);
+  background:#f1f5f9;
+}
+
+.profile-row{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 10px;
+  min-width:760px;
+}
+
+.table th{
+  text-align:left;
+  color:var(--muted);
+  font-size:.8rem;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.table td,.table th{
+  padding:10px;
+  vertical-align:top;
+}
+
+.table tbody tr{
+  background:#fff;
+  box-shadow:var(--shadowSoft);
+}
+
+.small-note{
+  color:var(--muted);
+  font-size:.85rem;
+  line-height:1.55;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
 @media(max-width:900px){
-.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}
-.menu{display:block}.links{display:none}.menu-open .links{display:flex;position:absolute;top:72px;left:0;right:0;background:#fff;padding:14px;flex-direction:column;border-bottom:1px solid var(--line)}
-.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}
+  .g4,.g3,.g2,.form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .menu{
+    display:block;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .menu-open .links{
+    display:flex;
+    position:absolute;
+    top:72px;
+    left:0;
+    right:0;
+    background:#fff;
+    padding:14px;
+    flex-direction:column;
+    border-bottom:1px solid var(--line);
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <header class="nav">
   <div class="container nav-inner">
+
     <a class="brand" href="parent-dashboard.html">
       <img src="logo.png" alt="SpeakOut">
-      <div><h2>SpeakOut</h2><p>Parent Student Link</p></div>
+      <div>
+        <h2>SpeakOut</h2>
+        <p>Parent Student Link</p>
+      </div>
     </a>
-    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+
+    <button
+      class="menu"
+      type="button"
+      aria-label="Open menu"
+      onclick="document.body.classList.toggle('menu-open')"
+    >
+      ☰
+    </button>
+
     <nav class="links">
       <a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
-      <a class="btn soft" href="student-dashboard.html">Student Dashboard</a>
+      <a class="btn soft" href="parent-library.html">Parent Library</a>
       <a class="btn soft" href="certificate-center.html">Certificates</a>
       <a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
     </nav>
+
   </div>
 </header>
 
+
 <main>
+
 <section class="hero">
   <div class="container">
-    <span class="kicker">Parent Access</span>
-    <h1>Link Your Child</h1>
-    <p>Search for your child with their Student ID, email, or school code, then send a secure link request. The student must approve before you can view their progress.</p>
+
+    <span class="kicker">
+      Parent Access
+    </span>
+
+    <h1>
+      Link Your Child
+    </h1>
+
+    <p>
+      Search using your child’s exact Student ID or email address, then send a secure parent-link request. Access to child progress is available only after the request is approved.
+    </p>
+
   </div>
 </section>
 
+
 <section>
   <div class="container">
-    <div id="statusBox" class="notice">Checking parent account...</div>
 
-    <div class="grid g4" style="margin-bottom:18px">
-      <div class="card stat"><strong id="totalLinks">0</strong><span>Total Links</span></div>
-      <div class="card stat"><strong id="approvedLinks">0</strong><span>Approved</span></div>
-      <div class="card stat"><strong id="pendingLinks">0</strong><span>Pending</span></div>
-      <div class="card stat"><strong id="rejectedLinks">0</strong><span>Rejected</span></div>
+    <div id="statusBox" class="notice">
+      Checking parent account...
     </div>
 
+
+    <div class="grid g4" style="margin-bottom:18px">
+
+      <div class="card stat">
+        <strong id="totalLinks">0</strong>
+        <span>Total Requests</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="approvedLinks">0</strong>
+        <span>Approved</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="pendingLinks">0</strong>
+        <span>Pending</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="rejectedLinks">0</strong>
+        <span>Rejected / Cancelled</span>
+      </div>
+
+    </div>
+
+
     <div class="grid g2">
+
       <div class="panel">
-        <span class="label">Find Student</span>
-        <h2>Search Student</h2>
-        <p>Use the exact Student ID for best results. You can also search by student email.</p>
+
+        <span class="label">
+          Find Student
+        </span>
+
+        <h2>
+          Search your child
+        </h2>
+
+        <p class="small-note">
+          Student ID is the preferred search method because it is unique. Email search is available when the student account has an email address.
+        </p>
+
 
         <form id="findForm">
+
           <div class="form-grid">
-            <input id="studentSearch" placeholder="Student ID or email" required>
+
+            <input
+              id="studentSearch"
+              placeholder="Student ID or student email"
+              required
+              autocomplete="off"
+            >
+
             <select id="relationship" required>
               <option value="Mother">Mother</option>
               <option value="Father">Father</option>
               <option value="Guardian">Guardian</option>
               <option value="Other">Other</option>
             </select>
+
           </div>
-          <textarea id="requestNote" placeholder="Optional note to the student"></textarea>
-          <button class="btn primary" type="submit">Find Student</button>
+
+          <textarea
+            id="requestNote"
+            placeholder="Optional note for the link request"
+          ></textarea>
+
+          <button
+            class="btn primary"
+            type="submit"
+            id="findButton"
+          >
+            Find Student
+          </button>
+
         </form>
+
       </div>
 
+
       <div class="panel">
-        <span class="label">Student Result</span>
-        <h2>Matched Student</h2>
-        <div id="studentResult"><p>Student details will appear here.</p></div>
+
+        <span class="label">
+          Student Result
+        </span>
+
+        <h2>
+          Matched Student
+        </h2>
+
+        <div id="studentResult">
+          <p>Student details will appear here.</p>
+        </div>
+
       </div>
+
     </div>
 
+
     <div class="grid g2" style="margin-top:18px">
-      <div class="panel">
-        <span class="label">My Children</span>
-        <h2>Approved / Pending Links</h2>
-        <div id="childrenBox" class="grid"></div>
-      </div>
 
       <div class="panel">
-        <span class="label">Request History</span>
-        <h2>Link Requests</h2>
+
+        <span class="label">
+          My Children
+        </span>
+
+        <h2>
+          Approved & pending links
+        </h2>
+
+        <div
+          id="childrenBox"
+          class="grid"
+        ></div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <span class="label">
+          Request History
+        </span>
+
+        <h2>
+          Link requests
+        </h2>
+
         <div style="overflow:auto">
+
           <table class="table">
+
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Code</th>
+                <th>Student ID</th>
                 <th>Relationship</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
+
             <tbody id="requestRows"></tbody>
+
           </table>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
 </section>
+
 </main>
 
+
 <footer class="footer">
-  <div class="container">SpeakOut Parent ↔ Student Linking</div>
+  <div class="container">
+    SpeakOut Parent ↔ Student Linking
+  </div>
 </footer>
 
+
 <script type="module">
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+import {
+  auth,
+  db
+} from "./firebase-config.js";
+
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
 import {
   collection,
   getDocs,
@@ -177,244 +638,1196 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+
 let currentUser = null;
 let parentProfile = null;
 let foundStudent = null;
 let links = [];
 let unsubscribeLinks = null;
 
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const totalLinks =
+  document.getElementById("totalLinks");
+
+const approvedLinks =
+  document.getElementById("approvedLinks");
+
+const pendingLinks =
+  document.getElementById("pendingLinks");
+
+const rejectedLinks =
+  document.getElementById("rejectedLinks");
+
+const findForm =
+  document.getElementById("findForm");
+
+const studentSearch =
+  document.getElementById("studentSearch");
+
+const relationship =
+  document.getElementById("relationship");
+
+const requestNote =
+  document.getElementById("requestNote");
+
+const findButton =
+  document.getElementById("findButton");
+
+const studentResult =
+  document.getElementById("studentResult");
+
+const childrenBox =
+  document.getElementById("childrenBox");
+
+const requestRows =
+  document.getElementById("requestRows");
+
+const logoutLink =
+  document.getElementById("logoutLink");
+
+
 function show(message,type=""){
   statusBox.textContent = message;
-  statusBox.className = "notice " + type;
+  statusBox.className = `notice ${type}`;
 }
-function safe(value){return value || "—";}
-function normalize(value){return (value || "").toString().toLowerCase().trim();}
-function pill(value){return `<span class="pill ${normalize(value)}">${safe(value)}</span>`;}
 
-async function requireParent(callback){
-  onAuthStateChanged(auth, async user=>{
-    if(!user){location.href="auth.html";return;}
 
-    const snap = await getDoc(doc(db,"users",user.uid));
-    if(!snap.exists()){show("Profile missing. Please complete your profile first.","bad");return;}
-
-    const profile = {uid:user.uid,...snap.data()};
-    const role = normalize(profile.role);
-    const status = normalize(profile.status);
-
-    if(!["parent","admin","super_admin"].includes(role)){location.href="index.html";return;}
-    if(status !== "approved"){show("Account pending approval. Linking is locked until approval.","warn");return;}
-
-    currentUser = user;
-    parentProfile = profile;
-    callback(user,profile);
-  });
+function normalize(value){
+  return String(value || "").trim().toLowerCase();
 }
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function pretty(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
+
+function pill(value){
+
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+
+}
+
 
 function updateStats(){
-  totalLinks.textContent = links.length;
-  approvedLinks.textContent = links.filter(x=>normalize(x.status)==="approved").length;
-  pendingLinks.textContent = links.filter(x=>normalize(x.status)==="pending").length;
-  rejectedLinks.textContent = links.filter(x=>["rejected","cancelled"].includes(normalize(x.status))).length;
+
+  totalLinks.textContent =
+    links.length;
+
+  approvedLinks.textContent =
+    links.filter(
+      item =>
+        normalize(item.status) === "approved"
+    ).length;
+
+  pendingLinks.textContent =
+    links.filter(
+      item =>
+        [
+          "pending",
+          "pending_school_approval"
+        ].includes(
+          normalize(item.status)
+        )
+    ).length;
+
+  rejectedLinks.textContent =
+    links.filter(
+      item =>
+        [
+          "rejected",
+          "cancelled"
+        ].includes(
+          normalize(item.status)
+        )
+    ).length;
+
 }
+
+
+function isActiveLink(link){
+
+  return ![
+    "cancelled",
+    "rejected"
+  ].includes(
+    normalize(link.status)
+  );
+
+}
+
+
+async function resolveStudent(link){
+
+  try{
+
+    const snap =
+      await getDoc(
+        doc(
+          db,
+          "users",
+          link.studentId
+        )
+      );
+
+    if(snap.exists()){
+
+      return {
+        id:snap.id,
+        ...snap.data()
+      };
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Could not load linked student:",
+      error
+    );
+
+  }
+
+  return null;
+
+}
+
 
 async function studentCard(link){
-  let student = null;
-  try{
-    const snap = await getDoc(doc(db,"users",link.studentId));
-    if(snap.exists()) student = {id:snap.id,...snap.data()};
-  }catch(e){}
 
-  const status = normalize(link.status || "pending");
+  const student =
+    await resolveStudent(link);
+
+  const status =
+    normalize(
+      link.status ||
+      "pending"
+    );
+
+  const studentName =
+    student
+      ? `${student.firstName || student.fullName || "Student"} ${student.lastName || ""}`.trim()
+      : (
+          link.studentName ||
+          "Student"
+        );
+
+  const photo =
+    student?.photoData ||
+    student?.photoURL ||
+    "logo.png";
+
+  const studentCode =
+    link.studentCode ||
+    student?.studentId ||
+    "—";
+
+  const school =
+    student?.schoolName ||
+    student?.schoolCode ||
+    link.schoolCode ||
+    "—";
+
   return `
     <div class="card">
+
       <div class="profile-row">
-        <img class="avatar" src="${student?.photoData || student?.photoURL || "logo.png"}" alt="">
+
+        <img
+          class="avatar"
+          src="${escapeHtml(photo)}"
+          alt="Student profile photo"
+        >
+
         <div>
-          <h3>${safe(student?.firstName || "Student")} ${safe(student?.lastName || "")}</h3>
-          <p><b>Student ID:</b> ${safe(link.studentCode || student?.studentId)}</p>
-          <p><b>Relationship:</b> ${safe(link.relationship)}</p>
-          <p><b>School:</b> ${safe(student?.schoolName || student?.schoolCode || link.schoolCode)}</p>
+
+          <h3>
+            ${escapeHtml(studentName)}
+          </h3>
+
+          <p>
+            <b>Student ID:</b>
+            ${escapeHtml(studentCode)}
+          </p>
+
+          <p>
+            <b>Relationship:</b>
+            ${escapeHtml(link.relationship || "Guardian")}
+          </p>
+
+          <p>
+            <b>School:</b>
+            ${escapeHtml(school)}
+          </p>
+
           ${pill(link.status || "pending")}
+
           <div class="actions">
-            ${status === "approved" ? `<a class="btn primary" href="child-progress.html?studentId=${encodeURIComponent(link.studentId)}">View Progress</a>` : ""}
-            ${status === "pending" ? `<button class="btn danger" data-cancel="${link.id}">Cancel Request</button>` : ""}
+
+            ${
+              status === "approved"
+                ? `
+                  <a
+                    class="btn primary"
+                    href="child-progress.html?studentId=${encodeURIComponent(link.studentId)}"
+                  >
+                    View Progress
+                  </a>
+                `
+                : ""
+            }
+
+            ${
+              [
+                "pending",
+                "pending_school_approval"
+              ].includes(status)
+                ? `
+                  <button
+                    class="btn danger"
+                    type="button"
+                    data-cancel="${escapeHtml(link.id)}"
+                  >
+                    Cancel Request
+                  </button>
+                `
+                : ""
+            }
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   `;
+
 }
+
 
 async function renderLinks(){
+
   updateStats();
 
+
   let html = "";
-  for(const link of links){
-    html += await studentCard(link);
+
+  for(
+    const link of links
+  ){
+    html +=
+      await studentCard(link);
   }
-  childrenBox.innerHTML = html || "<div class='notice warn'>No child linked yet.</div>";
 
-  requestRows.innerHTML = links.map(link=>`
-    <tr class="row">
-      <td>${safe(link.studentName || "Student")}</td>
-      <td>${safe(link.studentCode)}</td>
-      <td>${safe(link.relationship)}</td>
-      <td>${pill(link.status || "pending")}</td>
-      <td>
-        <div class="actions">
-          ${normalize(link.status)==="pending" ? `<button class="btn danger" data-cancel="${link.id}">Cancel</button>` : ""}
-          ${normalize(link.status)==="approved" ? `<a class="btn primary" href="child-progress.html?studentId=${encodeURIComponent(link.studentId)}">Progress</a>` : ""}
-        </div>
-      </td>
-    </tr>
-  `).join("") || "<tr><td colspan='5'>No requests found.</td></tr>";
 
-  document.querySelectorAll("[data-cancel]").forEach(btn=>{
-    btn.onclick = async ()=>{
-      await updateDoc(doc(db,"parentStudentLinks",btn.dataset.cancel),{
-        status:"cancelled",
-        updatedAt:serverTimestamp()
-      });
-      show("Link request cancelled.","ok");
-    };
-  });
+  childrenBox.innerHTML =
+    html ||
+    `
+      <div class="notice warn">
+        No child link request has been created yet.
+      </div>
+    `;
+
+
+  requestRows.innerHTML =
+    links.length
+      ? links.map(link=>{
+
+          const status =
+            normalize(
+              link.status ||
+              "pending"
+            );
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHtml(link.studentName || "Student")}
+              </td>
+
+              <td>
+                ${escapeHtml(link.studentCode || "—")}
+              </td>
+
+              <td>
+                ${escapeHtml(link.relationship || "Guardian")}
+              </td>
+
+              <td>
+                ${pill(link.status || "pending")}
+              </td>
+
+              <td>
+
+                <div class="actions">
+
+                  ${
+                    [
+                      "pending",
+                      "pending_school_approval"
+                    ].includes(status)
+                      ? `
+                        <button
+                          class="btn danger"
+                          type="button"
+                          data-cancel="${escapeHtml(link.id)}"
+                        >
+                          Cancel
+                        </button>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    status === "approved"
+                      ? `
+                        <a
+                          class="btn primary"
+                          href="child-progress.html?studentId=${encodeURIComponent(link.studentId)}"
+                        >
+                          Progress
+                        </a>
+                      `
+                      : ""
+                  }
+
+                </div>
+
+              </td>
+
+            </tr>
+          `;
+
+        }).join("")
+      : `
+        <tr>
+          <td colspan="5">
+            No requests found.
+          </td>
+        </tr>
+      `;
+
+
+  document
+    .querySelectorAll(
+      "[data-cancel]"
+    )
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        async ()=>{
+
+          try{
+
+            button.disabled =
+              true;
+
+            await updateDoc(
+              doc(
+                db,
+                "parentStudentLinks",
+                button.dataset.cancel
+              ),
+              {
+                status:"cancelled",
+                updatedAt:serverTimestamp()
+              }
+            );
+
+            show(
+              "Link request cancelled.",
+              "ok"
+            );
+
+          }catch(error){
+
+            console.error(error);
+
+            show(
+              error.message ||
+              "Could not cancel link request.",
+              "bad"
+            );
+
+          }finally{
+
+            button.disabled =
+              false;
+
+          }
+
+        }
+      );
+
+    });
+
 }
+
 
 function listenLinks(){
-  if(unsubscribeLinks) unsubscribeLinks();
 
-  unsubscribeLinks = onSnapshot(
-    query(collection(db,"parentStudentLinks"),where("parentId","==",currentUser.uid)),
-    snap=>{
-      links = [];
-      snap.forEach(d=>links.push({id:d.id,...d.data()}));
-      links.sort((a,b)=>(b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      renderLinks();
-      show("Parent account loaded.","ok");
-    },
-    error=>{
-      console.error(error);
-      show("Could not load child links. Check Firestore rules.","bad");
-    }
-  );
+  if(unsubscribeLinks){
+    unsubscribeLinks();
+  }
+
+
+  unsubscribeLinks =
+    onSnapshot(
+      query(
+        collection(
+          db,
+          "parentStudentLinks"
+        ),
+        where(
+          "parentId",
+          "==",
+          currentUser.uid
+        )
+      ),
+      snapshot=>{
+
+        links = [];
+
+        snapshot.forEach(document=>{
+
+          links.push({
+            id:document.id,
+            ...document.data()
+          });
+
+        });
+
+
+        links.sort(
+          (a,b)=>
+            (
+              b.createdAt?.seconds ||
+              0
+            ) -
+            (
+              a.createdAt?.seconds ||
+              0
+            )
+        );
+
+
+        renderLinks();
+
+        show(
+          "Parent account loaded.",
+          "ok"
+        );
+
+      },
+      error=>{
+
+        console.error(error);
+
+        show(
+          "Could not load child links. Check Firestore permissions.",
+          "bad"
+        );
+
+      }
+    );
+
 }
+
 
 async function findStudent(search){
-  const term = search.trim();
-  const searches = [];
 
-  searches.push(getDocs(query(collection(db,"users"),where("studentId","==",term))));
-  searches.push(getDocs(query(collection(db,"users"),where("email","==",term))));
+  const term =
+    search.trim();
 
-  const results = await Promise.allSettled(searches);
+
+  if(!term){
+    return null;
+  }
+
+
   let student = null;
 
-  for(const res of results){
-    if(res.status !== "fulfilled") continue;
-    res.value.forEach(d=>{
-      const data = d.data();
-      if(normalize(data.role)==="student") student = {id:d.id,...data};
+
+  try{
+
+    const studentIdSnap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "users"
+          ),
+          where(
+            "studentId",
+            "==",
+            term
+          )
+        )
+      );
+
+
+    studentIdSnap.forEach(document=>{
+
+      const data =
+        document.data();
+
+      if(
+        normalize(data.role) ===
+        "student"
+      ){
+
+        student = {
+          id:document.id,
+          ...data
+        };
+
+      }
+
     });
-    if(student) break;
+
+
+    if(student){
+      return student;
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Student ID search failed:",
+      error
+    );
+
   }
+
+
+  try{
+
+    const emailTerm =
+      term.toLowerCase();
+
+    const emailSnap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "users"
+          ),
+          where(
+            "email",
+            "==",
+            emailTerm
+          )
+        )
+      );
+
+
+    emailSnap.forEach(document=>{
+
+      const data =
+        document.data();
+
+      if(
+        normalize(data.role) ===
+        "student"
+      ){
+
+        student = {
+          id:document.id,
+          ...data
+        };
+
+      }
+
+    });
+
+  }catch(error){
+
+    console.warn(
+      "Student email search failed:",
+      error
+    );
+
+  }
+
 
   return student;
+
 }
 
-findForm.addEventListener("submit",async e=>{
-  e.preventDefault();
-  foundStudent = null;
-  studentResult.innerHTML = "<div class='notice'>Searching student...</div>";
 
-  const student = await findStudent(studentSearch.value);
+function schoolCompatibility(student){
 
-  if(!student){
-    studentResult.innerHTML = "<div class='notice bad'>No student found with this Student ID or email.</div>";
-    return;
+  const parentSchoolId =
+    parentProfile.schoolId ||
+    "";
+
+  const parentSchoolCode =
+    parentProfile.schoolCode ||
+    "";
+
+  const studentSchoolId =
+    student.schoolId ||
+    "";
+
+  const studentSchoolCode =
+    student.schoolCode ||
+    "";
+
+
+  /*
+    Individual parents may not have a schoolId/schoolCode.
+    If both accounts do have school linkage, they must match.
+  */
+
+  if(
+    parentSchoolId &&
+    studentSchoolId &&
+    parentSchoolId !== studentSchoolId
+  ){
+    return false;
   }
 
-  if(normalize(student.status) !== "approved"){
-    studentResult.innerHTML = "<div class='notice warn'>Student account exists but is not approved yet.</div>";
-    return;
+
+  if(
+    parentSchoolCode &&
+    studentSchoolCode &&
+    parentSchoolCode !== studentSchoolCode
+  ){
+    return false;
   }
 
-  foundStudent = student;
 
-  const already = links.find(x=>x.studentId === foundStudent.id && !["cancelled","rejected"].includes(normalize(x.status)));
+  return true;
 
-  studentResult.innerHTML = `
-    <div class="card">
-      <div class="profile-row">
-        <img class="avatar" src="${foundStudent.photoData || foundStudent.photoURL || "logo.png"}" alt="">
-        <div>
-          <h3>${safe(foundStudent.firstName)} ${safe(foundStudent.lastName)}</h3>
-          <p><b>Student ID:</b> ${safe(foundStudent.studentId)}</p>
-          <p><b>Class:</b> ${safe(foundStudent.classLevel || foundStudent.occupation)}</p>
-          <p><b>School:</b> ${safe(foundStudent.schoolName || foundStudent.schoolCode)}</p>
-          <p><b>Status:</b> ${pill(foundStudent.status || "approved")}</p>
-          ${already ? `<div class="notice warn">A link request already exists for this child.</div>` : `<button id="sendRequestBtn" class="btn gold">Send Link Request</button>`}
-        </div>
-      </div>
-    </div>
-  `;
+}
 
-  const btn = document.getElementById("sendRequestBtn");
-  if(btn) btn.onclick = sendRequest;
-});
+
+findForm.addEventListener(
+  "submit",
+  async event=>{
+
+    event.preventDefault();
+
+    foundStudent =
+      null;
+
+    findButton.disabled =
+      true;
+
+    findButton.textContent =
+      "Searching...";
+
+    studentResult.innerHTML =
+      `<div class="notice">Searching student...</div>`;
+
+
+    try{
+
+      const student =
+        await findStudent(
+          studentSearch.value
+        );
+
+
+      if(!student){
+
+        studentResult.innerHTML =
+          `
+            <div class="notice bad">
+              No student was found with that Student ID or email address.
+            </div>
+          `;
+
+        return;
+
+      }
+
+
+      if(
+        normalize(student.status) !==
+        "approved"
+      ){
+
+        studentResult.innerHTML =
+          `
+            <div class="notice warn">
+              This student account exists but is not approved for portal access yet.
+            </div>
+          `;
+
+        return;
+
+      }
+
+
+      if(
+        !schoolCompatibility(student)
+      ){
+
+        studentResult.innerHTML =
+          `
+            <div class="notice bad">
+              This student is linked to a different school. Contact the school or SpeakOut if this is incorrect.
+            </div>
+          `;
+
+        return;
+
+      }
+
+
+      foundStudent =
+        student;
+
+
+      const existing =
+        links.find(
+          link =>
+            link.studentId ===
+              foundStudent.id &&
+            isActiveLink(link)
+        );
+
+
+      const studentName =
+        `${foundStudent.firstName || foundStudent.fullName || "Student"} ${foundStudent.lastName || ""}`.trim();
+
+
+      studentResult.innerHTML =
+        `
+          <div class="card">
+
+            <div class="profile-row">
+
+              <img
+                class="avatar"
+                src="${escapeHtml(foundStudent.photoData || foundStudent.photoURL || "logo.png")}"
+                alt="Student profile photo"
+              >
+
+              <div>
+
+                <h3>
+                  ${escapeHtml(studentName)}
+                </h3>
+
+                <p>
+                  <b>Student ID:</b>
+                  ${escapeHtml(foundStudent.studentId || "—")}
+                </p>
+
+                <p>
+                  <b>Class:</b>
+                  ${escapeHtml(foundStudent.classLevel || foundStudent.occupation || "—")}
+                </p>
+
+                <p>
+                  <b>School:</b>
+                  ${escapeHtml(foundStudent.schoolName || foundStudent.schoolCode || "—")}
+                </p>
+
+                <p>
+                  <b>Status:</b>
+                  ${pill(foundStudent.status || "approved")}
+                </p>
+
+                ${
+                  existing
+                    ? `
+                      <div class="notice warn">
+                        A link request already exists for this child.
+                      </div>
+                    `
+                    : `
+                      <button
+                        id="sendRequestBtn"
+                        class="btn gold"
+                        type="button"
+                      >
+                        Send Link Request
+                      </button>
+                    `
+                }
+
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+
+      const sendButton =
+        document.getElementById(
+          "sendRequestBtn"
+        );
+
+
+      if(sendButton){
+
+        sendButton.addEventListener(
+          "click",
+          sendRequest
+        );
+
+      }
+
+
+    }catch(error){
+
+      console.error(error);
+
+
+      studentResult.innerHTML =
+        `
+          <div class="notice bad">
+            ${escapeHtml(error.message || "Student search failed.")}
+          </div>
+        `;
+
+
+    }finally{
+
+      findButton.disabled =
+        false;
+
+      findButton.textContent =
+        "Find Student";
+
+    }
+
+  }
+);
+
 
 async function sendRequest(){
-  if(!foundStudent) return;
 
-  const existing = await getDocs(
-    query(
-      collection(db,"parentStudentLinks"),
-      where("parentId","==",currentUser.uid),
-      where("studentId","==",foundStudent.id)
-    )
-  );
-
-  let activeExisting = false;
-  existing.forEach(d=>{
-    const status = normalize(d.data().status);
-    if(!["cancelled","rejected"].includes(status)) activeExisting = true;
-  });
-
-  if(activeExisting){
-    show("A link request already exists for this child.","warn");
+  if(!foundStudent){
     return;
   }
 
-  await addDoc(collection(db,"parentStudentLinks"),{
-    parentId:currentUser.uid,
-    parentName:parentProfile.fullName || `${parentProfile.firstName || ""} ${parentProfile.lastName || ""}`.trim(),
-    parentEmail:parentProfile.email || "",
-    studentId:foundStudent.id,
-    studentName:`${foundStudent.firstName || ""} ${foundStudent.lastName || ""}`.trim(),
-    studentCode:foundStudent.studentId || "",
-    relationship:relationship.value,
-    note:requestNote.value.trim(),
-    schoolId:foundStudent.schoolId || parentProfile.schoolId || "",
-    schoolCode:foundStudent.schoolCode || parentProfile.schoolCode || "",
-    status:"pending",
-    createdAt:serverTimestamp(),
-    updatedAt:serverTimestamp()
-  });
 
-  show("Link request sent. The student must approve it.","ok");
-  studentResult.innerHTML = "<div class='notice ok'>Request sent successfully.</div>";
-  findForm.reset();
+  try{
+
+    const existing =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "parentStudentLinks"
+          ),
+          where(
+            "parentId",
+            "==",
+            currentUser.uid
+          ),
+          where(
+            "studentId",
+            "==",
+            foundStudent.id
+          )
+        )
+      );
+
+
+    let activeExisting =
+      false;
+
+
+    existing.forEach(document=>{
+
+      if(
+        isActiveLink(
+          document.data()
+        )
+      ){
+        activeExisting =
+          true;
+      }
+
+    });
+
+
+    if(activeExisting){
+
+      show(
+        "A link request already exists for this child.",
+        "warn"
+      );
+
+      return;
+
+    }
+
+
+    const parentName =
+      parentProfile.fullName ||
+      `${parentProfile.firstName || ""} ${parentProfile.lastName || ""}`.trim();
+
+
+    const studentName =
+      `${foundStudent.firstName || foundStudent.fullName || ""} ${foundStudent.lastName || ""}`.trim();
+
+
+    await addDoc(
+      collection(
+        db,
+        "parentStudentLinks"
+      ),
+      {
+
+        parentId:
+          currentUser.uid,
+
+        parentName:
+          parentName,
+
+        parentEmail:
+          parentProfile.email ||
+          currentUser.email ||
+          "",
+
+        studentId:
+          foundStudent.id,
+
+        studentName:
+          studentName,
+
+        studentCode:
+          foundStudent.studentId ||
+          "",
+
+        relationship:
+          relationship.value,
+
+        note:
+          requestNote.value.trim(),
+
+        schoolId:
+          foundStudent.schoolId ||
+          parentProfile.schoolId ||
+          "",
+
+        schoolCode:
+          foundStudent.schoolCode ||
+          parentProfile.schoolCode ||
+          "",
+
+        status:
+          "pending",
+
+        approvalRequired:
+          true,
+
+        approvedAt:
+          null,
+
+        createdAt:
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    show(
+      "Link request sent. Access will remain locked until the request is approved.",
+      "ok"
+    );
+
+
+    studentResult.innerHTML =
+      `
+        <div class="notice ok">
+          Request sent successfully.
+        </div>
+      `;
+
+
+    findForm.reset();
+
+    foundStudent =
+      null;
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    show(
+      error.message ||
+      "Could not send link request.",
+      "bad"
+    );
+
+  }
+
 }
 
-logoutLink.addEventListener("click",async e=>{
-  e.preventDefault();
-  await signOut(auth);
-  location.href="auth.html";
-});
 
-requireParent(async()=>{
-  listenLinks();
-});
+logoutLink.addEventListener(
+  "click",
+  async event=>{
+
+    event.preventDefault();
+
+    if(unsubscribeLinks){
+      unsubscribeLinks();
+    }
+
+    await signOut(auth);
+
+    location.href =
+      "auth.html";
+
+  }
+);
+
+
+onAuthStateChanged(
+  auth,
+  async user=>{
+
+    if(!user){
+
+      location.href =
+        "auth.html";
+
+      return;
+
+    }
+
+
+    try{
+
+      const snap =
+        await getDoc(
+          doc(
+            db,
+            "users",
+            user.uid
+          )
+        );
+
+
+      if(!snap.exists()){
+
+        show(
+          "Profile missing. Please complete your profile first.",
+          "bad"
+        );
+
+        return;
+
+      }
+
+
+      const profile = {
+        uid:user.uid,
+        ...snap.data()
+      };
+
+
+      const role =
+        normalize(
+          profile.role
+        );
+
+      const accountStatus =
+        normalize(
+          profile.status
+        );
+
+
+      if(
+        ![
+          "parent",
+          "admin",
+          "super_admin"
+        ].includes(role)
+      ){
+
+        location.href =
+          "index.html";
+
+        return;
+
+      }
+
+
+      if(
+        accountStatus !==
+        "approved"
+      ){
+
+        show(
+          "Account pending approval. Child linking is locked until your account is approved.",
+          "warn"
+        );
+
+        return;
+
+      }
+
+
+      currentUser =
+        user;
+
+      parentProfile =
+        profile;
+
+
+      listenLinks();
+
+
+    }catch(error){
+
+      console.error(error);
+
+      show(
+        error.message ||
+        "Could not verify parent account.",
+        "bad"
+      );
+
+    }
+
+  }
+);
+
 </script>
+
 </body>
 </html>
+
