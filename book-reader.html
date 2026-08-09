@@ -1,67 +1,187 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Book Reader | SpeakOut</title><link rel="icon" href="logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book Reader | SpeakOut</title>
+<meta name="description" content="Interactive SpeakOut book reader with slide-based learning, reading progress, activities, knowledge checks and premium access controls.">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 22px 55px rgba(7,21,43,.12)}
-*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}.container{width:min(1240px,94%);margin:auto}.nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem}.primary{background:var(--blue);color:#fff}.softBtn{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
-.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.25),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:38px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1,h2,h3{line-height:1.05;letter-spacing:-.04em}h1{font-size:clamp(2rem,5vw,4.4rem);margin:12px 0}.hero p{max-width:860px;line-height:1.65;color:rgba(255,255,255,.88)}section{padding:34px 0}.loading,.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900}
-.slide-shell{display:grid;grid-template-columns:310px 1fr;gap:18px;align-items:start}.side{position:sticky;top:88px;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:16px;max-height:calc(100vh - 110px);overflow:auto}.slide-stage{background:#fff;border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow);overflow:hidden;min-height:560px}.slide-image{height:275px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.30),transparent 30%),linear-gradient(135deg,#07152b,#0a5fbf);display:grid;place-items:center;color:#fff;text-align:center;padding:24px;position:relative;overflow:hidden}.slide-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.slide-image:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,21,43,.12),rgba(7,21,43,.65))}.slide-image h2{position:relative;z-index:2;font-size:clamp(2rem,4vw,4rem);text-shadow:0 4px 24px rgba(0,0,0,.45);max-width:820px}.slide-body{padding:clamp(20px,4vw,44px);line-height:1.78}.slide-body p,.slide-body li{font-size:1.06rem}.slide-body h1,.slide-body h2,.slide-body h3{color:var(--navy)}.toc{display:grid;gap:8px}.toc button{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:11px;cursor:pointer;font-weight:850;color:var(--navy)}.toc button.active{background:var(--blue);color:#fff}.progress-wrap{margin:14px 0;background:#edf3fb;border-radius:999px;overflow:hidden;height:12px}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--blue));transition:.25s}.slide-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}.activity,.guide,.quiz{border:1px solid var(--line);border-radius:20px;padding:16px;margin:18px 0;background:#fbfdff}.activity{background:var(--goldSoft)}.guide{background:var(--greenSoft)}.quiz{background:#fff0f6}.fade-up{animation:fadeUp .65s ease}.zoom-in{animation:zoomIn .65s ease}.fade-left{animation:fadeLeft .65s ease}@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes zoomIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}@keyframes fadeLeft{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}.footer{background:#061126;color:rgba(255,255,255,.75);padding:36px 0;margin-top:30px}
-@media(max-width:900px){.slide-shell{grid-template-columns:1fr}.side{position:static;max-height:none}.nav-links{display:none}.btn{width:100%;border-radius:14px}.slide-actions{flex-direction:column}.slide-image{height:210px}}
-</style></head><body><header class="nav"><div class="container nav-inner">
-<a class="brand" href="portal.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>Learning Portal</p></div></a>
-<nav class="nav-links"><a class="btn softBtn" href="portal.html">Portal</a><a class="btn softBtn" href="e-library.html">E-Library</a><a class="btn softBtn" href="speakhub.html">SpeakHub</a><a class="btn softBtn" href="kiddies.html">Kiddies</a><a class="btn dark" href="auth.html">Login</a></nav>
-</div></header>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 22px 55px rgba(7,21,43,.12)}
+*{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}button{font:inherit}.container{width:min(1240px,94%);margin:auto}.nav{position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);z-index:1000}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.65rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.nav-links{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 15px;border-radius:999px;border:0;font-weight:900;cursor:pointer;font-size:.84rem}.primary{background:var(--blue);color:#fff}.softBtn{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}.success{background:var(--green);color:#fff}.hero{background:radial-gradient(circle at 15% 20%,rgba(244,162,28,.25),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:38px 0}.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.kicker{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}h1,h2,h3{line-height:1.05;letter-spacing:-.04em}h1{font-size:clamp(2rem,5vw,4.4rem);margin:12px 0}.hero p{max-width:860px;line-height:1.65;color:rgba(255,255,255,.88)}.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hero-meta span{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.76rem;font-weight:800}section{padding:34px 0}.loading,.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:800;line-height:1.55}.notice.warn{background:var(--goldSoft);color:#704800}.notice.ok{background:var(--greenSoft);color:var(--green)}.notice.bad{background:var(--redSoft);color:var(--red)}.slide-shell{display:grid;grid-template-columns:310px 1fr;gap:18px;align-items:start}.side{position:sticky;top:88px;background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:16px;max-height:calc(100vh - 110px);overflow:auto}.slide-stage{background:#fff;border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow);overflow:hidden;min-height:560px}.slide-image{height:275px;background:radial-gradient(circle at 20% 20%,rgba(244,162,28,.30),transparent 30%),linear-gradient(135deg,#07152b,#0a5fbf);display:grid;place-items:center;color:#fff;text-align:center;padding:24px;position:relative;overflow:hidden}.slide-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.slide-image:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,21,43,.12),rgba(7,21,43,.65))}.slide-image h2{position:relative;z-index:2;font-size:clamp(2rem,4vw,4rem);text-shadow:0 4px 24px rgba(0,0,0,.45);max-width:820px}.slide-body{padding:clamp(20px,4vw,44px);line-height:1.78}.slide-body p,.slide-body li{font-size:1.06rem}.slide-body h1,.slide-body h2,.slide-body h3{color:var(--navy)}.slide-body img,.slide-body video,.slide-body iframe{max-width:100%}.slide-body iframe{width:100%;min-height:360px;border:0;border-radius:16px}.toc{display:grid;gap:8px}.toc button{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:11px;cursor:pointer;font-weight:850;color:var(--navy)}.toc button.active{background:var(--blue);color:#fff;border-color:var(--blue)}.toc button.completed:not(.active){background:var(--greenSoft);border-color:#bde8db}.progress-wrap{margin:14px 0;background:#edf3fb;border-radius:999px;overflow:hidden;height:12px}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--blue));transition:.25s}.slide-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}.activity,.guide,.quiz{border:1px solid var(--line);border-radius:20px;padding:16px;margin:18px 0;background:#fbfdff}.activity{background:var(--goldSoft)}.guide{background:var(--greenSoft)}.quiz{background:#fff0f6}.fade-up{animation:fadeUp .65s ease}.zoom-in{animation:zoomIn .65s ease}.fade-left{animation:fadeLeft .65s ease}@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes zoomIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}@keyframes fadeLeft{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}.footer{background:#061126;color:rgba(255,255,255,.75);padding:36px 0;margin-top:30px}@media(max-width:900px){.slide-shell{grid-template-columns:1fr}.side{position:static;max-height:none}.nav-links{display:none}.btn{width:100%;border-radius:14px}.slide-actions{flex-direction:column}.slide-image{height:210px}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="student-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>Interactive Reader</p></div>
+    </a>
+    <nav class="nav-links" id="roleNav">
+      <a class="btn softBtn" href="student-dashboard.html">Dashboard</a>
+      <a class="btn softBtn" href="student-library.html">Library</a>
+      <a class="btn softBtn" href="speakhub.html">SpeakHub</a>
+      <a class="btn dark" href="auth.html">Login</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-<section class="hero"><div class="container">
-<span class="kicker">Premium Book Slides</span>
-<h1 id="heroTitle">Loading...</h1>
-<p id="heroDesc">Interactive slide-based learning with images, animations, activities and progress tracking.</p>
-<p><a id="detailsLink" class="btn gold" href="e-library.html">Details</a> <a class="btn softBtn" href="e-library.html">Back</a></p>
-</div></section>
-<section><div class="container">
-<div id="loading" class="loading">Loading interactive content...</div>
-<div id="shell" class="slide-shell" style="display:none">
-<aside class="side">
-<span class="label">Progress</span>
-<div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
-<p id="progressText" style="color:var(--muted);font-weight:850">0% complete</p>
-<h3>Sections</h3><div id="toc" class="toc"></div>
-</aside>
-<article>
-<div id="stage" class="slide-stage"></div>
-<div class="slide-actions">
-<button id="prevBtn" class="btn ghost" type="button">Previous</button>
-<button id="nextBtn" class="btn primary" type="button">Next</button>
-<button id="completeBtn" class="btn gold" type="button">Mark Complete</button>
-<a class="btn softBtn" href="e-library.html">Exit</a>
-</div>
-</article>
-</div>
-</div></section>
-</main><footer class="footer"><div class="container">SpeakOut Portal • <a href="portal.html">Back to Portal</a></div></footer>
-<script type="module" src="auth-guard.js"></script><script type="module" src="protected-page-guard.js"></script>
+<section class="hero">
+  <div class="container">
+    <span class="kicker">Interactive Book Reader</span>
+    <h1 id="heroTitle">Loading...</h1>
+    <p id="heroDesc">Interactive slide-based learning with activities and progress tracking.</p>
+    <div class="hero-meta" id="heroMeta" style="display:none">
+      <span id="authorMeta"></span>
+      <span id="readTimeMeta"></span>
+      <span id="accessMeta"></span>
+    </div>
+    <p>
+      <a id="detailsLink" class="btn gold" href="student-library.html">Details</a>
+      <a id="backLibraryLink" class="btn softBtn" href="student-library.html">Back to Library</a>
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="loading" class="loading">Loading interactive content...</div>
+    <div id="previewNotice" class="notice warn" style="display:none;margin-bottom:18px">Preview mode is active. Progress changes are disabled.</div>
+
+    <div id="shell" class="slide-shell" style="display:none">
+      <aside class="side">
+        <span class="label">Progress</span>
+        <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+        <p id="progressText" style="color:var(--muted);font-weight:850">0% complete</p>
+        <h3>Sections</h3>
+        <div id="toc" class="toc"></div>
+      </aside>
+
+      <article>
+        <div id="stage" class="slide-stage"></div>
+
+        <div class="slide-actions">
+          <button id="prevBtn" class="btn ghost" type="button">Previous</button>
+          <button id="nextBtn" class="btn primary" type="button">Next</button>
+          <button id="completeBtn" class="btn gold" type="button">Mark Section Complete</button>
+          <a id="exitLink" class="btn softBtn" href="student-library.html">Exit</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • SpeakHub Academy</div></footer>
+
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc, getDocs, collection, query, where, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { trackBookOpen } from "./progress-tracker.js";
 
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
 const preview = params.get("preview") === "1";
 
 let currentUser = null;
+let currentProfile = null;
 let item = null;
 let slides = [];
 let currentIndex = 0;
 let completed = new Set();
 
 const loading = document.getElementById("loading");
+const previewNotice = document.getElementById("previewNotice");
 const shell = document.getElementById("shell");
 const toc = document.getElementById("toc");
 const stage = document.getElementById("stage");
 const progressBar = document.getElementById("progressBar");
 const progressText = document.getElementById("progressText");
+const heroTitle = document.getElementById("heroTitle");
+const heroDesc = document.getElementById("heroDesc");
+const detailsLink = document.getElementById("detailsLink");
+const backLibraryLink = document.getElementById("backLibraryLink");
+const exitLink = document.getElementById("exitLink");
+const heroMeta = document.getElementById("heroMeta");
+const authorMeta = document.getElementById("authorMeta");
+const readTimeMeta = document.getElementById("readTimeMeta");
+const accessMeta = document.getElementById("accessMeta");
+const roleNav = document.getElementById("roleNav");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const completeBtn = document.getElementById("completeBtn");
 
-function htmlToSlides(resource) {
-  const html = resource.readerHtml || resource.contentHtml || `<h1>${resource.title}</h1><p>No content has been added yet.</p>`;
+function normalize(value){return String(value || "").trim().toLowerCase()}
+function escapeHtml(value){return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function cleanId(value){return String(value || "").replace(/[^a-zA-Z0-9_-]/g,"_").slice(0,120)}
+
+function dashboardFor(profile){
+  const role = normalize(profile?.role);
+  if(role === "admin" || role === "super_admin") return "admin-dashboard.html";
+  if(role === "school_admin") return "school-dashboard.html";
+  if(role === "teacher") return "teacher-dashboard.html";
+  if(role === "parent") return "parent-dashboard.html";
+  if(role === "student") return "student-dashboard.html";
+  return "auth.html";
+}
+
+function libraryFor(profile){
+  const role = normalize(profile?.role);
+  if(role === "parent") return "parent-library.html";
+  if(role === "teacher") return "teacher-library.html";
+  return "student-library.html";
+}
+
+function renderNav(profile){
+  const dashboard = dashboardFor(profile);
+  const library = libraryFor(profile);
+
+  roleNav.innerHTML = `
+    <a class="btn softBtn" href="${escapeHtml(dashboard)}">Dashboard</a>
+    <a class="btn softBtn" href="${escapeHtml(library)}">Library</a>
+    <a class="btn softBtn" href="speakhub.html">SpeakHub</a>
+    <a class="btn dark" href="auth.html">Login</a>
+  `;
+
+  backLibraryLink.href = library;
+  exitLink.href = library;
+}
+
+async function loadProfile(user){
+  if(!user) return null;
+
+  try{
+    const snap = await getDoc(doc(db,"users",user.uid));
+    return snap.exists()
+      ? {uid:user.uid,...snap.data()}
+      : {uid:user.uid,email:user.email,role:"user"};
+  }catch{
+    return {uid:user.uid,email:user.email,role:"user"};
+  }
+}
+
+function canAccess(resource){
+  const access = normalize(resource.accessType || "free");
+
+  if(access === "free") return true;
+  if(preview) return false;
+  if(currentProfile?.premiumAccess === true || currentProfile?.premium === true) return true;
+  if(["admin","super_admin"].includes(normalize(currentProfile?.role))) return true;
+
+  return false;
+}
+
+function htmlToSlides(resource){
+  const html = resource.readerHtml || resource.contentHtml || resource.content || `
+    <h1>${escapeHtml(resource.title || "Resource")}</h1>
+    <p>No content has been added yet.</p>
+  `;
+
   const parser = new DOMParser();
   const parsed = parser.parseFromString(`<div>${html}</div>`, "text/html");
   const root = parsed.body.firstElementChild;
@@ -69,165 +189,341 @@ function htmlToSlides(resource) {
   let current = null;
 
   [...root.childNodes].forEach(node => {
-    if (node.nodeType === 1 && ["H1","H2"].includes(node.tagName)) {
-      if (current) result.push(current);
+    if(node.nodeType === 1 && ["H1","H2"].includes(node.tagName)){
+      if(current) result.push(current);
+
       current = {
-        title: node.textContent.trim(),
-        imageUrl: resource.coverUrl || "",
-        animation: "fade-up",
-        layout: "image-top",
-        body: node.outerHTML
+        id:`slide-${result.length + 1}`,
+        title:node.textContent.trim(),
+        imageUrl:resource.coverUrl || "",
+        animation:"fade-up",
+        layout:"image-top",
+        body:node.outerHTML
       };
-    } else {
-      if (!current) current = { title: resource.title || "Introduction", imageUrl: resource.coverUrl || "", animation: "fade-up", layout: "image-top", body: "" };
+    }else{
+      if(!current){
+        current = {
+          id:"slide-1",
+          title:resource.title || "Introduction",
+          imageUrl:resource.coverUrl || "",
+          animation:"fade-up",
+          layout:"image-top",
+          body:""
+        };
+      }
+
       current.body += node.outerHTML || node.textContent || "";
     }
   });
 
-  if (current) result.push(current);
-  if (!result.length) result.push({ title: resource.title || "Content", imageUrl: resource.coverUrl || "", animation: "fade-up", body: html });
+  if(current) result.push(current);
 
-  result.push({ title: "Worksheet", imageUrl: "images/learning/worksheet-writing.jpg", animation: "fade-up", body: "<h1>Worksheet</h1><p>Write three key lessons and one action you will practice.</p>", activity: "Complete the worksheet in your notebook or learning journal.", quiz: "What is one thing you learned?" });
-  result.push({ title: "Knowledge Check", imageUrl: "images/learning/quiz-learning.jpg", animation: "fade-left", body: "<h1>Knowledge Check</h1><p>Answer the quick questions below before completing this resource.</p>", quiz: "What problem does this lesson help solve?" });
-  result.push({ title: "Action Plan", imageUrl: "images/learning/action-plan.jpg", animation: "zoom-in", body: "<h1>Action Plan</h1><p>Create a simple 7-day action plan based on what you learned.</p>", activity: "Write your plan with dates and support needed." });
+  if(!result.length){
+    result.push({
+      id:"slide-1",
+      title:resource.title || "Content",
+      imageUrl:resource.coverUrl || "",
+      animation:"fade-up",
+      body:html
+    });
+  }
 
   return result;
 }
 
-async function courseLessonsToSlides(courseId, resource) {
-  const moduleSnap = await getDocs(query(collection(db, "courseModules"), where("courseId", "==", courseId)));
-  const modules = [];
-  moduleSnap.forEach(d => modules.push({ id: d.id, ...d.data() }));
+function normalizeSlides(resource){
+  const source =
+    Array.isArray(resource.bookSlides) && resource.bookSlides.length
+      ? resource.bookSlides
+      : Array.isArray(resource.slides) && resource.slides.length
+        ? resource.slides
+        : null;
 
-  const lessonSnap = await getDocs(query(collection(db, "courseLessons"), where("courseId", "==", courseId)));
-  const lessons = [];
-  lessonSnap.forEach(d => lessons.push({ id: d.id, ...d.data() }));
-  lessons.sort((a,b)=>(a.order||0)-(b.order||0));
+  if(!source) return htmlToSlides(resource);
 
-  if (!lessons.length) {
-    return [{ title: resource.title || "Course", imageUrl: resource.coverUrl || "", animation: "fade-up", body: "<h1>Welcome</h1><p>No lessons have been added yet.</p>" }];
+  return source.map((slide,index)=>({
+    ...slide,
+    id:slide.id || `slide-${index+1}`,
+    title:slide.title || `Section ${index+1}`,
+    imageUrl:slide.imageUrl || slide.coverUrl || resource.coverUrl || "",
+    animation:slide.animation || (index % 3 === 0 ? "fade-up" : index % 3 === 1 ? "zoom-in" : "fade-left"),
+    body:slide.body || slide.contentHtml || slide.content || "<p>No content yet.</p>"
+  }));
+}
+
+function progressDocumentId(){
+  if(!currentUser || !item) return null;
+  return `${currentUser.uid}_book_${cleanId(item.id)}`;
+}
+
+function updateProgress(){
+  const validCompleted = [...completed].filter(index =>
+    Number.isInteger(index) &&
+    index >= 0 &&
+    index < slides.length
+  );
+
+  const percent = slides.length
+    ? Math.round((validCompleted.length / slides.length) * 100)
+    : 0;
+
+  progressBar.style.width = `${percent}%`;
+  progressText.textContent = `${percent}% complete (${validCompleted.length}/${slides.length} sections)`;
+
+  completeBtn.textContent = completed.has(currentIndex)
+    ? "Completed ✓"
+    : preview
+      ? "Preview Mode"
+      : "Mark Section Complete";
+
+  completeBtn.disabled = preview;
+}
+
+async function loadProgress(){
+  if(!currentUser || !item) return;
+
+  try{
+    const snap = await getDoc(doc(db,"userProgress",progressDocumentId()));
+
+    if(!snap.exists()) return;
+
+    const data = snap.data();
+
+    completed = new Set(
+      Array.isArray(data.completedSlides)
+        ? data.completedSlides.map(Number).filter(Number.isInteger)
+        : []
+    );
+
+    if(Number.isInteger(data.currentSlideIndex)){
+      currentIndex = Math.min(
+        data.currentSlideIndex,
+        Math.max(slides.length - 1, 0)
+      );
+    }
+  }catch(error){
+    console.warn("Could not load reading progress:", error);
   }
+}
 
-  return lessons.map((l, idx) => {
-    const mod = modules.find(m => m.id === l.moduleId);
-    return {
-      title: l.title || `Lesson ${idx + 1}`,
-      section: mod?.title || "Course Lesson",
-      imageUrl: l.imageUrl || resource.coverUrl || "",
-      animation: l.animation || (idx % 3 === 0 ? "fade-up" : idx % 3 === 1 ? "zoom-in" : "fade-left"),
-      layout: l.layout || "image-top",
-      body: `<span class="label">${mod?.title || "Course Lesson"}</span>${l.contentHtml || "<p>No lesson content yet.</p>"}`,
-      activity: l.activity || "",
-      quiz: l.quizPrompt || ""
-    };
+async function saveProgress(){
+  if(preview || !currentUser || !item) return;
+
+  const percent = slides.length
+    ? Math.round((completed.size / slides.length) * 100)
+    : 0;
+
+  await setDoc(doc(db,"userProgress",progressDocumentId()),{
+    userId:currentUser.uid,
+    userEmail:currentUser.email || "",
+    type:"book",
+    itemId:item.id,
+    bookId:item.id,
+    title:item.title || "",
+    category:item.category || "",
+    audience:Array.isArray(item.audience)
+      ? item.audience
+      : item.audience
+        ? [item.audience]
+        : [],
+    status:percent >= 100 ? "completed" : percent > 0 ? "in-progress" : "opened",
+    completedSlides:[...completed],
+    currentSlideIndex:currentIndex,
+    completedCount:completed.size,
+    totalSlides:slides.length,
+    percent,
+    progress:percent,
+    completed:percent >= 100,
+    updatedAt:serverTimestamp(),
+    ...(percent >= 100 ? {completedAt:serverTimestamp()} : {})
+  },{merge:true});
+}
+
+function renderToc(){
+  toc.innerHTML = slides.map((slide,index)=>`
+    <button
+      type="button"
+      data-idx="${index}"
+      class="${
+        index === currentIndex
+          ? "active"
+          : completed.has(index)
+            ? "completed"
+            : ""
+      }"
+    >
+      ${index+1}. ${escapeHtml(slide.title || "Section")}
+    </button>
+  `).join("");
+
+  toc.querySelectorAll("button").forEach(button=>{
+    button.addEventListener("click",async()=>{
+      currentIndex = Number(button.dataset.idx);
+      await saveProgress();
+      renderSlide();
+    });
   });
 }
 
-async function getSlides(resource) {
-  if (true) {
-    if (Array.isArray(resource.bookSlides) && resource.bookSlides.length) return resource.bookSlides;
-    if (Array.isArray(resource.slides) && resource.slides.length) return resource.slides;
-    return htmlToSlides(resource);
-  }
+function renderSlide(){
+  if(!slides.length) return;
 
-  return await courseLessonsToSlides(resource.id, resource);
-}
-
-function updateProgress() {
-  const pct = slides.length ? Math.round((completed.size / slides.length) * 100) : 0;
-  progressBar.style.width = pct + "%";
-  progressText.textContent = pct + "% complete";
-}
-
-async function saveProgress() {
-  if (!currentUser || !item) return;
-  await setDoc(doc(db, "userProgress", `${currentUser.uid}_book_${item.id}`), {
-    userId: currentUser.uid,
-    type: "book",
-    itemId: item.id,
-    completedSlides: [...completed],
-    percent: slides.length ? Math.round((completed.size / slides.length) * 100) : 0,
-    updatedAt: serverTimestamp()
-  }, { merge: true });
-}
-
-function renderToc() {
-  toc.innerHTML = slides.map((s,i)=>`<button type="button" data-idx="${i}" class="${i===currentIndex?'active':''}">${i+1}. ${s.title || "Slide"}</button>`).join("");
-  toc.querySelectorAll("button").forEach(btn => btn.onclick = () => {
-    currentIndex = Number(btn.dataset.idx);
-    renderSlide();
-  });
-}
-
-function renderSlide() {
   const slide = slides[currentIndex];
-  const anim = slide.animation || "fade-up";
-  const image = slide.imageUrl ? `<img src="${slide.imageUrl}" alt="${slide.title || "Slide image"}">` : "";
+  const animation = slide.animation || "fade-up";
+  const image = slide.imageUrl
+    ? `<img src="${escapeHtml(slide.imageUrl)}" alt="${escapeHtml(slide.title || "Slide image")}">`
+    : "";
+
   stage.innerHTML = `
-    <div class="slide-image ${anim}">
+    <div class="slide-image ${escapeHtml(animation)}">
       ${image}
-      <h2>${slide.title || "Slide"}</h2>
+      <h2>${escapeHtml(slide.title || "Section")}</h2>
     </div>
-    <div class="slide-body ${anim}">
-      ${slide.body || slide.contentHtml || slide.content || "<p>No slide content yet.</p>"}
-      ${slide.activity ? `<div class="activity"><h3>Activity</h3><p>${slide.activity}</p></div>` : ""}
-      ${slide.quiz ? `<div class="quiz"><h3>Knowledge Check</h3><p>${slide.quiz}</p></div>` : ""}
-      ${slide.guide ? `<div class="guide"><h3>Guide</h3><p>${slide.guide}</p></div>` : ""}
+
+    <div class="slide-body ${escapeHtml(animation)}">
+      ${slide.body || slide.contentHtml || slide.content || "<p>No content yet.</p>"}
+
+      ${slide.activity ? `
+        <div class="activity">
+          <h3>Activity</h3>
+          <p>${escapeHtml(slide.activity)}</p>
+        </div>
+      ` : ""}
+
+      ${slide.quiz ? `
+        <div class="quiz">
+          <h3>Knowledge Check</h3>
+          <p>${escapeHtml(slide.quiz)}</p>
+        </div>
+      ` : ""}
+
+      ${slide.guide ? `
+        <div class="guide">
+          <h3>Guide</h3>
+          <p>${escapeHtml(slide.guide)}</p>
+        </div>
+      ` : ""}
     </div>
   `;
+
   renderToc();
   updateProgress();
+
   prevBtn.disabled = currentIndex === 0;
   nextBtn.disabled = currentIndex === slides.length - 1;
 }
 
-async function loadItem() {
-  if (!id) {
-    loading.textContent = "No ID provided.";
+async function loadItem(){
+  if(!id){
+    loading.textContent = "No book ID was provided.";
     return;
   }
 
-  const snap = await getDoc(doc(db, "books", id));
-  if (!snap.exists()) {
-    loading.textContent = "Item not found.";
-    return;
+  try{
+    const snap = await getDoc(doc(db,"books",id));
+
+    if(!snap.exists()){
+      loading.textContent = "Resource not found.";
+      return;
+    }
+
+    item = {id:snap.id,...snap.data()};
+
+    const allowed = canAccess(item);
+
+    if(normalize(item.accessType || "free") !== "free" && !allowed && !preview){
+      loading.innerHTML = `
+        <div class="notice warn">
+          <strong>Premium resource.</strong><br><br>
+          You do not currently have access to the full reader.
+          <br><br>
+          <a class="btn gold" href="payment-history.html">Request Premium Access</a>
+          <a class="btn softBtn" href="book-reader.html?id=${encodeURIComponent(item.id)}&preview=1">Preview</a>
+        </div>
+      `;
+      return;
+    }
+
+    slides = normalizeSlides(item);
+
+    if(
+      preview &&
+      normalize(item.accessType || "free") !== "free" &&
+      slides.length > 2
+    ){
+      slides = slides.slice(0,2);
+    }
+
+    document.title = `${item.title || "Book"} | SpeakOut Reader`;
+    heroTitle.textContent = item.title || "Interactive Learning";
+    heroDesc.textContent = item.shortDescription || item.description || "Interactive SpeakOut learning resource.";
+    authorMeta.textContent = `Author: ${item.author || item.authorName || "SpeakOut"}`;
+    readTimeMeta.textContent = `Read time: ${item.readingTime || item.readTime || item.estimatedRead || "Self-paced"}`;
+    accessMeta.textContent = `Access: ${normalize(item.accessType || "free") === "free" ? "Free" : "Premium"}`;
+    heroMeta.style.display = "flex";
+    detailsLink.href = `book-details.html?id=${encodeURIComponent(item.id)}`;
+
+    if(preview){
+      previewNotice.style.display = "block";
+    }
+
+    if(currentUser){
+      await trackBookOpen(item);
+      await loadProgress();
+    }
+
+    loading.style.display = "none";
+    shell.style.display = "grid";
+    renderSlide();
+
+  }catch(error){
+    console.error("Book reader error:", error);
+    loading.textContent = "Failed to load this resource. Check Firestore rules.";
   }
-
-  item = { id: snap.id, ...snap.data() };
-
-  if ((item.accessType || "free") !== "free" && !preview) {
-    loading.textContent = "This premium item is locked. Payment unlock will be connected later.";
-    return;
-  }
-
-  slides = await getSlides(item);
-
-  document.title = `${item.title} | Interactive`;
-  heroTitle.textContent = item.title || "Interactive Learning";
-  heroDesc.textContent = item.shortDescription || item.description || "Premium interactive learning.";
-  detailsLink.href = `book-details.html?id=${encodeURIComponent(item.id)}`;
-
-  if (currentUser) {
-    const ps = await getDoc(doc(db, "userProgress", `${currentUser.uid}_book_${item.id}`));
-    if (ps.exists()) completed = new Set(ps.data().completedSlides || []);
-  }
-
-  loading.style.display = "none";
-  shell.style.display = "grid";
-  renderSlide();
 }
 
-prevBtn.onclick = () => { if (currentIndex > 0) { currentIndex--; renderSlide(); } };
-nextBtn.onclick = () => { if (currentIndex < slides.length - 1) { currentIndex++; renderSlide(); } };
-completeBtn.onclick = async () => {
+prevBtn.addEventListener("click",async()=>{
+  if(currentIndex > 0){
+    currentIndex--;
+    await saveProgress();
+    renderSlide();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+});
+
+nextBtn.addEventListener("click",async()=>{
+  if(currentIndex < slides.length - 1){
+    currentIndex++;
+    await saveProgress();
+    renderSlide();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+});
+
+completeBtn.addEventListener("click",async()=>{
+  if(preview) return;
+
   completed.add(currentIndex);
   await saveProgress();
   updateProgress();
-  if (currentIndex < slides.length - 1) { currentIndex++; renderSlide(); }
-};
 
-onAuthStateChanged(auth, async user => {
-  currentUser = user;
+  if(currentIndex < slides.length - 1){
+    currentIndex++;
+    await saveProgress();
+    renderSlide();
+  }else{
+    renderSlide();
+  }
+});
+
+onAuthStateChanged(auth,async user=>{
+  currentUser = user || null;
+  currentProfile = await loadProfile(user);
+  renderNav(currentProfile);
   await loadItem();
 });
-</script></body></html>
+</script>
+
+</body>
+</html>
+
