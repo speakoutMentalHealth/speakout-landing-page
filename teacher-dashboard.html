@@ -3,62 +3,423 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Teacher Dashboard | SpeakOut</title>
+
+<meta
+  name="description"
+  content="SpeakOut teacher dashboard for professional profile, SpeakHub learning, certificates, school-linked student support, teacher resources and workshops."
+>
+
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+>
 
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --goldSoft:#fff4df;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);
+  --shadowSoft:0 10px 28px rgba(7,21,43,.07);
+}
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  font-family:Outfit,Arial,sans-serif;
+  background:var(--bg);
+  color:#111827;
+}
+
 a{text-decoration:none;color:inherit}
-.container{width:min(1180px,92%);margin:auto}
-.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:44px}
-.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
-.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
-.links{display:flex;gap:8px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+button,input,textarea,select{font:inherit}
+
+.container{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+.nav{
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:44px;
+  height:44px;
+  object-fit:contain;
+}
+
+.brand h2{
+  margin:0;
+  color:var(--blue);
+  font-size:1.05rem;
+}
+
+.brand p{
+  margin:0;
+  color:#d98200;
+  font-size:.62rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:999px;
+  padding:10px 15px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:40px;
+}
+
 .primary{background:var(--blue);color:#fff}
 .soft{background:var(--soft);color:var(--blue)}
 .gold{background:var(--gold);color:#241300}
 .dark{background:var(--navy);color:#fff}
 .danger{background:var(--redSoft);color:var(--red)}
 .success{background:var(--greenSoft);color:var(--green)}
-.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
-.hero .container{padding:52px 0}
-.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
-.kicker{background:rgba(255,255,255,.14)}
-.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-h1{font-size:clamp(2rem,5vw,4.6rem);line-height:1.05;margin:14px 0}
-h2,h3{line-height:1.05;color:var(--navy)}
-.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+
+.hero{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(244,162,28,.20),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+}
+
+.hero .container{
+  padding:52px 0;
+}
+
+.kicker,.label{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.kicker{
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.label{
+  background:var(--soft);
+  color:var(--blue);
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,4.6rem);
+  line-height:1.05;
+  margin:14px 0;
+}
+
+h2,h3{
+  line-height:1.05;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:850px;
+  color:rgba(255,255,255,.88);
+  line-height:1.65;
+}
+
 section{padding:36px 0}
-.grid{display:grid;gap:16px}
+
+.grid{
+  display:grid;
+  gap:16px;
+}
+
 .g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g2{grid-template-columns:repeat(2,1fr)}
-.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
-.card p,.panel p{color:var(--muted);line-height:1.6}
-.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+
+.card,.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadowSoft);
+  padding:18px;
+}
+
+.card{
+  transition:.22s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+
+.card p,.panel p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.notice{
+  padding:14px;
+  border-radius:16px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  margin-bottom:16px;
+}
+
 .ok{background:var(--greenSoft);color:var(--green)}
 .bad{background:var(--redSoft);color:var(--red)}
 .warn{background:var(--goldSoft);color:#704800}
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
-.approved,.active{background:var(--greenSoft);color:var(--green)}
-.premium,.pending,.pending_school_approval{background:var(--goldSoft);color:#704800}
-.rejected,.suspended{background:var(--redSoft);color:var(--red)}
-.stat strong{display:block;color:var(--blue);font-size:2rem}
-.profile-grid,.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-input,textarea,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
-textarea{min-height:100px;resize:vertical}
-.photo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 18px}
-.avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:4px solid var(--soft);background:#f1f5f9}
-.photo-help{color:var(--muted);font-size:.88rem;line-height:1.5}
-.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
-@media(max-width:900px){.g4,.g3,.g2,.profile-grid,.form-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+
+.pill{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-size:.75rem;
+  font-weight:900;
+  margin:3px;
+}
+
+.approved,.active,.completed,.verified{
+  background:var(--greenSoft);
+  color:var(--green);
+}
+
+.premium,.pending,.pending_school_approval,.started,.in-progress{
+  background:var(--goldSoft);
+  color:#704800;
+}
+
+.rejected,.suspended,.revoked{
+  background:var(--redSoft);
+  color:var(--red);
+}
+
+.stat strong{
+  display:block;
+  color:var(--blue);
+  font-size:1.8rem;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
+
+.stat span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:.84rem;
+}
+
+.profile-grid,.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+input,textarea,select{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#fbfdff;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.photo-row{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+  margin:12px 0 18px;
+}
+
+.avatar{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid var(--soft);
+  background:#f1f5f9;
+}
+
+.photo-help{
+  color:var(--muted);
+  font-size:.88rem;
+  line-height:1.5;
+}
+
+.mini-list{
+  display:grid;
+  gap:10px;
+}
+
+.mini-item{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+}
+
+.item-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.item-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+
+.item-meta span{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:.72rem;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.progress-track{
+  height:9px;
+  background:#e8eef6;
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0 5px;
+}
+
+.progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--green));
+}
+
+.progress-label{
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.item-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-end;
+  margin-bottom:14px;
+}
+
+.section-head h2{
+  margin:0;
+}
+
+.section-head p{
+  margin:5px 0 0;
+}
+
+.footer{
+  background:#061126;
+  color:rgba(255,255,255,.75);
+  padding:34px 0;
+  margin-top:30px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  .g4,.g3,.g2,.profile-grid,.form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .links{
+    display:none;
+  }
+
+  .btn{
+    width:100%;
+    border-radius:14px;
+  }
+
+  .item-actions{
+    flex-direction:column;
+  }
+
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
 </style>
 </head>
 
@@ -66,42 +427,81 @@ textarea{min-height:100px;resize:vertical}
 
 <header class="nav">
   <div class="container nav-inner">
-    <a class="brand" href="teacher-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
+
+    <a
+      class="brand"
+      href="teacher-dashboard.html"
+    >
+      <img
+        src="logo.png"
+        alt="SpeakOut Logo"
+      >
+
       <div>
         <h2>SpeakOut</h2>
         <p>Teacher Dashboard</p>
       </div>
     </a>
-    <nav class="links" id="roleNav"></nav>
+
+    <nav
+      class="links"
+      id="roleNav"
+    ></nav>
+
   </div>
 </header>
+
 
 <main>
 
 <section class="hero">
   <div class="container">
-    <span class="kicker">Teacher Dashboard</span>
-    <h1>Welcome to your dashboard</h1>
-    <p>Access teacher resources, workshops, student support tools, certificates and your professional profile.</p>
+
+    <span class="kicker">
+      Teacher Dashboard
+    </span>
+
+    <h1 id="welcomeTitle">
+      Welcome to your dashboard
+    </h1>
+
+    <p>
+      Manage your professional profile, continue teacher development courses,
+      access classroom resources, review certificates, workshops and school-linked support tools.
+    </p>
+
     <div id="pills"></div>
+
   </div>
 </section>
+
 
 <section>
   <div class="container">
 
-    <div id="statusBox" class="notice">Loading dashboard...</div>
+    <div
+      id="statusBox"
+      class="notice"
+    >
+      Loading dashboard...
+    </div>
 
-    <div class="grid g4" style="margin-bottom:18px">
+    <div
+      id="profileWarning"
+      class="notice warn hidden"
+    >
+      Please complete your professional profile information.
+    </div>
+
+
+    <div
+      class="grid g4"
+      style="margin-bottom:18px"
+    >
+
       <div class="card stat">
         <strong id="nameBox">—</strong>
         <span>Name</span>
-      </div>
-
-      <div class="card stat">
-        <strong>Teacher</strong>
-        <span>Account Type</span>
       </div>
 
       <div class="card stat">
@@ -113,25 +513,90 @@ textarea{min-height:100px;resize:vertical}
         <strong id="certificateCount">0</strong>
         <span>Certificates</span>
       </div>
+
+      <div class="card stat">
+        <strong id="studentCount">0</strong>
+        <span>Linked Students</span>
+      </div>
+
     </div>
+
+
+    <div
+      class="grid g4"
+      style="margin-bottom:18px"
+    >
+
+      <div class="card stat">
+        <strong id="courseStartedCount">0</strong>
+        <span>Courses Started</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="courseCompletedCount">0</strong>
+        <span>Courses Completed</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="externalCourseCount">0</strong>
+        <span>External Learning</span>
+      </div>
+
+      <div class="card stat">
+        <strong id="workshopCount">0</strong>
+        <span>Upcoming Workshops</span>
+      </div>
+
+    </div>
+
 
     <div class="grid g2">
 
       <div class="panel">
-        <span class="label">My Profile</span>
-        <h2>Profile & Bio</h2>
-        <p>Update your details and profile picture. This uses Firestore only, not Firebase Storage.</p>
+
+        <span class="label">
+          My Profile
+        </span>
+
+        <h2>
+          Professional Profile
+        </h2>
+
+        <p>
+          Update your details, teaching focus and profile picture.
+        </p>
+
 
         <div class="photo-row">
-          <img id="profilePhotoPreview" class="avatar" src="logo.png" alt="Profile photo">
+
+          <img
+            id="profilePhotoPreview"
+            class="avatar"
+            src="logo.png"
+            alt="Profile photo"
+          >
+
           <div>
-            <input id="profilePhoto" type="file" accept="image/*">
-            <div class="photo-help">Upload a clear photo. It will be compressed before saving.</div>
+
+            <input
+              id="profilePhoto"
+              type="file"
+              accept="image/*"
+            >
+
+            <div class="photo-help">
+              Upload a clear photo. It will be compressed before saving to Firestore.
+            </div>
+
           </div>
+
         </div>
 
+
         <form id="profileForm">
+
           <div class="profile-grid">
+
             <input id="firstName" placeholder="First Name">
             <input id="lastName" placeholder="Last Name">
             <input id="phone" placeholder="Phone">
@@ -139,55 +604,234 @@ textarea{min-height:100px;resize:vertical}
             <input id="state" placeholder="State">
             <input id="city" placeholder="City">
             <input id="occupation" placeholder="Subjects / Department">
+
           </div>
 
-          <textarea id="bio" placeholder="Short bio, teaching focus, student support interest or workshop experience"></textarea>
+          <textarea
+            id="bio"
+            placeholder="Short bio, teaching focus, student support interests or workshop experience"
+          ></textarea>
 
-          <button class="btn primary" type="submit">Update Profile</button>
+          <button
+            class="btn primary"
+            type="submit"
+          >
+            Update Profile
+          </button>
+
         </form>
+
       </div>
 
+
       <div class="panel">
-        <span class="label">Quick Actions</span>
-        <h2>What you can do</h2>
+
+        <span class="label">
+          Quick Actions
+        </span>
+
+        <h2>
+          What you can do
+        </h2>
+
 
         <div class="grid">
-          <a class="card" href="teacher-library.html">
+
+          <a
+            class="card"
+            href="teacher-library.html"
+          >
             <h3>Teacher Library</h3>
-            <p>Access classroom wellbeing and student support resources.</p>
-            <span class="btn soft">Open Library</span>
+            <p>
+              Access classroom wellbeing, safeguarding and student support resources.
+            </p>
+            <span class="btn soft">
+              Open Library
+            </span>
           </a>
 
-          <a class="card" href="teacher-students.html">
+
+          <a
+            class="card"
+            href="teacher-students.html"
+          >
             <h3>Students</h3>
-            <p>View assigned student area and school-linked student support tools.</p>
-            <span class="btn primary">Open Students</span>
+            <p>
+              Open your assigned or school-linked student support area.
+            </p>
+            <span class="btn primary">
+              Open Students
+            </span>
           </a>
 
-          <a class="card" href="workshops.html">
+
+          <a
+            class="card"
+            href="workshops.html"
+          >
             <h3>Workshops</h3>
-            <p>See upcoming workshops and seminars for your school.</p>
-            <span class="btn gold">Open Workshops</span>
+            <p>
+              View upcoming workshops, seminars and school training sessions.
+            </p>
+            <span class="btn gold">
+              Open Workshops
+            </span>
           </a>
 
-          <a class="card" href="certificate-center.html">
+
+          <a
+            class="card"
+            href="certificate-center.html"
+          >
             <h3>Certificates</h3>
-            <p>View certificates earned from teacher trainings and workshops.</p>
-            <span class="btn soft">Open Certificates</span>
+            <p>
+              View and verify certificates earned through training and learning.
+            </p>
+            <span class="btn soft">
+              Open Certificates
+            </span>
           </a>
 
-          <a class="card" href="speakhub.html?audience=teacher">
+
+          <a
+            class="card"
+            href="speakhub.html?audience=teacher"
+          >
             <h3>Teacher Courses</h3>
-            <p>Continue professional development courses through SpeakHub.</p>
-            <span class="btn primary">Open Courses</span>
+            <p>
+              Continue professional development through SpeakHub Academy.
+            </p>
+            <span class="btn primary">
+              Open Courses
+            </span>
           </a>
 
-          <a class="card" href="payment-history.html">
+
+          <a
+            class="card"
+            href="payment-history.html"
+          >
             <h3>My Payments</h3>
-            <p>Track premium resource or training access requests.</p>
-            <span class="btn gold">Payment History</span>
+            <p>
+              Track premium training and resource access requests.
+            </p>
+            <span class="btn gold">
+              Payment History
+            </span>
           </a>
+
         </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="grid g2"
+      style="margin-top:18px"
+    >
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Professional Learning</span>
+            <h2>Continue Learning</h2>
+            <p>
+              Your active SpeakHub professional development courses.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="progressList"
+          class="mini-list"
+        >
+          <div class="notice">
+            Loading course progress...
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Completed Learning</span>
+            <h2>Course History</h2>
+            <p>
+              Completed internal and external learning records.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="completedList"
+          class="mini-list"
+        >
+          <div class="notice">
+            Loading completed learning...
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="grid g2"
+      style="margin-top:18px"
+    >
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Certificates</span>
+            <h2>Recent Certificates</h2>
+            <p>
+              Teacher training, workshops and learning credentials.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="certificateList"
+          class="mini-list"
+        >
+          <div class="notice">
+            Loading certificates...
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="section-head">
+          <div>
+            <span class="label">Workshops</span>
+            <h2>Upcoming Sessions</h2>
+            <p>
+              School-linked workshops and professional development sessions.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="workshopList"
+          class="mini-list"
+        >
+          <div class="notice">
+            Loading workshops...
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -197,13 +841,25 @@ textarea{min-height:100px;resize:vertical}
 
 </main>
 
+
 <footer class="footer">
-  <div class="container">SpeakOut Mental Health Outreach</div>
+  <div class="container">
+    SpeakOut Mental Health Outreach • Teacher Development
+  </div>
 </footer>
 
+
 <script type="module">
-import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
-import { db } from "./firebase-config.js";
+
+import {
+  requireRoles,
+  renderRoleNav
+} from "./launch-role-guard.js";
+
+import {
+  db
+} from "./firebase-config.js";
+
 import {
   doc,
   setDoc,
@@ -214,195 +870,1467 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+
 let currentUser = null;
 let profile = null;
 
-function show(message, type = ""){
-  statusBox.textContent = message;
-  statusBox.className = "notice " + type;
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const profileWarning =
+  document.getElementById("profileWarning");
+
+const pills =
+  document.getElementById("pills");
+
+const welcomeTitle =
+  document.getElementById("welcomeTitle");
+
+const nameBox =
+  document.getElementById("nameBox");
+
+const schoolBox =
+  document.getElementById("schoolBox");
+
+const certificateCount =
+  document.getElementById("certificateCount");
+
+const studentCount =
+  document.getElementById("studentCount");
+
+const courseStartedCount =
+  document.getElementById("courseStartedCount");
+
+const courseCompletedCount =
+  document.getElementById("courseCompletedCount");
+
+const externalCourseCount =
+  document.getElementById("externalCourseCount");
+
+const workshopCount =
+  document.getElementById("workshopCount");
+
+const progressList =
+  document.getElementById("progressList");
+
+const completedList =
+  document.getElementById("completedList");
+
+const certificateList =
+  document.getElementById("certificateList");
+
+const workshopList =
+  document.getElementById("workshopList");
+
+const profilePhoto =
+  document.getElementById("profilePhoto");
+
+const profilePhotoPreview =
+  document.getElementById("profilePhotoPreview");
+
+const profileForm =
+  document.getElementById("profileForm");
+
+
+function show(message,type=""){
+
+  statusBox.textContent =
+    message;
+
+  statusBox.className =
+    `notice ${type}`;
+
 }
 
-function safe(value){
-  return value || "—";
+
+function normalize(value){
+
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+
 }
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function pretty(value){
+
+  if(!value){
+    return "—";
+  }
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+
+}
+
 
 function pill(value){
-  return `<span class="pill ${(value || "").toLowerCase()}">${safe(value)}</span>`;
+
+  const className =
+    normalize(value)
+      .replace(/[^a-z0-9_-]/g,"-");
+
+  return `
+    <span class="pill ${className}">
+      ${escapeHtml(pretty(value))}
+    </span>
+  `;
+
 }
 
-function setVal(id, value){
-  const el = document.getElementById(id);
-  if(el) el.value = value || "";
+
+function setVal(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+    el.value =
+      value || "";
+  }
+
 }
 
-async function compressPhoto(file){
-  return new Promise((resolve, reject) => {
-    if(!file.type.startsWith("image/")){
-      return reject(new Error("Please upload an image file."));
+
+function formatDate(value){
+
+  if(!value){
+    return "—";
+  }
+
+  try{
+
+    const date =
+      value?.toDate
+      ? value.toDate()
+      : new Date(value);
+
+    if(Number.isNaN(date.getTime())){
+      return String(value);
     }
 
-    const img = new Image();
-    const reader = new FileReader();
-
-    reader.onload = e => {
-      img.src = e.target.result;
-    };
-
-    img.onload = () => {
-      const max = 300;
-      let w = img.width;
-      let h = img.height;
-
-      if(w > h && w > max){
-        h = Math.round(h * max / w);
-        w = max;
-      } else if(h > w && h > max){
-        w = Math.round(w * max / h);
-        h = max;
-      } else if(w > max){
-        w = max;
-        h = max;
+    return date.toLocaleDateString(
+      undefined,
+      {
+        year:"numeric",
+        month:"short",
+        day:"numeric"
       }
+    );
 
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
+  }catch{
+    return String(value);
+  }
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, w, h);
-
-      const data = canvas.toDataURL("image/jpeg", 0.65);
-
-      if(data.length > 260000){
-        return reject(new Error("Image is still too large. Please choose a smaller photo."));
-      }
-
-      resolve(data);
-    };
-
-    img.onerror = () => reject(new Error("Could not read image."));
-    reader.readAsDataURL(file);
-  });
 }
 
-function loadProfile(user, data){
-  currentUser = user;
-  profile = data;
 
-  renderRoleNav(data, "Dashboard");
+/* =========================================================
+   IMAGE
+========================================================= */
+
+async function compressPhoto(file){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      if(
+        !file.type.startsWith(
+          "image/"
+        )
+      ){
+        reject(
+          new Error(
+            "Please upload an image file."
+          )
+        );
+        return;
+      }
+
+
+      const img =
+        new Image();
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        event=>{
+          img.src =
+            event.target.result;
+        };
+
+
+      img.onload =
+        ()=>{
+
+          const max =
+            300;
+
+          let width =
+            img.width;
+
+          let height =
+            img.height;
+
+
+          if(
+            width > height &&
+            width > max
+          ){
+
+            height =
+              Math.round(
+                height *
+                max /
+                width
+              );
+
+            width =
+              max;
+
+          }else if(
+            height > width &&
+            height > max
+          ){
+
+            width =
+              Math.round(
+                width *
+                max /
+                height
+              );
+
+            height =
+              max;
+
+          }else if(
+            width > max
+          ){
+
+            width =
+              max;
+
+            height =
+              max;
+
+          }
+
+
+          const canvas =
+            document.createElement(
+              "canvas"
+            );
+
+          canvas.width =
+            width;
+
+          canvas.height =
+            height;
+
+
+          canvas
+            .getContext("2d")
+            .drawImage(
+              img,
+              0,
+              0,
+              width,
+              height
+            );
+
+
+          const data =
+            canvas.toDataURL(
+              "image/jpeg",
+              .65
+            );
+
+
+          if(data.length > 260000){
+
+            reject(
+              new Error(
+                "Image is still too large. Please choose a smaller photo."
+              )
+            );
+
+            return;
+          }
+
+
+          resolve(
+            data
+          );
+
+        };
+
+
+      img.onerror =
+        ()=>reject(
+          new Error(
+            "Could not read image."
+          )
+        );
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function renderProfile(user,data){
+
+  currentUser =
+    user;
+
+  profile =
+    data;
+
+
+  renderRoleNav(
+    data,
+    "Dashboard"
+  );
+
 
   pills.innerHTML =
     pill(data.role) +
     pill(data.status) +
-    pill(data.schoolCode || "individual");
+    pill(
+      data.schoolCode ||
+      "individual"
+    );
+
+
+  const fullName =
+    (
+      (
+        data.firstName ||
+        data.fullName ||
+        user.email ||
+        "Teacher"
+      ) +
+      " " +
+      (
+        data.lastName ||
+        ""
+      )
+    ).trim();
+
 
   nameBox.textContent =
-    (data.firstName || data.fullName || user.email || "User") +
-    " " +
-    (data.lastName || "");
+    fullName;
+
 
   schoolBox.textContent =
     data.schoolName ||
     data.schoolCode ||
     "Individual Access";
 
-  ["firstName","lastName","phone","country","state","city","occupation","bio"].forEach(k => {
-    setVal(k, data[k] || "");
-  });
+
+  welcomeTitle.textContent =
+    `Welcome, ${
+      data.firstName ||
+      data.fullName ||
+      "Teacher"
+    }`;
+
+
+  [
+    "firstName",
+    "lastName",
+    "phone",
+    "country",
+    "state",
+    "city",
+    "occupation",
+    "bio"
+  ]
+  .forEach(
+    key=>
+      setVal(
+        key,
+        data[key] || ""
+      )
+  );
+
 
   profilePhotoPreview.src =
     data.photoData ||
     data.photoURL ||
     "logo.png";
 
-  if(!data.profileCompleted){
-    show("Please complete your profile information.", "warn");
-  } else {
-    show("Dashboard loaded.", "ok");
-  }
+
+  profileWarning.classList.toggle(
+    "hidden",
+    Boolean(
+      data.profileCompleted
+    )
+  );
+
 }
 
-async function loadCertificateCount(user){
-  try{
-    const certSnap = await getDocs(
-      query(
-        collection(db, "certificates"),
-        where("recipientId", "==", user.uid)
-      )
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+function progressPercent(item){
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Number(
+        item.percent ??
+        item.progressPercent ??
+        item.progress ??
+        0
+      ) || 0
+    )
+  );
+
+}
+
+
+function isCourseProgress(item){
+
+  const type =
+    normalize(
+      item.type
     );
 
-    certificateCount.textContent = certSnap.size || 0;
-  }catch(error){
-    certificateCount.textContent = 0;
-  }
+  return (
+    type === "course" ||
+    type === "external-course" ||
+    Boolean(item.courseId)
+  );
+
 }
 
-profilePhoto.addEventListener("change", async () => {
-  if(profilePhoto.files && profilePhoto.files[0]){
+
+function isExternalProgress(item){
+
+  return (
+    normalize(item.type) === "external-course" ||
+    normalize(item.courseType) === "external" ||
+    normalize(item.completionMethod) === "certificate-upload"
+  );
+
+}
+
+
+function isCompletedProgress(item){
+
+  return (
+    normalize(item.status) === "completed" ||
+    item.completed === true ||
+    progressPercent(item) >= 100
+  );
+
+}
+
+
+function progressActionUrl(item){
+
+  const id =
+    item.courseId ||
+    item.itemId ||
+    "";
+
+  if(!id){
+    return "speakhub.html";
+  }
+
+  if(isExternalProgress(item)){
+    return (
+      item.externalUrl ||
+      `course-details.html?id=${encodeURIComponent(id)}`
+    );
+  }
+
+  return (
+    `course-player.html?id=${encodeURIComponent(id)}`
+  );
+
+}
+
+
+function progressCard(item){
+
+  const percent =
+    progressPercent(item);
+
+  const external =
+    isExternalProgress(item);
+
+  const completed =
+    isCompletedProgress(item);
+
+  const url =
+    progressActionUrl(item);
+
+  const target =
+    external &&
+    item.externalUrl
+      ? `target="_blank" rel="noopener noreferrer"`
+      : "";
+
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(
+              item.title ||
+              item.courseTitle ||
+              "Learning Item"
+            )}
+          </strong>
+
+          <div class="item-meta">
+
+            ${
+              item.provider
+              ? `<span>${escapeHtml(item.provider)}</span>`
+              : ""
+            }
+
+            ${
+              item.category
+              ? `<span>${escapeHtml(pretty(item.category))}</span>`
+              : ""
+            }
+
+            <span>
+              ${
+                external
+                ? "External Provider"
+                : "SpeakHub"
+              }
+            </span>
+
+          </div>
+
+        </div>
+
+        ${pill(
+          completed
+            ? "completed"
+            : item.status ||
+              "in-progress"
+        )}
+
+      </div>
+
+
+      ${
+        !external
+        ? `
+          <div class="progress-track">
+            <div
+              class="progress-bar"
+              style="width:${percent}%"
+            ></div>
+          </div>
+
+          <div class="progress-label">
+            ${percent}% complete
+          </div>
+        `
+        : `
+          <p class="progress-label">
+            ${
+              completed
+                ? "External learning recorded as completed."
+                : "External learning is in progress."
+            }
+          </p>
+        `
+      }
+
+
+      <div class="item-actions">
+
+        <a
+          class="btn ${
+            completed
+              ? "soft"
+              : "primary"
+          }"
+          href="${escapeHtml(url)}"
+          ${target}
+        >
+          ${
+            completed
+              ? "View Course"
+              : external
+                ? "Continue with Provider"
+                : "Continue Course"
+          }
+        </a>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   CERTIFICATES
+========================================================= */
+
+function certificateCard(record,docId){
+
+  const publicId =
+    record.certificateId ||
+    record.certificateNumber ||
+    record.verificationCode ||
+    docId;
+
+
+  const status =
+    normalize(
+      record.verificationStatus ||
+      record.status ||
+      "verified"
+    );
+
+
+  const issuer =
+    record.issuer ||
+    record.certificateIssuer ||
+    record.provider ||
+    "SpeakOut / SpeakHub";
+
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(
+              record.title ||
+              record.certificateTitle ||
+              record.courseTitle ||
+              record.trainingTitle ||
+              "Certificate"
+            )}
+          </strong>
+
+          <div class="item-meta">
+
+            <span>
+              ${escapeHtml(issuer)}
+            </span>
+
+            <span>
+              ${escapeHtml(
+                formatDate(
+                  record.issueDate ||
+                  record.issuedAt ||
+                  record.completionDate ||
+                  record.createdAt
+                )
+              )}
+            </span>
+
+          </div>
+
+        </div>
+
+        ${pill(
+          status ||
+          "verified"
+        )}
+
+      </div>
+
+
+      <div class="item-actions">
+
+        <a
+          class="btn soft"
+          href="certificate-view.html?id=${encodeURIComponent(publicId)}"
+        >
+          View Certificate
+        </a>
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   WORKSHOPS
+========================================================= */
+
+function workshopCard(item){
+
+  const title =
+    item.title ||
+    item.name ||
+    "Workshop";
+
+  const status =
+    item.status ||
+    "planned";
+
+  const date =
+    item.date ||
+    item.startDate ||
+    item.startAt ||
+    item.createdAt;
+
+
+  return `
+    <div class="mini-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <strong>
+            ${escapeHtml(title)}
+          </strong>
+
+          <div class="item-meta">
+
+            <span>
+              ${escapeHtml(formatDate(date))}
+            </span>
+
+            ${
+              item.schoolName
+              ? `<span>${escapeHtml(item.schoolName)}</span>`
+              : ""
+            }
+
+          </div>
+
+        </div>
+
+        ${pill(status)}
+
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   DATA LOADERS
+========================================================= */
+
+async function loadCertificates(){
+
+  try{
+
+    let snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "certificates"
+          ),
+          where(
+            "recipientId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    if(snap.empty){
+
+      snap =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "certificates"
+            ),
+            where(
+              "userId",
+              "==",
+              currentUser.uid
+            )
+          )
+        );
+
+    }
+
+
+    const docs =
+      snap.docs;
+
+
+    certificateCount.textContent =
+      docs.length;
+
+
+    certificateList.innerHTML =
+      docs.length
+        ? docs
+            .slice(0,8)
+            .map(
+              document=>
+                certificateCard(
+                  document.data(),
+                  document.id
+                )
+            )
+            .join("")
+        : `
+          <div class="notice warn">
+            No certificates yet.
+          </div>
+        `;
+
+
+  }catch(error){
+
+    console.error(
+      "Certificate load failed:",
+      error
+    );
+
+
+    certificateList.innerHTML = `
+      <div class="notice bad">
+        Could not load certificates.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadProgress(){
+
+  try{
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "userProgress"
+          ),
+          where(
+            "userId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    const allProgress =
+      snap.docs.map(
+        document=>({
+          id:document.id,
+          ...document.data()
+        })
+      );
+
+
+    const courseProgress =
+      allProgress.filter(
+        isCourseProgress
+      );
+
+
+    const externalProgress =
+      courseProgress.filter(
+        isExternalProgress
+      );
+
+
+    const internalProgress =
+      courseProgress.filter(
+        item=>
+          !isExternalProgress(item)
+      );
+
+
+    const completed =
+      courseProgress.filter(
+        isCompletedProgress
+      );
+
+
+    const activeInternal =
+      internalProgress.filter(
+        item=>
+          !isCompletedProgress(item)
+      );
+
+
+    courseStartedCount.textContent =
+      courseProgress.length;
+
+
+    courseCompletedCount.textContent =
+      completed.length;
+
+
+    externalCourseCount.textContent =
+      externalProgress.length;
+
+
+    progressList.innerHTML =
+      activeInternal.length
+        ? activeInternal
+            .slice(0,8)
+            .map(progressCard)
+            .join("")
+        : `
+          <div class="notice warn">
+            No active teacher course progress yet.
+          </div>
+        `;
+
+
+    completedList.innerHTML =
+      completed.length
+        ? completed
+            .slice(0,8)
+            .map(progressCard)
+            .join("")
+        : `
+          <div class="notice warn">
+            No completed learning yet.
+          </div>
+        `;
+
+
+  }catch(error){
+
+    console.error(
+      "Progress load failed:",
+      error
+    );
+
+
+    progressList.innerHTML = `
+      <div class="notice bad">
+        Could not load course progress.
+      </div>
+    `;
+
+
+    completedList.innerHTML = `
+      <div class="notice bad">
+        Could not load completed learning.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadStudents(){
+
+  try{
+
+    /*
+      Primary compatibility path:
+      teacher-student records linked directly by teacherId.
+    */
+
+    let snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "teacherStudents"
+          ),
+          where(
+            "teacherId",
+            "==",
+            currentUser.uid
+          )
+        )
+      );
+
+
+    /*
+      Fallback:
+      if teacherStudents is not used, count approved students in same school.
+    */
+
+    if(
+      snap.empty &&
+      profile?.schoolCode
+    ){
+
+      const schoolStudents =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "users"
+            ),
+            where(
+              "schoolCode",
+              "==",
+              profile.schoolCode
+            ),
+            where(
+              "role",
+              "==",
+              "student"
+            )
+          )
+        );
+
+
+      studentCount.textContent =
+        schoolStudents.size;
+
+      return;
+
+    }
+
+
+    studentCount.textContent =
+      snap.size;
+
+
+  }catch(error){
+
+    console.warn(
+      "Student count failed:",
+      error
+    );
+
+
+    studentCount.textContent =
+      "0";
+
+  }
+
+}
+
+
+async function loadWorkshops(){
+
+  try{
+
+    let all = [];
+
+
+    const snap =
+      await getDocs(
+        collection(
+          db,
+          "workshops"
+        )
+      );
+
+
+    snap.forEach(
+      document=>{
+
+        const item = {
+          id:document.id,
+          ...document.data()
+        };
+
+
+        const audiences =
+          Array.isArray(item.audience)
+            ? item.audience.map(normalize)
+            : [normalize(item.audience)];
+
+
+        const teacherVisible =
+          audiences.some(
+            audience =>
+              [
+                "teacher",
+                "teachers",
+                "school",
+                "all",
+                "general",
+                ""
+              ].includes(
+                audience
+              )
+          );
+
+
+        const sameSchool =
+          !item.schoolCode ||
+          !profile?.schoolCode ||
+          item.schoolCode ===
+          profile.schoolCode;
+
+
+        if(
+          teacherVisible &&
+          sameSchool
+        ){
+          all.push(item);
+        }
+
+      }
+    );
+
+
+    all.sort(
+      (a,b)=>{
+
+        const dateA =
+          new Date(
+            a.date ||
+            a.startDate ||
+            0
+          ).getTime();
+
+        const dateB =
+          new Date(
+            b.date ||
+            b.startDate ||
+            0
+          ).getTime();
+
+
+        return dateA - dateB;
+
+      }
+    );
+
+
+    const upcoming =
+      all.filter(
+        item =>
+          ![
+            "completed",
+            "cancelled",
+            "canceled"
+          ].includes(
+            normalize(
+              item.status
+            )
+          )
+      );
+
+
+    workshopCount.textContent =
+      upcoming.length;
+
+
+    workshopList.innerHTML =
+      upcoming.length
+        ? upcoming
+            .slice(0,6)
+            .map(workshopCard)
+            .join("")
+        : `
+          <div class="notice warn">
+            No upcoming workshops found.
+          </div>
+        `;
+
+
+  }catch(error){
+
+    console.warn(
+      "Workshop load failed:",
+      error
+    );
+
+
+    workshopCount.textContent =
+      "0";
+
+
+    workshopList.innerHTML = `
+      <div class="notice warn">
+        Workshop data is not available yet.
+      </div>
+    `;
+
+  }
+
+}
+
+
+async function loadDashboardData(){
+
+  await Promise.all([
+    loadCertificates(),
+    loadProgress(),
+    loadStudents(),
+    loadWorkshops()
+  ]);
+
+}
+
+
+/* =========================================================
+   PROFILE EVENTS
+========================================================= */
+
+profilePhoto.addEventListener(
+  "change",
+  async ()=>{
+
+    if(
+      profilePhoto.files &&
+      profilePhoto.files[0]
+    ){
+
+      try{
+
+        profilePhotoPreview.src =
+          await compressPhoto(
+            profilePhoto.files[0]
+          );
+
+      }catch(error){
+
+        show(
+          error.message,
+          "bad"
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
+profileForm.addEventListener(
+  "submit",
+  async event=>{
+
+    event.preventDefault();
+
+
     try{
-      profilePhotoPreview.src = await compressPhoto(profilePhoto.files[0]);
+
+      let photoData =
+        profile.photoData ||
+        "";
+
+
+      if(
+        profilePhoto.files &&
+        profilePhoto.files[0]
+      ){
+
+        photoData =
+          await compressPhoto(
+            profilePhoto.files[0]
+          );
+
+      }
+
+
+      const updatedProfile = {
+
+        firstName:
+          document
+            .getElementById("firstName")
+            .value
+            .trim(),
+
+        lastName:
+          document
+            .getElementById("lastName")
+            .value
+            .trim(),
+
+        phone:
+          document
+            .getElementById("phone")
+            .value
+            .trim(),
+
+        country:
+          document
+            .getElementById("country")
+            .value
+            .trim(),
+
+        state:
+          document
+            .getElementById("state")
+            .value
+            .trim(),
+
+        city:
+          document
+            .getElementById("city")
+            .value
+            .trim(),
+
+        occupation:
+          document
+            .getElementById("occupation")
+            .value
+            .trim(),
+
+        bio:
+          document
+            .getElementById("bio")
+            .value
+            .trim(),
+
+        photoData,
+
+        profileCompleted:
+          true,
+
+        updatedAt:
+          serverTimestamp()
+      };
+
+
+      await setDoc(
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        ),
+        updatedProfile,
+        {
+          merge:true
+        }
+      );
+
+
+      profile = {
+        ...profile,
+        ...updatedProfile
+      };
+
+
+      renderProfile(
+        currentUser,
+        profile
+      );
+
+
+      show(
+        "Profile updated successfully.",
+        "ok"
+      );
+
+
     }catch(error){
-      show(error.message, "bad");
+
+      console.error(
+        error
+      );
+
+
+      show(
+        error.message ||
+        "Profile update failed.",
+        "bad"
+      );
+
     }
+
   }
-});
+);
 
-profileForm.addEventListener("submit", async e => {
-  e.preventDefault();
 
-  try{
-    let photoData = profile.photoData || "";
+/* =========================================================
+   AUTH / ROLE GUARD
+========================================================= */
 
-    if(profilePhoto.files && profilePhoto.files[0]){
-      photoData = await compressPhoto(profilePhoto.files[0]);
+requireRoles(
+  ["teacher"],
+  async (user,data)=>{
+
+    const role =
+      normalize(
+        data.role
+      );
+
+
+    if(
+      role !== "teacher" &&
+      role !== "admin" &&
+      role !== "super_admin"
+    ){
+
+      location.href =
+        "auth.html";
+
+      return;
+
     }
 
-    const updatedProfile = {
-      firstName: firstName.value.trim(),
-      lastName: lastName.value.trim(),
-      phone: phone.value.trim(),
-      country: country.value.trim(),
-      state: state.value.trim(),
-      city: city.value.trim(),
-      occupation: occupation.value.trim(),
-      bio: bio.value.trim(),
-      photoData,
-      profileCompleted: true,
-      updatedAt: serverTimestamp()
-    };
 
-    await setDoc(
-      doc(db, "users", currentUser.uid),
-      updatedProfile,
-      { merge: true }
+    renderProfile(
+      user,
+      data
     );
 
-    profile = {
-      ...profile,
-      ...updatedProfile
-    };
 
-    loadProfile(currentUser, profile);
-    show("Profile updated successfully.", "ok");
+    await loadDashboardData();
 
-  }catch(error){
-    console.error(error);
-    show(error.message || "Profile update failed.", "bad");
+
+    show(
+      "Dashboard loaded.",
+      "ok"
+    );
+
   }
-});
+);
 
-requireRoles(["teacher"], async (user, data) => {
-  const role = (data.role || "").toLowerCase().trim();
-
-  if(role !== "teacher" && role !== "admin" && role !== "super_admin"){
-    location.href = "auth.html";
-    return;
-  }
-
-  loadProfile(user, data);
-  await loadCertificateCount(user);
-});
 </script>
 
 </body>
 </html>
+
