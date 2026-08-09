@@ -1,32 +1,1843 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Certificate Centre | SpeakOut</title><meta name="description" content="Verify SpeakOut and SpeakHub certificates.">
-<link rel="icon" href="images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/speakout-main.css"><link rel="stylesheet" href="css/forms-pages-extra.css"></head><body><div class="top">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Certificate Centre | SpeakOut & SpeakHub Academy</title>
+
+<meta name="description" content="Verify certificates issued by SpeakOut Mental Health Outreach and SpeakHub Academy, including academy courses, trainings, workshops, ambassador programmes and approved learning pathways.">
+
+<link rel="icon" href="images/logo.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/speakout-main.css">
+<link rel="stylesheet" href="css/forms-pages-extra.css">
+
+<style>
+:root{
+  --navy:#07152b;
+  --blue:#0a5fbf;
+  --blue2:#0d74dd;
+  --soft:#eaf3ff;
+  --gold:#f4a21c;
+  --goldSoft:#fff4df;
+  --green:#0f8f6f;
+  --greenSoft:#e9fbf5;
+  --red:#991b1b;
+  --redSoft:#fee2e2;
+  --ink:#111827;
+  --muted:#637083;
+  --line:#e5edf6;
+  --bg:#f7f9fc;
+  --white:#fff;
+  --shadow:0 18px 45px rgba(7,21,43,.10);
+  --shadow-lg:0 28px 70px rgba(7,21,43,.15);
+  --radius:22px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Outfit,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+button,input,select{font:inherit}
+
+.cert-shell{
+  width:min(1180px,92%);
+  margin:auto;
+}
+
+/* HERO */
+.certificate-hero-upgraded{
+  background:
+    radial-gradient(circle at 85% 25%,rgba(244,162,28,.22),transparent 28%),
+    linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:72px 0 60px;
+}
+
+.cert-hero-grid{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:28px;
+  align-items:center;
+}
+
+.cert-kicker{
+  display:inline-flex;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  font-weight:800;
+  font-size:.78rem;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+
+.certificate-hero-upgraded h1{
+  margin:0;
+  font-size:clamp(2.3rem,5vw,4.4rem);
+  line-height:1;
+  max-width:800px;
+}
+
+.certificate-hero-upgraded p{
+  font-size:1.08rem;
+  line-height:1.75;
+  max-width:760px;
+  opacity:.92;
+}
+
+.hero-trust{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.hero-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.16);
+  font-size:.82rem;
+  font-weight:700;
+}
+
+.verification-card{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(16px);
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 24px 60px rgba(0,0,0,.18);
+}
+
+.verification-card h3{
+  margin:0 0 8px;
+  font-size:1.25rem;
+}
+
+.verification-card p{
+  margin:0;
+  font-size:.94rem;
+}
+
+/* MAIN */
+.certificate-main{
+  padding:38px 0 70px;
+}
+
+.cert-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:24px;
+  align-items:start;
+}
+
+.cert-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  padding:24px;
+}
+
+.cert-card h2,
+.cert-card h3{
+  margin-top:0;
+}
+
+.search-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.search-tab{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--muted);
+  padding:10px 14px;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.search-tab.active{
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
+
+.field-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-bottom:14px;
+}
+
+.field label{
+  font-weight:800;
+  font-size:.88rem;
+}
+
+.field input{
+  width:100%;
+  border:1px solid #dce6f1;
+  background:#fff;
+  border-radius:14px;
+  padding:13px 14px;
+  outline:none;
+}
+
+.field input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(10,95,191,.08);
+}
+
+.helper{
+  font-size:.82rem;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.cert-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.cert-btn{
+  border:0;
+  text-decoration:none;
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:800;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+
+.cert-btn.primary{
+  background:var(--blue);
+  color:#fff;
+}
+
+.cert-btn.primary:hover{
+  background:#084f9d;
+}
+
+.cert-btn.soft{
+  background:var(--soft);
+  color:var(--blue);
+}
+
+.cert-btn.gold{
+  background:var(--gold);
+  color:#2b1900;
+}
+
+.cert-btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.status-box{
+  display:none;
+  border-radius:18px;
+  padding:18px;
+  margin-top:20px;
+  border:1px solid var(--line);
+}
+
+.status-box.loading{
+  display:block;
+  background:var(--soft);
+  color:#16416c;
+}
+
+.status-box.success{
+  display:block;
+  background:var(--greenSoft);
+  border-color:#bde8db;
+  color:#075e49;
+}
+
+.status-box.error{
+  display:block;
+  background:var(--redSoft);
+  border-color:#fecaca;
+  color:#7f1d1d;
+}
+
+.status-box.warning{
+  display:block;
+  background:var(--goldSoft);
+  border-color:#f8d79d;
+  color:#684000;
+}
+
+/* RESULT */
+.result-card{
+  display:none;
+  margin-top:22px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+}
+
+.result-card.show{display:block}
+
+.result-top{
+  background:linear-gradient(135deg,var(--navy),var(--blue));
+  color:#fff;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+
+.result-top h3{
+  margin:0 0 5px;
+}
+
+.verify-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 11px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:.78rem;
+  white-space:nowrap;
+}
+
+.verify-badge.verified{
+  background:#d1fae5;
+  color:#065f46;
+}
+
+.verify-badge.pending{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.verify-badge.rejected,
+.verify-badge.revoked{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.result-body{
+  padding:20px;
+  background:#fff;
+}
+
+.result-meta{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.meta-item{
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:13px;
+}
+
+.meta-item small{
+  display:block;
+  color:var(--muted);
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:800;
+  margin-bottom:4px;
+}
+
+.meta-item strong{
+  overflow-wrap:anywhere;
+}
+
+.provider-block{
+  margin-top:16px;
+  padding:14px;
+  border-radius:16px;
+  background:#f8fafc;
+  border:1px solid var(--line);
+}
+
+.provider-block strong{display:block}
+
+.external-note{
+  margin-top:16px;
+  padding:14px 16px;
+  border-radius:14px;
+  background:var(--goldSoft);
+  color:#684000;
+  border:1px solid #f8d79d;
+  line-height:1.55;
+}
+
+/* SIDE */
+.side-stack{
+  display:grid;
+  gap:18px;
+}
+
+.side-panel-upgraded{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.side-panel-upgraded h3{margin-top:0}
+
+.check-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+.check-list li{
+  position:relative;
+  padding:9px 0 9px 28px;
+  color:#39475b;
+  line-height:1.45;
+}
+
+.check-list li::before{
+  content:"✓";
+  position:absolute;
+  left:0;
+  top:9px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--greenSoft);
+  color:var(--green);
+  font-weight:900;
+  font-size:.72rem;
+}
+
+.provider-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.provider-pill{
+  padding:7px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  color:var(--blue);
+  font-weight:800;
+  font-size:.75rem;
+}
+
+.portal-box{
+  background:linear-gradient(135deg,#fff8e8,#fff);
+  border:1px solid #f7dfae;
+}
+
+.portal-box p{
+  color:#66522d;
+  line-height:1.6;
+}
+
+/* EXPLAINER */
+.how-section{
+  margin-top:26px;
+}
+
+.how-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.how-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+}
+
+.step-num{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--navy);
+  color:#fff;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.how-card h4{
+  margin:0 0 6px;
+}
+
+.how-card p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+  font-size:.9rem;
+}
+
+@media(max-width:900px){
+  .cert-hero-grid,
+  .cert-grid{
+    grid-template-columns:1fr;
+  }
+
+  .verification-card{
+    max-width:none;
+  }
+
+  .how-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:620px){
+  .field-grid,
+  .result-meta{
+    grid-template-columns:1fr;
+  }
+
+  .certificate-hero-upgraded{
+    padding:52px 0 44px;
+  }
+
+  .cert-card{
+    padding:18px;
+  }
+
+  .result-top{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
   <span>🎓 SpeakHub Academy enrollment, school partnerships and mental health resources are now open.</span>
   <a href="pages/contact.html">Get Started</a>
 </div>
+
 <header class="nav" id="siteNav">
   <div class="container nav-inner">
-    <a class="brand" href="index.html"><img src="images/logo.png" alt="SpeakOut Logo"><div><strong>SpeakOut</strong><small>Mental Health Outreach</small></div></a>
+
+    <a class="brand" href="index.html">
+      <img src="images/logo.png" alt="SpeakOut Logo">
+      <div>
+        <strong>SpeakOut</strong>
+        <small>Mental Health Outreach</small>
+      </div>
+    </a>
+
     <button class="menu" aria-label="Open menu" aria-expanded="false" type="button">☰</button>
+
     <nav class="links">
-      <a href="index.html">Home</a><a href="pages/about.html">About</a>
-      <div class="drop"><button class="drop-toggle" type="button">Programs <span>▾</span></button><div class="drop-menu">
-        <a href="pages/programs.html">All Programs</a><a href="pages/programs.html#school-clubs">School Mental Health Clubs</a><a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a><a href="pages/academy.html">SpeakHub Academy</a><a href="pages/programs.html#community">Community Outreach</a>
-      </div></div>
-      <a href="pages/academy.html">Academy</a><a href="pages/schools.html">Schools</a>
-      <div class="drop"><button class="drop-toggle" type="button">Resources <span>▾</span></button><div class="drop-menu">
-        <a href="pages/resources.html">Mental Health Library</a><a href="pages/news.html">News & Events</a><a href="pages/media.html">Media Centre</a><a href="pages/research.html">Research</a>
-      </div></div>
-      <a href="pages/impact.html">Impact</a><a href="pages/partners.html">Partners</a><a href="pages/contact.html">Contact</a>
+      <a href="index.html">Home</a>
+      <a href="pages/about.html">About</a>
+
+      <div class="drop">
+        <button class="drop-toggle" type="button">Programs <span>▾</span></button>
+
+        <div class="drop-menu">
+          <a href="pages/programs.html">All Programs</a>
+          <a href="pages/programs.html#school-clubs">School Mental Health Clubs</a>
+          <a href="https://mindcheck.speakoutmentalhealth.org/" target="_blank" rel="noopener">MindCheck</a>
+          <a href="pages/academy.html">SpeakHub Academy</a>
+          <a href="pages/programs.html#community">Community Outreach</a>
+        </div>
+      </div>
+
+      <a href="pages/academy.html">Academy</a>
+      <a href="pages/schools.html">Schools</a>
+
+      <div class="drop">
+        <button class="drop-toggle" type="button">Resources <span>▾</span></button>
+
+        <div class="drop-menu">
+          <a href="pages/resources.html">Mental Health Library</a>
+          <a href="pages/news.html">News & Events</a>
+          <a href="pages/media.html">Media Centre</a>
+          <a href="pages/research.html">Research</a>
+        </div>
+      </div>
+
+      <a href="pages/impact.html">Impact</a>
+      <a href="pages/partners.html">Partners</a>
+      <a href="pages/contact.html">Contact</a>
     </nav>
-    <div class="nav-actions"><a class="portal-btn" href="auth/auth.html">Portal</a><a class="donate-btn" href="pages/donate.html">Donate</a></div>
+
+    <div class="nav-actions">
+      <a class="portal-btn" href="auth/auth.html">Portal</a>
+      <a class="donate-btn" href="pages/donate.html">Donate</a>
+    </div>
   </div>
-</header><main><section class="form-hero certificate-hero"><div class="container bundle-hero-grid"><div><span class="kicker">Certificate Centre</span><h1>Verify SpeakOut and SpeakHub certificates.</h1><p>Check certificates issued for trainings, workshops, ambassador programs and SpeakHub Academy courses.</p></div><aside class="glass"><h3>Certificate Verification</h3><p>Enter the certificate ID or recipient details to confirm certificate status.</p></aside></div></section><section class="bundle-section"><div class="container form-grid"><form class="premium-form"><input placeholder="Certificate ID"><input placeholder="Recipient name"><input type="email" placeholder="Recipient email, if available"><button type="button" class="btn primary">Verify Certificate</button></form><aside class="side-panel"><h3>Certificate Types</h3><ul class="check"><li>SpeakHub Academy courses</li><li>Teacher training</li><li>Volunteer / ambassador program</li><li>Leadership summit participation</li><li>Workshops and bootcamps</li></ul></aside></div></section></main><a class="float" href="https://wa.me/2348118103510" target="_blank" rel="noopener">Need Help?</a>
-<footer class="footer"><div class="container"><div class="footer-grid">
-<div><img src="images/logo.png" alt="SpeakOut Logo"><h3>SpeakOut</h3><p>Building safer mental health ecosystems for schools, students, parents, teachers and communities.</p></div>
-<div><h4>Explore</h4><a href="index.html">Home</a><a href="pages/about.html">About</a><a href="pages/programs.html">Programs</a><a href="pages/schools.html">Schools</a></div>
-<div><h4>Access</h4><a href="auth/auth.html">Portal Login / Apply</a><a href="school-register.html">School Registration</a><a href="certificate-center.html">Certificate Check</a><a href="pages/donate.html">Donate</a></div>
-<div><h4>Contact</h4><a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a><a href="https://wa.me/2348118103510">WhatsApp</a><a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">@speaaakout</a><a href="pages/contact.html">Contact Form</a></div>
-</div><p style="margin-top:30px;color:rgba(255,255,255,.55)">© 2026 SpeakOut Mental Health Outreach. Educational support only; not a replacement for professional medical care or emergency services.</p></div></footer>
-<script src="js/main.js"></script></body></html>
+</header>
+
+
+<main>
+
+<section class="certificate-hero-upgraded">
+
+  <div class="cert-shell cert-hero-grid">
+
+    <div>
+
+      <span class="cert-kicker">
+        Certificate Centre
+      </span>
+
+      <h1>
+        Verify learning and training credentials.
+      </h1>
+
+      <p>
+        Confirm certificates issued through SpeakOut Mental Health Outreach
+        and SpeakHub Academy, including academy courses, trainings, workshops,
+        ambassador programmes and approved learning pathways.
+      </p>
+
+      <div class="hero-trust">
+        <span class="hero-chip">✓ Public Verification</span>
+        <span class="hero-chip">✓ Unique Certificate ID</span>
+        <span class="hero-chip">✓ Provider Transparency</span>
+      </div>
+
+    </div>
+
+    <aside class="verification-card">
+
+      <h3>Certificate Verification</h3>
+
+      <p>
+        Search using the unique certificate ID for the fastest result.
+        Recipient details can also be used when available.
+      </p>
+
+    </aside>
+
+  </div>
+
+</section>
+
+
+<section class="certificate-main">
+
+  <div class="cert-shell">
+
+    <div class="cert-grid">
+
+      <section class="cert-card">
+
+        <h2>Verify a Certificate</h2>
+
+        <p class="helper">
+          Certificate IDs should be entered exactly as shown on the credential.
+          You can also search by recipient details if you do not have the ID.
+        </p>
+
+
+        <div class="search-tabs">
+
+          <button
+            id="tabId"
+            class="search-tab active"
+            type="button"
+          >
+            Certificate ID
+          </button>
+
+          <button
+            id="tabRecipient"
+            class="search-tab"
+            type="button"
+          >
+            Recipient Details
+          </button>
+
+        </div>
+
+
+        <form
+          id="verificationForm"
+          novalidate
+        >
+
+          <div
+            id="idSearchFields"
+          >
+
+            <div class="field">
+
+              <label for="certificateId">
+                Certificate ID
+              </label>
+
+              <input
+                id="certificateId"
+                name="certificateId"
+                placeholder="e.g. SH-2026-001245"
+                autocomplete="off"
+              >
+
+              <div class="helper">
+                Recommended verification method.
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            id="recipientSearchFields"
+            style="display:none"
+          >
+
+            <div class="field-grid">
+
+              <div class="field">
+
+                <label for="recipientName">
+                  Recipient name
+                </label>
+
+                <input
+                  id="recipientName"
+                  name="recipientName"
+                  placeholder="Full name"
+                  autocomplete="name"
+                >
+
+              </div>
+
+              <div class="field">
+
+                <label for="recipientEmail">
+                  Recipient email
+                </label>
+
+                <input
+                  id="recipientEmail"
+                  name="recipientEmail"
+                  type="email"
+                  placeholder="Email address"
+                  autocomplete="email"
+                >
+
+              </div>
+
+            </div>
+
+            <div class="helper">
+              For privacy and accuracy, provide both name and email where possible.
+            </div>
+
+          </div>
+
+
+          <div class="cert-actions">
+
+            <button
+              id="verifyButton"
+              type="submit"
+              class="cert-btn primary"
+            >
+              Verify Certificate
+            </button>
+
+            <button
+              id="clearButton"
+              type="button"
+              class="cert-btn soft"
+            >
+              Clear
+            </button>
+
+          </div>
+
+        </form>
+
+
+        <div
+          id="statusBox"
+          class="status-box"
+          aria-live="polite"
+        ></div>
+
+
+        <div
+          id="resultCard"
+          class="result-card"
+        >
+
+          <div class="result-top">
+
+            <div>
+              <h3 id="resultTitle">Certificate</h3>
+              <div id="resultSubtitle"></div>
+            </div>
+
+            <span
+              id="resultBadge"
+              class="verify-badge verified"
+            >
+              Verified
+            </span>
+
+          </div>
+
+
+          <div class="result-body">
+
+            <div class="result-meta">
+
+              <div class="meta-item">
+                <small>Certificate ID</small>
+                <strong id="resultId">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <small>Recipient</small>
+                <strong id="resultRecipient">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <small>Course / Programme</small>
+                <strong id="resultCourse">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <small>Completion Date</small>
+                <strong id="resultDate">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <small>Credential Type</small>
+                <strong id="resultType">—</strong>
+              </div>
+
+              <div class="meta-item">
+                <small>Issuer</small>
+                <strong id="resultIssuer">—</strong>
+              </div>
+
+            </div>
+
+
+            <div
+              id="providerBlock"
+              class="provider-block"
+            >
+              <strong id="providerHeading">
+                SpeakHub Academy
+              </strong>
+
+              <span
+                id="providerText"
+                class="helper"
+              >
+                SpeakOut-issued credential
+              </span>
+            </div>
+
+
+            <div
+              id="externalCredentialNote"
+              class="external-note"
+              style="display:none"
+            >
+              This record relates to learning completed with an external
+              provider and subsequently submitted or verified through SpeakHub.
+              The external provider remains the original issuer of its credential.
+            </div>
+
+
+            <div
+              class="cert-actions"
+              style="margin-top:18px"
+            >
+
+              <a
+                id="viewCertificateButton"
+                class="cert-btn primary"
+                href="#"
+                style="display:none"
+              >
+                View Certificate
+              </a>
+
+              <button
+                id="newSearchButton"
+                type="button"
+                class="cert-btn soft"
+              >
+                New Search
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <aside class="side-stack">
+
+        <div class="side-panel-upgraded">
+
+          <h3>Certificate Types</h3>
+
+          <ul class="check-list">
+            <li>SpeakHub Academy courses</li>
+            <li>Learning pathway completion</li>
+            <li>Teacher training</li>
+            <li>Volunteer and ambassador programmes</li>
+            <li>Leadership programmes</li>
+            <li>Workshops and bootcamps</li>
+            <li>Approved external learning records</li>
+          </ul>
+
+        </div>
+
+
+        <div class="side-panel-upgraded">
+
+          <h3>Learning Providers</h3>
+
+          <p class="helper">
+            SpeakHub can track approved learning completed internally or
+            through external providers.
+          </p>
+
+          <div class="provider-list">
+            <span class="provider-pill">SpeakHub</span>
+            <span class="provider-pill">Kaggle</span>
+            <span class="provider-pill">Microsoft Learn</span>
+            <span class="provider-pill">IBM SkillsBuild</span>
+            <span class="provider-pill">HubSpot Academy</span>
+            <span class="provider-pill">Future Providers</span>
+          </div>
+
+        </div>
+
+
+        <div class="side-panel-upgraded portal-box">
+
+          <h3>Completed an External Course?</h3>
+
+          <p>
+            Learners can submit eligible external certificates or proof of
+            completion through the SpeakHub learner portal for review.
+          </p>
+
+          <a
+            class="cert-btn gold"
+            href="auth/auth.html"
+          >
+            Open Learner Portal
+          </a>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+
+    <div class="how-section">
+
+      <div class="how-grid">
+
+        <div class="how-card">
+          <div class="step-num">1</div>
+          <h4>Enter Credential Details</h4>
+          <p>
+            Use the certificate ID whenever possible, or search using
+            recipient information.
+          </p>
+        </div>
+
+        <div class="how-card">
+          <div class="step-num">2</div>
+          <h4>Check Verification Status</h4>
+          <p>
+            The system checks the certificate record and returns its current
+            verification status and issuer.
+          </p>
+        </div>
+
+        <div class="how-card">
+          <div class="step-num">3</div>
+          <h4>Confirm the Credential</h4>
+          <p>
+            Valid SpeakOut or SpeakHub credentials can link to the dedicated
+            certificate view for additional verification.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<a
+  class="float"
+  href="https://wa.me/2348118103510"
+  target="_blank"
+  rel="noopener"
+>
+  Need Help?
+</a>
+
+
+<footer class="footer">
+
+  <div class="container">
+
+    <div class="footer-grid">
+
+      <div>
+        <img src="images/logo.png" alt="SpeakOut Logo">
+        <h3>SpeakOut</h3>
+        <p>
+          Building safer mental health ecosystems for schools, students,
+          parents, teachers and communities.
+        </p>
+      </div>
+
+      <div>
+        <h4>Explore</h4>
+        <a href="index.html">Home</a>
+        <a href="pages/about.html">About</a>
+        <a href="pages/programs.html">Programs</a>
+        <a href="pages/schools.html">Schools</a>
+      </div>
+
+      <div>
+        <h4>Access</h4>
+        <a href="auth/auth.html">Portal Login / Apply</a>
+        <a href="school-register.html">School Registration</a>
+        <a href="certificate-center.html">Certificate Check</a>
+        <a href="pages/donate.html">Donate</a>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <a href="mailto:speaaakout@gmail.com">speaaakout@gmail.com</a>
+        <a href="https://wa.me/2348118103510">WhatsApp</a>
+        <a href="https://instagram.com/speaaakout" target="_blank" rel="noopener">@speaaakout</a>
+        <a href="pages/contact.html">Contact Form</a>
+      </div>
+
+    </div>
+
+    <p style="margin-top:30px;color:rgba(255,255,255,.55)">
+      © 2026 SpeakOut Mental Health Outreach. Educational support only;
+      not a replacement for professional medical care or emergency services.
+    </p>
+
+  </div>
+
+</footer>
+
+
+<script type="module">
+
+import { db } from "./firebase-config.js";
+
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  limit
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+const form =
+  document.getElementById("verificationForm");
+
+const tabId =
+  document.getElementById("tabId");
+
+const tabRecipient =
+  document.getElementById("tabRecipient");
+
+const idSearchFields =
+  document.getElementById("idSearchFields");
+
+const recipientSearchFields =
+  document.getElementById("recipientSearchFields");
+
+const certificateIdInput =
+  document.getElementById("certificateId");
+
+const recipientNameInput =
+  document.getElementById("recipientName");
+
+const recipientEmailInput =
+  document.getElementById("recipientEmail");
+
+const verifyButton =
+  document.getElementById("verifyButton");
+
+const clearButton =
+  document.getElementById("clearButton");
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const resultCard =
+  document.getElementById("resultCard");
+
+const resultTitle =
+  document.getElementById("resultTitle");
+
+const resultSubtitle =
+  document.getElementById("resultSubtitle");
+
+const resultBadge =
+  document.getElementById("resultBadge");
+
+const resultId =
+  document.getElementById("resultId");
+
+const resultRecipient =
+  document.getElementById("resultRecipient");
+
+const resultCourse =
+  document.getElementById("resultCourse");
+
+const resultDate =
+  document.getElementById("resultDate");
+
+const resultType =
+  document.getElementById("resultType");
+
+const resultIssuer =
+  document.getElementById("resultIssuer");
+
+const providerHeading =
+  document.getElementById("providerHeading");
+
+const providerText =
+  document.getElementById("providerText");
+
+const externalCredentialNote =
+  document.getElementById("externalCredentialNote");
+
+const viewCertificateButton =
+  document.getElementById("viewCertificateButton");
+
+const newSearchButton =
+  document.getElementById("newSearchButton");
+
+
+let searchMode = "id";
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function normalise(value){
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
+
+
+function formatLabel(value){
+  if(!value) return "—";
+
+  return String(value)
+    .replaceAll("-"," ")
+    .replace(/\b\w/g,letter=>letter.toUpperCase());
+}
+
+
+function formatDate(value){
+
+  if(!value) return "—";
+
+  try{
+
+    let date;
+
+    if(value?.toDate){
+      date = value.toDate();
+    }else{
+      date = new Date(value);
+    }
+
+    if(Number.isNaN(date.getTime())){
+      return String(value);
+    }
+
+    return date.toLocaleDateString(
+      undefined,
+      {
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      }
+    );
+
+  }catch{
+    return String(value);
+  }
+
+}
+
+
+function showStatus(type,message){
+
+  statusBox.className =
+    `status-box ${type}`;
+
+  statusBox.textContent =
+    message;
+
+}
+
+
+function hideStatus(){
+
+  statusBox.className =
+    "status-box";
+
+  statusBox.textContent =
+    "";
+
+}
+
+
+function setSearchMode(mode){
+
+  searchMode = mode;
+
+  const byId =
+    mode === "id";
+
+  tabId.classList.toggle(
+    "active",
+    byId
+  );
+
+  tabRecipient.classList.toggle(
+    "active",
+    !byId
+  );
+
+  idSearchFields.style.display =
+    byId ? "block" : "none";
+
+  recipientSearchFields.style.display =
+    byId ? "none" : "block";
+
+  hideStatus();
+
+  resultCard.classList.remove(
+    "show"
+  );
+
+}
+
+
+function clearSearch(){
+
+  certificateIdInput.value = "";
+  recipientNameInput.value = "";
+  recipientEmailInput.value = "";
+
+  hideStatus();
+
+  resultCard.classList.remove(
+    "show"
+  );
+
+}
+
+
+function certificateStatus(record){
+
+  return normalise(
+    record.verificationStatus ||
+    record.status ||
+    "verified"
+  );
+
+}
+
+
+function isExternalRecord(record){
+
+  return (
+    record.courseType === "external" ||
+    record.sourceType === "external" ||
+    record.externalProvider === true ||
+    record.completionMethod === "certificate-upload"
+  );
+
+}
+
+
+function renderCertificate(record,docId){
+
+  const status =
+    certificateStatus(record);
+
+  resultTitle.textContent =
+    record.certificateTitle ||
+    record.courseTitle ||
+    record.programmeTitle ||
+    record.programTitle ||
+    "Certificate";
+
+  resultSubtitle.textContent =
+    record.category
+    ? formatLabel(record.category)
+    : "SpeakOut / SpeakHub Credential";
+
+  resultId.textContent =
+    record.certificateId ||
+    record.certificateNumber ||
+    docId ||
+    "—";
+
+  resultRecipient.textContent =
+    record.recipientName ||
+    record.learnerName ||
+    record.name ||
+    "—";
+
+  resultCourse.textContent =
+    record.courseTitle ||
+    record.programmeTitle ||
+    record.programTitle ||
+    record.trainingTitle ||
+    "—";
+
+  resultDate.textContent =
+    formatDate(
+      record.completionDate ||
+      record.issueDate ||
+      record.issuedAt ||
+      record.createdAt
+    );
+
+  resultType.textContent =
+    formatLabel(
+      record.credentialType ||
+      record.certificateType ||
+      record.type ||
+      "certificate"
+    );
+
+  const issuer =
+    record.issuer ||
+    record.certificateIssuer ||
+    record.provider ||
+    "SpeakOut Mental Health Outreach";
+
+  resultIssuer.textContent =
+    issuer;
+
+  providerHeading.textContent =
+    record.provider ||
+    issuer;
+
+  const external =
+    isExternalRecord(record);
+
+  providerText.textContent =
+    external
+    ? "External learning provider credential recorded through SpeakHub."
+    : "Credential issued or managed through SpeakOut / SpeakHub.";
+
+  externalCredentialNote.style.display =
+    external ? "block" : "none";
+
+
+  resultBadge.className =
+    `verify-badge ${status}`;
+
+
+  if(status === "verified" || status === "approved"){
+
+    resultBadge.textContent =
+      "Verified";
+
+    resultBadge.className =
+      "verify-badge verified";
+
+  }else if(status === "pending"){
+
+    resultBadge.textContent =
+      "Pending Review";
+
+    resultBadge.className =
+      "verify-badge pending";
+
+  }else if(status === "revoked"){
+
+    resultBadge.textContent =
+      "Revoked";
+
+    resultBadge.className =
+      "verify-badge revoked";
+
+  }else{
+
+    resultBadge.textContent =
+      formatLabel(status);
+
+    resultBadge.className =
+      "verify-badge rejected";
+
+  }
+
+
+  const publicId =
+    record.certificateId ||
+    record.certificateNumber ||
+    docId;
+
+
+  if(
+    publicId &&
+    (status === "verified" || status === "approved")
+  ){
+
+    viewCertificateButton.href =
+      `certificate-view.html?id=${encodeURIComponent(publicId)}`;
+
+    viewCertificateButton.style.display =
+      "inline-flex";
+
+  }else{
+
+    viewCertificateButton.style.display =
+      "none";
+
+  }
+
+
+  resultCard.classList.add(
+    "show"
+  );
+
+}
+
+
+async function searchByCertificateId(rawId){
+
+  const id =
+    rawId.trim();
+
+  if(!id){
+    throw new Error(
+      "Enter a certificate ID."
+    );
+  }
+
+
+  const certificates =
+    collection(db,"certificates");
+
+
+  /*
+    The production schema should store a normalized certificateId
+    field on every credential.
+  */
+
+  let snap =
+    await getDocs(
+      query(
+        certificates,
+        where("certificateId","==",id),
+        limit(2)
+      )
+    );
+
+
+  /*
+    Compatibility fallback for older records that may have stored
+    certificateNumber instead of certificateId.
+  */
+
+  if(snap.empty){
+
+    snap =
+      await getDocs(
+        query(
+          certificates,
+          where("certificateNumber","==",id),
+          limit(2)
+        )
+      );
+
+  }
+
+
+  if(snap.empty){
+    return null;
+  }
+
+
+  const first =
+    snap.docs[0];
+
+
+  return {
+    docId:first.id,
+    record:first.data()
+  };
+
+}
+
+
+async function searchByRecipient(name,email){
+
+  const cleanName =
+    name.trim();
+
+  const cleanEmail =
+    email.trim().toLowerCase();
+
+
+  if(!cleanName && !cleanEmail){
+
+    throw new Error(
+      "Enter the recipient name or email."
+    );
+
+  }
+
+
+  const certificates =
+    collection(db,"certificates");
+
+
+  let snap;
+
+
+  /*
+    Prefer recipient email because it is usually more precise.
+    Firestore should store recipientEmailNormalized in lowercase.
+  */
+
+  if(cleanEmail){
+
+    snap =
+      await getDocs(
+        query(
+          certificates,
+          where(
+            "recipientEmailNormalized",
+            "==",
+            cleanEmail
+          ),
+          limit(20)
+        )
+      );
+
+  }else{
+
+    snap =
+      await getDocs(
+        query(
+          certificates,
+          where(
+            "recipientName",
+            "==",
+            cleanName
+          ),
+          limit(20)
+        )
+      );
+
+  }
+
+
+  if(snap.empty){
+    return null;
+  }
+
+
+  let matches =
+    snap.docs.map(docSnap=>({
+      docId:docSnap.id,
+      record:docSnap.data()
+    }));
+
+
+  if(cleanName){
+
+    matches =
+      matches.filter(item=>
+        normalise(
+          item.record.recipientName ||
+          item.record.learnerName ||
+          item.record.name
+        ) === normalise(cleanName)
+      );
+
+  }
+
+
+  if(cleanEmail){
+
+    matches =
+      matches.filter(item=>
+        normalise(
+          item.record.recipientEmailNormalized ||
+          item.record.recipientEmail ||
+          item.record.learnerEmail
+        ) === cleanEmail
+      );
+
+  }
+
+
+  if(!matches.length){
+    return null;
+  }
+
+
+  /*
+    For privacy, return only one exact match on the public page.
+    A learner can see their full credential history inside the portal.
+  */
+
+  return matches[0];
+
+}
+
+
+tabId.addEventListener(
+  "click",
+  ()=>setSearchMode("id")
+);
+
+
+tabRecipient.addEventListener(
+  "click",
+  ()=>setSearchMode("recipient")
+);
+
+
+clearButton.addEventListener(
+  "click",
+  clearSearch
+);
+
+
+newSearchButton.addEventListener(
+  "click",
+  ()=>{
+    clearSearch();
+
+    window.scrollTo({
+      top:
+        document.querySelector(".certificate-main")
+          .offsetTop - 40,
+      behavior:"smooth"
+    });
+  }
+);
+
+
+form.addEventListener(
+  "submit",
+  async event=>{
+
+    event.preventDefault();
+
+    hideStatus();
+
+    resultCard.classList.remove(
+      "show"
+    );
+
+
+    verifyButton.disabled =
+      true;
+
+    verifyButton.textContent =
+      "Checking...";
+
+
+    showStatus(
+      "loading",
+      "Checking the certificate registry..."
+    );
+
+
+    try{
+
+      let result;
+
+
+      if(searchMode === "id"){
+
+        result =
+          await searchByCertificateId(
+            certificateIdInput.value
+          );
+
+      }else{
+
+        result =
+          await searchByRecipient(
+            recipientNameInput.value,
+            recipientEmailInput.value
+          );
+
+      }
+
+
+      if(!result){
+
+        showStatus(
+          "error",
+          "No matching certificate was found. Check the details and try again."
+        );
+
+        return;
+
+      }
+
+
+      const status =
+        certificateStatus(
+          result.record
+        );
+
+
+      if(
+        status === "verified" ||
+        status === "approved"
+      ){
+
+        showStatus(
+          "success",
+          "Certificate record found and verified."
+        );
+
+      }else if(status === "pending"){
+
+        showStatus(
+          "warning",
+          "This certificate record exists but is still awaiting verification."
+        );
+
+      }else if(status === "revoked"){
+
+        showStatus(
+          "error",
+          "This certificate record has been revoked. Contact SpeakOut for clarification."
+        );
+
+      }else{
+
+        showStatus(
+          "warning",
+          `Certificate record found with status: ${formatLabel(status)}.`
+        );
+
+      }
+
+
+      renderCertificate(
+        result.record,
+        result.docId
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Certificate verification error:",
+        error
+      );
+
+
+      showStatus(
+        "error",
+        error.message ||
+        "Certificate verification failed. Please try again."
+      );
+
+
+    }finally{
+
+      verifyButton.disabled =
+        false;
+
+      verifyButton.textContent =
+        "Verify Certificate";
+
+    }
+
+  }
+);
+
+</script>
+
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
