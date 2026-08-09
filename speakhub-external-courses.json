@@ -1,0 +1,162 @@
+[
+  {
+    "id": "ext-kaggle-intro-machine-learning",
+    "title": "Intro to Machine Learning",
+    "courseType": "external",
+    "provider": "Kaggle",
+    "providerLogo": "",
+    "category": "ai-data",
+    "audience": [
+      "secondary",
+      "university",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "duration": "Self-paced",
+    "description": "Learn the core ideas of machine learning and build your first models on Kaggle's official learning platform.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "accessType": "free",
+    "certificateEligible": true,
+    "externalUrl": "https://www.kaggle.com/learn/intro-to-machine-learning",
+    "completionMethod": "certificate-upload",
+    "certificate": {
+      "available": true,
+      "issuer": "Kaggle",
+      "verificationRequired": true,
+      "uploadRequired": true
+    },
+    "outcomes": [
+      "Understand basic machine learning model concepts",
+      "Explore and prepare data for simple models",
+      "Build and validate introductory machine learning models"
+    ],
+    "prerequisites": [
+      "Basic familiarity with Python is helpful."
+    ]
+  },
+  {
+    "id": "ext-freecodecamp-python-certification",
+    "title": "Python Certification",
+    "courseType": "external",
+    "provider": "freeCodeCamp",
+    "providerLogo": "",
+    "category": "programming",
+    "audience": [
+      "secondary",
+      "university",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "duration": "Self-paced",
+    "description": "Learn Python fundamentals and complete the required projects toward freeCodeCamp's Python certification pathway.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "accessType": "free",
+    "certificateEligible": true,
+    "externalUrl": "https://www.freecodecamp.org/learn/python-v9",
+    "completionMethod": "certificate-upload",
+    "certificate": {
+      "available": true,
+      "issuer": "freeCodeCamp",
+      "verificationRequired": true,
+      "uploadRequired": true
+    },
+    "outcomes": [
+      "Understand core Python syntax and programming concepts",
+      "Work with variables, functions, data structures and control flow",
+      "Complete practical projects toward the provider's certification"
+    ],
+    "prerequisites": [
+      "No previous programming experience is required."
+    ]
+  },
+  {
+    "id": "ext-cisco-intro-cybersecurity",
+    "title": "Introduction to Cybersecurity",
+    "courseType": "external",
+    "provider": "Cisco Networking Academy / Skills for All",
+    "providerLogo": "",
+    "category": "ict-cybersecurity",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "duration": "6 hours",
+    "description": "Build foundational cybersecurity awareness, understand common threats and learn essential security practices on Cisco's official Skills for All platform.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "accessType": "free",
+    "certificateEligible": true,
+    "externalUrl": "https://skillsforall.com/course/introduction-to-cybersecurity",
+    "completionMethod": "certificate-upload",
+    "certificate": {
+      "available": true,
+      "issuer": "Cisco Networking Academy / Skills for All",
+      "verificationRequired": true,
+      "uploadRequired": true
+    },
+    "outcomes": [
+      "Understand core cybersecurity concepts",
+      "Recognize common threats and vulnerabilities",
+      "Apply basic privacy and security best practices"
+    ],
+    "prerequisites": [
+      "No prior cybersecurity experience is required."
+    ]
+  },
+  {
+    "id": "ext-openlearn-leadership-followership",
+    "title": "Leadership and Followership",
+    "courseType": "external",
+    "provider": "OpenLearn - The Open University",
+    "providerLogo": "",
+    "category": "leadership",
+    "audience": [
+      "secondary",
+      "university",
+      "teachers",
+      "parents",
+      "young-professionals",
+      "ngo-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "duration": "Self-paced",
+    "description": "Explore leadership, followership, common leadership challenges and practical ways to develop your leadership capability through OpenLearn.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "accessType": "free",
+    "certificateEligible": true,
+    "externalUrl": "https://www.open.edu/openlearn/education-development/learning/leadership-and-followership/content-section-overview?active-tab=description-tab",
+    "completionMethod": "certificate-upload",
+    "certificate": {
+      "available": true,
+      "issuer": "The Open University / OpenLearn",
+      "verificationRequired": true,
+      "uploadRequired": true
+    },
+    "outcomes": [
+      "Explore what effective leadership means",
+      "Recognize common leadership challenges",
+      "Identify practical leadership development goals"
+    ],
+    "prerequisites": [
+      "No formal prerequisites."
+    ]
+  }
+]
