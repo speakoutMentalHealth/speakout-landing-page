@@ -9969,4 +9969,684 @@
       "verificationRequired": true
     }
   }
+
+  {
+    "id": "career-readiness",
+    "title": "Career Readiness",
+    "courseType": "internal",
+    "provider": "SpeakHub Academy",
+    "providerLogo": "",
+    "category": "career-development",
+    "audience": [
+      "secondary",
+      "university",
+      "young-professionals",
+      "adults",
+      "general"
+    ],
+    "difficulty": "beginner",
+    "level": "beginner",
+    "duration": "5 weeks",
+    "description": "A practical career-readiness course that helps learners understand their strengths, explore career options, prepare professional application materials, practice workplace communication and interviews, and build a realistic action plan for education, employment or entrepreneurship.",
+    "shortDescription": "Build practical career skills, professional confidence and a clear action plan for your next step.",
+    "status": "active",
+    "featured": true,
+    "free": true,
+    "accessType": "free",
+    "certificateEligible": true,
+    "certificate": {
+      "available": true,
+      "issuer": "SpeakHub Academy",
+      "verificationRequired": false,
+      "uploadRequired": false
+    },
+    "completionMethod": "internal",
+    "outcomes": [
+      "Identify personal strengths, interests, values and transferable skills.",
+      "Explore realistic career, education and entrepreneurship pathways.",
+      "Create a targeted CV or resume and a professional personal profile.",
+      "Prepare for interviews and communicate confidently in professional settings.",
+      "Demonstrate workplace readiness, professionalism and basic digital career skills.",
+      "Create a measurable 30-day career action plan and track progress."
+    ],
+    "prerequisites": [
+      "No prior career training is required.",
+      "Learners should be willing to complete reflection activities and practical career tasks."
+    ],
+    "modules": [
+      {
+        "id": "career-readiness-module-1",
+        "title": "Foundation and Awareness",
+        "description": "Understand career readiness, personal strengths, values and transferable skills.",
+        "lessons": [
+          {
+            "title": "Understanding Career Readiness",
+            "duration": "25 mins",
+            "content": "<h2>Understanding Career Readiness</h2><p>Career readiness is more than getting a job. It combines self-awareness, communication, problem-solving, professionalism, digital confidence and the ability to take responsible action.</p><h3>Learning Objectives</h3><ul><li>Explain what career readiness means.</li><li>Identify the main skills employers and learning institutions expect.</li><li>Recognize the difference between technical skills and transferable skills.</li></ul><h3>Key Ideas</h3><ul><li>Career readiness develops through practice, not only certificates.</li><li>Transferable skills such as communication, teamwork and problem-solving apply across many careers.</li><li>Knowing your current strengths and gaps helps you choose useful next steps.</li></ul><h3>Activity</h3><p>Create a two-column list of your current strengths and the career-readiness skills you want to improve.</p>",
+            "activity": "Create a two-column list of your current strengths and the career-readiness skills you want to improve.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Career Readiness Self-Assessment",
+                "delivery": "in-platform",
+                "instructions": "Rate yourself from 1 to 5 on communication, teamwork, problem-solving, digital confidence, professionalism and self-management. Write one improvement action for your two lowest areas."
+              }
+            ],
+            "id": "career-readiness-m1-l1",
+            "order": 1,
+            "status": "active"
+          },
+          {
+            "title": "Strengths, Interests and Values",
+            "duration": "25 mins",
+            "content": "<h2>Strengths, Interests and Values</h2><p>Good career decisions are stronger when they connect your abilities, interests and values to realistic opportunities.</p><h3>Learning Objectives</h3><ul><li>Identify personal strengths and interests.</li><li>Describe values that matter in your future work.</li><li>Connect personal qualities to possible career areas.</li></ul><h3>Key Ideas</h3><ul><li>Strengths describe what you do well; interests describe what attracts your attention.</li><li>Values influence the kind of environment and work that feels meaningful.</li><li>A career choice should consider both personal fit and real-world opportunity.</li></ul><h3>Activity</h3><p>Write your top five strengths, top three interests and top three work values. Identify two careers that could fit the combination.</p>",
+            "activity": "Write your top five strengths, top three interests and top three work values. Identify two careers that could fit the combination.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Strengths and Career Fit Worksheet",
+                "delivery": "in-platform",
+                "instructions": "Complete the strengths, interests and values sections, then identify two possible career paths and explain why each one fits."
+              }
+            ],
+            "id": "career-readiness-m1-l2",
+            "order": 2,
+            "status": "active"
+          },
+          {
+            "title": "Transferable Skills and Evidence",
+            "duration": "25 mins",
+            "content": "<h2>Transferable Skills and Evidence</h2><p>Employers and schools value evidence. Learners need to explain not only which skills they have, but where and how they used them.</p><h3>Learning Objectives</h3><ul><li>Identify transferable skills from school, volunteering, family responsibilities and projects.</li><li>Use a simple Situation-Action-Result structure to describe evidence.</li><li>Turn everyday experience into credible career examples.</li></ul><h3>Key Ideas</h3><ul><li>Unpaid experience can still demonstrate valuable skills.</li><li>Specific examples are stronger than vague claims.</li><li>Results can include improvement, completion, learning, service or problem resolution.</li></ul><h3>Activity</h3><p>Write one Situation-Action-Result example that proves a skill you already have.</p>",
+            "activity": "Write one Situation-Action-Result example that proves a skill you already have.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Transferable Skills Evidence Builder",
+                "delivery": "in-platform",
+                "instructions": "Choose three transferable skills and write one evidence example for each using Situation, Action and Result."
+              }
+            ],
+            "id": "career-readiness-m1-l3",
+            "order": 3,
+            "status": "active"
+          }
+        ],
+        "quiz": {
+          "title": "Foundation and Awareness Quiz",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "Which statement best describes career readiness?",
+              "type": "multiple-choice",
+              "options": [
+                "A combination of practical skills, self-awareness and professional behaviors",
+                "Having only a university degree",
+                "Applying for as many jobs as possible",
+                "Knowing one technical skill"
+              ],
+              "answer": 0,
+              "explanation": "Career readiness combines practical skills, behaviors and the ability to apply them."
+            },
+            {
+              "question": "Which is an example of a transferable skill?",
+              "type": "multiple-choice",
+              "options": [
+                "Teamwork",
+                "A specific software license only",
+                "A company name",
+                "A job title"
+              ],
+              "answer": 0,
+              "explanation": "Teamwork can transfer across many industries and roles."
+            },
+            {
+              "question": "Why should you use evidence when describing a skill?",
+              "type": "multiple-choice",
+              "options": [
+                "It makes the claim more credible",
+                "It guarantees employment",
+                "It replaces qualifications",
+                "It removes the need to practice"
+              ],
+              "answer": 0,
+              "explanation": "Specific evidence helps demonstrate how you actually used the skill."
+            }
+          ]
+        },
+        "order": 1
+      },
+      {
+        "id": "career-readiness-module-2",
+        "title": "Career Planning",
+        "description": "Explore pathways, set goals and build a practical career plan.",
+        "lessons": [
+          {
+            "title": "Exploring Career Pathways",
+            "duration": "25 mins",
+            "content": "<h2>Exploring Career Pathways</h2><p>Career planning starts with research. Learners should compare pathways rather than choosing based only on popularity, pressure or assumptions.</p><h3>Learning Objectives</h3><ul><li>Research different career pathways.</li><li>Compare education, employment and entrepreneurship options.</li><li>Identify entry requirements and realistic first steps.</li></ul><h3>Key Ideas</h3><ul><li>The same interest can lead to several different careers.</li><li>Entry requirements vary by role, employer, sector and country.</li><li>Career plans should remain flexible as new information becomes available.</li></ul><h3>Activity</h3><p>Choose one career area and research three possible roles within it. Record the main duties, skills, qualifications and entry routes.</p>",
+            "activity": "Choose one career area and research three possible roles within it. Record the main duties, skills, qualifications and entry routes.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Career Pathway Research Sheet",
+                "delivery": "in-platform",
+                "instructions": "Research three related roles and compare duties, required skills, qualifications, likely entry routes and one source of reliable information for each."
+              }
+            ],
+            "id": "career-readiness-m2-l1",
+            "order": 1,
+            "status": "active"
+          },
+          {
+            "title": "Setting Career Goals",
+            "duration": "20 mins",
+            "content": "<h2>Setting Career Goals</h2><p>Career goals are useful when they translate ambition into measurable actions and deadlines.</p><h3>Learning Objectives</h3><ul><li>Convert a broad career ambition into a specific goal.</li><li>Create short-term and medium-term career milestones.</li><li>Identify resources and support needed.</li></ul><h3>Key Ideas</h3><ul><li>A useful goal states what you will do and by when.</li><li>Large goals become easier when broken into smaller milestones.</li><li>Reviewing progress regularly helps you adjust without abandoning the overall direction.</li></ul><h3>Activity</h3><p>Write one 90-day career goal and break it into three 30-day milestones.</p>",
+            "activity": "Write one 90-day career goal and break it into three 30-day milestones.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Career Goal Planner",
+                "delivery": "in-platform",
+                "instructions": "Create one 90-day goal, three milestones, the support/resources needed, and evidence that will show each milestone is complete."
+              }
+            ],
+            "id": "career-readiness-m2-l2",
+            "order": 2,
+            "status": "active"
+          },
+          {
+            "title": "Building Your Career Plan",
+            "duration": "25 mins",
+            "content": "<h2>Building Your Career Plan</h2><p>A career plan should connect your target, current position, gaps and actions in one practical document.</p><h3>Learning Objectives</h3><ul><li>Identify the gap between current readiness and target requirements.</li><li>Prioritize the most important development actions.</li><li>Create a simple plan that can be reviewed monthly.</li></ul><h3>Key Ideas</h3><ul><li>Not every skill gap needs to be solved immediately.</li><li>Priority should be based on relevance and impact.</li><li>A career plan is a living document and should change as circumstances change.</li></ul><h3>Activity</h3><p>Create a one-page career plan covering target role, current strengths, gaps, actions, deadlines and support required.</p>",
+            "activity": "Create a one-page career plan covering target role, current strengths, gaps, actions, deadlines and support required.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "One-Page Career Plan",
+                "delivery": "in-platform",
+                "instructions": "Complete the target role, current strengths, top gaps, three priority actions, deadlines and people/resources that can support you."
+              }
+            ],
+            "id": "career-readiness-m2-l3",
+            "order": 3,
+            "status": "active"
+          }
+        ],
+        "quiz": {
+          "title": "Career Planning Quiz",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "What is the best first step when exploring a career?",
+              "type": "multiple-choice",
+              "options": [
+                "Research roles, requirements and pathways",
+                "Choose the highest-paying title without research",
+                "Copy another person's plan",
+                "Wait until graduation"
+              ],
+              "answer": 0,
+              "explanation": "Research helps you make realistic and informed decisions."
+            },
+            {
+              "question": "A useful career goal should be:",
+              "type": "multiple-choice",
+              "options": [
+                "Specific and time-bound",
+                "Very broad with no deadline",
+                "Based only on what others want",
+                "Impossible to measure"
+              ],
+              "answer": 0,
+              "explanation": "Specific, measurable goals make progress easier to manage."
+            },
+            {
+              "question": "What should a career plan include?",
+              "type": "multiple-choice",
+              "options": [
+                "Target, gaps, actions and deadlines",
+                "Only the target job title",
+                "Only qualifications already completed",
+                "Only salary expectations"
+              ],
+              "answer": 0,
+              "explanation": "A practical plan connects the target to current gaps and next actions."
+            }
+          ]
+        },
+        "order": 2
+      },
+      {
+        "id": "career-readiness-module-3",
+        "title": "Practice and Application",
+        "description": "Develop a strong CV or resume, professional profile and tailored applications.",
+        "lessons": [
+          {
+            "title": "Creating a Strong CV or Resume",
+            "duration": "30 mins",
+            "content": "<h2>Creating a Strong CV or Resume</h2><p>A CV or resume should make it easy for the reader to understand your relevant skills, experience, achievements and potential.</p><h3>Learning Objectives</h3><ul><li>Identify the essential sections of a CV or resume.</li><li>Write clear achievement-focused bullet points.</li><li>Tailor content to a specific opportunity.</li></ul><h3>Key Ideas</h3><ul><li>Relevance is more important than including everything you have ever done.</li><li>Action verbs and specific results make experience stronger.</li><li>Formatting should be clear, consistent and easy to scan.</li></ul><h3>Activity</h3><p>Draft or improve one CV section using action verbs and evidence of results.</p>",
+            "activity": "Draft or improve one CV section using action verbs and evidence of results.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "CV Improvement Checklist",
+                "delivery": "in-platform",
+                "instructions": "Review your CV for contact details, profile, education, experience, skills, achievements, consistency, spelling and relevance to your target role."
+              }
+            ],
+            "id": "career-readiness-m3-l1",
+            "order": 1,
+            "status": "active"
+          },
+          {
+            "title": "Professional Profile and Online Presence",
+            "duration": "25 mins",
+            "content": "<h2>Professional Profile and Online Presence</h2><p>Your professional profile helps employers, schools, partners and collaborators quickly understand who you are and what value you can offer.</p><h3>Learning Objectives</h3><ul><li>Write a concise professional summary.</li><li>Identify appropriate information for a professional online profile.</li><li>Recognize digital behaviors that can affect professional reputation.</li></ul><h3>Key Ideas</h3><ul><li>A strong profile is specific about skills, interests and direction.</li><li>Online activity can contribute to professional credibility or undermine it.</li><li>Consistency across your CV, applications and profiles builds trust.</li></ul><h3>Activity</h3><p>Write a 60- to 90-word professional summary for your CV or online profile.</p>",
+            "activity": "Write a 60- to 90-word professional summary for your CV or online profile.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Professional Profile Builder",
+                "delivery": "in-platform",
+                "instructions": "Write a headline, short summary, five skills and two examples of work, volunteering, projects or learning that support your target."
+              }
+            ],
+            "id": "career-readiness-m3-l2",
+            "order": 2,
+            "status": "active"
+          },
+          {
+            "title": "Applications and Cover Messages",
+            "duration": "25 mins",
+            "content": "<h2>Applications and Cover Messages</h2><p>Applications are stronger when they show clear alignment between the opportunity and the learner's evidence.</p><h3>Learning Objectives</h3><ul><li>Read an opportunity description for requirements and priorities.</li><li>Match relevant evidence to the requirement.</li><li>Write a concise cover message or application introduction.</li></ul><h3>Key Ideas</h3><ul><li>Generic applications are weaker than tailored ones.</li><li>Use the language of the opportunity where it accurately reflects your experience.</li><li>A short, relevant message is usually stronger than an unfocused long one.</li></ul><h3>Activity</h3><p>Choose a real or sample opportunity and write a 120-word tailored application message.</p>",
+            "activity": "Choose a real or sample opportunity and write a 120-word tailored application message.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Application Matching Worksheet",
+                "delivery": "in-platform",
+                "instructions": "List five requirements from an opportunity and match each to one piece of evidence from your experience, projects, education or volunteering."
+              }
+            ],
+            "id": "career-readiness-m3-l3",
+            "order": 3,
+            "status": "active"
+          }
+        ],
+        "quiz": {
+          "title": "Practice and Application Quiz",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "What makes a CV bullet stronger?",
+              "type": "multiple-choice",
+              "options": [
+                "A clear action plus evidence or result",
+                "Using many unrelated adjectives",
+                "Writing one very long paragraph",
+                "Including every activity regardless of relevance"
+              ],
+              "answer": 0,
+              "explanation": "Action and evidence help the reader understand your contribution."
+            },
+            {
+              "question": "What should a professional summary communicate?",
+              "type": "multiple-choice",
+              "options": [
+                "Relevant strengths, direction and value",
+                "Private personal information",
+                "Every subject you have ever studied",
+                "Only your age"
+              ],
+              "answer": 0,
+              "explanation": "A concise professional summary should show relevant strengths and direction."
+            },
+            {
+              "question": "Why should an application be tailored?",
+              "type": "multiple-choice",
+              "options": [
+                "To connect your evidence to the specific requirements",
+                "To make it longer",
+                "To avoid reading the opportunity",
+                "To guarantee selection"
+              ],
+              "answer": 0,
+              "explanation": "Tailoring demonstrates relevance; it does not guarantee selection."
+            }
+          ]
+        },
+        "order": 3
+      },
+      {
+        "id": "career-readiness-module-4",
+        "title": "Professional Readiness",
+        "description": "Prepare for interviews, communicate professionally and demonstrate workplace readiness.",
+        "lessons": [
+          {
+            "title": "Interview Preparation",
+            "duration": "30 mins",
+            "content": "<h2>Interview Preparation</h2><p>Interview preparation reduces avoidable uncertainty and helps learners communicate evidence clearly.</p><h3>Learning Objectives</h3><ul><li>Research the role and organization before an interview.</li><li>Prepare examples for common competency questions.</li><li>Use Situation-Task-Action-Result to structure answers.</li></ul><h3>Key Ideas</h3><ul><li>Preparation should focus on relevant examples, not memorizing a script word-for-word.</li><li>Strong answers explain what you personally did.</li><li>Questions for the interviewer can demonstrate preparation and curiosity.</li></ul><h3>Activity</h3><p>Prepare three STAR examples: one for teamwork, one for problem-solving and one for handling a challenge.</p>",
+            "activity": "Prepare three STAR examples: one for teamwork, one for problem-solving and one for handling a challenge.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Interview STAR Practice Sheet",
+                "delivery": "in-platform",
+                "instructions": "Write Situation, Task, Action and Result for three examples. Keep each example focused on your own actions and outcome."
+              }
+            ],
+            "id": "career-readiness-m4-l1",
+            "order": 1,
+            "status": "active"
+          },
+          {
+            "title": "Professional Communication",
+            "duration": "25 mins",
+            "content": "<h2>Professional Communication</h2><p>Professional communication includes clear speaking, respectful writing, active listening and appropriate follow-up.</p><h3>Learning Objectives</h3><ul><li>Use clear and respectful workplace communication.</li><li>Write a concise professional email or message.</li><li>Practice active listening and clarification.</li></ul><h3>Key Ideas</h3><ul><li>Professional communication is clear, purposeful and respectful.</li><li>Tone matters in email, messaging, meetings and interviews.</li><li>Confirming expectations can prevent avoidable mistakes.</li></ul><h3>Activity</h3><p>Write a professional follow-up message after a mock interview or networking conversation.</p>",
+            "activity": "Write a professional follow-up message after a mock interview or networking conversation.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Professional Communication Practice",
+                "delivery": "in-platform",
+                "instructions": "Draft a subject line and short professional message that thanks the recipient, refers to the conversation and states an appropriate next step."
+              }
+            ],
+            "id": "career-readiness-m4-l2",
+            "order": 2,
+            "status": "active"
+          },
+          {
+            "title": "Workplace Readiness and Professionalism",
+            "duration": "25 mins",
+            "content": "<h2>Workplace Readiness and Professionalism</h2><p>Professionalism is demonstrated through reliability, responsibility, ethical behavior, teamwork and willingness to learn.</p><h3>Learning Objectives</h3><ul><li>Recognize behaviors associated with workplace professionalism.</li><li>Explain how reliability and accountability build trust.</li><li>Identify appropriate responses to common workplace situations.</li></ul><h3>Key Ideas</h3><ul><li>Professionalism applies in physical, remote and hybrid environments.</li><li>Owning mistakes and communicating early is usually better than hiding problems.</li><li>Respect, boundaries and confidentiality matter in professional environments.</li></ul><h3>Activity</h3><p>Review three workplace scenarios and write the most professional response to each.</p>",
+            "activity": "Review three workplace scenarios and write the most professional response to each.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Workplace Readiness Scenario Sheet",
+                "delivery": "in-platform",
+                "instructions": "Respond to scenarios involving a missed deadline, disagreement with a teammate and unclear instructions. Explain why your response is professional."
+              }
+            ],
+            "id": "career-readiness-m4-l3",
+            "order": 3,
+            "status": "active"
+          }
+        ],
+        "quiz": {
+          "title": "Professional Readiness Quiz",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "What is a strong way to structure a competency interview example?",
+              "type": "multiple-choice",
+              "options": [
+                "Situation, Task, Action, Result",
+                "Title, Salary, Address, Reference",
+                "Problem, Blame, Excuse, Exit",
+                "Question, Silence, Guess, Finish"
+              ],
+              "answer": 0,
+              "explanation": "STAR helps organize evidence clearly."
+            },
+            {
+              "question": "What is an example of professional communication?",
+              "type": "multiple-choice",
+              "options": [
+                "A clear, respectful message with an appropriate next step",
+                "Ignoring a request indefinitely",
+                "Sending confidential information publicly",
+                "Using an aggressive tone"
+              ],
+              "answer": 0,
+              "explanation": "Professional communication should be clear, respectful and purposeful."
+            },
+            {
+              "question": "If you realize you may miss a deadline, the best first response is usually to:",
+              "type": "multiple-choice",
+              "options": [
+                "Communicate early, explain the risk and propose a next step",
+                "Hide the problem",
+                "Blame a teammate immediately",
+                "Stop responding"
+              ],
+              "answer": 0,
+              "explanation": "Early communication and accountability protect trust and help resolve issues."
+            }
+          ]
+        },
+        "order": 4
+      },
+      {
+        "id": "career-readiness-module-5",
+        "title": "Action, Reflection and Reporting",
+        "description": "Build professional relationships, execute a 30-day action plan and create evidence of progress.",
+        "lessons": [
+          {
+            "title": "Networking and Opportunity Building",
+            "duration": "25 mins",
+            "content": "<h2>Networking and Opportunity Building</h2><p>Networking is the process of building genuine professional relationships and learning from people, communities and opportunities.</p><h3>Learning Objectives</h3><ul><li>Explain networking as relationship-building rather than asking strangers for jobs.</li><li>Prepare a concise introduction.</li><li>Identify safe and relevant places to build professional connections.</li></ul><h3>Key Ideas</h3><ul><li>Good networking is reciprocal and respectful.</li><li>A short introduction should communicate who you are, your interest and the reason for connecting.</li><li>Following up appropriately helps turn a first conversation into a professional relationship.</li></ul><h3>Activity</h3><p>Write a 30-second professional introduction and identify five people or communities you can learn from.</p>",
+            "activity": "Write a 30-second professional introduction and identify five people or communities you can learn from.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Networking Action Sheet",
+                "delivery": "in-platform",
+                "instructions": "Create your introduction, list five target connections or communities, and write one respectful outreach message."
+              }
+            ],
+            "id": "career-readiness-m5-l1",
+            "order": 1,
+            "status": "active"
+          },
+          {
+            "title": "Your 30-Day Career Action Plan",
+            "duration": "25 mins",
+            "content": "<h2>Your 30-Day Career Action Plan</h2><p>Progress depends on converting learning into repeated action. A short action plan creates accountability and evidence of movement.</p><h3>Learning Objectives</h3><ul><li>Prioritize the next three career actions.</li><li>Set measurable weekly commitments.</li><li>Define evidence of progress.</li></ul><h3>Key Ideas</h3><ul><li>Small consistent actions are more sustainable than occasional intense effort.</li><li>Track applications, learning, networking and portfolio progress.</li><li>Review what works and adapt your plan.</li></ul><h3>Activity</h3><p>Create a 30-day plan with weekly actions for learning, applications/opportunities, networking and portfolio development.</p>",
+            "activity": "Create a 30-day plan with weekly actions for learning, applications/opportunities, networking and portfolio development.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "30-Day Career Action Plan",
+                "delivery": "in-platform",
+                "instructions": "Plan four weeks of specific actions. Include target dates, evidence of completion and a weekly review question."
+              }
+            ],
+            "id": "career-readiness-m5-l2",
+            "order": 2,
+            "status": "active"
+          },
+          {
+            "title": "Reflection, Portfolio and Next Steps",
+            "duration": "30 mins",
+            "content": "<h2>Reflection, Portfolio and Next Steps</h2><p>Career readiness improves when learners collect evidence of learning and reflect on how their skills have developed.</p><h3>Learning Objectives</h3><ul><li>Review progress across the course outcomes.</li><li>Identify evidence to include in a simple career portfolio.</li><li>Choose next steps based on current readiness.</li></ul><h3>Key Ideas</h3><ul><li>A portfolio can include projects, certificates, writing samples, presentations, volunteer evidence and reflections.</li><li>Reflection helps convert experience into stronger future performance.</li><li>Career development continues after the course.</li></ul><h3>Activity</h3><p>Create a simple portfolio checklist and write a final reflection describing three skills you improved and your next three actions.</p>",
+            "activity": "Create a simple portfolio checklist and write a final reflection describing three skills you improved and your next three actions.",
+            "materials": [
+              {
+                "type": "worksheet",
+                "title": "Career Readiness Final Reflection",
+                "delivery": "in-platform",
+                "instructions": "List evidence you can include in your portfolio, rate yourself again on the original self-assessment areas, and write your next three career actions."
+              }
+            ],
+            "id": "career-readiness-m5-l3",
+            "order": 3,
+            "status": "active"
+          }
+        ],
+        "quiz": {
+          "title": "Action, Reflection and Reporting Quiz",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "What is the best description of networking?",
+              "type": "multiple-choice",
+              "options": [
+                "Building genuine professional relationships and learning from others",
+                "Asking every new contact for a job immediately",
+                "Collecting as many names as possible",
+                "Only attending large events"
+              ],
+              "answer": 0,
+              "explanation": "Networking is relationship-building, not simply requesting jobs."
+            },
+            {
+              "question": "A useful 30-day action plan should contain:",
+              "type": "multiple-choice",
+              "options": [
+                "Specific actions, dates and evidence of completion",
+                "Only a long-term dream",
+                "No deadlines",
+                "Actions controlled entirely by other people"
+              ],
+              "answer": 0,
+              "explanation": "Specific actions and evidence make progress trackable."
+            },
+            {
+              "question": "Why is a career portfolio useful?",
+              "type": "multiple-choice",
+              "options": [
+                "It provides evidence of skills, learning and completed work",
+                "It replaces all interviews",
+                "It guarantees a job",
+                "It should contain only certificates"
+              ],
+              "answer": 0,
+              "explanation": "A portfolio helps demonstrate capability with concrete evidence."
+            }
+          ]
+        },
+        "finalAssessment": {
+          "id": "career-readiness-final-assessment",
+          "title": "Career Readiness Final Assessment",
+          "passMark": 70,
+          "questions": [
+            {
+              "question": "Which approach best demonstrates career readiness?",
+              "type": "multiple-choice",
+              "options": [
+                "Combining self-awareness, practical skills, evidence and consistent action",
+                "Waiting for opportunities without preparation",
+                "Focusing only on qualifications",
+                "Using the same generic application everywhere"
+              ],
+              "answer": 0,
+              "explanation": "Career readiness is demonstrated through practical capability, evidence and action."
+            },
+            {
+              "question": "What is the strongest way to show an employer that you have a skill?",
+              "type": "multiple-choice",
+              "options": [
+                "Give a specific example showing what you did and the result",
+                "Simply say you are excellent",
+                "List the skill repeatedly",
+                "Avoid discussing experience"
+              ],
+              "answer": 0,
+              "explanation": "Evidence-based examples make skill claims credible."
+            },
+            {
+              "question": "When researching a career path, what should you compare?",
+              "type": "multiple-choice",
+              "options": [
+                "Role duties, skills, entry requirements and realistic pathways",
+                "Only the job title",
+                "Only social media popularity",
+                "Only one person's opinion"
+              ],
+              "answer": 0,
+              "explanation": "Good career decisions use multiple pieces of reliable information."
+            },
+            {
+              "question": "Why should a CV or resume be tailored?",
+              "type": "multiple-choice",
+              "options": [
+                "To emphasize evidence relevant to the specific opportunity",
+                "To make every application identical",
+                "To include unrelated information",
+                "To avoid reading the role description"
+              ],
+              "answer": 0,
+              "explanation": "Tailoring improves relevance."
+            },
+            {
+              "question": "What does STAR stand for in interview preparation?",
+              "type": "multiple-choice",
+              "options": [
+                "Situation, Task, Action, Result",
+                "Skill, Title, Application, Reference",
+                "Study, Test, Answer, Review",
+                "Summary, Target, Achievement, Resume"
+              ],
+              "answer": 0,
+              "explanation": "STAR is a standard structure for communicating experience clearly."
+            },
+            {
+              "question": "Which behavior demonstrates professionalism?",
+              "type": "multiple-choice",
+              "options": [
+                "Communicating early about risks and taking responsibility",
+                "Ignoring unclear instructions",
+                "Sharing confidential information",
+                "Blaming others before investigating"
+              ],
+              "answer": 0,
+              "explanation": "Responsibility and early communication help build trust."
+            },
+            {
+              "question": "What is the purpose of a 30-day career action plan?",
+              "type": "multiple-choice",
+              "options": [
+                "Turn career goals into specific, trackable actions",
+                "Guarantee a job within 30 days",
+                "Replace career research",
+                "Avoid reviewing progress"
+              ],
+              "answer": 0,
+              "explanation": "A short action plan turns goals into measurable action."
+            },
+            {
+              "question": "Which item can be part of a career portfolio?",
+              "type": "multiple-choice",
+              "options": [
+                "Projects and work samples",
+                "Only a birth certificate",
+                "Only social media followers",
+                "Nothing until you are employed"
+              ],
+              "answer": 0,
+              "explanation": "Projects and work samples are useful evidence of capability."
+            },
+            {
+              "question": "What is a healthy approach to networking?",
+              "type": "multiple-choice",
+              "options": [
+                "Build respectful relationships and learn from others",
+                "Ask every person for money or a job",
+                "Contact people repeatedly after they decline",
+                "Pretend to have experience you do not have"
+              ],
+              "answer": 0,
+              "explanation": "Professional networking should be genuine and respectful."
+            },
+            {
+              "question": "After completing the course, what is the best next step?",
+              "type": "multiple-choice",
+              "options": [
+                "Apply the learning, track progress and continue developing gaps",
+                "Stop learning completely",
+                "Wait for someone else to create a career plan",
+                "Use one generic CV forever"
+              ],
+              "answer": 0,
+              "explanation": "Career development is continuous and improves through action and review."
+            }
+          ]
+        },
+        "order": 5
+      }
+    ],
+    "lessonCount": 15
+  }
 ]
