@@ -3,94 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Course Player Pro | SpeakOut</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Course Player | SpeakHub Academy</title>
+<meta name="description" content="Interactive SpeakHub Academy course player with lessons, modules, quizzes, progress tracking and certificate eligibility.">
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
---navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--bg:#f7f9fc;
---line:#e5edf6;--soft:#eaf3ff;--shadow:0 20px 50px rgba(7,21,43,.12);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Outfit,sans-serif;background:var(--bg)}
-.hero{background:linear-gradient(135deg,#07152b,#0a5fbf);color:#fff;padding:40px}
-.container{width:min(1300px,95%);margin:auto}
-.layout{display:grid;grid-template-columns:320px 1fr;gap:20px;padding:20px}
-.sidebar,.content{background:#fff;border-radius:24px;box-shadow:var(--shadow)}
-.sidebar{padding:20px}
-.content{overflow:hidden}
-.slide-image{height:320px;background:linear-gradient(135deg,#07152b,#0a5fbf);display:flex;align-items:end;padding:30px;color:#fff}
-.slide-body{padding:30px;line-height:1.8}
-.progress{height:12px;background:#e5edf6;border-radius:999px;overflow:hidden}
-.progress div{height:100%;background:linear-gradient(90deg,#f4a21c,#0a5fbf);width:35%}
-.module{padding:12px;border:1px solid #e5edf6;border-radius:12px;margin-bottom:10px;cursor:pointer}
-.module.active{background:#0a5fbf;color:#fff}
-.btn{padding:12px 16px;border-radius:999px;border:none;font-weight:700}
-.primary{background:#0a5fbf;color:#fff}
-.gold{background:#f4a21c}
-@media(max-width:900px){.layout{grid-template-columns:1fr}}
+:root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--green:#0f8f6f;--bg:#f7f9fc;--line:#e5edf6;--soft:#eaf3ff;--goldSoft:#fff4df;--greenSoft:#e9fbf5;--muted:#637083;--ink:#111827;--shadow:0 20px 50px rgba(7,21,43,.12)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,sans-serif;background:var(--bg);color:var(--ink)}.container{width:min(1300px,95%);margin:auto}.hero{background:linear-gradient(135deg,#07152b,#0a5fbf);color:#fff}.hero .container{padding:32px 0}.hero h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,3rem)}.hero p{margin:0;opacity:.9;max-width:850px;line-height:1.6}.layout{display:grid;grid-template-columns:330px 1fr;gap:20px;padding:22px 0 50px}.sidebar,.content{background:#fff;border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--line)}.sidebar{padding:20px;align-self:start;position:sticky;top:20px}.content{overflow:hidden}.progress{height:12px;background:#e5edf6;border-radius:999px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,#f4a21c,#0a5fbf);width:0%;transition:width .25s ease}.progress-text{color:var(--muted);font-size:.9rem;margin:8px 0 20px}.module-group{margin-bottom:16px}.module-title{font-weight:800;margin-bottom:8px}.lesson-item{padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;font-size:.92rem;line-height:1.35;background:#fff}.lesson-item:hover{background:#f8fbff}.lesson-item.active{background:var(--blue);color:#fff;border-color:var(--blue)}.lesson-item.completed:not(.active){background:var(--greenSoft);border-color:#bde8db}.lesson-meta{display:block;font-size:.75rem;opacity:.72;margin-top:3px}.slide-image{min-height:250px;background:linear-gradient(135deg,#07152b,#0a5fbf);display:flex;align-items:flex-end;padding:30px;color:#fff;position:relative;overflow:hidden}.slide-image::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(7,21,43,.88),rgba(7,21,43,.1))}.slide-image h2{position:relative;z-index:2;margin:0;max-width:850px;font-size:clamp(1.5rem,3vw,2.3rem)}.slide-body{padding:30px;line-height:1.8}.lesson-content{min-height:180px}.notice{padding:14px 16px;border-radius:14px;background:var(--soft);color:#173b65;margin-bottom:18px;line-height:1.55}.notice.warning{background:var(--goldSoft);color:#684000}.notice.success{background:var(--greenSoft);color:#075e49}.btn-row{margin-top:25px;display:flex;gap:10px;flex-wrap:wrap}.btn{padding:12px 17px;border-radius:999px;border:none;font-weight:800;font-family:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.green{background:var(--green);color:#fff}.quiz-box{border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:20px;background:#fbfdff}.feature-list{padding-left:18px;line-height:1.8;color:var(--muted)}.loading{margin:25px 0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static}}
 </style>
 </head>
 <body>
-
-<div class="hero">
+<section class="hero"><div class="container"><h1 id="courseTitle">Loading Course...</h1><p id="courseSummary">Preparing your SpeakHub learning experience.</p></div></section>
 <div class="container">
-<h1>Upgraded Interactive Course Player</h1>
-<p>Enhanced LMS experience with modules, progress tracking, quizzes, worksheets and certificates.</p>
-</div>
-</div>
-
-<div class="container">
-<div class="layout">
-
-<div class="sidebar">
-<h3>Course Progress</h3>
-<div class="progress"><div></div></div>
-<p>35% Complete</p>
-
-<h3>Modules</h3>
-<div class="module active">1. Introduction</div>
-<div class="module">2. Core Concepts</div>
-<div class="module">3. Practical Activities</div>
-<div class="module">4. Knowledge Check</div>
-<div class="module">5. Final Assessment</div>
-
-<h3>Course Features</h3>
-<ul>
-<li>Progress Tracking</li>
-<li>Interactive Lessons</li>
-<li>Embedded Videos</li>
-<li>Worksheets</li>
-<li>Quizzes</li>
-<li>Certificates</li>
-</ul>
-</div>
-
-<div class="content">
-<div class="slide-image">
-<h2>Welcome to Your Interactive Learning Experience</h2>
-</div>
-
-<div class="slide-body">
-<h2>Lesson Overview</h2>
-<p>This upgraded player is designed for the SpeakOut Learning Management System.</p>
-
-<h3>Learning Outcomes</h3>
-<ul>
-<li>Understand key concepts</li>
-<li>Apply lessons in real-world scenarios</li>
-<li>Complete assessments</li>
-<li>Earn certificates</li>
-</ul>
-
-<div style="margin-top:20px">
-<button class="btn gold">Previous</button>
-<button class="btn primary">Next Lesson</button>
-</div>
-</div>
-</div>
-
-</div>
-</div>
-
+<div id="loading" class="loading">Loading course content...</div>
+<div id="playerArea" class="layout" style="display:none">
+<aside class="sidebar">
+<h3>Course Progress</h3><div class="progress"><div id="progressBar"></div></div><p id="progressText" class="progress-text">0% Complete</p>
+<h3>Course Content</h3><div id="moduleMenu"></div>
+<h3>Course Features</h3><ul class="feature-list"><li>Progress Tracking</li><li>Interactive Lessons</li><li>Quizzes & Assessments</li><li>Completion Tracking</li><li>Certificate Eligibility</li></ul>
+<a class="btn soft" id="detailsButton" href="#">Course Details</a>
+</aside>
+<main class="content"><div class="slide-image"><h2 id="lessonTitle">Lesson</h2></div><div class="slide-body"><div id="courseNotice" class="notice" style="display:none"></div><div id="lessonContent" class="lesson-content"></div><div id="quizArea"></div><div class="btn-row"><button class="btn gold" id="previousButton" type="button">Previous</button><button class="btn green" id="completeButton" type="button">Mark Complete</button><button class="btn primary" id="nextButton" type="button">Next Lesson</button></div></div></main>
+</div></div>
+<script type="module">
+import { db } from "./firebase-config.js";
+import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const params=new URLSearchParams(location.search);const courseId=params.get("id");const previewMode=params.get("preview")==="1";
+const loading=document.getElementById("loading"),playerArea=document.getElementById("playerArea"),courseTitle=document.getElementById("courseTitle"),courseSummary=document.getElementById("courseSummary"),moduleMenu=document.getElementById("moduleMenu"),lessonTitle=document.getElementById("lessonTitle"),lessonContent=document.getElementById("lessonContent"),quizArea=document.getElementById("quizArea"),progressBar=document.getElementById("progressBar"),progressText=document.getElementById("progressText"),previousButton=document.getElementById("previousButton"),nextButton=document.getElementById("nextButton"),completeButton=document.getElementById("completeButton"),detailsButton=document.getElementById("detailsButton"),courseNotice=document.getElementById("courseNotice");
+let course=null,modules=[],lessons=[],currentLessonIndex=0,completedLessons=new Set();
+function escapeHtml(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function isExternalCourse(c){return c?.courseType==="external"||c?.completionMethod==="certificate-upload"}
+function normaliseModules(raw){const result=[];(raw||[]).forEach((m,mi)=>{const arr=Array.isArray(m.lessons)?m.lessons:[];result.push({id:m.id||`${courseId}-module-${mi+1}`,title:m.title||`Module ${mi+1}`,description:m.description||"",quiz:m.quiz||null,finalAssessment:m.finalAssessment||null,lessons:arr.map((l,li)=>({id:l.id||`${courseId}-m${mi+1}-l${li+1}`,moduleIndex:mi,moduleTitle:m.title||`Module ${mi+1}`,title:l.title||`Lesson ${li+1}`,duration:l.duration||"",content:l.content||`<h2>${escapeHtml(l.title||`Lesson ${li+1}`)}</h2><p>Lesson content is being prepared.</p>`,videoUrl:l.videoUrl||"",worksheetUrl:l.worksheetUrl||""}))})});return result}
+async function loadModulesFromFirestore(){const ms=await getDocs(query(collection(db,"courseModules"),where("courseId","==",courseId)));const docs=[];ms.forEach(s=>docs.push({id:s.id,...s.data()}));docs.sort((a,b)=>(a.order||0)-(b.order||0));return normaliseModules(docs)}
+function flattenLessons(){lessons=[];modules.forEach(m=>m.lessons.forEach(l=>lessons.push(l)))}
+function renderModuleMenu(){moduleMenu.innerHTML="";modules.forEach(m=>{const w=document.createElement("div");w.className="module-group";const h=document.createElement("div");h.className="module-title";h.textContent=m.title;w.appendChild(h);m.lessons.forEach(l=>{const gi=lessons.findIndex(x=>x.id===l.id);const item=document.createElement("div");item.className="lesson-item";if(completedLessons.has(l.id))item.classList.add("completed");if(gi===currentLessonIndex)item.classList.add("active");item.innerHTML=`${escapeHtml(l.title)}${l.duration?`<span class="lesson-meta">${escapeHtml(l.duration)}</span>`:""}`;item.addEventListener("click",()=>{currentLessonIndex=gi;renderCurrentLesson()});w.appendChild(item)});moduleMenu.appendChild(w)})}
+function renderCurrentLesson(){if(!lessons.length){lessonTitle.textContent="Course Content";lessonContent.innerHTML='<div class="notice warning">No lessons are currently available for this course.</div>';previousButton.disabled=nextButton.disabled=completeButton.disabled=true;return}const l=lessons[currentLessonIndex];lessonTitle.textContent=l.title;let html=l.content||"";if(l.videoUrl)html+=`<div style="margin-top:20px"><a class="btn primary" href="${escapeHtml(l.videoUrl)}" target="_blank" rel="noopener noreferrer">Watch Lesson Video</a></div>`;if(l.worksheetUrl)html+=`<div style="margin-top:12px"><a class="btn soft" href="${escapeHtml(l.worksheetUrl)}" target="_blank" rel="noopener noreferrer">Open Worksheet</a></div>`;lessonContent.innerHTML=html;quizArea.innerHTML="";const cm=modules[l.moduleIndex],last=cm.lessons[cm.lessons.length-1];if(last&&last.id===l.id&&cm.quiz){quizArea.innerHTML=`<div class="quiz-box"><h3>${escapeHtml(cm.quiz.title||`${cm.title} Quiz`)}</h3><p>${cm.quiz.questions||0} questions • Pass mark: ${cm.quiz.passMark||70}%</p><div class="notice">Quiz questions can be connected to your assessment collection or quiz engine in the next integration step.</div></div>`}if(last&&last.id===l.id&&cm.finalAssessment){quizArea.innerHTML+=`<div class="quiz-box"><h3>${escapeHtml(cm.finalAssessment.title||"Final Assessment")}</h3><p>${cm.finalAssessment.questions||0} questions • Pass mark: ${cm.finalAssessment.passMark||70}%</p></div>`}previousButton.disabled=currentLessonIndex===0;nextButton.disabled=currentLessonIndex===lessons.length-1;completeButton.textContent=completedLessons.has(l.id)?"Completed ✓":"Mark Complete";renderModuleMenu();updateProgress()}
+function updateProgress(){const total=lessons.length,completed=completedLessons.size,p=total?Math.round(completed/total*100):0;progressBar.style.width=`${p}%`;progressText.textContent=`${p}% Complete (${completed}/${total} lessons)`;if(p===100&&course?.certificateEligible){courseNotice.style.display="block";courseNotice.className="notice success";courseNotice.innerHTML=`<strong>Course Complete.</strong> You have completed all available lessons. ${(course.certificate?.available||course.certificateEligible)?"You may now be eligible for the course certificate, subject to any required quiz or final assessment.":""}`}}
+function saveProgress(){localStorage.setItem(`speakhub-progress-${courseId}`,JSON.stringify({completedLessons:Array.from(completedLessons),currentLessonIndex,updatedAt:new Date().toISOString()}))}
+function loadLocalProgress(){try{const d=JSON.parse(localStorage.getItem(`speakhub-progress-${courseId}`));if(d&&Array.isArray(d.completedLessons))completedLessons=new Set(d.completedLessons);if(Number.isInteger(d?.currentLessonIndex))currentLessonIndex=Math.min(d.currentLessonIndex,Math.max(lessons.length-1,0))}catch(e){console.warn("Could not load local progress",e)}}
+async function loadCourse(){try{if(!courseId){loading.textContent="No course ID was provided.";return}const snap=await getDoc(doc(db,"courses",courseId));if(!snap.exists()){loading.textContent="Course not found.";return}course={id:snap.id,...snap.data()};if(isExternalCourse(course)){loading.innerHTML=`<strong>External course detected.</strong><br><br>This course is delivered by ${escapeHtml(course.provider||"an external provider")}. External courses should be opened from the course details page rather than inside the SpeakHub course player.<br><br><a class="btn primary" href="course-details.html?id=${encodeURIComponent(courseId)}">Return to Course Details</a>`;return}courseTitle.textContent=course.title||"SpeakHub Course";courseSummary.textContent=course.shortDescription||course.description||"Interactive SpeakHub Academy learning experience.";detailsButton.href=`course-details.html?id=${encodeURIComponent(courseId)}`;if(previewMode){courseNotice.style.display="block";courseNotice.className="notice warning";courseNotice.innerHTML="<strong>Preview Mode.</strong> You are viewing this course in preview mode. Completion and certificate access may be limited."}modules=Array.isArray(course.modules)&&course.modules.length?normaliseModules(course.modules):await loadModulesFromFirestore();flattenLessons();loadLocalProgress();renderModuleMenu();renderCurrentLesson();loading.style.display="none";playerArea.style.display="grid"}catch(error){console.error("Course player error:",error);loading.textContent="Failed to load this course. Please try again."}}
+previousButton.addEventListener("click",()=>{if(currentLessonIndex>0){currentLessonIndex--;saveProgress();renderCurrentLesson();window.scrollTo({top:0,behavior:"smooth"})}});nextButton.addEventListener("click",()=>{if(currentLessonIndex<lessons.length-1){currentLessonIndex++;saveProgress();renderCurrentLesson();window.scrollTo({top:0,behavior:"smooth"})}});completeButton.addEventListener("click",()=>{if(!lessons.length)return;completedLessons.add(lessons[currentLessonIndex].id);saveProgress();renderCurrentLesson()});loadCourse();
+</script>
 </body>
 </html>
