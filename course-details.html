@@ -3,613 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Course Details | SpeakHub Academy</title>
-
-<meta
-  name="description"
-  content="SpeakHub Academy course details for internal and approved external learning pathways, including providers, modules, outcomes, progress and certificate requirements."
->
-
+<meta name="description" content="SpeakHub Academy course details for internal and approved external learning pathways, including providers, modules, outcomes, progress and certificate requirements.">
 <link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
-  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--ink:#111827;
-  --muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);
-  --softShadow:0 10px 28px rgba(7,21,43,.07);--r:22px
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--purple:#6b21a8;
+  --purpleSoft:#f3e8ff;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;
+  --shadow:0 18px 44px rgba(7,21,43,.10);--softShadow:0 10px 28px rgba(7,21,43,.07);--r:22px
 }
 *{box-sizing:border-box}
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-a{text-decoration:none;color:inherit}
-.container{width:min(1200px,92%);margin:auto}
-
+a{text-decoration:none;color:inherit}.container{width:min(1200px,92%);margin:auto}
 .nav{background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
 .nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:44px;height:44px;object-fit:contain}
-.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
-.brand p{margin:2px 0 0;color:#d98200;font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;object-fit:contain}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:2px 0 0;color:#d98200;font-size:.62rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
 .nav-links{display:flex;gap:8px;flex-wrap:wrap}
-
 .hero{background:radial-gradient(circle at 85% 20%,rgba(244,162,28,.22),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
 .hero .container{padding:58px 0}
 .kicker,.label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
-.kicker{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}
-.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
-.hero h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.03;margin:16px 0}
-.hero p{max-width:850px;color:rgba(255,255,255,.9);line-height:1.65;font-size:1.03rem}
-.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.hero-chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.8rem;font-weight:800}
-
-section{padding:38px 0}
-.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--softShadow)}
+.kicker{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+.hero h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.03;margin:16px 0}.hero p{max-width:850px;color:rgba(255,255,255,.9);line-height:1.65;font-size:1.03rem}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.hero-chip{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:.8rem;font-weight:800}
+section{padding:38px 0}.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--softShadow)}
 .course-layout{display:grid;grid-template-columns:320px 1fr;gap:24px}
 .cover{min-height:420px;border-radius:24px;background:radial-gradient(circle at 18% 18%,rgba(244,162,28,.24),transparent 30%),linear-gradient(135deg,var(--navy),var(--blue));overflow:hidden;position:relative;color:#fff;padding:20px;display:flex;align-items:flex-end;box-shadow:var(--shadow)}
-.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,21,43,.05),rgba(7,21,43,.70))}
-.cover strong{position:relative;z-index:2;font-size:1.3rem;line-height:1.1;text-shadow:0 4px 18px rgba(0,0,0,.35)}
-
-.provider-box{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--softShadow)}
-.provider-row{display:flex;align-items:center;gap:12px}
-.provider-logo{width:48px;height:48px;border-radius:14px;object-fit:contain;background:#f8fbff;border:1px solid var(--line);padding:7px}
-.provider-box p{margin:3px 0 0;color:var(--muted);font-size:.86rem}
-
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.stat{background:#fff;border-radius:18px;padding:16px;text-align:center;border:1px solid var(--line);box-shadow:var(--softShadow)}
-.stat strong{display:block;font-size:1.5rem;color:var(--blue)}
-.stat span{color:var(--muted);font-size:.82rem;font-weight:800}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:11px 16px;border-radius:999px;border:0;text-decoration:none;font-weight:900;cursor:pointer}
-.primary{background:var(--blue);color:#fff}
-.gold{background:var(--gold);color:#241300}
-.soft{background:var(--soft);color:var(--blue)}
-.dark{background:var(--navy);color:#fff}
-.success{background:var(--greenSoft);color:var(--green)}
-.danger{background:var(--redSoft);color:var(--red)}
-
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);margin:4px;font-size:.75rem;font-weight:800;text-transform:capitalize}
-.pill.green{background:var(--greenSoft);color:var(--green)}
-.pill.gold{background:var(--goldSoft);color:#704800}
-
-.notice{padding:14px;border-radius:14px;background:var(--soft);color:#1b4d80;line-height:1.55}
-.notice.ok{background:var(--greenSoft);color:var(--green)}
-.notice.warn{background:var(--goldSoft);color:#704800}
-.notice.bad{background:var(--redSoft);color:var(--red)}
-
-.module{padding:14px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:#fbfdff}
-.module strong{color:var(--navy)}
-.module p{margin:6px 0 0;color:var(--muted);line-height:1.5}
-
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,21,43,.05),rgba(7,21,43,.70))}.cover strong{position:relative;z-index:2;font-size:1.3rem;line-height:1.1;text-shadow:0 4px 18px rgba(0,0,0,.35)}
+.provider-box{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--softShadow)}.provider-row{display:flex;align-items:center;gap:12px}.provider-logo{width:48px;height:48px;border-radius:14px;object-fit:contain;background:#f8fbff;border:1px solid var(--line);padding:7px}.provider-box p{margin:3px 0 0;color:var(--muted);font-size:.86rem}
+.status-card{margin-top:14px;border-radius:20px;padding:16px;border:1px solid var(--line);box-shadow:var(--softShadow);background:#fff}.status-card h3{margin:0 0 8px}.status-card p{margin:4px 0;color:var(--muted);line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#fff;border-radius:18px;padding:16px;text-align:center;border:1px solid var(--line);box-shadow:var(--softShadow)}.stat strong{display:block;font-size:1.5rem;color:var(--blue)}.stat span{color:var(--muted);font-size:.82rem;font-weight:800}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:11px 16px;border-radius:999px;border:0;text-decoration:none;font-weight:900;cursor:pointer}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.dark{background:var(--navy);color:#fff}.success{background:var(--green);color:#fff}.danger{background:var(--redSoft);color:var(--red)}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);margin:4px;font-size:.75rem;font-weight:800;text-transform:capitalize}.pill.green{background:var(--greenSoft);color:var(--green)}.pill.gold{background:var(--goldSoft);color:#704800}.pill.external{background:var(--purpleSoft);color:var(--purple)}.pill.pending-review{background:var(--goldSoft);color:#704800}.pill.approved{background:var(--greenSoft);color:var(--green)}.pill.rejected{background:var(--redSoft);color:var(--red)}.pill.not-started{background:#f1f5f9;color:#475569}
+.notice{padding:14px;border-radius:14px;background:var(--soft);color:#1b4d80;line-height:1.55}.notice.ok{background:var(--greenSoft);color:var(--green)}.notice.warn{background:var(--goldSoft);color:#704800}.notice.bad{background:var(--redSoft);color:var(--red)}
+.module{padding:14px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:#fbfdff}.module strong{color:var(--navy)}.module p{margin:6px 0 0;color:var(--muted);line-height:1.5}
 .actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
-.external-flow{display:none;margin-top:16px;border:1px solid #f1d39a;background:linear-gradient(135deg,#fff8e8,#fff);border-radius:18px;padding:16px}
-.external-flow h3{margin-top:0;color:var(--navy)}
-.external-flow ol{padding-left:20px;color:#5f5137;line-height:1.65}
-
-.meta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
-.meta{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}
-.meta b{display:block;color:var(--navy);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
-.meta span{display:block;margin-top:4px;color:var(--muted)}
-
-@media(max-width:900px){
-  .course-layout,.stats,.meta-list{grid-template-columns:1fr}
-  .nav-links{display:none}
-  .btn{width:100%;border-radius:14px}
-  .actions{flex-direction:column}
-  .cover{min-height:300px}
-}
+.external-flow{display:none;margin-top:16px;border:1px solid #f1d39a;background:linear-gradient(135deg,#fff8e8,#fff);border-radius:18px;padding:16px}.external-flow h3{margin-top:0;color:var(--navy)}.external-flow ol{padding-left:20px;color:#5f5137;line-height:1.65}
+.meta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}.meta{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}.meta b{display:block;color:var(--navy);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}.meta span{display:block;margin-top:4px;color:var(--muted)}
+@media(max-width:900px){.course-layout,.stats,.meta-list{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.cover{min-height:300px}}
 </style>
 </head>
-
 <body>
 
-<header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="speakhub.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div>
-    </a>
+<header class="nav"><div class="container nav-inner">
+  <a class="brand" href="speakhub.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
+  <nav class="nav-links"><a class="btn soft" href="speakhub.html">Courses</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Portal</a></nav>
+</div></header>
 
-    <nav class="nav-links">
-      <a class="btn soft" href="speakhub.html">Courses</a>
-      <a class="btn soft" href="certificate-center.html">Certificates</a>
-      <a class="btn dark" href="auth.html">Portal</a>
-    </nav>
+<section class="hero"><div class="container">
+  <span class="kicker" id="courseTypeKicker">Course Details</span>
+  <h1 id="heroTitle">Loading Course...</h1>
+  <p id="heroDesc">Please wait while course information is loaded.</p>
+  <div id="heroChips" class="hero-chips"></div>
+</div></section>
+
+<section><div class="container">
+  <div class="stats" id="statsRow" style="display:none">
+    <div class="stat"><strong id="moduleCount">0</strong><span id="moduleStatLabel">Modules</span></div>
+    <div class="stat"><strong id="outcomeCount">0</strong><span>Outcomes</span></div>
+    <div class="stat"><strong id="durationValue">--</strong><span>Duration</span></div>
+    <div class="stat"><strong id="levelValue">--</strong><span>Level</span></div>
   </div>
-</header>
 
-<section class="hero">
-  <div class="container">
-    <span class="kicker" id="courseTypeKicker">Course Details</span>
-    <h1 id="heroTitle">Loading Course...</h1>
-    <p id="heroDesc">Please wait while course information is loaded.</p>
-    <div id="heroChips" class="hero-chips"></div>
-  </div>
-</section>
+  <br>
+  <div id="loading" class="notice">Loading course...</div>
 
-<section>
-<div class="container">
+  <div id="courseArea" class="course-layout" style="display:none">
+    <div>
+      <div class="cover" id="courseCover"><strong id="coverText"></strong></div>
+      <div class="provider-box" id="providerBox"><div class="provider-row">
+        <img id="providerLogo" class="provider-logo" src="logo.png" alt="Provider">
+        <div><strong id="providerName">SpeakHub Academy</strong><p id="providerText">Course provider</p></div>
+      </div></div>
 
-<div class="stats" id="statsRow" style="display:none">
-  <div class="stat"><strong id="moduleCount">0</strong><span id="moduleStatLabel">Modules</span></div>
-  <div class="stat"><strong id="outcomeCount">0</strong><span>Outcomes</span></div>
-  <div class="stat"><strong id="durationValue">--</strong><span>Duration</span></div>
-  <div class="stat"><strong id="levelValue">--</strong><span>Level</span></div>
-</div>
-
-<br>
-
-<div id="loading" class="notice">Loading course...</div>
-
-<div id="courseArea" class="course-layout" style="display:none">
-
-<div>
-  <div class="cover" id="courseCover"><strong id="coverText"></strong></div>
-
-  <div class="provider-box" id="providerBox">
-    <div class="provider-row">
-      <img id="providerLogo" class="provider-logo" src="logo.png" alt="Provider">
-      <div>
-        <strong id="providerName">SpeakHub Academy</strong>
-        <p id="providerText">Course provider</p>
+      <div id="externalStatusCard" class="status-card" style="display:none">
+        <span class="label">My External Learning</span>
+        <h3 id="externalStatusHeading">Not Submitted</h3>
+        <p id="externalStatusText">Complete the provider course, then submit your certificate or proof.</p>
+        <div id="externalStatusPills"></div>
       </div>
     </div>
+
+    <div class="panel">
+      <span class="label" id="courseTypeLabel">Internal Course</span>
+      <h2 id="title"></h2>
+      <p><strong id="instructorLabel">Instructor:</strong> <span id="instructor"></span></p>
+      <div id="pills"></div>
+      <p id="description"></p>
+
+      <div class="meta-list">
+        <div class="meta"><b>Course Type</b><span id="courseTypeMeta">Internal</span></div>
+        <div class="meta"><b>Provider</b><span id="providerMeta">SpeakHub Academy</span></div>
+        <div class="meta"><b>Completion</b><span id="completionMeta">Inside SpeakHub</span></div>
+        <div class="meta"><b>Certificate Issuer</b><span id="certificateIssuerMeta">SpeakHub Academy</span></div>
+      </div>
+
+      <h3>Learning Outcomes</h3><ul id="outcomes"></ul>
+      <h3>Prerequisites</h3><div id="prerequisites">No prerequisites listed.</div>
+
+      <div id="modulesSection"><h3 id="modulesHeading">Modules</h3><div id="moduleList"></div></div>
+
+      <div id="externalFlow" class="external-flow">
+        <h3>How External Learning Works</h3>
+        <ol>
+          <li>Open the course on the official provider website.</li>
+          <li>Complete the course directly with that provider.</li>
+          <li>Return to SpeakHub after completion.</li>
+          <li>Upload your certificate or accepted proof of completion.</li>
+          <li>SpeakHub reviews the submission and records the approved external achievement.</li>
+        </ol>
+        <div class="notice warn">The external provider remains the original issuer of its certificate. SpeakHub records and verifies the learning achievement; it does not replace the provider's credential.</div>
+        <div id="verificationNotice" class="notice" style="margin-top:12px"></div>
+      </div>
+
+      <div class="actions" id="actions"></div>
+      <div id="premiumNote" class="notice warn" style="display:none;margin-top:12px">Premium access is required for this SpeakHub course.</div>
+    </div>
   </div>
-</div>
-
-<div class="panel">
-
-<span class="label" id="courseTypeLabel">Internal Course</span>
-<h2 id="title"></h2>
-
-<p>
-  <strong id="instructorLabel">Instructor:</strong>
-  <span id="instructor"></span>
-</p>
-
-<div id="pills"></div>
-<p id="description"></p>
-
-<div class="meta-list">
-  <div class="meta"><b>Course Type</b><span id="courseTypeMeta">Internal</span></div>
-  <div class="meta"><b>Provider</b><span id="providerMeta">SpeakHub Academy</span></div>
-  <div class="meta"><b>Completion</b><span id="completionMeta">Inside SpeakHub</span></div>
-  <div class="meta"><b>Certificate Issuer</b><span id="certificateIssuerMeta">SpeakHub Academy</span></div>
-</div>
-
-<h3>Learning Outcomes</h3>
-<ul id="outcomes"></ul>
-
-<h3>Prerequisites</h3>
-<div id="prerequisites">No prerequisites listed.</div>
-
-<div id="modulesSection">
-  <h3 id="modulesHeading">Modules</h3>
-  <div id="moduleList"></div>
-</div>
-
-<div id="externalFlow" class="external-flow">
-  <h3>How External Learning Works</h3>
-
-  <ol>
-    <li>Open the course on the official provider website.</li>
-    <li>Complete the course directly with that provider.</li>
-    <li>Return to SpeakHub after completion.</li>
-    <li>Upload your certificate or accepted proof of completion.</li>
-    <li>SpeakHub reviews the submission and records the approved external achievement.</li>
-  </ol>
-
-  <div class="notice warn">
-    The external provider remains the original issuer of its certificate. SpeakHub records and verifies the learning achievement; it does not replace the provider's credential.
-  </div>
-</div>
-
-<div class="actions" id="actions"></div>
-
-<div id="premiumNote" class="notice warn" style="display:none;margin-top:12px">
-  Premium access is required for this SpeakHub course.
-</div>
-
-</div>
-</div>
-
-</div>
-</section>
+</div></section>
 
 <script type="module">
-import { db } from "./firebase-config.js";
+import { db,auth } from "./firebase-config.js";
 import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-const id = new URLSearchParams(location.search).get("id");
+const id=new URLSearchParams(location.search).get("id");
+const $=id=>document.getElementById(id);
+const loading=$("loading"),courseArea=$("courseArea"),statsRow=$("statsRow"),heroTitle=$("heroTitle"),heroDesc=$("heroDesc"),heroChips=$("heroChips"),
+courseTypeKicker=$("courseTypeKicker"),courseTypeLabel=$("courseTypeLabel"),title=$("title"),instructorLabel=$("instructorLabel"),instructor=$("instructor"),
+description=$("description"),courseCover=$("courseCover"),coverText=$("coverText"),providerLogo=$("providerLogo"),providerName=$("providerName"),providerText=$("providerText"),
+pills=$("pills"),outcomes=$("outcomes"),prerequisites=$("prerequisites"),moduleCount=$("moduleCount"),outcomeCount=$("outcomeCount"),durationValue=$("durationValue"),
+levelValue=$("levelValue"),moduleStatLabel=$("moduleStatLabel"),modulesHeading=$("modulesHeading"),moduleList=$("moduleList"),actions=$("actions"),premiumNote=$("premiumNote"),
+externalFlow=$("externalFlow"),courseTypeMeta=$("courseTypeMeta"),providerMeta=$("providerMeta"),completionMeta=$("completionMeta"),certificateIssuerMeta=$("certificateIssuerMeta"),
+externalStatusCard=$("externalStatusCard"),externalStatusHeading=$("externalStatusHeading"),externalStatusText=$("externalStatusText"),externalStatusPills=$("externalStatusPills"),
+verificationNotice=$("verificationNotice");
 
-const loading = document.getElementById("loading");
-const courseArea = document.getElementById("courseArea");
-const statsRow = document.getElementById("statsRow");
-const heroTitle = document.getElementById("heroTitle");
-const heroDesc = document.getElementById("heroDesc");
-const heroChips = document.getElementById("heroChips");
-const courseTypeKicker = document.getElementById("courseTypeKicker");
-const courseTypeLabel = document.getElementById("courseTypeLabel");
-const title = document.getElementById("title");
-const instructorLabel = document.getElementById("instructorLabel");
-const instructor = document.getElementById("instructor");
-const description = document.getElementById("description");
-const courseCover = document.getElementById("courseCover");
-const coverText = document.getElementById("coverText");
-const providerLogo = document.getElementById("providerLogo");
-const providerName = document.getElementById("providerName");
-const providerText = document.getElementById("providerText");
-const pills = document.getElementById("pills");
-const outcomes = document.getElementById("outcomes");
-const prerequisites = document.getElementById("prerequisites");
-const moduleCount = document.getElementById("moduleCount");
-const outcomeCount = document.getElementById("outcomeCount");
-const durationValue = document.getElementById("durationValue");
-const levelValue = document.getElementById("levelValue");
-const moduleStatLabel = document.getElementById("moduleStatLabel");
-const modulesHeading = document.getElementById("modulesHeading");
-const moduleList = document.getElementById("moduleList");
-const actions = document.getElementById("actions");
-const premiumNote = document.getElementById("premiumNote");
-const externalFlow = document.getElementById("externalFlow");
-const courseTypeMeta = document.getElementById("courseTypeMeta");
-const providerMeta = document.getElementById("providerMeta");
-const completionMeta = document.getElementById("completionMeta");
-const certificateIssuerMeta = document.getElementById("certificateIssuerMeta");
+let currentUser=null,currentProfile=null,currentCourse=null,currentExternalRecord=null;
 
-function normalize(value){
-  return String(value || "").trim().toLowerCase();
+function normalize(v){return String(v||"").trim().toLowerCase()}
+function escapeHtml(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function pretty(v){if(!v)return"—";return String(v).replaceAll("-"," ").replace(/\b\w/g,l=>l.toUpperCase())}
+function audienceText(v){return Array.isArray(v)?v.map(pretty).join(", "):pretty(v||"general")}
+function accessType(c){if(c.free===true)return"free";if(c.free===false)return"premium";const a=normalize(c.accessType||c.access||"free");return a==="paid"?"premium":(a||"free")}
+function isExternalCourse(c){return normalize(c.courseType)==="external"||normalize(c.completionMethod)==="certificate-upload"||c.externalProvider===true}
+function externalCourseUrl(c){return c.externalUrl||c.courseUrl||c.providerCourseUrl||c.providerUrl||c.url||""}
+function certificateIssuer(c){return c.certificate?.issuer||c.certificateIssuer||c.provider||"SpeakHub Academy"}
+function certificateUploadRequired(c){return c.certificate?.uploadRequired===true||normalize(c.completionMethod)==="certificate-upload"||isExternalCourse(c)}
+function certificateVerificationRequired(c){return c.certificate?.verificationRequired===true||isExternalCourse(c)}
+
+function renderPills(c){
+  const access=accessType(c),external=isExternalCourse(c);
+  pills.innerHTML=`<span class="pill">${escapeHtml(pretty(c.category||"General"))}</span>
+  <span class="pill">${escapeHtml(pretty(c.difficulty||c.level||"Beginner"))}</span>
+  <span class="pill ${access==="free"?"green":"gold"}">${escapeHtml(pretty(access))}</span>
+  <span class="pill">${escapeHtml(audienceText(c.audience))}</span>
+  ${c.certificateEligible||c.certificate?.available?'<span class="pill gold">Certificate Available</span>':""}
+  ${external?'<span class="pill external">External Provider</span>':'<span class="pill">SpeakHub Course</span>'}`;
+}
+function renderHeroChips(c){
+  const external=isExternalCourse(c);
+  heroChips.innerHTML=`<span class="hero-chip">${escapeHtml(pretty(c.category||"General"))}</span><span class="hero-chip">${escapeHtml(c.duration||"Self-paced")}</span><span class="hero-chip">${escapeHtml(c.provider||"SpeakHub Academy")}</span><span class="hero-chip">${external?"External Learning":"In-house Learning"}</span>`;
 }
 
-function escapeHtml(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function pretty(value){
-  if(!value) return "—";
-  return String(value).replaceAll("-"," ").replace(/\b\w/g,letter=>letter.toUpperCase());
-}
-
-function audienceText(value){
-  if(Array.isArray(value)) return value.map(pretty).join(", ");
-  return pretty(value || "general");
-}
-
-function accessType(course){
-  if(course.free === true) return "free";
-  const access = normalize(course.accessType || course.access || "free");
-  return access === "paid" ? "premium" : (access || "free");
-}
-
-function isExternalCourse(course){
-  return (
-    normalize(course.courseType) === "external" ||
-    normalize(course.completionMethod) === "certificate-upload" ||
-    course.externalProvider === true
-  );
-}
-
-function externalCourseUrl(course){
-  return (
-    course.externalUrl ||
-    course.courseUrl ||
-    course.providerCourseUrl ||
-    course.providerUrl ||
-    course.url ||
-    ""
-  );
-}
-
-function certificateIssuer(course){
-  return (
-    course.certificate?.issuer ||
-    course.certificateIssuer ||
-    course.provider ||
-    "SpeakHub Academy"
-  );
-}
-
-function certificateUploadRequired(course){
-  return (
-    course.certificate?.uploadRequired === true ||
-    normalize(course.completionMethod) === "certificate-upload"
-  );
-}
-
-function certificateVerificationRequired(course){
-  return (
-    course.certificate?.verificationRequired === true ||
-    isExternalCourse(course)
-  );
-}
-
-function renderPills(course){
-  const access = accessType(course);
-  const external = isExternalCourse(course);
-  const audience = audienceText(course.audience);
-
-  pills.innerHTML = `
-    <span class="pill">${escapeHtml(pretty(course.category || "General"))}</span>
-    <span class="pill">${escapeHtml(pretty(course.difficulty || course.level || "Beginner"))}</span>
-    <span class="pill ${access === "free" ? "green" : "gold"}">${escapeHtml(pretty(access))}</span>
-    <span class="pill">${escapeHtml(audience)}</span>
-    ${course.certificateEligible ? '<span class="pill gold">Certificate Eligible</span>' : ""}
-    ${external ? '<span class="pill green">External Provider</span>' : '<span class="pill">SpeakHub Course</span>'}
-  `;
-}
-
-function renderHeroChips(course){
-  const external = isExternalCourse(course);
-
-  heroChips.innerHTML = `
-    <span class="hero-chip">${escapeHtml(pretty(course.category || "General"))}</span>
-    <span class="hero-chip">${escapeHtml(course.duration || "Self-paced")}</span>
-    <span class="hero-chip">${escapeHtml(course.provider || "SpeakHub Academy")}</span>
-    <span class="hero-chip">${external ? "External Learning" : "In-house Learning"}</span>
-  `;
-}
-
-async function loadModules(course){
-  if(Array.isArray(course.modules) && course.modules.length){
-    return course.modules.map((module,index)=>({
-      id:module.id || `${course.id}-module-${index+1}`,
-      ...module
-    }));
-  }
-
+async function loadModules(c){
+  if(Array.isArray(c.modules)&&c.modules.length)return c.modules.map((m,i)=>({id:m.id||`${c.id}-module-${i+1}`,...m}));
   try{
-    const snapshot = await getDocs(
-      query(
-        collection(db,"courseModules"),
-        where("courseId","==",course.id)
-      )
-    );
-
-    const modules = [];
-    snapshot.forEach(document=>{
-      modules.push({id:document.id,...document.data()});
-    });
-
-    modules.sort((a,b)=>(a.order||0)-(b.order||0));
-    return modules;
-  }catch(error){
-    console.warn("Could not load course modules:",error);
-    return [];
+    const s=await getDocs(query(collection(db,"courseModules"),where("courseId","==",c.id)));
+    const modules=[];s.forEach(d=>modules.push({id:d.id,...d.data()}));modules.sort((a,b)=>(a.order||0)-(b.order||0));return modules;
+  }catch(e){console.warn(e);return[]}
+}
+function renderModules(c,modules){
+  if(isExternalCourse(c)){
+    moduleStatLabel.textContent="Provider";moduleCount.textContent=c.provider?"1":"—";modulesHeading.textContent="Course Delivery";
+    moduleList.innerHTML=`<div class="module"><strong>Delivered by ${escapeHtml(c.provider||"External Provider")}</strong><p>This course is completed on the provider's official learning platform. SpeakHub does not copy or reproduce the provider's protected course content.</p></div>`;return;
   }
+  moduleStatLabel.textContent="Modules";moduleCount.textContent=modules.length;
+  moduleList.innerHTML=modules.length?modules.map((m,i)=>{const lc=Array.isArray(m.lessons)?m.lessons.length:(m.lessonCount||0);return`<div class="module"><strong>Module ${i+1}: ${escapeHtml(m.title||`Module ${i+1}`)}</strong>${m.description?`<p>${escapeHtml(m.description)}</p>`:""}${lc?`<p>${lc} lesson${lc===1?"":"s"}</p>`:""}</div>`}).join(""):`<div class="module">No modules have been added yet.</div>`;
 }
 
-function renderModules(course,modules){
-  const external = isExternalCourse(course);
-
-  if(external){
-    moduleStatLabel.textContent = "Provider";
-    moduleCount.textContent = course.provider ? "1" : "—";
-    modulesHeading.textContent = "Course Delivery";
-
-    moduleList.innerHTML = `
-      <div class="module">
-        <strong>Delivered by ${escapeHtml(course.provider || "External Provider")}</strong>
-        <p>
-          This course is completed on the provider's official learning platform.
-          SpeakHub does not copy or reproduce the external provider's course content.
-        </p>
-      </div>
-    `;
+function recordStatus(r){
+  if(!r)return{key:"not-started",label:"Not Submitted"};
+  const s=normalize(r.verificationStatus||r.status||"pending_review");
+  if(["approved","verified"].includes(s))return{key:"approved",label:"Approved"};
+  if(["rejected","revoked"].includes(s))return{key:"rejected",label:pretty(s)};
+  if(["pending","pending_review","submitted"].includes(s))return{key:"pending-review",label:"Pending Review"};
+  return{key:"pending-review",label:pretty(s)};
+}
+function submitLabel(){
+  const s=recordStatus(currentExternalRecord).key;
+  if(s==="approved")return"View Approved Record";
+  if(s==="pending-review")return"View Submission";
+  if(s==="rejected")return"Resubmit Certificate / Proof";
+  return"Upload Certificate / Proof";
+}
+function renderExternalStatus(){
+  if(!currentCourse||!isExternalCourse(currentCourse)){externalStatusCard.style.display="none";return}
+  externalStatusCard.style.display="block";
+  if(!currentUser){
+    externalStatusHeading.textContent="Sign in to track completion";
+    externalStatusText.textContent="You can open the provider course now. Sign in before submitting your certificate or proof so SpeakHub can connect it to your account.";
+    externalStatusPills.innerHTML=`<span class="pill not-started">Not Signed In</span>`;
     return;
   }
-
-  moduleStatLabel.textContent = "Modules";
-  moduleCount.textContent = modules.length;
-
-  moduleList.innerHTML = modules.length
-    ? modules.map((module,index)=>{
-        const lessonCount = Array.isArray(module.lessons)
-          ? module.lessons.length
-          : (module.lessonCount || 0);
-
-        return `
-          <div class="module">
-            <strong>Module ${index+1}: ${escapeHtml(module.title || `Module ${index+1}`)}</strong>
-            ${module.description ? `<p>${escapeHtml(module.description)}</p>` : ""}
-            ${lessonCount ? `<p>${lessonCount} lesson${lessonCount === 1 ? "" : "s"}</p>` : ""}
-          </div>
-        `;
-      }).join("")
-    : `<div class="module">No modules have been added yet.</div>`;
+  const status=recordStatus(currentExternalRecord);
+  externalStatusHeading.textContent=status.label;
+  externalStatusPills.innerHTML=`<span class="pill ${status.key}">${escapeHtml(status.label)}</span>`;
+  if(status.key==="approved")externalStatusText.textContent="Your external learning evidence has been approved and recorded in SpeakHub.";
+  else if(status.key==="pending-review")externalStatusText.textContent="Your submission has been received and is awaiting SpeakHub review.";
+  else if(status.key==="rejected")externalStatusText.textContent="Your previous submission was not approved. Review the feedback, then submit corrected evidence.";
+  else externalStatusText.textContent="Complete the provider course, obtain its certificate or accepted completion proof, then submit it to SpeakHub.";
 }
 
-function renderActions(course){
-  const external = isExternalCourse(course);
-  const access = accessType(course);
-  const courseId = encodeURIComponent(course.id);
+async function loadExternalRecord(){
+  currentExternalRecord=null;
+  if(!currentUser||!id)return;
+  try{
+    const s=await getDocs(query(collection(db,"externalLearningRecords"),where("userId","==",currentUser.uid),where("courseId","==",id)));
+    const records=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt?.seconds||b.submittedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.submittedAt?.seconds||a.createdAt?.seconds||0));
+    currentExternalRecord=records[0]||null;
+  }catch(e){console.warn("Could not load external record:",e)}
+}
 
-  premiumNote.style.display = "none";
-  externalFlow.style.display = external ? "block" : "none";
-
+function renderActions(c){
+  const external=isExternalCourse(c),access=accessType(c),courseId=encodeURIComponent(c.id);
+  premiumNote.style.display="none";externalFlow.style.display=external?"block":"none";
   if(external){
-    const providerUrl = externalCourseUrl(course);
-    const provider = course.provider || "Provider";
-    const uploadRequired = certificateUploadRequired(course);
-
-    actions.innerHTML = `
-      ${
-        providerUrl
-          ? `
-            <a
-              class="btn primary"
-              href="${escapeHtml(providerUrl)}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Start on ${escapeHtml(provider)}
-            </a>
-          `
-          : `
-            <button class="btn danger" type="button" disabled>
-              Provider Link Missing
-            </button>
-          `
-      }
-
-      ${
-        uploadRequired
-          ? `
-            <a
-              class="btn gold"
-              href="external-learning-submit.html?courseId=${courseId}"
-            >
-              Upload Certificate / Proof
-            </a>
-          `
-          : ""
-      }
-
-      <a class="btn soft" href="speakhub.html">Back to Courses</a>
-    `;
-
+    const providerUrl=externalCourseUrl(c),provider=c.provider||"Provider";
+    verificationNotice.innerHTML=`<strong>Verification:</strong> ${certificateVerificationRequired(c)?"Certificate/proof will be reviewed before the achievement is approved.":"Completion may be recorded automatically or through manual review."}`;
+    const submissionHref=currentUser?`external-learning-submit.html?courseId=${courseId}`:`auth.html`;
+    actions.innerHTML=`
+      ${providerUrl?`<a class="btn primary" href="${escapeHtml(providerUrl)}" target="_blank" rel="noopener noreferrer">Start on ${escapeHtml(provider)}</a>`:`<button class="btn danger" type="button" disabled>Provider Link Missing</button>`}
+      ${certificateUploadRequired(c)?`<a class="btn success" href="${submissionHref}">${escapeHtml(currentUser?submitLabel():"Sign In to Submit Proof")}</a>`:""}
+      <a class="btn soft" href="speakhub.html">Back to Courses</a>`;
     return;
   }
+  if(access==="free")actions.innerHTML=`<a class="btn primary" href="course-player.html?id=${courseId}">Start Course</a><a class="btn soft" href="speakhub.html">Back to Courses</a>`;
+  else{premiumNote.style.display="block";actions.innerHTML=`<a class="btn gold" href="course-player.html?id=${courseId}&preview=1">Preview Course</a><a class="btn soft" href="payment-history.html">Request Premium Access</a><a class="btn soft" href="speakhub.html">Back to Courses</a>`}
+}
 
-  if(access === "free"){
-    actions.innerHTML = `
-      <a class="btn primary" href="course-player.html?id=${courseId}">Start Course</a>
-      <a class="btn soft" href="speakhub.html">Back to Courses</a>
-    `;
-  }else{
-    premiumNote.style.display = "block";
-
-    actions.innerHTML = `
-      <a class="btn gold" href="course-player.html?id=${courseId}&preview=1">Preview Course</a>
-      <a class="btn soft" href="payment-history.html">Request Premium Access</a>
-      <a class="btn soft" href="speakhub.html">Back to Courses</a>
-    `;
-  }
+async function renderCourse(){
+  const c=currentCourse,external=isExternalCourse(c),provider=c.provider||(external?"External Provider":"SpeakHub Academy");
+  document.title=`${c.title||"Course"} | SpeakHub Academy`;
+  heroTitle.textContent=c.title||"Course Details";heroDesc.textContent=c.shortDescription||c.description||"SpeakHub Academy learning pathway.";
+  courseTypeKicker.textContent=external?"External Learning Pathway":"SpeakHub In-house Course";courseTypeLabel.textContent=external?"External Course":"Internal Course";
+  title.textContent=c.title||"Untitled Course";instructorLabel.textContent=external?"Provider:":"Instructor:";instructor.textContent=external?provider:(c.instructor||c.authorName||provider);
+  description.textContent=c.fullDescription||c.description||"No course description has been added yet.";coverText.textContent=c.title||"";
+  if(c.coverUrl)courseCover.innerHTML=`<img src="${escapeHtml(c.coverUrl)}" alt="${escapeHtml(c.title||"Course cover")}"><strong>${escapeHtml(c.title||"")}</strong>`;
+  providerName.textContent=provider;providerText.textContent=external?"Official external learning provider":"SpeakHub learning provider";providerLogo.src=c.providerLogo||"logo.png";
+  providerMeta.textContent=provider;courseTypeMeta.textContent=external?"External":"Internal";completionMeta.textContent=external?"Complete on provider platform, then submit proof":"Complete inside SpeakHub";certificateIssuerMeta.textContent=certificateIssuer(c);
+  const oa=Array.isArray(c.outcomes)?c.outcomes:[];outcomes.innerHTML=oa.length?oa.map(x=>`<li>${escapeHtml(x)}</li>`).join(""):`<li>Learning outcomes are provided by the course provider.</li>`;
+  outcomeCount.textContent=oa.length;levelValue.textContent=c.difficulty||c.level||"Beginner";durationValue.textContent=c.duration||c.estimatedDuration||"Self-paced";
+  renderPills(c);renderHeroChips(c);
+  if(Array.isArray(c.prerequisites)&&c.prerequisites.length)prerequisites.innerHTML="<ul>"+c.prerequisites.map(x=>`<li>${escapeHtml(x)}</li>`).join("")+"</ul>";
+  else prerequisites.textContent=external?"Check the provider's official course page for any specific prerequisites.":"No prerequisites listed.";
+  const modules=await loadModules(c);renderModules(c,modules);renderExternalStatus();renderActions(c);
+  loading.style.display="none";courseArea.style.display="grid";statsRow.style.display="grid";
 }
 
 async function loadCourse(){
+  if(!id){loading.textContent="No course ID provided.";loading.className="notice bad";return}
   try{
-    if(!id){
-      loading.textContent = "No course ID provided.";
-      loading.className = "notice bad";
-      return;
-    }
-
-    const snapshot = await getDoc(doc(db,"courses",id));
-
-    if(!snapshot.exists()){
-      loading.textContent = "Course not found.";
-      loading.className = "notice bad";
-      return;
-    }
-
-    const course = {id:snapshot.id,...snapshot.data()};
-    const external = isExternalCourse(course);
-    const provider = course.provider || (external ? "External Provider" : "SpeakHub Academy");
-
-    document.title = `${course.title || "Course"} | SpeakHub Academy`;
-
-    heroTitle.textContent = course.title || "Course Details";
-    heroDesc.textContent = course.shortDescription || course.description || "SpeakHub Academy learning pathway.";
-
-    courseTypeKicker.textContent = external ? "External Learning Pathway" : "SpeakHub In-house Course";
-    courseTypeLabel.textContent = external ? "External Course" : "Internal Course";
-
-    title.textContent = course.title || "Untitled Course";
-    instructorLabel.textContent = external ? "Provider:" : "Instructor:";
-    instructor.textContent = external
-      ? provider
-      : (course.instructor || course.authorName || provider);
-
-    description.textContent =
-      course.fullDescription ||
-      course.description ||
-      "No course description has been added yet.";
-
-    coverText.textContent = course.title || "";
-
-    if(course.coverUrl){
-      courseCover.innerHTML = `
-        <img src="${escapeHtml(course.coverUrl)}" alt="${escapeHtml(course.title || "Course cover")}">
-        <strong>${escapeHtml(course.title || "")}</strong>
-      `;
-    }
-
-    providerName.textContent = provider;
-    providerText.textContent = external ? "Official external learning provider" : "SpeakHub learning provider";
-    providerLogo.src = course.providerLogo || "logo.png";
-
-    providerMeta.textContent = provider;
-    courseTypeMeta.textContent = external ? "External" : "Internal";
-    completionMeta.textContent = external
-      ? "Complete on provider platform, then submit proof"
-      : "Complete inside SpeakHub";
-    certificateIssuerMeta.textContent = certificateIssuer(course);
-
-    const outcomesArray = Array.isArray(course.outcomes) ? course.outcomes : [];
-
-    outcomes.innerHTML = outcomesArray.length
-      ? outcomesArray.map(item=>`<li>${escapeHtml(item)}</li>`).join("")
-      : `<li>Learning outcomes are provided by the course provider.</li>`;
-
-    outcomeCount.textContent = outcomesArray.length;
-    levelValue.textContent = course.difficulty || course.level || "Beginner";
-    durationValue.textContent = course.duration || course.estimatedDuration || "Self-paced";
-
-    renderPills(course);
-    renderHeroChips(course);
-
-    if(Array.isArray(course.prerequisites) && course.prerequisites.length){
-      prerequisites.innerHTML =
-        "<ul>" +
-        course.prerequisites.map(item=>`<li>${escapeHtml(item)}</li>`).join("") +
-        "</ul>";
-    }else{
-      prerequisites.textContent = external
-        ? "Check the provider's official course page for any specific prerequisites."
-        : "No prerequisites listed.";
-    }
-
-    const modules = await loadModules(course);
-    renderModules(course,modules);
-    renderActions(course);
-
-    if(external){
-      const verificationText = certificateVerificationRequired(course)
-        ? "Certificate/proof will require review."
-        : "Completion may be recorded automatically or through manual review.";
-
-      externalFlow.insertAdjacentHTML(
-        "beforeend",
-        `<div class="notice" style="margin-top:12px"><strong>Verification:</strong> ${escapeHtml(verificationText)}</div>`
-      );
-    }
-
-    loading.style.display = "none";
-    courseArea.style.display = "grid";
-    statsRow.style.display = "grid";
-
-  }catch(error){
-    console.error("Course details error:",error);
-    loading.textContent = "Failed to load this course. Check Firestore permissions and the course record.";
-    loading.className = "notice bad";
-  }
+    const s=await getDoc(doc(db,"courses",id));
+    if(!s.exists()){loading.textContent="Course not found.";loading.className="notice bad";return}
+    currentCourse={id:s.id,...s.data()};
+    if(isExternalCourse(currentCourse))await loadExternalRecord();
+    await renderCourse();
+  }catch(e){console.error(e);loading.textContent="Failed to load this course. Check Firestore permissions and the course record.";loading.className="notice bad"}
 }
 
-loadCourse();
-</script>
+async function loadProfile(user){
+  if(!user)return null;
+  try{const s=await getDoc(doc(db,"users",user.uid));return s.exists()?{uid:user.uid,...s.data()}:{uid:user.uid,email:user.email,role:"user"}}
+  catch{return{uid:user.uid,email:user.email,role:"user"}}
+}
 
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  currentProfile=await loadProfile(user);
+  await loadCourse();
+});
+</script>
 </body>
 </html>
 
