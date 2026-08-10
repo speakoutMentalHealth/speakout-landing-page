@@ -11456,6 +11456,156 @@
       "Practical Activity",
       "Reflection",
       "Lesson Summary"
-    ]
+    ],
+    "finalAssessment": {
+      "title": "Career Readiness Final Assessment",
+      "passMark": 80,
+      "questions": [
+        {
+          "question": "Which statement best describes career readiness?",
+          "type": "multiple-choice",
+          "options": [
+            "A combination of practical skills, self-awareness and professional behaviors",
+            "Having only a university degree",
+            "Applying for as many jobs as possible",
+            "Knowing one technical skill"
+          ],
+          "answer": 0,
+          "explanation": "Career readiness combines practical skills, behaviors and the ability to apply them."
+        },
+        {
+          "question": "Which is an example of a transferable skill?",
+          "type": "multiple-choice",
+          "options": [
+            "Teamwork",
+            "A specific software license only",
+            "A company name",
+            "A job title"
+          ],
+          "answer": 0,
+          "explanation": "Teamwork can transfer across many industries and roles."
+        },
+        {
+          "question": "Why should you use evidence when describing a skill?",
+          "type": "multiple-choice",
+          "options": [
+            "It makes the claim more credible",
+            "It guarantees employment",
+            "It replaces qualifications",
+            "It removes the need to practice"
+          ],
+          "answer": 0,
+          "explanation": "Specific evidence helps demonstrate how you actually used the skill."
+        },
+        {
+          "question": "What is the best first step when exploring a career?",
+          "type": "multiple-choice",
+          "options": [
+            "Research roles, requirements and pathways",
+            "Choose the highest-paying title without research",
+            "Copy another person's plan",
+            "Wait until graduation"
+          ],
+          "answer": 0,
+          "explanation": "Research helps you make realistic and informed decisions."
+        },
+        {
+          "question": "A useful career goal should be:",
+          "type": "multiple-choice",
+          "options": [
+            "Specific and time-bound",
+            "Very broad with no deadline",
+            "Based only on what others want",
+            "Impossible to measure"
+          ],
+          "answer": 0,
+          "explanation": "Specific, measurable goals make progress easier to manage."
+        },
+        {
+          "question": "What should a career plan include?",
+          "type": "multiple-choice",
+          "options": [
+            "Target, gaps, actions and deadlines",
+            "Only the target job title",
+            "Only qualifications already completed",
+            "Only salary expectations"
+          ],
+          "answer": 0,
+          "explanation": "A practical plan connects the target to current gaps and next actions."
+        },
+        {
+          "question": "What makes a CV bullet stronger?",
+          "type": "multiple-choice",
+          "options": [
+            "A clear action plus evidence or result",
+            "Using many unrelated adjectives",
+            "Writing one very long paragraph",
+            "Including every activity regardless of relevance"
+          ],
+          "answer": 0,
+          "explanation": "Action and evidence help the reader understand your contribution."
+        },
+        {
+          "question": "What should a professional summary communicate?",
+          "type": "multiple-choice",
+          "options": [
+            "Relevant strengths, direction and value",
+            "Private personal information",
+            "Every subject you have ever studied",
+            "Only your age"
+          ],
+          "answer": 0,
+          "explanation": "A concise professional summary should show relevant strengths and direction."
+        },
+        {
+          "question": "Why should an application be tailored?",
+          "type": "multiple-choice",
+          "options": [
+            "To connect your evidence to the specific requirements",
+            "To make it longer",
+            "To avoid reading the opportunity",
+            "To guarantee selection"
+          ],
+          "answer": 0,
+          "explanation": "Tailoring demonstrates relevance; it does not guarantee selection."
+        },
+        {
+          "question": "What is a strong way to structure a competency interview example?",
+          "type": "multiple-choice",
+          "options": [
+            "Situation, Task, Action, Result",
+            "Title, Salary, Address, Reference",
+            "Problem, Blame, Excuse, Exit",
+            "Question, Silence, Guess, Finish"
+          ],
+          "answer": 0,
+          "explanation": "STAR helps organize evidence clearly."
+        },
+        {
+          "question": "What is an example of professional communication?",
+          "type": "multiple-choice",
+          "options": [
+            "A clear, respectful message with an appropriate next step",
+            "Ignoring a request indefinitely",
+            "Sending confidential information publicly",
+            "Using an aggressive tone"
+          ],
+          "answer": 0,
+          "explanation": "Professional communication should be clear, respectful and purposeful."
+        },
+        {
+          "question": "If you realize you may miss a deadline, the best first response is usually to:",
+          "type": "multiple-choice",
+          "options": [
+            "Communicate early, explain the risk and propose a next step",
+            "Hide the problem",
+            "Blame a teammate immediately",
+            "Stop responding"
+          ],
+          "answer": 0,
+          "explanation": "Early communication and accountability protect trust and help resolve issues."
+        }
+      ]
+    }
   }
 ]

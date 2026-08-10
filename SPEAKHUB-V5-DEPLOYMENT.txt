@@ -1,0 +1,62 @@
+SPEAKHUB SECURE GUIDED LEARNING V5
+===================================
+
+WHAT V5 CHANGES
+---------------
+1. course-player.html no longer calculates quiz/final scores in browser JavaScript.
+2. It no longer writes userProgress itself.
+3. It no longer creates certificates itself.
+4. It calls Firebase Cloud Functions for:
+   - getLearningState
+   - markLessonComplete
+   - getAssessment
+   - submitAssessment
+5. Answer keys are stored in private /courseAssessments.
+6. Learners cannot read answer keys.
+7. Learners cannot manually award themselves completion or certificates.
+8. Internal course content comes ONLY from embedded course.modules.
+   Legacy /lessons and /courseModules data are not mixed into the new curriculum.
+
+FILES TO REPLACE
+----------------
+course-player-v5-secure.html  -> rename to course-player.html
+courses-seed-secure-v5.json   -> rename to courses-seed.json
+
+SECURE BACKEND
+--------------
+Use the included:
+functions/index.js
+functions/package.json
+firestore-learning-secure.rules
+secure-assessment-migration.html
+
+ORDER
+-----
+1. Replace courses-seed.json with courses-seed-secure-v5.json.
+2. Run Seed Learning Engine once.
+3. Deploy Cloud Functions.
+4. Run secure-assessment-migration.html once as approved admin.
+5. Apply the secure Firestore learning rules.
+6. Replace live course-player.html with course-player-v5-secure.html.
+7. Remove secure-assessment-migration.html after successful migration.
+
+IMPORTANT
+---------
+The migration must run AFTER the latest course seed has been loaded because it copies
+the answer-bearing assessments into the private courseAssessments collection and removes
+their answer keys from the public course documents.
+
+TEST
+----
+- Open Anxiety Management as an approved learner.
+- Future lessons must show locked.
+- Lesson 2 must remain locked until Lesson 1 is marked complete.
+- Module quiz must remain locked until every lesson in its module is complete.
+- Fail module quiz: next module remains locked.
+- Pass module quiz: next module unlocks.
+- Complete all required lessons/quizzes: progress reaches 100%.
+- Final assessment unlocks only at 100%.
+- Fail final: no certificate.
+- Pass final: backend creates certificate and the player shows View / Download Certificate.
+- Try editing userProgress directly from the browser: Firestore should deny.
+- Try reading courseAssessments from browser: Firestore should deny.
