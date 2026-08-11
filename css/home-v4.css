@@ -451,3 +451,146 @@ p{color:var(--muted);line-height:1.75}
   .image-panel img{height:280px}
   .float-help{left:16px;right:16px;text-align:center;border-radius:14px}
 }
+
+/* ===== Video hero + minimalist mobile refinement ===== */
+.hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#06152f;
+}
+.hero-media,
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.hero-media{z-index:-2;background:#06152f url('../images/hero-africa.png') center/cover no-repeat}
+.hero-video{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.hero-overlay{
+  z-index:-1;
+  background:
+    radial-gradient(circle at 15% 22%,rgba(245,166,35,.16),transparent 31%),
+    linear-gradient(90deg,rgba(6,21,47,.90),rgba(6,21,47,.68),rgba(6,21,47,.34));
+}
+.hero-title-mobile,.hero-copy-mobile{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-video{display:none}
+}
+
+@media(max-width:760px){
+  /* Mobile header: one clean row, no announcement strip. */
+  body{padding-top:66px}
+  .top{display:none}
+  .nav{top:0}
+  .nav-inner{min-height:66px}
+  .brand img{width:40px;height:40px}
+  .brand strong{font-size:1.05rem}
+  .menu{width:42px;height:42px;border-radius:14px}
+  .links{top:68px;left:8px;right:8px}
+  .nav-actions{top:422px;left:8px;right:8px}
+
+  /* First screen: video + only the core message and one action. */
+  .hero{
+    min-height:76svh;
+    display:flex;
+    align-items:flex-end;
+  }
+  .hero-overlay{
+    background:linear-gradient(180deg,rgba(6,21,47,.20) 0%,rgba(6,21,47,.48) 40%,rgba(6,21,47,.92) 100%);
+  }
+  .hero-grid{
+    width:100%;
+    padding:clamp(72px,14vh,120px) 0 30px;
+    gap:22px;
+  }
+  .hero-copy{max-width:620px}
+  .eyebrow{display:none}
+  .hero-title-desktop,.hero-copy-desktop{display:none}
+  .hero-title-mobile,.hero-copy-mobile{display:inline}
+  .hero h1{
+    font-size:clamp(2.65rem,12.6vw,4rem);
+    line-height:.96;
+    letter-spacing:-.06em;
+    margin:0 0 18px;
+    max-width:10ch;
+  }
+  .hero p{
+    font-size:1rem;
+    line-height:1.55;
+    max-width:34rem;
+    margin:0;
+    color:rgba(255,255,255,.88);
+  }
+  .hero-actions{margin-top:22px;display:block}
+  .hero-actions .btn{display:none}
+  .hero-actions .btn:first-child{
+    display:inline-flex;
+    width:auto;
+    min-width:164px;
+    min-height:48px;
+    padding:12px 20px;
+    border-radius:999px;
+  }
+  .hero-pills{display:none}
+
+  /* Keep the four pathways, but make them compact and scannable. */
+  .hero-dashboard{gap:0;margin-top:2px}
+  .dashboard-card.main{display:none}
+  .mini-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  .mini-grid a{
+    min-height:96px;
+    border-radius:18px;
+    padding:14px;
+    justify-content:flex-start;
+    gap:4px;
+    background:rgba(255,255,255,.96);
+  }
+  .mini-grid strong{font-size:.92rem;line-height:1.2}
+  .mini-grid span{font-size:.75rem;line-height:1.3;font-weight:650}
+
+  /* Impact becomes one concise horizontal strip. */
+  .impact-ribbon{padding:12px 0}
+  .impact-ribbon-grid{
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+  }
+  .impact-ribbon a{
+    padding:10px 4px;
+    border:0;
+    background:transparent;
+    box-shadow:none;
+  }
+  .impact-ribbon a:nth-child(4){display:none}
+  .impact-ribbon strong{font-size:1.25rem}
+  .impact-ribbon span{font-size:.68rem;line-height:1.15}
+
+  /* Reduce visual weight throughout the homepage. */
+  .section{padding:44px 0}
+  .partners-strip{padding:14px 0}
+  .partners-strip p{font-size:.78rem;line-height:1.4}
+  h2{font-size:clamp(1.9rem,9vw,2.7rem);letter-spacing:-.045em}
+  .dashboard-card,.academy-card,.donation-card,.insight-card{border-radius:22px}
+
+  /* Support stays visible without covering the content. */
+  .float-help{
+    left:auto;
+    right:14px;
+    bottom:14px;
+    width:auto;
+    max-width:142px;
+    padding:10px 14px;
+    text-align:center;
+    border-radius:999px;
+    font-size:.82rem;
+  }
+}
