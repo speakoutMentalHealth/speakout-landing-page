@@ -65,6 +65,7 @@ tr.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
 .detail span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
 @media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.menu{display:block}.nav-links{display:none}.menu-open .nav-links{display:flex;position:absolute;top:72px;left:0;right:0;background:#fff;padding:14px;flex-direction:column;border-bottom:1px solid var(--line)}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}table{font-size:.85rem}}
 </style>
+<link rel="stylesheet" href="css/portal-ui.css">
 </head>
 
 <body>
@@ -499,5 +500,6 @@ logoutBtn.addEventListener("click",async()=>{await signOut(auth);location.href="
 
 requireAdmin(startRealtime);
 </script>
+<script src="portal-ui.js" defer></script>
 </body>
 </html>

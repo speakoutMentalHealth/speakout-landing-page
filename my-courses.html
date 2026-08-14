@@ -6,6 +6,7 @@
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="dashboard-shared.css">
+<link rel="stylesheet" href="css/portal-ui.css">
 </head>
 <body>
 <header class="nav"><div class="container nav-inner">
@@ -38,4 +39,5 @@ function render(){let q=search.value.toLowerCase();let out=courses.filter(c=>(ca
 search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};load();
 
 </script>
+<script src="portal-ui.js" defer></script>
 </body></html>

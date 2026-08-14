@@ -35,6 +35,7 @@ section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:rep
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
 @media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
 </style>
+<link rel="stylesheet" href="css/portal-ui.css">
 </head>
 <body>
 <header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>Admin Command Center</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn soft" href="admin-schools.html">Schools</a><a class="btn soft" href="admin-users.html">Users</a><a class="btn dark" href="admin-content-review.html">Content</a><a class="btn soft" href="admin-payments.html">Payments</a><a class="btn danger" href="auth.html" id="logoutLink">Logout</a></nav></div></header>
@@ -179,5 +180,6 @@ logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(a
 
 requireAdmin(startRealtime);
 </script>
+<script src="portal-ui.js" defer></script>
 </body>
 </html>

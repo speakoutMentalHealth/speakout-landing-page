@@ -1,0 +1,68 @@
+SpeakOut Portal Frontend Revamp — Phase 2
+
+Shared files added:
+- css/portal-ui.css
+- portal-ui.js
+
+The following portal/product pages were connected to the shared UI layer:
+- admin.html
+- admin-dashboard.html
+- admin-books.html
+- admin-certificates.html
+- admin-content-review.html
+- admin-contributors.html
+- admin-courses.html
+- admin-impact.html
+- admin-media.html
+- admin-partners.html
+- admin-payments.html
+- admin-podcast.html
+- admin-progress.html
+- admin-reports.html
+- admin-schools.html
+- admin-users.html
+- admin-videos.html
+- admin-workshops.html
+- ambassador-dashboard.html
+- contributor.html
+- student-dashboard.html
+- student-library.html
+- student-link-requests.html
+- student-progress.html
+- teacher-dashboard.html
+- teacher-library.html
+- teacher-students.html
+- parent-dashboard.html
+- parent-library.html
+- parent-child-link.html
+- child-progress.html
+- school-dashboard.html
+- school-partnership-dashboard.html
+- school-profile.html
+- school-approvals.html
+- school-parents.html
+- school-proposal-hub.html
+- school-resource-center.html
+- school-resources.html
+- school-students.html
+- school-teachers.html
+- school-users.html
+- school-workshops.html
+- portal.html
+- profile.html
+- settings.html
+- progress.html
+- certificates.html
+- certificate-center.html
+- certificate-view.html
+- payment-history.html
+- payment-request.html
+- pending.html
+- external-learning-submit.html
+- my-courses.html
+- my-library.html
+- course-player.html
+- course-viewer.html
+
+No Firebase configuration, authentication logic, Firestore queries, role guards, or data schemas were changed.
+Mobile navigation remains fully accessible by converting existing top navigation into a horizontal scroll row rather than hiding it.

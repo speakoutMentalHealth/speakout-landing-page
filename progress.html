@@ -6,6 +6,7 @@
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="dashboard-shared.css">
+<link rel="stylesheet" href="css/portal-ui.css">
 </head>
 <body>
 <header class="nav"><div class="container nav-inner">
@@ -36,4 +37,5 @@ import { SO } from "./dashboard-shared.js";
 SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;const rowsData=await SO.getMine("userProgress","userEmail",user.email);total.textContent=SO.num(rowsData.length);done.textContent=SO.num(rowsData.filter(r=>r.status==="completed").length);avg.textContent=(rowsData.length?Math.round(rowsData.reduce((a,r)=>a+Number(r.percent||0),0)/rowsData.length):0)+"%";rows.innerHTML=rowsData.length?rowsData.map(r=>`<tr><td>${SO.safe(r.courseTitle)}</td><td>${SO.badge(r.status)}</td><td><div class="progress-track"><div class="progress-fill" style="width:${Number(r.percent||0)}%"></div></div> ${SO.num(r.percent)}%</td><td>${SO.safe(r.updatedAt)}</td></tr>`).join(""):`<tr><td colspan="4">No progress records yet.</td></tr>`});
 
 </script>
+<script src="portal-ui.js" defer></script>
 </body></html>
