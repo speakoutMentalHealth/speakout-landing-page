@@ -1,12 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>SpeakHub Academy | SpeakOut</title>
-<link rel="icon" href="../images/logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="../images/logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -129,187 +129,162 @@ section{padding:58px 0}
   .modal-content h2{font-size:1.65rem}
 }
 </style>
-</head>
-
-<body>
+<link href="../css/production-ready.css" rel="stylesheet"/><script defer="True" src="../production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-    <a href="../index.html" class="brand">
-      <img src="../images/logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>SpeakHub Academy</p>
-      </div>
-    </a>
-
-    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
-
-    <nav class="nav-links" id="roleNav">
-      <a href="../index.html">Home</a>
-      <a href="courses.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies</a>
-      <a href="../certificate-center.html">Certificates</a>
-      <a href="../auth/auth.html">Login</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="../index.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="../images/logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>SpeakHub Academy</p>
+</div>
+</a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')" type="button">☰</button>
+<nav class="nav-links" id="roleNav">
+<a href="../index.html">Home</a>
+<a href="courses.html">SpeakHub</a>
+<a href="kiddies.html">Kiddies</a>
+<a href="../certificate-center.html">Certificates</a>
+<a href="../auth/auth.html">Login</a>
+</nav>
+</div>
 </header>
-
-<main>
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Protected Learning Center • Courses • Progress • Certificates</span>
-    <h1>SpeakHub Academy</h1>
-    <p>Take structured courses with modules, lesson slides, activities, quizzes, progress tracking and certificate pathways for students, parents, teachers, ambassadors and school communities.</p>
-
-    <div class="actions">
-      <a href="#courses" class="btn primary">Browse Courses</a>
-      <a href="#filters" class="btn light">Search Courses</a>
-      <a href="../certificate-center.html" class="btn gold">My Certificates</a>
-    </div>
-
-    <div class="trust">
-      <span>Free + Premium</span>
-      <span>Certificate pathways</span>
-      <span>Role-based learning</span>
-      <span>Firestore powered</span>
-    </div>
-  </div>
+<div class="container">
+<span class="kicker">Protected Learning Center • Courses • Progress • Certificates</span>
+<h1>SpeakHub Academy</h1>
+<p>Take structured courses with modules, lesson slides, activities, quizzes, progress tracking and certificate pathways for students, parents, teachers, ambassadors and school communities.</p>
+<div class="actions">
+<a class="btn primary" href="#courses">Browse Courses</a>
+<a class="btn light" href="#filters">Search Courses</a>
+<a class="btn gold" href="../certificate-center.html">My Certificates</a>
+</div>
+<div class="trust">
+<span>Free + Premium</span>
+<span>Certificate pathways</span>
+<span>Role-based learning</span>
+<span>Firestore powered</span>
+</div>
+</div>
 </section>
-
 <section class="stats">
-  <div class="container grid g4">
-    <div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
-    <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
-    <div class="stat"><strong id="certCount">0</strong><span>Certificate Eligible</span></div>
-    <div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
-  </div>
+<div class="container grid g4">
+<div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
+<div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+<div class="stat"><strong id="certCount">0</strong><span>Certificate Eligible</span></div>
+<div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
+</div>
 </section>
-
 <section class="featured-section">
-  <div class="container">
-    <div class="title">
-      <span class="label">Recommended</span>
-      <h2>Featured courses</h2>
-      <p>Start with SpeakOut-approved learning paths for mental health, leadership, parenting, teacher development and community impact.</p>
-    </div>
-    <div id="featuredGrid" class="grid g3"></div>
-  </div>
+<div class="container">
+<div class="title">
+<span class="label">Recommended</span>
+<h2>Featured courses</h2>
+<p>Start with SpeakOut-approved learning paths for mental health, leadership, parenting, teacher development and community impact.</p>
+</div>
+<div class="grid g3" id="featuredGrid"></div>
+</div>
 </section>
-
 <section class="controls" id="filters">
-  <div class="container">
-    <div class="panel">
-      <span class="label">Search Courses</span>
-      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right course</h2>
-      <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, instructor, category, audience, topic or keyword.</p>
-
-      <div class="controls-grid">
-        <input type="text" id="searchInput" class="input" placeholder="Search courses...">
-
-        <select id="categoryFilter" class="select">
-          <option value="all">All Categories</option>
-          <option value="mental-health">Mental Health</option>
-          <option value="leadership">Leadership</option>
-          <option value="digital-skills">Digital Skills</option>
-          <option value="career">Career</option>
-          <option value="ngo">NGO Academy</option>
-          <option value="parenting">Parenting</option>
-          <option value="teacher-training">Teacher Training</option>
-          <option value="ambassador-training">Ambassador Training</option>
-          <option value="school-club">School Club</option>
-        </select>
-
-        <select id="audienceFilter" class="select">
-          <option value="all">All Audiences</option>
-          <option value="student">Students</option>
-          <option value="parent">Parents</option>
-          <option value="teacher">Teachers</option>
-          <option value="school">Schools</option>
-          <option value="ambassador">Ambassadors</option>
-        </select>
-
-        <select id="accessFilter" class="select">
-          <option value="all">Free & Premium</option>
-          <option value="free">Free</option>
-          <option value="paid">Premium</option>
-          <option value="premium">Premium</option>
-        </select>
-      </div>
-
-      <div class="controls-grid" style="margin-top:10px;grid-template-columns:1fr 1fr">
-        <select id="levelFilter" class="select">
-          <option value="all">All Levels</option>
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="advanced">Advanced</option>
-        </select>
-
-        <select id="sortFilter" class="select">
-          <option value="featured">Featured</option>
-          <option value="newest">Newest</option>
-          <option value="title">Title A-Z</option>
-          <option value="certificate">Certificate Eligible</option>
-        </select>
-      </div>
-
-      <div class="empty" id="emptyState">No matching course found. Try another keyword or filter.</div>
-    </div>
-  </div>
+<div class="container">
+<div class="panel">
+<span class="label">Search Courses</span>
+<h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right course</h2>
+<p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, instructor, category, audience, topic or keyword.</p>
+<div class="controls-grid">
+<input class="input" id="searchInput" placeholder="Search courses..." type="text"/>
+<select class="select" id="categoryFilter">
+<option value="all">All Categories</option>
+<option value="mental-health">Mental Health</option>
+<option value="leadership">Leadership</option>
+<option value="digital-skills">Digital Skills</option>
+<option value="career">Career</option>
+<option value="ngo">NGO Academy</option>
+<option value="parenting">Parenting</option>
+<option value="teacher-training">Teacher Training</option>
+<option value="ambassador-training">Ambassador Training</option>
+<option value="school-club">School Club</option>
+</select>
+<select class="select" id="audienceFilter">
+<option value="all">All Audiences</option>
+<option value="student">Students</option>
+<option value="parent">Parents</option>
+<option value="teacher">Teachers</option>
+<option value="school">Schools</option>
+<option value="ambassador">Ambassadors</option>
+</select>
+<select class="select" id="accessFilter">
+<option value="all">Free &amp; Premium</option>
+<option value="free">Free</option>
+<option value="paid">Premium</option>
+<option value="premium">Premium</option>
+</select>
+</div>
+<div class="controls-grid" style="margin-top:10px;grid-template-columns:1fr 1fr">
+<select class="select" id="levelFilter">
+<option value="all">All Levels</option>
+<option value="beginner">Beginner</option>
+<option value="intermediate">Intermediate</option>
+<option value="advanced">Advanced</option>
+</select>
+<select class="select" id="sortFilter">
+<option value="featured">Featured</option>
+<option value="newest">Newest</option>
+<option value="title">Title A-Z</option>
+<option value="certificate">Certificate Eligible</option>
+</select>
+</div>
+<div class="empty" id="emptyState">No matching course found. Try another keyword or filter.</div>
+</div>
+</div>
 </section>
-
 <section id="courses">
-  <div class="container">
-    <div class="title">
-      <span class="label">Course Catalog</span>
-      <h2>Available SpeakHub courses</h2>
-      <p>Only courses marked active appear here. Premium access can be connected through payment history and admin approval.</p>
-    </div>
-
-    <div id="loading" class="loading">Loading courses...</div>
-    <div class="grid g3" id="courseGrid"></div>
-  </div>
+<div class="container">
+<div class="title">
+<span class="label">Course Catalog</span>
+<h2>Available SpeakHub courses</h2>
+<p>Only courses marked active appear here. Premium access can be connected through payment history and admin approval.</p>
+</div>
+<div class="loading" id="loading">Loading courses...</div>
+<div class="grid g3" id="courseGrid"></div>
+</div>
 </section>
 </main>
-
 <div class="modal" id="courseModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div class="modal-title" id="courseModalTitle">Course Preview</div>
-      <button class="close-btn" type="button" onclick="closeCoursePreview()">Close</button>
-    </div>
-
-    <div class="modal-content" id="courseModalContent"></div>
-
-    <div class="modal-actions">
-      <a class="btn primary" id="modalStartBtn" href="#">Start Course</a>
-      <a class="btn gold" id="modalDetailsBtn" href="#">View Details</a>
-    </div>
-  </div>
+<div class="modal-box">
+<div class="modal-head">
+<div class="modal-title" id="courseModalTitle">Course Preview</div>
+<button class="close-btn" onclick="closeCoursePreview()" type="button">Close</button>
 </div>
-
+<div class="modal-content" id="courseModalContent"></div>
+<div class="modal-actions">
+<a class="btn primary" href="#" id="modalStartBtn">Start Course</a>
+<a class="btn gold" href="#" id="modalDetailsBtn">View Details</a>
+</div>
+</div>
+</div>
 <footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <h3>SpeakOut</h3>
-      <p>SpeakHub Academy provides structured learning for mental health, leadership, parenting, teacher support and school wellbeing programs.</p>
-    </div>
-
-    <div>
-      <h4>Learning</h4>
-      <a href="courses.html">SpeakHub</a>
-      <a href="kiddies.html">Kiddies Corner</a>
-      <a href="../certificate-center.html">Certificates</a>
-    </div>
-
-    <div>
-      <h4>Support</h4>
-      <a href="../auth/auth.html">Login / Apply</a>
-      <a href="../school-register.html">Register School</a>
-      <a href="contributor.html">Become Contributor</a>
-    </div>
-  </div>
+<div class="container footer-grid">
+<div>
+<h3>SpeakOut</h3>
+<p>SpeakHub Academy provides structured learning for mental health, leadership, parenting, teacher support and school wellbeing programs.</p>
+</div>
+<div>
+<h4>Learning</h4>
+<a href="courses.html">SpeakHub</a>
+<a href="kiddies.html">Kiddies Corner</a>
+<a href="../certificate-center.html">Certificates</a>
+</div>
+<div>
+<h4>Support</h4>
+<a href="../auth/auth.html">Login / Apply</a>
+<a href="../school-register.html">Register School</a>
+<a href="../contributor.html">Become Contributor</a>
+</div>
+</div>
 </footer>
-
 <script type="module">
 import { db, auth } from "../js/firebase-config.js";
 import { collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -571,6 +546,6 @@ onAuthStateChanged(auth, async user => {
   await loadCourses();
 });
 </script>
-<script type="module" src="../js/protected-page-guard.js"></script>
+<script src="../js/protected-page-guard.js" type="module"></script>
 </body>
 </html>
