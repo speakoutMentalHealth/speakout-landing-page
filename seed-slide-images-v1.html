@@ -1,14 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Seed Slide Images | SpeakOut</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 body{margin:0;font-family:Outfit,Arial,sans-serif;background:#f7f9fc;color:#07152b}.wrap{width:min(900px,92%);margin:60px auto;background:#fff;border:1px solid #e5edf6;border-radius:28px;padding:34px;box-shadow:0 18px 44px rgba(7,21,43,.10)}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.05;margin:0 0 16px;letter-spacing:-.05em}p,li{color:#637083;line-height:1.7;font-size:1.02rem}button{border:0;border-radius:999px;background:#0a5fbf;color:#fff;font-weight:900;padding:16px 24px;font-size:1rem;cursor:pointer}button:disabled{opacity:.55}.notice{margin-top:22px;padding:18px;border-radius:18px;font-weight:800;line-height:1.6;white-space:pre-line}.info{background:#eaf3ff;color:#0a5fbf}.success{background:#e9fbf5;color:#0f8f6f}.error{background:#fee2e2;color:#991b1b}.warn{background:#fff4df;color:#704800}
 </style>
-</head>
-<body>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="wrap">
 <h1>Seed Slide Images + Chapter Sections</h1>
 <p>This updates all 5 flagship books, 5 courses and 5 Kiddies resources with slide-based sections and image fields.</p>
@@ -17,9 +18,9 @@ body{margin:0;font-family:Outfit,Arial,sans-serif;background:#f7f9fc;color:#0715
 <li>Course lessons get <strong>imageUrl</strong>, <strong>animation</strong>, <strong>layout</strong></li>
 <li>Kiddies resources get <strong>kiddiesSlides</strong></li>
 </ul>
-<button id="seedBtn" disabled>Install Slide Images</button>
-<div id="status" class="notice info">Checking admin access...</div>
+<button disabled="" id="seedBtn">Install Slide Images</button>
+<div class="notice info" id="status">Checking admin access...</div>
 <div class="notice warn">The image paths are placeholders. Upload matching images into your GitHub <strong>/images/learning/</strong> folder later.</div>
 </div>
-<script type="module" src="seed-slide-images-v1.js"></script>
+<script src="seed-slide-images-v1.js" type="module"></script>
 </body></html>

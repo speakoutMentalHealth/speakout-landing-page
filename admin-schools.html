@@ -1,12 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Admin Schools | SpeakOut</title>
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
 *{box-sizing:border-box}
@@ -40,114 +40,104 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
 @media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.table{font-size:.85rem}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="admin-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div><h2>SpeakOut</h2><p>Admin Command Center</p></div>
-    </a>
-    <nav class="links">
-      <a class="btn soft" href="admin-dashboard.html">Dashboard</a>
-      <a class="btn dark" href="admin-schools.html">Schools</a>
-      <a class="btn soft" href="admin-users.html">Users</a>
-      <a class="btn soft" href="admin-content-review.html">Content</a>
-      <a class="btn soft" href="admin-payments.html">Payments</a>
-      <a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="admin-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div><h2>SpeakOut</h2><p>Admin Command Center</p></div>
+</a>
+<nav class="links">
+<a class="btn soft" href="admin-dashboard.html">Dashboard</a>
+<a class="btn dark" href="admin-schools.html">Schools</a>
+<a class="btn soft" href="admin-users.html">Users</a>
+<a class="btn soft" href="admin-content-review.html">Content</a>
+<a class="btn soft" href="admin-payments.html">Payments</a>
+<a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
+</nav>
+</div>
 </header>
-
-<main>
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Admin</span>
-    <h1>Admin Schools</h1>
-    <p>Review school registrations, approve partner schools, suspend inactive schools and manage school codes for the SpeakOut platform.</p>
-  </div>
+<div class="container">
+<span class="kicker">Admin</span>
+<h1>Admin Schools</h1>
+<p>Review school registrations, approve partner schools, suspend inactive schools and manage school codes for the SpeakOut platform.</p>
+</div>
 </section>
-
 <section>
-  <div class="container">
-    <div id="statusBox" class="notice">Checking admin access...</div>
-
-    <div class="grid g5" style="margin-bottom:18px">
-      <div class="card stat"><strong id="totalCount">0</strong><span>Total Schools</span></div>
-      <div class="card stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
-      <div class="card stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
-      <div class="card stat"><strong id="studentReach">0</strong><span>Estimated Students</span></div>
-      <div class="card stat"><strong id="stateCount">0</strong><span>States</span></div>
-    </div>
-
-    <div class="panel">
-      <span class="label">Filters</span>
-      <div class="form-grid">
-        <input id="searchInput" placeholder="Search school, email, code, city, state...">
-        <select id="statusFilter">
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="pending_school_approval">Pending School Approval</option>
-          <option value="approved">Approved</option>
-          <option value="active">Active</option>
-          <option value="rejected">Rejected</option>
-          <option value="suspended">Suspended</option>
-        </select>
-        <select id="typeFilter">
-          <option value="all">All School Types</option>
-          <option value="Primary School">Primary School</option>
-          <option value="Secondary School">Secondary School</option>
-          <option value="College">College</option>
-          <option value="University">University</option>
-          <option value="Faith-Based School">Faith-Based School</option>
-          <option value="Community School">Community School</option>
-        </select>
-      </div>
-
-      <div class="actions" style="margin-top:14px">
-        <button class="btn gold" id="exportBtn">Export CSV</button>
-        <button class="btn soft" id="refreshBtn">Refresh</button>
-      </div>
-    </div>
-
-    <div class="panel" style="margin-top:18px">
-      <div style="overflow:auto">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>School</th>
-              <th>Email</th>
-              <th>Code</th>
-              <th>Location</th>
-              <th>Students</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="notice" id="statusBox">Checking admin access...</div>
+<div class="grid g5" style="margin-bottom:18px">
+<div class="card stat"><strong id="totalCount">0</strong><span>Total Schools</span></div>
+<div class="card stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
+<div class="card stat"><strong id="pendingCount">0</strong><span>Pending</span></div>
+<div class="card stat"><strong id="studentReach">0</strong><span>Estimated Students</span></div>
+<div class="card stat"><strong id="stateCount">0</strong><span>States</span></div>
+</div>
+<div class="panel">
+<span class="label">Filters</span>
+<div class="form-grid">
+<input id="searchInput" placeholder="Search school, email, code, city, state..."/>
+<select id="statusFilter">
+<option value="all">All Status</option>
+<option value="pending">Pending</option>
+<option value="pending_school_approval">Pending School Approval</option>
+<option value="approved">Approved</option>
+<option value="active">Active</option>
+<option value="rejected">Rejected</option>
+<option value="suspended">Suspended</option>
+</select>
+<select id="typeFilter">
+<option value="all">All School Types</option>
+<option value="Primary School">Primary School</option>
+<option value="Secondary School">Secondary School</option>
+<option value="College">College</option>
+<option value="University">University</option>
+<option value="Faith-Based School">Faith-Based School</option>
+<option value="Community School">Community School</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<button class="btn gold" id="exportBtn">Export CSV</button>
+<button class="btn soft" id="refreshBtn">Refresh</button>
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<div style="overflow:auto">
+<table class="table">
+<thead>
+<tr>
+<th>School</th>
+<th>Email</th>
+<th>Code</th>
+<th>Location</th>
+<th>Students</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 </main>
-
-<div id="schoolModal" class="modal">
-  <div class="panel">
-    <h2>School Details</h2>
-    <div id="modalContent" class="detail-grid"></div>
-    <div class="actions" style="margin-top:18px">
-      <button class="btn dark" id="closeModal">Close</button>
-    </div>
-  </div>
+<div class="modal" id="schoolModal">
+<div class="panel">
+<h2>School Details</h2>
+<div class="detail-grid" id="modalContent"></div>
+<div class="actions" style="margin-top:18px">
+<button class="btn dark" id="closeModal">Close</button>
 </div>
-
+</div>
+</div>
 <footer class="footer">
-  <div class="container">SpeakOut Admin Command Center</div>
+<div class="container">SpeakOut Admin Command Center</div>
 </footer>
-
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -382,6 +372,6 @@ logoutLink.addEventListener("click",async e => {
 
 requireAdmin(startRealtime);
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

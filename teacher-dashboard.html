@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Teacher Dashboard | SpeakOut</title>
-
-<meta
-  name="description"
-  content="SpeakOut teacher dashboard for professional profile, SpeakHub learning, certificates, school-linked student support, teacher resources and workshops."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="SpeakOut teacher dashboard for professional profile, SpeakHub learning, certificates, school-linked student support, teacher resources and workshops." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -421,435 +411,258 @@ textarea{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a
-      class="brand"
-      href="teacher-dashboard.html"
-    >
-      <img
-        src="logo.png"
-        alt="SpeakOut Logo"
-      >
-
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Teacher Dashboard</p>
-      </div>
-    </a>
-
-    <nav
-      class="links"
-      id="roleNav"
-    ></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="teacher-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Teacher Dashboard</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Teacher Dashboard
     </span>
-
-    <h1 id="welcomeTitle">
+<h1 id="welcomeTitle">
       Welcome to your dashboard
     </h1>
-
-    <p>
+<p>
       Manage your professional profile, continue teacher development courses,
       access classroom resources, review certificates, workshops and school-linked support tools.
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div
-      id="statusBox"
-      class="notice"
-    >
+<div class="container">
+<div class="notice" id="statusBox">
       Loading dashboard...
     </div>
-
-    <div
-      id="profileWarning"
-      class="notice warn hidden"
-    >
+<div class="notice warn hidden" id="profileWarning">
       Please complete your professional profile information.
     </div>
-
-
-    <div
-      class="grid g4"
-      style="margin-bottom:18px"
-    >
-
-      <div class="card stat">
-        <strong id="nameBox">—</strong>
-        <span>Name</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="schoolBox">—</strong>
-        <span>School / Access</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="certificateCount">0</strong>
-        <span>Certificates</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="studentCount">0</strong>
-        <span>Linked Students</span>
-      </div>
-
-    </div>
-
-
-    <div
-      class="grid g4"
-      style="margin-bottom:18px"
-    >
-
-      <div class="card stat">
-        <strong id="courseStartedCount">0</strong>
-        <span>Courses Started</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="courseCompletedCount">0</strong>
-        <span>Courses Completed</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="externalCourseCount">0</strong>
-        <span>External Learning</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="workshopCount">0</strong>
-        <span>Upcoming Workshops</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="nameBox">—</strong>
+<span>Name</span>
+</div>
+<div class="card stat">
+<strong id="schoolBox">—</strong>
+<span>School / Access</span>
+</div>
+<div class="card stat">
+<strong id="certificateCount">0</strong>
+<span>Certificates</span>
+</div>
+<div class="card stat">
+<strong id="studentCount">0</strong>
+<span>Linked Students</span>
+</div>
+</div>
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="courseStartedCount">0</strong>
+<span>Courses Started</span>
+</div>
+<div class="card stat">
+<strong id="courseCompletedCount">0</strong>
+<span>Courses Completed</span>
+</div>
+<div class="card stat">
+<strong id="externalCourseCount">0</strong>
+<span>External Learning</span>
+</div>
+<div class="card stat">
+<strong id="workshopCount">0</strong>
+<span>Upcoming Workshops</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           My Profile
         </span>
-
-        <h2>
+<h2>
           Professional Profile
         </h2>
-
-        <p>
+<p>
           Update your details, teaching focus and profile picture.
         </p>
-
-
-        <div class="photo-row">
-
-          <img
-            id="profilePhotoPreview"
-            class="avatar"
-            src="logo.png"
-            alt="Profile photo"
-          >
-
-          <div>
-
-            <input
-              id="profilePhoto"
-              type="file"
-              accept="image/*"
-            >
-
-            <div class="photo-help">
+<div class="photo-row">
+<img alt="Profile photo" class="avatar" decoding="async" height="1254" id="profilePhotoPreview" loading="lazy" src="logo.png" width="1254"/>
+<div>
+<input accept="image/*" id="profilePhoto" type="file"/>
+<div class="photo-help">
               Upload a clear photo. It will be compressed before saving to Firestore.
             </div>
-
-          </div>
-
-        </div>
-
-
-        <form id="profileForm">
-
-          <div class="profile-grid">
-
-            <input id="firstName" placeholder="First Name">
-            <input id="lastName" placeholder="Last Name">
-            <input id="phone" placeholder="Phone">
-            <input id="country" placeholder="Country">
-            <input id="state" placeholder="State">
-            <input id="city" placeholder="City">
-            <input id="occupation" placeholder="Subjects / Department">
-
-          </div>
-
-          <textarea
-            id="bio"
-            placeholder="Short bio, teaching focus, student support interests or workshop experience"
-          ></textarea>
-
-          <button
-            class="btn primary"
-            type="submit"
-          >
+</div>
+</div>
+<form id="profileForm">
+<div class="profile-grid">
+<input id="firstName" placeholder="First Name"/>
+<input id="lastName" placeholder="Last Name"/>
+<input id="phone" placeholder="Phone"/>
+<input id="country" placeholder="Country"/>
+<input id="state" placeholder="State"/>
+<input id="city" placeholder="City"/>
+<input id="occupation" placeholder="Subjects / Department"/>
+</div>
+<textarea id="bio" placeholder="Short bio, teaching focus, student support interests or workshop experience"></textarea>
+<button class="btn primary" type="submit">
             Update Profile
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+</form>
+</div>
+<div class="panel">
+<span class="label">
           Quick Actions
         </span>
-
-        <h2>
+<h2>
           What you can do
         </h2>
-
-
-        <div class="grid">
-
-          <a
-            class="card"
-            href="teacher-library.html"
-          >
-            <h3>Teacher Library</h3>
-            <p>
+<div class="grid">
+<a class="card" href="teacher-library.html">
+<h3>Teacher Library</h3>
+<p>
               Access classroom wellbeing, safeguarding and student support resources.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Library
             </span>
-          </a>
-
-
-          <a
-            class="card"
-            href="teacher-students.html"
-          >
-            <h3>Students</h3>
-            <p>
+</a>
+<a class="card" href="teacher-students.html">
+<h3>Students</h3>
+<p>
               Open your assigned or school-linked student support area.
             </p>
-            <span class="btn primary">
+<span class="btn primary">
               Open Students
             </span>
-          </a>
-
-
-          <a
-            class="card"
-            href="workshops.html"
-          >
-            <h3>Workshops</h3>
-            <p>
+</a>
+<a class="card" href="workshops.html">
+<h3>Workshops</h3>
+<p>
               View upcoming workshops, seminars and school training sessions.
             </p>
-            <span class="btn gold">
+<span class="btn gold">
               Open Workshops
             </span>
-          </a>
-
-
-          <a
-            class="card"
-            href="certificate-center.html"
-          >
-            <h3>Certificates</h3>
-            <p>
+</a>
+<a class="card" href="certificate-center.html">
+<h3>Certificates</h3>
+<p>
               View and verify certificates earned through training and learning.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Certificates
             </span>
-          </a>
-
-
-          <a
-            class="card"
-            href="speakhub.html?audience=teacher"
-          >
-            <h3>Teacher Courses</h3>
-            <p>
+</a>
+<a class="card" href="speakhub.html?audience=teacher">
+<h3>Teacher Courses</h3>
+<p>
               Continue professional development through SpeakHub Academy.
             </p>
-            <span class="btn primary">
+<span class="btn primary">
               Open Courses
             </span>
-          </a>
-
-
-          <a
-            class="card"
-            href="payment-history.html"
-          >
-            <h3>My Payments</h3>
-            <p>
+</a>
+<a class="card" href="payment-history.html">
+<h3>My Payments</h3>
+<p>
               Track premium training and resource access requests.
             </p>
-            <span class="btn gold">
+<span class="btn gold">
               Payment History
             </span>
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="grid g2"
-      style="margin-top:18px"
-    >
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Professional Learning</span>
-            <h2>Continue Learning</h2>
-            <p>
+</a>
+</div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Professional Learning</span>
+<h2>Continue Learning</h2>
+<p>
               Your active SpeakHub professional development courses.
             </p>
-          </div>
-        </div>
-
-        <div
-          id="progressList"
-          class="mini-list"
-        >
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="progressList">
+<div class="notice">
             Loading course progress...
           </div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Completed Learning</span>
-            <h2>Course History</h2>
-            <p>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Completed Learning</span>
+<h2>Course History</h2>
+<p>
               Completed internal and external learning records.
             </p>
-          </div>
-        </div>
-
-        <div
-          id="completedList"
-          class="mini-list"
-        >
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="completedList">
+<div class="notice">
             Loading completed learning...
           </div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="grid g2"
-      style="margin-top:18px"
-    >
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Certificates</span>
-            <h2>Recent Certificates</h2>
-            <p>
+</div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Certificates</span>
+<h2>Recent Certificates</h2>
+<p>
               Teacher training, workshops and learning credentials.
             </p>
-          </div>
-        </div>
-
-        <div
-          id="certificateList"
-          class="mini-list"
-        >
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="certificateList">
+<div class="notice">
             Loading certificates...
           </div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Workshops</span>
-            <h2>Upcoming Sessions</h2>
-            <p>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Workshops</span>
+<h2>Upcoming Sessions</h2>
+<p>
               School-linked workshops and professional development sessions.
             </p>
-          </div>
-        </div>
-
-        <div
-          id="workshopList"
-          class="mini-list"
-        >
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="workshopList">
+<div class="notice">
             Loading workshops...
           </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • Teacher Development
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -2331,8 +2144,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

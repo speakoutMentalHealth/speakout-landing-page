@@ -1,13 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Portal Login | SpeakOut</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -173,44 +172,37 @@ input:focus{
   .btn{width:100%;border-radius:14px}
 }
 </style>
-</head>
-
-<body>
-  <main class="shell">
-    <section class="info">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <h1>SpeakOut Protected Portal</h1>
-      <p>Login to access approved learning tools, E-Library, SpeakHub, Kiddies Corner, dashboards, certificates and progress tracking.</p>
-      <ul>
-        <li>Students access student dashboard</li>
-        <li>Schools access school dashboard</li>
-        <li>Admins access admin control center</li>
-        <li>Pending users wait for approval</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <span class="badge">Portal Login</span>
-      <h2>Welcome back</h2>
-      <p>Use the email and password you registered with.</p>
-
-      <form class="form" id="loginForm">
-        <input id="email" type="email" placeholder="Email address" autocomplete="email" required>
-        <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
-        <button class="btn primary" type="submit" id="loginBtn">Login</button>
-      </form>
-
-      <div id="statusBox" class="status"></div>
-
-      <div class="actions">
-        <a class="btn gold" href="register.html">Apply for Access</a>
-        <a class="btn soft" href="index.html">Back Home</a>
-      </div>
-
-      <p class="small">Access is only available after admin approval.</p>
-    </section>
-  </main>
-
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
+<main class="shell" id="main-content">
+<section class="info">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<h1>SpeakOut Protected Portal</h1>
+<p>Login to access approved learning tools, E-Library, SpeakHub, Kiddies Corner, dashboards, certificates and progress tracking.</p>
+<ul>
+<li>Students access student dashboard</li>
+<li>Schools access school dashboard</li>
+<li>Admins access admin control center</li>
+<li>Pending users wait for approval</li>
+</ul>
+</section>
+<section class="card">
+<span class="badge">Portal Login</span>
+<h2>Welcome back</h2>
+<p>Use the email and password you registered with.</p>
+<form class="form" id="loginForm">
+<input autocomplete="email" id="email" placeholder="Email address" required="" type="email"/>
+<input autocomplete="current-password" id="password" placeholder="Password" required="" type="password"/>
+<button class="btn primary" id="loginBtn" type="submit">Login</button>
+</form>
+<div class="status" id="statusBox"></div>
+<div class="actions">
+<a class="btn gold" href="register.html">Apply for Access</a>
+<a class="btn soft" href="index.html">Back Home</a>
+</div>
+<p class="small">Access is only available after admin approval.</p>
+</section>
+</main>
 <script type="module">
 import { auth } from "./firebase-config.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";

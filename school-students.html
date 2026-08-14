@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>School Students | SpeakOut</title>
-
-<meta
-  name="description"
-  content="School student management for SpeakOut school administrators, including student records, approval status, Student IDs, search, filters and learning access."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="School student management for SpeakOut school administrators, including student records, approval status, Student IDs, search, filters and learning access." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -362,276 +352,156 @@ input:focus,textarea:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="school-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>School Students</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="school-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>School Students</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       School Management
     </span>
-
-    <h1>
+<h1>
       School Students
     </h1>
-
-    <p id="schoolMeta">
+<p id="schoolMeta">
       Manage student records, Student IDs, school approval status and learning access.
     </p>
-
-    <div id="schoolPills"></div>
-
-  </div>
+<div id="schoolPills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Checking school access...
     </div>
-
-
-    <div class="grid g4" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="totalCount">0</strong>
-        <span>Total Students</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="approvedCount">0</strong>
-        <span>Approved</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="pendingCount">0</strong>
-        <span>Pending</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="rejectedCount">0</strong>
-        <span>Rejected / Suspended</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="totalCount">0</strong>
+<span>Total Students</span>
+</div>
+<div class="card stat">
+<strong id="approvedCount">0</strong>
+<span>Approved</span>
+</div>
+<div class="card stat">
+<strong id="pendingCount">0</strong>
+<span>Pending</span>
+</div>
+<div class="card stat">
+<strong id="rejectedCount">0</strong>
+<span>Rejected / Suspended</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           Add Student Record
         </span>
-
-        <h2>
+<h2>
           Add a student
         </h2>
-
-        <p class="small-note">
+<p class="small-note">
           This creates the student's Firestore profile and Student ID.
           It does not create a Firebase Authentication password account.
           The learner must still register/login through your normal authentication flow if portal login is required.
         </p>
-
-
-        <form id="addForm">
-
-          <div class="form-grid">
-
-            <input
-              id="firstName"
-              placeholder="First Name"
-              required
-            >
-
-            <input
-              id="lastName"
-              placeholder="Last Name"
-              required
-            >
-
-            <input
-              id="email"
-              type="email"
-              placeholder="Email, if available"
-            >
-
-            <input
-              id="phone"
-              placeholder="Phone, if available"
-            >
-
-            <input
-              id="classLevel"
-              placeholder="Class / Level"
-            >
-
-            <input
-              id="admissionNumber"
-              placeholder="School Admission Number"
-            >
-
-          </div>
-
-          <textarea
-            id="bio"
-            placeholder="Optional notes"
-          ></textarea>
-
-          <button
-            class="btn primary"
-            type="submit"
-            id="addButton"
-          >
+<form id="addForm">
+<div class="form-grid">
+<input id="firstName" placeholder="First Name" required=""/>
+<input id="lastName" placeholder="Last Name" required=""/>
+<input id="email" placeholder="Email, if available" type="email"/>
+<input id="phone" placeholder="Phone, if available"/>
+<input id="classLevel" placeholder="Class / Level"/>
+<input id="admissionNumber" placeholder="School Admission Number"/>
+</div>
+<textarea id="bio" placeholder="Optional notes"></textarea>
+<button class="btn primary" id="addButton" type="submit">
             Add Student
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
-          Search & Filter
+</form>
+</div>
+<div class="panel">
+<span class="label">
+          Search &amp; Filter
         </span>
-
-        <h2>
+<h2>
           Find students
         </h2>
-
-        <div class="form-grid">
-
-          <input
-            id="searchInput"
-            placeholder="Search name, email, Student ID, class..."
-          >
-
-          <select id="statusFilter">
-
-            <option value="all">
+<div class="form-grid">
+<input id="searchInput" placeholder="Search name, email, Student ID, class..."/>
+<select id="statusFilter">
+<option value="all">
               All Statuses
             </option>
-
-            <option value="pending_school_approval">
+<option value="pending_school_approval">
               Pending
             </option>
-
-            <option value="approved">
+<option value="approved">
               Approved
             </option>
-
-            <option value="rejected">
+<option value="rejected">
               Rejected
             </option>
-
-            <option value="suspended">
+<option value="suspended">
               Suspended
             </option>
-
-          </select>
-
-        </div>
-
-        <div class="actions" style="margin-top:14px">
-
-          <a
-            class="btn soft"
-            href="school-dashboard.html"
-          >
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<a class="btn soft" href="school-dashboard.html">
             Back to Dashboard
           </a>
-
-          <a
-            class="btn gold"
-            href="school-users.html"
-          >
+<a class="btn gold" href="school-users.html">
             All School Users
           </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <h2>
+</div>
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<h2>
         Students
       </h2>
-
-      <p class="small-note">
+<p class="small-note">
         Approval controls access status. Use View Progress for approved students to open their learning record.
       </p>
-
-      <div class="table-wrap">
-
-        <table class="table">
-
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Contact</th>
-              <th>Student ID</th>
-              <th>Class</th>
-              <th>Status</th>
-              <th>Learning</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody id="rows"></tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
-  </div>
+<div class="table-wrap">
+<table class="table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Contact</th>
+<th>Student ID</th>
+<th>Class</th>
+<th>Status</th>
+<th>Learning</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • School Student Management
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1615,7 +1485,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

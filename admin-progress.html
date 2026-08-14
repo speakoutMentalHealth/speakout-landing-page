@@ -1,12 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Admin Progress | SpeakOut Admin</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
 --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -65,153 +65,139 @@ tr.row{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
 .detail span{display:block;color:var(--muted);margin-top:4px;word-break:break-word}
 @media(max-width:1000px){.g5,.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.menu{display:block}.nav-links{display:none}.menu-open .nav-links{display:flex;position:absolute;top:72px;left:0;right:0;background:#fff;padding:14px;flex-direction:column;border-bottom:1px solid var(--line)}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}table{font-size:.85rem}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="admin-dashboard.html">
-      <img src="logo.png" alt="SpeakOut">
-      <div>SpeakOut<small>Admin Control</small></div>
-    </a>
-    <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-    <nav class="nav-links">
-      <a class="btn soft" href="admin-dashboard.html">Home</a>
-      <a class="btn soft" href="admin-users.html">Users</a>
-      <a class="btn soft" href="admin-schools.html">Schools</a>
-      <a class="btn soft" href="admin-courses.html">Courses</a>
-      <a class="btn dark" href="admin-progress.html">Progress</a>
-      <a class="btn soft" href="admin-certificates.html">Certificates</a>
-      <a class="btn gold" href="executive-dashboard.html">Executive</a>
-      <button class="btn danger" id="logoutBtn">Logout</button>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="admin-dashboard.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>SpeakOut<small>Admin Control</small></div>
+</a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+<nav class="nav-links">
+<a class="btn soft" href="admin-dashboard.html">Home</a>
+<a class="btn soft" href="admin-users.html">Users</a>
+<a class="btn soft" href="admin-schools.html">Schools</a>
+<a class="btn soft" href="admin-courses.html">Courses</a>
+<a class="btn dark" href="admin-progress.html">Progress</a>
+<a class="btn soft" href="admin-certificates.html">Certificates</a>
+<a aria-disabled="true" class="btn gold is-disabled" href="#" title="Coming soon">Executive</a>
+<button class="btn danger" id="logoutBtn">Logout</button>
+</nav>
+</div>
 </header>
-
-<main>
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Learning Analytics</span>
-    <h1>Admin Progress</h1>
-    <p>Track learner activity, course progress, completion trends, certificate readiness and recent learning performance across SpeakHub.</p>
-  </div>
+<div class="container">
+<span class="kicker">Learning Analytics</span>
+<h1>Admin Progress</h1>
+<p>Track learner activity, course progress, completion trends, certificate readiness and recent learning performance across SpeakHub.</p>
+</div>
 </section>
-
 <section>
-  <div class="container">
-    <div id="statusBox" class="notice">Checking admin access...</div>
-
-    <div class="grid g5">
-      <div class="card metric"><strong id="usersCount">0</strong><span>Users</span></div>
-      <div class="card metric"><strong id="activeLearners">0</strong><span>Active Learners</span></div>
-      <div class="card metric"><strong id="progressCount">0</strong><span>Progress Records</span></div>
-      <div class="card metric"><strong id="completedCount">0</strong><span>Completed</span></div>
-      <div class="card metric"><strong id="certsCount">0</strong><span>Certificates</span></div>
-    </div>
-
-    <div class="grid g4" style="margin-top:16px">
-      <div class="card metric"><strong id="coursesCount">0</strong><span>Courses</span></div>
-      <div class="card metric"><strong id="avgCompletion">0%</strong><span>Avg Completion</span></div>
-      <div class="card metric"><strong id="inProgressCount">0</strong><span>In Progress</span></div>
-      <div class="card metric"><strong id="notStartedCount">0</strong><span>Not Started</span></div>
-    </div>
-  </div>
+<div class="container">
+<div class="notice" id="statusBox">Checking admin access...</div>
+<div class="grid g5">
+<div class="card metric"><strong id="usersCount">0</strong><span>Users</span></div>
+<div class="card metric"><strong id="activeLearners">0</strong><span>Active Learners</span></div>
+<div class="card metric"><strong id="progressCount">0</strong><span>Progress Records</span></div>
+<div class="card metric"><strong id="completedCount">0</strong><span>Completed</span></div>
+<div class="card metric"><strong id="certsCount">0</strong><span>Certificates</span></div>
+</div>
+<div class="grid g4" style="margin-top:16px">
+<div class="card metric"><strong id="coursesCount">0</strong><span>Courses</span></div>
+<div class="card metric"><strong id="avgCompletion">0%</strong><span>Avg Completion</span></div>
+<div class="card metric"><strong id="inProgressCount">0</strong><span>In Progress</span></div>
+<div class="card metric"><strong id="notStartedCount">0</strong><span>Not Started</span></div>
+</div>
+</div>
 </section>
-
 <section>
-  <div class="container grid g2">
-    <div class="panel">
-      <span class="label">Filters</span>
-      <h2>Search Progress</h2>
-      <div class="form-grid">
-        <input id="searchInput" placeholder="Search user, email, course...">
-        <select id="statusFilter">
-          <option value="all">All Status</option>
-          <option value="not_started">Not Started</option>
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="certified">Certified</option>
-        </select>
-        <select id="courseFilter">
-          <option value="all">All Courses</option>
-        </select>
-      </div>
-      <div class="actions" style="margin-top:14px">
-        <button class="btn gold" id="exportBtn">Export CSV</button>
-        <button class="btn soft" id="refreshBtn">Refresh</button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <span class="label">Recent Completions</span>
-      <h2>Latest Completed Courses</h2>
-      <div id="recentCompletions" class="mini-list"></div>
-    </div>
-  </div>
+<div class="container grid g2">
+<div class="panel">
+<span class="label">Filters</span>
+<h2>Search Progress</h2>
+<div class="form-grid">
+<input id="searchInput" placeholder="Search user, email, course..."/>
+<select id="statusFilter">
+<option value="all">All Status</option>
+<option value="not_started">Not Started</option>
+<option value="in_progress">In Progress</option>
+<option value="completed">Completed</option>
+<option value="certified">Certified</option>
+</select>
+<select id="courseFilter">
+<option value="all">All Courses</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<button class="btn gold" id="exportBtn">Export CSV</button>
+<button class="btn soft" id="refreshBtn">Refresh</button>
+</div>
+</div>
+<div class="panel">
+<span class="label">Recent Completions</span>
+<h2>Latest Completed Courses</h2>
+<div class="mini-list" id="recentCompletions"></div>
+</div>
+</div>
 </section>
-
 <section>
-  <div class="container grid g2">
-    <div class="panel">
-      <span class="label">Top Courses</span>
-      <h2>Most Active Courses</h2>
-      <div id="topCourses" class="mini-list"></div>
-    </div>
-
-    <div class="panel">
-      <span class="label">Learners</span>
-      <h2>Most Active Learners</h2>
-      <div id="topLearners" class="mini-list"></div>
-    </div>
-  </div>
+<div class="container grid g2">
+<div class="panel">
+<span class="label">Top Courses</span>
+<h2>Most Active Courses</h2>
+<div class="mini-list" id="topCourses"></div>
+</div>
+<div class="panel">
+<span class="label">Learners</span>
+<h2>Most Active Learners</h2>
+<div class="mini-list" id="topLearners"></div>
+</div>
+</div>
 </section>
-
 <section>
-  <div class="container">
-    <div class="panel">
-      <span class="label">Progress Tracking</span>
-      <h2>User Progress Records</h2>
-      <p>Review individual course completion, last activity and certificate eligibility.</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Course</th>
-              <th>Progress</th>
-              <th>Lessons</th>
-              <th>Status</th>
-              <th>Certificate</th>
-              <th>Updated</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="panel">
+<span class="label">Progress Tracking</span>
+<h2>User Progress Records</h2>
+<p>Review individual course completion, last activity and certificate eligibility.</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Email</th>
+<th>Course</th>
+<th>Progress</th>
+<th>Lessons</th>
+<th>Status</th>
+<th>Certificate</th>
+<th>Updated</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 </main>
-
-<div id="progressModal" class="modal">
-  <div class="panel">
-    <h2>Progress Details</h2>
-    <div id="modalContent" class="detail-grid"></div>
-    <div class="actions" style="margin-top:18px">
-      <a id="modalCourseLink" class="btn primary" href="#" target="_blank">Open Course</a>
-      <button class="btn dark" id="closeModal">Close</button>
-    </div>
-  </div>
+<div class="modal" id="progressModal">
+<div class="panel">
+<h2>Progress Details</h2>
+<div class="detail-grid" id="modalContent"></div>
+<div class="actions" style="margin-top:18px">
+<a class="btn primary" href="#" id="modalCourseLink" target="_blank">Open Course</a>
+<button class="btn dark" id="closeModal">Close</button>
 </div>
-
+</div>
+</div>
 <footer class="footer">
-  <div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div>
+<div class="container">SpeakOut Admin • <a href="index.html">Back Home</a></div>
 </footer>
-
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -500,6 +486,6 @@ logoutBtn.addEventListener("click",async()=>{await signOut(auth);location.href="
 
 requireAdmin(startRealtime);
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

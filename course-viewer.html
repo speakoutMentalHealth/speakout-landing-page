@@ -1,12 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Course Viewer | SpeakHub</title>
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
 --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -59,71 +59,59 @@ h1,h2,h3{color:var(--navy);line-height:1.08}
 .wrap{grid-template-columns:1fr}.side{position:static;max-height:none}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="header">
-  <div class="inner">
-    <a class="brand" href="speakhub.html">
-      <img src="logo.png" alt="SpeakOut">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Course Viewer</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav">
-      <a class="btn soft" href="speakhub.html">SpeakHub</a>
-      <a class="btn soft" href="certificate-center.html">Certificates</a>
-      <a class="btn dark" href="auth.html">Login</a>
-    </nav>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="container">
-    <span class="pill">Interactive Course Viewer</span>
-    <h1 id="heroTitle">Loading Course...</h1>
-    <p id="heroDesc">Structured lessons, progress tracking, quiz pathway and certificate readiness.</p>
-    <div class="actions">
-      <a class="btn gold" id="detailsLink" href="speakhub.html">Course Details</a>
-      <a class="btn soft" href="speakhub.html">Back to SpeakHub</a>
-    </div>
-  </div>
-</section>
-
-<div class="wrap">
-  <aside class="side">
-    <h3>Course Progress</h3>
-    <div class="progress"><div id="progressBar"></div></div>
-    <p id="progressText" class="muted">0% complete</p>
-
-    <h3>Lessons</h3>
-    <div id="lessonList">Loading...</div>
-  </aside>
-
-  <main class="main">
-    <div id="status" class="notice">Loading course...</div>
-
-    <article id="lessonBody" class="lesson-content" style="display:none"></article>
-
-    <div id="quizBox" class="quiz" style="display:none"></div>
-
-    <div class="actions" id="lessonActions" style="display:none">
-      <button class="btn soft" id="prevBtn" type="button">Previous</button>
-      <button class="btn success" id="completeBtn" type="button">Mark Complete</button>
-      <button class="btn" id="nextBtn" type="button">Next Lesson</button>
-      <a class="btn gold" id="certificateLink" href="certificate-center.html" style="display:none">View Certificate Pathway</a>
-    </div>
-  </main>
+<div class="inner">
+<a class="brand" href="speakhub.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Course Viewer</p>
 </div>
-
+</a>
+<nav class="links" id="roleNav">
+<a class="btn soft" href="speakhub.html">SpeakHub</a>
+<a class="btn soft" href="certificate-center.html">Certificates</a>
+<a class="btn dark" href="auth.html">Login</a>
+</nav>
+</div>
+</header>
+<section class="hero">
+<div class="container">
+<span class="pill">Interactive Course Viewer</span>
+<h1 id="heroTitle">Loading Course...</h1>
+<p id="heroDesc">Structured lessons, progress tracking, quiz pathway and certificate readiness.</p>
+<div class="actions">
+<a class="btn gold" href="speakhub.html" id="detailsLink">Course Details</a>
+<a class="btn soft" href="speakhub.html">Back to SpeakHub</a>
+</div>
+</div>
+</section>
+<div class="wrap">
+<aside class="side">
+<h3>Course Progress</h3>
+<div class="progress"><div id="progressBar"></div></div>
+<p class="muted" id="progressText">0% complete</p>
+<h3>Lessons</h3>
+<div id="lessonList">Loading...</div>
+</aside>
+<main class="main" id="main-content">
+<div class="notice" id="status">Loading course...</div>
+<article class="lesson-content" id="lessonBody" style="display:none"></article>
+<div class="quiz" id="quizBox" style="display:none"></div>
+<div class="actions" id="lessonActions" style="display:none">
+<button class="btn soft" id="prevBtn" type="button">Previous</button>
+<button class="btn success" id="completeBtn" type="button">Mark Complete</button>
+<button class="btn" id="nextBtn" type="button">Next Lesson</button>
+<a class="btn gold" href="certificate-center.html" id="certificateLink" style="display:none">View Certificate Pathway</a>
+</div>
+</main>
+</div>
 <footer class="footer">
-  <div class="container">SpeakOut Mental Health Outreach</div>
+<div class="container">SpeakOut Mental Health Outreach</div>
 </footer>
-
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -360,7 +348,6 @@ onAuthStateChanged(auth, async user => {
   }
 });
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

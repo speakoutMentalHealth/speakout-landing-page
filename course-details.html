@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Course Details | SpeakHub Academy</title>
-<meta name="description" content="SpeakHub Academy course details for internal and approved external learning pathways, including providers, modules, outcomes, progress and certificate requirements.">
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta content="SpeakHub Academy course details for internal and approved external learning pathways, including providers, modules, outcomes, progress and certificate requirements." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -44,86 +45,73 @@ section{padding:38px 0}.panel{background:#fff;border:1px solid var(--line);borde
 .meta-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}.meta{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}.meta b{display:block;color:var(--navy);font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}.meta span{display:block;margin-top:4px;color:var(--muted)}
 @media(max-width:900px){.course-layout,.stats,.meta-list{grid-template-columns:1fr}.nav-links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.cover{min-height:300px}}
 </style>
-</head>
-<body>
-
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav"><div class="container nav-inner">
-  <a class="brand" href="speakhub.html"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
-  <nav class="nav-links"><a class="btn soft" href="speakhub.html">Courses</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Portal</a></nav>
+<a class="brand" href="speakhub.html"><img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
+<nav class="nav-links"><a class="btn soft" href="speakhub.html">Courses</a><a class="btn soft" href="certificate-center.html">Certificates</a><a class="btn dark" href="auth.html">Portal</a></nav>
 </div></header>
-
-<section class="hero"><div class="container">
-  <span class="kicker" id="courseTypeKicker">Course Details</span>
-  <h1 id="heroTitle">Loading Course...</h1>
-  <p id="heroDesc">Please wait while course information is loaded.</p>
-  <div id="heroChips" class="hero-chips"></div>
+<section class="hero" id="main-content"><div class="container">
+<span class="kicker" id="courseTypeKicker">Course Details</span>
+<h1 id="heroTitle">Loading Course...</h1>
+<p id="heroDesc">Please wait while course information is loaded.</p>
+<div class="hero-chips" id="heroChips"></div>
 </div></section>
-
 <section><div class="container">
-  <div class="stats" id="statsRow" style="display:none">
-    <div class="stat"><strong id="moduleCount">0</strong><span id="moduleStatLabel">Modules</span></div>
-    <div class="stat"><strong id="outcomeCount">0</strong><span>Outcomes</span></div>
-    <div class="stat"><strong id="durationValue">--</strong><span>Duration</span></div>
-    <div class="stat"><strong id="levelValue">--</strong><span>Level</span></div>
-  </div>
-
-  <br>
-  <div id="loading" class="notice">Loading course...</div>
-
-  <div id="courseArea" class="course-layout" style="display:none">
-    <div>
-      <div class="cover" id="courseCover"><strong id="coverText"></strong></div>
-      <div class="provider-box" id="providerBox"><div class="provider-row">
-        <img id="providerLogo" class="provider-logo" src="logo.png" alt="Provider">
-        <div><strong id="providerName">SpeakHub Academy</strong><p id="providerText">Course provider</p></div>
-      </div></div>
-
-      <div id="externalStatusCard" class="status-card" style="display:none">
-        <span class="label">My External Learning</span>
-        <h3 id="externalStatusHeading">Not Submitted</h3>
-        <p id="externalStatusText">Complete the provider course, then submit your certificate or proof.</p>
-        <div id="externalStatusPills"></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <span class="label" id="courseTypeLabel">Internal Course</span>
-      <h2 id="title"></h2>
-      <p><strong id="instructorLabel">Instructor:</strong> <span id="instructor"></span></p>
-      <div id="pills"></div>
-      <p id="description"></p>
-
-      <div class="meta-list">
-        <div class="meta"><b>Course Type</b><span id="courseTypeMeta">Internal</span></div>
-        <div class="meta"><b>Provider</b><span id="providerMeta">SpeakHub Academy</span></div>
-        <div class="meta"><b>Completion</b><span id="completionMeta">Inside SpeakHub</span></div>
-        <div class="meta"><b>Certificate Issuer</b><span id="certificateIssuerMeta">SpeakHub Academy</span></div>
-      </div>
-
-      <h3>Learning Outcomes</h3><ul id="outcomes"></ul>
-      <h3>Prerequisites</h3><div id="prerequisites">No prerequisites listed.</div>
-
-      <div id="modulesSection"><h3 id="modulesHeading">Modules</h3><div id="moduleList"></div></div>
-
-      <div id="externalFlow" class="external-flow">
-        <h3>How External Learning Works</h3>
-        <ol>
-          <li>Open the course on the official provider website.</li>
-          <li>Complete the course directly with that provider.</li>
-          <li>Return to SpeakHub after completion.</li>
-          <li>Upload your certificate or accepted proof of completion.</li>
-          <li>SpeakHub reviews the submission and records the approved external achievement.</li>
-        </ol>
-        <div class="notice warn">The external provider remains the original issuer of its certificate. SpeakHub records and verifies the learning achievement; it does not replace the provider's credential.</div>
-        <div id="verificationNotice" class="notice" style="margin-top:12px"></div>
-      </div>
-
-      <div class="actions" id="actions"></div>
-      <div id="premiumNote" class="notice warn" style="display:none;margin-top:12px">Premium access is required for this SpeakHub course.</div>
-    </div>
-  </div>
+<div class="stats" id="statsRow" style="display:none">
+<div class="stat"><strong id="moduleCount">0</strong><span id="moduleStatLabel">Modules</span></div>
+<div class="stat"><strong id="outcomeCount">0</strong><span>Outcomes</span></div>
+<div class="stat"><strong id="durationValue">--</strong><span>Duration</span></div>
+<div class="stat"><strong id="levelValue">--</strong><span>Level</span></div>
+</div>
+<br/>
+<div class="notice" id="loading">Loading course...</div>
+<div class="course-layout" id="courseArea" style="display:none">
+<div>
+<div class="cover" id="courseCover"><strong id="coverText"></strong></div>
+<div class="provider-box" id="providerBox"><div class="provider-row">
+<img alt="Provider" class="provider-logo" decoding="async" height="1254" id="providerLogo" loading="lazy" src="logo.png" width="1254"/>
+<div><strong id="providerName">SpeakHub Academy</strong><p id="providerText">Course provider</p></div>
+</div></div>
+<div class="status-card" id="externalStatusCard" style="display:none">
+<span class="label">My External Learning</span>
+<h3 id="externalStatusHeading">Not Submitted</h3>
+<p id="externalStatusText">Complete the provider course, then submit your certificate or proof.</p>
+<div id="externalStatusPills"></div>
+</div>
+</div>
+<div class="panel">
+<span class="label" id="courseTypeLabel">Internal Course</span>
+<h2 id="title"></h2>
+<p><strong id="instructorLabel">Instructor:</strong> <span id="instructor"></span></p>
+<div id="pills"></div>
+<p id="description"></p>
+<div class="meta-list">
+<div class="meta"><b>Course Type</b><span id="courseTypeMeta">Internal</span></div>
+<div class="meta"><b>Provider</b><span id="providerMeta">SpeakHub Academy</span></div>
+<div class="meta"><b>Completion</b><span id="completionMeta">Inside SpeakHub</span></div>
+<div class="meta"><b>Certificate Issuer</b><span id="certificateIssuerMeta">SpeakHub Academy</span></div>
+</div>
+<h3>Learning Outcomes</h3><ul id="outcomes"></ul>
+<h3>Prerequisites</h3><div id="prerequisites">No prerequisites listed.</div>
+<div id="modulesSection"><h3 id="modulesHeading">Modules</h3><div id="moduleList"></div></div>
+<div class="external-flow" id="externalFlow">
+<h3>How External Learning Works</h3>
+<ol>
+<li>Open the course on the official provider website.</li>
+<li>Complete the course directly with that provider.</li>
+<li>Return to SpeakHub after completion.</li>
+<li>Upload your certificate or accepted proof of completion.</li>
+<li>SpeakHub reviews the submission and records the approved external achievement.</li>
+</ol>
+<div class="notice warn">The external provider remains the original issuer of its certificate. SpeakHub records and verifies the learning achievement; it does not replace the provider's credential.</div>
+<div class="notice" id="verificationNotice" style="margin-top:12px"></div>
+</div>
+<div class="actions" id="actions"></div>
+<div class="notice warn" id="premiumNote" style="display:none;margin-top:12px">Premium access is required for this SpeakHub course.</div>
+</div>
+</div>
 </div></section>
-
 <script type="module">
 import { db,auth } from "./firebase-config.js";
 import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -287,4 +275,3 @@ onAuthStateChanged(auth,async user=>{
 </script>
 </body>
 </html>
-

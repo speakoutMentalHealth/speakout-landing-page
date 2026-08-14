@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Link Child | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Secure parent-to-student linking for SpeakOut. Parents can find a child, send a link request, track approval status and access approved child progress."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="Secure parent-to-student linking for SpeakOut. Parents can find a child, send a link request, track approval status and access approved child progress." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -383,237 +373,146 @@ input:focus,textarea:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="parent-dashboard.html">
-      <img src="logo.png" alt="SpeakOut">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Parent Student Link</p>
-      </div>
-    </a>
-
-    <button
-      class="menu"
-      type="button"
-      aria-label="Open menu"
-      onclick="document.body.classList.toggle('menu-open')"
-    >
+<div class="container nav-inner">
+<a class="brand" href="parent-dashboard.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Parent Student Link</p>
+</div>
+</a>
+<button aria-label="Open menu" class="menu" onclick="document.body.classList.toggle('menu-open')" type="button">
       ☰
     </button>
-
-    <nav class="links">
-      <a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
-      <a class="btn soft" href="parent-library.html">Parent Library</a>
-      <a class="btn soft" href="certificate-center.html">Certificates</a>
-      <a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
-    </nav>
-
-  </div>
+<nav class="links">
+<a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
+<a class="btn soft" href="parent-library.html">Parent Library</a>
+<a class="btn soft" href="certificate-center.html">Certificates</a>
+<a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
+</nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Parent Access
     </span>
-
-    <h1>
+<h1>
       Link Your Child
     </h1>
-
-    <p>
+<p>
       Search using your child’s exact Student ID or email address, then send a secure parent-link request. Access to child progress is available only after the request is approved.
     </p>
-
-  </div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Checking parent account...
     </div>
-
-
-    <div class="grid g4" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="totalLinks">0</strong>
-        <span>Total Requests</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="approvedLinks">0</strong>
-        <span>Approved</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="pendingLinks">0</strong>
-        <span>Pending</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="rejectedLinks">0</strong>
-        <span>Rejected / Cancelled</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="totalLinks">0</strong>
+<span>Total Requests</span>
+</div>
+<div class="card stat">
+<strong id="approvedLinks">0</strong>
+<span>Approved</span>
+</div>
+<div class="card stat">
+<strong id="pendingLinks">0</strong>
+<span>Pending</span>
+</div>
+<div class="card stat">
+<strong id="rejectedLinks">0</strong>
+<span>Rejected / Cancelled</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           Find Student
         </span>
-
-        <h2>
+<h2>
           Search your child
         </h2>
-
-        <p class="small-note">
+<p class="small-note">
           Student ID is the preferred search method because it is unique. Email search is available when the student account has an email address.
         </p>
-
-
-        <form id="findForm">
-
-          <div class="form-grid">
-
-            <input
-              id="studentSearch"
-              placeholder="Student ID or student email"
-              required
-              autocomplete="off"
-            >
-
-            <select id="relationship" required>
-              <option value="Mother">Mother</option>
-              <option value="Father">Father</option>
-              <option value="Guardian">Guardian</option>
-              <option value="Other">Other</option>
-            </select>
-
-          </div>
-
-          <textarea
-            id="requestNote"
-            placeholder="Optional note for the link request"
-          ></textarea>
-
-          <button
-            class="btn primary"
-            type="submit"
-            id="findButton"
-          >
+<form id="findForm">
+<div class="form-grid">
+<input autocomplete="off" id="studentSearch" placeholder="Student ID or student email" required=""/>
+<select id="relationship" required="">
+<option value="Mother">Mother</option>
+<option value="Father">Father</option>
+<option value="Guardian">Guardian</option>
+<option value="Other">Other</option>
+</select>
+</div>
+<textarea id="requestNote" placeholder="Optional note for the link request"></textarea>
+<button class="btn primary" id="findButton" type="submit">
             Find Student
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+</form>
+</div>
+<div class="panel">
+<span class="label">
           Student Result
         </span>
-
-        <h2>
+<h2>
           Matched Student
         </h2>
-
-        <div id="studentResult">
-          <p>Student details will appear here.</p>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <span class="label">
+<div id="studentResult">
+<p>Student details will appear here.</p>
+</div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<span class="label">
           My Children
         </span>
-
-        <h2>
-          Approved & pending links
+<h2>
+          Approved &amp; pending links
         </h2>
-
-        <div
-          id="childrenBox"
-          class="grid"
-        ></div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid" id="childrenBox"></div>
+</div>
+<div class="panel">
+<span class="label">
           Request History
         </span>
-
-        <h2>
+<h2>
           Link requests
         </h2>
-
-        <div style="overflow:auto">
-
-          <table class="table">
-
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Student ID</th>
-                <th>Relationship</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody id="requestRows"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+<div style="overflow:auto">
+<table class="table">
+<thead>
+<tr>
+<th>Student</th>
+<th>Student ID</th>
+<th>Relationship</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="requestRows"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Parent ↔ Student Linking
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1828,8 +1727,6 @@ onAuthStateChanged(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

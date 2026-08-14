@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Course Player | SpeakHub Academy</title>
-<meta name="description" content="Guided SpeakHub Academy course player with locked lessons, scored module quizzes, final assessment and certificate completion.">
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta content="Guided SpeakHub Academy course player with locked lessons, scored module quizzes, final assessment and certificate completion." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--green:#0f8f6f;--red:#991b1b;
@@ -49,37 +50,35 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;max-height:none}}
 @media(max-width:620px){.slide-body{padding:20px}.slide-image{min-height:210px;padding:22px}.btn{width:100%;border-radius:14px}.profile-confirm{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-<body>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <section class="hero"><div class="container">
 <h1 id="courseTitle">Loading Course...</h1>
 <p id="courseSummary">Preparing your guided SpeakHub learning experience.</p>
 <div class="course-provider" id="courseProvider" style="display:none">
 <span class="hero-pill" id="providerPill"></span><span class="hero-pill" id="levelPill"></span><span class="hero-pill" id="durationPill"></span><span class="hero-pill">Guided Learning</span>
 </div></div></section>
-
 <div class="container">
-<div id="loading" class="loading">Loading course content...</div>
-<div id="playerArea" class="layout" style="display:none">
+<div class="loading" id="loading">Loading course content...</div>
+<div class="layout" id="playerArea" style="display:none">
 <aside class="sidebar">
 <h3>Course Progress</h3>
 <div class="progress"><div id="progressBar"></div></div>
-<p id="progressText" class="progress-text">0% Complete</p>
-<p id="progressDetail" class="progress-detail"></p>
+<p class="progress-text" id="progressText">0% Complete</p>
+<p class="progress-detail" id="progressDetail"></p>
 <h3>Course Content</h3><div id="moduleMenu"></div>
 <div id="finalMenu"></div>
 <h3>Course Features</h3>
 <ul class="feature-list"><li>Guided lesson sequence</li><li>Required lesson completion</li><li>Scored module quizzes</li><li>Pass-to-unlock progression</li><li>Final assessment</li><li>Certificate eligibility</li></ul>
-<a class="btn soft" id="detailsButton" href="#">Course Details</a>
+<a class="btn soft" href="#" id="detailsButton">Course Details</a>
 <div class="source-note" id="sourceNote"></div>
 </aside>
-
-<main class="content">
+<main class="content" id="main-content">
 <div class="slide-image" id="lessonCover"><h2 id="lessonTitle">Lesson</h2></div>
 <div class="slide-body">
-<div id="courseNotice" class="notice" style="display:none"></div>
-<div id="lessonContent" class="lesson-content"></div>
+<div class="notice" id="courseNotice" style="display:none"></div>
+<div class="lesson-content" id="lessonContent"></div>
 <div id="assessmentArea"></div>
 <div class="btn-row" id="navigationRow">
 <button class="btn gold" id="previousButton" type="button">Previous</button>
@@ -90,7 +89,6 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 </main>
 </div>
 </div>
-
 <script type="module">
 import { db,auth } from "./firebase-config.js";
 import { doc,getDoc,setDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -424,6 +422,6 @@ onAuthStateChanged(auth,async user=>{
  await loadCourse();
 });
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

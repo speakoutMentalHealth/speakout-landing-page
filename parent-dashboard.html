@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Parent Dashboard | SpeakOut</title>
-
-<meta
-  name="description"
-  content="SpeakOut parent dashboard for linked children, child learning supervision, parent resources, workshops, certificates, profile management and family support."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="SpeakOut parent dashboard for linked children, child learning supervision, parent resources, workshops, certificates, profile management and family support." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -439,388 +429,263 @@ textarea{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="parent-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Parent Dashboard</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="parent-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Parent Dashboard</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Parent Dashboard
     </span>
-
-    <h1 id="welcomeTitle">
+<h1 id="welcomeTitle">
       Welcome to your dashboard
     </h1>
-
-    <p>
+<p>
       Manage your profile, linked children, approved child learning progress,
       family resources, workshops, certificates and premium learning access.
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Loading dashboard...
     </div>
-
-    <div id="profileAlert"></div>
-
-
-    <div class="grid g4" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="nameBox">—</strong>
-        <span>Name</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="schoolBox">—</strong>
-        <span>School / Access</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="childrenCountBox">0</strong>
-        <span>Linked Children</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="certificateCountBox">0</strong>
-        <span>Certificates</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g4" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="approvedChildrenBox">0</strong>
-        <span>Approved Links</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="pendingChildrenBox">0</strong>
-        <span>Pending Links</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="parentCourseStartedBox">0</strong>
-        <span>Courses Started</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="parentCourseCompletedBox">0</strong>
-        <span>Courses Completed</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div id="profileAlert"></div>
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="nameBox">—</strong>
+<span>Name</span>
+</div>
+<div class="card stat">
+<strong id="schoolBox">—</strong>
+<span>School / Access</span>
+</div>
+<div class="card stat">
+<strong id="childrenCountBox">0</strong>
+<span>Linked Children</span>
+</div>
+<div class="card stat">
+<strong id="certificateCountBox">0</strong>
+<span>Certificates</span>
+</div>
+</div>
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="approvedChildrenBox">0</strong>
+<span>Approved Links</span>
+</div>
+<div class="card stat">
+<strong id="pendingChildrenBox">0</strong>
+<span>Pending Links</span>
+</div>
+<div class="card stat">
+<strong id="parentCourseStartedBox">0</strong>
+<span>Courses Started</span>
+</div>
+<div class="card stat">
+<strong id="parentCourseCompletedBox">0</strong>
+<span>Courses Completed</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           My Profile
         </span>
-
-        <h2>
-          Profile & Bio
+<h2>
+          Profile &amp; Bio
         </h2>
-
-        <p>
+<p>
           Update your parent profile, contact details and profile picture.
         </p>
-
-
-        <div class="photo-row">
-
-          <img
-            id="profilePhotoPreview"
-            class="avatar"
-            src="logo.png"
-            alt="Profile photo"
-          >
-
-          <div>
-
-            <input
-              id="profilePhoto"
-              type="file"
-              accept="image/*"
-            >
-
-            <div class="photo-help">
+<div class="photo-row">
+<img alt="Profile photo" class="avatar" decoding="async" height="1254" id="profilePhotoPreview" loading="lazy" src="logo.png" width="1254"/>
+<div>
+<input accept="image/*" id="profilePhoto" type="file"/>
+<div class="photo-help">
               Upload a clear photo. It will be compressed before saving to Firestore.
             </div>
-
-          </div>
-
-        </div>
-
-
-        <form id="profileForm">
-
-          <div class="profile-grid">
-
-            <input id="firstName" placeholder="First Name">
-            <input id="lastName" placeholder="Last Name">
-            <input id="phone" placeholder="Phone">
-            <input id="country" placeholder="Country">
-            <input id="state" placeholder="State">
-            <input id="city" placeholder="City">
-            <input id="occupation" placeholder="Occupation / Parent Role">
-
-          </div>
-
-          <textarea
-            id="bio"
-            placeholder="Short bio, interests, family support goals or parenting focus"
-          ></textarea>
-
-          <button class="btn primary" type="submit">
+</div>
+</div>
+<form id="profileForm">
+<div class="profile-grid">
+<input id="firstName" placeholder="First Name"/>
+<input id="lastName" placeholder="Last Name"/>
+<input id="phone" placeholder="Phone"/>
+<input id="country" placeholder="Country"/>
+<input id="state" placeholder="State"/>
+<input id="city" placeholder="City"/>
+<input id="occupation" placeholder="Occupation / Parent Role"/>
+</div>
+<textarea id="bio" placeholder="Short bio, interests, family support goals or parenting focus"></textarea>
+<button class="btn primary" type="submit">
             Update Profile
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+</form>
+</div>
+<div class="panel">
+<span class="label">
           Quick Actions
         </span>
-
-        <h2>
+<h2>
           What you can do
         </h2>
-
-
-        <div class="grid">
-
-          <a class="card" href="parent-child-link.html">
-            <h3>My Children</h3>
-            <p>
+<div class="grid">
+<a class="card" href="parent-child-link.html">
+<h3>My Children</h3>
+<p>
               Link a child using their Student ID and manage approval status.
             </p>
-            <span class="btn gold">
+<span class="btn gold">
               Open Children
             </span>
-          </a>
-
-
-          <a class="card" href="parent-library.html">
-            <h3>Parent Library</h3>
-            <p>
+</a>
+<a class="card" href="parent-library.html">
+<h3>Parent Library</h3>
+<p>
               Access parenting, family wellbeing and child development resources.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Library
             </span>
-          </a>
-
-
-          <a class="card" href="speakhub.html?audience=parent">
-            <h3>Parent Courses</h3>
-            <p>
+</a>
+<a class="card" href="speakhub.html?audience=parent">
+<h3>Parent Courses</h3>
+<p>
               Continue parent and family learning through SpeakHub Academy.
             </p>
-            <span class="btn primary">
+<span class="btn primary">
               Open Courses
             </span>
-          </a>
-
-
-          <a class="card" href="workshops.html">
-            <h3>Workshops</h3>
-            <p>
+</a>
+<a class="card" href="workshops.html">
+<h3>Workshops</h3>
+<p>
               View parent seminars and school-linked family workshops.
             </p>
-            <span class="btn primary">
+<span class="btn primary">
               Open Workshops
             </span>
-          </a>
-
-
-          <a class="card" href="certificate-center.html">
-            <h3>Certificates</h3>
-            <p>
+</a>
+<a class="card" href="certificate-center.html">
+<h3>Certificates</h3>
+<p>
               View and verify certificates earned through SpeakOut learning.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Certificates
             </span>
-          </a>
-
-
-          <a class="card" href="payment-history.html">
-            <h3>My Payments</h3>
-            <p>
+</a>
+<a class="card" href="payment-history.html">
+<h3>My Payments</h3>
+<p>
               Track premium access and manual payment requests.
             </p>
-            <span class="btn gold">
+<span class="btn gold">
               Payment History
             </span>
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div style="margin-top:18px">
-
-      <div class="panel">
-
-        <span class="label">
+</a>
+</div>
+</div>
+</div>
+<div style="margin-top:18px">
+<div class="panel">
+<span class="label">
           My Linked Children
         </span>
-
-        <h2>
+<h2>
           Child Progress Supervision
         </h2>
-
-        <p>
+<p>
           Only children linked to this parent account appear here.
           Approved links can open child progress.
         </p>
-
-        <div id="childrenBox" class="grid g2"></div>
-
-      </div>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">My Learning</span>
-            <h2>Parent Courses</h2>
-            <p>
+<div class="grid g2" id="childrenBox"></div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">My Learning</span>
+<h2>Parent Courses</h2>
+<p>
               Your own SpeakHub course progress is shown separately from your children.
             </p>
-          </div>
-        </div>
-
-        <div id="parentProgressList" class="mini-list">
-          <div class="notice">Loading parent learning...</div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Certificates</span>
-            <h2>Recent Certificates</h2>
-            <p>
+</div>
+</div>
+<div class="mini-list" id="parentProgressList">
+<div class="notice">Loading parent learning...</div>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Certificates</span>
+<h2>Recent Certificates</h2>
+<p>
               Parent learning, workshops and approved training credentials.
             </p>
-          </div>
-        </div>
-
-        <div id="certificateList" class="mini-list">
-          <div class="notice">Loading certificates...</div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Family Workshops</span>
-            <h2>Upcoming Sessions</h2>
-            <p>
+</div>
+</div>
+<div class="mini-list" id="certificateList">
+<div class="notice">Loading certificates...</div>
+</div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Family Workshops</span>
+<h2>Upcoming Sessions</h2>
+<p>
               Parent and school-linked events available to your account.
             </p>
-          </div>
-        </div>
-
-        <div id="workshopList" class="mini-list">
-          <div class="notice">Loading workshops...</div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Child Learning Snapshot</span>
-            <h2>Approved Child Activity</h2>
-            <p>
+</div>
+</div>
+<div class="mini-list" id="workshopList">
+<div class="notice">Loading workshops...</div>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Child Learning Snapshot</span>
+<h2>Approved Child Activity</h2>
+<p>
               A lightweight summary of learning activity for approved child links.
             </p>
-          </div>
-        </div>
-
-        <div id="childActivityList" class="mini-list">
-          <div class="notice">Loading child learning activity...</div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+</div>
+</div>
+<div class="mini-list" id="childActivityList">
+<div class="notice">Loading child learning activity...</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • Family Support
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -2187,8 +2052,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

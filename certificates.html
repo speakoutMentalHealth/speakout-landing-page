@@ -1,16 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Certificates | SpeakOut Portal</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dashboard-shared.css">
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-<body>
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="dashboard-shared.css" rel="stylesheet"/>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav"><div class="container nav-inner">
-<a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Portal Dashboard</small></div></a>
+<a class="brand" href="student-dashboard.html"><img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/><div>SpeakOut<small>Portal Dashboard</small></div></a>
 <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
 <nav class="nav-links">
 <a class="btn soft" href="student-dashboard.html">Student</a>
@@ -22,20 +23,18 @@
 <a class="btn soft" href="profile.html">Profile</a>
 <button class="btn dark" id="logoutBtn">Logout</button>
 </nav></div></header>
-<main>
+<main id="main-content">
 <section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>My Certificates</h1><p>View issued certificates and verification details.</p></div></section>
-
 <section><div class="container grid g3"><div class="card metric"><strong id="total">0</strong><span>Certificates</span></div><div class="card metric"><strong id="issued">0</strong><span>Issued</span></div><div class="card metric"><strong id="types">0</strong><span>Types</span></div></div></section>
 <section><div class="container"><div class="panel"><span class="label">My Certificates</span><div class="table-wrap"><table><thead><tr><th>Recipient</th><th>Type</th><th>School</th><th>Date</th><th>Verification Code</th></tr></thead><tbody id="rows"></tbody></table></div></div></div></section>
-
 </main>
 <footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
-<script type="module" src="auth-guard.js"></script>
+<script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { SO } from "./dashboard-shared.js";
 
 SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;let data=await SO.getMine("certificates","email",user.email);if(!data.length){data=await SO.getAll("certificates")}total.textContent=SO.num(data.length);issued.textContent=SO.num(data.filter(r=>r.status==="issued"||r.verificationCode).length);types.textContent=SO.num(new Set(data.map(r=>r.type).filter(Boolean)).size);rows.innerHTML=data.length?data.map(r=>`<tr><td>${SO.safe(r.recipientName)}</td><td>${SO.safe(r.type)}</td><td>${SO.safe(r.schoolName)}</td><td>${SO.safe(r.issuedDate)}</td><td>${SO.safe(r.verificationCode)}</td></tr>`).join(""):`<tr><td colspan="5">No certificates yet.</td></tr>`});
 
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body></html>

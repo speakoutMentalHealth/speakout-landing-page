@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Student Library | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Student-focused SpeakOut learning resources covering mental health, leadership, digital skills, study support and personal development."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="Student-focused SpeakOut learning resources covering mental health, leadership, digital skills, study support and personal development." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -348,186 +338,107 @@ input:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a
-      class="brand"
-      href="student-dashboard.html"
-    >
-      <img
-        src="logo.png"
-        alt="SpeakOut Logo"
-      >
-
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Student Library</p>
-      </div>
-    </a>
-
-    <nav
-      class="links"
-      id="roleNav"
-    ></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="student-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Student Library</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Student Library
     </span>
-
-    <h1>
+<h1>
       Student resources for mental health, leadership and success
     </h1>
-
-    <p>
+<p>
       Access student-focused books, guides and learning resources selected to
       strengthen wellbeing, confidence, digital awareness, study skills and leadership.
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div
-      id="statusBox"
-      class="notice"
-    >
+<div class="container">
+<div class="notice" id="statusBox">
       Loading student resources...
     </div>
-
-
-    <div
-      class="grid g4"
-      style="margin-bottom:18px"
-    >
-
-      <div class="card stat">
-        <strong id="totalCount">0</strong>
-        <span>Total Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="freeCount">0</strong>
-        <span>Free Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="premiumCount">0</strong>
-        <span>Premium Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="categoryCount">0</strong>
-        <span>Categories</span>
-      </div>
-
-    </div>
-
-
-    <div class="panel">
-
-      <span class="label">
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="totalCount">0</strong>
+<span>Total Resources</span>
+</div>
+<div class="card stat">
+<strong id="freeCount">0</strong>
+<span>Free Resources</span>
+</div>
+<div class="card stat">
+<strong id="premiumCount">0</strong>
+<span>Premium Resources</span>
+</div>
+<div class="card stat">
+<strong id="categoryCount">0</strong>
+<span>Categories</span>
+</div>
+</div>
+<div class="panel">
+<span class="label">
         Find Resources
       </span>
-
-      <h2>
+<h2>
         Search and filter
       </h2>
-
-      <div class="searchbar">
-
-        <input
-          id="searchInput"
-          placeholder="Search by title, author, topic or description..."
-        >
-
-        <select id="categoryFilter">
-          <option value="all">
+<div class="searchbar">
+<input id="searchInput" placeholder="Search by title, author, topic or description..."/>
+<select id="categoryFilter">
+<option value="all">
             All Categories
           </option>
-        </select>
-
-        <select id="accessFilter">
-          <option value="all">
+</select>
+<select id="accessFilter">
+<option value="all">
             Free and Premium
           </option>
-
-          <option value="free">
+<option value="free">
             Free Only
           </option>
-
-          <option value="premium">
+<option value="premium">
             Premium Only
           </option>
-        </select>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <span class="label">
+</select>
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<span class="label">
         Featured
       </span>
-
-      <h2>
+<h2>
         Recommended for students
       </h2>
-
-      <div
-        id="featuredGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-
-    <div style="margin-top:18px">
-
-      <div
-        id="resourceGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-  </div>
+<div class="grid g3" id="featuredGrid"></div>
+</div>
+<div style="margin-top:18px">
+<div class="grid g3" id="resourceGrid"></div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • SpeakHub Academy
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1310,8 +1221,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

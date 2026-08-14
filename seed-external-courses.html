@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Seed External Courses | SpeakHub</title>
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--bg:#f7f9fc;--line:#e5edf6}
 *{box-sizing:border-box}
@@ -25,30 +26,24 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .warn{background:#fff4df;color:#704800}
 @media(max-width:700px){.grid{grid-template-columns:1fr}button{width:100%;border-radius:14px}}
 </style>
-</head>
-<body>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="wrap">
-  <h1>Seed External Courses</h1>
-  <p>This adds four test external learning pathways to the existing <b>courses</b> collection. It does not delete your current SpeakHub courses.</p>
-
-  <div class="grid">
-    <div class="card"><strong>AI & Data</strong><span>Kaggle • Intro to Machine Learning</span></div>
-    <div class="card"><strong>Programming</strong><span>freeCodeCamp • Python Certification</span></div>
-    <div class="card"><strong>ICT / Cybersecurity</strong><span>Cisco • Introduction to Cybersecurity</span></div>
-    <div class="card"><strong>Leadership</strong><span>OpenLearn • Leadership and Followership</span></div>
-  </div>
-
-  <button id="seedButton" disabled>Install External Courses</button>
-
-  <div class="box" id="statusBox">Checking approved admin access...</div>
-
-  <div class="box warn">
+<h1>Seed External Courses</h1>
+<p>This adds four test external learning pathways to the existing <b>courses</b> collection. It does not delete your current SpeakHub courses.</p>
+<div class="grid">
+<div class="card"><strong>AI &amp; Data</strong><span>Kaggle • Intro to Machine Learning</span></div>
+<div class="card"><strong>Programming</strong><span>freeCodeCamp • Python Certification</span></div>
+<div class="card"><strong>ICT / Cybersecurity</strong><span>Cisco • Introduction to Cybersecurity</span></div>
+<div class="card"><strong>Leadership</strong><span>OpenLearn • Leadership and Followership</span></div>
+</div>
+<button disabled="" id="seedButton">Install External Courses</button>
+<div class="box" id="statusBox">Checking approved admin access...</div>
+<div class="box warn">
     Run this once for the test. Because records use fixed IDs, running it again updates the same four courses instead of creating duplicates.
   </div>
 </div>
-
-<script type="module" src="seed-external-courses.js"></script>
-
+<script src="seed-external-courses.js" type="module"></script>
 <script type="module">
 const button = document.getElementById("seedButton");
 const statusBox = document.getElementById("statusBox");

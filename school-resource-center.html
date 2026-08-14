@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>School Resource Center | SpeakOut</title>
-
-<meta
-  name="description"
-  content="School implementation resources for SpeakOut partner schools, including policies, mental health club guides, safeguarding tools, reporting templates, teacher resources and school wellbeing materials."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="School implementation resources for SpeakOut partner schools, including policies, mental health club guides, safeguarding tools, reporting templates, teacher resources and school wellbeing materials." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -345,231 +335,143 @@ input:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="school-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>School Resource Center</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="school-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>School Resource Center</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       School Resource Center
     </span>
-
-    <h1 id="schoolName">
+<h1 id="schoolName">
       School Resource Center
     </h1>
-
-    <p>
+<p>
       Access policies, mental health club implementation guides, safeguarding tools, school templates, teacher resources and practical wellbeing materials.
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Loading school resources...
     </div>
-
-
-    <div class="grid g5">
-
-      <div class="card stat">
-        <strong id="resourceCount">0</strong>
-        <span>Available Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="featuredCount">0</strong>
-        <span>Featured</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="freeCount">0</strong>
-        <span>Free Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="premiumCount">0</strong>
-        <span>Premium Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="categoryCount">0</strong>
-        <span>Categories</span>
-      </div>
-
-    </div>
-
-  </div>
+<div class="grid g5">
+<div class="card stat">
+<strong id="resourceCount">0</strong>
+<span>Available Resources</span>
+</div>
+<div class="card stat">
+<strong id="featuredCount">0</strong>
+<span>Featured</span>
+</div>
+<div class="card stat">
+<strong id="freeCount">0</strong>
+<span>Free Resources</span>
+</div>
+<div class="card stat">
+<strong id="premiumCount">0</strong>
+<span>Premium Resources</span>
+</div>
+<div class="card stat">
+<strong id="categoryCount">0</strong>
+<span>Categories</span>
+</div>
+</div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div class="panel">
-
-      <span class="label">
+<div class="container">
+<div class="panel">
+<span class="label">
         Find School Resources
       </span>
-
-      <h2>
+<h2>
         Search and filter
       </h2>
-
-      <div class="search-grid">
-
-        <input
-          id="searchInput"
-          placeholder="Search policies, club guides, safeguarding, reporting..."
-        >
-
-        <select id="categoryFilter">
-          <option value="all">All Categories</option>
-        </select>
-
-        <select id="accessFilter">
-          <option value="all">Free & Premium</option>
-          <option value="free">Free Only</option>
-          <option value="premium">Premium Only</option>
-        </select>
-
-        <select id="featuredFilter">
-          <option value="all">All Resources</option>
-          <option value="featured">Featured Only</option>
-        </select>
-
-      </div>
-
-      <div class="actions" style="margin-top:14px">
-
-        <a
-          class="btn soft"
-          href="school-dashboard.html"
-        >
+<div class="search-grid">
+<input id="searchInput" placeholder="Search policies, club guides, safeguarding, reporting..."/>
+<select id="categoryFilter">
+<option value="all">All Categories</option>
+</select>
+<select id="accessFilter">
+<option value="all">Free &amp; Premium</option>
+<option value="free">Free Only</option>
+<option value="premium">Premium Only</option>
+</select>
+<select id="featuredFilter">
+<option value="all">All Resources</option>
+<option value="featured">Featured Only</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<a class="btn soft" href="school-dashboard.html">
           Back to Dashboard
         </a>
-
-        <a
-          class="btn gold"
-          href="speakhub.html"
-        >
+<a class="btn gold" href="speakhub.html">
           SpeakHub Academy
         </a>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <span class="label">
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<span class="label">
         Core School Toolkit
       </span>
-
-      <h2>
+<h2>
         Recommended implementation areas
       </h2>
-
-      <div class="grid g3">
-
-        <div class="card">
-          <div class="icon">📋</div>
-          <h3>Policies & Safeguarding</h3>
-          <p>Referral pathways, consent, safeguarding, club governance and wellbeing procedures.</p>
-        </div>
-
-        <div class="card">
-          <div class="icon">🏫</div>
-          <h3>Mental Health Clubs</h3>
-          <p>Club setup guides, officer roles, activity plans, meeting formats and student engagement tools.</p>
-        </div>
-
-        <div class="card">
-          <div class="icon">📊</div>
-          <h3>Monitoring & Documentation</h3>
-          <p>Attendance templates, activity summaries, implementation trackers and school impact documentation tools.</p>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <span class="label">
+<div class="grid g3">
+<div class="card">
+<div class="icon">📋</div>
+<h3>Policies &amp; Safeguarding</h3>
+<p>Referral pathways, consent, safeguarding, club governance and wellbeing procedures.</p>
+</div>
+<div class="card">
+<div class="icon">🏫</div>
+<h3>Mental Health Clubs</h3>
+<p>Club setup guides, officer roles, activity plans, meeting formats and student engagement tools.</p>
+</div>
+<div class="card">
+<div class="icon">📊</div>
+<h3>Monitoring &amp; Documentation</h3>
+<p>Attendance templates, activity summaries, implementation trackers and school impact documentation tools.</p>
+</div>
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<span class="label">
         Featured
       </span>
-
-      <h2>
+<h2>
         Recommended school resources
       </h2>
-
-      <div
-        id="featuredGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-
-    <div style="margin-top:18px">
-
-      <div
-        id="resourceGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-  </div>
+<div class="grid g3" id="featuredGrid"></div>
+</div>
+<div style="margin-top:18px">
+<div class="grid g3" id="resourceGrid"></div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • School Resource Center
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1342,8 +1244,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

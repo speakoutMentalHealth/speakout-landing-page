@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>School Dashboard | SpeakOut</title>
-
-<meta
-  name="description"
-  content="SpeakOut school dashboard for students, teachers, parents, workshops, learning activity, certificates, announcements and school wellbeing management."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="SpeakOut school dashboard for students, teachers, parents, workshops, learning activity, certificates, announcements and school wellbeing management." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -390,383 +380,282 @@ section{padding:36px 0}
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="school-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>School Dashboard</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="school-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>School Dashboard</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       School Management
     </span>
-
-    <h1 id="schoolName">
+<h1 id="schoolName">
       School Dashboard
     </h1>
-
-    <p id="schoolMeta">
+<p id="schoolMeta">
       Loading school information...
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Checking school access...
     </div>
-
-
-    <div class="grid g5">
-
-      <div class="card stat">
-        <strong id="teacherCount">0</strong>
-        <span>Teachers</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="parentCount">0</strong>
-        <span>Parents</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="studentCount">0</strong>
-        <span>Students</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="pendingCount">0</strong>
-        <span>Pending Users</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="linkedParentCount">0</strong>
-        <span>Approved Parent Links</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g4" style="margin-top:18px">
-
-      <div class="card stat">
-        <strong id="activeCourseCount">0</strong>
-        <span>Active Courses</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="courseActivityCount">0</strong>
-        <span>Course Learners</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="certificateCount">0</strong>
-        <span>School Certificates</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="workshopCount">0</strong>
-        <span>Upcoming Workshops</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g5">
+<div class="card stat">
+<strong id="teacherCount">0</strong>
+<span>Teachers</span>
+</div>
+<div class="card stat">
+<strong id="parentCount">0</strong>
+<span>Parents</span>
+</div>
+<div class="card stat">
+<strong id="studentCount">0</strong>
+<span>Students</span>
+</div>
+<div class="card stat">
+<strong id="pendingCount">0</strong>
+<span>Pending Users</span>
+</div>
+<div class="card stat">
+<strong id="linkedParentCount">0</strong>
+<span>Approved Parent Links</span>
+</div>
+</div>
+<div class="grid g4" style="margin-top:18px">
+<div class="card stat">
+<strong id="activeCourseCount">0</strong>
+<span>Active Courses</span>
+</div>
+<div class="card stat">
+<strong id="courseActivityCount">0</strong>
+<span>Course Learners</span>
+</div>
+<div class="card stat">
+<strong id="certificateCount">0</strong>
+<span>School Certificates</span>
+</div>
+<div class="card stat">
+<strong id="workshopCount">0</strong>
+<span>Upcoming Workshops</span>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<span class="label">
           School Profile
         </span>
-
-        <h2>
+<h2>
           School Information
         </h2>
-
-        <div class="info-list">
-
-          <div class="info-item">
-            <b>School Name</b>
-            <span id="infoSchoolName">—</span>
-          </div>
-
-          <div class="info-item">
-            <b>School Code</b>
-            <span id="infoSchoolCode">—</span>
-          </div>
-
-          <div class="info-item">
-            <b>Status</b>
-            <span id="infoSchoolStatus">—</span>
-          </div>
-
-          <div class="info-item">
-            <b>Location</b>
-            <span id="infoSchoolLocation">—</span>
-          </div>
-
-          <div class="info-item">
-            <b>Contact</b>
-            <span id="infoSchoolContact">—</span>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+<div class="info-list">
+<div class="info-item">
+<b>School Name</b>
+<span id="infoSchoolName">—</span>
+</div>
+<div class="info-item">
+<b>School Code</b>
+<span id="infoSchoolCode">—</span>
+</div>
+<div class="info-item">
+<b>Status</b>
+<span id="infoSchoolStatus">—</span>
+</div>
+<div class="info-item">
+<b>Location</b>
+<span id="infoSchoolLocation">—</span>
+</div>
+<div class="info-item">
+<b>Contact</b>
+<span id="infoSchoolContact">—</span>
+</div>
+</div>
+</div>
+<div class="panel">
+<span class="label">
           Launch Actions
         </span>
-
-        <h2>
+<h2>
           Manage your school ecosystem
         </h2>
-
-        <div class="grid">
-
-          <a class="card" href="school-students.html">
-            <h3>Students</h3>
-            <p>
+<div class="grid">
+<a class="card" href="school-students.html">
+<h3>Students</h3>
+<p>
               Manage student records, Student IDs, approvals and learner access.
             </p>
-            <span class="btn primary">
+<span class="btn primary">
               Open Students
             </span>
-          </a>
-
-
-          <a class="card" href="school-parents.html">
-            <h3>Parents</h3>
-            <p>
+</a>
+<a class="card" href="school-parents.html">
+<h3>Parents</h3>
+<p>
               Manage parent accounts and family access linked to your school.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Parents
             </span>
-          </a>
-
-
-          <a class="card" href="school-teachers.html">
-            <h3>Teachers</h3>
-            <p>
+</a>
+<a class="card" href="school-teachers.html">
+<h3>Teachers</h3>
+<p>
               Manage teachers, departments and professional development access.
             </p>
-            <span class="btn soft">
+<span class="btn soft">
               Open Teachers
             </span>
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="grid g3" style="margin-top:18px">
-
-      <a class="card" href="school-workshops.html">
-        <h3>Workshops</h3>
-        <p>
+</a>
+</div>
+</div>
+</div>
+<div class="grid g3" style="margin-top:18px">
+<a class="card" href="school-workshops.html">
+<h3>Workshops</h3>
+<p>
           Create and manage sessions for students, parents and teachers.
         </p>
-        <span class="btn gold">
+<span class="btn gold">
           Open Workshops
         </span>
-      </a>
-
-
-      <a class="card" href="school-resource-center.html">
-        <h3>School Resources</h3>
-        <p>
+</a>
+<a class="card" href="school-resource-center.html">
+<h3>School Resources</h3>
+<p>
           Access policies, club guides, report templates and wellbeing frameworks.
         </p>
-        <span class="btn soft">
+<span class="btn soft">
           Open Resources
         </span>
-      </a>
-
-
-      <a class="card" href="certificate-center.html">
-        <h3>Certificates</h3>
-        <p>
+</a>
+<a class="card" href="certificate-center.html">
+<h3>Certificates</h3>
+<p>
           Review school-linked certificates and training records.
         </p>
-        <span class="btn primary">
+<span class="btn primary">
           Open Certificates
         </span>
-      </a>
-
-
-      <a class="card" href="school-reports.html">
-        <h3>Reports</h3>
-        <p>
+</a>
+<a aria-disabled="true" class="card is-disabled" href="#" title="Coming soon">
+<h3>Reports</h3>
+<p>
           View participation, activity summaries and learning progress.
         </p>
-        <span class="btn soft">
+<span class="btn soft">
           Open Reports
         </span>
-      </a>
-
-
-      <a class="card" href="school-users.html">
-        <h3>All School Users</h3>
-        <p>
+</a>
+<a class="card" href="school-users.html">
+<h3>All School Users</h3>
+<p>
           View teachers, parents and students under your school in one place.
         </p>
-        <span class="btn dark">
+<span class="btn dark">
           Open Users
         </span>
-      </a>
-
-
-      <a class="card" href="club-dashboard.html">
-        <h3>Mental Health Club</h3>
-        <p>
+</a>
+<a aria-disabled="true" class="card is-disabled" href="#" title="Coming soon">
+<h3>Mental Health Club</h3>
+<p>
           Manage club members, activities, executives and wellbeing programmes.
         </p>
-        <span class="btn gold">
+<span class="btn gold">
           Open Club
         </span>
-      </a>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Learning Activity</span>
-            <h2>School Learning Snapshot</h2>
-            <p>
+</a>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Learning Activity</span>
+<h2>School Learning Snapshot</h2>
+<p>
               Course participation across students, teachers and parents linked to this school.
             </p>
-          </div>
-        </div>
-
-        <div id="learningList" class="mini-list">
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="learningList">
+<div class="notice">
             Loading learning activity...
           </div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Workshops</span>
-            <h2>Upcoming Sessions</h2>
-            <p>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Workshops</span>
+<h2>Upcoming Sessions</h2>
+<p>
               Upcoming school-linked workshops and programme activities.
             </p>
-          </div>
-        </div>
-
-        <div id="workshopList" class="mini-list">
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="workshopList">
+<div class="notice">
             Loading workshops...
           </div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Announcements</span>
-            <h2>School Updates</h2>
-            <p>
+</div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Announcements</span>
+<h2>School Updates</h2>
+<p>
               Current SpeakOut announcements relevant to your school community.
             </p>
-          </div>
-        </div>
-
-        <div id="announcementList" class="mini-list">
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="announcementList">
+<div class="notice">
             Loading announcements...
           </div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <div class="section-head">
-          <div>
-            <span class="label">Certificates</span>
-            <h2>Recent School Credentials</h2>
-            <p>
+</div>
+</div>
+<div class="panel">
+<div class="section-head">
+<div>
+<span class="label">Certificates</span>
+<h2>Recent School Credentials</h2>
+<p>
               Recent certificates issued to learners and staff linked to this school.
             </p>
-          </div>
-        </div>
-
-        <div id="certificateList" class="mini-list">
-          <div class="notice">
+</div>
+</div>
+<div class="mini-list" id="certificateList">
+<div class="notice">
             Loading certificates...
           </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • School Wellness Platform
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1803,8 +1692,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

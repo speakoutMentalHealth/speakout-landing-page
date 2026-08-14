@@ -1,14 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Admin Payments | SpeakOut</title>
-
-<link rel="icon" href="logo.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 
 :root{
@@ -257,93 +255,69 @@ display:none
 }
 
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
-
 <div class="brand">
-<img src="logo.png">
+<img alt="SpeakOut logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
 <div>
 <h2>SpeakOut</h2>
 <p>Admin Payments</p>
 </div>
 </div>
-
 <nav class="links">
 <a class="btn soft" href="admin-dashboard.html">Dashboard</a>
 <a class="btn soft" href="admin-users.html">Users</a>
 <a class="btn soft" href="admin-content-review.html">Content</a>
 <a class="btn dark" href="index.html">home</a>
 </nav>
-
 </div>
 </header>
-
-<section class="hero">
+<section class="hero" id="main-content">
 <div class="container">
 <h1>Payment Management</h1>
 <p>Review payment evidence, approve access and manage transactions.</p>
 </div>
 </section>
-
 <section>
 <div class="container">
-
-<div id="statusBox" class="notice">
+<div class="notice" id="statusBox">
 Loading payments...
 </div>
-
 <div class="grid g4">
-
 <div class="card stat">
 <strong id="totalPayments">0</strong>
 <span>Total Payments</span>
 </div>
-
 <div class="card stat">
 <strong id="approvedPayments">0</strong>
 <span>Approved</span>
 </div>
-
 <div class="card stat">
 <strong id="pendingPayments">0</strong>
 <span>Pending</span>
 </div>
-
 <div class="card stat">
 <strong id="rejectedPayments">0</strong>
 <span>Rejected</span>
 </div>
-
 </div>
-
 <div class="panel" style="margin-top:18px">
-
 <div class="form-grid">
-
-<input id="searchInput" placeholder="Search payments">
-
+<input id="searchInput" placeholder="Search payments"/>
 <select id="statusFilter">
 <option value="all">All Status</option>
 <option value="pending">Pending</option>
 <option value="approved">Approved</option>
 <option value="rejected">Rejected</option>
 </select>
-
 </div>
-
 </div>
-
 <div class="panel" style="margin-top:18px">
-
 <div style="overflow:auto">
-
 <table class="table">
-
 <thead>
 <tr>
 <th>Payer</th>
@@ -354,46 +328,26 @@ Loading payments...
 <th>Actions</th>
 </tr>
 </thead>
-
 <tbody id="rows"></tbody>
-
 </table>
-
 </div>
-
 </div>
-
 </div>
 </section>
-
-<div id="paymentModal" class="modal">
-
+<div class="modal" id="paymentModal">
 <div class="modal-content">
-
 <h2>Payment Details</h2>
-
 <div id="paymentDetails"></div>
-
 <div style="margin-top:20px">
-
-<a id="proofLink"
-class="btn primary"
-target="_blank">
+<a class="btn primary" id="proofLink" target="_blank">
 View Evidence
 </a>
-
-<button
-class="btn dark"
-onclick="paymentModal.style.display='none'">
+<button class="btn dark" onclick="paymentModal.style.display='none'">
 Close
 </button>
-
 </div>
-
 </div>
-
 </div>
-
 <script type="module">
 
 import { auth, db } from "./firebase-config.js";
@@ -538,7 +492,6 @@ searchInput.addEventListener("input",render);
 statusFilter.addEventListener("change",render);
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

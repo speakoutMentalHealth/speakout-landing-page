@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboards/
+Sitemap: https://speakoutmentalhealth.org/sitemap.xml

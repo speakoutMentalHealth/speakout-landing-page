@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Submit External Learning | SpeakHub</title>
-<meta name="description" content="Submit a certificate or proof of completion for an approved external SpeakHub learning pathway.">
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta content="Submit a certificate or proof of completion for an approved external SpeakHub learning pathway." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -46,123 +47,104 @@ textarea{min-height:110px;resize:vertical}
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:32px 0;margin-top:20px}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
-  <a class="brand" href="speakhub.html">
-    <img src="logo.png" alt="SpeakOut">
-    <div><h2>SpeakOut</h2><p>External Learning</p></div>
-  </a>
-  <nav class="links">
-    <a class="btn soft" href="speakhub.html">Courses</a>
-    <a class="btn soft" href="certificate-center.html">Certificates</a>
-    <a class="btn dark" href="auth.html">Portal</a>
-  </nav>
+<a class="brand" href="speakhub.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div><h2>SpeakOut</h2><p>External Learning</p></div>
+</a>
+<nav class="links">
+<a class="btn soft" href="speakhub.html">Courses</a>
+<a class="btn soft" href="certificate-center.html">Certificates</a>
+<a class="btn dark" href="auth.html">Portal</a>
+</nav>
 </div>
 </header>
-
 <section class="hero">
 <div class="container">
-  <span class="kicker">External Learning Record</span>
-  <h1 id="heroTitle">Submit your certificate or proof.</h1>
-  <p id="heroText">Complete the course on the external provider's official platform, then return here and submit proof for SpeakHub review.</p>
+<span class="kicker">External Learning Record</span>
+<h1 id="heroTitle">Submit your certificate or proof.</h1>
+<p id="heroText">Complete the course on the external provider's official platform, then return here and submit proof for SpeakHub review.</p>
 </div>
 </section>
-
 <section>
 <div class="container">
-<div id="statusBox" class="notice">Checking your account and course...</div>
-
-<div id="contentArea" class="grid" style="display:none">
-<main class="panel">
-  <span class="label">Completion Submission</span>
-  <h2 id="pageCourseTitle">External Course</h2>
-
-  <div class="course-card">
-    <h3 id="courseTitle">—</h3>
-    <p><b>Provider:</b> <span id="providerName">—</span></p>
-    <p><b>Certificate issuer:</b> <span id="issuerName">—</span></p>
-    <p><b>Course category:</b> <span id="categoryName">—</span></p>
-    <div class="actions">
-      <a id="providerCourseLink" class="btn primary" target="_blank" rel="noopener noreferrer">Open Provider Course</a>
-      <a id="courseDetailsLink" class="btn soft">Course Details</a>
-    </div>
-  </div>
-
-  <form id="submissionForm">
-    <div class="field">
-      <label for="completionDate">Completion date</label>
-      <input id="completionDate" type="date" required>
-    </div>
-
-    <div class="field">
-      <label for="certificateNumber">Certificate / credential number (if available)</label>
-      <input id="certificateNumber" placeholder="Certificate or credential ID">
-    </div>
-
-    <div class="field">
-      <label for="verificationUrl">Provider verification URL (if available)</label>
-      <input id="verificationUrl" type="url" placeholder="https://...">
-    </div>
-
-    <div class="field">
-      <label for="proofFile">Upload certificate/proof image</label>
-      <input id="proofFile" type="file" accept="image/jpeg,image/png,image/webp">
-      <small style="color:var(--muted)">
+<div class="notice" id="statusBox">Checking your account and course...</div>
+<div class="grid" id="contentArea" style="display:none">
+<main class="panel" id="main-content">
+<span class="label">Completion Submission</span>
+<h2 id="pageCourseTitle">External Course</h2>
+<div class="course-card">
+<h3 id="courseTitle">—</h3>
+<p><b>Provider:</b> <span id="providerName">—</span></p>
+<p><b>Certificate issuer:</b> <span id="issuerName">—</span></p>
+<p><b>Course category:</b> <span id="categoryName">—</span></p>
+<div class="actions">
+<a class="btn primary" id="providerCourseLink" rel="noopener noreferrer" target="_blank">Open Provider Course</a>
+<a class="btn soft" id="courseDetailsLink">Course Details</a>
+</div>
+</div>
+<form id="submissionForm">
+<div class="field">
+<label for="completionDate">Completion date</label>
+<input id="completionDate" required="" type="date"/>
+</div>
+<div class="field">
+<label for="certificateNumber">Certificate / credential number (if available)</label>
+<input id="certificateNumber" placeholder="Certificate or credential ID"/>
+</div>
+<div class="field">
+<label for="verificationUrl">Provider verification URL (if available)</label>
+<input id="verificationUrl" placeholder="https://..." type="url"/>
+</div>
+<div class="field">
+<label for="proofFile">Upload certificate/proof image</label>
+<input accept="image/jpeg,image/png,image/webp" id="proofFile" type="file"/>
+<small style="color:var(--muted)">
         JPG, PNG or WebP. The image is compressed before being stored in Firestore.
         A new image is required for a first submission or rejected resubmission.
       </small>
-      <img id="proofPreview" class="preview" alt="Certificate preview">
-    </div>
-
-    <div class="field">
-      <label for="learnerNote">Optional note</label>
-      <textarea id="learnerNote" placeholder="Anything the reviewer should know"></textarea>
-    </div>
-
-    <div class="notice warn">
+<img alt="Certificate preview" class="preview" decoding="async" id="proofPreview" loading="lazy"/>
+</div>
+<div class="field">
+<label for="learnerNote">Optional note</label>
+<textarea id="learnerNote" placeholder="Anything the reviewer should know"></textarea>
+</div>
+<div class="notice warn">
       Submit only genuine proof belonging to you. External credentials remain issued by the original provider. SpeakHub records the achievement after review.
     </div>
-
-    <button id="submitButton" class="btn gold" type="submit">Submit for Review</button>
-  </form>
-
-  <div id="resultBox" class="notice" style="display:none;margin-top:16px"></div>
+<button class="btn gold" id="submitButton" type="submit">Submit for Review</button>
+</form>
+<div class="notice" id="resultBox" style="display:none;margin-top:16px"></div>
 </main>
-
 <aside class="panel">
-  <span class="label">Review Process</span>
-  <h2>What happens next?</h2>
-  <ul class="check">
-    <li>Your submission is saved as Pending Review.</li>
-    <li>SpeakHub checks the course, provider and submitted evidence.</li>
-    <li>Approved learning is added to your external learning record.</li>
-    <li>The original provider remains the certificate issuer.</li>
-  </ul>
-
-  <div id="existingSubmission" class="notice" style="display:none"></div>
-
-  <div id="reviewBox" class="review-box">
-    <h3>Reviewer Feedback</h3>
-    <p id="reviewFeedback">—</p>
-    <p><b>Reviewed by:</b> <span id="reviewedBy">—</span></p>
-    <p><b>Reviewed:</b> <span id="reviewedAt">—</span></p>
-  </div>
-
-  <div class="actions">
-    <a id="backToCourse" class="btn soft">Back to Course</a>
-    <a class="btn soft" href="speakhub.html">Browse Courses</a>
-  </div>
+<span class="label">Review Process</span>
+<h2>What happens next?</h2>
+<ul class="check">
+<li>Your submission is saved as Pending Review.</li>
+<li>SpeakHub checks the course, provider and submitted evidence.</li>
+<li>Approved learning is added to your external learning record.</li>
+<li>The original provider remains the certificate issuer.</li>
+</ul>
+<div class="notice" id="existingSubmission" style="display:none"></div>
+<div class="review-box" id="reviewBox">
+<h3>Reviewer Feedback</h3>
+<p id="reviewFeedback">—</p>
+<p><b>Reviewed by:</b> <span id="reviewedBy">—</span></p>
+<p><b>Reviewed:</b> <span id="reviewedAt">—</span></p>
+</div>
+<div class="actions">
+<a class="btn soft" id="backToCourse">Back to Course</a>
+<a class="btn soft" href="speakhub.html">Browse Courses</a>
+</div>
 </aside>
 </div>
 </div>
 </section>
-
 <footer class="footer"><div class="container">SpeakOut Mental Health Outreach • SpeakHub Academy</div></footer>
-
 <script type="module">
 import { auth,db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -428,6 +410,6 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

@@ -1,21 +1,22 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Seed Launch Content | SpeakOut</title>
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
 *{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}.container{width:min(1000px,92%);margin:auto}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}.hero .container{padding:60px 0}.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:22px;margin:34px 0}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 18px;font-weight:900;cursor:pointer;min-height:44px;background:var(--blue);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}li{margin:8px 0}
 </style>
-</head>
-<body>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <section class="hero"><div class="container"><h1>Seed Launch Content</h1><p>This installs the 5-resource launch structure for Student, Parent, Teacher, School, Kiddies, and SpeakHub.</p></div></section>
-<main class="container">
+<main class="container" id="main-content">
 <div class="panel">
-<div id="statusBox" class="notice">Checking admin access...</div>
+<div class="notice" id="statusBox">Checking admin access...</div>
 <h2>What will be created</h2>
 <ul>
 <li>5 Student Library resources</li>
@@ -25,9 +26,9 @@
 <li>5 Kiddies resources</li>
 <li>5 SpeakHub courses with modules and lessons</li>
 </ul>
-<button id="seedBtn" class="btn" disabled>Seed Launch Content</button>
+<button class="btn" disabled="" id="seedBtn">Seed Launch Content</button>
 </div>
 </main>
-<script type="module" src="seed-launch-content.js"></script>
+<script src="seed-launch-content.js" type="module"></script>
 </body>
 </html>

@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Child Progress | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Secure parent view of an approved linked child's SpeakOut learning progress, certificates and profile."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="Secure parent view of an approved linked child's SpeakOut learning progress, certificates and profile." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -349,141 +339,97 @@ section{padding:36px 0}
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="parent-dashboard.html">
-      <img src="logo.png" alt="SpeakOut">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Child Progress</p>
-      </div>
-    </a>
-
-    <nav class="links">
-      <a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
-      <a class="btn soft" href="parent-child-link.html">My Children</a>
-      <a class="btn soft" href="parent-library.html">Parent Library</a>
-      <a class="btn soft" href="certificate-center.html">Certificates</a>
-      <a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
-    </nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="parent-dashboard.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Child Progress</p>
+</div>
+</a>
+<nav class="links">
+<a class="btn soft" href="parent-dashboard.html">Parent Dashboard</a>
+<a class="btn soft" href="parent-child-link.html">My Children</a>
+<a class="btn soft" href="parent-library.html">Parent Library</a>
+<a class="btn soft" href="certificate-center.html">Certificates</a>
+<a class="btn dark" href="auth.html" id="logoutLink">Logout</a>
+</nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Approved Parent View
     </span>
-
-    <h1>
+<h1>
       Child Progress
     </h1>
-
-    <p>
+<p>
       View learning progress and certificates for a child who has an approved parent link to your account.
     </p>
-
-  </div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Checking access...
     </div>
-
-
-    <div id="summaryStats" class="grid g4" style="display:none;margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="coursesStartedCount">0</strong>
-        <span>Courses Started</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="coursesCompletedCount">0</strong>
-        <span>Courses Completed</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="booksCount">0</strong>
-        <span>Books / Resources</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="certificateCount">0</strong>
-        <span>Certificates</span>
-      </div>
-
-    </div>
-
-
-    <div id="profileBox"></div>
-
-
-    <div class="grid g2" style="margin-top:18px">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g4" id="summaryStats" style="display:none;margin-bottom:18px">
+<div class="card stat">
+<strong id="coursesStartedCount">0</strong>
+<span>Courses Started</span>
+</div>
+<div class="card stat">
+<strong id="coursesCompletedCount">0</strong>
+<span>Courses Completed</span>
+</div>
+<div class="card stat">
+<strong id="booksCount">0</strong>
+<span>Books / Resources</span>
+</div>
+<div class="card stat">
+<strong id="certificateCount">0</strong>
+<span>Certificates</span>
+</div>
+</div>
+<div id="profileBox"></div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<span class="label">
           Certificates
         </span>
-
-        <h2>
+<h2>
           Certificates Earned
         </h2>
-
-        <div id="certBox">
-          <div class="notice">Loading certificates...</div>
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+<div id="certBox">
+<div class="notice">Loading certificates...</div>
+</div>
+</div>
+<div class="panel">
+<span class="label">
           Learning Progress
         </span>
-
-        <h2>
-          Courses & Activities
+<h2>
+          Courses &amp; Activities
         </h2>
-
-        <div id="progressBox">
-          <div class="notice">Loading progress...</div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+<div id="progressBox">
+<div class="notice">Loading progress...</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Parent ↔ Student Linking
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1296,8 +1242,6 @@ onAuthStateChanged(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SpeakOut Portal | Role-Based Access</title>
-  <link rel="icon" type="image/png" href="logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpeakOut Portal | Role-Based Access</title>
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<style>
     :root{--navy:#07152b;--blue:#0a5fbf;--blue-soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--green-soft:#e9fbf5;--red:#b42318;--red-soft:#fff1f0;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 24px 70px rgba(7,21,43,.12);--shadow-soft:0 16px 44px rgba(7,21,43,.08)}
     *{box-sizing:border-box}html,body{width:100%;max-width:100%;overflow-x:hidden}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}.container{width:min(1180px,92%);margin:auto}
     .nav{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:relative}.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--blue)}.brand img{width:44px;height:44px;object-fit:contain}.brand small{display:block;color:#d98200;font-size:.56rem;text-transform:uppercase;letter-spacing:.08em}.nav-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.menu{display:none;width:42px;height:42px;border:0;border-radius:13px;background:var(--navy);color:#fff;font-weight:900;font-size:1.1rem}
@@ -20,105 +20,97 @@
     .table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:#fff;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;font-size:.86rem;vertical-align:top}th{background:#f8fbff;color:var(--navy);text-transform:uppercase;font-size:.7rem;letter-spacing:.05em}
     @media(max-width:920px){.menu{display:inline-flex;align-items:center;justify-content:center}.nav-links{display:none;position:absolute;top:calc(100% + 10px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 22px 55px rgba(7,21,43,.16);flex-direction:column;align-items:stretch;z-index:2500}.nav-links a,.nav-links button{width:100%;border-radius:14px}body.menu-open .nav-links{display:flex}.g4,.g3,.g2,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.btn{width:100%;border-radius:14px}section{padding:40px 0}.hero{padding:42px 0}}
   </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-  <header class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="portal.html">
-        <img src="logo.png" alt="SpeakOut logo">
-        <div>SpeakOut<small>Protected Portal</small></div>
-      </a>
-      <button class="menu" type="button" aria-label="Open menu">☰</button>
-      <nav class="nav-links">
-        <button class="btn soft tab-btn active" data-tab="dashboard">Dashboard</button>
-        <button class="btn soft tab-btn" data-tab="access">My Access</button>
-        <button class="btn soft tab-btn" data-tab="reports">Reports</button>
-        <button class="btn soft tab-btn" data-tab="certificates">Certificates</button>
-        <button class="btn soft tab-btn" data-tab="profile">Profile</button>
-        <button class="btn dark" id="logoutBtn" type="button">Logout</button>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container">
-        <span class="kicker" id="roleLabel">Loading Access</span>
-        <h1 id="heroTitle">SpeakOut Portal</h1>
-        <p id="heroText">Checking your approved access and loading the correct tools for your role.</p>
-      </div>
-    </section>
-
-    <section>
-      <div class="container">
-        <div id="dashboard" class="tab active">
-          <div class="grid g4">
-            <div class="card metric"><strong id="accessCount">0</strong><span>Accessible Sections</span></div>
-            <div class="card metric"><strong id="bookCount">0</strong><span>Books</span></div>
-            <div class="card metric"><strong id="courseCount">0</strong><span>Courses</span></div>
-            <div class="card metric"><strong id="certCount">0</strong><span>Certificates</span></div>
-          </div>
-          <div class="notice" style="margin-top:16px">
-            <span class="label">Role-Based Access</span>
-            <h2 id="welcomeTitle">Welcome</h2>
-            <p id="welcomeText">Your portal is controlled by your approved role.</p>
-          </div>
-        </div>
-
-        <div id="access" class="tab">
-          <div class="grid g3" id="accessCards"></div>
-        </div>
-
-        <div id="reports" class="tab">
-          <div class="panel">
-            <span class="label">Submit Activity Report</span>
-            <h2>School / Ambassador Activity Report</h2>
-            <p>Use this after school outreach, club meetings, awareness sessions or ambassador activities.</p>
-            <form class="form-grid" id="reportForm">
-              <input id="reportTitle" placeholder="Activity title" required>
-              <input id="reportDate" type="date">
-              <input id="studentsReached" type="number" placeholder="Students reached">
-              <input id="parentsReached" type="number" placeholder="Parents reached">
-              <input id="teachersReached" type="number" placeholder="Teachers reached">
-              <input id="driveLink" type="url" placeholder="Google Drive evidence link">
-              <textarea class="full" id="reportSummary" placeholder="Short summary"></textarea>
-              <button class="btn primary full" type="submit">Submit Report</button>
-            </form>
-            <div id="reportMsg" class="message"></div>
-          </div>
-          <div class="table-wrap">
-            <table><thead><tr><th>Activity</th><th>Date</th><th>Reach</th><th>Status</th></tr></thead><tbody id="reportRows"></tbody></table>
-          </div>
-        </div>
-
-        <div id="certificates" class="tab">
-          <div class="table-wrap">
-            <table><thead><tr><th>Recipient</th><th>Type</th><th>School</th><th>Date</th><th>Code</th></tr></thead><tbody id="certRows"></tbody></table>
-          </div>
-        </div>
-
-        <div id="profile" class="tab">
-          <div class="grid g2">
-            <div class="panel">
-              <span class="label">My Profile</span>
-              <h2 id="profileName">Loading...</h2>
-              <p id="profileEmail"></p>
-              <div class="table-wrap"><table><tbody id="profileRows"></tbody></table></div>
-            </div>
-            <div class="notice">
-              <span class="label">Access Note</span>
-              <h3>Your access depends on approval</h3>
-              <p>If you believe you should see a section but cannot access it, contact SpeakOut admin to update your role or approval status.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-<script type="module" src="auth-guard.js"></script>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+<div class="container nav-inner">
+<a class="brand" href="portal.html">
+<img alt="SpeakOut logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>SpeakOut<small>Protected Portal</small></div>
+</a>
+<button aria-label="Open menu" class="menu" type="button">☰</button>
+<nav class="nav-links">
+<button class="btn soft tab-btn active" data-tab="dashboard">Dashboard</button>
+<button class="btn soft tab-btn" data-tab="access">My Access</button>
+<button class="btn soft tab-btn" data-tab="reports">Reports</button>
+<button class="btn soft tab-btn" data-tab="certificates">Certificates</button>
+<button class="btn soft tab-btn" data-tab="profile">Profile</button>
+<button class="btn dark" id="logoutBtn" type="button">Logout</button>
+</nav>
+</div>
+</header>
+<main id="main-content">
+<section class="hero">
+<div class="container">
+<span class="kicker" id="roleLabel">Loading Access</span>
+<h1 id="heroTitle">SpeakOut Portal</h1>
+<p id="heroText">Checking your approved access and loading the correct tools for your role.</p>
+</div>
+</section>
+<section>
+<div class="container">
+<div class="tab active" id="dashboard">
+<div class="grid g4">
+<div class="card metric"><strong id="accessCount">0</strong><span>Accessible Sections</span></div>
+<div class="card metric"><strong id="bookCount">0</strong><span>Books</span></div>
+<div class="card metric"><strong id="courseCount">0</strong><span>Courses</span></div>
+<div class="card metric"><strong id="certCount">0</strong><span>Certificates</span></div>
+</div>
+<div class="notice" style="margin-top:16px">
+<span class="label">Role-Based Access</span>
+<h2 id="welcomeTitle">Welcome</h2>
+<p id="welcomeText">Your portal is controlled by your approved role.</p>
+</div>
+</div>
+<div class="tab" id="access">
+<div class="grid g3" id="accessCards"></div>
+</div>
+<div class="tab" id="reports">
+<div class="panel">
+<span class="label">Submit Activity Report</span>
+<h2>School / Ambassador Activity Report</h2>
+<p>Use this after school outreach, club meetings, awareness sessions or ambassador activities.</p>
+<form class="form-grid" id="reportForm">
+<input id="reportTitle" placeholder="Activity title" required=""/>
+<input id="reportDate" type="date"/>
+<input id="studentsReached" placeholder="Students reached" type="number"/>
+<input id="parentsReached" placeholder="Parents reached" type="number"/>
+<input id="teachersReached" placeholder="Teachers reached" type="number"/>
+<input id="driveLink" placeholder="Google Drive evidence link" type="url"/>
+<textarea class="full" id="reportSummary" placeholder="Short summary"></textarea>
+<button class="btn primary full" type="submit">Submit Report</button>
+</form>
+<div class="message" id="reportMsg"></div>
+</div>
+<div class="table-wrap">
+<table><thead><tr><th>Activity</th><th>Date</th><th>Reach</th><th>Status</th></tr></thead><tbody id="reportRows"></tbody></table>
+</div>
+</div>
+<div class="tab" id="certificates">
+<div class="table-wrap">
+<table><thead><tr><th>Recipient</th><th>Type</th><th>School</th><th>Date</th><th>Code</th></tr></thead><tbody id="certRows"></tbody></table>
+</div>
+</div>
+<div class="tab" id="profile">
+<div class="grid g2">
+<div class="panel">
+<span class="label">My Profile</span>
+<h2 id="profileName">Loading...</h2>
+<p id="profileEmail"></p>
+<div class="table-wrap"><table><tbody id="profileRows"></tbody></table></div>
+</div>
+<div class="notice">
+<span class="label">Access Note</span>
+<h3>Your access depends on approval</h3>
+<p>If you believe you should see a section but cannot access it, contact SpeakOut admin to update your role or approval status.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script src="auth-guard.js" type="module"></script>
 <script type="module">
   import { auth, db } from "./firebase-config.js";
   import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -265,6 +257,6 @@
     await loadPortal(user);
   });
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>

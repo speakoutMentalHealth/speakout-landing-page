@@ -1,12 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Admin Dashboard | SpeakOut</title>
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
 *{box-sizing:border-box}
@@ -61,150 +61,125 @@ section{padding:34px 0}
 .footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
 @media(max-width:1100px){.g6,.g5,.g4,.g3,.g2{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="admin-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Admin Command Center</p>
-      </div>
-    </a>
-
-    <nav class="links">
-      <a class="btn dark" href="admin-dashboard.html">Dashboard</a>
-      <a class="btn soft" href="admin-schools.html">Schools</a>
-      <a class="btn soft" href="admin-users.html">Users</a>
-      <a class="btn soft" href="admin-content-review.html">Content</a>
-      <a class="btn soft" href="admin-payments.html">Payments</a>
-      <a class="btn soft" href="admin-certificates.html">Certificates</a>
-      <a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="admin-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Admin Command Center</p>
+</div>
+</a>
+<nav class="links">
+<a class="btn dark" href="admin-dashboard.html">Dashboard</a>
+<a class="btn soft" href="admin-schools.html">Schools</a>
+<a class="btn soft" href="admin-users.html">Users</a>
+<a class="btn soft" href="admin-content-review.html">Content</a>
+<a class="btn soft" href="admin-payments.html">Payments</a>
+<a class="btn soft" href="admin-certificates.html">Certificates</a>
+<a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
+</nav>
+</div>
 </header>
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Super Admin</span>
-    <h1>Admin Command Center</h1>
-    <p>Manage schools, users, contributors, content, certificates, workshops, payments and launch operations from one place.</p>
-  </div>
+<div class="container">
+<span class="kicker">Super Admin</span>
+<h1>Admin Command Center</h1>
+<p>Manage schools, users, contributors, content, certificates, workshops, payments and launch operations from one place.</p>
+</div>
 </section>
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">Checking admin access...</div>
-
-    <div class="grid g6">
-      <div class="card stat"><strong id="schoolCount">0</strong><span>Schools</span></div>
-      <div class="card stat"><strong id="userCount">0</strong><span>Users</span></div>
-      <div class="card stat"><strong id="bookCount">0</strong><span>Books</span></div>
-      <div class="card stat"><strong id="courseCount">0</strong><span>Courses</span></div>
-      <div class="card stat"><strong id="certCount">0</strong><span>Certificates</span></div>
-      <div class="card stat"><strong id="workshopCount">0</strong><span>Workshops</span></div>
-    </div>
-
-    <div class="grid g4" style="margin-top:18px">
-      <a class="card" href="admin-schools.html">
-        <h3>Schools</h3>
-        <p>Review, approve, reject or suspend school applications.</p>
-        <span class="btn primary">Manage Schools</span>
-      </a>
-
-      <a class="card" href="admin-users.html">
-        <h3>Users</h3>
-        <p>Approve users, assign roles and confirm school links.</p>
-        <span class="btn soft">Manage Users</span>
-      </a>
-
-      <a class="card" href="admin-content-review.html">
-        <h3>Content Review</h3>
-        <p>Review submitted books, courses and learning resources.</p>
-        <span class="btn gold">Review Content</span>
-      </a>
-
-      <a class="card" href="admin-payments.html">
-        <h3>Payments</h3>
-        <p>Review manual payment evidence and unlock premium access.</p>
-        <span class="btn soft">Review Payments</span>
-      </a>
-
-      <a class="card" href="admin-certificates.html">
-        <h3>Certificates</h3>
-        <p>View, issue and verify certificates.</p>
-        <span class="btn primary">Manage Certificates</span>
-      </a>
-
-      <a class="card" href="admin-workshops.html">
-        <h3>Workshops</h3>
-        <p>View workshops created by schools across the platform.</p>
-        <span class="btn soft">Manage Workshops</span>
-      </a>
-
-      <a class="card" href="admin-contributors.html">
-        <h3>Contributors</h3>
-        <p>Approve authors, trainers and publishers.</p>
-        <span class="btn gold">Manage Contributors</span>
-      </a>
-
-      <a class="card" href="admin-reports.html">
-        <h3>Reports</h3>
-        <p>Launch reports and school activity summaries.</p>
-        <span class="btn dark">Open Reports</span>
-      </a>
-    </div>
-
-    <div class="grid g3" style="margin-top:18px">
-      <div class="panel">
-        <span class="label">Pending Users</span>
-        <h2>Users needing approval</h2>
-        <div id="pendingUsers" class="mini-list"></div>
-      </div>
-
-      <div class="panel">
-        <span class="label">Schools</span>
-        <h2>Recent school records</h2>
-        <div id="recentSchools" class="mini-list"></div>
-      </div>
-
-      <div class="panel">
-        <span class="label">Payments</span>
-        <h2>Pending payment reviews</h2>
-        <div id="pendingPayments" class="mini-list"></div>
-      </div>
-    </div>
-
-    <div class="grid g2" style="margin-top:18px">
-      <div class="panel">
-        <span class="label">Contributor Review</span>
-        <h2>Pending contributors</h2>
-        <div id="pendingContributors" class="mini-list"></div>
-      </div>
-
-      <div class="panel">
-        <span class="label">Content Review</span>
-        <h2>Recent content</h2>
-        <div id="recentContent" class="mini-list"></div>
-      </div>
-    </div>
-
-  </div>
+<div class="container">
+<div class="notice" id="statusBox">Checking admin access...</div>
+<div class="grid g6">
+<div class="card stat"><strong id="schoolCount">0</strong><span>Schools</span></div>
+<div class="card stat"><strong id="userCount">0</strong><span>Users</span></div>
+<div class="card stat"><strong id="bookCount">0</strong><span>Books</span></div>
+<div class="card stat"><strong id="courseCount">0</strong><span>Courses</span></div>
+<div class="card stat"><strong id="certCount">0</strong><span>Certificates</span></div>
+<div class="card stat"><strong id="workshopCount">0</strong><span>Workshops</span></div>
+</div>
+<div class="grid g4" style="margin-top:18px">
+<a class="card" href="admin-schools.html">
+<h3>Schools</h3>
+<p>Review, approve, reject or suspend school applications.</p>
+<span class="btn primary">Manage Schools</span>
+</a>
+<a class="card" href="admin-users.html">
+<h3>Users</h3>
+<p>Approve users, assign roles and confirm school links.</p>
+<span class="btn soft">Manage Users</span>
+</a>
+<a class="card" href="admin-content-review.html">
+<h3>Content Review</h3>
+<p>Review submitted books, courses and learning resources.</p>
+<span class="btn gold">Review Content</span>
+</a>
+<a class="card" href="admin-payments.html">
+<h3>Payments</h3>
+<p>Review manual payment evidence and unlock premium access.</p>
+<span class="btn soft">Review Payments</span>
+</a>
+<a class="card" href="admin-certificates.html">
+<h3>Certificates</h3>
+<p>View, issue and verify certificates.</p>
+<span class="btn primary">Manage Certificates</span>
+</a>
+<a class="card" href="admin-workshops.html">
+<h3>Workshops</h3>
+<p>View workshops created by schools across the platform.</p>
+<span class="btn soft">Manage Workshops</span>
+</a>
+<a class="card" href="admin-contributors.html">
+<h3>Contributors</h3>
+<p>Approve authors, trainers and publishers.</p>
+<span class="btn gold">Manage Contributors</span>
+</a>
+<a class="card" href="admin-reports.html">
+<h3>Reports</h3>
+<p>Launch reports and school activity summaries.</p>
+<span class="btn dark">Open Reports</span>
+</a>
+</div>
+<div class="grid g3" style="margin-top:18px">
+<div class="panel">
+<span class="label">Pending Users</span>
+<h2>Users needing approval</h2>
+<div class="mini-list" id="pendingUsers"></div>
+</div>
+<div class="panel">
+<span class="label">Schools</span>
+<h2>Recent school records</h2>
+<div class="mini-list" id="recentSchools"></div>
+</div>
+<div class="panel">
+<span class="label">Payments</span>
+<h2>Pending payment reviews</h2>
+<div class="mini-list" id="pendingPayments"></div>
+</div>
+</div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<span class="label">Contributor Review</span>
+<h2>Pending contributors</h2>
+<div class="mini-list" id="pendingContributors"></div>
+</div>
+<div class="panel">
+<span class="label">Content Review</span>
+<h2>Recent content</h2>
+<div class="mini-list" id="recentContent"></div>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
 <footer class="footer">
-  <div class="container">SpeakOut Admin Command Center</div>
+<div class="container">SpeakOut Admin Command Center</div>
 </footer>
-
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import {
@@ -449,7 +424,6 @@ requireAdmin(async () => {
   show("Admin dashboard loaded.", "ok");
 });
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
-</html> 
+</html>

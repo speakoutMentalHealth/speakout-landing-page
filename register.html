@@ -1,13 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Apply for Portal Access | SpeakOut</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--line:#e5edf6;--muted:#637083;--red:#b42318;--green:#0f8f6f}
 *{box-sizing:border-box}
@@ -29,58 +28,53 @@ textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focu
 @media(max-width:900px){.shell{grid-template-columns:1fr}.info{position:static}}
 @media(max-width:620px){body{padding:14px}.info,.card{padding:22px;border-radius:22px}.form{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}}
 </style>
-</head>
-
-<body>
-  <main class="shell">
-    <section class="info">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <h1>Apply for SpeakOut Portal Access</h1>
-      <p>Register as a student, school, teacher, ambassador, or parent. Every new account enters as pending until approved by SpeakOut.</p>
-      <ul>
-        <li>Students get learning tools</li>
-        <li>Schools get implementation resources</li>
-        <li>Teachers get coordination materials</li>
-        <li>Ambassadors get tasks and training</li>
-        <li>Admins must be assigned manually</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <span class="badge">Access Application</span>
-      <h2>Create your account</h2>
-      <p>Use correct details. Fake or incomplete applications should be rejected by admin.</p>
-
-      <form class="form" id="registerForm">
-        <input id="fullName" type="text" placeholder="Full name" autocomplete="name" required>
-        <input id="email" type="email" placeholder="Email address" autocomplete="email" required>
-        <input id="phone" type="tel" placeholder="Phone / WhatsApp number" required>
-        <select id="role" required>
-          <option value="">Select access type</option>
-          <option value="student">Student</option>
-          <option value="school">School</option>
-          <option value="teacher">Teacher / Coordinator</option>
-          <option value="ambassador">Student Ambassador</option>
-          <option value="parent">Parent</option>
-        </select>
-        <input id="schoolName" type="text" placeholder="School / Organization name">
-        <input id="location" type="text" placeholder="Location / State">
-        <input id="password" type="password" placeholder="Create password" autocomplete="new-password" required>
-        <input id="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password" required>
-        <textarea class="full" id="reason" placeholder="Briefly explain why you need access" required></textarea>
-        <button class="btn primary full" type="submit" id="registerBtn">Submit Application</button>
-      </form>
-
-      <div id="statusBox" class="status"></div>
-      <div class="note">Your account will be created as <strong>pending</strong>. SpeakOut must approve it before protected portal access.</div>
-      <div class="actions">
-        <a class="btn gold" href="login.html">Already have access?</a>
-        <a class="btn soft" href="index.html">Back Home</a>
-      </div>
-      <p class="small">By applying, you confirm that the information provided is accurate.</p>
-    </section>
-  </main>
-
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
+<main class="shell" id="main-content">
+<section class="info">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<h1>Apply for SpeakOut Portal Access</h1>
+<p>Register as a student, school, teacher, ambassador, or parent. Every new account enters as pending until approved by SpeakOut.</p>
+<ul>
+<li>Students get learning tools</li>
+<li>Schools get implementation resources</li>
+<li>Teachers get coordination materials</li>
+<li>Ambassadors get tasks and training</li>
+<li>Admins must be assigned manually</li>
+</ul>
+</section>
+<section class="card">
+<span class="badge">Access Application</span>
+<h2>Create your account</h2>
+<p>Use correct details. Fake or incomplete applications should be rejected by admin.</p>
+<form class="form" id="registerForm">
+<input autocomplete="name" id="fullName" placeholder="Full name" required="" type="text"/>
+<input autocomplete="email" id="email" placeholder="Email address" required="" type="email"/>
+<input id="phone" placeholder="Phone / WhatsApp number" required="" type="tel"/>
+<select id="role" required="">
+<option value="">Select access type</option>
+<option value="student">Student</option>
+<option value="school">School</option>
+<option value="teacher">Teacher / Coordinator</option>
+<option value="ambassador">Student Ambassador</option>
+<option value="parent">Parent</option>
+</select>
+<input id="schoolName" placeholder="School / Organization name" type="text"/>
+<input id="location" placeholder="Location / State" type="text"/>
+<input autocomplete="new-password" id="password" placeholder="Create password" required="" type="password"/>
+<input autocomplete="new-password" id="confirmPassword" placeholder="Confirm password" required="" type="password"/>
+<textarea class="full" id="reason" placeholder="Briefly explain why you need access" required=""></textarea>
+<button class="btn primary full" id="registerBtn" type="submit">Submit Application</button>
+</form>
+<div class="status" id="statusBox"></div>
+<div class="note">Your account will be created as <strong>pending</strong>. SpeakOut must approve it before protected portal access.</div>
+<div class="actions">
+<a class="btn gold" href="login.html">Already have access?</a>
+<a class="btn soft" href="index.html">Back Home</a>
+</div>
+<p class="small">By applying, you confirm that the information provided is accurate.</p>
+</section>
+</main>
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";

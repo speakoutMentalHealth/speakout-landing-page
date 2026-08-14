@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Book Details | SpeakOut</title>
-
-<meta
-  name="description"
-  content="View SpeakOut learning resource details, reading progress, access level, related resources and protected reading options."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="View SpeakOut learning resource details, reading progress, access level, related resources and protected reading options." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -499,412 +489,222 @@ section{padding:52px 0}
   }
 }
 </style>
-</head>
-
-<body>
-
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a
-      href="student-dashboard.html"
-      class="brand"
-    >
-      <img
-        src="logo.png"
-        alt="SpeakOut Logo"
-      >
-
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Book Details</p>
-      </div>
-    </a>
-
-    <button
-      class="menu"
-      id="menuButton"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >
+<div class="container nav-inner">
+<a class="brand" href="student-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Book Details</p>
+</div>
+</a>
+<button aria-expanded="false" aria-label="Open menu" class="menu" id="menuButton" type="button">
       ☰
     </button>
-
-    <nav
-      class="nav-links"
-      id="roleNav"
-    >
-      <a href="student-dashboard.html">Dashboard</a>
-      <a href="student-library.html">Student Library</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="certificate-center.html">Certificates</a>
-      <a href="auth.html">Login</a>
-    </nav>
-
-  </div>
+<nav class="nav-links" id="roleNav">
+<a href="student-dashboard.html">Dashboard</a>
+<a href="student-library.html">Student Library</a>
+<a href="speakhub.html">SpeakHub</a>
+<a href="certificate-center.html">Certificates</a>
+<a href="auth.html">Login</a>
+</nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       Book Details • SpeakOut Library
     </span>
-
-    <h1 id="heroTitle">
+<h1 id="heroTitle">
       Loading book...
     </h1>
-
-    <p id="heroDesc">
+<p id="heroDesc">
       Preparing resource information.
     </p>
-
-    <div
-      class="actions"
-      id="heroActions"
-    ></div>
-
-    <div class="trust">
-      <span id="trustAudience">Audience</span>
-      <span id="trustAccess">Access</span>
-      <span id="trustCategory">Category</span>
-    </div>
-
-  </div>
+<div class="actions" id="heroActions"></div>
+<div class="trust">
+<span id="trustAudience">Audience</span>
+<span id="trustAccess">Access</span>
+<span id="trustCategory">Category</span>
+</div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div
-      id="loading"
-      class="loading"
-    >
+<div class="container">
+<div class="loading" id="loading">
       Loading book details...
     </div>
-
-
-    <div
-      id="bookArea"
-      class="book-head"
-      style="display:none"
-    >
-
-      <div>
-
-        <div
-          class="big-cover"
-          id="bookCover"
-        >
-          <strong id="coverText">
+<div class="book-head" id="bookArea" style="display:none">
+<div>
+<div class="big-cover" id="bookCover">
+<strong id="coverText">
             Book
           </strong>
-        </div>
-
-
-        <div
-          class="panel"
-          style="margin-top:16px"
-        >
-
-          <span class="label">
+</div>
+<div class="panel" style="margin-top:16px">
+<span class="label">
             Reading Progress
           </span>
-
-          <div class="progress-track">
-            <div
-              class="progress-bar"
-              id="progressBar"
-            ></div>
-          </div>
-
-          <div
-            class="progress-text"
-            id="progressText"
-          >
+<div class="progress-track">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="progress-text" id="progressText">
             0% complete
           </div>
-
-          <div class="actions">
-
-            <button
-              class="btn softBtn"
-              id="markStartedBtn"
-              type="button"
-            >
+<div class="actions">
+<button class="btn softBtn" id="markStartedBtn" type="button">
               Mark Started
             </button>
-
-            <button
-              class="btn success"
-              id="markCompleteBtn"
-              type="button"
-            >
+<button class="btn success" id="markCompleteBtn" type="button">
               Mark Complete
             </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span
-          class="label"
-          id="categoryLabel"
-        >
+</div>
+</div>
+</div>
+<div class="panel">
+<span class="label" id="categoryLabel">
           Category
         </span>
-
-        <h2 id="title">
+<h2 id="title">
           Book Title
         </h2>
-
-        <p>
-          <strong>Author:</strong>
-          <span id="author">SpeakOut</span>
-        </p>
-
-        <div
-          class="pills"
-          id="pills"
-        ></div>
-
-        <p id="description">
+<p>
+<strong>Author:</strong>
+<span id="author">SpeakOut</span>
+</p>
+<div class="pills" id="pills"></div>
+<p id="description">
           No description.
         </p>
-
-
-        <div class="meta-list">
-
-          <div class="meta">
-            <b>Audience</b>
-            <span id="audienceMeta">—</span>
-          </div>
-
-          <div class="meta">
-            <b>Access</b>
-            <span id="accessMeta">—</span>
-          </div>
-
-          <div class="meta">
-            <b>Level</b>
-            <span id="levelMeta">—</span>
-          </div>
-
-          <div class="meta">
-            <b>Format</b>
-            <span id="formatMeta">—</span>
-          </div>
-
-          <div class="meta">
-            <b>Language</b>
-            <span id="languageMeta">—</span>
-          </div>
-
-          <div class="meta">
-            <b>Estimated Read</b>
-            <span id="readTimeMeta">—</span>
-          </div>
-
-        </div>
-
-
-        <h3>Key Lessons</h3>
-
-        <ul id="keyLessons"></ul>
-
-
-        <div
-          id="actions"
-          class="actions"
-        ></div>
-
-
-        <div
-          id="premiumNote"
-          class="notice warn"
-          style="display:none;margin-top:14px"
-        >
+<div class="meta-list">
+<div class="meta">
+<b>Audience</b>
+<span id="audienceMeta">—</span>
+</div>
+<div class="meta">
+<b>Access</b>
+<span id="accessMeta">—</span>
+</div>
+<div class="meta">
+<b>Level</b>
+<span id="levelMeta">—</span>
+</div>
+<div class="meta">
+<b>Format</b>
+<span id="formatMeta">—</span>
+</div>
+<div class="meta">
+<b>Language</b>
+<span id="languageMeta">—</span>
+</div>
+<div class="meta">
+<b>Estimated Read</b>
+<span id="readTimeMeta">—</span>
+</div>
+</div>
+<h3>Key Lessons</h3>
+<ul id="keyLessons"></ul>
+<div class="actions" id="actions"></div>
+<div class="notice warn" id="premiumNote" style="display:none;margin-top:14px">
           Premium access is required for the full resource.
           Approved access can be managed from Payment History.
         </div>
-
-      </div>
-
-    </div>
-
-  </div>
+</div>
+</div>
+</div>
 </section>
-
-
-<section
-  id="readerSection"
-  style="display:none"
->
-  <div class="container">
-
-    <div
-      class="reader"
-      id="readerContent"
-    ></div>
-
-  </div>
+<section id="readerSection" style="display:none">
+<div class="container">
+<div class="reader" id="readerContent"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container grid g2">
-
-    <div class="panel">
-
-      <span class="label">
+<div class="container grid g2">
+<div class="panel">
+<span class="label">
         Share Resource
       </span>
-
-      <h2>
+<h2>
         Share this book
       </h2>
-
-      <p>
+<p>
         Send this resource to a student, parent, teacher or school leader.
       </p>
-
-      <div class="share-grid">
-
-        <a
-          class="btn success"
-          id="whatsappShare"
-          target="_blank"
-          rel="noopener"
-        >
+<div class="share-grid">
+<a class="btn success" id="whatsappShare" rel="noopener" target="_blank">
           WhatsApp
         </a>
-
-        <a
-          class="btn softBtn"
-          id="emailShare"
-        >
+<a class="btn softBtn" id="emailShare">
           Email
         </a>
-
-        <button
-          class="btn gold"
-          id="copyLinkBtn"
-          type="button"
-        >
+<button class="btn gold" id="copyLinkBtn" type="button">
           Copy Link
         </button>
-
-      </div>
-
-    </div>
-
-
-    <div class="panel">
-
-      <span class="label">
+</div>
+</div>
+<div class="panel">
+<span class="label">
         Support SpeakOut
       </span>
-
-      <h2>
+<h2>
         Donate
       </h2>
-
-      <p>
+<p>
         Support school clubs, learning resources and mental health education outreach.
       </p>
-
-      <div class="actions">
-
-        <a
-          class="btn primary"
-          href="https://paystack.shop/pay/speakout-donate"
-          target="_blank"
-          rel="noopener"
-        >
+<div class="actions">
+<a class="btn primary" href="https://paystack.shop/pay/speakout-donate" rel="noopener" target="_blank">
           Donate with Paystack
         </a>
-
-      </div>
-
-      <p>
-        <strong>Zenith:</strong> 1229664088
-        <br>
-        <strong>OPay:</strong> 6117106366
+</div>
+<p>
+<strong>Zenith:</strong> 1229664088
+        <br/>
+<strong>OPay:</strong> 6117106366
       </p>
-
-    </div>
-
-  </div>
+</div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div class="panel">
-
-      <span class="label">
+<div class="container">
+<div class="panel">
+<span class="label">
         Related
       </span>
-
-      <h2>
+<h2>
         Related books
       </h2>
-
-      <div
-        id="relatedGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-  </div>
+<div class="grid g3" id="relatedGrid"></div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-
-  <div class="container footer-grid">
-
-    <div>
-      <h3>SpeakOut</h3>
-      <p>
+<div class="container footer-grid">
+<div>
+<h3>SpeakOut</h3>
+<p>
         Protected learning resources for students, families,
         teachers and school communities.
       </p>
-    </div>
-
-    <div>
-      <h4>Libraries</h4>
-      <a href="student-library.html">Student Library</a>
-      <a href="parent-library.html">Parent Library</a>
-      <a href="teacher-library.html">Teacher Library</a>
-    </div>
-
-    <div>
-      <h4>Access</h4>
-      <a href="auth.html">Login / Apply</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="certificate-center.html">Certificates</a>
-    </div>
-
-  </div>
-
+</div>
+<div>
+<h4>Libraries</h4>
+<a href="student-library.html">Student Library</a>
+<a href="parent-library.html">Parent Library</a>
+<a href="teacher-library.html">Teacher Library</a>
+</div>
+<div>
+<h4>Access</h4>
+<a href="auth.html">Login / Apply</a>
+<a href="speakhub.html">SpeakHub</a>
+<a href="certificate-center.html">Certificates</a>
+</div>
+</div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -2251,6 +2051,5 @@ onAuthStateChanged(
 );
 
 </script>
-
 </body>
 </html>

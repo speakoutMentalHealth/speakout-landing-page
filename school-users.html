@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>School Users | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Unified SpeakOut school user management for students, teachers and parents, including approval status, role filtering, school linkage and learning activity."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="Unified SpeakOut school user management for students, teachers and parents, including approval status, role filtering, school linkage and learning activity." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -363,295 +353,172 @@ input:focus,textarea:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="school-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>School Users</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="school-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>School Users</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       School Management
     </span>
-
-    <h1>
+<h1>
       All School Users
     </h1>
-
-    <p id="schoolMeta">
+<p id="schoolMeta">
       Manage students, teachers and parents from one school-wide control centre.
     </p>
-
-    <div id="schoolPills"></div>
-
-  </div>
+<div id="schoolPills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Checking school access...
     </div>
-
-
-    <div class="grid g5" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="totalCount">0</strong>
-        <span>Total Users</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="studentCount">0</strong>
-        <span>Students</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="teacherCount">0</strong>
-        <span>Teachers</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="parentCount">0</strong>
-        <span>Parents</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="pendingCount">0</strong>
-        <span>Pending</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g5" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="totalCount">0</strong>
+<span>Total Users</span>
+</div>
+<div class="card stat">
+<strong id="studentCount">0</strong>
+<span>Students</span>
+</div>
+<div class="card stat">
+<strong id="teacherCount">0</strong>
+<span>Teachers</span>
+</div>
+<div class="card stat">
+<strong id="parentCount">0</strong>
+<span>Parents</span>
+</div>
+<div class="card stat">
+<strong id="pendingCount">0</strong>
+<span>Pending</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           Add School Member
         </span>
-
-        <h2>
+<h2>
           Create a school user record
         </h2>
-
-        <p class="small-note">
+<p class="small-note">
           This creates a Firestore user profile only. It does not create a Firebase Authentication account.
           Students receive a SpeakOut Student ID automatically; teachers and parents do not.
         </p>
-
-
-        <form id="addForm">
-
-          <div class="form-grid">
-
-            <input
-              id="firstName"
-              placeholder="First Name"
-              required
-            >
-
-            <input
-              id="lastName"
-              placeholder="Last Name"
-              required
-            >
-
-            <input
-              id="email"
-              type="email"
-              placeholder="Email, if available"
-            >
-
-            <input
-              id="phone"
-              placeholder="Phone, if available"
-            >
-
-            <select id="role" required>
-              <option value="">Select Role</option>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="parent">Parent</option>
-            </select>
-
-            <input
-              id="roleDetail"
-              placeholder="Class / Department / Parent Role"
-            >
-
-          </div>
-
-          <textarea
-            id="bio"
-            placeholder="Optional note"
-          ></textarea>
-
-          <button
-            class="btn primary"
-            type="submit"
-            id="addButton"
-          >
+<form id="addForm">
+<div class="form-grid">
+<input id="firstName" placeholder="First Name" required=""/>
+<input id="lastName" placeholder="Last Name" required=""/>
+<input id="email" placeholder="Email, if available" type="email"/>
+<input id="phone" placeholder="Phone, if available"/>
+<select id="role" required="">
+<option value="">Select Role</option>
+<option value="student">Student</option>
+<option value="teacher">Teacher</option>
+<option value="parent">Parent</option>
+</select>
+<input id="roleDetail" placeholder="Class / Department / Parent Role"/>
+</div>
+<textarea id="bio" placeholder="Optional note"></textarea>
+<button class="btn primary" id="addButton" type="submit">
             Add User
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
-          Search & Filter
+</form>
+</div>
+<div class="panel">
+<span class="label">
+          Search &amp; Filter
         </span>
-
-        <h2>
+<h2>
           Find school users
         </h2>
-
-        <div class="form-grid">
-
-          <input
-            id="searchInput"
-            placeholder="Search name, email, ID, role, class..."
-          >
-
-          <select id="roleFilter">
-            <option value="all">All Roles</option>
-            <option value="student">Students</option>
-            <option value="teacher">Teachers</option>
-            <option value="parent">Parents</option>
-          </select>
-
-          <select id="statusFilter">
-            <option value="all">All Statuses</option>
-            <option value="pending_school_approval">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="suspended">Suspended</option>
-          </select>
-
-          <select id="activityFilter">
-            <option value="all">All Learning Activity</option>
-            <option value="active">Has Learning Activity</option>
-            <option value="none">No Learning Activity</option>
-          </select>
-
-        </div>
-
-
-        <div class="actions" style="margin-top:14px">
-
-          <a
-            class="btn soft"
-            href="school-dashboard.html"
-          >
+<div class="form-grid">
+<input id="searchInput" placeholder="Search name, email, ID, role, class..."/>
+<select id="roleFilter">
+<option value="all">All Roles</option>
+<option value="student">Students</option>
+<option value="teacher">Teachers</option>
+<option value="parent">Parents</option>
+</select>
+<select id="statusFilter">
+<option value="all">All Statuses</option>
+<option value="pending_school_approval">Pending</option>
+<option value="approved">Approved</option>
+<option value="rejected">Rejected</option>
+<option value="suspended">Suspended</option>
+</select>
+<select id="activityFilter">
+<option value="all">All Learning Activity</option>
+<option value="active">Has Learning Activity</option>
+<option value="none">No Learning Activity</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<a class="btn soft" href="school-dashboard.html">
             Back to Dashboard
           </a>
-
-          <a
-            class="btn primary"
-            href="school-students.html"
-          >
+<a class="btn primary" href="school-students.html">
             Students
           </a>
-
-          <a
-            class="btn soft"
-            href="school-teachers.html"
-          >
+<a class="btn soft" href="school-teachers.html">
             Teachers
           </a>
-
-          <a
-            class="btn gold"
-            href="school-parents.html"
-          >
+<a class="btn gold" href="school-parents.html">
             Parents
           </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <h2>
+</div>
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<h2>
         School Users
       </h2>
-
-      <p class="small-note">
+<p class="small-note">
         This page is the unified school roster. Approval status and learning activity are shown without mixing student, teacher and parent-specific identifiers.
       </p>
-
-      <div class="table-wrap">
-
-        <table class="table">
-
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Contact</th>
-              <th>Role Detail</th>
-              <th>Identifier</th>
-              <th>Status</th>
-              <th>Learning</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody id="rows"></tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
-  </div>
+<div class="table-wrap">
+<table class="table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Role</th>
+<th>Contact</th>
+<th>Role Detail</th>
+<th>Identifier</th>
+<th>Status</th>
+<th>Learning</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • Unified School User Management
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1846,8 +1713,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

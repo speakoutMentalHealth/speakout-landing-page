@@ -1,23 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>School Workshops | SpeakOut</title>
-
-<meta
-  name="description"
-  content="Create, manage and review school workshops, seminars, trainings and wellbeing sessions for students, parents, teachers and school administrators."
->
-
-<link rel="icon" href="logo.png">
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
-
+<meta content="Create, manage and review school workshops, seminars, trainings and wellbeing sessions for students, parents, teachers and school administrators." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -363,307 +353,176 @@ input:focus,textarea:focus,select:focus{
   }
 }
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-
-<body>
-
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-
-    <a class="brand" href="school-dashboard.html">
-      <img src="logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>School Workshops</p>
-      </div>
-    </a>
-
-    <nav class="links" id="roleNav"></nav>
-
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="school-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div>
+<h2>SpeakOut</h2>
+<p>School Workshops</p>
+</div>
+</a>
+<nav class="links" id="roleNav"></nav>
+</div>
 </header>
-
-
-<main>
-
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-
-    <span class="kicker">
+<div class="container">
+<span class="kicker">
       School Workshops
     </span>
-
-    <h1 id="schoolName">
+<h1 id="schoolName">
       Manage Workshops
     </h1>
-
-    <p>
+<p>
       Create and manage seminars, wellbeing sessions, trainings and school programmes for students, parents, teachers and school administrators.
     </p>
-
-    <div id="pills"></div>
-
-  </div>
+<div id="pills"></div>
+</div>
 </section>
-
-
 <section>
-  <div class="container">
-
-    <div id="statusBox" class="notice">
+<div class="container">
+<div class="notice" id="statusBox">
       Loading workshops...
     </div>
-
-
-    <div class="grid g5" style="margin-bottom:18px">
-
-      <div class="card stat">
-        <strong id="totalCount">0</strong>
-        <span>Total Workshops</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="upcomingCount">0</strong>
-        <span>Upcoming</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="studentCount">0</strong>
-        <span>Student Sessions</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="parentCount">0</strong>
-        <span>Parent Sessions</span>
-      </div>
-
-      <div class="card stat">
-        <strong id="teacherCount">0</strong>
-        <span>Teacher Sessions</span>
-      </div>
-
-    </div>
-
-
-    <div class="grid g2">
-
-      <div class="panel">
-
-        <span class="label">
+<div class="grid g5" style="margin-bottom:18px">
+<div class="card stat">
+<strong id="totalCount">0</strong>
+<span>Total Workshops</span>
+</div>
+<div class="card stat">
+<strong id="upcomingCount">0</strong>
+<span>Upcoming</span>
+</div>
+<div class="card stat">
+<strong id="studentCount">0</strong>
+<span>Student Sessions</span>
+</div>
+<div class="card stat">
+<strong id="parentCount">0</strong>
+<span>Parent Sessions</span>
+</div>
+<div class="card stat">
+<strong id="teacherCount">0</strong>
+<span>Teacher Sessions</span>
+</div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<span class="label">
           Create Workshop
         </span>
-
-        <h2>
+<h2>
           New workshop or training
         </h2>
-
-        <p class="small-note">
+<p class="small-note">
           Workshops created here are automatically linked to this school. Audience selection controls who should see the session in their portal.
         </p>
-
-
-        <form id="workshopForm">
-
-          <div class="form-grid">
-
-            <input
-              id="title"
-              placeholder="Workshop title"
-              required
-            >
-
-            <select id="audience">
-              <option value="all">All School Users</option>
-              <option value="students">Students</option>
-              <option value="parents">Parents</option>
-              <option value="teachers">Teachers</option>
-              <option value="school_admin">School Administrators</option>
-            </select>
-
-            <select id="category">
-              <option value="Mental Health">Mental Health</option>
-              <option value="Leadership">Leadership</option>
-              <option value="Parent Education">Parent Education</option>
-              <option value="Teacher Wellbeing">Teacher Wellbeing</option>
-              <option value="Safeguarding">Safeguarding</option>
-              <option value="School Club">School Club</option>
-              <option value="Digital Skills">Digital Skills</option>
-              <option value="Career Development">Career Development</option>
-            </select>
-
-            <select id="deliveryMode">
-              <option value="physical">Physical</option>
-              <option value="online">Online</option>
-              <option value="hybrid">Hybrid</option>
-            </select>
-
-            <input
-              id="date"
-              type="date"
-              required
-            >
-
-            <input
-              id="time"
-              type="time"
-            >
-
-            <input
-              id="duration"
-              placeholder="Duration e.g. 2 hours"
-            >
-
-            <input
-              id="facilitator"
-              placeholder="Facilitator / Speaker"
-            >
-
-            <input
-              id="locationField"
-              placeholder="Location / Meeting link"
-            >
-
-            <input
-              id="capacity"
-              type="number"
-              min="0"
-              placeholder="Expected Participants"
-            >
-
-            <select id="status">
-              <option value="planned">Planned</option>
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-
-            <input
-              id="registrationLink"
-              placeholder="Registration link, if any"
-            >
-
-          </div>
-
-          <textarea
-            id="description"
-            placeholder="Description, objectives and expected outcomes"
-          ></textarea>
-
-          <button
-            class="btn primary"
-            type="submit"
-            id="createButton"
-          >
+<form id="workshopForm">
+<div class="form-grid">
+<input id="title" placeholder="Workshop title" required=""/>
+<select id="audience">
+<option value="all">All School Users</option>
+<option value="students">Students</option>
+<option value="parents">Parents</option>
+<option value="teachers">Teachers</option>
+<option value="school_admin">School Administrators</option>
+</select>
+<select id="category">
+<option value="Mental Health">Mental Health</option>
+<option value="Leadership">Leadership</option>
+<option value="Parent Education">Parent Education</option>
+<option value="Teacher Wellbeing">Teacher Wellbeing</option>
+<option value="Safeguarding">Safeguarding</option>
+<option value="School Club">School Club</option>
+<option value="Digital Skills">Digital Skills</option>
+<option value="Career Development">Career Development</option>
+</select>
+<select id="deliveryMode">
+<option value="physical">Physical</option>
+<option value="online">Online</option>
+<option value="hybrid">Hybrid</option>
+</select>
+<input id="date" required="" type="date"/>
+<input id="time" type="time"/>
+<input id="duration" placeholder="Duration e.g. 2 hours"/>
+<input id="facilitator" placeholder="Facilitator / Speaker"/>
+<input id="locationField" placeholder="Location / Meeting link"/>
+<input id="capacity" min="0" placeholder="Expected Participants" type="number"/>
+<select id="status">
+<option value="planned">Planned</option>
+<option value="active">Active</option>
+<option value="completed">Completed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+<input id="registrationLink" placeholder="Registration link, if any"/>
+</div>
+<textarea id="description" placeholder="Description, objectives and expected outcomes"></textarea>
+<button class="btn primary" id="createButton" type="submit">
             Create Workshop
           </button>
-
-        </form>
-
-      </div>
-
-
-      <div class="panel">
-
-        <span class="label">
+</form>
+</div>
+<div class="panel">
+<span class="label">
           Find Workshops
         </span>
-
-        <h2>
+<h2>
           Search and filter
         </h2>
-
-        <div class="search-grid">
-
-          <input
-            id="searchInput"
-            placeholder="Search title, facilitator, category..."
-          >
-
-          <select id="audienceFilter">
-            <option value="all">All Audiences</option>
-            <option value="students">Students</option>
-            <option value="parents">Parents</option>
-            <option value="teachers">Teachers</option>
-            <option value="school_admin">School Admin</option>
-          </select>
-
-          <select id="categoryFilter">
-            <option value="all">All Categories</option>
-          </select>
-
-          <select id="statusFilter">
-            <option value="all">All Statuses</option>
-            <option value="planned">Planned</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-        </div>
-
-
-        <div class="actions" style="margin-top:14px">
-
-          <a
-            class="btn soft"
-            href="school-dashboard.html"
-          >
+<div class="search-grid">
+<input id="searchInput" placeholder="Search title, facilitator, category..."/>
+<select id="audienceFilter">
+<option value="all">All Audiences</option>
+<option value="students">Students</option>
+<option value="parents">Parents</option>
+<option value="teachers">Teachers</option>
+<option value="school_admin">School Admin</option>
+</select>
+<select id="categoryFilter">
+<option value="all">All Categories</option>
+</select>
+<select id="statusFilter">
+<option value="all">All Statuses</option>
+<option value="planned">Planned</option>
+<option value="active">Active</option>
+<option value="completed">Completed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px">
+<a class="btn soft" href="school-dashboard.html">
             Back to Dashboard
           </a>
-
-          <a
-            class="btn gold"
-            href="workshops.html"
-          >
+<a class="btn gold" href="workshops.html">
             General Workshop Portal
           </a>
-
-        </div>
-
-
-        <div class="notice warn" style="margin-top:16px;margin-bottom:0">
+</div>
+<div class="notice warn" style="margin-top:16px;margin-bottom:0">
           School sessions remain separate from global workshops unless you intentionally set the workshop as school-wide or public elsewhere.
         </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="panel"
-      style="margin-top:18px"
-    >
-
-      <span class="label">
+</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<span class="label">
         School Calendar
       </span>
-
-      <h2>
-        Workshops & Sessions
+<h2>
+        Workshops &amp; Sessions
       </h2>
-
-      <div
-        id="workshopGrid"
-        class="grid g3"
-      ></div>
-
-    </div>
-
-  </div>
+<div class="grid g3" id="workshopGrid"></div>
+</div>
+</div>
 </section>
-
 </main>
-
-
 <footer class="footer">
-  <div class="container">
+<div class="container">
     SpeakOut Mental Health Outreach • School Workshops
   </div>
 </footer>
-
-
 <script type="module">
 
 import {
@@ -1554,8 +1413,6 @@ requireRoles(
 );
 
 </script>
-
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
-

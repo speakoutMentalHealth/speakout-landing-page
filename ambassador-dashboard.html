@@ -1,16 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Ambassador Dashboard | SpeakOut Portal</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dashboard-shared.css">
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-<body>
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="dashboard-shared.css" rel="stylesheet"/>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav"><div class="container nav-inner">
-<a class="brand" href="student-dashboard.html"><img src="logo.png" alt="SpeakOut"><div>SpeakOut<small>Portal Dashboard</small></div></a>
+<a class="brand" href="student-dashboard.html"><img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/><div>SpeakOut<small>Portal Dashboard</small></div></a>
 <button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
 <nav class="nav-links">
 <a class="btn soft" href="student-dashboard.html">Student</a>
@@ -22,9 +23,8 @@
 <a class="btn soft" href="profile.html">Profile</a>
 <button class="btn dark" id="logoutBtn">Logout</button>
 </nav></div></header>
-<main>
+<main id="main-content">
 <section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>Ambassador Dashboard</h1><p>Access ambassador training, monthly tasks, certificates and leadership resources.</p></div></section>
-
 <section><div class="container grid g4"><div class="card metric"><strong>Bronze</strong><span>Current Level</span></div><div class="card metric"><strong>0</strong><span>Points</span></div><div class="card metric"><strong>0</strong><span>Tasks Done</span></div><div class="card metric"><strong>0</strong><span>Certificates</span></div></div></section>
 <section><div class="container grid g3">
 <a class="card" href="my-courses.html"><div class="icon">👑</div><h2>Ambassador Training</h2><p>Take leadership and mental health advocacy training.</p><span class="btn primary">Start</span></a>
@@ -32,13 +32,12 @@
 <a class="card" href="certificates.html"><div class="icon">🏆</div><h2>Certificates</h2><p>View ambassador certificates and verification codes.</p><span class="btn soft">Open</span></a>
 </div></section>
 <section><div class="container"><div class="notice"><span class="label">Ambassador Rule</span><h3>No activity, no credibility.</h3><p>Ambassadors are not title collectors. You need completed tasks, reports, service hours and visible impact.</p></div></div></section>
-
 </main>
 <footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
-<script type="module" src="auth-guard.js"></script>
+<script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { SO } from "./dashboard-shared.js";
 
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body></html>

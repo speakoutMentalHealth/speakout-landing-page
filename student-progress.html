@@ -1,17 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>My Progress | SpeakOut Portal</title>
-<meta name="description" content="Student progress dashboard for SpeakOut portal.">
-
-<link rel="icon" type="image/png" href="icons/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+<meta content="Student progress dashboard for SpeakOut portal." name="description"/>
+<link href="images/logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -55,65 +53,60 @@ section{padding:36px 0}
 @media(max-width:900px){.g4,.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.nav-inner{flex-direction:column;align-items:flex-start;padding:12px 0}.nav-links{width:100%}.nav-links a,.nav-links button{width:100%;border-radius:14px}.g4,.g3{grid-template-columns:1fr}.item{flex-direction:column}.hero{padding:42px 0}}
 </style>
-<link rel="stylesheet" href="css/portal-ui.css">
-</head>
-<body>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
-  <div class="container nav-inner">
-    <a class="brand" href="student-dashboard.html"><img src="icons/logo.png" alt="SpeakOut"><div>SpeakOut<small>My Progress</small></div></a>
-    <nav class="nav-links">
-      <a class="btn soft" href="student-dashboard.html">Dashboard</a>
-      <a class="btn soft" href="e-library.html">E-Library</a>
-      <a class="btn soft" href="speakhub.html">SpeakHub</a>
-      <a class="btn soft" href="kiddies.html">Kiddies</a>
-      <button class="btn dark" id="logoutBtn">Logout</button>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="student-dashboard.html"><img alt="SpeakOut" decoding="async" fetchpriority="high" loading="eager" src="images/logo.png"/><div>SpeakOut<small>My Progress</small></div></a>
+<nav class="nav-links">
+<a class="btn soft" href="student-dashboard.html">Dashboard</a>
+<a class="btn soft" href="e-library.html">E-Library</a>
+<a class="btn soft" href="speakhub.html">SpeakHub</a>
+<a class="btn soft" href="kiddies.html">Kiddies</a>
+<button class="btn dark" id="logoutBtn">Logout</button>
+</nav>
+</div>
 </header>
-
-<main>
+<main id="main-content">
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Student Activity</span>
-    <h1>My Progress</h1>
-    <p>Track what you have opened, started, downloaded and completed inside the SpeakOut learning portal.</p>
-  </div>
+<div class="container">
+<span class="kicker">Student Activity</span>
+<h1>My Progress</h1>
+<p>Track what you have opened, started, downloaded and completed inside the SpeakOut learning portal.</p>
+</div>
 </section>
-
 <section>
-  <div class="container grid g4">
-    <div class="card metric"><strong id="booksOpened">0</strong><span>Books Opened</span></div>
-    <div class="card metric"><strong id="booksDownloaded">0</strong><span>Downloads</span></div>
-    <div class="card metric"><strong id="coursesStarted">0</strong><span>Courses Started</span></div>
-    <div class="card metric"><strong id="coursesCompleted">0</strong><span>Courses Completed</span></div>
-  </div>
+<div class="container grid g4">
+<div class="card metric"><strong id="booksOpened">0</strong><span>Books Opened</span></div>
+<div class="card metric"><strong id="booksDownloaded">0</strong><span>Downloads</span></div>
+<div class="card metric"><strong id="coursesStarted">0</strong><span>Courses Started</span></div>
+<div class="card metric"><strong id="coursesCompleted">0</strong><span>Courses Completed</span></div>
+</div>
 </section>
-
 <section>
-  <div class="container">
-    <div class="title"><span class="label">Activity History</span><h2>Your learning records</h2><p>These records update when tracking is connected to E-Library and SpeakHub buttons.</p></div>
-    <div class="grid g3">
-      <div class="panel">
-        <h3>Books & Resources</h3>
-        <div id="bookList" class="list"><div class="empty">Loading...</div></div>
-      </div>
-      <div class="panel">
-        <h3>Courses</h3>
-        <div id="courseList" class="list"><div class="empty">Loading...</div></div>
-      </div>
-      <div class="panel">
-        <h3>Next Best Action</h3>
-        <div class="empty">Do not just click around. Pick one course, complete it, then request a certificate if eligible.</div>
-        <p><a class="btn primary" href="speakhub.html">Continue Learning</a></p>
-      </div>
-    </div>
-  </div>
+<div class="container">
+<div class="title"><span class="label">Activity History</span><h2>Your learning records</h2><p>These records update when tracking is connected to E-Library and SpeakHub buttons.</p></div>
+<div class="grid g3">
+<div class="panel">
+<h3>Books &amp; Resources</h3>
+<div class="list" id="bookList"><div class="empty">Loading...</div></div>
+</div>
+<div class="panel">
+<h3>Courses</h3>
+<div class="list" id="courseList"><div class="empty">Loading...</div></div>
+</div>
+<div class="panel">
+<h3>Next Best Action</h3>
+<div class="empty">Do not just click around. Pick one course, complete it, then request a certificate if eligible.</div>
+<p><a class="btn primary" href="speakhub.html">Continue Learning</a></p>
+</div>
+</div>
+</div>
 </section>
 </main>
-
 <footer class="footer"><div class="container">SpeakOut Student Progress • <a href="https://speakoutmentalhealth.org/">Main Website</a></div></footer>
-
-<script type="module" src="auth-guard.js"></script>
+<script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -157,6 +150,6 @@ onAuthStateChanged(auth, async user => {
   renderList("courseList", courses);
 });
 </script>
-<script src="portal-ui.js" defer></script>
+<script defer="" src="portal-ui.js"></script>
 </body>
 </html>
