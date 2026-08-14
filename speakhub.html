@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>SpeakHub Academy | SpeakOut</title>
-<meta name="description" content="Explore SpeakHub Academy courses and curated learning from SpeakOut and approved external providers across mental health, leadership, AI, technology, career development, education, parenting, NGO development and more.">
-<link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta content="Explore SpeakHub Academy courses and curated learning from SpeakOut and approved external providers across mental health, leadership, AI, technology, career development, education, parenting, NGO development and more." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -47,93 +48,82 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 @media(max-width:1000px){.g4,.g3,.footer-grid{grid-template-columns:repeat(2,1fr)}.controls-grid,.controls-grid.secondary{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.menu{display:block}.nav-inner{min-height:68px}.nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 6%;flex-direction:column;align-items:stretch;gap:8px}body.menu-open .nav-links{display:flex}.nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}section{padding:48px 0}.hero .container{padding:52px 0}.g4,.g3,.g2,.footer-grid,.controls-grid,.controls-grid.secondary{grid-template-columns:1fr}.actions{flex-direction:column}.btn{width:100%;border-radius:14px}.card,.panel{padding:16px;border-radius:19px}.modal{padding:10px}.modal-box{margin:12px auto;border-radius:22px}.modal-head{grid-template-columns:1fr}.close-btn{width:100%}.modal-content{padding:20px;font-size:.98rem}.modal-content h2{font-size:1.65rem}}
 </style>
-</head>
+<link href="css/frontend-revamp.css" rel="stylesheet"/><meta content="#071b3a" name="theme-color"/></head>
 <body>
-
 <header class="nav">
-  <div class="container nav-inner">
-    <a href="index.html" class="brand"><img src="logo.png" alt="SpeakOut Logo"><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
-    <button class="menu" type="button" aria-label="Open menu" aria-expanded="false" id="menuButton">☰</button>
-    <nav class="nav-links" id="roleNav">
-      <a href="index.html">Home</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies</a><a href="certificate-center.html">Certificates</a><a href="auth.html">Login</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="index.html"><img alt="SpeakOut Logo" decoding="async" src="logo.png"/><div><h2>SpeakOut</h2><p>SpeakHub Academy</p></div></a>
+<button aria-expanded="false" aria-label="Open menu" class="menu" id="menuButton" type="button">☰</button>
+<nav class="nav-links" id="roleNav">
+<a href="index.html">Home</a><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies</a><a href="certificate-center.html">Certificates</a><a href="auth.html">Login</a>
+</nav>
+</div>
 </header>
-
 <main>
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Learning Hub • Courses • Pathways • Progress • Certificates</span>
-    <h1>SpeakHub Academy</h1>
-    <p>One learning ecosystem for SpeakHub courses and carefully selected external learning opportunities across mental health, leadership, AI, programming, ICT, cybersecurity, career development, education, parenting, NGO development and community impact.</p>
-    <div class="actions"><a href="#courses" class="btn primary">Browse Courses</a><a href="#filters" class="btn light">Search Courses</a><a href="certificate-center.html" class="btn gold">Certificates</a></div>
-    <div class="trust"><span>SpeakHub + External Providers</span><span>Free + Premium</span><span>Certificate pathways</span><span>Progress tracking</span><span>External proof review</span></div>
-  </div>
+<div class="container">
+<span class="kicker">Learning Hub • Courses • Pathways • Progress • Certificates</span>
+<h1>SpeakHub Academy</h1>
+<p>One learning ecosystem for SpeakHub courses and carefully selected external learning opportunities across mental health, leadership, AI, programming, ICT, cybersecurity, career development, education, parenting, NGO development and community impact.</p>
+<div class="actions"><a class="btn primary" href="#courses">Browse Courses</a><a class="btn light" href="#filters">Search Courses</a><a class="btn gold" href="certificate-center.html">Certificates</a></div>
+<div class="trust"><span>SpeakHub + External Providers</span><span>Free + Premium</span><span>Certificate pathways</span><span>Progress tracking</span><span>External proof review</span></div>
+</div>
 </section>
-
 <section class="stats"><div class="container grid g4">
-  <div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
-  <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
-  <div class="stat"><strong id="certCount">0</strong><span>Certificate Available</span></div>
-  <div class="stat"><strong id="providerCount">0</strong><span>Learning Providers</span></div>
+<div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
+<div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+<div class="stat"><strong id="certCount">0</strong><span>Certificate Available</span></div>
+<div class="stat"><strong id="providerCount">0</strong><span>Learning Providers</span></div>
 </div></section>
-
 <section class="provider-strip"><div class="container">
-  <div class="title"><span class="label">Learning Ecosystem</span><h2>One academy. Multiple trusted sources.</h2><p>SpeakHub can deliver its own courses while guiding learners to approved external providers and recording verified achievements without misrepresenting the original certificate issuer.</p></div>
-  <div class="provider-grid" id="providerGrid"><span class="provider-chip"><span class="provider-dot"></span>SpeakHub Academy</span></div>
+<div class="title"><span class="label">Learning Ecosystem</span><h2>One academy. Multiple trusted sources.</h2><p>SpeakHub can deliver its own courses while guiding learners to approved external providers and recording verified achievements without misrepresenting the original certificate issuer.</p></div>
+<div class="provider-grid" id="providerGrid"><span class="provider-chip"><span class="provider-dot"></span>SpeakHub Academy</span></div>
 </div></section>
-
 <section class="featured-section"><div class="container">
-  <div class="title"><span class="label">Recommended</span><h2>Featured courses</h2><p>Start with high-priority learning selected for personal development, professional growth and community impact.</p></div>
-  <div id="featuredGrid" class="grid g3"></div>
+<div class="title"><span class="label">Recommended</span><h2>Featured courses</h2><p>Start with high-priority learning selected for personal development, professional growth and community impact.</p></div>
+<div class="grid g3" id="featuredGrid"></div>
 </div></section>
-
 <section class="pathways"><div class="container">
-  <div class="title"><span class="label">Learning Pathways</span><h2>Build skills in a clear sequence</h2><p>Internal and external learning can sit inside one structured development ecosystem.</p></div>
-  <div class="grid g3">
-    <div class="path-card"><h3>AI, Programming & ICT</h3><p>Build digital confidence before progressing into programming, AI, data, cloud and cybersecurity.</p><div class="path-steps"><span>Computer Basics</span><span>Programming</span><span>AI & Data</span><span>Cybersecurity</span></div></div>
-    <div class="path-card"><h3>Leadership & Career</h3><p>Build leadership, communication, workplace readiness and career confidence.</p><div class="path-steps"><span>Leadership</span><span>Communication</span><span>Career Planning</span><span>Portfolio</span></div></div>
-    <div class="path-card"><h3>NGO & Community Impact</h3><p>Develop skills for advocacy, mobilisation, grant work and programme delivery.</p><div class="path-steps"><span>NGO Fundamentals</span><span>Mobilisation</span><span>Grant Writing</span><span>M&E</span></div></div>
-  </div>
+<div class="title"><span class="label">Learning Pathways</span><h2>Build skills in a clear sequence</h2><p>Internal and external learning can sit inside one structured development ecosystem.</p></div>
+<div class="grid g3">
+<div class="path-card"><h3>AI, Programming &amp; ICT</h3><p>Build digital confidence before progressing into programming, AI, data, cloud and cybersecurity.</p><div class="path-steps"><span>Computer Basics</span><span>Programming</span><span>AI &amp; Data</span><span>Cybersecurity</span></div></div>
+<div class="path-card"><h3>Leadership &amp; Career</h3><p>Build leadership, communication, workplace readiness and career confidence.</p><div class="path-steps"><span>Leadership</span><span>Communication</span><span>Career Planning</span><span>Portfolio</span></div></div>
+<div class="path-card"><h3>NGO &amp; Community Impact</h3><p>Develop skills for advocacy, mobilisation, grant work and programme delivery.</p><div class="path-steps"><span>NGO Fundamentals</span><span>Mobilisation</span><span>Grant Writing</span><span>M&amp;E</span></div></div>
+</div>
 </div></section>
-
 <section class="controls" id="filters"><div class="container"><div class="panel">
-  <span class="label">Search Courses</span>
-  <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px">Find the right course</h2>
-  <p style="color:var(--muted);line-height:1.6;margin:0">Search by title, provider, category, audience, level, topic or keyword.</p>
-  <div class="controls-grid">
-    <input type="text" id="searchInput" class="input" placeholder="Search courses, topics or providers...">
-    <select id="categoryFilter" class="select"><option value="all">All Categories</option></select>
-    <select id="audienceFilter" class="select"><option value="all">All Audiences</option></select>
-    <select id="accessFilter" class="select"><option value="all">Free & Premium</option><option value="free">Free</option><option value="premium">Premium</option></select>
-  </div>
-  <div class="controls-grid secondary">
-    <select id="levelFilter" class="select"><option value="all">All Levels</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
-    <select id="providerFilter" class="select"><option value="all">All Providers</option></select>
-    <select id="sortFilter" class="select"><option value="featured">Featured First</option><option value="newest">Newest</option><option value="title">Title A-Z</option><option value="certificate">Certificate Available</option><option value="provider">Provider A-Z</option></select>
-  </div>
-  <div class="empty" id="emptyState">No matching course found. Try another keyword or filter.</div>
+<span class="label">Search Courses</span>
+<h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px">Find the right course</h2>
+<p style="color:var(--muted);line-height:1.6;margin:0">Search by title, provider, category, audience, level, topic or keyword.</p>
+<div class="controls-grid">
+<input class="input" id="searchInput" placeholder="Search courses, topics or providers..." type="text"/>
+<select class="select" id="categoryFilter"><option value="all">All Categories</option></select>
+<select class="select" id="audienceFilter"><option value="all">All Audiences</option></select>
+<select class="select" id="accessFilter"><option value="all">Free &amp; Premium</option><option value="free">Free</option><option value="premium">Premium</option></select>
+</div>
+<div class="controls-grid secondary">
+<select class="select" id="levelFilter"><option value="all">All Levels</option><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+<select class="select" id="providerFilter"><option value="all">All Providers</option></select>
+<select class="select" id="sortFilter"><option value="featured">Featured First</option><option value="newest">Newest</option><option value="title">Title A-Z</option><option value="certificate">Certificate Available</option><option value="provider">Provider A-Z</option></select>
+</div>
+<div class="empty" id="emptyState">No matching course found. Try another keyword or filter.</div>
 </div></div></section>
-
 <section id="courses"><div class="container">
-  <div class="title"><span class="label">Course Catalogue</span><h2>Available SpeakHub learning</h2><p>Active SpeakHub courses and approved external learning opportunities appear in one catalogue, with clear provider, completion and certificate information.</p></div>
-  <div id="loading" class="loading">Loading courses...</div>
-  <div class="grid g3" id="courseGrid"></div>
+<div class="title"><span class="label">Course Catalogue</span><h2>Available SpeakHub learning</h2><p>Active SpeakHub courses and approved external learning opportunities appear in one catalogue, with clear provider, completion and certificate information.</p></div>
+<div class="loading" id="loading">Loading courses...</div>
+<div class="grid g3" id="courseGrid"></div>
 </div></section>
 </main>
-
 <div class="modal" id="courseModal"><div class="modal-box">
-  <div class="modal-head"><div class="modal-title" id="courseModalTitle">Course Preview</div><button class="close-btn" type="button" id="closeModalButton">Close</button></div>
-  <div class="modal-content" id="courseModalContent"></div>
-  <div class="modal-actions"><a class="btn primary" id="modalStartBtn" href="#">Start Course</a><a class="btn greenBtn" id="modalSubmitBtn" href="#" style="display:none">Submit Certificate</a><a class="btn gold" id="modalDetailsBtn" href="#">View Details</a></div>
+<div class="modal-head"><div class="modal-title" id="courseModalTitle">Course Preview</div><button class="close-btn" id="closeModalButton" type="button">Close</button></div>
+<div class="modal-content" id="courseModalContent"></div>
+<div class="modal-actions"><a class="btn primary" href="#" id="modalStartBtn">Start Course</a><a class="btn greenBtn" href="#" id="modalSubmitBtn" style="display:none">Submit Certificate</a><a class="btn gold" href="#" id="modalDetailsBtn">View Details</a></div>
 </div></div>
-
 <footer class="footer"><div class="container footer-grid">
-  <div><h3>SpeakOut</h3><p>SpeakHub Academy connects structured SpeakOut learning with approved external learning opportunities across wellbeing, education, technology and professional development.</p></div>
-  <div><h4>Learning</h4><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies Corner</a><a href="certificate-center.html">Certificates</a></div>
-  <div><h4>Support</h4><a href="auth.html">Login / Apply</a><a href="school-register.html">Register School</a><a href="contributor.html">Become Contributor</a></div>
+<div><h3>SpeakOut</h3><p>SpeakHub Academy connects structured SpeakOut learning with approved external learning opportunities across wellbeing, education, technology and professional development.</p></div>
+<div><h4>Learning</h4><a href="speakhub.html">SpeakHub</a><a href="kiddies.html">Kiddies Corner</a><a href="certificate-center.html">Certificates</a></div>
+<div><h4>Support</h4><a href="auth.html">Login / Apply</a><a href="school-register.html">Register School</a><a href="contributor.html">Become Contributor</a></div>
 </div></footer>
-
 <script type="module">
 import { db,auth } from "./firebase-config.js";
 import { collection,getDocs,doc,getDoc,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -416,4 +406,3 @@ onAuthStateChanged(auth,async user=>{
 </script>
 </body>
 </html>
-

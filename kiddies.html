@@ -1,14 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Kiddies Corner | Protected Student Resources</title>
-<link rel="icon" type="image/png" href="icons/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+<link href="icons/logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--navy:#07152b;--blue:#0a5fbf;--blue2:#074f9f;--blueSoft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;--green:#0f8f6f;--greenSoft:#e9fbf5;--ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10);--soft:0 10px 28px rgba(7,21,43,.07);--r:22px}
 *{box-sizing:border-box}
@@ -124,158 +124,136 @@ section{padding:58px 0}
   .modal-content h2{font-size:1.65rem}
 }
 </style>
-</head>
-
+<link href="css/frontend-revamp.css" rel="stylesheet"/><meta content="#071b3a" name="theme-color"/></head>
 <body>
 <header class="nav">
-  <div class="container nav-inner">
-    <a href="portal.html" class="brand">
-      <img src="icons/logo.png" alt="SpeakOut Logo">
-      <div>
-        <h2>SpeakOut</h2>
-        <p>Kiddies Corner</p>
-      </div>
-    </a>
-
-    <button class="menu" type="button" onclick="document.body.classList.toggle('menu-open')">☰</button>
-
-    <nav class="nav-links">
-      <a href="portal.html">Portal</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="e-library.html">E-Library</a>
-      <a href="kiddies.html">Kiddies</a>
-      <a href="ambassador.html">Ambassador</a>
-    </nav>
-  </div>
+<div class="container nav-inner">
+<a class="brand" href="portal.html">
+<img alt="SpeakOut Logo" decoding="async" src="icons/logo.png"/>
+<div>
+<h2>SpeakOut</h2>
+<p>Kiddies Corner</p>
+</div>
+</a>
+<button class="menu" onclick="document.body.classList.toggle('menu-open')" type="button">☰</button>
+<nav class="nav-links">
+<a href="portal.html">Portal</a>
+<a href="speakhub.html">SpeakHub</a>
+<a href="e-library.html">E-Library</a>
+<a href="kiddies.html">Kiddies</a>
+<a href="ambassador.html">Ambassador</a>
+</nav>
+</div>
 </header>
-
 <main>
 <section class="hero">
-  <div class="container">
-    <span class="kicker">Protected Access • Firestore Powered • Expandable</span>
-    <h1>Kiddies Corner | Protected Student Resources</h1>
-    <p>Age-appropriate emotional wellbeing, safety, character, study skills and confidence-building resources for primary and secondary school learners.</p>
-
-    <div class="actions">
-      <a href="#items" class="btn primary">Browse Resources</a>
-      <a href="#filters" class="btn light">Search</a>
-      <a href="portal.html" class="btn gold">Back to Portal</a>
-    </div>
-
-    <div class="trust">
-      <span>Pre-installed</span>
-      <span>Admin expandable</span>
-      <span>Approved users only</span>
-    </div>
-  </div>
+<div class="container">
+<span class="kicker">Protected Access • Firestore Powered • Expandable</span>
+<h1>Kiddies Corner | Protected Student Resources</h1>
+<p>Age-appropriate emotional wellbeing, safety, character, study skills and confidence-building resources for primary and secondary school learners.</p>
+<div class="actions">
+<a class="btn primary" href="#items">Browse Resources</a>
+<a class="btn light" href="#filters">Search</a>
+<a class="btn gold" href="portal.html">Back to Portal</a>
+</div>
+<div class="trust">
+<span>Pre-installed</span>
+<span>Admin expandable</span>
+<span>Approved users only</span>
+</div>
+</div>
 </section>
-
 <section class="stats">
-  <div class="container stats-grid">
-    <div class="stat"><strong id="totalCount">0</strong><span>Total Resources</span></div>
-    <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
-    <div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
-    <div class="stat"><strong id="audCount">0</strong><span>Age Groups</span></div>
-  </div>
+<div class="container stats-grid">
+<div class="stat"><strong id="totalCount">0</strong><span>Total Resources</span></div>
+<div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
+<div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
+<div class="stat"><strong id="audCount">0</strong><span>Age Groups</span></div>
+</div>
 </section>
-
 <section class="controls" id="filters">
-  <div class="container">
-    <div class="panel">
-      <span class="label">Search</span>
-      <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right resource</h2>
-      <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, category, audience, topic or keyword.</p>
-
-      <div class="controls-grid">
-        <input type="text" id="searchInput" class="input" placeholder="Search resources...">
-
-        <select id="categoryFilter" class="select">
-          <option value="all">All Categories</option>
-          <option value="literacy">Literacy</option>
-          <option value="numeracy">Numeracy</option>
-          <option value="early-learning">Early Learning</option>
-          <option value="emotions">Emotions</option>
-          <option value="safety">Safety</option>
-          <option value="character">Character</option>
-          <option value="wellness">Wellness</option>
-          <option value="confidence">Confidence</option>
-          <option value="leadership">Leadership</option>
-          <option value="science">Science</option>
-          <option value="creativity">Creativity</option>
-          <option value="environment">Environment</option>
-        </select>
-
-        <select id="audienceFilter" class="select">
-          <option value="all">All Ages</option>
-          <option value="ages-3-5">Ages 3–5</option>
-          <option value="ages-6-9">Ages 6–9</option>
-          <option value="ages-10-13">Ages 10–13</option>
-          <option value="primary">Primary</option>
-          <option value="junior-secondary">Junior Secondary</option>
-          <option value="senior-secondary">Senior Secondary</option>
-        </select>
-      </div>
-
-      <div class="empty" id="emptyState">No matching resource found. Try another keyword or filter.</div>
-    </div>
-  </div>
+<div class="container">
+<div class="panel">
+<span class="label">Search</span>
+<h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right resource</h2>
+<p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, category, audience, topic or keyword.</p>
+<div class="controls-grid">
+<input class="input" id="searchInput" placeholder="Search resources..." type="text"/>
+<select class="select" id="categoryFilter">
+<option value="all">All Categories</option>
+<option value="literacy">Literacy</option>
+<option value="numeracy">Numeracy</option>
+<option value="early-learning">Early Learning</option>
+<option value="emotions">Emotions</option>
+<option value="safety">Safety</option>
+<option value="character">Character</option>
+<option value="wellness">Wellness</option>
+<option value="confidence">Confidence</option>
+<option value="leadership">Leadership</option>
+<option value="science">Science</option>
+<option value="creativity">Creativity</option>
+<option value="environment">Environment</option>
+</select>
+<select class="select" id="audienceFilter">
+<option value="all">All Ages</option>
+<option value="ages-3-5">Ages 3–5</option>
+<option value="ages-6-9">Ages 6–9</option>
+<option value="ages-10-13">Ages 10–13</option>
+<option value="primary">Primary</option>
+<option value="junior-secondary">Junior Secondary</option>
+<option value="senior-secondary">Senior Secondary</option>
+</select>
+</div>
+<div class="empty" id="emptyState">No matching resource found. Try another keyword or filter.</div>
+</div>
+</div>
 </section>
-
 <section id="items">
-  <div class="container">
-    <div class="title">
-      <span class="label">Live Resources</span>
-      <h2>Pre-installed resources plus admin additions</h2>
-      <p>Only resources marked <strong>active</strong> appear here.</p>
-    </div>
-
-    <div id="loading" class="loading">Loading resources...</div>
-    <div class="grid g3" id="itemGrid"></div>
-  </div>
+<div class="container">
+<div class="title">
+<span class="label">Live Resources</span>
+<h2>Pre-installed resources plus admin additions</h2>
+<p>Only resources marked <strong>active</strong> appear here.</p>
+</div>
+<div class="loading" id="loading">Loading resources...</div>
+<div class="grid g3" id="itemGrid"></div>
+</div>
 </section>
 </main>
-
 <div class="modal" id="resourceModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div class="modal-title" id="resourceModalTitle">Resource</div>
-      <button class="close-btn" type="button" onclick="closeKiddiesResource()">Close</button>
-    </div>
-
-    <div class="modal-content" id="resourceModalContent"></div>
-
-    <div class="modal-actions">
-      <a class="btn soft" id="resourceSourceBtn" href="#" target="_blank" rel="noopener" style="display:none;">Open Source</a>
-      <a class="btn gold" id="resourceDownloadBtn" href="#" target="_blank" rel="noopener" style="display:none;">Download / Source Page</a>
-    </div>
-  </div>
+<div class="modal-box">
+<div class="modal-head">
+<div class="modal-title" id="resourceModalTitle">Resource</div>
+<button class="close-btn" onclick="closeKiddiesResource()" type="button">Close</button>
 </div>
-
+<div class="modal-content" id="resourceModalContent"></div>
+<div class="modal-actions">
+<a class="btn soft" href="#" id="resourceSourceBtn" rel="noopener noreferrer" style="display:none;" target="_blank">Open Source</a>
+<a class="btn gold" href="#" id="resourceDownloadBtn" rel="noopener noreferrer" style="display:none;" target="_blank">Download / Source Page</a>
+</div>
+</div>
+</div>
 <footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <h3>SpeakOut</h3>
-      <p>Kiddies Corner protected resource center.</p>
-    </div>
-
-    <div>
-      <h4>Portal</h4>
-      <a href="portal.html">Main Portal</a>
-      <a href="speakhub.html">SpeakHub</a>
-      <a href="e-library.html">E-Library</a>
-    </div>
-
-    <div>
-      <h4>Contact</h4>
-      <a href="https://wa.me/2348118103510">WhatsApp</a>
-      <a href="mailto:speaaakout@gmail.com">Email</a>
-    </div>
-  </div>
+<div class="container footer-grid">
+<div>
+<h3>SpeakOut</h3>
+<p>Kiddies Corner protected resource center.</p>
+</div>
+<div>
+<h4>Portal</h4>
+<a href="portal.html">Main Portal</a>
+<a href="speakhub.html">SpeakHub</a>
+<a href="e-library.html">E-Library</a>
+</div>
+<div>
+<h4>Contact</h4>
+<a href="https://wa.me/2348118103510">WhatsApp</a>
+<a href="mailto:speaaakout@gmail.com">Email</a>
+</div>
+</div>
 </footer>
-
-<script type="module" src="auth-guard.js"></script>
-<script type="module" src="protected-page-guard.js"></script>
-
+<script src="auth-guard.js" type="module"></script>
+<script src="protected-page-guard.js" type="module"></script>
 <script type="module">
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
