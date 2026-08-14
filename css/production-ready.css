@@ -1,0 +1,31 @@
+/* SpeakOut Production Readiness Layer — Phase 3–5 */
+:root{--so-focus:#0b57d0;--so-surface:#fff;--so-text:#12213a;--so-muted:#5c667a;--so-shadow:0 10px 30px rgba(18,33,58,.09)}
+html{scroll-behavior:smooth;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden}
+img,video{max-width:100%;height:auto}
+img{font-style:italic}
+:focus-visible{outline:3px solid var(--so-focus);outline-offset:3px;border-radius:4px}
+.skip-link{position:fixed;left:12px;top:12px;z-index:99999;padding:10px 14px;background:#fff;color:#111;border-radius:8px;box-shadow:var(--so-shadow);transform:translateY(-160%);transition:transform .18s ease}
+.skip-link:focus{transform:none}
+main{min-height:40vh}
+[hidden]{display:none!important}
+button,a,input,select,textarea{touch-action:manipulation}
+button,.btn,[class*="button"],a[class*="btn"]{min-height:44px}
+input,select,textarea{font:inherit}
+iframe{max-width:100%;border:0}
+.so-trust-strip{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;padding:12px 20px;background:#f6f8fb;color:var(--so-text);font-size:.9rem;border-top:1px solid rgba(18,33,58,.07)}
+.so-trust-strip a{color:inherit;font-weight:650;text-decoration:none}
+.so-trust-strip a:hover{text-decoration:underline}
+.so-mobile-actions{display:none}
+@media (max-width:760px){
+  body{padding-bottom:68px}
+  .so-mobile-actions{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:9998;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border:1px solid rgba(18,33,58,.09);border-radius:16px;box-shadow:0 14px 40px rgba(18,33,58,.16)}
+  .so-mobile-actions a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border-radius:11px;text-decoration:none;font-weight:750;font-size:.88rem}
+  .so-mobile-actions .primary{background:#123f91;color:#fff}
+  .so-mobile-actions .secondary{background:#eef3fb;color:#17345f}
+  table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  pre,code{overflow-wrap:anywhere}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.hero-video{display:none!important}}
+@media print{.skip-link,.so-mobile-actions,.float-help{display:none!important}}
+a[aria-disabled="true"],.is-disabled{opacity:.55;cursor:not-allowed;pointer-events:none}

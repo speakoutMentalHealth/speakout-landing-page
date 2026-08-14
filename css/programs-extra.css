@@ -5,7 +5,7 @@
   color:#fff;
   background:
     linear-gradient(90deg,rgba(6,21,47,.92),rgba(6,21,47,.72),rgba(6,21,47,.28)),
-    url("../images/programs-hero.png") center center / cover no-repeat;
+    url("../images/programs-hero.webp") center center / cover no-repeat;
 }
 
 .programs-hero-grid{

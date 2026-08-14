@@ -5,7 +5,7 @@
   color:#fff;
   background:
     linear-gradient(90deg,rgba(6,21,47,.88),rgba(6,21,47,.66),rgba(6,21,47,.22)),
-    url('../images/about-hero.png') center/cover no-repeat;
+    url('../images/about-hero.webp') center/cover no-repeat;
 }
 
 .about-hero-grid{

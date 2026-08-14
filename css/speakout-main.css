@@ -290,7 +290,7 @@ button,input,select,textarea{font:inherit}
 .hero{
   background:
     linear-gradient(90deg,rgba(6,21,47,.96),rgba(6,21,47,.80),rgba(6,21,47,.38)),
-    url('../images/hero-africa.png') center/cover no-repeat;
+    url('../images/hero-africa.webp') center/cover no-repeat;
 }
 
 .hero .container,

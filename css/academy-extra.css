@@ -5,7 +5,7 @@
   color:#fff;
   background:
     linear-gradient(90deg,rgba(6,21,47,.92),rgba(6,21,47,.72),rgba(6,21,47,.28)),
-    url("../images/academy-hero.png") center center / cover no-repeat;
+    url("../images/academy-hero.webp") center center / cover no-repeat;
 }
 
 .academy-hero-grid{
