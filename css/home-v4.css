@@ -594,3 +594,116 @@ p{color:var(--muted);line-height:1.75}
     font-size:.82rem;
   }
 }
+
+/* ===== Full-page minimalist mobile experience ===== */
+@media(max-width:760px){
+  :root{--mobile-pad:18px}
+  body{background:#fff;color:#14213d}
+  .container{width:calc(100% - (var(--mobile-pad) * 2));max-width:none}
+  .section-title{margin-bottom:22px}
+  .section-title p{font-size:.94rem;line-height:1.55;margin-top:10px}
+  .label{font-size:.72rem;letter-spacing:.08em}
+  h2{font-size:clamp(1.82rem,8.4vw,2.45rem);line-height:1.03;margin-bottom:12px}
+  h3{line-height:1.15}
+  p{font-size:.94rem;line-height:1.55}
+
+  /* Reduce homepage repetition. The hero already acts as the primary ecosystem navigator. */
+  .partners-strip{display:none}
+  .ecosystem-section{display:none}
+
+  /* About: one editorial image, short explanation, one action. */
+  .about-preview{padding:38px 0 44px}
+  .about-preview .split{gap:22px}
+  .about-preview .image-panel{order:2}
+  .about-preview .image-panel img{height:220px;border-radius:22px;object-fit:cover}
+  .about-preview .reveal:not(.image-panel){order:1}
+  .about-preview h2{max-width:14ch}
+  .about-preview p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;margin-bottom:18px}
+  .about-preview .check-list{display:none}
+  .about-preview .btn{width:auto;display:inline-flex;border-radius:999px;padding:11px 18px}
+
+  /* Programs become compact editorial cards instead of large stacked panels. */
+  .programs-showcase{padding:44px 0;background:#f7f9fc}
+  .programs-showcase .section-title h2{max-width:13ch}
+  .program-row{gap:12px}
+  .program-row article{
+    display:grid;
+    grid-template-columns:92px minmax(0,1fr);
+    align-items:center;
+    gap:14px;
+    padding:10px;
+    border-radius:20px;
+    background:#fff;
+    border:1px solid rgba(14,43,82,.08);
+    box-shadow:0 8px 28px rgba(15,35,65,.06);
+  }
+  .program-row article img{width:92px;height:102px;border-radius:15px;object-fit:cover;margin:0}
+  .program-row article div{padding:0 8px 0 0}
+  .program-row article div>span{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+  .program-row article h3{font-size:1rem;margin:5px 0}
+  .program-row article p{font-size:.79rem;line-height:1.4;margin:0 0 7px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  .program-row article a{font-size:.8rem;font-weight:800}
+
+  /* Insight: concise, high-contrast pause in the page. */
+  .insight-section{padding:22px 0;background:#fff}
+  .insight-card{padding:26px 22px;border-radius:24px}
+  .insight-card h2{font-size:1.75rem;max-width:14ch}
+  .insight-card p{font-size:.9rem;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .insight-actions{margin-top:18px;gap:10px}
+  .insight-actions .btn{min-height:46px}
+  .insight-actions .btn-outline{display:none}
+
+  /* Academy preview: remove the secondary box and tag clutter on phones. */
+  .academy-preview{padding:44px 0}
+  .academy-preview .split{gap:0}
+  .academy-preview h2{max-width:13ch}
+  .academy-preview p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+  .academy-preview .course-tags{display:none}
+  .academy-preview .academy-card{display:none}
+  .academy-preview .btn{width:auto;display:inline-flex;border-radius:999px;padding:11px 18px;margin-top:8px}
+
+  /* Media: one visual block plus small follow-up links. */
+  .media-preview{padding:44px 0;background:#f7f9fc}
+  .media-preview .section-title h2{max-width:12ch}
+  .media-preview .section-title p{display:none}
+  .media-grid{gap:12px}
+  .video-preview{min-height:240px;border-radius:22px;padding:22px;display:flex;flex-direction:column;justify-content:flex-end}
+  .video-preview h3{font-size:1.3rem;margin-bottom:7px}
+  .video-preview p{font-size:.84rem;margin-bottom:14px}
+  .video-preview .btn{width:auto;align-self:flex-start;border-radius:999px;padding:10px 16px}
+  .media-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .media-list a{padding:14px;border-radius:18px;min-height:92px}
+  .media-list a:nth-child(3){grid-column:1/-1;min-height:auto}
+  .media-list strong{font-size:.86rem}
+  .media-list span{font-size:.72rem;line-height:1.3}
+
+  /* Get involved: keep all paths, but as a tidy 2 × 2 grid. */
+  .movement-section{padding:44px 0}
+  .movement-section .section-title h2{max-width:12ch}
+  .movement-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .movement-grid a{padding:18px 14px;min-height:132px;border-radius:20px;font-size:1.15rem}
+  .movement-grid strong{font-size:.9rem;margin-top:8px}
+  .movement-grid span{font-size:.73rem;line-height:1.3}
+
+  /* Donation: one clear conversion action. */
+  .donation-banner{padding:0 0 26px;background:#fff}
+  .donation-card{display:block;padding:26px 22px;border-radius:24px}
+  .donation-card h2{font-size:1.8rem;max-width:13ch}
+  .donation-card p{font-size:.88rem;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .donation-actions{margin-top:18px}
+  .donation-actions .btn{width:100%;min-height:48px}
+  .donation-actions .btn-white{display:none}
+
+  /* Footer: keep brand + direct contact only on mobile. */
+  .footer{padding:32px 0 24px}
+  .footer-grid{display:block}
+  .footer-grid>div{display:none}
+  .footer-grid>div:first-child,.footer-grid>div:last-child{display:block}
+  .footer-grid>div:first-child{margin-bottom:22px}
+  .footer img{width:46px;border-radius:14px}
+  .footer h3{font-size:1.1rem;margin-top:8px}
+  .footer h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+  .footer p,.footer a{font-size:.82rem;line-height:1.45}
+  .footer-bottom{margin-top:24px;padding-top:16px}
+  .footer-bottom p{font-size:.7rem;line-height:1.45}
+}

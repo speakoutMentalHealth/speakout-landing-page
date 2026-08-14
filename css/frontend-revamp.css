@@ -1,0 +1,166 @@
+/* SpeakOut Frontend Revamp — shared public-site design system */
+:root{
+  --so-navy:#071b3a;
+  --so-navy-2:#0b2a55;
+  --so-blue:#0b67d0;
+  --so-blue-2:#0854ad;
+  --so-gold:#f2a51a;
+  --so-green:#16856c;
+  --so-ink:#122033;
+  --so-muted:#617087;
+  --so-bg:#f7f9fc;
+  --so-surface:#ffffff;
+  --so-soft:#edf5ff;
+  --so-line:#e4eaf2;
+  --so-shadow:0 18px 55px rgba(7,27,58,.09);
+  --so-shadow-hover:0 24px 72px rgba(7,27,58,.14);
+  --so-radius:24px;
+  --so-radius-sm:16px;
+  --so-max:1240px;
+}
+
+html{scroll-padding-top:104px}
+body{
+  background:var(--so-bg);
+  color:var(--so-ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+.container{width:min(var(--so-max),calc(100% - 48px));margin-inline:auto}
+
+/* Refined global navigation */
+.top{min-height:30px;padding:6px 18px;font-size:.74rem;letter-spacing:.01em}
+.nav{background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15)}
+.nav-inner{min-height:70px}
+.brand img{width:44px;height:44px}
+.links> a,.drop-toggle{font-size:.82rem;padding:9px 11px}
+.portal-btn,.donate-btn{min-height:40px;padding:9px 15px}
+.drop-menu{border-radius:18px;padding:8px;box-shadow:0 20px 60px rgba(7,27,58,.16)}
+.drop-menu a{padding:11px 12px}
+
+/* Accessible focus treatment */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(11,103,208,.28);
+  outline-offset:3px;
+}
+
+/* Typography + section rhythm */
+h1,h2,h3,h4{color:var(--so-navy);text-wrap:balance}
+h1{letter-spacing:-.045em}
+h2{letter-spacing:-.035em}
+p{color:var(--so-muted);line-height:1.72}
+main>section{padding-top:clamp(64px,7vw,96px);padding-bottom:clamp(64px,7vw,96px)}
+main>section:first-child{padding-top:clamp(54px,6vw,82px)}
+.section-title,.section-head{max-width:760px;margin-left:auto;margin-right:auto}
+.section-title h2,.section-head h2{font-size:clamp(2rem,4vw,3.35rem);line-height:1.04;margin:.35em 0 .35em}
+.section-title p,.section-head p{font-size:clamp(1rem,1.5vw,1.12rem)}
+.label,.kicker,.eyebrow{letter-spacing:.08em;text-transform:uppercase;font-weight:850}
+
+/* Buttons */
+.btn,.portal-btn,.donate-btn{
+  transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease;
+}
+.btn{min-height:46px;padding:12px 19px;font-weight:800}
+.btn:hover,.portal-btn:hover,.donate-btn:hover{transform:translateY(-2px)}
+.btn.primary{box-shadow:0 10px 28px rgba(11,103,208,.22)}
+
+/* Consistent premium cards across public pages */
+:is(.belief-card,.challenge-card,.mission-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.value-card,.team-card,.research-card,.support-card,.option-card,.way-card,.contact-card,.donate-card,.story-image-card,.about-hero-panel){
+  border:1px solid var(--so-line);
+  border-radius:var(--so-radius);
+  box-shadow:0 10px 34px rgba(7,27,58,.055);
+}
+@media (hover:hover){
+  :is(.belief-card,.challenge-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.value-card,.team-card,.research-card,.support-card,.option-card,.way-card):hover{
+    transform:translateY(-5px);
+    box-shadow:var(--so-shadow-hover);
+    border-color:#d8e5f4;
+  }
+}
+:is(.belief-card,.challenge-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.value-card,.team-card,.research-card,.support-card,.option-card,.way-card){transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+
+/* Images */
+main img{border-radius:18px}
+.story-image-card img,.about-hero-panel img{border-radius:calc(var(--so-radius) - 2px)}
+
+/* Forms */
+input,select,textarea{
+  border:1px solid #dbe3ee;
+  border-radius:14px;
+  background:#fff;
+  min-height:46px;
+  padding:11px 13px;
+  color:var(--so-ink);
+}
+textarea{min-height:130px}
+input:focus,select:focus,textarea:focus{border-color:var(--so-blue);box-shadow:0 0 0 4px rgba(11,103,208,.08);outline:0}
+
+/* Footer polish */
+footer{background:var(--so-navy);color:#fff}
+footer p,footer small{color:rgba(255,255,255,.7)}
+footer a{transition:opacity .18s ease}
+footer a:hover{opacity:.78}
+
+/* Prevent layout shift where dimensions are known */
+img{height:auto}
+
+/* Tablet */
+@media(max-width:980px){
+  .container{width:min(100% - 36px,var(--so-max))}
+  main>section{padding-top:64px;padding-bottom:64px}
+}
+
+/* Mobile: deliberately minimalist */
+@media(max-width:760px){
+  html{scroll-padding-top:78px}
+  body{padding-top:70px!important}
+  .top{display:none!important}
+  .nav{top:0!important;box-shadow:0 7px 26px rgba(7,27,58,.07)}
+  .nav-inner{min-height:70px}
+  .container{width:calc(100% - 32px)}
+  .brand img{width:38px;height:38px}
+  .brand strong{font-size:.98rem}
+  .brand small{font-size:.44rem}
+  .menu{display:grid;place-items:center;width:40px;height:40px;border-radius:12px}
+  .links{border:1px solid var(--so-line)!important;border-radius:18px!important;box-shadow:0 18px 48px rgba(7,27,58,.12)!important;padding:10px!important}
+  .links> a,.drop-toggle{width:100%;justify-content:space-between;text-align:left;border-radius:11px!important;padding:11px 12px!important}
+  .drop-menu{position:static!important;width:100%!important;border:0!important;box-shadow:none!important;padding:4px 0 4px 10px!important;background:#f8fbff!important}
+  .nav-actions{gap:6px}
+  .portal-btn{min-height:38px;padding:8px 11px;font-size:.76rem}
+  .donate-btn{display:none!important}
+
+  main>section{padding-top:54px;padding-bottom:54px}
+  main>section:first-child{padding-top:42px}
+  h1{font-size:clamp(2.35rem,12vw,3.4rem)!important;line-height:.98!important}
+  .section-title h2,.section-head h2{font-size:clamp(1.85rem,8.5vw,2.55rem);line-height:1.04}
+  p{line-height:1.62}
+
+  .btn{min-height:46px;padding:11px 16px}
+  .actions{gap:9px!important}
+
+  /* Collapse dense grids into readable, thumb-friendly layouts */
+  :is(.belief-grid,.challenge-grid,.program-grid,.academy-grid,.resource-grid,.impact-grid,.partner-grid,.news-grid,.media-grid,.school-grid,.team-grid,.research-grid,.support-grid,.ways-grid){
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  :is(.belief-card,.challenge-card,.mission-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.value-card,.team-card,.research-card,.support-card,.option-card,.way-card){
+    border-radius:20px;
+    box-shadow:0 7px 24px rgba(7,27,58,.05);
+  }
+
+  /* More compact mobile cards */
+  :is(.belief-card,.challenge-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.research-card,.support-card,.option-card,.way-card){padding:20px!important}
+
+  footer{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+}
+
+@media(max-width:390px){
+  .container{width:calc(100% - 26px)}
+  .nav-actions .portal-btn{display:none!important}
+  h1{font-size:2.25rem!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
