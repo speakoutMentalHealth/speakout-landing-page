@@ -425,7 +425,9 @@ p{color:var(--muted);line-height:1.75}
     flex-direction:column;
     z-index:4000;
   }
-  .links > a,.drop > button,.portal-btn,.donate-btn{width:100%;border-radius:14px;text-align:center}
+  .links > a,.drop > button,.portal-btn,.donate-btn{width:100%;border-radius:14px}
+  .links > a,.drop > button{text-align:left}
+  .portal-btn,.donate-btn{text-align:center}
   .drop-menu{position:static;width:100%;box-shadow:none;margin-top:8px}
   .drop.open .drop-menu{display:block}
   .drop:hover .drop-menu{display:none}
