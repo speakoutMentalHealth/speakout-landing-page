@@ -111,6 +111,46 @@ img{height:auto}
   main>section{padding-top:64px;padding-bottom:64px}
 }
 
+/* Hero readability fix: once a hero grid collapses to one column (see each
+   page's own breakpoint), the copy spans the full width and reaches the
+   faded right-hand edge of the background-image gradient. Add a flat,
+   uniformly strong scrim behind the text at those widths instead of relying
+   on the desktop left-to-right fade. */
+@media(max-width:1180px){
+  :is(.about-hero,.academy-hero,.programs-hero,.resources-hero,.impact-hero,.news-hero,.schools-hero,.bundle-hero,.form-hero){
+    position:relative;
+  }
+  :is(.about-hero,.academy-hero,.programs-hero,.resources-hero,.impact-hero,.news-hero,.schools-hero,.bundle-hero,.form-hero)::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(6,21,47,.6);
+    pointer-events:none;
+  }
+  :is(.about-hero-grid,.academy-hero-grid,.programs-hero-grid,.resources-hero-grid,.impact-hero-grid,.news-hero-grid,.schools-hero-grid,.bundle-hero-grid){
+    position:relative;
+    z-index:1;
+  }
+
+  /* .nav uses backdrop-filter, which establishes a containing block for
+     position:fixed descendants in modern browsers — without this, the
+     full-screen mobile nav panel (.links/.nav-actions) gets trapped inside
+     the ~70px-tall nav bar instead of covering the viewport. Only disable
+     it while the menu is actually open, so the frosted-glass header look is
+     unaffected everywhere else. */
+  body.menu-open .nav{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  /* Avoid two competing bottom action bars while the full-screen nav is open */
+  body.menu-open .so-mobile-actions,
+  body.menu-open .float,
+  body.menu-open .float-help{
+    display:none!important;
+  }
+}
+
 /* Mobile: deliberately minimalist */
 @media(max-width:760px){
   html{scroll-padding-top:78px}
@@ -123,8 +163,8 @@ img{height:auto}
   .brand strong{font-size:.98rem}
   .brand small{display:none}
   .menu{display:grid;place-items:center;width:40px;height:40px;border-radius:12px}
-  .links{border:1px solid var(--so-line)!important;border-radius:18px!important;box-shadow:0 18px 48px rgba(7,27,58,.12)!important;padding:10px!important}
-  .links> a,.drop-toggle{width:100%;justify-content:space-between;text-align:left;border-radius:11px!important;padding:11px 12px!important}
+  .links{border:0!important;border-radius:0!important;box-shadow:none!important;padding:18px 20px calc(100px + env(safe-area-inset-bottom))!important}
+  .links> a,.drop-toggle{width:100%;justify-content:space-between;text-align:left;border-radius:0!important;padding:15px 2px!important;font-size:1.02rem!important;font-weight:750!important}
   .drop-menu{position:static!important;width:100%!important;border:0!important;box-shadow:none!important;padding:4px 0 4px 10px!important;background:#f8fbff!important}
   .nav-actions{gap:6px}
   .portal-btn{min-height:38px;padding:8px 11px;font-size:.76rem}
@@ -157,10 +197,93 @@ img{height:auto}
 
 @media(max-width:390px){
   .container{width:calc(100% - 26px)}
-  .nav-actions .portal-btn{display:none!important}
   h1{font-size:2.25rem!important}
 }
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
+/* Embedded media players: on-site YouTube video gallery + Spotify podcast player */
+.image-panel iframe{width:100%;height:260px;border:0;border-radius:22px;display:block;background:var(--so-navy)}
+
+.media-player-wrap{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:22px;
+  align-items:start;
+}
+.video-embed-frame{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:var(--so-radius-sm);
+  overflow:hidden;
+  box-shadow:var(--so-shadow);
+  background:var(--so-navy);
+}
+.video-embed-frame iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
+.media-player-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:calc(min(100vw,700px) * 9 / 16);
+  overflow-y:auto;
+  padding-right:4px;
+}
+.media-player-item{
+  display:grid;
+  grid-template-columns:96px 1fr;
+  gap:12px;
+  align-items:center;
+  text-align:left;
+  background:#fff;
+  border:1px solid var(--so-line);
+  border-radius:16px;
+  padding:8px;
+  cursor:pointer;
+  transition:border-color .18s ease,box-shadow .18s ease;
+  font:inherit;
+  color:var(--so-ink);
+}
+.media-player-item img{
+  width:96px;
+  height:54px;
+  object-fit:cover;
+  border-radius:10px;
+  display:block;
+}
+.media-player-item span{
+  font-size:.86rem;
+  font-weight:750;
+  line-height:1.32;
+}
+.media-player-item:hover{border-color:var(--so-blue)}
+.media-player-item.is-active{
+  border-color:var(--so-blue);
+  box-shadow:0 0 0 3px rgba(11,103,208,.14);
+}
+
+.podcast-embed-frame{
+  border-radius:var(--so-radius-sm);
+  overflow:hidden;
+  box-shadow:var(--so-shadow);
+}
+.podcast-embed-frame iframe{
+  width:100%;
+  height:352px;
+  border:0;
+  display:block;
+}
+
+@media(max-width:760px){
+  .media-player-wrap{grid-template-columns:1fr}
+  .media-player-list{max-height:none;flex-direction:column}
+  .podcast-embed-frame iframe{height:232px}
 }

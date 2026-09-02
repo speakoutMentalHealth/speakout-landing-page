@@ -3,8 +3,12 @@ const nav = document.getElementById("siteNav");
 
 if (menuBtn) {
   menuBtn.addEventListener("click", () => {
-    document.body.classList.toggle("menu-open");
-    menuBtn.setAttribute("aria-expanded", document.body.classList.contains("menu-open") ? "true" : "false");
+    const isOpen = document.body.classList.toggle("menu-open");
+    menuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+    if (isOpen && nav) {
+      document.documentElement.style.setProperty("--nav-panel-top", nav.getBoundingClientRect().bottom + "px");
+    }
   });
 }
 

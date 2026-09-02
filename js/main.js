@@ -1,9 +1,14 @@
 const menuBtn = document.querySelector(".menu");
+const navHeader = document.querySelector(".nav");
 
 if (menuBtn) {
   menuBtn.addEventListener("click", () => {
     const isOpen = document.body.classList.toggle("menu-open");
     menuBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+    if (isOpen && navHeader) {
+      document.documentElement.style.setProperty("--nav-panel-top", navHeader.getBoundingClientRect().bottom + "px");
+    }
   });
 }
 

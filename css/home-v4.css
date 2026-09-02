@@ -393,42 +393,58 @@ p{color:var(--muted);line-height:1.75}
 }
 .reveal{opacity:0;transform:translateY(32px);transition:.7s ease}
 .reveal.show{opacity:1;transform:translateY(0)}
+@keyframes navPanelIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:1180px){
-  .menu{display:block}
+  .menu{display:grid;place-items:center;position:relative}
   .links,.nav-actions{display:none}
+  body.menu-open{overflow:hidden}
   .menu-open .links,.menu-open .nav-actions{display:flex}
+  .menu-open .menu{color:transparent}
+  .menu-open .menu::after{content:"✕";position:absolute;inset:0;display:grid;place-items:center;color:var(--ink,#122033)}
   .links{
-    position:absolute;
-    top:76px;
-    left:14px;
-    right:14px;
+    position:fixed;
+    top:var(--nav-panel-top,74px);
+    left:0;
+    right:0;
+    bottom:0;
     background:#fff;
-    border:1px solid var(--line);
-    border-radius:20px;
-    box-shadow:var(--shadow);
-    padding:12px;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    padding:18px 20px calc(100px + env(safe-area-inset-bottom));
     flex-direction:column;
     align-items:stretch;
     white-space:normal;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     z-index:4000;
+    animation:navPanelIn .22s ease;
   }
+  .links > a,.links > .drop{
+    border-bottom:1px solid var(--line);
+    padding:15px 2px;
+  }
+  .links > a:last-child,.links > .drop:last-child{border-bottom:0}
   .nav-actions{
-    position:absolute;
-    top:430px;
-    left:14px;
-    right:14px;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
     background:#fff;
-    border:1px solid var(--line);
-    border-radius:18px;
-    box-shadow:var(--shadow);
-    padding:12px;
-    flex-direction:column;
-    z-index:4000;
+    border:0;
+    border-top:1px solid var(--line);
+    border-radius:0;
+    box-shadow:0 -10px 30px rgba(7,27,58,.1);
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    flex-direction:row;
+    gap:10px;
+    z-index:4001;
+    animation:navPanelIn .22s ease;
   }
   .links > a,.drop > button,.portal-btn,.donate-btn{width:100%;border-radius:14px}
-  .links > a,.drop > button{text-align:left}
-  .portal-btn,.donate-btn{text-align:center}
-  .drop-menu{position:static;width:100%;box-shadow:none;margin-top:8px}
+  .links > a,.drop > button{text-align:left;font-size:1.02rem;font-weight:750}
+  .nav-actions .portal-btn,.nav-actions .donate-btn{flex:1;text-align:center}
+  .drop-menu{position:static;width:100%;box-shadow:none;margin-top:8px;padding-left:10px}
   .drop.open .drop-menu{display:block}
   .drop:hover .drop-menu{display:none}
   .hero-grid,.split,.media-grid,.donation-card{grid-template-columns:1fr}
@@ -495,8 +511,6 @@ p{color:var(--muted);line-height:1.75}
   .brand img{width:40px;height:40px}
   .brand strong{font-size:1.05rem}
   .menu{width:42px;height:42px;border-radius:14px}
-  .links{top:68px;left:8px;right:8px}
-  .nav-actions{top:422px;left:8px;right:8px}
 
   /* First screen: video + only the core message and one action. */
   .hero{

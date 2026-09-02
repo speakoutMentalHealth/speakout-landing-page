@@ -25,8 +25,37 @@
 <div class="nav-actions"><a class="portal-btn" href="../auth/auth.html">Portal</a><a class="donate-btn" href="../pages/donate.html">Donate</a></div>
 </div>
 </header><main id="main-content"><section class="bundle-hero media-hero"><div class="container bundle-hero-grid"><div><span class="kicker">Media Centre</span><h1>Stories, voices and conversations that move mental health into the open.</h1><p>Explore SpeakOut videos, radio conversations, interviews, campaign highlights, social media updates and event coverage.</p><div class="actions"><a class="btn gold" href="#videos">Watch Videos</a><a class="btn light" href="#radio">Radio &amp; Podcast</a><a class="btn outline" href="../pages/contact.html">Media Inquiry</a></div></div><aside class="glass"><h3>Normalize conversations. Expand reach.</h3><p>Media helps SpeakOut educate people who may never attend a physical event.</p></aside></div></section>
-<section class="bundle-section" id="videos"><div class="container"><div class="section-title"><span class="label">Video Library</span><h2>Watch program highlights and public education.</h2></div><div class="bundle-grid g3"><article><img alt="" decoding="async" height="1024" loading="lazy" src="../images/video-library.webp" width="1536"/><h3>School Sessions</h3><p>Student talks, awareness campaigns and school club activities.</p></article><article><img alt="" decoding="async" height="1024" loading="lazy" src="../images/leadership-summit.webp" width="1536"/><h3>Summit Highlights</h3><p>Leadership, purpose and student empowerment.</p></article><article><img alt="" decoding="async" height="1024" loading="lazy" src="../images/media-coverage.webp" width="1536"/><h3>Campaign Stories</h3><p>Outreach, reels and impact moments.</p></article></div></div></section>
-<section class="dark-bundle" id="radio"><div class="container split"><div class="image-panel"><img alt="" decoding="async" height="1024" loading="lazy" src="../images/radio-interview.webp" width="1536"/></div><div><span class="label label-light">Radio &amp; Podcast</span><h2>Conversations people can hear anywhere.</h2><p>Use this section for radio programs, podcasts, interviews and audio clips.</p><a class="btn gold" href="../pages/contact.html">Invite SpeakOut</a></div></div></section></main><a class="float" href="https://wa.me/2348118103510" rel="noopener noreferrer" target="_blank">Need Help?</a>
+<section class="bundle-section" id="videos"><div class="container"><div class="section-title"><span class="label">Video Library</span><h2>Watch program highlights and public education.</h2></div>
+<div class="media-player-wrap">
+<div class="video-embed-frame"><iframe allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen="" id="speakoutVideoFrame" loading="lazy" src="https://www.youtube.com/embed/tAoGJvkvNRg" title="SpeakOut video player"></iframe></div>
+<div class="media-player-list">
+<button class="media-player-item is-active" data-video-id="tAoGJvkvNRg" type="button"><img alt="" loading="lazy" src="https://img.youtube.com/vi/tAoGJvkvNRg/hqdefault.jpg"/><span>SpeakOut Anthem | Together We Rise for Mental Health</span></button>
+<button class="media-player-item" data-video-id="ixDjSGFBA5Q" type="button"><img alt="" loading="lazy" src="https://img.youtube.com/vi/ixDjSGFBA5Q/hqdefault.jpg"/><span>Dear Men With ADHD: This Is For You | Spoken Word</span></button>
+<button class="media-player-item" data-video-id="PSq-nwyzrNk" type="button"><img alt="" loading="lazy" src="https://img.youtube.com/vi/PSq-nwyzrNk/hqdefault.jpg"/><span>This Might Change How You See Religion Forever</span></button>
+<button class="media-player-item" data-video-id="EFOEWzO1a3E" type="button"><img alt="" loading="lazy" src="https://img.youtube.com/vi/EFOEWzO1a3E/hqdefault.jpg"/><span>Heavy Heart of a Tired Nation (Nigeria as a Case Study)</span></button>
+<button class="media-player-item" data-video-id="akWDTQmn9K0" type="button"><img alt="" loading="lazy" src="https://img.youtube.com/vi/akWDTQmn9K0/hqdefault.jpg"/><span>The Silent Architect of Marital Decay</span></button>
+</div>
+</div>
+<div class="actions" style="margin-top:24px"><a class="btn outline" href="https://www.youtube.com/@speaak" rel="noopener noreferrer" target="_blank">Watch More on YouTube</a></div>
+</div></section>
+<section class="dark-bundle" id="radio"><div class="container split"><div class="podcast-embed-frame"><iframe allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy" src="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&amp;theme=0" title="SPEAK podcast player"></iframe></div><div><span class="label label-light">Radio &amp; Podcast</span><h2>Conversations people can hear anywhere.</h2><p>Listen to SPEAK, SpeakOut's podcast on mental health, culture and everyday life &mdash; new episodes streaming right here.</p><a class="btn gold" href="https://creators.spotify.com/pod/show/4Z8Ua9vAYLT5YJEWYV1gfx/episodes" rel="noopener noreferrer" target="_blank">Listen on Spotify</a></div></div></section>
+<script>
+(function(){
+  var frame = document.getElementById('speakoutVideoFrame');
+  var items = document.querySelectorAll('.media-player-item');
+  if(!frame || !items.length) return;
+  items.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-video-id');
+      if(!id) return;
+      frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+      items.forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+    });
+  });
+})();
+</script>
+</main><a class="float" href="https://wa.me/2348118103510" rel="noopener noreferrer" target="_blank">Need Help?</a>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><img alt="SpeakOut Logo" decoding="async" height="1254" loading="lazy" src="../images/logo.png" width="1254"/><h3>SpeakOut</h3><p>Building safer mental health ecosystems for schools, students, parents, teachers and communities.</p></div>
 <div><h4>Explore</h4><a href="../index.html">Home</a><a href="../pages/about.html">About</a><a href="../pages/programs.html">Programs</a><a href="../pages/schools.html">Schools</a></div>

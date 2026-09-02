@@ -680,6 +680,11 @@ textarea{
   transform:translateY(0);
 }
 
+@keyframes navPanelIn{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
 /* RESPONSIVE NAV */
 @media(max-width:1180px){
   body{
@@ -687,7 +692,9 @@ textarea{
   }
 
   .menu{
-    display:block;
+    display:grid;
+    place-items:center;
+    position:relative;
   }
 
   .links,
@@ -695,44 +702,76 @@ textarea{
     display:none;
   }
 
+  body.menu-open{
+    overflow:hidden;
+  }
+
   body.menu-open .links,
   body.menu-open .nav-actions{
     display:flex;
   }
 
-  .links{
+  body.menu-open .menu{
+    color:transparent;
+  }
+
+  body.menu-open .menu::after{
+    content:"✕";
     position:absolute;
-    top:76px;
-    left:14px;
-    right:14px;
-    max-height:calc(100vh - 180px);
-    overflow-y:auto;
+    inset:0;
+    display:grid;
+    place-items:center;
+    color:var(--ink);
+  }
+
+  .links{
+    position:fixed;
+    top:var(--nav-panel-top,74px);
+    left:0;
+    right:0;
+    bottom:0;
     background:#fff;
-    border:1px solid var(--line);
-    border-radius:20px;
-    box-shadow:var(--shadow);
-    padding:12px;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    padding:18px 20px calc(100px + env(safe-area-inset-bottom));
     flex-direction:column;
     align-items:stretch;
     justify-content:flex-start;
-    gap:8px;
+    gap:0;
     white-space:normal;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     z-index:4000;
+    animation:navPanelIn .22s ease;
+  }
+
+  .links > a,
+  .links > .drop{
+    border-bottom:1px solid var(--line);
+    padding:15px 2px;
+  }
+
+  .links > a:last-child,
+  .links > .drop:last-child{
+    border-bottom:0;
   }
 
   .nav-actions{
-    position:absolute;
-    top:calc(76px + 100%);
-    left:14px;
-    right:14px;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
     background:#fff;
-    border:1px solid var(--line);
-    border-radius:18px;
-    box-shadow:var(--shadow);
-    padding:12px;
-    flex-direction:column;
-    gap:8px;
+    border:0;
+    border-top:1px solid var(--line);
+    border-radius:0;
+    box-shadow:0 -10px 30px rgba(7,27,58,.1);
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    flex-direction:row;
+    gap:10px;
     z-index:4001;
+    animation:navPanelIn .22s ease;
   }
 
   .links > a,
@@ -744,8 +783,16 @@ textarea{
     border-radius:14px;
     text-align:left;
     justify-content:flex-start;
+    padding:10px 2px;
+    font-size:1.02rem;
+    font-weight:750;
+  }
+
+  .nav-actions .portal-btn,
+  .nav-actions .donate-btn{
+    flex:1;
+    text-align:center;
     padding:10px 12px;
-    font-size:.92rem;
   }
 
   .drop{
