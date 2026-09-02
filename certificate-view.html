@@ -7,7 +7,7 @@
 <title>View Certificate | SpeakOut &amp; SpeakHub Academy</title>
 <meta content="View and verify certificates issued or recorded through SpeakOut Mental Health Outreach and SpeakHub Academy." name="description"/>
 <link href="logo.png" rel="icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -339,19 +339,33 @@ section{padding:36px 0}
   line-height:1.55;
 }
 
-.signature-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:36px;
+.signature-block{
   margin:38px auto 0;
-  max-width:780px;
+  max-width:420px;
+  text-align:center;
+}
+
+.signature-script{
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(2.1rem,5vw,2.9rem);
+  color:var(--navy);
+  line-height:1;
 }
 
 .signature-line{
   border-top:1px solid #9aabba;
+  margin-top:8px;
   padding-top:8px;
   font-size:.84rem;
   color:var(--muted);
+  line-height:1.5;
+}
+
+.signature-name{
+  display:block;
+  font-weight:900;
+  color:var(--ink);
+  font-size:.92rem;
 }
 
 .verification-line{
@@ -945,14 +959,13 @@ function renderCertificate(record,docId){
         ${
           !external
           ? `
-            <div class="signature-grid">
+            <div class="signature-block">
+
+              <div class="signature-script">Offorka J.N</div>
 
               <div class="signature-line">
-                Authorised Signatory
-              </div>
-
-              <div class="signature-line">
-                SpeakOut Mental Health Outreach / SpeakHub Academy
+                <span class="signature-name">Offorka Jerry Nnamdi</span>
+                Founder/Executive Director, SpeakOut Mental Health Outreach
               </div>
 
             </div>
