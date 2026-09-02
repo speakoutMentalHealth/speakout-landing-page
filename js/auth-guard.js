@@ -20,20 +20,6 @@ function getRequiredRole() {
   return document.body?.dataset?.requiredRole || "";
 }
 
-function dashboardForRole(role) {
-  const map = {
-    student: "../../dashboards/student/",
-    parent: "../../dashboards/parent/",
-    teacher: "../../dashboards/teacher/",
-    school_admin: "../../dashboards/school/",
-    admin: "../../dashboards/admin/",
-    super_admin: "../../dashboards/admin/",
-    ambassador: "../../dashboards/student/"
-  };
-
-  return map[role] || LOGIN_PAGE;
-}
-
 function roleAllowed(requiredRole, actualRole) {
   if (!requiredRole) return true;
 

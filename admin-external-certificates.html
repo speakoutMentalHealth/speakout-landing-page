@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>External Certificate Review | SpeakOut</title>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--purple:#6b21a8;--purpleSoft:#f3e8ff;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
+a{text-decoration:none;color:inherit}
+.container{width:min(1220px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:44px}
+.brand h2{margin:0;color:var(--blue);font-size:1.05rem}
+.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;min-height:40px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--blue);color:#fff}
+.soft{background:var(--soft);color:var(--blue)}
+.gold{background:var(--gold);color:#241300}
+.dark{background:var(--navy);color:#fff}
+.danger{background:var(--redSoft);color:var(--red)}
+.success{background:var(--greenSoft);color:var(--green)}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:48px 0}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase}
+.kicker{background:rgba(255,255,255,.14)}
+.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+h1{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:14px 0}
+h2,h3{line-height:1.05;color:var(--navy)}
+.hero p{max-width:850px;color:rgba(255,255,255,.88);line-height:1.65}
+section{padding:34px 0}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:18px}
+.card p,.panel p{color:var(--muted);line-height:1.6}
+.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:900;margin-bottom:16px}
+.ok{background:var(--greenSoft);color:var(--green)}
+.bad{background:var(--redSoft);color:var(--red)}
+.warn{background:var(--goldSoft);color:#704800}
+.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
+.approved{background:var(--greenSoft);color:var(--green)}
+.pending,.pending_review{background:var(--goldSoft);color:#704800}
+.rejected{background:var(--redSoft);color:var(--red)}
+.resubmission_required{background:var(--purpleSoft);color:var(--purple)}
+.stat strong{display:block;color:var(--blue);font-size:2.25rem}
+.form-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
+input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
+textarea{min-height:70px;resize:vertical}
+.submission-card{display:grid;grid-template-columns:200px 1fr;gap:16px}
+.submission-card img{width:100%;border-radius:14px;border:1px solid var(--line);object-fit:cover;max-height:220px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.detail{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:10px}
+.detail b{display:block;color:var(--navy);font-size:.75rem;text-transform:uppercase}
+.detail span{display:block;color:var(--muted);margin-top:3px;word-break:break-word}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:34px 0;margin-top:30px}
+@media(max-width:1000px){.g4,.g3,.g2,.form-grid,.detail-grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}.submission-card{grid-template-columns:1fr}}
+</style>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+<div class="container nav-inner">
+<a class="brand" href="admin-dashboard.html">
+<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div><h2>SpeakOut</h2><p>Admin Command Center</p></div>
+</a>
+<nav class="links">
+<a class="btn soft" href="admin-dashboard.html">Dashboard</a>
+<a class="btn soft" href="admin-certificates.html">Certificates</a>
+<a class="btn dark" href="admin-external-certificates.html">External Certs</a>
+<a class="btn soft" href="admin-content-review.html">Content</a>
+<a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
+</nav>
+</div>
+</header>
+<main id="main-content">
+<section class="hero">
+<div class="container">
+<span class="kicker">Admin</span>
+<h1>External Certificate Review</h1>
+<p>Review proof of completion that learners submit for courses taken with an external provider. Approve to issue a SpeakOut Certificate of Completion verifying their achievement — this never claims SpeakOut delivered the external course itself.</p>
+</div>
+</section>
+<section>
+<div class="container">
+<div class="notice" id="statusBox">Checking admin access...</div>
+<div class="grid g4" style="margin-bottom:18px">
+<div class="card stat"><strong id="totalCount">0</strong><span>Total Submissions</span></div>
+<div class="card stat"><strong id="pendingCount">0</strong><span>Pending Review</span></div>
+<div class="card stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
+<div class="card stat"><strong id="rejectedCount">0</strong><span>Rejected / Resubmission</span></div>
+</div>
+<div class="panel">
+<span class="label">Filters</span>
+<div class="form-grid">
+<input aria-label="Search submissions" id="searchInput" placeholder="Search learner, course, provider..."/>
+<select aria-label="Filter by status" id="statusFilter">
+<option value="all">All Status</option>
+<option value="pending_review">Pending Review</option>
+<option value="approved">Approved</option>
+<option value="rejected">Rejected</option>
+<option value="resubmission_required">Resubmission Requested</option>
+</select>
+</div>
+<div class="actions" style="margin-top:14px"><button class="btn soft" id="refreshBtn">Refresh</button></div>
+</div>
+<div class="grid" id="submissionList" style="margin-top:18px"></div>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="container">SpeakOut Admin Command Center</div>
+</footer>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-functions.js";
+
+const functions = getFunctions();
+const reviewExternalCertificateFn = httpsCallable(functions, "reviewExternalCertificate");
+
+let ITEMS = [];
+let unsubscribe = null;
+
+function show(message, type = "") {
+  statusBox.textContent = message;
+  statusBox.className = "notice " + type;
+}
+
+function safe(value) {
+  return value || "—";
+}
+
+function normalize(value) {
+  return (value || "").toString().toLowerCase().trim();
+}
+
+function pill(value) {
+  const v = normalize(value) || "pending_review";
+  const label = v.replaceAll("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+  return `<span class="pill ${v}">${label}</span>`;
+}
+
+async function requireAdmin(callback) {
+  onAuthStateChanged(auth, async user => {
+    if (!user) { location.href = "auth.html"; return; }
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (!snap.exists()) { location.href = "auth.html#pending"; return; }
+
+    const profile = { uid: user.uid, ...snap.data() };
+    const role = normalize(profile.role);
+    const status = normalize(profile.status);
+
+    if (status !== "approved") { location.href = "auth.html#pending"; return; }
+    if (role !== "admin" && role !== "super_admin") { location.href = "index.html"; return; }
+
+    callback(user, profile);
+  });
+}
+
+function updateStats() {
+  totalCount.textContent = ITEMS.length;
+  pendingCount.textContent = ITEMS.filter(x => ["pending_review", "pending", "submitted"].includes(normalize(x.status))).length;
+  approvedCount.textContent = ITEMS.filter(x => normalize(x.status) === "approved").length;
+  rejectedCount.textContent = ITEMS.filter(x => ["rejected", "resubmission_required"].includes(normalize(x.status))).length;
+}
+
+function filteredItems() {
+  const search = normalize(searchInput.value);
+  const status = statusFilter.value;
+
+  return ITEMS.filter(item => {
+    const text = `
+      ${item.learnerName || ""}
+      ${item.userEmail || ""}
+      ${item.courseTitle || ""}
+      ${item.provider || ""}
+      ${item.certificateNumber || ""}
+    `.toLowerCase();
+
+    const itemStatus = normalize(item.status) || "pending_review";
+    return (!search || text.includes(search)) &&
+      (status === "all" || itemStatus === status);
+  });
+}
+
+function detail(label, value) {
+  return `<div class="detail"><b>${label}</b><span>${safe(value)}</span></div>`;
+}
+
+function submissionCard(item) {
+  const status = normalize(item.status) || "pending_review";
+  const isPending = ["pending_review", "pending", "submitted"].includes(status);
+  const proof = item.proofData
+    ? `<img alt="Submitted proof of completion for ${safe(item.courseTitle)}" src="${item.proofData}"/>`
+    : `<div class="notice">No proof image attached.</div>`;
+
+  return `
+    <article class="card submission-card" data-id="${item.id}">
+      <div>${proof}</div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
+          <h3 style="margin:0">${safe(item.courseTitle)}</h3>
+          ${pill(status)}
+        </div>
+        <div class="detail-grid" style="margin-top:10px">
+          ${detail("Learner", item.learnerName)}
+          ${detail("Email", item.userEmail)}
+          ${detail("Provider", item.provider)}
+          ${detail("Provider Certificate No", item.certificateNumber)}
+          ${detail("Completion Date", item.completionDate)}
+          ${detail("Verification URL", item.verificationUrl)}
+        </div>
+        ${item.learnerNote ? `<p><strong>Learner note:</strong> ${safe(item.learnerNote)}</p>` : ""}
+        ${item.reviewerFeedback ? `<p><strong>Previous reviewer feedback:</strong> ${safe(item.reviewerFeedback)}</p>` : ""}
+        <label style="display:block;margin-top:10px;font-weight:800;font-size:.85rem">Reviewer note</label>
+        <textarea data-note="${item.id}" placeholder="Optional note shown to the learner"></textarea>
+        <div class="actions">
+          <button class="btn success" data-decision="approved" data-id="${item.id}" ${isPending ? "" : "disabled"}>Approve</button>
+          <button class="btn danger" data-decision="rejected" data-id="${item.id}" ${isPending ? "" : "disabled"}>Reject</button>
+          <button class="btn soft" data-decision="resubmission_required" data-id="${item.id}" ${isPending ? "" : "disabled"}>Request Resubmission</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function render() {
+  const data = filteredItems();
+  submissionList.innerHTML = data.map(submissionCard).join("") ||
+    `<div class="panel">No external-learning submissions match this filter.</div>`;
+
+  submissionList.querySelectorAll("button[data-decision]").forEach(btn => {
+    btn.onclick = () => reviewSubmission(btn.dataset.id, btn.dataset.decision);
+  });
+}
+
+async function reviewSubmission(recordId, decision) {
+  const noteField = submissionList.querySelector(`textarea[data-note="${recordId}"]`);
+  const note = noteField ? noteField.value.trim() : "";
+  const buttons = submissionList.querySelectorAll(`button[data-id="${recordId}"]`);
+  buttons.forEach(b => b.disabled = true);
+
+  try {
+    show("Submitting review...", "");
+    await reviewExternalCertificateFn({ recordId, decision, note });
+    show(`Submission ${decision.replaceAll("_", " ")}.`, "ok");
+  } catch (error) {
+    console.error(error);
+    show(error.message || "Could not submit this review.", "bad");
+    buttons.forEach(b => b.disabled = false);
+  }
+}
+
+function startRealtime() {
+  if (unsubscribe) unsubscribe();
+
+  unsubscribe = onSnapshot(
+    collection(db, "externalLearningRecords"),
+    snapshot => {
+      ITEMS = [];
+      snapshot.forEach(d => ITEMS.push({ id: d.id, ...d.data() }));
+      ITEMS.sort((a, b) => (b.submittedAt?.seconds || b.createdAt?.seconds || 0) - (a.submittedAt?.seconds || a.createdAt?.seconds || 0));
+      updateStats();
+      render();
+      show("External certificate submissions loaded.", "ok");
+    },
+    error => {
+      console.error(error);
+      show("Could not load external certificate submissions.", "bad");
+    }
+  );
+}
+
+searchInput.addEventListener("input", render);
+statusFilter.addEventListener("change", render);
+refreshBtn.addEventListener("click", startRealtime);
+logoutLink.addEventListener("click", async e => {
+  e.preventDefault();
+  await signOut(auth);
+  location.href = "auth.html";
+});
+
+requireAdmin(startRealtime);
+</script>
+<script defer="" src="portal-ui.js"></script>
+</body>
+</html>

@@ -48,8 +48,8 @@ const ROLE_DASHBOARDS = {
   admin: "admin-dashboard.html",
   super_admin: "admin-dashboard.html",
 
-  ambassador: "ambassador.html",
-  contributor: "contributor-dashboard.html",
+  ambassador: "ambassador-dashboard.html",
+  contributor: "contributor.html",
 
   volunteer: "student-dashboard.html"
 };

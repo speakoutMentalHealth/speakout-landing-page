@@ -20,7 +20,7 @@ const ACCESS_MAP = {
   "school-dashboard.html": ["admin", "school", "school_admin", "contributor", "volunteer"],
   "teacher-dashboard.html": ["admin", "teacher"],
   "parent-dashboard.html": ["admin", "parent"],
-  "ambassador.html": ["admin", "ambassador", "student"],
+  "ambassador-dashboard.html": ["admin", "ambassador", "student"],
 
   // Protected learning areas
   "library.html": ALL_APPROVED_USERS,

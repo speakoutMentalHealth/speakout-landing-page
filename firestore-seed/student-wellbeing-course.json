@@ -9,14 +9,16 @@
   "category": "mental-health",
   "status": "active",
   "level": "Beginner",
-  "duration": "4\u20135 hours",
+  "duration": "4–5 hours",
   "description": "A 16-module introductory wellbeing course based on the SpeakOut Student Wellbeing Handbook.",
-  "certificate": "Certificate in Student Wellbeing Foundations",
+  "certificate": {
+    "issuer": "SpeakOut Mental Health Outreach"
+  },
+  "provider": "SpeakOut Mental Health Outreach",
   "completionCriteria": [
     "Complete all 16 modules",
-    "Complete reflection activities",
-    "Score 70% or higher on final quiz",
-    "Submit personal wellbeing plan"
+    "Pass every module quiz (70% or higher)",
+    "Pass the final assessment (70% or higher)"
   ],
   "modules": [
     {
@@ -27,24 +29,31 @@
         {
           "title": "Welcome to SpeakOut: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Wellbeing is the overall state of your emotional, mental, social and physical health while you live, learn and grow. It is not a fixed trait you either have or lack — it moves throughout the week depending on sleep, stress, relationships and what is happening in your life. Everyone's wellbeing needs attention sometimes, not just people going through an obvious crisis.</p><p>This course introduces the ideas, language and practical skills covered in the SpeakOut Student Wellbeing Handbook. Each module pairs a short lesson with a reflection activity and a short knowledge check, so you can build understanding gradually rather than all at once.</p><p>There is no requirement to share anything personal with anyone else to complete this course. The reflection questions are for your own thinking; what matters for completion is that you engage honestly with the material and pass each knowledge check.</p><p>If anything in this course brings up something you are struggling with, that is a normal and valid response — not a sign you are doing the course wrong. Module 15 covers how and when to ask for support, and you do not have to wait until then to reach out to a trusted adult, school counsellor or local mental health service if you need to.</p>"
         },
         {
           "title": "Welcome to SpeakOut: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Welcome to SpeakOut: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Take a few quiet minutes with these questions. There are no right answers — they are here to help you notice where you already are before the course begins.</p><ol><li>What does wellbeing mean to you?</li><li>Which area of your wellbeing needs the most attention right now?</li><li>Who are three trusted people you can talk to?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What does wellbeing mean to you?",
         "Which area of your wellbeing needs the most attention right now?",
         "Who are three trusted people you can talk to?"
-      ]
+      ],
+      "quiz": {
+        "title": "Welcome to SpeakOut Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "According to this module, wellbeing is best described as:", "options": ["A fixed trait you either have or do not have", "A state that can change week to week depending on sleep, stress and relationships", "Something only relevant during a crisis", "The same as having no problems at all"], "answer": 1 },
+          { "question": "Is it necessary to share personal information with classmates to complete this course?", "options": ["Yes, it is required for every module", "No, the reflection questions are for your own private thinking", "Only in the final module", "Only if a teacher asks"], "answer": 1 },
+          { "question": "If course content brings up something difficult for you personally, this module says that is:", "options": ["A sign you are doing the course incorrectly", "Something to ignore until the course ends", "A normal, valid response worth acting on if needed", "Grounds to skip the rest of the course"], "answer": 2 },
+          { "question": "Each module in this course pairs a lesson with which two things?", "options": ["A video and a group debate", "A reflection activity and a knowledge check", "A guest speaker and a written essay", "A worksheet and a parent signature"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 2,
@@ -54,24 +63,31 @@
         {
           "title": "What Is Mental Health?: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Mental health refers to your emotional, psychological and social wellbeing — it shapes how you think, feel, handle stress, relate to others and make decisions. Like physical health, everyone has mental health, and it exists on a spectrum rather than as a simple “healthy” or “unhealthy” label. It can be strong in some seasons of life and more fragile in others.</p><p>A common myth is that mental health struggles mean something is “wrong” with a person, or that only certain people experience them. In reality, mental health difficulties are common and can affect anyone, regardless of age, background or how someone appears on the outside. Struggling does not mean weakness, and it is not something a person chooses.</p><p>Another myth is that mental health only matters once things become severe. In practice, small, regular habits — sleep, movement, connection with others, and having language to describe how you feel — support mental health long before a crisis point, in the same way brushing your teeth prevents problems rather than only treating them.</p><p>This course does not diagnose or treat any condition. It offers general education, language and coping skills. If you are ever concerned about your own mental health or someone else's, speak with a trusted adult, school counsellor or qualified professional.</p>"
         },
         {
           "title": "What Is Mental Health?: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "What Is Mental Health?: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What mental health myths have you heard?</li><li>How can schools make it safer for students to speak up?</li><li>What is one fact about mental health you want others to know?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What mental health myths have you heard?",
         "How can schools make it safer for students to speak up?",
         "What is one fact about mental health you want others to know?"
-      ]
+      ],
+      "quiz": {
+        "title": "What Is Mental Health? Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "Mental health is best understood as:", "options": ["Something only some people have", "A spectrum of emotional, psychological and social wellbeing that everyone has", "A permanent label once diagnosed", "Only relevant to adults"], "answer": 1 },
+          { "question": "Which statement is closest to what this module teaches?", "options": ["Struggling with mental health means someone is weak", "Mental health difficulties are common and not a choice", "Only people who look distressed are struggling", "Mental health only matters during a crisis"], "answer": 1 },
+          { "question": "This module compares small daily wellbeing habits to:", "options": ["Taking medicine only when sick", "Brushing your teeth to prevent problems, not just treat them", "Ignoring a problem until it goes away", "Waiting for someone else to notice"], "answer": 1 },
+          { "question": "What does this course say about diagnosing conditions?", "options": ["It diagnoses common conditions for learners", "It does not diagnose or treat any condition — it offers general education", "Only teachers can diagnose students", "Diagnosis is not important"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 3,
@@ -81,24 +97,31 @@
         {
           "title": "Knowing Yourself: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Self-awareness is the ability to notice your own thoughts, feelings, values and patterns of behaviour — and to understand how they affect your choices. It is a skill, not a fixed personality trait, which means it can be practised and strengthened over time.</p><p>One useful starting point is identifying your strengths: the things you are naturally good at or that come easily to you. Strengths are not only academic or athletic — they include things like listening well, staying calm under pressure, being organised, or making others feel included.</p><p>Values are what matters most to you — honesty, fairness, family, creativity, achievement, and so on. When your daily choices line up with your values, you tend to feel more grounded; when there is a gap between what you value and how you are actually spending your time, that gap is often a source of stress worth noticing.</p><p>Self-awareness also includes recognising habits you would like to change. Growth does not require becoming a different person — it means noticing a pattern, understanding what triggers it, and choosing one small, realistic adjustment at a time.</p>"
         },
         {
           "title": "Knowing Yourself: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Knowing Yourself: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What are three strengths you have?</li><li>What value matters most to you?</li><li>What is one habit you want to improve?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What are three strengths you have?",
         "What value matters most to you?",
         "What is one habit you want to improve?"
-      ]
+      ],
+      "quiz": {
+        "title": "Knowing Yourself Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "Self-awareness is best described as:", "options": ["A fixed personality trait you either have or lack", "A skill that can be practised and strengthened", "Something only therapists need", "The same as self-esteem"], "answer": 1 },
+          { "question": "According to this module, strengths:", "options": ["Are only academic or athletic abilities", "Can include things like listening well or staying calm under pressure", "Cannot be developed", "Are the same for everyone"], "answer": 1 },
+          { "question": "When daily choices line up with a person's values, this module says they tend to feel:", "options": ["More anxious", "More grounded", "Less motivated", "No different at all"], "answer": 1 },
+          { "question": "What does this module say growth requires?", "options": ["Becoming a completely different person", "Noticing a pattern and making one small, realistic adjustment", "Changing everything at once", "Ignoring habits you dislike"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 4,
@@ -108,24 +131,31 @@
         {
           "title": "Understanding Emotions: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Emotions are signals — they give you information about what is happening in your life and what you might need. All emotions, including uncomfortable ones like anger, sadness, jealousy or fear, are normal and serve a purpose. The goal is not to eliminate difficult emotions but to recognise, name and respond to them in healthy ways.</p><p>Naming an emotion accurately — for example, noticing that what feels like anger is actually hurt, or that anxiety is layered under excitement — tends to make it easier to manage. This is sometimes called “emotional vocabulary,” and it grows with practice, the same way any vocabulary does.</p><p>Accepting an emotion means acknowledging it is present without judging yourself for feeling it. This is different from acting on every emotional impulse. You can feel intense anger and still choose how you respond — the feeling and the action are two separate steps.</p><p>Healthy ways to manage strong emotions include pausing before reacting, physical movement, talking to someone you trust, writing your thoughts down, and slow breathing. What works varies from person to person, so it is worth trying a few approaches to find what genuinely helps you.</p>"
         },
         {
           "title": "Understanding Emotions: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Understanding Emotions: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>Which emotion do you find hardest to express?</li><li>What helps you calm down safely?</li><li>How can you express anger without hurting yourself or others?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "Which emotion do you find hardest to express?",
         "What helps you calm down safely?",
         "How can you express anger without hurting yourself or others?"
-      ]
+      ],
+      "quiz": {
+        "title": "Understanding Emotions Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module describes emotions primarily as:", "options": ["Problems to eliminate", "Signals that give information about what you might need", "Signs of weakness", "Something only some people experience"], "answer": 1 },
+          { "question": "Accepting an emotion means:", "options": ["Acting on every impulse it creates", "Acknowledging it is present without judging yourself for feeling it", "Ignoring it completely", "Suppressing it until it disappears"], "answer": 1 },
+          { "question": "Building 'emotional vocabulary' means:", "options": ["Learning to name emotions more accurately over time", "Memorising a list of feelings for a test", "Avoiding words for negative emotions", "Something that cannot be practised"], "answer": 0 },
+          { "question": "Which of these is listed in the lesson as a healthy way to manage strong emotions?", "options": ["Reacting immediately without pausing", "Slow breathing and talking to someone you trust", "Keeping every feeling to yourself permanently", "Avoiding all emotional situations"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 5,
@@ -135,24 +165,31 @@
         {
           "title": "Managing Stress: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Stress is your body and mind's response to pressure or demand — exams, deadlines, family responsibilities, or social situations. In small amounts, stress can be motivating and help you focus. Problems tend to arise when stress is constant, feels unmanageable, or has no outlet.</p><p>A useful first step in managing stress is identifying your specific triggers. Stress is easier to respond to once you can name what is actually causing it, rather than experiencing it as one large, vague weight.</p><p>Healthy coping strategies include breaking large tasks into smaller steps, planning your time realistically, physical activity, sufficient sleep, and talking to someone about what is on your mind. Coping strategies that provide short-term relief but add long-term harm — such as avoiding responsibilities entirely, or using substances to numb stress — tend to make the underlying pressure worse over time.</p><p>It is also worth noticing when a responsibility feels too big to face. Breaking it into smaller, concrete steps — the next single action rather than the whole task — usually makes it feel more manageable and reduces the urge to avoid it altogether.</p>"
         },
         {
           "title": "Managing Stress: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Managing Stress: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What are your top three stress triggers?</li><li>What is one healthy coping skill you can practice this week?</li><li>What responsibility can you break into smaller steps?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What are your top three stress triggers?",
         "What is one healthy coping skill you can practice this week?",
         "What responsibility can you break into smaller steps?"
-      ]
+      ],
+      "quiz": {
+        "title": "Managing Stress Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "According to this module, small amounts of stress can:", "options": ["Never be helpful", "Be motivating and help you focus", "Only cause harm", "Only affect adults"], "answer": 1 },
+          { "question": "The module suggests the first step in managing stress is:", "options": ["Ignoring it until it passes", "Identifying your specific triggers", "Avoiding every stressful situation permanently", "Comparing your stress to other people's"], "answer": 1 },
+          { "question": "Which is described as a coping strategy that gives short-term relief but adds long-term harm?", "options": ["Breaking tasks into smaller steps", "Talking to someone about what is on your mind", "Avoiding responsibilities entirely", "Getting enough sleep"], "answer": 2 },
+          { "question": "The module recommends handling a large, overwhelming task by:", "options": ["Doing it all at once", "Breaking it into smaller, concrete steps", "Waiting until the deadline", "Assigning it to someone else"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 6,
@@ -162,24 +199,31 @@
         {
           "title": "Anxiety and Worry: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Anxiety is your body's alarm system — it prepares you to respond to a perceived threat, even when the “threat” is a test, a social situation, or an uncertain future rather than immediate physical danger. Occasional worry is a normal part of life. It becomes more difficult to manage when it is frequent, intense, or interferes with daily activities like sleeping, eating or attending school.</p><p>Anxiety often shows up physically — a racing heart, tight chest, upset stomach, or restlessness — before it is fully recognised as a thought. Learning to notice these body signals early can help you respond before worry escalates.</p><p>Grounding techniques help bring attention back to the present moment when worry feels overwhelming. Common examples include slow, deliberate breathing; naming five things you can see, four you can hear and three you can touch; or focusing on a single physical sensation, like your feet on the floor.</p><p>Occasional worry is manageable with these everyday tools. If anxiety is frequent, intense, or is stopping you from doing things you need or want to do, that is a signal worth taking seriously — it is appropriate and encouraged to speak with a trusted adult, school counsellor or qualified mental health professional.</p>"
         },
         {
           "title": "Anxiety and Worry: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Anxiety and Worry: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What does worry feel like in your body?</li><li>Which grounding technique can you try?</li><li>When should someone seek extra support for anxiety?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What does worry feel like in your body?",
         "Which grounding technique can you try?",
         "When should someone seek extra support for anxiety?"
-      ]
+      ],
+      "quiz": {
+        "title": "Anxiety and Worry Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module describes anxiety as:", "options": ["A sign of weakness", "The body's alarm system preparing to respond to a perceived threat", "Something that only affects adults", "The same thing as excitement"], "answer": 1 },
+          { "question": "Anxiety becomes more difficult to manage when it is:", "options": ["Occasional and mild", "Frequent, intense, or interferes with daily activities", "Noticed early", "Named accurately"], "answer": 1 },
+          { "question": "Which of these is given as an example of a grounding technique?", "options": ["Avoiding the situation entirely", "Naming five things you can see, four you can hear, three you can touch", "Ignoring physical sensations", "Skipping sleep to finish worrying"], "answer": 1 },
+          { "question": "According to this module, when should someone seek extra support for anxiety?", "options": ["Never — anxiety always resolves on its own", "When it is frequent, intense, or stopping them from doing things they need or want to do", "Only if a teacher notices first", "Only after finishing this course"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 7,
@@ -189,24 +233,31 @@
         {
           "title": "Building Resilience: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Resilience is the ability to recover, adapt and keep functioning after a setback, disappointment or difficult experience. It is often misunderstood as never struggling — in reality, resilience is about how you respond and recover after struggle, not about avoiding hardship altogether.</p><p>Resilience is built, not simply inherited. Factors that strengthen it include having supportive relationships, developing problem-solving skills, practising self-compassion instead of harsh self-criticism, and maintaining a sense that your actions can make a difference in your own life.</p><p>Reframing a setback — asking “what can I learn from this?” instead of only “why did this happen to me?” — does not erase the disappointment, but it can shift a setback from feeling purely like failure to feeling like useful information for next time.</p><p>Recovering from a setback also does not mean pretending it did not hurt. Acknowledging the disappointment honestly, giving yourself time, and then identifying one next step is usually more sustainable than forcing immediate positivity.</p>"
         },
         {
           "title": "Building Resilience: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Building Resilience: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>Describe a setback you survived.</li><li>What helped you recover?</li><li>What lesson did you learn from that experience?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "Describe a setback you survived.",
         "What helped you recover?",
         "What lesson did you learn from that experience?"
-      ]
+      ],
+      "quiz": {
+        "title": "Building Resilience Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module defines resilience as:", "options": ["Never experiencing hardship", "The ability to recover, adapt and keep functioning after a setback", "Being naturally fearless", "Avoiding all risk"], "answer": 1 },
+          { "question": "According to this module, resilience is:", "options": ["A fixed trait some people are simply born with and cannot change", "Something that can be built through relationships, skills and self-compassion", "Only relevant to serious emergencies", "The opposite of self-compassion"], "answer": 1 },
+          { "question": "Reframing a setback by asking 'what can I learn from this?' is described as helping to:", "options": ["Erase the disappointment completely", "Shift the setback toward useful information rather than pure failure", "Prove the setback did not matter", "Avoid dealing with the setback"], "answer": 1 },
+          { "question": "What does this module say about acknowledging a setback?", "options": ["You should pretend it did not hurt", "Acknowledging it honestly before identifying a next step is more sustainable", "It is unnecessary if you move on quickly", "Only adults need to process setbacks"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 8,
@@ -216,24 +267,31 @@
         {
           "title": "Healthy Relationships: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Healthy relationships — friendships, family relationships, and romantic relationships — share common features: mutual respect, honesty, trust, and the ability to disagree without the relationship being threatened. No relationship is conflict-free; what distinguishes a healthy one is how conflict is handled.</p><p>A boundary is a limit you set about what you are and are not comfortable with — how you want to be spoken to, how much time you can give, or what topics you are willing to discuss. Setting a boundary is not the same as rejecting a person; it is a normal, healthy part of any relationship, and people who respect you will generally respect your boundaries too.</p><p>Respectful communication includes listening without interrupting, using “I feel” statements instead of blame, and checking that you have understood the other person before responding. These skills reduce the chance that a disagreement escalates unnecessarily.</p><p>Warning signs of an unhealthy relationship include consistent disrespect, control over who you see or what you do, pressure to do things you are uncomfortable with, and refusal to accept a boundary once it has been clearly stated. If you notice these patterns in your own relationships, it is worth talking to a trusted adult.</p>"
         },
         {
           "title": "Healthy Relationships: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Healthy Relationships: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What does respect look like in friendship?</li><li>What boundary do you need to set?</li><li>How can you handle conflict more calmly?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What does respect look like in friendship?",
         "What boundary do you need to set?",
         "How can you handle conflict more calmly?"
-      ]
+      ],
+      "quiz": {
+        "title": "Healthy Relationships Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module says healthy relationships are distinguished by:", "options": ["Never having any conflict", "How conflict is handled when it happens", "Always agreeing with the other person", "Avoiding honest conversations"], "answer": 1 },
+          { "question": "Setting a boundary is described as:", "options": ["Rejecting the other person", "A normal, healthy part of any relationship", "A sign the relationship is failing", "Something only adults can do"], "answer": 1 },
+          { "question": "Which is given as an example of respectful communication?", "options": ["Interrupting to make your point first", "Using 'I feel' statements instead of blame", "Assuming you already understand the other person", "Avoiding the topic entirely"], "answer": 1 },
+          { "question": "Which of these is listed as a warning sign of an unhealthy relationship?", "options": ["Occasionally disagreeing about small things", "Refusal to accept a boundary once clearly stated", "Spending time apart sometimes", "Having different opinions"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 9,
@@ -243,24 +301,31 @@
         {
           "title": "Self-Esteem and Confidence: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Self-esteem is the overall sense of your own worth, while confidence often refers more specifically to belief in your ability to handle a particular task or situation. Both can fluctuate — it is normal to feel confident in one area of life and unsure in another.</p><p>A common obstacle to healthy self-esteem is the “inner critic” — an automatic negative thought pattern that exaggerates flaws or mistakes. Learning to notice these thoughts and question whether they are actually accurate, rather than accepting them automatically, is a core self-esteem skill.</p><p>Confidence tends to build through action rather than waiting to feel ready first. Small, achievable steps — trying something new, speaking up once, completing a task you were avoiding — create real evidence of capability that gradually builds belief in yourself.</p><p>Comparing yourself to others, especially on social media where people typically only share their highlights, tends to distort self-esteem. It is more useful to compare your progress to your own past, rather than to someone else's curated presentation of their life.</p>"
         },
         {
           "title": "Self-Esteem and Confidence: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Self-Esteem and Confidence: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What negative thought do you need to challenge?</li><li>What is one thing you are proud of?</li><li>What action can build your confidence this week?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What negative thought do you need to challenge?",
         "What is one thing you are proud of?",
         "What action can build your confidence this week?"
-      ]
+      ],
+      "quiz": {
+        "title": "Self-Esteem and Confidence Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module distinguishes self-esteem and confidence by describing confidence as:", "options": ["Exactly the same thing as self-esteem", "Belief in your ability to handle a particular task or situation", "A trait you either have completely or not at all", "Something unrelated to self-esteem"], "answer": 1 },
+          { "question": "The 'inner critic' is described as:", "options": ["A helpful, always-accurate guide", "An automatic negative thought pattern that exaggerates flaws or mistakes", "Something only some people experience", "A permanent, unchangeable part of personality"], "answer": 1 },
+          { "question": "According to this module, confidence tends to build through:", "options": ["Waiting until you feel ready before acting", "Taking small, achievable actions that create evidence of capability", "Avoiding new or uncertain situations", "Comparing yourself to others online"], "answer": 1 },
+          { "question": "This module suggests it is more useful to compare your progress to:", "options": ["Other people's curated social media highlights", "Your own past self", "The most successful person you know", "No comparison is ever useful"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 10,
@@ -270,24 +335,31 @@
         {
           "title": "Digital Wellbeing: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Digital wellbeing is about how technology and social media affect your mood, sleep, relationships and sense of self — and making intentional choices about your use, rather than using devices purely on autopilot.</p><p>Social media often shows a curated highlight reel rather than everyday reality. Comparing your ordinary day to someone else's best moments is an unfair comparison that can quietly affect mood and self-esteem over time, even when you know intellectually that it is not a complete picture.</p><p>Practical digital wellbeing habits include noticing how you feel during and after scrolling, setting boundaries around screen use before bed (screen light and stimulating content can interfere with sleep), being selective about who and what you follow, and taking deliberate breaks from platforms that consistently leave you feeling worse.</p><p>Online safety also matters: protecting personal information, being cautious about who you share images or details with, and recognising and reporting cyberbullying — whether it happens to you or someone you know — rather than assuming it must be dealt with alone.</p>"
         },
         {
           "title": "Digital Wellbeing: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Digital Wellbeing: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>How does social media affect your mood?</li><li>What digital habit do you want to change?</li><li>How can you protect yourself online?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "How does social media affect your mood?",
         "What digital habit do you want to change?",
         "How can you protect yourself online?"
-      ]
+      ],
+      "quiz": {
+        "title": "Digital Wellbeing Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module describes social media content as typically showing:", "options": ["A complete, accurate picture of someone's life", "A curated highlight reel rather than everyday reality", "Only negative moments", "Nothing relevant to wellbeing"], "answer": 1 },
+          { "question": "Which is listed as a reason screen use before bed can affect wellbeing?", "options": ["It has no effect on sleep", "Screen light and stimulating content can interfere with sleep", "It always improves sleep quality", "Only adults are affected by screen use"], "answer": 1 },
+          { "question": "What does this module recommend if a platform consistently leaves you feeling worse?", "options": ["Using it even more to feel included", "Taking a deliberate break from it", "Ignoring the feeling completely", "Sharing more personal information there"], "answer": 1 },
+          { "question": "This module says cyberbullying should be:", "options": ["Dealt with alone and never mentioned", "Recognised and reported, whether it happens to you or someone you know", "Ignored until it stops on its own", "Only a concern for adults"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 11,
@@ -297,24 +369,31 @@
         {
           "title": "Study Skills and Balance: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Effective studying is less about the number of hours spent and more about how that time is used. Techniques like spacing study sessions out over several days (rather than cramming), testing yourself on material instead of just re-reading it, and studying in short focused blocks with real breaks tend to produce better results with less exhaustion.</p><p>Burnout is a state of physical and mental exhaustion caused by prolonged pressure without adequate recovery. Early signs include persistent tiredness even after resting, declining motivation, irritability, and finding it harder to concentrate than usual. Recognising these signs early makes them easier to address before they become severe.</p><p>Balance does not mean never working hard — it means making sure rest, sleep, movement and connection with others have a genuine place alongside your responsibilities, rather than being treated as optional extras only allowed once everything else is finished.</p><p>Realistic weekly planning — writing down what actually needs to happen and roughly when, rather than keeping it all in your head — tends to reduce the background anxiety of feeling like you might be forgetting something important.</p>"
         },
         {
           "title": "Study Skills and Balance: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Study Skills and Balance: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What study habit works best for you?</li><li>What is one sign you may need rest?</li><li>How can you plan your week better?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What study habit works best for you?",
         "What is one sign you may need rest?",
         "How can you plan your week better?"
-      ]
+      ],
+      "quiz": {
+        "title": "Study Skills and Balance Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module says effective studying depends mainly on:", "options": ["The total number of hours spent, regardless of method", "How that time is used, such as spacing sessions and self-testing", "Studying only the night before an exam", "Re-reading notes repeatedly without testing yourself"], "answer": 1 },
+          { "question": "Burnout is described as:", "options": ["A sign of laziness", "Physical and mental exhaustion from prolonged pressure without adequate recovery", "Something that only affects working adults", "The same thing as normal tiredness after one busy day"], "answer": 1 },
+          { "question": "Which of these is listed as an early sign of burnout?", "options": ["Increased motivation", "Persistent tiredness even after resting", "Improved concentration", "Feeling more social than usual"], "answer": 1 },
+          { "question": "According to this module, balance means:", "options": ["Never working hard", "Making sure rest and connection have a genuine place alongside responsibilities", "Working until everything is finished before resting", "Avoiding all planning"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 12,
@@ -324,24 +403,31 @@
         {
           "title": "Physical Health and Mental Health: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Physical health and mental health are closely connected — what affects the body tends to affect mood, concentration and emotional regulation, and vice versa. This is sometimes called the body-mind connection, and it is one of the most well-established general ideas in wellbeing education.</p><p>Sleep is one of the most influential factors. Insufficient or irregular sleep is linked to lower mood, reduced concentration and greater difficulty managing stress. A consistent sleep routine — similar bedtime and wake time most days — tends to support both physical and mental wellbeing more than occasional long “catch-up” sleep.</p><p>Regular movement, even in modest amounts like walking, tends to support mood and stress management, partly through its physical effects and partly by providing a break from other pressures. It does not need to mean intense exercise to be beneficial.</p><p>Nutrition and hydration also play a role — skipping meals or being significantly dehydrated can affect concentration, energy and irritability. None of these habits are a cure for a mental health condition on their own, but they are a meaningful, practical foundation that supports overall wellbeing.</p>"
         },
         {
           "title": "Physical Health and Mental Health: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Physical Health and Mental Health: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>How many hours do you sleep on most nights?</li><li>What physical habit affects your mood?</li><li>What small health habit can you improve?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "How many hours do you sleep on most nights?",
         "What physical habit affects your mood?",
         "What small health habit can you improve?"
-      ]
+      ],
+      "quiz": {
+        "title": "Physical Health and Mental Health Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module refers to the link between physical and mental health as:", "options": ["An unproven idea", "The body-mind connection, a well-established general concept", "Relevant only to athletes", "Something with no practical value"], "answer": 1 },
+          { "question": "According to this module, insufficient or irregular sleep is linked to:", "options": ["Improved concentration", "Lower mood and reduced concentration", "No noticeable effects", "Better stress management"], "answer": 1 },
+          { "question": "This module says regular movement, even in modest amounts:", "options": ["Must be intense to have any benefit", "Can support mood and stress management", "Has no connection to mental wellbeing", "Should be avoided while stressed"], "answer": 1 },
+          { "question": "What does this module say about healthy physical habits and mental health conditions?", "options": ["They are a guaranteed cure on their own", "They are a meaningful, practical foundation but not a cure on their own", "They have no relationship to mental health", "They matter only for physical illness"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 13,
@@ -351,24 +437,31 @@
         {
           "title": "Purpose and Goals: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>A sense of purpose — having something that feels meaningful to work toward — is associated with greater motivation and resilience during difficult periods. Purpose does not need to be a single grand life mission; it can be as immediate as a value you want to live by this year, or a skill you want to develop.</p><p>Goals turn a general sense of direction into something actionable. Clear goals tend to specify what exactly you are working toward, and over what timeframe, rather than staying vague (“I want to do better” versus “I want to improve my grade in this subject by the end of term”).</p><p>Large goals can feel overwhelming or distant, which is why breaking them into smaller milestones — and identifying the very next concrete step — makes consistent progress far more achievable than waiting for motivation to arrive fully formed.</p><p>It is also normal for goals and sense of purpose to shift over time as you learn more about yourself. Revisiting and adjusting your goals periodically is a sign of healthy self-awareness, not a sign of failure or inconsistency.</p>"
         },
         {
           "title": "Purpose and Goals: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Purpose and Goals: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What kind of person do you want to become?</li><li>What goal matters to you this term?</li><li>What is the first small step?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What kind of person do you want to become?",
         "What goal matters to you this term?",
         "What is the first small step?"
-      ]
+      ],
+      "quiz": {
+        "title": "Purpose and Goals Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module says a sense of purpose is associated with:", "options": ["Lower motivation", "Greater motivation and resilience during difficult periods", "No measurable effect on wellbeing", "Only relevance to adults with careers"], "answer": 1 },
+          { "question": "According to this module, purpose:", "options": ["Must be a single grand life mission", "Can be as immediate as a value or skill you want to develop this year", "Cannot change over time", "Is unrelated to daily choices"], "answer": 1 },
+          { "question": "Which is described as a clearer goal?", "options": ["\"I want to do better\"", "\"I want to improve my grade in this subject by the end of term\"", "\"I want things to be different somehow\"", "\"I will try harder eventually\""], "answer": 1 },
+          { "question": "What does this module say about goals and purpose shifting over time?", "options": ["It is a sign of failure", "It is normal and a sign of healthy self-awareness", "It should never happen", "It only happens to unmotivated people"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 14,
@@ -378,24 +471,31 @@
         {
           "title": "Helping a Friend: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Being a supportive friend does not require having all the answers. Often, the most valuable thing you can offer is genuine listening — giving someone your full attention, not interrupting to fix or minimise what they are sharing, and letting them know you believe them and are glad they told you.</p><p>Supporting a friend is different from carrying their problem for them. You can care deeply about someone without taking full responsibility for solving what they are going through — especially situations that need adult or professional support, such as abuse, self-harm, or thoughts of suicide.</p><p>Some problems should never be kept secret, even if a friend asks you to promise not to tell anyone. If a friend's safety is at risk — for example, they mention self-harm, suicide, abuse, or another situation where someone could be seriously hurt — the caring and responsible response is to tell a trusted adult, even though it may feel like breaking their trust in the moment. A safe friend is not always a silent one.</p><p>If you are supporting a friend through something difficult, it is also important to look after your own wellbeing and talk to a trusted adult yourself — you do not have to carry it entirely alone either.</p>"
         },
         {
           "title": "Helping a Friend: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Helping a Friend: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>How can you listen better?</li><li>What problem should never be kept secret?</li><li>Who can help if a friend is unsafe?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "How can you listen better?",
         "What problem should never be kept secret?",
         "Who can help if a friend is unsafe?"
-      ]
+      ],
+      "quiz": {
+        "title": "Helping a Friend Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "According to this module, being a supportive friend mainly requires:", "options": ["Having all the answers", "Genuine listening and full attention", "Fixing the problem immediately", "Avoiding the topic entirely"], "answer": 1 },
+          { "question": "This module distinguishes supporting a friend from:", "options": ["Listening to them", "Carrying their problem entirely for them, especially issues needing professional support", "Caring about them", "Being honest with them"], "answer": 1 },
+          { "question": "If a friend mentions self-harm or suicide and asks you to keep it secret, this module says you should:", "options": ["Always keep the promise no matter what", "Tell a trusted adult, even though it may feel like breaking their trust", "Ignore it and hope it passes", "Only tell other friends"], "answer": 1 },
+          { "question": "What does this module say about your own wellbeing while supporting a friend?", "options": ["It does not matter as long as you help your friend", "You should also look after yourself and talk to a trusted adult if needed", "Only your friend's wellbeing is relevant", "Supporting a friend never affects you"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 15,
@@ -405,24 +505,31 @@
         {
           "title": "Asking for Help: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Asking for help is a sign of self-awareness and strength, not weakness — it means recognising a limit and taking a responsible step to address it, which is exactly what people with strong problem-solving skills do. The idea that people should always manage alone is a myth that stops many people from getting support earlier, when it is often easier to help.</p><p>Signs that someone may need extra support include noticeable changes in mood, sleep, appetite, or behaviour that last more than a couple of weeks; withdrawing from friends and activities they used to enjoy; a persistent sense of hopelessness; or, seriously, talking about wanting to harm themselves or not wanting to be here anymore. These signs apply both to noticing them in yourself and in others.</p><p>Common reasons students hesitate to ask for help include fear of being judged, not wanting to be a burden, not knowing who to ask, or believing the problem is not “serious enough.” None of these are good reasons to stay silent — support is available for a wide range of concerns, not only severe ones.</p><p>Trusted people to reach out to include a parent or guardian, a teacher or school counsellor, another trusted adult in your life, or a qualified mental health professional. If you or someone you know is in immediate danger, contact local emergency services right away.</p>"
         },
         {
           "title": "Asking for Help: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Asking for Help: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What signs show someone may need help?</li><li>Who are your trusted support people?</li><li>What stops students from asking for help?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What signs show someone may need help?",
         "Who are your trusted support people?",
         "What stops students from asking for help?"
-      ]
+      ],
+      "quiz": {
+        "title": "Asking for Help Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module describes asking for help as:", "options": ["A sign of weakness", "A sign of self-awareness and strength", "Something to avoid whenever possible", "Only appropriate for severe emergencies"], "answer": 1 },
+          { "question": "Which of these is listed as a sign someone may need extra support?", "options": ["A single good night's sleep", "Noticeable mood or behaviour changes lasting more than a couple of weeks", "Enjoying usual activities as normal", "Feeling fine most days"], "answer": 1 },
+          { "question": "According to this module, common reasons students hesitate to ask for help include:", "options": ["Fear of being judged and not knowing who to ask", "Having too many trusted adults available", "Feeling too supported already", "Believing help is always easy to access"], "answer": 0 },
+          { "question": "What does this module say to do if someone is in immediate danger?", "options": ["Wait and see if it passes", "Contact local emergency services right away", "Only tell a friend and keep it private", "Handle it alone first"], "answer": 1 }
+        ]
+      }
     },
     {
       "moduleNumber": 16,
@@ -432,24 +539,53 @@
         {
           "title": "Your Personal Wellbeing Plan: Core Lesson",
           "type": "reading",
-          "duration": "10 minutes"
+          "duration": "10 minutes",
+          "content": "<p>A personal wellbeing plan turns everything covered in this course into something practical you can actually use — rather than information you read once and forget. It does not need to be complicated; a short, honest plan you will actually follow is more useful than an elaborate one you abandon after a week.</p><p>A useful wellbeing plan usually includes: your early warning signs (the first signals that your stress or mood is slipping, from earlier modules), a short list of coping tools that genuinely work for you, the names of two or three trusted people you can reach out to, and one or two small daily or weekly habits you want to keep consistent — such as sleep routine, movement, or check-ins with a friend.</p><p>Reviewing your plan occasionally — monthly, or after a stressful period — and adjusting it as you learn more about what works for you keeps it useful rather than letting it become outdated.</p><p>Completing this course is a starting point, not a finish line. Wellbeing is an ongoing practice, and it is normal to keep learning, adjusting, and reaching out for support as your circumstances change.</p>"
         },
         {
           "title": "Your Personal Wellbeing Plan: Reflection Activity",
           "type": "activity",
-          "duration": "10 minutes"
-        },
-        {
-          "title": "Your Personal Wellbeing Plan: Knowledge Check",
-          "type": "quiz",
-          "duration": "5 minutes"
+          "duration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions, and consider writing your answers down somewhere you can return to.</p><ol><li>What are your early warning signs?</li><li>What coping tools work for you?</li><li>What commitments will you make for the next 30 days?</li></ol>"
         }
       ],
       "reflectionQuestions": [
         "What are your early warning signs?",
         "What coping tools work for you?",
         "What commitments will you make for the next 30 days?"
-      ]
+      ],
+      "quiz": {
+        "title": "Your Personal Wellbeing Plan Quiz",
+        "passMark": 70,
+        "questions": [
+          { "question": "This module says a useful wellbeing plan is:", "options": ["As elaborate and complicated as possible", "Short and honest enough that you will actually follow it", "Only necessary during a crisis", "The same for every person"], "answer": 1 },
+          { "question": "Which of these is listed as something a wellbeing plan should include?", "options": ["Your early warning signs and a few trusted people to contact", "A list of everyone else's problems", "A plan to avoid all stress permanently", "Only academic goals"], "answer": 0 },
+          { "question": "According to this module, a wellbeing plan should be reviewed:", "options": ["Never, once written", "Occasionally, such as monthly or after a stressful period", "Only if a teacher requires it", "Every single day without exception"], "answer": 1 },
+          { "question": "This module describes finishing the course as:", "options": ["A finish line where wellbeing work ends", "A starting point, since wellbeing is an ongoing practice", "Proof that no further support will ever be needed", "The only opportunity to learn these skills"], "answer": 1 }
+        ]
+      }
     }
-  ]
+  ],
+  "finalAssessment": {
+    "title": "Student Wellbeing Foundations: Final Assessment",
+    "passMark": 70,
+    "questions": [
+      { "question": "Wellbeing is best understood as:", "options": ["A fixed trait you either have or lack", "A state that can change depending on sleep, stress and relationships", "Relevant only during a crisis", "The complete absence of problems"], "answer": 1 },
+      { "question": "This course states that mental health difficulties are:", "options": ["Rare and only affect certain people", "Common and not a sign of weakness or a choice", "A permanent label once experienced", "Only relevant to adults"], "answer": 1 },
+      { "question": "Self-awareness is described as:", "options": ["A fixed personality trait", "A skill that can be practised and strengthened over time", "Only useful for adults", "The same thing as confidence"], "answer": 1 },
+      { "question": "Accepting an emotion means:", "options": ["Acting on every impulse it creates", "Acknowledging it without judging yourself for feeling it", "Suppressing it completely", "Ignoring it until it disappears"], "answer": 1 },
+      { "question": "The course recommends managing a large, overwhelming task by:", "options": ["Doing it all at once", "Breaking it into smaller, concrete steps", "Avoiding it indefinitely", "Waiting for the deadline"], "answer": 1 },
+      { "question": "A grounding technique for anxiety mentioned in this course is:", "options": ["Avoiding the situation entirely", "Naming things you can see, hear and touch", "Ignoring physical sensations", "Skipping sleep"], "answer": 1 },
+      { "question": "Resilience is defined in this course as:", "options": ["Never experiencing hardship", "The ability to recover, adapt and keep functioning after a setback", "Being naturally fearless", "Avoiding all risk"], "answer": 1 },
+      { "question": "Setting a boundary in a relationship is described as:", "options": ["Rejecting the other person", "A normal, healthy part of any relationship", "A sign the relationship has failed", "Only necessary in romantic relationships"], "answer": 1 },
+      { "question": "This course says confidence tends to build through:", "options": ["Waiting until you feel fully ready", "Taking small, achievable actions", "Avoiding uncertain situations", "Comparing yourself to others online"], "answer": 1 },
+      { "question": "Regarding social media, this course notes that content typically shown is:", "options": ["A complete, accurate picture of someone's life", "A curated highlight reel rather than everyday reality", "Always harmful with no benefit", "Irrelevant to wellbeing"], "answer": 1 },
+      { "question": "Burnout is described in this course as:", "options": ["A sign of laziness", "Physical and mental exhaustion from prolonged pressure without recovery", "The same as normal tiredness after one busy day", "Only relevant to working adults"], "answer": 1 },
+      { "question": "The 'body-mind connection' refers to:", "options": ["An unproven idea with no practical relevance", "The established link between physical health and mental wellbeing", "A concept relevant only to athletes", "The idea that physical health has no effect on mood"], "answer": 1 },
+      { "question": "According to this course, goals are clearer when they:", "options": ["Stay vague, like 'I want to do better'", "Specify what you are working toward and over what timeframe", "Never need to be written down", "Cannot change once set"], "answer": 1 },
+      { "question": "If a friend mentions self-harm or suicide and asks you to keep it secret, this course says you should:", "options": ["Always keep the promise", "Tell a trusted adult, even though it may feel like breaking trust", "Ignore it and hope it passes", "Handle it alone without telling anyone"], "answer": 1 },
+      { "question": "This course describes asking for help as:", "options": ["A sign of weakness", "A sign of self-awareness and strength", "Something to avoid whenever possible", "Appropriate only in emergencies"], "answer": 1 },
+      { "question": "A useful personal wellbeing plan, according to this course, should be:", "options": ["As elaborate as possible", "Short and honest enough that you will actually follow it", "Written once and never reviewed", "Identical for every student"], "answer": 1 }
+    ]
+  }
 }

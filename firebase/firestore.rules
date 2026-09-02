@@ -189,30 +189,74 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
-    match /userProgress/{progressId} {
-      allow read, write: if isApproved() &&
-        (
-          resource.data.userId == request.auth.uid ||
-          request.resource.data.userId == request.auth.uid ||
-          isSuperAdmin()
-        );
+    /* PRIVATE ANSWER KEYS.
+       Cloud Functions Admin SDK bypasses these rules entirely.
+       No browser/client may ever read or write this collection. */
+    match /courseAssessments/{assessmentId} {
+      allow read, write: if false;
     }
 
-    match /certificates/{certificateId} {
-      allow read: if true;
-
-      allow create: if isApproved() &&
+    /* Learners may READ their own progress. INTERNAL-course progress may
+       no longer be WRITTEN directly by clients — it changes only via
+       Cloud Functions (getLearningState / markLessonComplete /
+       getAssessment / submitAssessment in functions/index.js), which use
+       the Admin SDK and so are unaffected by the restriction below.
+       EXTERNAL-course tracking markers (type == "external-course",
+       written by external-learning-submit.html) remain learner-writable:
+       they carry no certificate authority on their own — certificates
+       always require isSuperAdmin() to create (see below), so this
+       cannot be used to self-issue a certificate, only to update the
+       learner's own dashboard display. */
+    match /userProgress/{progressId} {
+      allow read: if isApproved() &&
         (
-          isSuperAdmin() ||
-          request.resource.data.userId == request.auth.uid
+          resource.data.userId == request.auth.uid ||
+          isSuperAdmin()
         );
 
-      allow update, delete: if isSuperAdmin();
+      allow create, update: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.type == "external-course";
+
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    /* Certificates remain publicly readable for verification
+       (verify-certificate.html / certificate-view.html). Learners can
+       no longer create their own certificates — Cloud Functions issue
+       them with the Admin SDK after server-side grading or admin
+       review of an external submission. */
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow create, update, delete: if isSuperAdmin();
     }
 
     match /certificateTemplates/{templateId} {
       allow read: if isApproved();
       allow write: if isSuperAdmin();
+    }
+
+    /* Learners submit proof of an externally-completed course here, and
+       may resubmit after a rejection (external-learning-submit.html
+       always writes status "pending_review" / verificationStatus
+       "pending" on every submit — first-time or resubmit). That's the
+       only state a learner's own write may ever set: they cannot write
+       "approved" into their own record, so self-approval is impossible.
+       Only Cloud Functions (reviewExternalCertificate) or an admin may
+       move a record to "approved"/"rejected". */
+    match /externalLearningRecords/{recordId} {
+      allow create, update: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == "pending_review" &&
+        request.resource.data.verificationStatus == "pending";
+
+      allow read: if isApproved() &&
+        (
+          resource.data.userId == request.auth.uid ||
+          isSuperAdmin()
+        );
+
+      allow update, delete: if isSuperAdmin();
     }
 
     match /contributors/{contributorId} {

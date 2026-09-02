@@ -34,7 +34,7 @@ document.querySelector("[data-finish-setup]")?.addEventListener("click",async()=
  try{
   await setDoc(doc(db,"schools",SCHOOL.code),{schoolName:SCHOOL.name,schoolCode:SCHOOL.code,website:value("schoolWebsite"),address:value("schoolAddress"),schoolPhone:value("schoolPhone"),population:value("population"),departments:checked("departments"),levels:checked("levels"),modules:checked("modules"),setupStatus:"completed",setupProgress:100,updatedAt:serverTimestamp()},{merge:true});
   showMessage("Setup saved. Opening FAMSA school dashboard...","ok");
-  setTimeout(()=>{window.location.href="../../dashboards/school/index.html"},1200);
- }catch(e){console.error(e);showMessage("Setup could not be saved, but you can still open the dashboard.","warn");setTimeout(()=>{window.location.href="../../dashboards/school/index.html"},1500)}
+  setTimeout(()=>{window.location.href="../../school-dashboard.html"},1200);
+ }catch(e){console.error(e);showMessage("Setup could not be saved, but you can still open the dashboard.","warn");setTimeout(()=>{window.location.href="../../school-dashboard.html"},1500)}
 });
 showStep(0);

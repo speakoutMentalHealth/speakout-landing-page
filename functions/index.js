@@ -621,3 +621,127 @@ exports.submitAssessment = onCall(async request => {
     };
   });
 });
+
+
+/**
+ * External-course certificate review (admin only).
+ *
+ * Learners submit proof of an externally-completed course into
+ * /externalLearningRecords (see external-learning-submit.html). Nothing
+ * previously reviewed those submissions, so they were permanently stuck
+ * "pending". This callable lets an approved admin/super_admin approve,
+ * reject, or request resubmission. On approval it idempotently issues a
+ * SEPARATE SpeakOut "Certificate of Completion" verifying the learner's
+ * evidence — it never claims SpeakOut delivered the external course.
+ */
+const EXTERNAL_REVIEW_DECISIONS = {
+  approved: { status: "approved", verificationStatus: "approved" },
+  rejected: { status: "rejected", verificationStatus: "rejected" },
+  resubmission_required: { status: "resubmission_required", verificationStatus: "rejected" }
+};
+
+exports.reviewExternalCertificate = onCall(async request => {
+  const uid = requireAuth(request);
+  const reviewer = await requireAdmin(uid);
+
+  const recordId = String(request.data?.recordId || "").trim();
+  const decision = norm(request.data?.decision);
+  const note = String(request.data?.note || "").trim();
+
+  if (!recordId) {
+    throw new HttpsError("invalid-argument", "recordId is required.");
+  }
+  const mapped = EXTERNAL_REVIEW_DECISIONS[decision];
+  if (!mapped) {
+    throw new HttpsError("invalid-argument", "decision must be approved, rejected or resubmission_required.");
+  }
+
+  const recordRef = db.doc(`externalLearningRecords/${recordId}`);
+
+  return await db.runTransaction(async tx => {
+    const recordSnap = await tx.get(recordRef);
+    if (!recordSnap.exists) throw new HttpsError("not-found", "Submission not found.");
+    const record = recordSnap.data();
+
+    const learnerUid = record.userId;
+    const courseId = record.courseId;
+    if (!learnerUid || !courseId) {
+      throw new HttpsError("failed-precondition", "Submission is missing learner or course reference.");
+    }
+
+    const progressRef = db.doc(`userProgress/${learnerUid}_external_${courseId}`);
+    const certId = `${learnerUid}_external_${courseId}`;
+    const certRef = db.doc(`certificates/${certId}`);
+
+    const [progressSnap, existingCertSnap] = await Promise.all([
+      tx.get(progressRef),
+      decision === "approved" ? tx.get(certRef) : Promise.resolve(null)
+    ]);
+
+    let certificate = null;
+
+    if (decision === "approved") {
+      if (existingCertSnap && existingCertSnap.exists) {
+        certificate = { id: certId, ...existingCertSnap.data() };
+      } else {
+        certificate = {
+          id: certId,
+          recipientId: learnerUid,
+          recipientName: record.learnerName || "Learner",
+          recipientEmail: record.userEmail || "",
+          type: "external-completion",
+          title: "Certificate of Completion — External Learning Verified",
+          courseId,
+          courseTitle: record.courseTitle || "",
+          externalProvider: record.provider || "External Provider",
+          externalProviderCourseUrl: record.providerCourseUrl || "",
+          externalCertificateNumber: record.certificateNumber || "",
+          externalCompletionDate: record.completionDate || "",
+          issuer: "SpeakOut Mental Health Outreach",
+          statement: `This certifies that SpeakOut Mental Health Outreach has verified proof that the recipient completed "${record.courseTitle || "an external learning course"}", provided by ${record.provider || "an external provider"} (not by SpeakOut).`,
+          issueDate: new Date().toISOString().slice(0, 10),
+          certificateNumber: certificateCode(`ext-${courseId}`),
+          verificationCode: verificationCode(),
+          status: "active",
+          verifiedBy: uid,
+          verifiedByName: reviewer.fullName || reviewer.email || "SpeakOut Admin",
+          verifiedAt: FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp()
+        };
+        tx.set(certRef, certificate);
+      }
+    }
+
+    tx.set(recordRef, {
+      status: mapped.status,
+      verificationStatus: mapped.verificationStatus,
+      reviewerFeedback: note,
+      reviewedBy: uid,
+      reviewedByName: reviewer.fullName || reviewer.email || "SpeakOut Admin",
+      reviewedAt: FieldValue.serverTimestamp(),
+      certificateId: certificate ? certificate.id : (record.certificateId || null),
+      updatedAt: FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    if (progressSnap.exists) {
+      tx.set(progressRef, {
+        status: decision === "approved" ? "completed" : mapped.status,
+        verificationStatus: mapped.verificationStatus,
+        certificateId: certificate ? certificate.id : (progressSnap.data().certificateId || null),
+        reviewerFeedback: note,
+        updatedAt: FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+
+    return {
+      ok: true,
+      decision,
+      certificate: certificate ? {
+        id: certificate.id,
+        certificateNumber: certificate.certificateNumber,
+        verificationCode: certificate.verificationCode
+      } : null
+    };
+  });
+});

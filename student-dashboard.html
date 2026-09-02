@@ -1318,6 +1318,36 @@ function progressActionUrl(item){
 }
 
 
+/* External-learning submissions are reviewed by an admin via the
+   reviewExternalCertificate Cloud Function, which writes status/
+   verificationStatus/certificateId/reviewerFeedback back onto this
+   same userProgress item (see functions/index.js). */
+function externalReviewStatus(item){
+
+  const value =
+    normalize(
+      item.verificationStatus ||
+      item.status ||
+      ""
+    );
+
+  if(["approved","verified"].includes(value)){
+    return "approved";
+  }
+
+  if(value === "rejected"){
+    return "rejected";
+  }
+
+  if(value === "resubmission_required"){
+    return "resubmission_required";
+  }
+
+  return "pending";
+
+}
+
+
 function progressCard(item){
 
   const percent =
@@ -1337,6 +1367,16 @@ function progressCard(item){
     item.externalUrl
     ? `target="_blank" rel="noopener noreferrer"`
     : "";
+
+  const reviewStatus =
+    external
+    ? externalReviewStatus(item)
+    : "";
+
+  const courseIdForResubmit =
+    encodeURIComponent(
+      progressCourseId(item)
+    );
 
 
   return `
@@ -1404,9 +1444,15 @@ function progressCard(item){
         : `
           <p class="progress-label">
             ${
-              completed
-              ? "External learning recorded as completed."
-              : "External learning started. Return after completion to record your credential where applicable."
+              reviewStatus === "approved"
+              ? "SpeakOut has verified this external achievement."
+              : reviewStatus === "pending"
+                ? "Certificate submitted. Awaiting SpeakOut verification."
+                : `This submission needs another look.${
+                    item.reviewerFeedback
+                    ? ` Reviewer note: ${escapeHtml(item.reviewerFeedback)}`
+                    : ""
+                  }`
             }
           </p>
         `
@@ -1415,23 +1461,31 @@ function progressCard(item){
 
       <div class="item-actions">
 
-        <a
-          class="btn ${
-            completed
-            ? "soft"
-            : "primary"
-          }"
-          href="${escapeHtml(url)}"
-          ${target}
-        >
-          ${
-            completed
-            ? "View Course"
-            : external
-              ? "Continue with Provider"
-              : "Continue Course"
-          }
-        </a>
+        ${
+          !external
+          ? `
+            <a
+              class="btn ${completed ? "soft" : "primary"}"
+              href="${escapeHtml(url)}"
+              ${target}
+            >
+              ${completed ? "View Course" : "Continue Course"}
+            </a>
+          `
+          : reviewStatus === "approved"
+            ? `
+              <a class="btn soft" href="certificate-view.html?id=${encodeURIComponent(item.certificateId || "")}">
+                View SpeakOut Certificate
+              </a>
+            `
+            : reviewStatus === "pending"
+              ? `<span class="btn soft" aria-disabled="true">Verification Pending</span>`
+              : `
+                <a class="btn primary" href="external-learning-submit.html?courseId=${courseIdForResubmit}">
+                  Resubmit Certificate
+                </a>
+              `
+        }
 
       </div>
 

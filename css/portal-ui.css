@@ -179,8 +179,13 @@ a.card:hover,.card:hover{transform:translateY(-2px) !important;box-shadow:var(--
 .mini-item h3{font-size:.94rem !important;margin-bottom:4px !important}
 .mini-item p{font-size:.83rem !important}
 
-/* Forms */
-input,select,textarea{
+/* Forms
+   Scoped away from radio/checkbox inputs — the text-field styling below
+   (44px min-height, padding, border, background) was being applied to
+   every <input type="radio"/checkbox"> on the page too (e.g. quiz answer
+   options in course-player.html), blowing each radio button up into a
+   full-width box and breaking the layout it sits in. */
+input:not([type="radio"]):not([type="checkbox"]),select,textarea{
   width:100%;
   background:#fff !important;
   color:var(--sp-ink) !important;
@@ -192,7 +197,7 @@ input,select,textarea{
   box-shadow:0 1px 2px rgba(7,21,43,.02) !important;
 }
 textarea{min-height:110px !important;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:#65a7ea !important;box-shadow:0 0 0 4px rgba(18,104,196,.10) !important}
+input:not([type="radio"]):not([type="checkbox"]):focus,select:focus,textarea:focus{border-color:#65a7ea !important;box-shadow:0 0 0 4px rgba(18,104,196,.10) !important}
 label{font-weight:750 !important;color:#344054 !important;font-size:.83rem !important}
 .form-grid{gap:13px !important}
 

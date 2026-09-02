@@ -31,7 +31,7 @@ onAuthStateChanged(auth, async user => {
 
   if (!canAccessPage(profile.role, pageName)) {
     alert("You do not have access to this section. Please contact SpeakOut admin.");
-    location.href = "../dashboards/portal-dashboard.html";
+    location.href = "../portal.html";
     return;
   }
 
