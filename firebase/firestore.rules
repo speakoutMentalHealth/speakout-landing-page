@@ -24,13 +24,12 @@ service cloud.firestore {
       return userExists() ? userDoc().data.schoolId : "";
     }
 
-    /* Some existing accounts have `approved` stored as the text "true"
-       instead of a real boolean — Firestore rules do a typed comparison,
-       so `== true` alone silently rejects those accounts. Accept both
-       until the underlying data is cleaned up. */
+    /* Many existing accounts have no `approved` field at all (only
+       `status`), so requiring it here rejected real accounts — including
+       login itself. The app's own client code (auth.js) already treats
+       status == "approved" as sufficient on its own; match that here. */
     function isApproved() {
       return userExists() &&
-        (userDoc().data.approved == true || userDoc().data.approved == "true") &&
         userDoc().data.status == "approved";
     }
 
