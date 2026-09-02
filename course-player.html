@@ -326,7 +326,7 @@ async function ensureCertificate(){
  const year=new Date().getFullYear();
  const certNo=`SO-${year}-${courseCode()}-${randomCode(6)}`;
  await setDoc(ref,{
-   recipientId:currentUser.uid,recipientName:profileName(),recipientEmail:currentProfile?.email||currentUser.email||"",
+   userId:currentUser.uid,recipientId:currentUser.uid,recipientName:profileName(),recipientEmail:currentProfile?.email||currentUser.email||"",
    courseId:course.id,courseTitle:course.title||"",issuer:course.certificate?.issuer||course.provider||"SpeakHub Academy",
    provider:course.provider||"SpeakHub Academy",certificateNumber:certNo,verificationCode:randomCode(10),
    issueDate:new Date().toISOString().slice(0,10),finalScore:finalAssessmentScore,
