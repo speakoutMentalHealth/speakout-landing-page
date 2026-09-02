@@ -196,39 +196,34 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    /* Learners may READ their own progress. INTERNAL-course progress may
-       no longer be WRITTEN directly by clients — it changes only via
-       Cloud Functions (getLearningState / markLessonComplete /
-       getAssessment / submitAssessment in functions/index.js), which use
-       the Admin SDK and so are unaffected by the restriction below.
-       EXTERNAL-course tracking markers (type == "external-course",
-       written by external-learning-submit.html) remain learner-writable:
-       they carry no certificate authority on their own — certificates
-       always require isSuperAdmin() to create (see below), so this
-       cannot be used to self-issue a certificate, only to update the
-       learner's own dashboard display. */
+    /* TEMPORARY: left as the original permissive rules on purpose.
+       course-player.html is currently running the old client-side-write
+       version (Cloud Functions/billing not set up yet), which needs
+       direct write access to these two collections. Once the secure
+       Cloud Functions are deployed and course-player.html is switched
+       back to calling them, tighten these back down to admin-only
+       writes (see git history / DEPLOYMENT.md for the locked-down
+       version) — do NOT deploy that version before the Functions are
+       live, or quiz progress/certificates will silently stop saving. */
     match /userProgress/{progressId} {
-      allow read: if isApproved() &&
+      allow read, write: if isApproved() &&
         (
           resource.data.userId == request.auth.uid ||
+          request.resource.data.userId == request.auth.uid ||
           isSuperAdmin()
         );
-
-      allow create, update: if isApproved() &&
-        request.resource.data.userId == request.auth.uid &&
-        request.resource.data.type == "external-course";
-
-      allow create, update, delete: if isSuperAdmin();
     }
 
-    /* Certificates remain publicly readable for verification
-       (verify-certificate.html / certificate-view.html). Learners can
-       no longer create their own certificates — Cloud Functions issue
-       them with the Admin SDK after server-side grading or admin
-       review of an external submission. */
     match /certificates/{certificateId} {
       allow read: if true;
-      allow create, update, delete: if isSuperAdmin();
+
+      allow create: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          request.resource.data.userId == request.auth.uid
+        );
+
+      allow update, delete: if isSuperAdmin();
     }
 
     match /certificateTemplates/{templateId} {
