@@ -27,7 +27,7 @@ import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 let books=[]; const grid=document.getElementById("bookGrid"), loading=document.getElementById("loading"), searchInput=document.getElementById("searchInput"), categoryFilter=document.getElementById("categoryFilter"), accessFilter=document.getElementById("accessFilter"), sortFilter=document.getElementById("sortFilter"), emptyState=document.getElementById("emptyState");
 const pretty=v=>(v||"—").toString().replaceAll("-"," ");
-const money=i=>(i.accessType||"free")==="free"?"Free":`${i.currency||"₦"}${Number(i.price||0).toLocaleString()}`;
+const money=i=>(i.accessType||"free")==="free"?"Free":Number(i.price||0)?`${i.currency||"₦"}${Number(i.price||0).toLocaleString()}`:"Premium";
 function card(i){
  const c=i.coverUrl?`<img src="${i.coverUrl}" alt="${i.title||"cover"}">`:"";
  const a=i.accessType||"free";
