@@ -28,22 +28,27 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
 let books=[]; const grid=document.getElementById("bookGrid"), loading=document.getElementById("loading"), searchInput=document.getElementById("searchInput"), categoryFilter=document.getElementById("categoryFilter"), accessFilter=document.getElementById("accessFilter"), sortFilter=document.getElementById("sortFilter"), emptyState=document.getElementById("emptyState");
 const pretty=v=>(v||"—").toString().replaceAll("-"," ");
 const money=i=>(i.accessType||"free")==="free"?"Free":Number(i.price||0)?`${i.currency||"₦"}${Number(i.price||0).toLocaleString()}`:"Premium";
+const escapeHtml=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 function card(i){
- const c=i.coverUrl?`<img src="${i.coverUrl}" alt="${i.title||"cover"}">`:"";
+ const c=i.coverUrl?`<img src="${escapeHtml(i.coverUrl)}" alt="${escapeHtml(i.title||"cover")}">`:"";
  const a=i.accessType||"free";
  const external=!!i.purchaseUrl;
+ const downloadable=!external&&!!i.downloadUrl;
  const actions=external
-  ?`<a class="btn gold" href="${i.purchaseUrl}" target="_blank" rel="noopener noreferrer">🛒 Get this Book</a>
+  ?`<a class="btn gold" href="${escapeHtml(i.purchaseUrl)}" target="_blank" rel="noopener noreferrer">🛒 Get this Book</a>
+    <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>`
+  :downloadable
+  ?`<a class="btn gold" href="${escapeHtml(i.downloadUrl)}" target="_blank" rel="noopener noreferrer">📥 Read Free on Source Site</a>
     <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>`
   :`<a class="btn primary" href="book-reader.html?id=${encodeURIComponent(i.id)}">📖 Read Interactive</a>
     <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>
     ${a!=="free"?`<a class="btn gold" href="book-reader.html?id=${encodeURIComponent(i.id)}&preview=1">Preview</a>`:""}`;
  return `<article class="card">
-  <div class="cover">${c}<strong>${i.title||"Untitled"}</strong></div>
+  <div class="cover">${c}<strong>${escapeHtml(i.title||"Untitled")}</strong></div>
   <div class="pills"><span class="pill">${pretty(i.category)}</span><span class="pill ${a==="free"?"green":"gold"}">${money(i)}</span>${i.featured?'<span class="pill gold">Featured</span>':""}${i.source==="community"?'<span class="pill">Community</span>':""}</div>
-  <h3>${i.title||"Untitled"}</h3>
-  <p><strong>${i.author||"SpeakOut"}</strong></p>
-  <p>${i.shortDescription||i.description||""}</p>
+  <h3>${escapeHtml(i.title||"Untitled")}</h3>
+  <p><strong>${escapeHtml(i.author||"SpeakOut")}</strong></p>
+  <p>${escapeHtml(i.shortDescription||i.description||"")}</p>
   <div class="card-actions">
     ${actions}
   </div>

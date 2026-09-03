@@ -1307,6 +1307,13 @@ function renderBook(book){
     book.purchaseUrl ||
     "";
 
+  const hasReaderContent =
+    !!(book.contentHtml || book.content);
+
+  const downloadOnlyUrl =
+    (!purchaseUrl && !hasReaderContent && book.downloadUrl) ||
+    "";
+
 
   heroActions.innerHTML =
     purchaseUrl
@@ -1318,6 +1325,17 @@ function renderBook(book){
         rel="noopener noreferrer"
       >
         🛒 Get this Book${book.purchasePlatform ? ` on ${escapeHtml(book.purchasePlatform)}` : ""}
+      </a>
+    `
+    : downloadOnlyUrl
+    ? `
+      <a
+        class="btn gold"
+        href="${escapeHtml(downloadOnlyUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📥 Read Free on Source Site
       </a>
     `
     : allowed
@@ -1364,6 +1382,26 @@ function renderBook(book){
         id="purchaseBookButton"
       >
         🛒 Get this Book${book.purchasePlatform ? ` on ${escapeHtml(book.purchasePlatform)}` : ""}
+      </a>
+
+      <button
+        class="btn ghost"
+        type="button"
+        id="backButton"
+      >
+        Back
+      </button>
+    `
+    : downloadOnlyUrl
+    ? `
+      <a
+        class="btn gold"
+        href="${escapeHtml(downloadOnlyUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        id="downloadBookButton"
+      >
+        📥 Read Free on Source Site
       </a>
 
       <button
@@ -1434,7 +1472,7 @@ function renderBook(book){
 
 
   premiumNote.style.display =
-    (allowed || purchaseUrl)
+    (allowed || purchaseUrl || downloadOnlyUrl)
     ? "none"
     : "block";
 

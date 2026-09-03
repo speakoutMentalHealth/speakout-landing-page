@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Clean Up E-Library Books</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&amp;display=swap" rel="stylesheet"/><style>body{margin:0;font-family:Outfit,Arial,sans-serif;background:#f7f9fc;color:#111827}.wrap{width:min(820px,92%);margin:60px auto;background:#fff;border:1px solid #e5edf6;border-radius:24px;padding:28px;box-shadow:0 16px 44px rgba(7,21,43,.08)}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1;margin:0 0 14px;color:#07152b}p{color:#637083;line-height:1.65}button{border:0;border-radius:999px;background:#0a5fbf;color:#fff;font-weight:900;padding:12px 18px;cursor:pointer;margin-right:10px}button.danger{background:#b42318}button:disabled{opacity:.5}.box{margin-top:16px;padding:14px;border-radius:14px;background:#eaf3ff;color:#0a5fbf;font-weight:800;white-space:pre-line}.ok{background:#e9fbf5;color:#0f8f6f}.bad{background:#fff1f0;color:#b42318}.warn{background:#fff4df;color:#704800}ul.stub-list{max-height:260px;overflow:auto;background:#f7f9fc;border-radius:12px;padding:14px 14px 14px 30px;font-size:.9rem;color:#374151}</style><link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head><body><a class="skip-link" href="#main-content">Skip to main content</a><div class="wrap"><h1>Clean Up E-Library Books</h1><p>Finds book documents with no real content (no reading content, no purchase link, no download link) left over from earlier seeding, previews the exact list, then deletes only those on confirmation. Real books - including any using a <code>downloadUrl</code>, <code>purchaseUrl</code>, <code>bookSlides</code>, or <code>content</code> field - are never touched.</p><button id="previewButton">Preview Stub Books</button><button id="deleteButton" class="danger" disabled>Delete Stub Books</button><div class="box" id="status">Checking admin access...</div><div class="box" id="result" style="display:none"></div><div class="box warn">Run once. After success, remove this page from public hosting or keep it admin-only.</div></div><script src="cleanup-books.js" type="module"></script><script type="module">
+import { auth } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const statusBox = document.getElementById("status");
+const resultBox = document.getElementById("result");
+const previewButton = document.getElementById("previewButton");
+const deleteButton = document.getElementById("deleteButton");
+let lastPreview = null;
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    statusBox.textContent = "Sign in as an admin to use this tool.";
+    previewButton.disabled = true;
+    return;
+  }
+  statusBox.textContent = "Signed in. Click \"Preview Stub Books\" to see what would be removed.";
+});
+
+previewButton.addEventListener("click", async () => {
+  resultBox.style.display = "block";
+  resultBox.className = "box ok";
+  resultBox.textContent = "Scanning books collection...";
+  try {
+    lastPreview = await window.previewBookCleanup();
+    const list = lastPreview.stubs.slice(0, 50).map(s => `${s.title} (${s.id})`).join("\n");
+    const more = lastPreview.stubs.length > 50 ? `\n...and ${lastPreview.stubs.length - 50} more` : "";
+    resultBox.innerHTML = `Found ${lastPreview.stubs.length} empty stub book(s) out of ${lastPreview.total} total.\n\n<ul class="stub-list">${lastPreview.stubs.map(s => `<li>${s.title} (${s.id})</li>`).join("")}</ul>`;
+    deleteButton.disabled = lastPreview.stubs.length === 0;
+  } catch (e) {
+    resultBox.className = "box bad";
+    resultBox.textContent = e.message || "Preview failed.";
+  }
+});
+
+deleteButton.addEventListener("click", async () => {
+  if (!lastPreview || !lastPreview.stubs.length) return;
+  if (!confirm(`Delete ${lastPreview.stubs.length} empty stub book document(s)? This cannot be undone.`)) return;
+  resultBox.className = "box ok";
+  resultBox.textContent = "Deleting...";
+  deleteButton.disabled = true;
+  try {
+    const r = await window.runBookCleanup();
+    resultBox.textContent = `Done.\nBefore: ${r.totalBefore}\nDeleted: ${r.deleted}\nRemaining: ${r.remaining}`;
+  } catch (e) {
+    resultBox.className = "box bad";
+    resultBox.textContent = e.message || "Cleanup failed.";
+  }
+});
+</script></body></html>
