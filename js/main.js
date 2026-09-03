@@ -80,6 +80,25 @@ document.querySelectorAll(".links a, .nav-actions a").forEach((link) => {
   });
 });
 
+window.addEventListener("scroll", () => {
+  if (!navHeader) return;
+  navHeader.classList.toggle("shrink", window.scrollY > 40);
+}, { passive: true });
+
+document.querySelectorAll(".links > a, .drop-menu a").forEach((link) => {
+  const href = link.getAttribute("href") || "";
+  if (href.startsWith("#")) return;
+
+  if (link.pathname === location.pathname) {
+    link.classList.add("active");
+    const parentDrop = link.closest(".drop");
+    if (parentDrop) {
+      const toggle = parentDrop.querySelector(".drop-toggle");
+      if (toggle) toggle.classList.add("active");
+    }
+  }
+});
+
 /* Filter Cards */
 document.querySelectorAll("[data-filter]").forEach((btn) => {
   btn.addEventListener("click", () => {

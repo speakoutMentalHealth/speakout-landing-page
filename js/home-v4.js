@@ -40,6 +40,20 @@ window.addEventListener("scroll", () => {
   nav.classList.toggle("shrink", window.scrollY > 40);
 }, { passive: true });
 
+document.querySelectorAll(".links > a, .drop-menu a").forEach((link) => {
+  const href = link.getAttribute("href") || "";
+  if (href.startsWith("#")) return;
+
+  if (link.pathname === location.pathname) {
+    link.classList.add("active");
+    const parentDrop = link.closest(".drop");
+    if (parentDrop) {
+      const toggle = parentDrop.querySelector("button");
+      if (toggle) toggle.classList.add("active");
+    }
+  }
+});
+
 const revealItems = document.querySelectorAll(".reveal");
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
