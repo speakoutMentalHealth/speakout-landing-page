@@ -1937,9 +1937,20 @@ async function loadBook(){
 
     if(currentUser){
 
-      await trackBookOpen(
-        currentBook
-      );
+      try{
+
+        await trackBookOpen(
+          currentBook
+        );
+
+      }catch(trackError){
+
+        console.warn(
+          "Could not record reading activity:",
+          trackError
+        );
+
+      }
 
     }
 

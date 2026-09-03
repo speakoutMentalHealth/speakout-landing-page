@@ -461,7 +461,11 @@ async function loadItem(){
     }
 
     if(currentUser){
-      await trackBookOpen(item);
+      try{
+        await trackBookOpen(item);
+      }catch(trackError){
+        console.warn("Could not record reading activity:", trackError);
+      }
       await loadProgress();
     }
 
