@@ -4,11 +4,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>External Certificate Review | SpeakOut</title>
+<title>Book Submission Review | SpeakOut</title>
 <link href="logo.png" rel="icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
-:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--purple:#6b21a8;--purpleSoft:#f3e8ff;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--goldSoft:#fff4df;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)}
 *{box-sizing:border-box}
 body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}
 a{text-decoration:none;color:inherit}
@@ -49,9 +49,8 @@ section{padding:34px 0}
 .warn{background:var(--goldSoft);color:#704800}
 .pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft);color:var(--blue);font-size:.75rem;font-weight:900;margin:3px}
 .approved{background:var(--greenSoft);color:var(--green)}
-.pending,.pending_review{background:var(--goldSoft);color:#704800}
+.pending{background:var(--goldSoft);color:#704800}
 .rejected{background:var(--redSoft);color:var(--red)}
-.resubmission_required{background:var(--purpleSoft);color:var(--purple)}
 .stat strong{display:block;color:var(--blue);font-size:2.25rem}
 .form-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:12px}
 input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;padding:11px;font:inherit;background:#fbfdff}
@@ -78,9 +77,8 @@ textarea{min-height:70px;resize:vertical}
 <nav class="links">
 <a class="btn soft" href="admin-dashboard.html">Dashboard</a>
 <a class="btn soft" href="admin-certificates.html">Certificates</a>
-<a class="btn dark" href="admin-external-certificates.html">External Certs</a>
-<a class="btn soft" href="admin-book-submissions.html">Book Submissions</a>
-<a class="btn soft" href="admin-content-review.html">Content</a>
+<a class="btn soft" href="admin-external-certificates.html">External Certs</a>
+<a class="btn dark" href="admin-book-submissions.html">Book Submissions</a>
 <a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
 </nav>
 </div>
@@ -89,8 +87,8 @@ textarea{min-height:70px;resize:vertical}
 <section class="hero">
 <div class="container">
 <span class="kicker">Admin</span>
-<h1>External Certificate Review</h1>
-<p>Review proof of completion that learners submit for courses taken with an external provider. Approve to issue a SpeakOut Certificate of Completion verifying their achievement — this never claims SpeakOut delivered the external course itself.</p>
+<h1>Book Submission Review</h1>
+<p>Review books submitted by authors and publishers for the E-Library. Approve a free book to make it readable, or a paid book to list it with its Selar/Amazon purchase link. SpeakOut never processes payment for paid books — approval only publishes the listing.</p>
 </div>
 </section>
 <section>
@@ -100,18 +98,17 @@ textarea{min-height:70px;resize:vertical}
 <div class="card stat"><strong id="totalCount">0</strong><span>Total Submissions</span></div>
 <div class="card stat"><strong id="pendingCount">0</strong><span>Pending Review</span></div>
 <div class="card stat"><strong id="approvedCount">0</strong><span>Approved</span></div>
-<div class="card stat"><strong id="rejectedCount">0</strong><span>Rejected / Resubmission</span></div>
+<div class="card stat"><strong id="rejectedCount">0</strong><span>Rejected</span></div>
 </div>
 <div class="panel">
 <span class="label">Filters</span>
 <div class="form-grid">
-<input aria-label="Search submissions" id="searchInput" placeholder="Search learner, course, provider..."/>
+<input aria-label="Search submissions" id="searchInput" placeholder="Search title, author, email..."/>
 <select aria-label="Filter by status" id="statusFilter">
 <option value="all">All Status</option>
-<option value="pending_review">Pending Review</option>
+<option value="pending">Pending Review</option>
 <option value="approved">Approved</option>
 <option value="rejected">Rejected</option>
-<option value="resubmission_required">Resubmission Requested</option>
 </select>
 </div>
 <div class="actions" style="margin-top:14px"><button class="btn soft" id="refreshBtn">Refresh</button></div>
@@ -130,7 +127,7 @@ import { doc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/fir
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-functions.js";
 
 const functions = getFunctions();
-const reviewExternalCertificateFn = httpsCallable(functions, "reviewExternalCertificate");
+const reviewBookSubmissionFn = httpsCallable(functions, "reviewBookSubmission");
 
 let ITEMS = [];
 let unsubscribe = null;
@@ -149,9 +146,14 @@ function normalize(value) {
 }
 
 function pill(value) {
-  const v = normalize(value) || "pending_review";
-  const label = v.replaceAll("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+  const v = normalize(value) || "pending";
+  const label = v.replace(/\b\w/g, l => l.toUpperCase());
   return `<span class="pill ${v}">${label}</span>`;
+}
+
+function money(item) {
+  if (normalize(item.accessType) !== "paid") return "Free";
+  return `${item.currency || "₦"}${Number(item.price || 0).toLocaleString()} · ${safe(item.purchasePlatform)}`;
 }
 
 async function requireAdmin(callback) {
@@ -174,9 +176,9 @@ async function requireAdmin(callback) {
 
 function updateStats() {
   totalCount.textContent = ITEMS.length;
-  pendingCount.textContent = ITEMS.filter(x => ["pending_review", "pending", "submitted"].includes(normalize(x.status))).length;
+  pendingCount.textContent = ITEMS.filter(x => normalize(x.status) === "pending").length;
   approvedCount.textContent = ITEMS.filter(x => normalize(x.status) === "approved").length;
-  rejectedCount.textContent = ITEMS.filter(x => ["rejected", "resubmission_required"].includes(normalize(x.status))).length;
+  rejectedCount.textContent = ITEMS.filter(x => normalize(x.status) === "rejected").length;
 }
 
 function filteredItems() {
@@ -185,14 +187,13 @@ function filteredItems() {
 
   return ITEMS.filter(item => {
     const text = `
-      ${item.learnerName || ""}
-      ${item.userEmail || ""}
-      ${item.courseTitle || ""}
-      ${item.provider || ""}
-      ${item.certificateNumber || ""}
+      ${item.title || ""}
+      ${item.authorName || ""}
+      ${item.contactEmail || ""}
+      ${item.category || ""}
     `.toLowerCase();
 
-    const itemStatus = normalize(item.status) || "pending_review";
+    const itemStatus = normalize(item.status) || "pending";
     return (!search || text.includes(search)) &&
       (status === "all" || itemStatus === status);
   });
@@ -203,36 +204,36 @@ function detail(label, value) {
 }
 
 function submissionCard(item) {
-  const status = normalize(item.status) || "pending_review";
-  const isPending = ["pending_review", "pending", "submitted"].includes(status);
-  const proof = item.proofData
-    ? `<img alt="Submitted proof of completion for ${safe(item.courseTitle)}" src="${item.proofData}"/>`
-    : `<div class="notice">No proof image attached.</div>`;
+  const status = normalize(item.status) || "pending";
+  const isPending = status === "pending";
+  const cover = item.coverUrl
+    ? `<img alt="Cover for ${safe(item.title)}" src="${item.coverUrl}"/>`
+    : `<div class="notice">No cover image attached.</div>`;
 
   return `
     <article class="card submission-card" data-id="${item.id}">
-      <div>${proof}</div>
+      <div>${cover}</div>
       <div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
-          <h3 style="margin:0">${safe(item.courseTitle)}</h3>
+          <h3 style="margin:0">${safe(item.title)}</h3>
           ${pill(status)}
         </div>
         <div class="detail-grid" style="margin-top:10px">
-          ${detail("Learner", item.learnerName)}
-          ${detail("Email", item.userEmail)}
-          ${detail("Provider", item.provider)}
-          ${detail("Provider Certificate No", item.certificateNumber)}
-          ${detail("Completion Date", item.completionDate)}
-          ${detail("Verification URL", item.verificationUrl)}
+          ${detail("Author / Publisher", item.authorName)}
+          ${detail("Contact Email", item.contactEmail)}
+          ${detail("Category", item.category)}
+          ${detail("Price", money(item))}
+          ${detail("Purchase Link", item.purchaseUrl)}
+          ${detail("Audience", Array.isArray(item.audience) ? item.audience.join(", ") : item.audience)}
         </div>
-        ${item.learnerNote ? `<p><strong>Learner note:</strong> ${safe(item.learnerNote)}</p>` : ""}
+        <p><strong>Short description:</strong> ${safe(item.shortDescription)}</p>
+        <p>${safe(item.description)}</p>
         ${item.reviewerFeedback ? `<p><strong>Previous reviewer feedback:</strong> ${safe(item.reviewerFeedback)}</p>` : ""}
         <label style="display:block;margin-top:10px;font-weight:800;font-size:.85rem">Reviewer note</label>
-        <textarea data-note="${item.id}" placeholder="Optional note shown to the learner"></textarea>
+        <textarea data-note="${item.id}" placeholder="Optional note about this decision"></textarea>
         <div class="actions">
           <button class="btn success" data-decision="approved" data-id="${item.id}" ${isPending ? "" : "disabled"}>Approve</button>
           <button class="btn danger" data-decision="rejected" data-id="${item.id}" ${isPending ? "" : "disabled"}>Reject</button>
-          <button class="btn soft" data-decision="resubmission_required" data-id="${item.id}" ${isPending ? "" : "disabled"}>Request Resubmission</button>
         </div>
       </div>
     </article>
@@ -242,23 +243,23 @@ function submissionCard(item) {
 function render() {
   const data = filteredItems();
   submissionList.innerHTML = data.map(submissionCard).join("") ||
-    `<div class="panel">No external-learning submissions match this filter.</div>`;
+    `<div class="panel">No book submissions match this filter.</div>`;
 
   submissionList.querySelectorAll("button[data-decision]").forEach(btn => {
     btn.onclick = () => reviewSubmission(btn.dataset.id, btn.dataset.decision);
   });
 }
 
-async function reviewSubmission(recordId, decision) {
-  const noteField = submissionList.querySelector(`textarea[data-note="${recordId}"]`);
+async function reviewSubmission(submissionId, decision) {
+  const noteField = submissionList.querySelector(`textarea[data-note="${submissionId}"]`);
   const note = noteField ? noteField.value.trim() : "";
-  const buttons = submissionList.querySelectorAll(`button[data-id="${recordId}"]`);
+  const buttons = submissionList.querySelectorAll(`button[data-id="${submissionId}"]`);
   buttons.forEach(b => b.disabled = true);
 
   try {
     show("Submitting review...", "");
-    await reviewExternalCertificateFn({ recordId, decision, note });
-    show(`Submission ${decision.replaceAll("_", " ")}.`, "ok");
+    await reviewBookSubmissionFn({ submissionId, decision, note });
+    show(`Submission ${decision}.`, "ok");
   } catch (error) {
     console.error(error);
     show(error.message || "Could not submit this review.", "bad");
@@ -270,18 +271,18 @@ function startRealtime() {
   if (unsubscribe) unsubscribe();
 
   unsubscribe = onSnapshot(
-    collection(db, "externalLearningRecords"),
+    collection(db, "bookSubmissions"),
     snapshot => {
       ITEMS = [];
       snapshot.forEach(d => ITEMS.push({ id: d.id, ...d.data() }));
       ITEMS.sort((a, b) => (b.submittedAt?.seconds || b.createdAt?.seconds || 0) - (a.submittedAt?.seconds || a.createdAt?.seconds || 0));
       updateStats();
       render();
-      show("External certificate submissions loaded.", "ok");
+      show("Book submissions loaded.", "ok");
     },
     error => {
       console.error(error);
-      show("Could not load external certificate submissions.", "bad");
+      show("Could not load book submissions.", "bad");
     }
   );
 }

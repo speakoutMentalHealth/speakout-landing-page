@@ -1303,8 +1303,24 @@ function renderBook(book){
     `;
 
 
+  const purchaseUrl =
+    book.purchaseUrl ||
+    "";
+
+
   heroActions.innerHTML =
-    allowed
+    purchaseUrl
+    ? `
+      <a
+        class="btn gold"
+        href="${escapeHtml(purchaseUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        🛒 Get this Book${book.purchasePlatform ? ` on ${escapeHtml(book.purchasePlatform)}` : ""}
+      </a>
+    `
+    : allowed
     ? `
       <a
         class="btn primary"
@@ -1338,7 +1354,27 @@ function renderBook(book){
 
 
   actions.innerHTML =
-    allowed
+    purchaseUrl
+    ? `
+      <a
+        class="btn gold"
+        href="${escapeHtml(purchaseUrl)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        id="purchaseBookButton"
+      >
+        🛒 Get this Book${book.purchasePlatform ? ` on ${escapeHtml(book.purchasePlatform)}` : ""}
+      </a>
+
+      <button
+        class="btn ghost"
+        type="button"
+        id="backButton"
+      >
+        Back
+      </button>
+    `
+    : allowed
     ? `
       <a
         class="btn primary"
@@ -1398,7 +1434,7 @@ function renderBook(book){
 
 
   premiumNote.style.display =
-    allowed
+    (allowed || purchaseUrl)
     ? "none"
     : "block";
 

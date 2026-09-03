@@ -222,6 +222,16 @@ function verificationCode() {
   return crypto.randomBytes(6).toString("hex").toUpperCase();
 }
 
+function slugify(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+}
+
 /**
  * One-time migration:
  * 1) Extracts answer-bearing assessments from public course docs.
@@ -742,6 +752,104 @@ exports.reviewExternalCertificate = onCall(async request => {
         certificateNumber: certificate.certificateNumber,
         verificationCode: certificate.verificationCode
       } : null
+    };
+  });
+});
+
+
+/**
+ * Book-submission review (admin only).
+ *
+ * Anyone signed in can submit a book (free or paid/external) into
+ * /bookSubmissions via submit-book.html. This callable lets an approved
+ * admin/super_admin approve or reject it. On approval it idempotently
+ * creates the public /books document the E-Library reads from, reusing
+ * the same document across re-approvals instead of duplicating it.
+ */
+const BOOK_REVIEW_DECISIONS = {
+  approved: "approved",
+  rejected: "rejected"
+};
+
+exports.reviewBookSubmission = onCall(async request => {
+  const uid = requireAuth(request);
+  const reviewer = await requireAdmin(uid);
+
+  const submissionId = String(request.data?.submissionId || "").trim();
+  const decision = norm(request.data?.decision);
+  const note = String(request.data?.note || "").trim();
+
+  if (!submissionId) {
+    throw new HttpsError("invalid-argument", "submissionId is required.");
+  }
+  const mappedStatus = BOOK_REVIEW_DECISIONS[decision];
+  if (!mappedStatus) {
+    throw new HttpsError("invalid-argument", "decision must be approved or rejected.");
+  }
+
+  const submissionRef = db.doc(`bookSubmissions/${submissionId}`);
+
+  return await db.runTransaction(async tx => {
+    const submissionSnap = await tx.get(submissionRef);
+    if (!submissionSnap.exists) throw new HttpsError("not-found", "Submission not found.");
+    const submission = submissionSnap.data();
+
+    if (!submission.title) {
+      throw new HttpsError("failed-precondition", "Submission is missing a title.");
+    }
+
+    let bookId = submission.bookId || null;
+    let book = null;
+
+    if (decision === "approved") {
+      bookId = bookId || `${slugify(submission.title)}-${submissionId.slice(0, 6)}`;
+      const bookRef = db.doc(`books/${bookId}`);
+      const isPaid = norm(submission.accessType) === "paid";
+
+      book = {
+        id: bookId,
+        title: submission.title,
+        author: submission.authorName || "Independent Author",
+        category: submission.category || "general",
+        audience: Array.isArray(submission.audience) ? submission.audience : ["all"],
+        shortDescription: submission.shortDescription || "",
+        description: submission.description || submission.shortDescription || "",
+        coverUrl: submission.coverUrl || "",
+        accessType: isPaid ? "paid" : "free",
+        price: isPaid ? Number(submission.price || 0) : 0,
+        currency: isPaid ? (submission.currency || "₦") : "₦",
+        purchasePlatform: isPaid ? (submission.purchasePlatform || "") : "",
+        purchaseUrl: isPaid ? (submission.purchaseUrl || "") : "",
+        tags: Array.isArray(submission.tags) ? submission.tags : [],
+        status: "active",
+        featured: false,
+        source: "community",
+        submittedBy: submission.submittedBy || "",
+        contactEmail: submission.contactEmail || "",
+        verifiedBy: uid,
+        verifiedByName: reviewer.fullName || reviewer.email || "SpeakOut Admin",
+        verifiedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+        ...(submission.bookId ? {} : { createdAt: FieldValue.serverTimestamp() })
+      };
+
+      tx.set(bookRef, book, { merge: true });
+    }
+
+    tx.set(submissionRef, {
+      status: mappedStatus,
+      bookId: decision === "approved" ? bookId : (submission.bookId || null),
+      reviewerFeedback: note,
+      reviewedBy: uid,
+      reviewedByName: reviewer.fullName || reviewer.email || "SpeakOut Admin",
+      reviewedAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    return {
+      ok: true,
+      decision,
+      bookId: book ? book.id : null
     };
   });
 });

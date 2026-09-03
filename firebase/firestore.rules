@@ -123,9 +123,31 @@ service cloud.firestore {
       allow update, delete: if isSuperAdmin() || isSchoolAdmin();
     }
 
+    /* The E-Library is a public showcase (free and paid/external books),
+       so anyone can browse it without a portal account — only writes
+       stay admin-only. */
     match /books/{bookId} {
-      allow read: if isApproved();
+      allow read: if true;
       allow write: if isSuperAdmin();
+    }
+
+    /* Anyone signed in (no portal/school approval required) can submit a
+       book for the E-Library. Their own write may only ever set
+       status "pending" — approval/rejection happens through the
+       reviewBookSubmission Cloud Function or an admin, never the
+       submitter themselves. */
+    match /bookSubmissions/{submissionId} {
+      allow create: if isSignedIn() &&
+        request.resource.data.submittedBy == request.auth.uid &&
+        request.resource.data.status == "pending";
+
+      allow read: if isSignedIn() &&
+        (
+          resource.data.submittedBy == request.auth.uid ||
+          isSuperAdmin()
+        );
+
+      allow update, delete: if isSuperAdmin();
     }
 
     match /parentResources/{resourceId} {

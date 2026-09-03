@@ -80,6 +80,7 @@ section{padding:34px 0}
 <a class="btn soft" href="admin-content-review.html">Content</a>
 <a class="btn soft" href="admin-payments.html">Payments</a>
 <a class="btn soft" href="admin-certificates.html">Certificates</a>
+<a class="btn soft" href="admin-book-submissions.html">Book Submissions</a>
 <a class="btn danger" href="auth.html" id="logoutLink">Logout</a>
 </nav>
 </div>
@@ -103,6 +104,7 @@ section{padding:34px 0}
 <div class="card stat"><strong id="certCount">0</strong><span>Certificates</span></div>
 <div class="card stat"><strong id="workshopCount">0</strong><span>Workshops</span></div>
 <div class="card stat"><strong id="externalCertCount">0</strong><span>External Certs Pending</span></div>
+<div class="card stat"><strong id="bookSubmissionCount">0</strong><span>Book Submissions Pending</span></div>
 </div>
 <div class="grid g4" style="margin-top:18px">
 <a class="card" href="admin-schools.html">
@@ -134,6 +136,11 @@ section{padding:34px 0}
 <h3>External Certificate Review</h3>
 <p>Approve, reject or request resubmission of externally-completed course evidence.</p>
 <span class="btn gold">Review External Certs</span>
+</a>
+<a class="card" href="admin-book-submissions.html">
+<h3>Book Submission Review</h3>
+<p>Approve or reject books submitted by authors and publishers, including paid Selar/Amazon listings.</p>
+<span class="btn gold">Review Book Submissions</span>
 </a>
 <a class="card" href="admin-workshops.html">
 <h3>Workshops</h3>
@@ -282,6 +289,17 @@ async function countPendingExternalCerts(){
   }
 }
 
+async function countPendingBookSubmissions(){
+  try{
+    const snap = await getDocs(
+      query(collection(db, "bookSubmissions"), where("status", "==", "pending"))
+    );
+    return snap.size || 0;
+  }catch(error){
+    return 0;
+  }
+}
+
 async function loadCounts(){
   schoolCount.textContent = await countCollection("schools");
   userCount.textContent = await countCollection("users");
@@ -290,6 +308,7 @@ async function loadCounts(){
   certCount.textContent = await countCollection("certificates");
   workshopCount.textContent = await countCollection("workshops");
   externalCertCount.textContent = await countPendingExternalCerts();
+  bookSubmissionCount.textContent = await countPendingBookSubmissions();
 }
 
 async function loadPendingUsers(){

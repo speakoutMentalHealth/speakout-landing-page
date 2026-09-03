@@ -18,11 +18,10 @@
 <a class="btn dark" href="auth.html">Login</a>
 </nav></div></header>
 <main id="main-content">
-<section class="hero"><div class="container"><span class="kicker">Protected Digital Knowledge Center</span><h1>SpeakOut E-Library</h1><p>Read premium interactive books, guides, workbooks and learning resources with chapter navigation, activities, quizzes and progress tracking.</p><p><a class="btn gold" href="admin-books.html">Admin Upload</a> <a class="btn primary" href="#books">Browse Books</a></p></div></section>
-<section class="controls" id="filters"><div class="container"><div class="panel"><span class="label" id="searchLabel">Search</span><div class="controls-grid"><input aria-label="Search books by title, author or description" class="input" id="searchInput" placeholder="Search books..."/><select aria-label="Filter by category" class="select" id="categoryFilter"><option value="all">All Categories</option><option value="mental-health">Mental Health</option><option value="leadership">Leadership</option><option value="digital-skills">Digital Skills</option><option value="career">Career</option><option value="financial-literacy">Financial Literacy</option><option value="teacher-training">Teacher Training</option><option value="parent-training">Parent Training</option><option value="ambassador-training">Ambassador Training</option><option value="ngo-community">NGO &amp; Community</option><option value="public-speaking">Public Speaking</option></select><select aria-label="Filter by access type" class="select" id="accessFilter"><option value="all">Free &amp; Premium</option><option value="free">Free</option><option value="paid">Premium</option></select><select aria-label="Sort books" class="select" id="sortFilter"><option value="featured">Featured</option><option value="newest">Newest</option><option value="title">Title A-Z</option></select></div><div class="notice empty" id="emptyState">No matching books found.</div></div></div></section>
+<section class="hero"><div class="container"><span class="kicker">Free &amp; Paid Books, Open to Everyone</span><h1>SpeakOut E-Library</h1><p>Read free interactive books, guides and workbooks with chapter navigation, activities and progress tracking &#x2014; or discover paid books from independent authors, with a direct link to buy on Selar, Amazon or elsewhere.</p><p><a class="btn primary" href="#books">Browse Books</a> <a class="btn gold" href="submit-book.html">Submit Your Book</a></p></div></section>
+<section class="controls" id="filters"><div class="container"><div class="panel"><span class="label" id="searchLabel">Search</span><div class="controls-grid"><input aria-label="Search books by title, author or description" class="input" id="searchInput" placeholder="Search books..."/><select aria-label="Filter by category" class="select" id="categoryFilter"><option value="all">All Categories</option><option value="mental-health">Mental Health</option><option value="leadership">Leadership</option><option value="digital-skills">Digital Skills</option><option value="career">Career</option><option value="financial-literacy">Financial Literacy</option><option value="teacher-training">Teacher Training</option><option value="parent-training">Parent Training</option><option value="ambassador-training">Ambassador Training</option><option value="ngo-community">NGO &amp; Community</option><option value="public-speaking">Public Speaking</option><option value="general">General</option></select><select aria-label="Filter by access type" class="select" id="accessFilter"><option value="all">Free &amp; Premium</option><option value="free">Free</option><option value="paid">Premium</option></select><select aria-label="Sort books" class="select" id="sortFilter"><option value="featured">Featured</option><option value="newest">Newest</option><option value="title">Title A-Z</option></select></div><div class="notice empty" id="emptyState">No matching books found.</div></div></div></section>
 <section id="books"><div class="container"><h2 class="label" style="margin-bottom:16px">Available Books</h2><div class="loading" id="loading">Loading books...</div><div class="grid g3" id="bookGrid"></div></div></section>
 </main><footer class="footer"><div class="container">SpeakOut Portal • <a href="portal.html">Back to Portal</a></div></footer>
-<script src="auth-guard.js" type="module"></script><script src="protected-page-guard.js" type="module"></script>
 <script type="module">
 import { db } from "./firebase-config.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -32,16 +31,21 @@ const money=i=>(i.accessType||"free")==="free"?"Free":`${i.currency||"₦"}${Num
 function card(i){
  const c=i.coverUrl?`<img src="${i.coverUrl}" alt="${i.title||"cover"}">`:"";
  const a=i.accessType||"free";
+ const external=!!i.purchaseUrl;
+ const actions=external
+  ?`<a class="btn gold" href="${i.purchaseUrl}" target="_blank" rel="noopener noreferrer">🛒 Get this Book</a>
+    <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>`
+  :`<a class="btn primary" href="book-reader.html?id=${encodeURIComponent(i.id)}">📖 Read Interactive</a>
+    <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>
+    ${a!=="free"?`<a class="btn gold" href="book-reader.html?id=${encodeURIComponent(i.id)}&preview=1">Preview</a>`:""}`;
  return `<article class="card">
   <div class="cover">${c}<strong>${i.title||"Untitled"}</strong></div>
-  <div class="pills"><span class="pill">${pretty(i.category)}</span><span class="pill ${a==="free"?"green":"gold"}">${money(i)}</span>${i.featured?'<span class="pill gold">Featured</span>':""}</div>
+  <div class="pills"><span class="pill">${pretty(i.category)}</span><span class="pill ${a==="free"?"green":"gold"}">${money(i)}</span>${i.featured?'<span class="pill gold">Featured</span>':""}${i.source==="community"?'<span class="pill">Community</span>':""}</div>
   <h3>${i.title||"Untitled"}</h3>
   <p><strong>${i.author||"SpeakOut"}</strong></p>
   <p>${i.shortDescription||i.description||""}</p>
   <div class="card-actions">
-    <a class="btn primary" href="book-reader.html?id=${encodeURIComponent(i.id)}">📖 Read Interactive</a>
-    <a class="btn softBtn" href="book-details.html?id=${encodeURIComponent(i.id)}">Details</a>
-    ${(i.accessType||"free")!=="free"?`<a class="btn gold" href="book-reader.html?id=${encodeURIComponent(i.id)}&preview=1">Preview</a>`:""}
+    ${actions}
   </div>
  </article>`
 }

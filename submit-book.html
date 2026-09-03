@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Submit Your Book | SpeakOut E-Library</title>
+<meta content="Showcase your free or paid book (including Selar and Amazon listings) in the SpeakOut E-Library." name="description"/>
+<link href="logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
+  --green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;
+  --ink:#111827;--muted:#637083;--line:#e5edf6;--bg:#f7f9fc;--shadow:0 18px 44px rgba(7,21,43,.10)
+}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{text-decoration:none;color:inherit}.container{width:min(1050px,92%);margin:auto}
+.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px}.brand h2{margin:0;color:var(--blue);font-size:1.05rem}.brand p{margin:0;color:#d98200;font-size:.62rem;font-weight:900}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.hero{background:radial-gradient(circle at 85% 20%,rgba(244,162,28,.22),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));color:#fff}
+.hero .container{padding:54px 0}.hero h1{font-size:clamp(2rem,5vw,4.2rem);line-height:1.04;margin:14px 0}.hero p{max-width:800px;line-height:1.65;color:rgba(255,255,255,.9)}
+.kicker,.label{display:inline-flex;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.kicker{background:rgba(255,255,255,.14)}.label{background:var(--soft);color:var(--blue);margin-bottom:12px}
+section{padding:38px 0}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:20px}
+.field{display:grid;gap:7px;margin-bottom:14px}.field label{font-weight:800;font-size:.88rem}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font:inherit;background:#fbfdff}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.08)}
+textarea{min-height:100px;resize:vertical}
+.check-row{display:flex;flex-wrap:wrap;gap:10px}
+.check-row label{display:flex;align-items:center;gap:6px;font-weight:600;font-size:.86rem;background:#fbfdff;border:1px solid var(--line);border-radius:12px;padding:8px 11px;cursor:pointer}
+.check-row input{width:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:11px 16px;font-weight:900;cursor:pointer;text-decoration:none}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}.gold{background:var(--gold);color:#241300}.dark{background:var(--navy);color:#fff}
+.notice{padding:14px;border-radius:14px;background:var(--soft);color:#1b4d80;line-height:1.55;margin-bottom:14px}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}.warn{background:var(--goldSoft);color:#704800}
+.preview{max-width:100%;max-height:260px;border-radius:16px;border:1px solid var(--line);margin-top:10px;display:none}
+.check{list-style:none;padding:0}.check li{padding:7px 0 7px 26px;position:relative;color:#46556a}.check li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+.paid-fields{display:none;border-top:1px dashed var(--line);margin-top:6px;padding-top:14px}
+.paid-fields.show{display:block}
+.access-toggle{display:flex;gap:10px}
+.access-toggle label{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:14px;padding:11px;cursor:pointer;font-weight:800}
+.access-toggle input{width:auto}
+.footer{background:#061126;color:rgba(255,255,255,.75);padding:32px 0;margin-top:20px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}}
+</style>
+<link href="css/portal-ui.css" rel="stylesheet"/>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+<div class="container nav-inner">
+<a class="brand" href="e-library.html">
+<img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/>
+<div><h2>SpeakOut</h2><p>E-Library</p></div>
+</a>
+<nav class="links">
+<a class="btn soft" href="e-library.html">E-Library</a>
+<a class="btn dark" href="auth.html">Portal</a>
+</nav>
+</div>
+</header>
+<section class="hero">
+<div class="container">
+<span class="kicker">Author &amp; Publisher Submission</span>
+<h1>Showcase your book in the SpeakOut E-Library.</h1>
+<p>Submit a free book for readers, or a paid book with a link to your Selar or Amazon listing. Every submission is reviewed before it appears publicly.</p>
+</div>
+</section>
+<section>
+<div class="container">
+<div class="notice" id="statusBox">Checking your sign-in status...</div>
+<div class="grid" id="contentArea" style="display:none">
+<main class="panel" id="main-content">
+<span class="label">Book Details</span>
+<h2>Tell us about your book</h2>
+<form id="submissionForm">
+<div class="field">
+<label for="title">Book title</label>
+<input id="title" placeholder="Your book's title" required=""/>
+</div>
+<div class="field">
+<label for="authorName">Author / publisher name</label>
+<input id="authorName" placeholder="How your name should appear" required=""/>
+</div>
+<div class="field">
+<label for="contactEmail">Contact email</label>
+<input id="contactEmail" placeholder="you@example.com" required="" type="email"/>
+</div>
+<div class="field">
+<label for="category">Category</label>
+<select id="category" required="">
+<option value="">Select a category</option>
+<option value="mental-health">Mental Health</option>
+<option value="leadership">Leadership</option>
+<option value="digital-skills">Digital Skills</option>
+<option value="career">Career</option>
+<option value="financial-literacy">Financial Literacy</option>
+<option value="teacher-training">Teacher Training</option>
+<option value="parent-training">Parent Training</option>
+<option value="ambassador-training">Ambassador Training</option>
+<option value="ngo-community">NGO &amp; Community</option>
+<option value="public-speaking">Public Speaking</option>
+<option value="general">General / Other</option>
+</select>
+</div>
+<div class="field">
+<label>Who is this book for?</label>
+<div class="check-row">
+<label><input type="checkbox" value="student"/> Students</label>
+<label><input type="checkbox" value="parent"/> Parents</label>
+<label><input type="checkbox" value="teacher"/> Teachers</label>
+<label><input type="checkbox" value="school"/> Schools &amp; NGOs</label>
+<label><input checked="" type="checkbox" value="general"/> General Public</label>
+</div>
+</div>
+<div class="field">
+<label for="shortDescription">Short description (shown on the book card)</label>
+<input id="shortDescription" maxlength="140" placeholder="One sentence describing your book" required=""/>
+</div>
+<div class="field">
+<label for="description">Full description</label>
+<textarea id="description" placeholder="What readers will get from this book" required=""></textarea>
+</div>
+<div class="field">
+<label for="coverFile">Cover image</label>
+<input accept="image/jpeg,image/png,image/webp" id="coverFile" type="file"/>
+<small style="color:var(--muted)">JPG, PNG or WebP. Optional, but books with a cover get far more clicks.</small>
+<img alt="Cover preview" class="preview" decoding="async" id="coverPreview" loading="lazy"/>
+</div>
+<div class="field">
+<label>Is this book free or paid?</label>
+<div class="access-toggle">
+<label><input checked="" id="accessFree" name="accessType" type="radio" value="free"/> Free to read</label>
+<label><input id="accessPaid" name="accessType" type="radio" value="paid"/> Paid (external link)</label>
+</div>
+</div>
+<div class="paid-fields" id="paidFields">
+<div class="field">
+<label for="price">Price</label>
+<input id="price" min="0" placeholder="e.g. 8500" step="1" type="number"/>
+</div>
+<div class="field">
+<label for="currency">Currency</label>
+<select id="currency">
+<option value="₦">₦ Naira</option>
+<option value="$">$ US Dollar</option>
+<option value="£">£ Pound</option>
+<option value="€">€ Euro</option>
+</select>
+</div>
+<div class="field">
+<label for="purchasePlatform">Where can readers buy it?</label>
+<select id="purchasePlatform">
+<option value="Selar">Selar</option>
+<option value="Amazon">Amazon</option>
+<option value="Other">Other platform</option>
+</select>
+</div>
+<div class="field">
+<label for="purchaseUrl">Purchase link</label>
+<input id="purchaseUrl" placeholder="https://selar.co/..." type="url"/>
+</div>
+</div>
+<div class="notice warn">
+      Submit only books you have the right to distribute or sell. Paid books link out to your own Selar, Amazon or other listing — SpeakOut does not process payments and never takes a cut.
+    </div>
+<button class="btn gold" id="submitButton" type="submit">Submit for Review</button>
+</form>
+<div class="notice" id="resultBox" style="display:none;margin-top:16px"></div>
+</main>
+<aside class="panel">
+<span class="label">Review Process</span>
+<h2>What happens next?</h2>
+<ul class="check">
+<li>Your submission is saved as Pending Review.</li>
+<li>A SpeakOut admin checks the details and cover.</li>
+<li>Approved books appear in the public E-Library.</li>
+<li>You'll keep full ownership and control of your book.</li>
+</ul>
+<div class="actions">
+<a class="btn soft" href="e-library.html">Browse the E-Library</a>
+</div>
+</aside>
+</div>
+</div>
+</section>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • SpeakHub Academy</div></footer>
+<script type="module">
+import { auth,db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  doc,setDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const $=id=>document.getElementById(id);
+const statusBox=$("statusBox"),contentArea=$("contentArea"),submissionForm=$("submissionForm"),
+coverFile=$("coverFile"),coverPreview=$("coverPreview"),submitButton=$("submitButton"),resultBox=$("resultBox"),
+paidFields=$("paidFields"),accessFree=$("accessFree"),accessPaid=$("accessPaid");
+
+let currentUser=null;
+
+function show(message,type=""){statusBox.textContent=message;statusBox.className=`notice ${type}`}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    if(!file||!["image/jpeg","image/png","image/webp"].includes(file.type)){
+      reject(new Error("Please select a JPG, PNG or WebP image."));return;
+    }
+    if(file.size>8*1024*1024){reject(new Error("The selected image is too large. Please use an image below 8 MB."));return;}
+    const reader=new FileReader(),image=new Image();
+    reader.onload=e=>image.src=e.target.result;
+    image.onload=()=>{
+      const maxWidth=900,maxHeight=1200;
+      let width=image.width,height=image.height;
+      const ratio=Math.min(1,maxWidth/width,maxHeight/height);
+      width=Math.round(width*ratio);height=Math.round(height*ratio);
+      const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+      canvas.getContext("2d").drawImage(image,0,0,width,height);
+      let quality=.78,data=canvas.toDataURL("image/jpeg",quality);
+      while(data.length>420000&&quality>.40){quality-=.08;data=canvas.toDataURL("image/jpeg",quality);}
+      if(data.length>500000){reject(new Error("Cover image is still too large after compression. Please upload a smaller image."));return;}
+      resolve(data);
+    };
+    image.onerror=()=>reject(new Error("Could not read the selected image."));
+    reader.onerror=()=>reject(new Error("Could not read the selected file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+coverFile.addEventListener("change",()=>{
+  const file=coverFile.files?.[0];
+  if(!file){coverPreview.style.display="none";coverPreview.removeAttribute("src");return;}
+  const url=URL.createObjectURL(file);coverPreview.src=url;coverPreview.style.display="block";
+  coverPreview.onload=()=>URL.revokeObjectURL(url);
+});
+
+function updateAccessFields(){
+  paidFields.classList.toggle("show",accessPaid.checked);
+}
+accessFree.addEventListener("change",updateAccessFields);
+accessPaid.addEventListener("change",updateAccessFields);
+
+submissionForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(!currentUser)return;
+
+  submitButton.disabled=true;submitButton.textContent="Submitting...";
+  resultBox.style.display="block";resultBox.className="notice";resultBox.textContent="Submitting your book for review...";
+
+  try{
+    const title=$("title").value.trim();
+    const authorName=$("authorName").value.trim();
+    const contactEmail=$("contactEmail").value.trim();
+    const category=$("category").value;
+    const shortDescription=$("shortDescription").value.trim();
+    const description=$("description").value.trim();
+    const isPaid=accessPaid.checked;
+    const price=$("price").value;
+    const currency=$("currency").value;
+    const purchasePlatform=$("purchasePlatform").value;
+    const purchaseUrl=$("purchaseUrl").value.trim();
+
+    if(!title||!authorName||!contactEmail||!category||!shortDescription||!description){
+      throw new Error("Please fill in every required field.");
+    }
+
+    const audience=[...document.querySelectorAll('.check-row input[type="checkbox"]:checked')].map(el=>el.value);
+    if(!audience.length)audience.push("general");
+
+    if(isPaid){
+      if(!price||Number(price)<=0)throw new Error("Enter a price for a paid book.");
+      if(!purchaseUrl)throw new Error("Enter the link where readers can buy your book.");
+      try{new URL(purchaseUrl)}catch{throw new Error("Enter a valid purchase link beginning with http:// or https://.");}
+    }
+
+    let coverUrl="";
+    const file=coverFile.files?.[0];
+    if(file)coverUrl=await compressImage(file);
+
+    const submissionId=`${currentUser.uid}_${Date.now()}`;
+
+    await setDoc(doc(db,"bookSubmissions",submissionId),{
+      title,
+      authorName,
+      contactEmail,
+      category,
+      audience,
+      shortDescription,
+      description,
+      coverUrl,
+      accessType:isPaid?"paid":"free",
+      price:isPaid?Number(price):0,
+      currency:isPaid?currency:"₦",
+      purchasePlatform:isPaid?purchasePlatform:"",
+      purchaseUrl:isPaid?purchaseUrl:"",
+      status:"pending",
+      submittedBy:currentUser.uid,
+      submittedByEmail:currentUser.email||contactEmail,
+      submittedAt:serverTimestamp(),
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
+      reviewerFeedback:"",
+      reviewedBy:"",
+      reviewedAt:null
+    });
+
+    resultBox.className="notice ok";
+    resultBox.innerHTML="<strong>Submission received.</strong><br>Your book is now pending SpeakOut review. You'll see it in the E-Library once approved.";
+    submissionForm.reset();
+    coverPreview.style.display="none";coverPreview.removeAttribute("src");
+    paidFields.classList.remove("show");
+    submitButton.textContent="Submit Another Book";
+
+  }catch(error){
+    console.error(error);resultBox.className="notice bad";resultBox.textContent=error.message||"Could not submit your book.";
+  }finally{
+    submitButton.disabled=false;
+    if(submitButton.textContent==="Submitting...")submitButton.textContent="Submit for Review";
+  }
+});
+
+onAuthStateChanged(auth,user=>{
+  if(!user){
+    show("Please sign in to submit a book.","warn");
+    setTimeout(()=>{location.href="auth.html";},1200);
+    return;
+  }
+  currentUser=user;
+  contentArea.style.display="grid";
+  show("Signed in. Fill in the form to submit your book for review.","ok");
+});
+</script>
+<script defer="" src="portal-ui.js"></script>
+</body>
+</html>
