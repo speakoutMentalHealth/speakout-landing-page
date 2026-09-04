@@ -386,7 +386,7 @@ completeButton.onclick=async()=>{
  try{
    const result=await markLessonCompleteFn({courseId,lessonId:l.id});
    applyServerProgress(result.data.progress);
-   renderCurrentView();
+   nextButton.onclick();
  }catch(error){
    console.error("Could not mark lesson complete",error);
    setNotice(esc(error.message||"Could not mark this lesson complete. Please try again."),"error");
