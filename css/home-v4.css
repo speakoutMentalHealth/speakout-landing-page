@@ -269,6 +269,25 @@ h3{color:var(--navy)}
 .dashboard-card span{color:#ffd78a;font-weight:900;text-transform:uppercase;font-size:.75rem}
 .dashboard-card h3{color:#fff;font-size:2rem;margin:10px 0}
 .dashboard-card p{color:rgba(255,255,255,.84)}
+.icon-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:46px;
+  height:46px;
+  border-radius:15px;
+  background:linear-gradient(145deg,var(--sky),#fff);
+  border:1px solid var(--line);
+  box-shadow:0 6px 16px rgba(6,21,47,.06);
+  flex-shrink:0;
+}
+.icon-chip svg{width:24px;height:24px;stroke:var(--blue)}
+.icon-chip.light{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.24)}
+.icon-chip.light svg{stroke:#fff}
+.icon-chip.gold{background:linear-gradient(145deg,#fff3de,#fff)}
+.icon-chip.gold svg{stroke:var(--gold)}
+.mini-grid a strong,.eco-card strong,.movement-grid a strong{display:flex;align-items:center;gap:10px}
+.media-list strong{display:flex;align-items:center;gap:10px}
 .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .mini-grid a{
   min-height:140px;
@@ -331,7 +350,6 @@ p{color:var(--muted);line-height:1.75}
 }
 .eco-card:hover,.movement-grid a:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
 .eco-card{display:grid;gap:8px}
-.eco-card b{font-size:1.8rem}
 .eco-card strong{font-size:1.1rem;color:var(--navy)}
 .eco-card span,.movement-grid span{color:var(--muted);font-size:.95rem;line-height:1.5}
 .program-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
