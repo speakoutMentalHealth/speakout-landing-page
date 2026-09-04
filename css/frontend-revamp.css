@@ -49,6 +49,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 h1,h2,h3,h4{color:var(--so-navy);text-wrap:balance}
 h1{letter-spacing:-.045em}
 h2{letter-spacing:-.035em}
+.hero h1,.hero h2,.hero h3,.hero h4,.page-hero h1,.page-hero h2,.page-hero h3,.page-hero h4{color:#fff}
 p{color:var(--so-muted);line-height:1.72}
 main>section{padding-top:clamp(64px,7vw,96px);padding-bottom:clamp(64px,7vw,96px)}
 main>section:first-child{padding-top:clamp(54px,6vw,82px)}
