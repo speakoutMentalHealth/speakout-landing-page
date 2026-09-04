@@ -186,7 +186,7 @@ a{text-decoration:none;color:inherit}
   overflow:hidden;
   background:
     linear-gradient(90deg,rgba(9,21,37,.92) 0%,rgba(11,46,95,.78) 40%,rgba(11,46,95,.38) 66%,rgba(255,255,255,.18) 100%),
-    url("assets/famsas/hero-students.jpg") right center/cover no-repeat;
+    url("images/outreach-1.webp") right center/cover no-repeat;
 }
 
 .hero:before{
