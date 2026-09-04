@@ -81,6 +81,28 @@ main>section:first-child{padding-top:clamp(54px,6vw,82px)}
 }
 :is(.belief-card,.challenge-card,.program-card,.academy-card,.resource-card,.impact-card,.partner-card,.news-card,.media-card,.school-card,.value-card,.team-card,.research-card,.support-card,.option-card,.way-card){transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
 
+/* Icon chips - shared line-icon container used in place of emoji */
+.icon-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:46px;
+  height:46px;
+  border-radius:15px;
+  background:linear-gradient(145deg,var(--so-soft),#fff);
+  border:1px solid var(--so-line);
+  box-shadow:0 6px 16px rgba(7,27,58,.06);
+  flex-shrink:0;
+}
+.icon-chip svg{width:24px;height:24px;stroke:var(--so-blue)}
+.icon-chip.light{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.24)}
+.icon-chip.light svg{stroke:#fff}
+.icon-chip.gold{background:linear-gradient(145deg,#fff3de,#fff)}
+.icon-chip.gold svg{stroke:var(--so-gold)}
+.icon-chip.green{background:linear-gradient(145deg,#e6f7f2,#fff)}
+.icon-chip.green svg{stroke:var(--so-green)}
+strong:has(.icon-chip),h3:has(.icon-chip){display:flex;align-items:center;gap:10px}
+
 /* Images */
 main img{border-radius:18px}
 .story-image-card img,.about-hero-panel img{border-radius:calc(var(--so-radius) - 2px)}
