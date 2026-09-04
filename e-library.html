@@ -30,7 +30,7 @@ const pretty=v=>(v||"—").toString().replaceAll("-"," ");
 const money=i=>(i.accessType||"free")==="free"?"Free":Number(i.price||0)?`${i.currency||"₦"}${Number(i.price||0).toLocaleString()}`:"Premium";
 const escapeHtml=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 function card(i){
- const c=i.coverUrl?`<img src="${escapeHtml(i.coverUrl)}" alt="${escapeHtml(i.title||"cover")}">`:"";
+ const c=i.coverUrl?`<img src="${escapeHtml(i.coverUrl)}" alt="${escapeHtml(i.title||"cover")}" onerror="this.remove()">`:"";
  const a=i.accessType||"free";
  const external=!!i.purchaseUrl;
  const downloadable=!external&&!!i.downloadUrl;

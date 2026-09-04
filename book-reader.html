@@ -364,7 +364,7 @@ function renderSlide(){
   const slide = slides[currentIndex];
   const animation = slide.animation || "fade-up";
   const image = slide.imageUrl
-    ? `<img src="${escapeHtml(slide.imageUrl)}" alt="${escapeHtml(slide.title || "Slide image")}">`
+    ? `<img src="${escapeHtml(slide.imageUrl)}" alt="${escapeHtml(slide.title || "Slide image")}" onerror="this.remove()">`
     : "";
 
   stage.innerHTML = `

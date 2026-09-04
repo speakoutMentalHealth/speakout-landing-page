@@ -1246,6 +1246,7 @@ function renderBook(book){
       <img
         src="${escapeHtml(book.coverUrl)}"
         alt="${escapeHtml(book.title || "Book cover")}"
+        onerror="this.remove()"
       >
       <strong>
         ${escapeHtml(book.title || "")}
