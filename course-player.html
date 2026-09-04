@@ -42,8 +42,7 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 .btn:disabled{opacity:.42;cursor:not-allowed}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.green{background:var(--green);color:#fff}.danger{background:var(--redSoft);color:var(--red)}
 .quiz-box{border:1px solid var(--line);border-radius:18px;padding:20px;background:#fbfdff}.quiz-question{padding:16px;border:1px solid var(--line);border-radius:14px;margin:12px 0}.quiz-question h4{margin:0 0 10px;color:var(--navy)}
 .quiz-option{display:flex;gap:8px;align-items:flex-start;margin:8px 0}.quiz-result{margin-top:14px;padding:14px;border-radius:13px;background:var(--soft)}
-.score-big{font-size:2rem;font-weight:900;color:var(--blue)}.completion-card{padding:clamp(24px,4vw,44px);border-radius:24px;background:linear-gradient(135deg,var(--navy),var(--blue));border:1px solid rgba(255,255,255,.14);color:#fff;text-align:center;position:relative;overflow:hidden}.completion-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(244,162,28,.32),transparent 35%)}.completion-card>*{position:relative;z-index:1}.completion-card h2{color:#fff;font-size:clamp(1.7rem,4vw,2.3rem);margin-bottom:10px}.completion-card p{color:rgba(255,255,255,.86)}.completion-card .notice{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;text-align:left}.completion-card .notice small{color:rgba(255,255,255,.65)}.completion-card .btn-row{justify-content:center}
-.completion-card h2{color:var(--navy);font-size:2rem}.profile-confirm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.score-big{font-size:2rem;font-weight:900;color:var(--blue)}.completion-card{padding:clamp(24px,4vw,44px);border-radius:24px;background:linear-gradient(135deg,var(--navy),var(--blue));border:1px solid rgba(255,255,255,.14);color:#fff;text-align:center;position:relative;overflow:hidden}.completion-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(244,162,28,.32),transparent 35%)}.completion-card>*{position:relative;z-index:1}.completion-card h2{color:#fff;font-size:clamp(1.7rem,4vw,2.3rem);margin-bottom:10px}.completion-card p{color:rgba(255,255,255,.86)}.completion-card .notice{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;text-align:left}.completion-card .notice small{color:rgba(255,255,255,.65)}.completion-card .btn-row{justify-content:center}.profile-confirm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
 .profile-confirm input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}
 .feature-list{padding-left:18px;line-height:1.8;color:var(--muted)}.loading{margin:25px 0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 .source-note{color:var(--muted);font-size:.78rem;margin-top:12px}
@@ -91,15 +90,8 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 </div>
 <script type="module">
 import { db,auth } from "./firebase-config.js";
-import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc,getDoc,setDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { getFunctions,httpsCallable } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-functions.js";
-
-const functions=getFunctions();
-const getLearningStateFn=httpsCallable(functions,"getLearningState");
-const markLessonCompleteFn=httpsCallable(functions,"markLessonComplete");
-const getAssessmentFn=httpsCallable(functions,"getAssessment");
-const submitAssessmentFn=httpsCallable(functions,"submitAssessment");
 
 const params=new URLSearchParams(location.search);
 const courseId=params.get("id");
@@ -153,26 +145,42 @@ function courseRequirementCounts(){
 }
 function coursePercent(){const c=courseRequirementCounts();return c.total?Math.round(c.done/c.total*100):0}
 function finalUnlocked(){return coursePercent()===100}
+function progressId(){return `${currentUser.uid}_${courseId}`}
+
 async function loadProfile(){
  const s=await getDoc(doc(db,"users",currentUser.uid));
  currentProfile=s.exists()?{uid:s.id,...s.data()}:{uid:currentUser.uid,email:currentUser.email||""};
 }
 
-function applyServerProgress(p){
- completedLessons=new Set(Array.isArray(p?.completedLessons)?p.completedLessons:[]);
- passedModuleQuizzes=p?.passedModuleQuizzes||{};
- moduleQuizScores=p?.moduleQuizScores||{};
- finalAssessmentPassed=p?.finalAssessmentPassed===true;
- finalAssessmentScore=Number(p?.finalAssessmentScore||0);
- certificateId=p?.certificateId||"";
-}
-
 async function loadProgress(){
  if(!currentUser||previewMode)return;
  try{
-   const result=await getLearningStateFn({courseId});
-   applyServerProgress(result.data?.progress);
+   const s=await getDoc(doc(db,"userProgress",progressId()));
+   if(!s.exists())return;
+   const p=s.data();
+   completedLessons=new Set(Array.isArray(p.completedLessons)?p.completedLessons:[]);
+   passedModuleQuizzes=p.passedModuleQuizzes||{};
+   moduleQuizScores=p.moduleQuizScores||{};
+   finalAssessmentPassed=p.finalAssessmentPassed===true;
+   finalAssessmentScore=Number(p.finalAssessmentScore||0);
+   certificateId=p.certificateId||"";
  }catch(e){console.warn("Progress load failed",e)}
+}
+
+async function saveProgress(){
+ if(!currentUser||previewMode)return;
+ const counts=courseRequirementCounts();
+ await setDoc(doc(db,"userProgress",progressId()),{
+   userId:currentUser.uid,courseId,courseTitle:course.title||"",
+   completedLessons:[...completedLessons],
+   passedModuleQuizzes,moduleQuizScores,
+   completedCount:counts.done,totalRequirements:counts.total,
+   percent:coursePercent(),progress:coursePercent(),
+   courseRequirementsComplete:coursePercent()===100,
+   finalAssessmentPassed,finalAssessmentScore,certificateId,
+   status:finalAssessmentPassed?"completed":coursePercent()===100?"final_assessment_unlocked":"in_progress",
+   updatedAt:serverTimestamp()
+ },{merge:true});
 }
 
 function updateProgress(){
@@ -269,55 +277,66 @@ function renderAssessment(assessment,type,moduleIndex=null){
 
 async function scoreAssessment(assessment,type,moduleIndex){
  if(previewMode)return;
- const questions=assessment.questions||[];const answers=[];let unanswered=0;
+ const questions=assessment.questions||[];let correct=0;let unanswered=0;
  questions.forEach((q,qi)=>{
    const chosen=document.querySelector(`input[name="q-${qi}"]:checked`);
-   if(!chosen){unanswered++;answers.push(null);return}
-   answers.push(Number(chosen.value));
+   if(!chosen){unanswered++;return}
+   if(Number(chosen.value)===Number(q.answer))correct++;
  });
  const result=$("quizResult");result.style.display="block";
  if(unanswered){result.className="quiz-result notice warning";result.innerHTML=`Answer all questions before submitting. ${unanswered} unanswered.`;return}
-
- const submitBtn=$("submitAssessmentBtn");
- if(submitBtn){submitBtn.disabled=true;submitBtn.textContent="Submitting...";}
-
- try{
-   const payload=type==="module"?{courseId,type,moduleIndex,answers}:{courseId,type,answers};
-   const response=await submitAssessmentFn(payload);
-   const{score,passMark,passed,progress,certificate}=response.data;
-   applyServerProgress(progress);
-
-   result.className=`quiz-result notice ${passed?"success":"error"}`;
-   result.innerHTML=passed?`<div class="score-big">${score}%</div><strong>Passed successfully.</strong><br>${type==="module"?"The next module is now unlocked.":"You have passed the final assessment. Your certificate is ready to be generated."}`:
-   `<div class="score-big">${score}%</div><strong>Not passed yet.</strong><br>Required score: ${passMark}%. Review the material and try again.`;
-   renderSidebar();
-   if(passed&&type==="module"){
-     const nextModule=moduleIndex+1;
-     result.innerHTML+=nextModule<modules.length?`<div style="margin-top:12px"><button id="continueAfterQuiz" class="btn green">Continue to Next Module</button></div>`:
-       `<div style="margin-top:12px"><button id="openFinalBtn" class="btn green">Continue</button></div>`;
-     const b=$("continueAfterQuiz")||$("openFinalBtn");
-     if(b)b.onclick=()=>{
-       if(nextModule<modules.length){currentView={type:"lesson",lessonIndex:lessonGlobalIndex(modules[nextModule].lessons[0].id)}}
-       else if(finalUnlocked()){currentView={type:"final"}}
-       renderCurrentView();
-     };
-   }
-   if(passed&&type==="final"){
-     if(certificate)certificateId=certificate.id;
-     await showCompletion();
-   }
- }catch(error){
-   console.error("Assessment submission failed",error);
-   result.className="quiz-result notice error";
-   result.innerHTML=esc(error.message||"Could not submit your assessment. Please try again.");
-   if(submitBtn){submitBtn.disabled=false;submitBtn.textContent="Submit Assessment";}
+ const score=Math.round(correct/questions.length*100), passMark=Number(assessment.passMark||70), passed=score>=passMark;
+ if(type==="module"){
+   moduleQuizScores[moduleIndex]=Math.max(Number(moduleQuizScores[moduleIndex]||0),score);
+   if(passed)passedModuleQuizzes[moduleIndex]=true;
+ }else{
+   finalAssessmentScore=Math.max(finalAssessmentScore,score);
+   if(passed)finalAssessmentPassed=true;
  }
+ await saveProgress();
+ result.className=`quiz-result notice ${passed?"success":"error"}`;
+ result.innerHTML=passed?`<div class="score-big">${score}%</div><strong>Passed successfully.</strong><br>${type==="module"?"The next module is now unlocked.":"You have passed the final assessment. Your certificate is ready to be generated."}`:
+ `<div class="score-big">${score}%</div><strong>Not passed yet.</strong><br>Required score: ${passMark}%. Review the material and try again.`;
+ renderSidebar();
+ if(passed&&type==="module"){
+   const nextModule=moduleIndex+1;
+   result.innerHTML+=nextModule<modules.length?`<div style="margin-top:12px"><button id="continueAfterQuiz" class="btn green">Continue to Next Module</button></div>`:
+     `<div style="margin-top:12px"><button id="openFinalBtn" class="btn green">Continue</button></div>`;
+   const b=$("continueAfterQuiz")||$("openFinalBtn");
+   if(b)b.onclick=()=>{
+     if(nextModule<modules.length){currentView={type:"lesson",lessonIndex:lessonGlobalIndex(modules[nextModule].lessons[0].id)}}
+     else if(finalUnlocked()){currentView={type:"final"}}
+     renderCurrentView();
+   };
+ }
+ if(passed&&type==="final"){await showCompletion()}
 }
 
 function profileName(){return (currentProfile?.fullName||`${currentProfile?.firstName||""} ${currentProfile?.lastName||""}`.trim()||currentUser?.displayName||"Learner").trim()}
+function courseCode(){return String(course.id||"COURSE").split("-").map(x=>x[0]||"").join("").toUpperCase().slice(0,5)||"CRS"}
+function randomCode(len=8){const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let x="";for(let i=0;i<len;i++)x+=chars[Math.floor(Math.random()*chars.length)];return x}
+
+async function ensureCertificate(){
+ if(certificateId)return certificateId;
+ const stableId=`${currentUser.uid}_${courseId}`;
+ const ref=doc(db,"certificates",stableId);
+ const existing=await getDoc(ref);
+ if(existing.exists()){certificateId=stableId;return stableId}
+ const year=new Date().getFullYear();
+ const certNo=`SO-${year}-${courseCode()}-${randomCode(6)}`;
+ await setDoc(ref,{
+   userId:currentUser.uid,recipientId:currentUser.uid,recipientName:profileName(),recipientEmail:currentProfile?.email||currentUser.email||"",
+   courseId:course.id,courseTitle:course.title||"",issuer:course.certificate?.issuer||course.provider||"SpeakHub Academy",
+   provider:course.provider||"SpeakHub Academy",certificateNumber:certNo,verificationCode:randomCode(10),
+   issueDate:new Date().toISOString().slice(0,10),finalScore:finalAssessmentScore,
+   passMark:Number(course.finalAssessment?.passMark||70),status:"active",type:"course",
+   createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+ },{merge:true});
+ certificateId=stableId;await saveProgress();return stableId;
+}
 
 async function showCompletion(){
- const cid=certificateId;
+ const cid=await ensureCertificate();
  lessonTitle.textContent="Course Completed";
  lessonCover.innerHTML="<h2>Congratulations — Course Completed</h2>";
  lessonContent.innerHTML="";
@@ -334,43 +353,13 @@ async function showCompletion(){
  navigationRow.style.display="none";renderSidebar();
 }
 
-function showAssessmentLoading(){
- lessonTitle.textContent="Loading Assessment...";
- lessonCover.innerHTML="<h2>Loading Assessment...</h2>";
- lessonContent.innerHTML="";
- assessmentArea.innerHTML=`<div class="notice">Loading your assessment...</div>`;
- navigationRow.style.display="none";
-}
-
-async function openModuleQuiz(moduleIndex){
- showAssessmentLoading();
- try{
-   const result=await getAssessmentFn({courseId,type:"module",moduleIndex});
-   renderAssessment(result.data.assessment,"module",moduleIndex);
- }catch(error){
-   console.error("Could not load module quiz",error);
-   assessmentArea.innerHTML=`<div class="notice error">${esc(error.message||"This module quiz is not available yet.")}</div>`;
- }
-}
-
-async function openFinalAssessment(){
- showAssessmentLoading();
- try{
-   const result=await getAssessmentFn({courseId,type:"final"});
-   renderAssessment(result.data.assessment,"final",null);
- }catch(error){
-   console.error("Could not load final assessment",error);
-   assessmentArea.innerHTML=`<div class="notice error">${esc(error.message||"The final assessment is not available yet.")}</div>`;
- }
-}
-
-async function renderCurrentView(){
+function renderCurrentView(){
  renderSidebar();
- if(currentView.type==="lesson"){renderLesson();return}
- if(currentView.type==="moduleQuiz"){await openModuleQuiz(currentView.moduleIndex);return}
- if(currentView.type==="final"){
-   if(finalAssessmentPassed){await showCompletion();return}
-   await openFinalAssessment();
+ if(currentView.type==="lesson")renderLesson();
+ else if(currentView.type==="moduleQuiz")renderAssessment(modules[currentView.moduleIndex].quiz,"module",currentView.moduleIndex);
+ else if(currentView.type==="final"){
+   if(finalAssessmentPassed){showCompletion();return}
+   renderAssessment(course.finalAssessment,"final");
  }
 }
 
@@ -381,18 +370,7 @@ previousButton.onclick=()=>{
 
 completeButton.onclick=async()=>{
  if(currentView.type!=="lesson"||previewMode)return;
- const l=lessons[currentView.lessonIndex];
- completeButton.disabled=true;
- try{
-   const result=await markLessonCompleteFn({courseId,lessonId:l.id});
-   applyServerProgress(result.data.progress);
-   nextButton.onclick();
- }catch(error){
-   console.error("Could not mark lesson complete",error);
-   setNotice(esc(error.message||"Could not mark this lesson complete. Please try again."),"error");
- }finally{
-   completeButton.disabled=false;
- }
+ const l=lessons[currentView.lessonIndex];completedLessons.add(l.id);await saveProgress();nextButton.onclick();
 };
 
 nextButton.onclick=()=>{
