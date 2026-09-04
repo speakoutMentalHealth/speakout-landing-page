@@ -42,7 +42,7 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 .btn:disabled{opacity:.42;cursor:not-allowed}.primary{background:var(--blue);color:#fff}.gold{background:var(--gold);color:#241300}.soft{background:var(--soft);color:var(--blue)}.green{background:var(--green);color:#fff}.danger{background:var(--redSoft);color:var(--red)}
 .quiz-box{border:1px solid var(--line);border-radius:18px;padding:20px;background:#fbfdff}.quiz-question{padding:16px;border:1px solid var(--line);border-radius:14px;margin:12px 0}.quiz-question h4{margin:0 0 10px;color:var(--navy)}
 .quiz-option{display:flex;gap:8px;align-items:flex-start;margin:8px 0}.quiz-result{margin-top:14px;padding:14px;border-radius:13px;background:var(--soft)}
-.score-big{font-size:2rem;font-weight:900;color:var(--blue)}.completion-card{padding:24px;border-radius:20px;background:linear-gradient(135deg,var(--greenSoft),#fff);border:1px solid #bde8db}
+.score-big{font-size:2rem;font-weight:900;color:var(--blue)}.completion-card{padding:clamp(24px,4vw,44px);border-radius:24px;background:linear-gradient(135deg,var(--navy),var(--blue));border:1px solid rgba(255,255,255,.14);color:#fff;text-align:center;position:relative;overflow:hidden}.completion-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(244,162,28,.32),transparent 35%)}.completion-card>*{position:relative;z-index:1}.completion-card h2{color:#fff;font-size:clamp(1.7rem,4vw,2.3rem);margin-bottom:10px}.completion-card p{color:rgba(255,255,255,.86)}.completion-card .notice{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;text-align:left}.completion-card .notice small{color:rgba(255,255,255,.65)}.completion-card .btn-row{justify-content:center}
 .completion-card h2{color:var(--navy);font-size:2rem}.profile-confirm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
 .profile-confirm input{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}
 .feature-list{padding-left:18px;line-height:1.8;color:var(--muted)}.loading{margin:25px 0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
@@ -322,14 +322,14 @@ async function showCompletion(){
  lessonCover.innerHTML="<h2>Congratulations — Course Completed</h2>";
  lessonContent.innerHTML="";
  assessmentArea.innerHTML=`<div class="completion-card">
- <h2>🎓 Congratulations, ${esc(profileName())}</h2>
+ <div class="completion-badge" style="width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;margin:0 auto 14px;font-size:1.8rem">🎓</div>
+ <h2>Congratulations, ${esc(profileName())}</h2>
  <p>You successfully completed <strong>${esc(course.title)}</strong> and passed the final assessment with <strong>${finalAssessmentScore}%</strong>.</p>
  <div class="notice"><strong>Name on certificate:</strong> ${esc(profileName())}<br><strong>Email:</strong> ${esc(currentProfile?.email||currentUser.email||"—")}<br><small>If the name is incorrect, update your profile before regenerating future certificates.</small></div>
  <div class="btn-row">
- <a class="btn primary" href="certificate-view.html?id=${encodeURIComponent(cid)}">View / Download Certificate</a>
+ <a class="btn gold" href="certificate-view.html?id=${encodeURIComponent(cid)}">View / Download Certificate</a>
  <a class="btn soft" href="certificate-center.html">Certificate Center</a>
  </div>
- <p style="color:var(--muted);font-size:.85rem;margin-top:15px">Email delivery can be added through a secure server-side mail service. Browser code should not contain private email-service credentials.</p>
  </div>`;
  navigationRow.style.display="none";renderSidebar();
 }
