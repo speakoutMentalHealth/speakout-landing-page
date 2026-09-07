@@ -1,0 +1,9 @@
+{
+  "name": "speakout-platform-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "vars": {
+    "FIREBASE_PROJECT_ID": "replace-with-staging-project-id",
+    "ALLOWED_ORIGINS": "http://localhost:5000,https://staging.example.org"
+  }
+}

@@ -154,7 +154,7 @@ function show(m,t=""){
   if(el){el.textContent=m;el.className="notice "+t;}
 }
 
-function safe(v){return v || "—";}
+function safe(v){return String(v || "—").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
 function pill(v){return `<span class="pill ${(v||"").toLowerCase()}">${safe(v)}</span>`;}
 
 function normalize(v){return (v||"").toLowerCase().trim();}

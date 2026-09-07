@@ -1,3 +1,5 @@
+/* LEGACY RULE SAMPLE — DO NOT DEPLOY.
+   The only production rule source is firebase/firestore.rules. */
 rules_version = '2';
 
 service cloud.firestore {

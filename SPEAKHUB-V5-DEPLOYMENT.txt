@@ -1,4 +1,9 @@
-SPEAKHUB SECURE GUIDED LEARNING V5
+LEGACY DOCUMENT — DO NOT DEPLOY FIREBASE FUNCTIONS
+===================================================
+Production must remain on Firebase Spark. Follow docs/PHASE-1-SECURITY-ROLLOUT.md
+and use workers/platform-api/ for privileged server-side operations.
+
+HISTORICAL SPEAKHUB SECURE GUIDED LEARNING V5
 ===================================
 
 WHAT V5 CHANGES

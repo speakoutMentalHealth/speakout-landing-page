@@ -1,4 +1,12 @@
-# DEPLOYMENT ORDER — SpeakHub Secure Learning
+# LEGACY DEPLOYMENT NOTES — DO NOT USE FOR PRODUCTION
+
+The Firebase Functions process below is retained as historical context only. The
+production platform is required to remain on Firebase Spark. Do not deploy the
+`functions/` directory. The current Phase 1 architecture and safe rollout order
+are documented in `docs/PHASE-1-SECURITY-ROLLOUT.md`; privileged operations run
+through the Cloudflare Worker in `workers/platform-api/`.
+
+# Historical deployment order — SpeakHub secure learning
 
 ## 1. Firebase plan
 Cloud Functions deployment requires a Firebase project configured for Functions. Use the Firebase CLI and the project's supported billing setup.

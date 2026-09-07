@@ -131,7 +131,7 @@ function updateProgress() {
 
 async function saveProgress() {
   if (!currentUser || !item) return;
-  await setDoc(doc(db, "userProgress", `${currentUser.uid}_kiddies_${item.id}`), {
+  await setDoc(doc(db, "readingProgress", `${currentUser.uid}_kiddies_${item.id}`), {
     userId: currentUser.uid,
     type: "kiddies",
     itemId: item.id,
@@ -192,7 +192,7 @@ async function loadResource() {
   document.getElementById("heroDesc").textContent = item.description || "Interactive Kiddies learning resource.";
 
   if (currentUser) {
-    const progressSnap = await getDoc(doc(db, "userProgress", `${currentUser.uid}_kiddies_${item.id}`));
+    const progressSnap = await getDoc(doc(db, "readingProgress", `${currentUser.uid}_kiddies_${item.id}`));
     if (progressSnap.exists()) completed = new Set(progressSnap.data().completedSlides || []);
   }
 

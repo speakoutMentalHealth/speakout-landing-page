@@ -11,17 +11,15 @@ pre{white-space:pre-wrap;background:#eef6ff;padding:16px;border-radius:14px}
 </style><link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a><div class="box">
 <h1>Secure SpeakHub Assessments</h1>
-<p>Run this once while signed in as an approved admin. It moves quiz/final answer keys into the private <code>courseAssessments</code> collection and removes answer keys from public course documents.</p>
-<button id="run">Secure Assessments</button>
+<p>This Phase 1 tool performs a dry-run inventory only. A destructive migration requires a separate reviewed authorization and must never be run from a publicly hosted page.</p>
+<button id="run">Preview Assessment Migration</button>
 <pre id="status">Ready.</pre>
 </div>
 <script type="module">
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-functions.js";
-import "./firebase-config.js";
-const fn=httpsCallable(getFunctions(),"syncCourseAssessments");
+import { platformRequest } from "./js/platform-api.js";
 document.getElementById("run").onclick=async()=>{
  const s=document.getElementById("status");s.textContent="Running...";
- try{const r=await fn({});s.textContent=JSON.stringify(r.data,null,2)}
+ try{const r=await platformRequest("/v1/admin/assessments/migrate",{dryRun:true});s.textContent=JSON.stringify(r,null,2)}
  catch(e){console.error(e);s.textContent=e.message||"Migration failed."}
 };
 </script></body></html>

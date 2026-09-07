@@ -1,4 +1,11 @@
-# SpeakHub Secure Learning — Client Integration
+# LEGACY FIREBASE FUNCTIONS CLIENT — DO NOT USE
+
+Production must remain on Firebase Spark. The canonical client is now
+`js/platform-api.js`, which sends Firebase ID tokens to the Cloudflare Worker in
+`workers/platform-api/`. The callable-functions examples below remain only for
+history and must not be restored without explicit approval.
+
+# Historical SpeakHub secure-learning client integration
 
 The V4 player must stop scoring locally and stop writing userProgress/certificates directly.
 

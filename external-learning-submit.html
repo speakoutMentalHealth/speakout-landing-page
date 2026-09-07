@@ -151,6 +151,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/f
 import {
   doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { uploadEvidence } from "./js/platform-api.js";
 
 const courseId=new URLSearchParams(location.search).get("courseId");
 const $=id=>document.getElementById(id);
@@ -295,11 +296,21 @@ submissionForm.addEventListener("submit",async event=>{
       try{new URL(verification)}catch{throw new Error("Enter a valid provider verification URL beginning with http:// or https://.");}
     }
 
-    const proofData=await compressImage(file);
+    const uploaded=await uploadEvidence(file,"external-course-evidence");
     const recordId=`${currentUser.uid}_${courseId}`;
-    const firstCreatedAt=existingRecord?.createdAt||serverTimestamp();
-
-    await setDoc(doc(db,"externalLearningRecords",recordId),{
+    const submissionData=existingRecord?{
+      completionDate:completionDate.value,
+      certificateNumber:certificateNumber.value.trim(),
+      verificationUrl:verification,
+      learnerNote:learnerNote.value.trim(),
+      proofType:"cloudinary-authenticated-image",
+      evidenceAssetId:uploaded.assetId,
+      evidenceVersion:uploaded.version,
+      status:"pending_review",
+      verificationStatus:"pending",
+      submittedAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    }:{
       userId:currentUser.uid,
       userEmail:currentUser.email||currentProfile.email||"",
       learnerName:currentProfile.fullName||`${currentProfile.firstName||""} ${currentProfile.lastName||""}`.trim(),
@@ -317,34 +328,22 @@ submissionForm.addEventListener("submit",async event=>{
       certificateNumber:certificateNumber.value.trim(),
       verificationUrl:verification,
       learnerNote:learnerNote.value.trim(),
-      proofType:"image",
-      proofData,
+      proofType:"cloudinary-authenticated-image",
+      evidenceAssetId:uploaded.assetId,
+      evidenceVersion:uploaded.version,
       status:"pending_review",
       verificationStatus:"pending",
       submittedBy:currentUser.uid,
       submittedAt:serverTimestamp(),
-      createdAt:firstCreatedAt,
+      createdAt:serverTimestamp(),
       updatedAt:serverTimestamp(),
-      resubmissionCount:(existingRecord?.resubmissionCount||0)+(status==="rejected"?1:0),
+      resubmissionCount:0,
       reviewerFeedback:"",
       reviewedBy:"",
       reviewedAt:null
-    },{merge:true});
+    };
 
-    await setDoc(doc(db,"userProgress",`${currentUser.uid}_external_${course.id}`),{
-      userId:currentUser.uid,
-      type:"external-course",
-      itemId:course.id,
-      courseId:course.id,
-      title:course.title||"",
-      provider:course.provider||"",
-      status:"pending_review",
-      progress:100,
-      percent:100,
-      proofSubmitted:true,
-      completionMethod:"certificate-upload",
-      updatedAt:serverTimestamp()
-    },{merge:true});
+    await setDoc(doc(db,"externalLearningRecords",recordId),submissionData,{merge:true});
 
     resultBox.className="notice ok";
     resultBox.innerHTML="<strong>Submission received.</strong><br>Your external learning evidence is now pending SpeakHub review.";

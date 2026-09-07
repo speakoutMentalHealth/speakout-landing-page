@@ -117,7 +117,7 @@
   import { collection, getDocs, doc, getDoc, query, where, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
   import { getRoleAccess } from "./role-access.js";
 
-  const safe = value => value || "—";
+  const safe = value => String(value || "—").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
   const num = value => Number(value || 0).toLocaleString();
   const badge = value => `<span class="badge">${value || "submitted"}</span>`;
 
@@ -184,7 +184,7 @@
 
     const books = await all("books");
     const courses = await all("courses");
-    const certificates = await mine("certificates", "email", user.email).then(rows => rows.length ? rows : all("certificates"));
+    const certificates = await mine("certificates", "userId", user.uid);
     const reports = await mine("schoolReports", "schoolEmail", user.email);
 
     document.getElementById("bookCount").textContent = num(books.length);

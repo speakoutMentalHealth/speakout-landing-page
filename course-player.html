@@ -90,8 +90,10 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
 </div>
 <script type="module">
 import { db,auth } from "./firebase-config.js";
-import { doc,getDoc,setDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { learningApi } from "./js/platform-api.js";
+import { sanitizeRichHtml } from "./js/safe-dom.js";
 
 const params=new URLSearchParams(location.search);
 const courseId=params.get("id");
@@ -155,32 +157,27 @@ async function loadProfile(){
 async function loadProgress(){
  if(!currentUser||previewMode)return;
  try{
-   const s=await getDoc(doc(db,"userProgress",progressId()));
-   if(!s.exists())return;
-   const p=s.data();
+   const response=await learningApi.state(courseId);
+   const p=response.progress||{};
    completedLessons=new Set(Array.isArray(p.completedLessons)?p.completedLessons:[]);
    passedModuleQuizzes=p.passedModuleQuizzes||{};
    moduleQuizScores=p.moduleQuizScores||{};
    finalAssessmentPassed=p.finalAssessmentPassed===true;
    finalAssessmentScore=Number(p.finalAssessmentScore||0);
    certificateId=p.certificateId||"";
- }catch(e){console.warn("Progress load failed",e)}
+ }catch(e){
+   console.error("Secure progress load failed",e);
+   throw e;
+ }
 }
 
-async function saveProgress(){
- if(!currentUser||previewMode)return;
- const counts=courseRequirementCounts();
- await setDoc(doc(db,"userProgress",progressId()),{
-   userId:currentUser.uid,courseId,courseTitle:course.title||"",
-   completedLessons:[...completedLessons],
-   passedModuleQuizzes,moduleQuizScores,
-   completedCount:counts.done,totalRequirements:counts.total,
-   percent:coursePercent(),progress:coursePercent(),
-   courseRequirementsComplete:coursePercent()===100,
-   finalAssessmentPassed,finalAssessmentScore,certificateId,
-   status:finalAssessmentPassed?"completed":coursePercent()===100?"final_assessment_unlocked":"in_progress",
-   updatedAt:serverTimestamp()
- },{merge:true});
+function applyServerProgress(p={}){
+ completedLessons=new Set(Array.isArray(p.completedLessons)?p.completedLessons:[]);
+ passedModuleQuizzes=p.passedModuleQuizzes||{};
+ moduleQuizScores=p.moduleQuizScores||{};
+ finalAssessmentPassed=p.finalAssessmentPassed===true;
+ finalAssessmentScore=Number(p.finalAssessmentScore||0);
+ certificateId=p.certificateId||"";
 }
 
 function updateProgress(){
@@ -236,7 +233,7 @@ function renderLesson(){
  if(!l){return}
  lessonTitle.textContent=l.title;
  lessonCover.innerHTML=l.coverUrl?`<img src="${esc(l.coverUrl)}" alt="${esc(l.title)}"><h2>${esc(l.title)}</h2>`:`<h2>${esc(l.title)}</h2>`;
- lessonContent.innerHTML=l.content||"<p>No lesson content yet.</p>";
+ lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
  assessmentArea.innerHTML="";
  navigationRow.style.display="flex";
  previousButton.disabled=currentView.lessonIndex===0;
@@ -256,7 +253,24 @@ function renderLesson(){
  setNotice(previewMode?"<strong>Preview mode:</strong> progress, quiz results and certificates are disabled.":"");
 }
 
-function renderAssessment(assessment,type,moduleIndex=null){
+async function renderAssessment(metadata,type,moduleIndex=null){
+ if(previewMode){
+   lessonTitle.textContent=metadata?.title||"Assessment";
+   lessonContent.innerHTML="";
+   navigationRow.style.display="none";
+   assessmentArea.innerHTML='<div class="notice warning">Assessments are not exposed in preview mode.</div>';
+   return;
+ }
+ assessmentArea.innerHTML='<div class="notice">Loading secure assessment…</div>';
+ let assessment;
+ try{
+   const response=await learningApi.assessment(courseId,type,moduleIndex);
+   assessment=response.assessment;
+ }catch(error){
+   assessmentArea.textContent=error.message||"The secure assessment could not be loaded.";
+   assessmentArea.className="notice error";
+   return;
+ }
  lessonTitle.textContent=assessment.title||(type==="final"?"Final Assessment":"Module Quiz");
  lessonCover.innerHTML=`<h2>${esc(assessment.title||(type==="final"?"Final Assessment":"Module Quiz"))}</h2>`;
  lessonContent.innerHTML="";
@@ -264,7 +278,7 @@ function renderAssessment(assessment,type,moduleIndex=null){
  const questions=Array.isArray(assessment.questions)?assessment.questions:[];
  const passMark=Number(assessment.passMark||70);
  if(!questions.length){
-   assessmentArea.innerHTML=`<div class="notice error">This assessment has no question records yet. It cannot be passed until questions and answer keys are added to the course JSON.</div>`;
+   assessmentArea.innerHTML=`<div class="notice error">This assessment is not available. Contact SpeakOut support.</div>`;
    return;
  }
  assessmentArea.innerHTML=`<div class="quiz-box"><h3>${esc(assessment.title||"Assessment")}</h3>
@@ -277,23 +291,26 @@ function renderAssessment(assessment,type,moduleIndex=null){
 
 async function scoreAssessment(assessment,type,moduleIndex){
  if(previewMode)return;
- const questions=assessment.questions||[];let correct=0;let unanswered=0;
+ const questions=assessment.questions||[];let unanswered=0;
+ const answers=[];
  questions.forEach((q,qi)=>{
    const chosen=document.querySelector(`input[name="q-${qi}"]:checked`);
    if(!chosen){unanswered++;return}
-   if(Number(chosen.value)===Number(q.answer))correct++;
+   answers.push(Number(chosen.value));
  });
  const result=$("quizResult");result.style.display="block";
  if(unanswered){result.className="quiz-result notice warning";result.innerHTML=`Answer all questions before submitting. ${unanswered} unanswered.`;return}
- const score=Math.round(correct/questions.length*100), passMark=Number(assessment.passMark||70), passed=score>=passMark;
- if(type==="module"){
-   moduleQuizScores[moduleIndex]=Math.max(Number(moduleQuizScores[moduleIndex]||0),score);
-   if(passed)passedModuleQuizzes[moduleIndex]=true;
- }else{
-   finalAssessmentScore=Math.max(finalAssessmentScore,score);
-   if(passed)finalAssessmentPassed=true;
+ let response;
+ try{
+   response=await learningApi.submitAssessment(courseId,type,moduleIndex,answers);
+ }catch(error){
+   result.className="quiz-result notice error";
+   result.textContent=error.message||"Assessment submission failed.";
+   return;
  }
- await saveProgress();
+ const {score,passMark,passed,progress,certificate}=response;
+ applyServerProgress(progress);
+ if(certificate?.id)certificateId=certificate.id;
  result.className=`quiz-result notice ${passed?"success":"error"}`;
  result.innerHTML=passed?`<div class="score-big">${score}%</div><strong>Passed successfully.</strong><br>${type==="module"?"The next module is now unlocked.":"You have passed the final assessment. Your certificate is ready to be generated."}`:
  `<div class="score-big">${score}%</div><strong>Not passed yet.</strong><br>Required score: ${passMark}%. Review the material and try again.`;
@@ -313,26 +330,9 @@ async function scoreAssessment(assessment,type,moduleIndex){
 }
 
 function profileName(){return (currentProfile?.fullName||`${currentProfile?.firstName||""} ${currentProfile?.lastName||""}`.trim()||currentUser?.displayName||"Learner").trim()}
-function courseCode(){return String(course.id||"COURSE").split("-").map(x=>x[0]||"").join("").toUpperCase().slice(0,5)||"CRS"}
-function randomCode(len=8){const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let x="";for(let i=0;i<len;i++)x+=chars[Math.floor(Math.random()*chars.length)];return x}
-
 async function ensureCertificate(){
- if(certificateId)return certificateId;
- const stableId=`${currentUser.uid}_${courseId}`;
- const ref=doc(db,"certificates",stableId);
- const existing=await getDoc(ref);
- if(existing.exists()){certificateId=stableId;return stableId}
- const year=new Date().getFullYear();
- const certNo=`SO-${year}-${courseCode()}-${randomCode(6)}`;
- await setDoc(ref,{
-   userId:currentUser.uid,recipientId:currentUser.uid,recipientName:profileName(),recipientEmail:currentProfile?.email||currentUser.email||"",
-   courseId:course.id,courseTitle:course.title||"",issuer:course.certificate?.issuer||course.provider||"SpeakHub Academy",
-   provider:course.provider||"SpeakHub Academy",certificateNumber:certNo,verificationCode:randomCode(10),
-   issueDate:new Date().toISOString().slice(0,10),finalScore:finalAssessmentScore,
-   passMark:Number(course.finalAssessment?.passMark||70),status:"active",type:"course",
-   createdAt:serverTimestamp(),updatedAt:serverTimestamp()
- },{merge:true});
- certificateId=stableId;await saveProgress();return stableId;
+ if(!certificateId)throw new Error("The secure service has not issued a certificate for this course.");
+ return certificateId;
 }
 
 async function showCompletion(){
@@ -353,7 +353,7 @@ async function showCompletion(){
  navigationRow.style.display="none";renderSidebar();
 }
 
-function renderCurrentView(){
+async function renderCurrentView(){
  renderSidebar();
  if(currentView.type==="lesson")renderLesson();
  else if(currentView.type==="moduleQuiz")renderAssessment(modules[currentView.moduleIndex].quiz,"module",currentView.moduleIndex);
@@ -370,7 +370,17 @@ previousButton.onclick=()=>{
 
 completeButton.onclick=async()=>{
  if(currentView.type!=="lesson"||previewMode)return;
- const l=lessons[currentView.lessonIndex];completedLessons.add(l.id);await saveProgress();nextButton.onclick();
+ const l=lessons[currentView.lessonIndex];
+ completeButton.disabled=true;
+ try{
+   const response=await learningApi.completeLesson(courseId,l.id);
+   applyServerProgress(response.progress);
+   renderSidebar();
+   nextButton.onclick();
+ }catch(error){
+   setNotice(error.message||"Lesson completion could not be recorded.","error");
+   completeButton.disabled=false;
+ }
 };
 
 nextButton.onclick=()=>{
@@ -418,7 +428,12 @@ onAuthStateChanged(auth,async user=>{
  currentUser=user;await loadProfile();
  const status=norm(currentProfile?.status);
  if(status&&status!=="approved"&&currentProfile?.approved!==true){loading.textContent="Your account must be approved before taking guided courses.";return}
- await loadCourse();
+ try{
+   await loadCourse();
+ }catch(error){
+   console.error(error);
+   loading.textContent=error.message||"Secure learning is temporarily unavailable.";
+ }
 });
 </script>
 <script defer="" src="portal-ui.js"></script>

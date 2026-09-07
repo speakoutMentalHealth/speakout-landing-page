@@ -278,7 +278,7 @@ async function loadProgress(){
   if(!currentUser || !item) return;
 
   try{
-    const snap = await getDoc(doc(db,"userProgress",progressDocumentId()));
+    const snap = await getDoc(doc(db,"readingProgress",progressDocumentId()));
 
     if(!snap.exists()) return;
 
@@ -308,7 +308,7 @@ async function saveProgress(){
     ? Math.round((completed.size / slides.length) * 100)
     : 0;
 
-  await setDoc(doc(db,"userProgress",progressDocumentId()),{
+  await setDoc(doc(db,"readingProgress",progressDocumentId()),{
     userId:currentUser.uid,
     userEmail:currentUser.email || "",
     type:"book",

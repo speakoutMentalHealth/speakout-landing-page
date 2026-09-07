@@ -201,7 +201,7 @@ export async function trackBookOpen(book){
   const progressRef =
     doc(
       db,
-      "userProgress",
+      "readingProgress",
       progressId
     );
 
@@ -298,7 +298,7 @@ export async function trackBookDownload(book){
   await setDoc(
     doc(
       db,
-      "userProgress",
+      "readingProgress",
       progressId
     ),
     {

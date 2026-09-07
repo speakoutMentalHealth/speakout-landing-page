@@ -170,22 +170,15 @@ function updateProgress(){
   const pct = lessons.length ? Math.round((completed.size / lessons.length) * 100) : 0;
   progressBar.style.width = pct + "%";
   progressText.textContent = pct + "% complete";
-  certificateLink.style.display = pct >= 100 ? "inline-flex" : "none";
+  certificateLink.style.display = "none";
 }
 
 async function saveProgress(){
   if(!currentUser || !course) return;
 
-  await setDoc(doc(db,"userProgress",`${currentUser.uid}_course_${course.id}`),{
-    userId:currentUser.uid,
-    courseId:course.id,
-    itemId:course.id,
-    type:"course",
-    completedLessons:[...completed],
-    completedSlides:[...completed],
-    percent:lessons.length ? Math.round((completed.size / lessons.length) * 100) : 0,
-    updatedAt:serverTimestamp()
-  },{merge:true});
+  localStorage.setItem(`speakout-course-preview-${currentUser.uid}-${course.id}`,JSON.stringify({
+    completedLessons:[...completed],updatedAt:new Date().toISOString()
+  }));
 }
 
 function render(){

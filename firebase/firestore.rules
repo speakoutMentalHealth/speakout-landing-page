@@ -58,8 +58,49 @@ service cloud.firestore {
       return isApproved() && userRole() == "ambassador";
     }
 
+    function isPublicRole(role) {
+      return role in [
+        "student",
+        "parent",
+        "teacher",
+        "school",
+        "school_admin",
+        "ambassador",
+        "contributor",
+        "volunteer"
+      ];
+    }
+
+    function validNewUser(userId) {
+      return request.resource.data.uid == userId &&
+        request.resource.data.status == "pending" &&
+        request.resource.data.approved == false &&
+        isPublicRole(request.resource.data.role) &&
+        request.resource.data.email is string;
+    }
+
+    function onlyEditableProfileFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        "firstName",
+        "lastName",
+        "fullName",
+        "phone",
+        "country",
+        "state",
+        "city",
+        "location",
+        "occupation",
+        "bio",
+        "photoURL",
+        "profileCompleted",
+        "updatedAt"
+      ]);
+    }
+
     match /users/{userId} {
-      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() &&
+        request.auth.uid == userId &&
+        validNewUser(userId);
 
       allow read: if isApproved() &&
         (
@@ -71,21 +112,24 @@ service cloud.firestore {
           )
         );
 
-      allow update: if isApproved() &&
+      /* Ordinary users may edit presentation/profile fields only. Role,
+         approval, status, email, school membership and ownership fields are
+         immutable from their browser. Administrative account changes require
+         an existing super-admin session (or the external trusted API). */
+      allow update: if isSuperAdmin() ||
         (
-          request.auth.uid == userId ||
-          isSuperAdmin() ||
-          (
-            isSchoolAdmin() &&
-            resource.data.schoolId == userSchoolId()
-          )
+          isApproved() &&
+          request.auth.uid == userId &&
+          onlyEditableProfileFieldsChanged()
         );
 
       allow delete: if isSuperAdmin();
     }
 
     match /schools/{schoolId} {
-      allow create: if isSignedIn();
+      /* School creation/activation is privileged. Public applications belong
+         in /schoolApplications and are reviewed before a school is created. */
+      allow create: if isSuperAdmin();
 
       allow read: if isApproved() &&
         (
@@ -115,12 +159,17 @@ service cloud.firestore {
       allow read: if isApproved() &&
         (
           isSuperAdmin() ||
-          isSchoolAdmin() ||
+          (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
           resource.data.parentId == request.auth.uid ||
           resource.data.studentId == request.auth.uid
         );
 
-      allow update, delete: if isSuperAdmin() || isSchoolAdmin();
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId());
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
 
     /* The E-Library is a public showcase (free and paid/external books),
@@ -175,11 +224,13 @@ service cloud.firestore {
           )
         );
 
-      allow write: if isSuperAdmin() ||
-        (
-          isSchoolAdmin() &&
-          request.resource.data.schoolId == userSchoolId()
-        );
+      allow create: if isSuperAdmin() ||
+        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId());
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
 
     match /workshops/{workshopId} {
@@ -192,11 +243,13 @@ service cloud.firestore {
           )
         );
 
-      allow create, update, delete: if isSuperAdmin() ||
-        (
-          isSchoolAdmin() &&
-          request.resource.data.schoolId == userSchoolId()
-        );
+      allow create: if isSuperAdmin() ||
+        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId());
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
 
     match /courses/{courseId} {
@@ -221,34 +274,45 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    /* TEMPORARY: left as the original permissive rules on purpose.
-       course-player.html is currently running the old client-side-write
-       version (Cloud Functions/billing not set up yet), which needs
-       direct write access to these two collections. Once the secure
-       Cloud Functions are deployed and course-player.html is switched
-       back to calling them, tighten these back down to admin-only
-       writes (see git history / DEPLOYMENT.md for the locked-down
-       version) — do NOT deploy that version before the Functions are
-       live, or quiz progress/certificates will silently stop saving. */
+    /* Authoritative learning records. Learners can read their own progress,
+       but only a trusted server-side service or a super admin may write it.
+       The external service uses Google IAM and is not governed by client SDK
+       rules. */
     match /userProgress/{progressId} {
-      allow read, write: if isApproved() &&
+      allow read: if isApproved() &&
         (
           resource.data.userId == request.auth.uid ||
-          request.resource.data.userId == request.auth.uid ||
           isSuperAdmin()
         );
+
+      allow write: if isSuperAdmin();
+    }
+
+    /* Non-credential reading position. This collection cannot unlock courses
+       or issue certificates and is intentionally separate from userProgress. */
+    match /readingProgress/{progressId} {
+      allow read: if isApproved() && resource.data.userId == request.auth.uid;
+      allow create: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.type in ["book", "kiddies"];
+      allow update: if isApproved() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.type in ["book", "kiddies"];
+      allow delete: if isApproved() && resource.data.userId == request.auth.uid;
     }
 
     match /certificates/{certificateId} {
+      allow read: if isSuperAdmin() ||
+        (isApproved() && resource.data.userId == request.auth.uid);
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    /* Deliberately limited public projection written by the trusted API.
+       Never include email, uid, score, reviewer notes or evidence here. */
+    match /publicCertificateVerifications/{verificationCode} {
       allow read: if true;
-
-      allow create: if isApproved() &&
-        (
-          isSuperAdmin() ||
-          request.resource.data.userId == request.auth.uid
-        );
-
-      allow update, delete: if isSuperAdmin();
+      allow write: if isSuperAdmin();
     }
 
     match /certificateTemplates/{templateId} {
@@ -265,10 +329,30 @@ service cloud.firestore {
        Only Cloud Functions (reviewExternalCertificate) or an admin may
        move a record to "approved"/"rejected". */
     match /externalLearningRecords/{recordId} {
-      allow create, update: if isApproved() &&
+      allow create: if isApproved() &&
         request.resource.data.userId == request.auth.uid &&
         request.resource.data.status == "pending_review" &&
         request.resource.data.verificationStatus == "pending";
+
+      allow update: if isApproved() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid &&
+        resource.data.status in ["rejected", "resubmission_required"] &&
+        request.resource.data.status == "pending_review" &&
+        request.resource.data.verificationStatus == "pending" &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "certificateNumber",
+          "completionDate",
+          "verificationUrl",
+          "evidenceAssetId",
+          "evidenceVersion",
+          "proofType",
+          "learnerNote",
+          "status",
+          "verificationStatus",
+          "submittedAt",
+          "updatedAt"
+        ]);
 
       allow read: if isApproved() &&
         (
@@ -306,7 +390,9 @@ service cloud.firestore {
     }
 
     match /payments/{paymentId} {
-      allow create: if isSignedIn();
+      allow create: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == "pending";
 
       allow read: if isSuperAdmin() ||
         (

@@ -158,7 +158,7 @@ function show(message,type=""){
   statusBox.className = "notice " + type;
 }
 
-function safe(value){return value || "—";}
+function safe(value){return String(value || "—").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
 function normalize(value){return (value || "").toString().toLowerCase().trim();}
 function pill(value){return `<span class="pill ${normalize(value)}">${safe(value)}</span>`;}
 

@@ -76,7 +76,7 @@ import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, onSnapsho
 let BOOKS=[], COURSES=[], unsubBooks=null, unsubCourses=null;
 
 function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t}
-function safe(v){return v||"—"}
+function safe(v){return String(v||"—").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function normalize(v){return (v||"").toLowerCase().trim()}
 function pill(v){return `<span class="pill ${normalize(v)}">${safe(v)}</span>`}
 

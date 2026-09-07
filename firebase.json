@@ -1,8 +1,42 @@
 {
-  "functions": {
-    "source": "functions"
-  },
   "firestore": {
     "rules": "firebase/firestore.rules"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      ".git/**",
+      ".github/**",
+      "functions/**",
+      "workers/**",
+      "tests/**",
+      "speakout-landing-page/**",
+      "firestore-schema/**",
+      "firestore-seed/**",
+      "docs/**",
+      "*.md",
+      "*.txt",
+      "books-seed.json",
+      "courses-seed.json",
+      "legal-elibrary-books.json",
+      "*.bundle",
+      "secure-assessment-migration.html",
+      "seed-*.html",
+      "seed-*.js",
+      "cleanup-books.html",
+      "cleanup-books.js"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        ]
+      }
+    ]
   }
 }

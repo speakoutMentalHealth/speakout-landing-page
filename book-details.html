@@ -1605,7 +1605,7 @@ async function loadProgress(){
     const progressRef =
       doc(
         db,
-        "userProgress",
+        "readingProgress",
         `${currentUser.uid}_book_${id.replace(/[^a-zA-Z0-9_-]/g,"_").slice(0,120)}`
       );
 
@@ -1688,7 +1688,7 @@ async function saveBookProgress(
   await setDoc(
     doc(
       db,
-      "userProgress",
+      "readingProgress",
       progressId
     ),
     {

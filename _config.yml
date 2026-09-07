@@ -1,0 +1,41 @@
+# Temporary GitHub Pages containment while the static site moves to Firebase Hosting.
+# This does not make secrets in a public Git repository private; assessment keys
+# must still be migrated and rotated before launch.
+exclude:
+  - functions
+  - workers
+  - tests
+  - docs
+  - firestore-schema
+  - firestore-seed
+  - speakout-landing-page
+  - courses-seed.json
+  - books-seed.json
+  - legal-elibrary-books.json
+  - secure-assessment-migration.html
+  - seed-cleanup-launch.html
+  - seed-cleanup-launch.js
+  - seed-demo-accounts.html
+  - seed-demo-accounts.js
+  - seed-external-courses.html
+  - seed-external-courses.js
+  - seed-kiddies-resources-rich.html
+  - seed-kiddies-resources-rich.js
+  - seed-kiddies-slides-v3.html
+  - seed-kiddies-slides-v3.js
+  - seed-launch-content.html
+  - seed-launch-content.js
+  - seed-learning-engine.html
+  - seed-learning-engine.js
+  - seed-legal-elibrary.html
+  - seed-legal-elibrary.js
+  - seed-premium-v2-content.html
+  - seed-premium-v2-content.js
+  - seed-slide-images-v1.html
+  - seed-slide-images-v1.js
+  - cleanup-books.html
+  - cleanup-books.js
+  - CLIENT-INTEGRATION.md
+  - DEPLOYMENT.md
+  - SPEAKHUB-V5-DEPLOYMENT.txt
+  - firestore-rules.txt
