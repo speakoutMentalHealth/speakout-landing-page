@@ -51,6 +51,7 @@ test("privileged Worker writes use Firestore transactions", () => {
   assert.match(worker, /documents:beginTransaction/u);
   assert.match(worker, /documents:commit/u);
   assert.match(worker, /firestoreStatus !== "ABORTED"/u);
+  assert.match(worker, /name: `\$\{databaseName\(env\)\}\/documents\/\$\{path\}`/u);
   assert.ok((worker.match(/return runTransaction\(/gu) || []).length >= 4);
 });
 

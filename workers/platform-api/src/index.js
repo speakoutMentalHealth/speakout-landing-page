@@ -98,8 +98,8 @@ async function firebaseAccessToken(env) {
   return result.access_token;
 }
 
-const databaseUrl = env =>
-  `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)`;
+const databaseName = env => `projects/${env.FIREBASE_PROJECT_ID}/databases/(default)`;
+const databaseUrl = env => `https://firestore.googleapis.com/v1/${databaseName(env)}`;
 const documentUrl = (env, path) => `${databaseUrl(env)}/documents/${path}`;
 
 async function firestoreRequest(env, url, init = {}) {
@@ -143,7 +143,7 @@ async function listDocuments(env, collectionPath, limit = 1000) {
 }
 
 function documentWrite(env, path, data) {
-  return { update: { name: `${databaseUrl(env)}/documents/${path}`, fields: encodeFields(data) } };
+  return { update: { name: `${databaseName(env)}/documents/${path}`, fields: encodeFields(data) } };
 }
 
 async function rollbackTransaction(env, transaction) {
