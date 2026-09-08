@@ -118,10 +118,6 @@ async function firestoreRequest(env, url, init = {}) {
   return body;
 }
 
-async function firestore(env, path, init = {}) {
-  return firestoreRequest(env, documentUrl(env, path), init);
-}
-
 async function getDocument(env, path, transaction = "") {
   const url = new URL(documentUrl(env, path));
   if (transaction) url.searchParams.set("transaction", transaction);
@@ -284,11 +280,14 @@ async function assessmentContext(env, user, courseId, type, mi, reader = path =>
 }
 
 async function authenticatedEvidenceResponse(env, record) {
-  const publicId = clean(record.evidencePublicId || record.evidenceAssetId);
+  const publicId = clean(record.evidencePublicId);
+  const ownerId = safeId(record.userId, "evidence owner identifier");
   const version = Number(record.evidenceVersion);
   const format = normalized(record.evidenceFormat || "jpg");
   const resourceType = normalized(record.evidenceResourceType || "image");
-  if (!publicId || !Number.isInteger(version) || version < 1 || !/^[a-z0-9]{2,12}$/.test(format) || resourceType !== "image") {
+  const expectedPrefix = `speakout/private-evidence/${ownerId}/`;
+  const assetName = publicId.slice(expectedPrefix.length);
+  if (!publicId.startsWith(expectedPrefix) || !/^[A-Za-z0-9-]{8,80}$/.test(assetName) || !Number.isInteger(version) || version < 1 || !/^[a-z0-9]{2,12}$/.test(format) || resourceType !== "image") {
     throw Object.assign(new Error("This evidence record needs migration before it can be viewed securely."), { status: 409 });
   }
   const encodedPublicId = publicId.split("/").map(encodeURIComponent).join("/");
@@ -468,10 +467,12 @@ async function route(request, env, path, data) {
     }
     certificateCodes.forEach(count => { if (count > 1) duplicateVerificationCodes += count - 1; });
     const orphanPublicProjections = projectionsPage.documents.filter(item => !certificateCodes.has(item.id)).length;
-    const evidenceMetadataIncomplete = evidencePage.documents.filter(item =>
-      (item.evidenceAssetId || item.evidencePublicId) &&
-      !(item.evidencePublicId && item.evidenceVersion && item.evidenceFormat && item.evidenceResourceType)
-    ).length;
+    const evidenceMetadataIncomplete = evidencePage.documents.filter(item => {
+      const hasLegacyEvidence = Boolean(item.proofData || item.proofUrl || item.evidenceUrl || item.secureUrl);
+      const hasAnySecureMetadata = Boolean(item.evidenceAssetId || item.evidencePublicId || item.evidenceVersion || item.evidenceFormat || item.evidenceResourceType);
+      const hasCompleteSecureMetadata = Boolean(item.evidenceAssetId && item.evidencePublicId && item.evidenceVersion && item.evidenceFormat && item.evidenceResourceType);
+      return hasLegacyEvidence || (hasAnySecureMetadata && !hasCompleteSecureMetadata);
+    }).length;
     return {
       dryRun: true,
       generatedAt: new Date().toISOString(),
@@ -511,7 +512,7 @@ async function route(request, env, path, data) {
       tx.set(`bookSubmissions/${submissionId}`, { ...submission, status: decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
       let bookId = null;
       if (decision === "approved") {
-        bookId = clean(submission.bookId) || `submitted-${submissionId}`;
+        bookId = safeId(clean(submission.bookId) || `submitted-${submissionId}`, "book identifier");
         tx.set(`books/${bookId}`, {
           title: submission.title || "Untitled resource", author: submission.authorName || "Independent contributor",
           category: submission.category || "general", audience: submission.audience || ["general"],
@@ -540,11 +541,13 @@ async function route(request, env, path, data) {
       tx.set(`externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
       let certificate = null;
       if (decision === "approved") {
-        const id = `external_${record.userId}_${record.courseId}`;
+        const recordCourseId = safeId(record.courseId, "course identifier");
+        const recordUserId = safeId(record.userId, "user identifier");
+        const id = `external_${recordUserId}_${recordCourseId}`;
         const existing = await tx.get(`certificates/${id}`);
         if (!existing) {
           const verificationCode = await deterministicVerificationCode(`external:${id}`);
-          const certificateRecord = { id, userId: record.userId, recipientName: record.learnerName || "Learner", courseId: record.courseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+          const certificateRecord = { id, userId: recordUserId, recipientName: record.learnerName || "Learner", courseId: recordCourseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
           tx.set(`certificates/${id}`, certificateRecord);
           tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
           certificate = { id, verificationCode };

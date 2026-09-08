@@ -202,10 +202,10 @@ function detail(label, value) {
 function submissionCard(item) {
   const status = normalize(item.status) || "pending_review";
   const isPending = ["pending_review", "pending", "submitted"].includes(status);
-  const proof = item.proofData
-    ? `<img alt="Submitted proof of completion for ${safe(item.courseTitle)}" src="${item.proofData}"/>`
-    : item.evidencePublicId || item.evidenceAssetId
+  const proof = item.evidencePublicId && item.evidenceAssetId
       ? `<div class="notice">Evidence is protected. Use the authorized viewer below.</div><div data-evidence-preview="${safe(item.id)}"></div>`
+      : item.proofData || item.proofUrl || item.evidenceUrl || item.secureUrl
+        ? `<div class="notice bad">Legacy evidence is blocked from direct display. Migrate this record to authenticated Cloudinary metadata before review.</div>`
       : `<div class="notice">No proof image attached.</div>`;
 
   return `
@@ -229,7 +229,7 @@ function submissionCard(item) {
         <label style="display:block;margin-top:10px;font-weight:800;font-size:.85rem">Reviewer note</label>
         <textarea data-note="${item.id}" placeholder="Optional note shown to the learner"></textarea>
         <div class="actions">
-          ${item.evidencePublicId || item.evidenceAssetId ? `<button class="btn gold" data-evidence="${safe(item.id)}">View Protected Evidence</button>` : ""}
+          ${item.evidencePublicId && item.evidenceAssetId ? `<button class="btn gold" data-evidence="${safe(item.id)}">View Protected Evidence</button>` : ""}
           <button class="btn success" data-decision="approved" data-id="${item.id}" ${isPending ? "" : "disabled"}>Approve</button>
           <button class="btn danger" data-decision="rejected" data-id="${item.id}" ${isPending ? "" : "disabled"}>Reject</button>
           <button class="btn soft" data-decision="resubmission_required" data-id="${item.id}" ${isPending ? "" : "disabled"}>Request Resubmission</button>

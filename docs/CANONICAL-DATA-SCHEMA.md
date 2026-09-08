@@ -8,7 +8,7 @@ Status: Phase 1 contract. Existing data is not migrated by this document.
 - Role, approval, school membership, assessment results, progress, reviews and certificates are protected fields.
 - Protected writes are performed only by an authorized administrator under Firestore rules or by the trusted Cloudflare Worker using Google IAM.
 - Assessment answers exist only in `courseAssessments`, which no browser may read.
-- Cloudinary stores media. Firestore stores only HTTPS asset identifiers/URLs and metadata.
+- Cloudinary stores media. Private evidence uses authenticated Cloudinary assets; Firestore stores immutable asset metadata, never a reusable delivery URL.
 
 ## Collections
 
@@ -48,7 +48,7 @@ Minimal public projection: recipient display name, award title, issuer, issue da
 
 ### `externalLearningRecords/{uid_courseId}`
 
-Learner-owned submission metadata with a private Cloudinary `evidenceUrl`, provider details, status, reviewer identity/feedback and timestamps. Learners may create pending submissions and resubmit rejected records; only trusted reviewers can decide them or issue a certificate.
+Learner-owned submission metadata with Cloudinary `evidenceAssetId`, `evidencePublicId`, `evidenceVersion`, `evidenceFormat` and `evidenceResourceType`, plus provider details, status, reviewer identity/feedback and timestamps. The public ID must remain under `speakout/private-evidence/{uid}/`. Learners may create pending submissions and resubmit rejected records; only trusted reviewers can retrieve evidence through the authenticated Worker, decide a record or issue a certificate.
 
 ### `books/{bookId}`
 

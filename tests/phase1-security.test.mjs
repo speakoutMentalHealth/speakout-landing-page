@@ -43,3 +43,39 @@ test("Firebase deployment config does not deploy Cloud Functions", () => {
   assert.ok(config.hosting.ignore.includes("functions/**"));
   assert.ok(config.hosting.ignore.includes("workers/**"));
 });
+
+test("privileged Worker writes use Firestore transactions", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  assert.doesNotMatch(worker, /method:\s*["']PATCH["']/u);
+  assert.doesNotMatch(worker, /setDocument/u);
+  assert.match(worker, /documents:beginTransaction/u);
+  assert.match(worker, /documents:commit/u);
+  assert.match(worker, /firestoreStatus !== "ABORTED"/u);
+  assert.ok((worker.match(/return runTransaction\(/gu) || []).length >= 4);
+});
+
+test("protected evidence is authenticated and proxied without exposing a signed URL", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  const client = read("js/platform-api.js");
+  assert.match(worker, /type=authenticated/u);
+  assert.match(worker, /\$\{resourceType\}\/authenticated\/s--\$\{signature\}--/u);
+  assert.match(worker, /cache-control": "private, no-store/u);
+  assert.doesNotMatch(worker, /return\s+\{[^}]*signedUrl/u);
+  assert.match(client, /\/v1\/admin\/media\/evidence/u);
+  assert.match(client, /return response\.blob\(\)/u);
+  const reviewPage = read("admin-external-certificates.html");
+  assert.doesNotMatch(reviewPage, /src="\$\{item\.proofData\}"/u);
+  assert.match(reviewPage, /Legacy evidence is blocked from direct display/u);
+});
+
+test("staging Worker declares every required secret", () => {
+  const config = JSON.parse(read("workers/platform-api/wrangler.staging.jsonc"));
+  assert.deepEqual(config.secrets.required.sort(), [
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "CLOUDINARY_CLOUD_NAME",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY"
+  ]);
+  assert.equal(config.vars.FIREBASE_PROJECT_ID, "speakout-portal-staging");
+});

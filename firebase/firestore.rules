@@ -103,7 +103,11 @@ service cloud.firestore {
     }
 
     function validEvidenceMetadata() {
-      return request.resource.data.evidenceAssetId is string &&
+      return request.resource.data.userId == request.auth.uid &&
+        request.resource.data.courseId is string &&
+        request.resource.data.courseId.matches('^[A-Za-z0-9_-]{1,180}$') &&
+        request.resource.data.evidenceAssetId is string &&
+        request.resource.data.evidenceAssetId.matches('^[A-Za-z0-9_-]{8,180}$') &&
         request.resource.data.evidencePublicId is string &&
         request.resource.data.evidencePublicId.matches(
           '^speakout/private-evidence/' + request.auth.uid + '/[A-Za-z0-9-]+$'
