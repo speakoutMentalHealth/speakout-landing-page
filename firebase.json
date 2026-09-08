@@ -26,6 +26,7 @@
       "functions/**",
       "workers/**",
       "tests/**",
+      "demo/**",
       "speakout-landing-page/**",
       "firestore-schema/**",
       "firestore-seed/**",
@@ -41,6 +42,13 @@
       "seed-*.js",
       "cleanup-books.html",
       "cleanup-books.js"
+    ],
+    "redirects": [
+      { "source": "/portal/courses/**", "destination": "/my-courses.html", "type": 302 },
+      { "source": "/portal/library/**", "destination": "/my-library.html", "type": 302 },
+      { "source": "/portal/progress/**", "destination": "/progress.html", "type": 302 },
+      { "source": "/portal/certificates/**", "destination": "/certificates.html", "type": 302 },
+      { "source": "/portal/workshops/**", "destination": "/workshops.html", "type": 302 }
     ],
     "headers": [
       {

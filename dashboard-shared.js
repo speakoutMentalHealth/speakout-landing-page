@@ -13,12 +13,19 @@ if(logoutBtn){
 
 export const SO = {
   auth, db, collection, getDocs, addDoc, doc, getDoc, query, where, serverTimestamp, onAuthStateChanged,
-  safe(v){ return v ?? "—"; },
+  safe(v){
+    return String(v ?? "—")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  },
   num(v){ return Number(v || 0).toLocaleString(); },
   badge(v){
-    const raw = v || "pending";
-    const cls = raw.toLowerCase().replaceAll(" ","").replaceAll("_","");
-    return `<span class="badge ${cls}">${raw}</span>`;
+    const raw = String(v || "pending");
+    const cls = raw.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    return `<span class="badge ${cls}">${this.safe(raw)}</span>`;
   },
   async getAll(name){
     const snap = await getDocs(collection(db, name));
