@@ -30,6 +30,20 @@ async function sha1Hex(value) {
   return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
 }
 
+async function sha1Base64Url(value) {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-1", bytes);
+  let binary = "";
+  for (const byte of new Uint8Array(digest)) binary += String.fromCharCode(byte);
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+}
+
+async function deterministicVerificationCode(value) {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].slice(0, 8).map(byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
+
 function toFirestore(value) {
   if (value === null || value === undefined) return { nullValue: null };
   if (typeof value === "boolean") return { booleanValue: value };
@@ -84,27 +98,91 @@ async function firebaseAccessToken(env) {
   return result.access_token;
 }
 
-const documentUrl = (env, path) =>
-  `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)/documents/${path}`;
+const databaseUrl = env =>
+  `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/(default)`;
+const documentUrl = (env, path) => `${databaseUrl(env)}/documents/${path}`;
 
-async function firestore(env, path, init = {}) {
-  const response = await fetch(documentUrl(env, path), {
+async function firestoreRequest(env, url, init = {}) {
+  const response = await fetch(url, {
     ...init,
     headers: { Authorization: `Bearer ${await firebaseAccessToken(env)}`, "content-type": "application/json", ...(init.headers || {}) }
   });
   if (response.status === 404) return null;
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body?.error?.message || "Firestore request failed.");
+  if (!response.ok) {
+    const error = new Error(body?.error?.message || "Firestore request failed.");
+    error.firestoreStatus = body?.error?.status;
+    error.status = response.status;
+    throw error;
+  }
   return body;
 }
 
-async function getDocument(env, path) {
-  const doc = await firestore(env, path);
+async function firestore(env, path, init = {}) {
+  return firestoreRequest(env, documentUrl(env, path), init);
+}
+
+async function getDocument(env, path, transaction = "") {
+  const url = new URL(documentUrl(env, path));
+  if (transaction) url.searchParams.set("transaction", transaction);
+  const doc = await firestoreRequest(env, url.toString());
   return doc ? { id: doc.name.split("/").pop(), ...decodeFields(doc.fields) } : null;
 }
 
-async function setDocument(env, path, data) {
-  return firestore(env, path, { method: "PATCH", body: JSON.stringify({ fields: encodeFields(data) }) });
+async function listDocuments(env, collectionPath, limit = 1000) {
+  const documents = [];
+  let pageToken = "";
+  do {
+    const url = new URL(documentUrl(env, collectionPath));
+    url.searchParams.set("pageSize", String(Math.min(100, limit - documents.length)));
+    if (pageToken) url.searchParams.set("pageToken", pageToken);
+    const page = await firestoreRequest(env, url.toString());
+    for (const doc of page?.documents || []) {
+      documents.push({ id: doc.name.split("/").pop(), ...decodeFields(doc.fields) });
+      if (documents.length >= limit) break;
+    }
+    pageToken = page?.nextPageToken || "";
+  } while (pageToken && documents.length < limit);
+  return { documents, truncated: Boolean(pageToken) };
+}
+
+function documentWrite(env, path, data) {
+  return { update: { name: `${databaseUrl(env)}/documents/${path}`, fields: encodeFields(data) } };
+}
+
+async function rollbackTransaction(env, transaction) {
+  await firestoreRequest(env, `${databaseUrl(env)}/documents:rollback`, {
+    method: "POST",
+    body: JSON.stringify({ transaction })
+  }).catch(() => null);
+}
+
+async function runTransaction(env, operation, maxAttempts = 4) {
+  let lastError;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const started = await firestoreRequest(env, `${databaseUrl(env)}/documents:beginTransaction`, {
+      method: "POST",
+      body: JSON.stringify({ options: { readWrite: {} } })
+    });
+    const transaction = started.transaction;
+    const writes = [];
+    try {
+      const result = await operation({
+        get: path => getDocument(env, path, transaction),
+        set: (path, data) => writes.push(documentWrite(env, path, data))
+      });
+      await firestoreRequest(env, `${databaseUrl(env)}/documents:commit`, {
+        method: "POST",
+        body: JSON.stringify({ writes, transaction })
+      });
+      return result;
+    } catch (error) {
+      lastError = error;
+      await rollbackTransaction(env, transaction);
+      if (error.firestoreStatus !== "ABORTED" || attempt === maxAttempts - 1) throw error;
+    }
+  }
+  throw lastError;
 }
 
 async function authenticatedUser(request, env) {
@@ -163,11 +241,11 @@ function publicProgress(progress, course) {
   return { ...progress, percent: result.percent, progress: result.percent };
 }
 
-async function learningContext(env, user, courseId) {
-  const course = await getDocument(env, `courses/${courseId}`);
+async function learningContext(env, user, courseId, reader = path => getDocument(env, path)) {
+  const course = await reader(`courses/${courseId}`);
   if (!course) throw Object.assign(new Error("Course not found."), { status: 404 });
   const progressPath = `userProgress/${user.uid}_${courseId}`;
-  const progress = await getDocument(env, progressPath) || emptyProgress(user.uid, courseId, course);
+  const progress = await reader(progressPath) || emptyProgress(user.uid, courseId, course);
   return { course, progress, progressPath, modules: modulesOf(course) };
 }
 
@@ -187,9 +265,62 @@ function answerIndex(question) {
   return null;
 }
 
+async function assessmentContext(env, user, courseId, type, mi, reader = path => getDocument(env, path)) {
+  const ctx = await learningContext(env, user, courseId, reader);
+  if (!["module", "final"].includes(type)) throw Object.assign(new Error("Invalid assessment type."), { status: 400 });
+  if (type === "module") {
+    if (!Number.isInteger(mi) || !ctx.modules[mi]) throw Object.assign(new Error("Invalid module."), { status: 400 });
+    if (!previousModulesComplete(courseId, ctx.modules, mi, ctx.progress)) throw Object.assign(new Error("Complete the previous module first."), { status: 409 });
+    const done = new Set(ctx.progress.completedLessons || []);
+    if (!lessonsOf(ctx.modules[mi]).every((lesson, li) => done.has(lessonId(courseId, mi, lesson, li)))) {
+      throw Object.assign(new Error("Complete all lessons in this module first."), { status: 409 });
+    }
+  } else if (counts(courseId, ctx.course, ctx.progress).percent !== 100) {
+    throw Object.assign(new Error("Complete all course requirements first."), { status: 409 });
+  }
+  const assessment = await reader(`courseAssessments/${assessmentId(courseId, type, mi)}`);
+  if (!assessment) throw Object.assign(new Error("Secure assessment unavailable."), { status: 404 });
+  return { ...ctx, assessment };
+}
+
+async function authenticatedEvidenceResponse(env, record) {
+  const publicId = clean(record.evidencePublicId || record.evidenceAssetId);
+  const version = Number(record.evidenceVersion);
+  const format = normalized(record.evidenceFormat || "jpg");
+  const resourceType = normalized(record.evidenceResourceType || "image");
+  if (!publicId || !Number.isInteger(version) || version < 1 || !/^[a-z0-9]{2,12}$/.test(format) || resourceType !== "image") {
+    throw Object.assign(new Error("This evidence record needs migration before it can be viewed securely."), { status: 409 });
+  }
+  const encodedPublicId = publicId.split("/").map(encodeURIComponent).join("/");
+  const deliveryTail = `v${version}/${encodedPublicId}.${format}`;
+  const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, 8);
+  const response = await fetch(`https://res.cloudinary.com/${encodeURIComponent(env.CLOUDINARY_CLOUD_NAME)}/${resourceType}/authenticated/s--${signature}--/${deliveryTail}`);
+  if (!response.ok || !response.body) {
+    throw Object.assign(new Error("Secure evidence retrieval failed."), { status: response.status === 404 ? 404 : 502 });
+  }
+  return new Response(response.body, {
+    status: 200,
+    headers: {
+      "content-type": response.headers.get("content-type") || `image/${format}`,
+      "content-disposition": `inline; filename=\"evidence.${format}\"`,
+      "cache-control": "private, no-store, max-age=0",
+      "x-content-type-options": "nosniff",
+      "x-robots-tag": "noindex, nofollow"
+    }
+  });
+}
+
 async function route(request, env, path, data) {
   const user = await authenticatedUser(request, env);
   const courseId = path.startsWith("/v1/learning/") ? safeId(data.courseId, "course identifier") : clean(data.courseId);
+
+  if (path === "/v1/admin/media/evidence") {
+    requireAdmin(user);
+    const recordId = safeId(data.recordId, "record identifier");
+    const record = await getDocument(env, `externalLearningRecords/${recordId}`);
+    if (!record) throw Object.assign(new Error("Evidence record not found."), { status: 404 });
+    return authenticatedEvidenceResponse(env, record);
+  }
 
   if (path === "/v1/media/evidence") {
     const file = data.file;
@@ -212,7 +343,13 @@ async function route(request, env, path, data) {
     const response = await fetch(`https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: upload });
     const result = await response.json();
     if (!response.ok) throw Object.assign(new Error("Secure evidence upload failed."), { status: 502 });
-    return { assetId: result.public_id, version: result.version, resourceType: result.resource_type };
+    return {
+      assetId: result.asset_id,
+      publicId: result.public_id,
+      version: result.version,
+      format: result.format,
+      resourceType: result.resource_type
+    };
   }
 
   if (path === "/v1/learning/state") {
@@ -221,79 +358,144 @@ async function route(request, env, path, data) {
   }
 
   if (path === "/v1/learning/lessons/complete") {
-    const ctx = await learningContext(env, user, courseId);
-    const target = clean(data.lessonId);
-    let found;
-    ctx.modules.forEach((module, mi) => lessonsOf(module).forEach((lesson, li) => {
-      if (lessonId(courseId, mi, lesson, li) === target) found = { mi, li };
-    }));
-    if (!found) throw Object.assign(new Error("Lesson not found."), { status: 404 });
-    if (!previousModulesComplete(courseId, ctx.modules, found.mi, ctx.progress)) throw Object.assign(new Error("Complete the previous module first."), { status: 409 });
-    if (found.li > 0) {
-      const prior = lessonId(courseId, found.mi, ctx.modules[found.mi].lessons[found.li - 1], found.li - 1);
-      if (!(ctx.progress.completedLessons || []).includes(prior)) throw Object.assign(new Error("Complete the previous lesson first."), { status: 409 });
-    }
-    const completed = [...new Set([...(ctx.progress.completedLessons || []), target])];
-    const updated = publicProgress({ ...ctx.progress, completedLessons: completed, updatedAt: new Date().toISOString() }, ctx.course);
-    await setDocument(env, ctx.progressPath, updated);
-    return { progress: updated };
+    return runTransaction(env, async tx => {
+      const ctx = await learningContext(env, user, courseId, tx.get);
+      const target = clean(data.lessonId);
+      let found;
+      ctx.modules.forEach((module, mi) => lessonsOf(module).forEach((lesson, li) => {
+        if (lessonId(courseId, mi, lesson, li) === target) found = { mi, li };
+      }));
+      if (!found) throw Object.assign(new Error("Lesson not found."), { status: 404 });
+      if (!previousModulesComplete(courseId, ctx.modules, found.mi, ctx.progress)) throw Object.assign(new Error("Complete the previous module first."), { status: 409 });
+      if (found.li > 0) {
+        const prior = lessonId(courseId, found.mi, ctx.modules[found.mi].lessons[found.li - 1], found.li - 1);
+        if (!(ctx.progress.completedLessons || []).includes(prior)) throw Object.assign(new Error("Complete the previous lesson first."), { status: 409 });
+      }
+      const completed = [...new Set([...(ctx.progress.completedLessons || []), target])];
+      const updated = publicProgress({ ...ctx.progress, completedLessons: completed, updatedAt: new Date().toISOString() }, ctx.course);
+      tx.set(ctx.progressPath, updated);
+      return { progress: updated };
+    });
   }
 
   if (path === "/v1/learning/assessments/get" || path === "/v1/learning/assessments/submit") {
-    const ctx = await learningContext(env, user, courseId);
     const type = normalized(data.type);
     const mi = Number(data.moduleIndex);
-    if (!["module", "final"].includes(type)) throw Object.assign(new Error("Invalid assessment type."), { status: 400 });
-    if (type === "module") {
-      if (!Number.isInteger(mi) || !ctx.modules[mi]) throw Object.assign(new Error("Invalid module."), { status: 400 });
-      if (!previousModulesComplete(courseId, ctx.modules, mi, ctx.progress)) throw Object.assign(new Error("Complete the previous module first."), { status: 409 });
-      const done = new Set(ctx.progress.completedLessons || []);
-      if (!lessonsOf(ctx.modules[mi]).every((lesson, li) => done.has(lessonId(courseId, mi, lesson, li)))) throw Object.assign(new Error("Complete all lessons in this module first."), { status: 409 });
-    } else if (counts(courseId, ctx.course, ctx.progress).percent !== 100) {
-      throw Object.assign(new Error("Complete all course requirements first."), { status: 409 });
+    if (path.endsWith("/get")) {
+      const ctx = await assessmentContext(env, user, courseId, type, mi);
+      return { assessment: safeAssessment(ctx.assessment) };
     }
-    const assessment = await getDocument(env, `courseAssessments/${assessmentId(courseId, type, mi)}`);
-    if (!assessment) throw Object.assign(new Error("Secure assessment unavailable."), { status: 404 });
-    if (path.endsWith("/get")) return { assessment: safeAssessment(assessment) };
-    const answers = Array.isArray(data.answers) ? data.answers : [];
-    const questions = assessment.questions || [];
-    if (!questions.length || answers.length !== questions.length) throw Object.assign(new Error("Answer every question."), { status: 400 });
-    let correct = 0;
-    questions.forEach((question, index) => { const key = answerIndex(question); if (key === null) throw Object.assign(new Error("Assessment configuration error."), { status: 500 }); if (Number(answers[index]) === key) correct++; });
-    const score = Math.round(correct / questions.length * 100);
-    const passMark = Number(assessment.passMark || 70);
-    const passed = score >= passMark;
-    const updated = { ...ctx.progress, passedModuleQuizzes: { ...(ctx.progress.passedModuleQuizzes || {}) }, moduleQuizScores: { ...(ctx.progress.moduleQuizScores || {}) }, updatedAt: new Date().toISOString() };
-    let certificate = null;
-    if (type === "module") {
-      updated.moduleQuizScores[String(mi)] = Math.max(Number(updated.moduleQuizScores[String(mi)] || 0), score);
-      if (passed) updated.passedModuleQuizzes[String(mi)] = true;
-    } else {
-      updated.finalAssessmentScore = Math.max(Number(updated.finalAssessmentScore || 0), score);
-      if (passed) {
-        updated.finalAssessmentPassed = true;
-        updated.status = "completed";
-        const id = `${user.uid}_${courseId}`;
-        const existing = await getDocument(env, `certificates/${id}`);
-        if (!existing) {
-          const verificationCode = crypto.randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
-          const record = { id, userId: user.uid, recipientName: user.profile.fullName || user.email, courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: new Date().toISOString().slice(0, 10), createdAt: new Date().toISOString() };
-          await setDocument(env, `certificates/${id}`, record);
-          await setDocument(env, `publicCertificateVerifications/${verificationCode}`, { recipientName: record.recipientName, awardTitle: record.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: record.issueDate, status: record.status, certificateNumber: id });
-          certificate = { id, verificationCode };
-        } else certificate = { id, verificationCode: existing.verificationCode };
-        updated.certificateId = id;
+    return runTransaction(env, async tx => {
+      const ctx = await assessmentContext(env, user, courseId, type, mi, tx.get);
+      const answers = Array.isArray(data.answers) ? data.answers : [];
+      const questions = ctx.assessment.questions || [];
+      if (!questions.length || answers.length !== questions.length) throw Object.assign(new Error("Answer every question."), { status: 400 });
+      let correct = 0;
+      questions.forEach((question, index) => {
+        const key = answerIndex(question);
+        if (key === null) throw Object.assign(new Error("Assessment configuration error."), { status: 500 });
+        if (Number(answers[index]) === key) correct++;
+      });
+      const score = Math.round(correct / questions.length * 100);
+      const passMark = Number(ctx.assessment.passMark || 70);
+      const passed = score >= passMark;
+      const now = new Date().toISOString();
+      const updated = { ...ctx.progress, passedModuleQuizzes: { ...(ctx.progress.passedModuleQuizzes || {}) }, moduleQuizScores: { ...(ctx.progress.moduleQuizScores || {}) }, updatedAt: now };
+      let certificate = null;
+      if (type === "module") {
+        updated.moduleQuizScores[String(mi)] = Math.max(Number(updated.moduleQuizScores[String(mi)] || 0), score);
+        if (passed) updated.passedModuleQuizzes[String(mi)] = true;
+      } else {
+        updated.finalAssessmentScore = Math.max(Number(updated.finalAssessmentScore || 0), score);
+        if (passed) {
+          updated.finalAssessmentPassed = true;
+          updated.status = "completed";
+          const id = `${user.uid}_${courseId}`;
+          const existing = await tx.get(`certificates/${id}`);
+          if (!existing) {
+            const verificationCode = await deterministicVerificationCode(`course:${id}`);
+            const record = { id, userId: user.uid, recipientName: user.profile.fullName || user.email, courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+            tx.set(`certificates/${id}`, record);
+            tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: record.recipientName, awardTitle: record.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: record.issueDate, status: record.status, certificateNumber: id });
+            certificate = { id, verificationCode };
+          } else certificate = { id, verificationCode: existing.verificationCode };
+          updated.certificateId = id;
+        }
       }
-    }
-    const finalProgress = publicProgress(updated, ctx.course);
-    await setDocument(env, ctx.progressPath, finalProgress);
-    return { score, passMark, passed, progress: finalProgress, certificate };
+      const finalProgress = publicProgress(updated, ctx.course);
+      tx.set(ctx.progressPath, finalProgress);
+      return { score, passMark, passed, progress: finalProgress, certificate };
+    });
   }
 
   if (path === "/v1/admin/assessments/migrate") {
     requireAdmin(user);
     if (data.dryRun !== true) throw Object.assign(new Error("Only dry-run migration inventory is enabled."), { status: 409 });
-    return { dryRun: true, message: "No data was changed. Enable the reviewed migration only after a Firestore backup." };
+    const [coursesPage, assessmentsPage, certificatesPage, projectionsPage, evidencePage] = await Promise.all([
+      listDocuments(env, "courses"),
+      listDocuments(env, "courseAssessments"),
+      listDocuments(env, "certificates"),
+      listDocuments(env, "publicCertificateVerifications"),
+      listDocuments(env, "externalLearningRecords")
+    ]);
+    const assessmentIds = new Set(assessmentsPage.documents.map(item => item.id));
+    let embeddedModuleAssessments = 0;
+    let embeddedFinalAssessments = 0;
+    let missingSecureAssessments = 0;
+    for (const course of coursesPage.documents) {
+      modulesOf(course).forEach((module, mi) => {
+        if (!module.quiz) return;
+        embeddedModuleAssessments++;
+        if (!assessmentIds.has(assessmentId(course.id, "module", mi))) missingSecureAssessments++;
+      });
+      if (course.finalAssessment || course.finalQuiz) {
+        embeddedFinalAssessments++;
+        if (!assessmentIds.has(assessmentId(course.id, "final", 0))) missingSecureAssessments++;
+      }
+    }
+    const certificateCodes = new Map();
+    let certificatesMissingCode = 0;
+    let duplicateVerificationCodes = 0;
+    let missingPublicProjections = 0;
+    const projectionIds = new Set(projectionsPage.documents.map(item => item.id));
+    for (const certificate of certificatesPage.documents) {
+      const code = clean(certificate.verificationCode);
+      if (!code) certificatesMissingCode++;
+      else {
+        certificateCodes.set(code, (certificateCodes.get(code) || 0) + 1);
+        if (!projectionIds.has(code)) missingPublicProjections++;
+      }
+    }
+    certificateCodes.forEach(count => { if (count > 1) duplicateVerificationCodes += count - 1; });
+    const orphanPublicProjections = projectionsPage.documents.filter(item => !certificateCodes.has(item.id)).length;
+    const evidenceMetadataIncomplete = evidencePage.documents.filter(item =>
+      (item.evidenceAssetId || item.evidencePublicId) &&
+      !(item.evidencePublicId && item.evidenceVersion && item.evidenceFormat && item.evidenceResourceType)
+    ).length;
+    return {
+      dryRun: true,
+      generatedAt: new Date().toISOString(),
+      writesPerformed: 0,
+      assessments: {
+        coursesScanned: coursesPage.documents.length,
+        secureAssessments: assessmentsPage.documents.length,
+        embeddedModuleAssessments,
+        embeddedFinalAssessments,
+        missingSecureAssessments
+      },
+      certificates: {
+        certificatesScanned: certificatesPage.documents.length,
+        publicProjections: projectionsPage.documents.length,
+        certificatesMissingCode,
+        duplicateVerificationCodes,
+        missingPublicProjections,
+        orphanPublicProjections
+      },
+      evidence: { recordsScanned: evidencePage.documents.length, evidenceMetadataIncomplete },
+      truncated: [coursesPage, assessmentsPage, certificatesPage, projectionsPage, evidencePage].some(page => page.truncated),
+      safeToMigrate: missingSecureAssessments === 0 && certificatesMissingCode === 0 && duplicateVerificationCodes === 0 && evidenceMetadataIncomplete === 0,
+      message: "Inventory only. No data was changed. Back up Firestore and review every reported exception before enabling a migration write path."
+    };
   }
 
   if (path === "/v1/admin/book-submissions/review") {
@@ -301,26 +503,28 @@ async function route(request, env, path, data) {
     const submissionId = safeId(data.submissionId, "submission identifier");
     const decision = normalized(data.decision);
     if (!submissionId || !["approved", "rejected"].includes(decision)) throw Object.assign(new Error("Invalid review request."), { status: 400 });
-    const submission = await getDocument(env, `bookSubmissions/${submissionId}`);
-    if (!submission) throw Object.assign(new Error("Submission not found."), { status: 404 });
-    if (normalized(submission.status) !== "pending") throw Object.assign(new Error("This submission has already been reviewed."), { status: 409 });
-    const now = new Date().toISOString();
-    await setDocument(env, `bookSubmissions/${submissionId}`, { ...submission, status: decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
-    let bookId = null;
-    if (decision === "approved") {
-      bookId = clean(submission.bookId) || `submitted-${submissionId}`;
-      await setDocument(env, `books/${bookId}`, {
-        title: submission.title || "Untitled resource", author: submission.authorName || "Independent contributor",
-        category: submission.category || "general", audience: submission.audience || ["general"],
-        shortDescription: submission.shortDescription || "", description: submission.description || "",
-        coverUrl: submission.coverUrl || "", accessType: submission.accessType || "free",
-        price: Number(submission.price || 0), currency: submission.currency || "₦",
-        purchasePlatform: submission.purchasePlatform || "", purchaseUrl: submission.purchaseUrl || "",
-        status: "active", source: "approved-submission", sourceSubmissionId: submissionId,
-        createdAt: now, updatedAt: now
-      });
-    }
-    return { ok: true, decision, bookId };
+    return runTransaction(env, async tx => {
+      const submission = await tx.get(`bookSubmissions/${submissionId}`);
+      if (!submission) throw Object.assign(new Error("Submission not found."), { status: 404 });
+      if (normalized(submission.status) !== "pending") throw Object.assign(new Error("This submission has already been reviewed."), { status: 409 });
+      const now = new Date().toISOString();
+      tx.set(`bookSubmissions/${submissionId}`, { ...submission, status: decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
+      let bookId = null;
+      if (decision === "approved") {
+        bookId = clean(submission.bookId) || `submitted-${submissionId}`;
+        tx.set(`books/${bookId}`, {
+          title: submission.title || "Untitled resource", author: submission.authorName || "Independent contributor",
+          category: submission.category || "general", audience: submission.audience || ["general"],
+          shortDescription: submission.shortDescription || "", description: submission.description || "",
+          coverUrl: submission.coverUrl || "", accessType: submission.accessType || "free",
+          price: Number(submission.price || 0), currency: submission.currency || "₦",
+          purchasePlatform: submission.purchasePlatform || "", purchaseUrl: submission.purchaseUrl || "",
+          status: "active", source: "approved-submission", sourceSubmissionId: submissionId,
+          createdAt: now, updatedAt: now
+        });
+      }
+      return { ok: true, decision, bookId };
+    });
   }
 
   if (path === "/v1/admin/external-learning/review") {
@@ -328,24 +532,26 @@ async function route(request, env, path, data) {
     const recordId = safeId(data.recordId, "record identifier");
     const decision = normalized(data.decision);
     if (!recordId || !["approved", "rejected", "resubmission_required"].includes(decision)) throw Object.assign(new Error("Invalid review request."), { status: 400 });
-    const record = await getDocument(env, `externalLearningRecords/${recordId}`);
-    if (!record) throw Object.assign(new Error("Submission not found."), { status: 404 });
-    if (!["pending_review", "pending", "submitted"].includes(normalized(record.status))) throw Object.assign(new Error("This submission is not awaiting review."), { status: 409 });
-    const now = new Date().toISOString();
-    await setDocument(env, `externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
-    let certificate = null;
-    if (decision === "approved") {
-      const id = `external_${record.userId}_${record.courseId}`;
-      const existing = await getDocument(env, `certificates/${id}`);
-      if (!existing) {
-        const verificationCode = crypto.randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase();
-        const certificateRecord = { id, userId: record.userId, recipientName: record.learnerName || "Learner", courseId: record.courseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
-        await setDocument(env, `certificates/${id}`, certificateRecord);
-        await setDocument(env, `publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
-        certificate = { id, verificationCode };
-      } else certificate = { id, verificationCode: existing.verificationCode };
-    }
-    return { ok: true, decision, certificate };
+    return runTransaction(env, async tx => {
+      const record = await tx.get(`externalLearningRecords/${recordId}`);
+      if (!record) throw Object.assign(new Error("Submission not found."), { status: 404 });
+      if (!["pending_review", "pending", "submitted"].includes(normalized(record.status))) throw Object.assign(new Error("This submission is not awaiting review."), { status: 409 });
+      const now = new Date().toISOString();
+      tx.set(`externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
+      let certificate = null;
+      if (decision === "approved") {
+        const id = `external_${record.userId}_${record.courseId}`;
+        const existing = await tx.get(`certificates/${id}`);
+        if (!existing) {
+          const verificationCode = await deterministicVerificationCode(`external:${id}`);
+          const certificateRecord = { id, userId: record.userId, recipientName: record.learnerName || "Learner", courseId: record.courseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+          tx.set(`certificates/${id}`, certificateRecord);
+          tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
+          certificate = { id, verificationCode };
+        } else certificate = { id, verificationCode: existing.verificationCode };
+      }
+      return { ok: true, decision, certificate };
+    });
   }
 
   if (path.startsWith("/v1/admin/")) {
@@ -370,7 +576,13 @@ export default {
         const form = await request.formData();
         data = Object.fromEntries(form.entries());
       }
-      return json(await route(request, env, new URL(request.url).pathname, data), 200, headers);
+      const result = await route(request, env, new URL(request.url).pathname, data);
+      if (result instanceof Response) {
+        const responseHeaders = new Headers(result.headers);
+        Object.entries(headers).forEach(([key, value]) => responseHeaders.set(key, value));
+        return new Response(result.body, { status: result.status, statusText: result.statusText, headers: responseHeaders });
+      }
+      return json(result, 200, headers);
     } catch (error) {
       console.error(error);
       return json({ error: error.message || "Request failed." }, error.status || 500, headers);

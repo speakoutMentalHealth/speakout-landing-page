@@ -72,10 +72,15 @@ service cloud.firestore {
     }
 
     function validNewUser(userId) {
-      return request.resource.data.uid == userId &&
+      return request.resource.data.keys().hasAll(["uid", "email", "role", "status", "approved"]) &&
+        request.resource.data.uid == userId &&
+        request.auth.uid == userId &&
         request.resource.data.status == "pending" &&
         request.resource.data.approved == false &&
-        isPublicRole(request.resource.data.role) &&
+        request.resource.data.role in [
+          "student", "parent", "teacher", "school", "school_admin",
+          "ambassador", "contributor", "volunteer"
+        ] &&
         request.resource.data.email is string;
     }
 
@@ -95,6 +100,26 @@ service cloud.firestore {
         "profileCompleted",
         "updatedAt"
       ]);
+    }
+
+    function validEvidenceMetadata() {
+      return request.resource.data.evidenceAssetId is string &&
+        request.resource.data.evidencePublicId is string &&
+        request.resource.data.evidencePublicId.matches(
+          '^speakout/private-evidence/' + request.auth.uid + '/[A-Za-z0-9-]+$'
+        ) &&
+        request.resource.data.evidenceVersion is int &&
+        request.resource.data.evidenceVersion > 0 &&
+        request.resource.data.evidenceFormat in ["jpg", "jpeg", "png", "webp"] &&
+        request.resource.data.evidenceResourceType == "image" &&
+        !("proofData" in request.resource.data) &&
+        !("proofUrl" in request.resource.data) &&
+        !("secureUrl" in request.resource.data);
+    }
+
+    function isUserInSchool(userId, schoolId) {
+      return exists(/databases/$(database)/documents/users/$(userId)) &&
+        get(/databases/$(database)/documents/users/$(userId)).data.schoolId == schoolId;
     }
 
     match /users/{userId} {
@@ -154,7 +179,16 @@ service cloud.firestore {
     }
 
     match /parentStudentLinks/{linkId} {
-      allow create: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin());
+      allow create: if isSuperAdmin() ||
+        (
+          isApproved() &&
+          request.resource.data.schoolId == userSchoolId() &&
+          isUserInSchool(request.resource.data.studentId, userSchoolId()) &&
+          (
+            (isSchoolAdmin() && isUserInSchool(request.resource.data.parentId, userSchoolId())) ||
+            (isParent() && request.resource.data.parentId == request.auth.uid)
+          )
+        );
 
       allow read: if isApproved() &&
         (
@@ -167,7 +201,9 @@ service cloud.firestore {
       allow update: if isSuperAdmin() ||
         (isSchoolAdmin() &&
           resource.data.schoolId == userSchoolId() &&
-          request.resource.data.schoolId == userSchoolId());
+          request.resource.data.schoolId == userSchoolId() &&
+          request.resource.data.parentId == resource.data.parentId &&
+          request.resource.data.studentId == resource.data.studentId);
       allow delete: if isSuperAdmin() ||
         (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
@@ -332,7 +368,8 @@ service cloud.firestore {
       allow create: if isApproved() &&
         request.resource.data.userId == request.auth.uid &&
         request.resource.data.status == "pending_review" &&
-        request.resource.data.verificationStatus == "pending";
+        request.resource.data.verificationStatus == "pending" &&
+        validEvidenceMetadata();
 
       allow update: if isApproved() &&
         resource.data.userId == request.auth.uid &&
@@ -345,14 +382,18 @@ service cloud.firestore {
           "completionDate",
           "verificationUrl",
           "evidenceAssetId",
+          "evidencePublicId",
           "evidenceVersion",
+          "evidenceFormat",
+          "evidenceResourceType",
           "proofType",
           "learnerNote",
           "status",
           "verificationStatus",
           "submittedAt",
           "updatedAt"
-        ]);
+        ]) &&
+        validEvidenceMetadata();
 
       allow read: if isApproved() &&
         (

@@ -1,0 +1,12 @@
+node_modules/
+workers/platform-api/node_modules/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+workers/platform-api/.wrangler/
+workers/platform-api/.wrangler-dry-run/
+workers/platform-api/wrangler.jsonc
+.env
+.env.*
+!.env.example

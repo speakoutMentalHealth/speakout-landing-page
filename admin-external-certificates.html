@@ -204,7 +204,9 @@ function submissionCard(item) {
   const isPending = ["pending_review", "pending", "submitted"].includes(status);
   const proof = item.proofData
     ? `<img alt="Submitted proof of completion for ${safe(item.courseTitle)}" src="${item.proofData}"/>`
-    : `<div class="notice">No proof image attached.</div>`;
+    : item.evidencePublicId || item.evidenceAssetId
+      ? `<div class="notice">Evidence is protected. Use the authorized viewer below.</div><div data-evidence-preview="${safe(item.id)}"></div>`
+      : `<div class="notice">No proof image attached.</div>`;
 
   return `
     <article class="card submission-card" data-id="${item.id}">
@@ -227,6 +229,7 @@ function submissionCard(item) {
         <label style="display:block;margin-top:10px;font-weight:800;font-size:.85rem">Reviewer note</label>
         <textarea data-note="${item.id}" placeholder="Optional note shown to the learner"></textarea>
         <div class="actions">
+          ${item.evidencePublicId || item.evidenceAssetId ? `<button class="btn gold" data-evidence="${safe(item.id)}">View Protected Evidence</button>` : ""}
           <button class="btn success" data-decision="approved" data-id="${item.id}" ${isPending ? "" : "disabled"}>Approve</button>
           <button class="btn danger" data-decision="rejected" data-id="${item.id}" ${isPending ? "" : "disabled"}>Reject</button>
           <button class="btn soft" data-decision="resubmission_required" data-id="${item.id}" ${isPending ? "" : "disabled"}>Request Resubmission</button>
@@ -244,6 +247,32 @@ function render() {
   submissionList.querySelectorAll("button[data-decision]").forEach(btn => {
     btn.onclick = () => reviewSubmission(btn.dataset.id, btn.dataset.decision);
   });
+  submissionList.querySelectorAll("button[data-evidence]").forEach(btn => {
+    btn.onclick = () => viewEvidence(btn);
+  });
+}
+
+async function viewEvidence(button) {
+  const recordId = button.dataset.evidence;
+  const preview = submissionList.querySelector(`[data-evidence-preview="${CSS.escape(recordId)}"]`);
+  button.disabled = true;
+  try {
+    show("Retrieving protected evidence...", "");
+    const blob = await adminApi.retrieveEvidence(recordId);
+    const url = URL.createObjectURL(blob);
+    const image = document.createElement("img");
+    image.alt = "Protected evidence submitted for review";
+    image.src = url;
+    image.onload = () => URL.revokeObjectURL(url);
+    image.onerror = () => URL.revokeObjectURL(url);
+    preview.replaceChildren(image);
+    show("Protected evidence loaded for this authorized session.", "ok");
+  } catch (error) {
+    console.error(error);
+    show(error.message || "Could not retrieve protected evidence.", "bad");
+  } finally {
+    button.disabled = false;
+  }
 }
 
 async function reviewSubmission(recordId, decision) {

@@ -55,6 +55,24 @@ export async function uploadEvidence(file, purpose) {
   return parseResponse(response);
 }
 
+export async function retrieveEvidence(recordId) {
+  const response = await fetch(endpoint("/v1/admin/media/evidence"), {
+    method: "POST",
+    headers: {
+      Authorization: await authorizationHeader(),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ recordId }),
+    credentials: "omit",
+    cache: "no-store"
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.error || body.message || "The evidence could not be retrieved securely.");
+  }
+  return response.blob();
+}
+
 export const learningApi = {
   state: courseId => platformRequest("/v1/learning/state", { courseId }),
   completeLesson: (courseId, lessonId) =>
@@ -66,6 +84,7 @@ export const learningApi = {
 };
 
 export const adminApi = {
+  retrieveEvidence,
   reviewBook: (submissionId, decision, note) =>
     platformRequest("/v1/admin/book-submissions/review", { submissionId, decision, note }),
   reviewExternalCertificate: (recordId, decision, note) =>

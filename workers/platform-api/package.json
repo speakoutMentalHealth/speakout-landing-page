@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "check": "wrangler deploy --dry-run --outdir .wrangler-dry-run"
+    "dev": "wrangler dev --config wrangler.staging.jsonc",
+    "deploy:staging": "wrangler deploy --config wrangler.staging.jsonc",
+    "check": "wrangler deploy --dry-run --config wrangler.staging.jsonc --outdir .wrangler-dry-run"
   },
   "dependencies": {
     "jose": "^6.2.12"
