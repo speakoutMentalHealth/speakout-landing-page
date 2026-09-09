@@ -80,3 +80,40 @@ test("staging Worker declares every required secret", () => {
   ]);
   assert.equal(config.vars.FIREBASE_PROJECT_ID, "speakout-portal-staging");
 });
+
+test("homepage CMS writes use the whitelisted admin Worker API", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  const client = read("js/platform-api.js");
+  const pages = [
+    "admin-impact.html",
+    "admin-media.html",
+    "admin-partners.html",
+    "admin-podcast.html",
+    "admin-reports.html",
+    "admin-videos.html"
+  ];
+  for (const collectionName of [
+    "homepageStats",
+    "homepageMedia",
+    "homepagePartners",
+    "homepagePodcasts",
+    "homepageReports",
+    "homepageVideos"
+  ]) assert.match(worker, new RegExp(`${collectionName}: \\[`, "u"));
+  assert.match(worker, /Object\.hasOwn\(CMS_COLLECTION_FIELDS, collectionName\)/u);
+  assert.match(worker, /\/v1\/admin\/content\/upsert/u);
+  assert.match(worker, /\/v1\/admin\/content\/status/u);
+  assert.match(worker, /\/v1\/admin\/content\/delete/u);
+  assert.match(worker, /delete: path => writes\.push\(documentDelete\(env, path\)\)/u);
+  assert.match(client, /upsertContent:/u);
+  assert.match(client, /setContentStatus:/u);
+  assert.match(client, /deleteContent:/u);
+  for (const file of pages) {
+    const page = read(file);
+    assert.match(page, /import \{ adminApi \} from "\.\/js\/platform-api\.js"/u, file);
+    assert.match(page, /adminApi\.upsertContent\(COL,editingId,payload\)/u, file);
+    assert.match(page, /adminApi\.setContentStatus\(COL,b\.dataset\.hide,"hidden"\)/u, file);
+    assert.match(page, /adminApi\.deleteContent\(COL,b\.dataset\.del\)/u, file);
+    assert.doesNotMatch(page, /\b(?:addDoc|updateDoc|deleteDoc|serverTimestamp)\b/u, file);
+  }
+});

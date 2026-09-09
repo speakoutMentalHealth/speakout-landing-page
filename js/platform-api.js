@@ -88,5 +88,11 @@ export const adminApi = {
   reviewBook: (submissionId, decision, note) =>
     platformRequest("/v1/admin/book-submissions/review", { submissionId, decision, note }),
   reviewExternalCertificate: (recordId, decision, note) =>
-    platformRequest("/v1/admin/external-learning/review", { recordId, decision, note })
+    platformRequest("/v1/admin/external-learning/review", { recordId, decision, note }),
+  upsertContent: (collection, id, record) =>
+    platformRequest("/v1/admin/content/upsert", { collection, id, record }),
+  setContentStatus: (collection, id, status) =>
+    platformRequest("/v1/admin/content/status", { collection, id, status }),
+  deleteContent: (collection, id) =>
+    platformRequest("/v1/admin/content/delete", { collection, id })
 };

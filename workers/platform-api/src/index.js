@@ -24,6 +24,45 @@ function safeId(value, label = "identifier") {
   return id;
 }
 
+const CMS_COLLECTION_FIELDS = Object.freeze({
+  homepageStats: ["title", "description", "value", "suffix", "category"],
+  homepageMedia: ["title", "description", "type", "url", "imageUrl"],
+  homepagePartners: ["title", "description", "logoUrl", "websiteUrl", "category"],
+  homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
+  homepageReports: ["title", "description", "url", "category", "imageUrl"],
+  homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"]
+});
+
+function cmsCollection(value) {
+  const collectionName = clean(value);
+  if (!Object.hasOwn(CMS_COLLECTION_FIELDS, collectionName)) {
+    throw Object.assign(new Error("Unsupported content collection."), { status: 400 });
+  }
+  return collectionName;
+}
+
+function cmsRecord(collectionName, input) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw Object.assign(new Error("Invalid content record."), { status: 400 });
+  }
+  const record = {};
+  for (const field of CMS_COLLECTION_FIELDS[collectionName]) {
+    const value = clean(input[field]);
+    if (value.length > 2000) throw Object.assign(new Error(`${field} is too long.`), { status: 400 });
+    record[field] = value;
+  }
+  if (!record.title) throw Object.assign(new Error("Title is required."), { status: 400 });
+  const status = normalized(input.status) || "active";
+  if (!["active", "draft", "hidden"].includes(status)) {
+    throw Object.assign(new Error("Invalid content status."), { status: 400 });
+  }
+  const order = Number(input.order || 0);
+  if (!Number.isFinite(order) || !Number.isInteger(order) || Math.abs(order) > 100000) {
+    throw Object.assign(new Error("Invalid content order."), { status: 400 });
+  }
+  return { ...record, status, order };
+}
+
 async function sha1Hex(value) {
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-1", bytes);
@@ -146,6 +185,10 @@ function documentWrite(env, path, data) {
   return { update: { name: `${databaseName(env)}/documents/${path}`, fields: encodeFields(data) } };
 }
 
+function documentDelete(env, path) {
+  return { delete: `${databaseName(env)}/documents/${path}` };
+}
+
 async function rollbackTransaction(env, transaction) {
   await firestoreRequest(env, `${databaseUrl(env)}/documents:rollback`, {
     method: "POST",
@@ -165,7 +208,8 @@ async function runTransaction(env, operation, maxAttempts = 4) {
     try {
       const result = await operation({
         get: path => getDocument(env, path, transaction),
-        set: (path, data) => writes.push(documentWrite(env, path, data))
+        set: (path, data) => writes.push(documentWrite(env, path, data)),
+        delete: path => writes.push(documentDelete(env, path))
       });
       await firestoreRequest(env, `${databaseUrl(env)}/documents:commit`, {
         method: "POST",
@@ -554,6 +598,57 @@ async function route(request, env, path, data) {
         } else certificate = { id, verificationCode: existing.verificationCode };
       }
       return { ok: true, decision, certificate };
+    });
+  }
+
+  if (path === "/v1/admin/content/upsert") {
+    requireAdmin(user);
+    const collectionName = cmsCollection(data.collection);
+    const record = cmsRecord(collectionName, data.record);
+    const recordId = data.id ? safeId(data.id, "content identifier") : `cms-${crypto.randomUUID()}`;
+    return runTransaction(env, async tx => {
+      const existing = await tx.get(`${collectionName}/${recordId}`);
+      const now = new Date().toISOString();
+      tx.set(`${collectionName}/${recordId}`, {
+        ...record,
+        createdAt: existing?.createdAt || now,
+        updatedAt: now,
+        updatedBy: user.uid
+      });
+      return { ok: true, id: recordId };
+    });
+  }
+
+  if (path === "/v1/admin/content/status") {
+    requireAdmin(user);
+    const collectionName = cmsCollection(data.collection);
+    const recordId = safeId(data.id, "content identifier");
+    const status = normalized(data.status);
+    if (!["active", "draft", "hidden"].includes(status)) {
+      throw Object.assign(new Error("Invalid content status."), { status: 400 });
+    }
+    return runTransaction(env, async tx => {
+      const existing = await tx.get(`${collectionName}/${recordId}`);
+      if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
+      tx.set(`${collectionName}/${recordId}`, {
+        ...existing,
+        status,
+        updatedAt: new Date().toISOString(),
+        updatedBy: user.uid
+      });
+      return { ok: true, id: recordId, status };
+    });
+  }
+
+  if (path === "/v1/admin/content/delete") {
+    requireAdmin(user);
+    const collectionName = cmsCollection(data.collection);
+    const recordId = safeId(data.id, "content identifier");
+    return runTransaction(env, async tx => {
+      const existing = await tx.get(`${collectionName}/${recordId}`);
+      if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
+      tx.delete(`${collectionName}/${recordId}`);
+      return { ok: true, id: recordId };
     });
   }
 
