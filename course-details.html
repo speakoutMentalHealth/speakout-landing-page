@@ -116,7 +116,7 @@ section{padding:38px 0}.panel{background:#fff;border:1px solid var(--line);borde
 import { db,auth } from "./firebase-config.js";
 import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { isPublicCourse } from "./js/content-visibility.js";
+import { courseCoverUrl, isPublicCourse } from "./js/content-visibility.js";
 
 const id=new URLSearchParams(location.search).get("id");
 const $=id=>document.getElementById(id);
@@ -239,7 +239,7 @@ async function renderCourse(){
   courseTypeKicker.textContent=external?"External Learning Pathway":"SpeakHub In-house Course";courseTypeLabel.textContent=external?"External Course":"Internal Course";
   title.textContent=c.title||"Untitled Course";instructorLabel.textContent=external?"Provider:":"Instructor:";instructor.textContent=external?provider:(c.instructor||c.authorName||provider);
   description.textContent=c.fullDescription||c.description||"No course description has been added yet.";coverText.textContent=c.title||"";
-  if(c.coverUrl)courseCover.innerHTML=`<img src="${escapeHtml(c.coverUrl)}" alt="${escapeHtml(c.title||"Course cover")}"><strong>${escapeHtml(c.title||"")}</strong>`;
+  courseCover.innerHTML=`<img src="${escapeHtml(courseCoverUrl(c))}" alt="" loading="lazy"><strong>${escapeHtml(c.title||"")}</strong>`;
   providerName.textContent=provider;providerText.textContent=external?"Official external learning provider":"SpeakHub learning provider";providerLogo.src=c.providerLogo||"logo.png";
   providerMeta.textContent=provider;courseTypeMeta.textContent=external?"External":"Internal";completionMeta.textContent=external?"Complete on provider platform, then submit proof":"Complete inside SpeakHub";certificateIssuerMeta.textContent=certificateIssuer(c);
   const oa=Array.isArray(c.outcomes)?c.outcomes:[];outcomes.innerHTML=oa.length?oa.map(x=>`<li>${escapeHtml(x)}</li>`).join(""):`<li>Learning outcomes are provided by the course provider.</li>`;

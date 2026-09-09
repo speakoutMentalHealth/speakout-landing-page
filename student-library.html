@@ -460,6 +460,7 @@ import {
 import {
   trackBookOpen
 } from "./progress-tracker.js";
+import { isPublicBook } from "./js/content-visibility.js";
 
 
 let currentProfile = null;
@@ -1054,7 +1055,7 @@ async function loadStudentResources(){
 
 
         if(
-          canDisplayBook(
+          isPublicBook(item) && canDisplayBook(
             item
           )
         ){

@@ -461,6 +461,7 @@ import {
 import {
   trackBookOpen
 } from "./progress-tracker.js";
+import { isPublicBook } from "./js/content-visibility.js";
 
 
 let resources = [];
@@ -1038,7 +1039,7 @@ async function loadTeacherResources(){
 
 
         if(
-          canDisplayBook(
+          isPublicBook(item) && canDisplayBook(
             item
           )
         ){

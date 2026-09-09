@@ -150,13 +150,13 @@ test("generic CMS pages use the shared authorized UI controller", async () => {
 });
 
 test("public catalogues only render complete published learning content", async () => {
-  const { isPublicBook, isPublicCourse } = await import("../js/content-visibility.js");
+  const { CONTENT_THRESHOLDS, countWords, isPublicBook, isPublicCourse } = await import("../js/content-visibility.js");
   const lesson = { title: "Lesson one", content: "Ready learning content" };
   const course = {
     status: "active",
     title: "Ready course",
     category: "wellbeing",
-    description: "A complete course",
+    description: "lesson ".repeat(5000),
     courseType: "internal",
     modules: [{ title: "Module one", lessons: [lesson] }],
   };
@@ -167,22 +167,40 @@ test("public catalogues only render complete published learning content", async 
     description: "A complete guide",
     author: "SpeakOut",
     coverUrl: "https://example.com/cover.webp",
-    chapters: [{ title: "Chapter one", content: "Ready book content" }],
+    chapters: [
+      { title: "Chapter one", content: "guide ".repeat(900) },
+      { title: "Chapter two", content: "guide ".repeat(900) },
+      { title: "Chapter three", content: "guide ".repeat(900) },
+    ],
   };
 
   assert.equal(isPublicCourse(course), true);
   assert.equal(isPublicCourse({ ...course, status: "draft" }), false);
   assert.equal(isPublicCourse({ ...course, modules: [] }), false);
-  assert.equal(isPublicCourse({ ...course, courseType: "external", provider: "Partner", modules: undefined, externalUrl: "https://example.com/course" }), true);
+  assert.equal(isPublicCourse({ ...course, courseType: "external", provider: "Partner", modules: undefined, description: "overview ".repeat(75), externalUrl: "https://example.com/course" }), true);
   assert.equal(isPublicCourse({ ...course, courseType: "external", provider: "Partner", modules: undefined, externalUrl: "javascript:alert(1)" }), false);
   assert.equal(isPublicBook(book), true);
   assert.equal(isPublicBook({ ...book, coverUrl: "" }), false);
   assert.equal(isPublicBook({ ...book, status: "active", chapters: [] }), false);
+  assert.deepEqual(CONTENT_THRESHOLDS, {
+    internalCourseWords: 5000,
+    externalCourseEditorialWords: 75,
+    bookWords: 2500,
+  });
+  assert.equal(countWords("<h2>Three useful words</h2>"), 3);
+
+  const parseSeed = async file => JSON.parse((await readFile(path.join(root, file), "utf8")).replace(/^\uFEFF/, ""));
+  const placeholderBooks = await parseSeed("books-seed.json");
+  const audienceGuides = await parseSeed("firestore-seed/audience-guides.json");
+  assert.equal(placeholderBooks.some(isPublicBook), false);
+  assert.equal(audienceGuides.length, 3);
+  assert.equal(audienceGuides.every(isPublicBook), true);
+  assert.equal(audienceGuides.every(guide => guide.contentWordCount >= CONTENT_THRESHOLDS.bookWords), true);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
   }
-  for (const file of ["e-library.html", "my-library.html", "book-details.html", "book-reader.html"]) {
+  for (const file of ["e-library.html", "my-library.html", "book-details.html", "book-reader.html", "teacher-library.html", "student-library.html", "parent-library.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicBook/u, file);
   }
 });

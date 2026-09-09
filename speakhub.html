@@ -130,7 +130,7 @@ section{padding:58px 0}.title{max-width:850px;margin:0 auto 30px;text-align:cent
 import { db,auth } from "./firebase-config.js";
 import { collection,getDocs,doc,getDoc,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { isPublicCourse } from "./js/content-visibility.js";
+import { courseCoverUrl, isPublicCourse } from "./js/content-visibility.js";
 
 let courses=[],progressMap={},externalRecordMap={},currentProfile=null;
 
@@ -238,7 +238,7 @@ function startLabel(i){
 function certificateIssuer(i){return i.certificate?.issuer||i.certificateIssuer||providerName(i)}
 
 function courseCard(item,featured=false){
-  const cover=item.coverUrl?`<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title||"Course")}">`:"";
+  const cover=`<img src="${escapeAttr(courseCoverUrl(item))}" alt="" loading="lazy">`;
   const percent=Math.max(0,Math.min(100,progressPercent(item)));
   const id=encodeURIComponent(item.id),external=isExternalCourse(item),instructorLed=isInstructorLed(item);
   const provider=providerName(item),audiences=audienceArray(item),audienceText=audiences.slice(0,3).map(pretty).join(", "),more=audiences.length>3?` +${audiences.length-3}`:"";
