@@ -32,8 +32,9 @@
 <script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { SO } from "./dashboard-shared.js";
+import { learningApi } from "./js/platform-api.js";
 
-SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;const rowsData=await SO.getMine("userProgress","userEmail",user.email);total.textContent=SO.num(rowsData.length);done.textContent=SO.num(rowsData.filter(r=>r.status==="completed").length);avg.textContent=(rowsData.length?Math.round(rowsData.reduce((a,r)=>a+Number(r.percent||0),0)/rowsData.length):0)+"%";rows.innerHTML=rowsData.length?rowsData.map(r=>`<tr><td>${SO.safe(r.courseTitle)}</td><td>${SO.badge(r.status)}</td><td><div class="progress-track"><div class="progress-fill" style="width:${Number(r.percent||0)}%"></div></div> ${SO.num(r.percent)}%</td><td>${SO.safe(r.updatedAt)}</td></tr>`).join(""):`<tr><td colspan="4">No progress records yet.</td></tr>`});
+SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;try{const rowsData=(await learningApi.dashboard()).progress||[];total.textContent=SO.num(rowsData.length);done.textContent=SO.num(rowsData.filter(r=>r.status==="completed").length);avg.textContent=(rowsData.length?Math.round(rowsData.reduce((a,r)=>a+Number(r.percent||0),0)/rowsData.length):0)+"%";rows.innerHTML=rowsData.length?rowsData.map(r=>{const pct=Math.max(0,Math.min(100,Number(r.percent||0)));return `<tr><td><a href="course-player.html?id=${encodeURIComponent(r.courseId)}">${SO.safe(r.courseTitle)}</a></td><td>${SO.badge(r.status)}</td><td><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div> ${SO.num(pct)}%</td><td>${SO.safe(r.updatedAt||r.enrolledAt)}</td></tr>`}).join(""):`<tr><td colspan="4">No progress records yet. <a href="speakhub.html">Browse courses</a> to enroll.</td></tr>`}catch(error){rows.innerHTML=`<tr><td colspan="4">${SO.safe(error.message||"Could not load progress.")}</td></tr>`}});
 
 </script>
 <script defer="" src="portal-ui.js"></script>

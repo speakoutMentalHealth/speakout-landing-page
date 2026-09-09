@@ -158,7 +158,8 @@ async function loadProfile(){
 async function loadProgress(){
  if(!currentUser||previewMode)return;
  try{
-   const response=await learningApi.state(courseId);
+   // Opening a guided course is the explicit, idempotent enrollment action.
+   const response=await learningApi.enroll(courseId);
    const p=response.progress||{};
    completedLessons=new Set(Array.isArray(p.completedLessons)?p.completedLessons:[]);
    passedModuleQuizzes=p.passedModuleQuizzes||{};

@@ -228,7 +228,7 @@ function renderActions(c){
       <a class="btn soft" href="speakhub.html">Back to Courses</a>`;
     return;
   }
-  if(access==="free")actions.innerHTML=`<a class="btn primary" href="course-player.html?id=${courseId}">Start Course</a><a class="btn soft" href="speakhub.html">Back to Courses</a>`;
+  if(access==="free")actions.innerHTML=`<a class="btn primary" href="course-player.html?id=${courseId}">Enroll &amp; Start Course</a><a class="btn soft" href="speakhub.html">Back to Courses</a>`;
   else{premiumNote.style.display="block";actions.innerHTML=`<a class="btn gold" href="course-player.html?id=${courseId}&preview=1">Preview Course</a><a class="btn soft" href="payment-history.html">Request Premium Access</a><a class="btn soft" href="speakhub.html">Back to Courses</a>`}
 }
 

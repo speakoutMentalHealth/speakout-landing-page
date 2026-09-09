@@ -32,8 +32,9 @@
 <script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { SO } from "./dashboard-shared.js";
+import { learningApi } from "./js/platform-api.js";
 
-SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;let data=await SO.getMine("certificates","email",user.email);if(!data.length){data=await SO.getAll("certificates")}total.textContent=SO.num(data.length);issued.textContent=SO.num(data.filter(r=>r.status==="issued"||r.verificationCode).length);types.textContent=SO.num(new Set(data.map(r=>r.type).filter(Boolean)).size);rows.innerHTML=data.length?data.map(r=>`<tr><td>${SO.safe(r.recipientName)}</td><td>${SO.safe(r.type)}</td><td>${SO.safe(r.schoolName)}</td><td>${SO.safe(r.issuedDate)}</td><td>${SO.safe(r.verificationCode)}</td></tr>`).join(""):`<tr><td colspan="5">No certificates yet.</td></tr>`});
+SO.onAuthStateChanged(SO.auth, async user=>{if(!user)return;try{const data=(await learningApi.dashboard()).certificates||[];total.textContent=SO.num(data.length);issued.textContent=SO.num(data.filter(r=>r.status==="active"||r.status==="issued").length);types.textContent=SO.num(new Set(data.map(r=>r.type).filter(Boolean)).size);rows.innerHTML=data.length?data.map(r=>`<tr><td>${SO.safe(r.recipientName)}</td><td><a href="certificate-view.html?id=${encodeURIComponent(r.id)}">${SO.safe(r.type)}</a></td><td>${SO.safe(r.courseTitle||r.schoolName)}</td><td>${SO.safe(r.issueDate||r.issuedDate)}</td><td>${SO.safe(r.verificationCode)}</td></tr>`).join(""):`<tr><td colspan="5">No certificates yet.</td></tr>`}catch(error){rows.innerHTML=`<tr><td colspan="5">${SO.safe(error.message||"Could not load certificates.")}</td></tr>`}});
 
 </script>
 <script defer="" src="portal-ui.js"></script>

@@ -24,7 +24,7 @@
 <button class="btn dark" id="logoutBtn">Logout</button>
 </nav></div></header>
 <main id="main-content">
-<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>My Courses</h1><p>Access SpeakHub training programs and skill development courses.</p></div></section>
+<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>My Courses</h1><p>Continue courses you have enrolled in and see your current progress.</p><div class="actions"><a class="btn gold" href="speakhub.html">Browse Course Catalogue</a></div></div></section>
 <section><div class="container grid g3"><div class="card metric"><strong id="total">0</strong><span>Courses</span></div><div class="card metric"><strong id="digital">0</strong><span>Digital Skills</span></div><div class="card metric"><strong id="leadership">0</strong><span>Leadership</span></div></div></section>
 <section><div class="container"><div class="panel"><span class="label">SpeakHub Courses</span><div class="controls"><input id="search" placeholder="Search courses..."/><select id="category"><option value="all">All Categories</option></select><button class="btn ghost" id="reset">Reset</button></div></div><div class="grid g3" id="cards" style="margin-top:14px"></div></div></section>
 </main>
@@ -33,12 +33,13 @@
 <script type="module">
 import { SO } from "./dashboard-shared.js";
 import { isPublicCourse } from "./js/content-visibility.js";
+import { learningApi } from "./js/platform-api.js";
 
 const httpUrl=value=>/^https?:\/\//i.test(String(value||""))?value:"";
 const courseHref=c=>String(c.courseType||"").toLowerCase()==="external"?([c.externalUrl,c.courseUrl,c.providerCourseUrl].map(httpUrl).find(Boolean)||`course-details.html?id=${encodeURIComponent(c.id)}`):`course-player.html?id=${encodeURIComponent(c.id)}`;
-let courses=[];async function load(){courses=(await SO.getAll("courses")).filter(isPublicCourse);total.textContent=SO.num(courses.length);digital.textContent=SO.num(courses.filter(c=>c.category==="Digital Skills").length);leadership.textContent=SO.num(courses.filter(c=>c.category==="Leadership").length);[...new Set(courses.map(c=>c.category).filter(Boolean))].forEach(c=>category.innerHTML+=`<option>${SO.safe(c)}</option>`);render()}
-function render(){let q=search.value.toLowerCase();let out=courses.filter(c=>(category.value==="all"||c.category===category.value)&&`${c.title} ${c.category} ${c.level}`.toLowerCase().includes(q));cards.innerHTML=out.length?out.map(c=>`<article class="card"><div class="icon">🎓</div><span class="label">${SO.safe(c.category)}</span><h2>${SO.safe(c.title)}</h2><p>${SO.safe(c.description||c.shortDescription)}</p><p><strong>${SO.safe(c.level||c.difficulty)}</strong> • ${SO.safe(c.duration)}</p><a class="btn primary" href="${SO.safe(courseHref(c))}">Start Course</a></article>`).join(""):`<div class="notice"><h3>No published courses found.</h3><p>Try another filter or check back when new learning is ready.</p></div>`}
-search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};load();
+let courses=[];async function load(){const [catalog,dashboard]=await Promise.all([SO.getAll("courses"),learningApi.dashboard()]);const byId=new Map((dashboard.progress||[]).map(p=>[p.courseId,p]));courses=catalog.filter(isPublicCourse).filter(c=>byId.has(c.id)).map(c=>({...c,learnerProgress:byId.get(c.id)}));total.textContent=SO.num(courses.length);digital.textContent=SO.num(courses.filter(c=>c.category==="Digital Skills").length);leadership.textContent=SO.num(courses.filter(c=>c.category==="Leadership").length);[...new Set(courses.map(c=>c.category).filter(Boolean))].forEach(c=>category.innerHTML+=`<option>${SO.safe(c)}</option>`);render()}
+function render(){let q=search.value.toLowerCase();let out=courses.filter(c=>(category.value==="all"||c.category===category.value)&&`${c.title} ${c.category} ${c.level}`.toLowerCase().includes(q));cards.innerHTML=out.length?out.map(c=>{const pct=Math.max(0,Math.min(100,Number(c.learnerProgress?.percent||0)));return `<article class="card"><div class="icon">🎓</div><span class="label">${SO.safe(c.category)}</span><h2>${SO.safe(c.title)}</h2><p>${SO.safe(c.description||c.shortDescription)}</p><p><strong>${SO.safe(c.level||c.difficulty)}</strong> • ${SO.safe(c.duration)}</p><div class="progress-track" aria-label="${pct}% complete"><div class="progress-fill" style="width:${pct}%"></div></div><p><strong>${pct}% complete</strong></p><a class="btn primary" href="${SO.safe(courseHref(c))}">${pct?"Continue Course":"Start Course"}</a></article>`}).join(""):`<div class="notice"><h3>No enrolled courses found.</h3><p><a href="speakhub.html">Browse the catalogue</a> and open a course to enroll.</p></div>`}
+search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};SO.onAuthStateChanged(SO.auth,user=>{if(user)load().catch(error=>{cards.innerHTML=`<div class="notice bad">${SO.safe(error.message||"Could not load your enrolled courses.")}</div>`})});
 
 </script>
 <script defer="" src="portal-ui.js"></script>

@@ -74,6 +74,8 @@ export async function retrieveEvidence(recordId) {
 }
 
 export const learningApi = {
+  dashboard: () => platformRequest("/v1/learning/dashboard"),
+  enroll: courseId => platformRequest("/v1/learning/enroll", { courseId }),
   state: courseId => platformRequest("/v1/learning/state", { courseId }),
   completeLesson: (courseId, lessonId) =>
     platformRequest("/v1/learning/lessons/complete", { courseId, lessonId }),

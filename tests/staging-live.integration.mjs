@@ -131,6 +131,9 @@ try {
   const denied = await firestore(`certificates/forged-${suffix}`, { method: "PATCH", data: { userId: learner.localId, status: "active" }, token: learner.idToken });
   assert.equal(denied.response.status, 403, "learner certificate forgery was not denied by live rules");
 
+  const enrollment = await worker("/v1/learning/enroll", learner.idToken, { courseId });
+  assert.equal(enrollment.response.ok, true, `enrollment failed (${enrollment.response.status}): ${JSON.stringify(enrollment.body)}`);
+  assert.equal(enrollment.body.created, true);
   const preQuiz = await worker("/v1/learning/assessments/get", learner.idToken, { courseId, type: "module", moduleIndex: 0 });
   assert.equal(preQuiz.response.status, 409);
   const lesson = await worker("/v1/learning/lessons/complete", learner.idToken, { courseId, lessonId: "lesson-1" });

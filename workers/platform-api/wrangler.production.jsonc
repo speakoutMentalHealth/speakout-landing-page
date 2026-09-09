@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "speakout-platform-api-staging",
+  "name": "speakout-platform-api",
   "main": "src/index.js",
   "compatibility_date": "2026-09-09",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,8 +14,8 @@
     ]
   },
   "vars": {
-    "FIREBASE_PROJECT_ID": "speakout-portal-staging",
-    "ALLOWED_ORIGINS": "http://127.0.0.1:5000,http://localhost:5000,https://speakout-portal-staging.web.app,https://speakout-portal-staging.firebaseapp.com"
+    "FIREBASE_PROJECT_ID": "speaakout-portal",
+    "ALLOWED_ORIGINS": "https://speakoutmentalhealth.org,https://www.speakoutmentalhealth.org,https://speaakout-portal.web.app,https://speaakout-portal.firebaseapp.com"
   },
   "observability": {
     "enabled": true,

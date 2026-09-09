@@ -181,6 +181,22 @@ async function listDocuments(env, collectionPath, limit = 1000) {
   return { documents, truncated: Boolean(pageToken) };
 }
 
+async function queryDocumentsByField(env, collectionId, fieldPath, value, limit = 1000) {
+  const rows = await firestoreRequest(env, `${databaseUrl(env)}/documents:runQuery`, {
+    method: "POST",
+    body: JSON.stringify({ structuredQuery: {
+      from: [{ collectionId }],
+      where: { fieldFilter: { field: { fieldPath }, op: "EQUAL", value: toFirestore(value) } },
+      limit
+    } })
+  });
+  const documents = (rows || []).flatMap(row => row.document ? [{
+    id: row.document.name.split("/").pop(),
+    ...decodeFields(row.document.fields)
+  }] : []);
+  return { documents, truncated: documents.length === limit };
+}
+
 function documentWrite(env, path, data) {
   return { update: { name: `${databaseName(env)}/documents/${path}`, fields: encodeFields(data) } };
 }
@@ -254,6 +270,16 @@ function emptyProgress(uid, courseId, course) {
   return { userId: uid, courseId, courseTitle: course.title || "", completedLessons: [], passedModuleQuizzes: {}, moduleQuizScores: {}, finalAssessmentPassed: false, finalAssessmentScore: 0, percent: 0, progress: 0, status: "in_progress" };
 }
 
+function courseIsLearnable(course) {
+  const status = normalized(course?.status || "active");
+  const type = normalized(course?.courseType || "internal");
+  const completion = normalized(course?.completionMethod);
+  return ["active", "published"].includes(status) &&
+    !["external", "instructor-led"].includes(type) &&
+    completion !== "certificate-upload" &&
+    modulesOf(course).some(module => lessonsOf(module).length > 0);
+}
+
 function counts(courseId, course, progress) {
   const done = new Set(progress.completedLessons || []);
   let total = 0, complete = 0;
@@ -284,9 +310,15 @@ function publicProgress(progress, course) {
 async function learningContext(env, user, courseId, reader = path => getDocument(env, path)) {
   const course = await reader(`courses/${courseId}`);
   if (!course) throw Object.assign(new Error("Course not found."), { status: 404 });
+  if (!courseIsLearnable(course)) throw Object.assign(new Error("This course is not available for guided learning."), { status: 409 });
   const progressPath = `userProgress/${user.uid}_${courseId}`;
-  const progress = await reader(progressPath) || emptyProgress(user.uid, courseId, course);
-  return { course, progress, progressPath, modules: modulesOf(course) };
+  const storedProgress = await reader(progressPath);
+  const progress = storedProgress || emptyProgress(user.uid, courseId, course);
+  return { course, progress, progressPath, enrolled: Boolean(storedProgress), modules: modulesOf(course) };
+}
+
+function requireEnrollment(ctx) {
+  if (!ctx.enrolled) throw Object.assign(new Error("Enroll in this course before starting lessons."), { status: 409 });
 }
 
 function safeAssessment(assessment) {
@@ -307,6 +339,7 @@ function answerIndex(question) {
 
 async function assessmentContext(env, user, courseId, type, mi, reader = path => getDocument(env, path)) {
   const ctx = await learningContext(env, user, courseId, reader);
+  requireEnrollment(ctx);
   if (!["module", "final"].includes(type)) throw Object.assign(new Error("Invalid assessment type."), { status: 400 });
   if (type === "module") {
     if (!Number.isInteger(mi) || !ctx.modules[mi]) throw Object.assign(new Error("Invalid module."), { status: 400 });
@@ -355,7 +388,14 @@ async function authenticatedEvidenceResponse(env, record) {
 
 async function route(request, env, path, data) {
   const user = await authenticatedUser(request, env);
-  const courseId = path.startsWith("/v1/learning/") ? safeId(data.courseId, "course identifier") : clean(data.courseId);
+  const courseSpecificLearningPaths = new Set([
+    "/v1/learning/enroll",
+    "/v1/learning/state",
+    "/v1/learning/lessons/complete",
+    "/v1/learning/assessments/get",
+    "/v1/learning/assessments/submit"
+  ]);
+  const courseId = courseSpecificLearningPaths.has(path) ? safeId(data.courseId, "course identifier") : clean(data.courseId);
 
   if (path === "/v1/admin/media/evidence") {
     requireAdmin(user);
@@ -395,14 +435,39 @@ async function route(request, env, path, data) {
     };
   }
 
+  if (path === "/v1/learning/dashboard") {
+    const [progressPage, certificatesPage] = await Promise.all([
+      queryDocumentsByField(env, "userProgress", "userId", user.uid),
+      queryDocumentsByField(env, "certificates", "userId", user.uid)
+    ]);
+    return {
+      progress: progressPage.documents,
+      certificates: certificatesPage.documents,
+      truncated: progressPage.truncated || certificatesPage.truncated
+    };
+  }
+
+  if (path === "/v1/learning/enroll") {
+    return runTransaction(env, async tx => {
+      const ctx = await learningContext(env, user, courseId, tx.get);
+      if (ctx.enrolled) return { created: false, progress: publicProgress(ctx.progress, ctx.course) };
+      const now = new Date().toISOString();
+      const progress = publicProgress({ ...ctx.progress, enrolledAt: now, updatedAt: now }, ctx.course);
+      tx.set(ctx.progressPath, progress);
+      return { created: true, progress };
+    });
+  }
+
   if (path === "/v1/learning/state") {
     const ctx = await learningContext(env, user, courseId);
+    requireEnrollment(ctx);
     return { progress: publicProgress(ctx.progress, ctx.course) };
   }
 
   if (path === "/v1/learning/lessons/complete") {
     return runTransaction(env, async tx => {
       const ctx = await learningContext(env, user, courseId, tx.get);
+      requireEnrollment(ctx);
       const target = clean(data.lessonId);
       let found;
       ctx.modules.forEach((module, mi) => lessonsOf(module).forEach((lesson, li) => {

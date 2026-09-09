@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "wrangler dev --config wrangler.staging.jsonc",
     "deploy:staging": "wrangler deploy --config wrangler.staging.jsonc",
-    "check": "wrangler deploy --dry-run --config wrangler.staging.jsonc --outdir .wrangler-dry-run"
+    "deploy:production": "wrangler deploy --config wrangler.production.jsonc",
+    "check": "wrangler deploy --dry-run --config wrangler.staging.jsonc --outdir .wrangler-dry-run",
+    "check:production": "wrangler deploy --dry-run --config wrangler.production.jsonc --outdir .wrangler-dry-run-production"
   },
   "dependencies": {
     "jose": "^6.2.12"
