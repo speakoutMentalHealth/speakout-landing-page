@@ -28,7 +28,11 @@ function chapterFromModule(module, index) {
 
 function buildBook(spec) {
   const course = sourceCourse(spec.courseTitle);
-  const chapters = course.modules.map(chapterFromModule);
+  const selectedModules = Array.isArray(spec.moduleIndexes)
+    ? spec.moduleIndexes.map(index => course.modules[index]).filter(Boolean)
+    : course.modules;
+  if (selectedModules.length < 3) throw new Error(`${spec.title} needs at least three source modules`);
+  const chapters = selectedModules.map(chapterFromModule);
   const content = chapters.map(chapter => `<h2>Chapter ${chapter.number}: ${escapeHtml(chapter.title)}</h2>${chapter.content}`).join("\n");
   const contentWordCount = countWords(content);
   if (contentWordCount < 2500) throw new Error(`${spec.title} has only ${contentWordCount} content words`);
@@ -236,6 +240,69 @@ const books = [
     coverUrl: "images/learning-covers/course-digital-skills-v1.png",
     description: "A hands-on spreadsheet workbook that develops confidence with worksheets, formulas, data organisation, useful functions, charts and a complete practical reporting project.",
     disclaimer: "Interface details can vary across spreadsheet versions. Focus on the underlying concepts and verify sensitive calculations before using them for financial, operational or reporting decisions.",
+  }),
+  buildBook({
+    id: "microsoft-word",
+    courseTitle: "Microsoft Word",
+    title: "Microsoft Word Practical Workbook",
+    subtitle: "Create, format, review and deliver clear professional documents",
+    category: "digital-skills",
+    audience: ["student", "teacher", "ngo-professional", "adult", "general"],
+    featured: true,
+    coverUrl: "images/learning-covers/course-digital-skills-v1.png",
+    description: "A hands-on document-production workbook covering the Word interface, text and paragraph formatting, page layout, tables and visuals, styles, review tools and a complete professional document project.",
+    disclaimer: "Interface details can vary by software version and device. Use the underlying document-design principles and your application's current accessibility checker when preparing important documents.",
+  }),
+  buildBook({
+    id: "canva-design",
+    courseTitle: "Canva Design",
+    title: "Canva Design and Visual Communication Workbook",
+    subtitle: "Apply layout, typography and colour principles to purposeful visual communication",
+    category: "digital-skills",
+    audience: ["student", "teacher", "ngo-professional", "community", "adult", "general"],
+    featured: true,
+    coverUrl: "images/learning-covers/course-digital-skills-v1.png",
+    description: "A practical visual-communication workbook covering Canva foundations, design principles, typography and colour, social-media graphics, flyers, presentations and a structured portfolio project.",
+    disclaimer: "Product interfaces and licensing options can change. Verify current template, font, image and export rights before publishing commercial or organisational work.",
+  }),
+  buildBook({
+    id: "budgeting",
+    courseTitle: "Personal Finance",
+    moduleIndexes: [0,1,2,4],
+    title: "Budgeting and Cash-Flow Workbook",
+    subtitle: "Understand income, track spending, plan priorities and prepare for financial shocks",
+    category: "financial-literacy",
+    audience: ["student", "university", "adult", "general"],
+    featured: true,
+    coverUrl: "images/learning-covers/course-financial-literacy-v1.png",
+    description: "A focused workbook for understanding personal cash flow, separating needs and wants, creating a realistic budget, building emergency savings and protecting a plan from common financial setbacks.",
+    disclaimer: "This workbook provides general financial education, not personalised financial, investment, tax or legal advice. Adapt figures to your circumstances and seek qualified advice for significant decisions.",
+  }),
+  buildBook({
+    id: "saving",
+    courseTitle: "Personal Finance",
+    moduleIndexes: [0,1,2,5],
+    title: "Saving and Emergency Planning Guide",
+    subtitle: "Turn clear goals and consistent cash-flow decisions into practical financial resilience",
+    category: "financial-literacy",
+    audience: ["student", "university", "adult", "general"],
+    featured: true,
+    coverUrl: "images/learning-covers/course-financial-literacy-v1.png",
+    description: "An applied saving guide covering money foundations, budgeting, emergency funds, realistic goal-setting, automation, trade-offs and the long-term habits that support financial capability.",
+    disclaimer: "This guide provides general financial education rather than personalised investment, tax or legal advice. Savings products, protections and inflation risks vary by location and provider.",
+  }),
+  buildBook({
+    id: "debt-management",
+    courseTitle: "Personal Finance",
+    moduleIndexes: [0,1,3,4],
+    title: "Debt Management and Credit Guide",
+    subtitle: "Evaluate borrowing, prioritise repayment and reduce avoidable financial risk",
+    category: "financial-literacy",
+    audience: ["university", "adult", "general"],
+    featured: true,
+    coverUrl: "images/learning-covers/course-financial-literacy-v1.png",
+    description: "A practical guide to understanding debt and credit, comparing the real cost of borrowing, organising repayment priorities, communicating with creditors and protecting essential needs while reducing risk.",
+    disclaimer: "This guide is general financial education, not debt counselling, legal advice or a promise of a particular outcome. Seek qualified local support when repayments, enforcement or insolvency are serious concerns.",
   }),
 ];
 
