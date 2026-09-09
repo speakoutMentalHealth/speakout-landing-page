@@ -84,6 +84,7 @@ test("staging Worker declares every required secret", () => {
 test("homepage CMS writes use the whitelisted admin Worker API", () => {
   const worker = read("workers/platform-api/src/index.js");
   const client = read("js/platform-api.js");
+  const controller = read("js/admin-cms-ui.js");
   const pages = [
     "admin-impact.html",
     "admin-media.html",
@@ -108,12 +109,29 @@ test("homepage CMS writes use the whitelisted admin Worker API", () => {
   assert.match(client, /upsertContent:/u);
   assert.match(client, /setContentStatus:/u);
   assert.match(client, /deleteContent:/u);
+  assert.match(controller, /adminApi\.upsertContent\(collectionName, editingId, payload\)/u);
+  assert.match(controller, /adminApi\.setContentStatus\(collectionName, button\.dataset\.hide, "hidden"\)/u);
+  assert.match(controller, /adminApi\.deleteContent\(collectionName, button\.dataset\.del\)/u);
   for (const file of pages) {
     const page = read(file);
-    assert.match(page, /import \{ adminApi \} from "\.\/js\/platform-api\.js"/u, file);
-    assert.match(page, /adminApi\.upsertContent\(COL,editingId,payload\)/u, file);
-    assert.match(page, /adminApi\.setContentStatus\(COL,b\.dataset\.hide,"hidden"\)/u, file);
-    assert.match(page, /adminApi\.deleteContent\(COL,b\.dataset\.del\)/u, file);
+    assert.match(page, /import \{ createAdminCmsController \} from "\.\/js\/admin-cms-ui\.js"/u, file);
+    assert.match(page, /createAdminCmsController\(\{ collectionName:/u, file);
     assert.doesNotMatch(page, /\b(?:addDoc|updateDoc|deleteDoc|serverTimestamp)\b/u, file);
+  }
+});
+
+test("homepage CMS provides accessible responsive editing feedback", () => {
+  const controller = read("js/admin-cms-ui.js");
+  const styles = read("css/admin-cms.css");
+  assert.match(controller, /setAttribute\("aria-live", "polite"\)/u);
+  assert.match(controller, /recordCount/u);
+  assert.match(controller, /Cancel edit/u);
+  assert.match(controller, /aria-label="Edit/u);
+  assert.match(controller, /This cannot be undone/u);
+  assert.match(controller, /setAttribute\("aria-busy"/u);
+  assert.match(styles, /@media\(max-width:900px\)/u);
+  assert.match(styles, /\.table thead\{display:none\}/u);
+  for (const file of ["admin-impact.html", "admin-media.html", "admin-partners.html", "admin-podcast.html", "admin-reports.html", "admin-videos.html"]) {
+    assert.match(read(file), /css\/admin-cms\.css/u, file);
   }
 });

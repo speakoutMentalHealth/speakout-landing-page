@@ -129,7 +129,7 @@ test("legacy portal aliases redirect to their maintained routes", async () => {
   }
 });
 
-test("generic CMS pages authorize before loading or enabling writes", async () => {
+test("generic CMS pages use the shared authorized UI controller", async () => {
   const pages = [
     "admin-impact.html",
     "admin-media.html",
@@ -140,10 +140,13 @@ test("generic CMS pages authorize before loading or enabling writes", async () =
   ];
   for (const file of pages) {
     const source = await readFile(path.join(root, file), "utf8");
-    assert.match(source, /requireRoles\(\["admin","super_admin"\]/, file);
-    assert.match(source, /control=>control\.disabled=true/, file);
-    assert.match(source, /SO\.safe\(/, file);
+    assert.match(source, /createAdminCmsController/u, file);
+    assert.match(source, /css\/admin-cms\.css/u, file);
   }
+  const controller = await readFile(path.join(root, "js/admin-cms-ui.js"), "utf8");
+  assert.match(controller, /requireRoles\(\["admin", "super_admin"\]/u);
+  assert.match(controller, /SO\.safe\(/u);
+  assert.match(controller, /setBusy\(true\)/u);
 });
 
 test("shared dashboard HTML interpolation escapes untrusted values", async () => {
