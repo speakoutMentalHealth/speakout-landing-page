@@ -7,6 +7,7 @@ ui-debug.log
 workers/platform-api/.wrangler/
 workers/platform-api/.wrangler-dry-run/
 workers/platform-api/wrangler.jsonc
+speakout-landing-page/
 .env
 .env.*
 !.env.example
