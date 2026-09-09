@@ -115,6 +115,7 @@ test("development snippets are excluded from Firebase Hosting", async () => {
   assert.equal(firebase.hosting.ignore.includes("firestore-seed/**"), false);
   assert.equal(firebase.hosting.ignore.includes("firestore-seed/audience-guides.json"), false);
   assert.equal(firebase.hosting.ignore.includes("firestore-seed/priority-library-books.json"), false);
+  assert.equal(firebase.hosting.ignore.includes("firestore-seed/priority-courses.json"), false);
 });
 
 test("publishable library packs are included in GitHub Pages", async () => {
@@ -122,6 +123,7 @@ test("publishable library packs are included in GitHub Pages", async () => {
   assert.equal(/^\s*-\s+firestore-seed\s*$/m.test(config), false);
   assert.equal(config.includes("firestore-seed/audience-guides.json"), false);
   assert.equal(config.includes("firestore-seed/priority-library-books.json"), false);
+  assert.equal(config.includes("firestore-seed/priority-courses.json"), false);
   assert.equal(config.includes("firestore-seed/build-audience-guides.mjs"), true);
   assert.equal(config.includes("firestore-seed/build-priority-library.mjs"), true);
 });
