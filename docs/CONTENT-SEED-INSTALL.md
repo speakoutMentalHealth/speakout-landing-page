@@ -68,3 +68,18 @@ node firestore-seed\build-priority-library.mjs
 ```
 
 Import these records with merge semantics into the `books` collection. Because their IDs match existing placeholders, they replace those thin entries without creating duplicate catalogue cards.
+
+## Priority course expansion
+
+`firestore-seed/priority-courses.json` upgrades fifteen incomplete course IDs:
+
+- Six internal courses with six complete modules, eighteen lessons, final assessments, cover art and 9,800–11,500 curriculum words each.
+- Nine provider-hosted courses with verified destinations and at least 75 words of original SpeakHub editorial guidance. Provider-owned lessons are not copied.
+
+Rebuild the pack after editing source curricula with:
+
+```powershell
+node firestore-seed\build-priority-courses.mjs
+```
+
+Import the records with merge semantics into the `courses` collection. The Admin Courses page validates every record with the shared readiness gate before writing, so incomplete courses cannot be published through the pack importer.

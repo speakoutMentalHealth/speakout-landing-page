@@ -210,6 +210,7 @@ test("public catalogues only render complete published learning content", async 
   const placeholderBooks = await parseSeed("books-seed.json");
   const audienceGuides = await parseSeed("firestore-seed/audience-guides.json");
   const priorityBooks = await parseSeed("firestore-seed/priority-library-books.json");
+  const priorityCourses = await parseSeed("firestore-seed/priority-courses.json");
   assert.equal(placeholderBooks.some(isPublicBook), false);
   assert.equal(audienceGuides.length, 3);
   assert.equal(audienceGuides.every(isPublicBook), true);
@@ -239,6 +240,32 @@ test("public catalogues only render complete published learning content", async 
   assert.equal(priorityBooks.every(isPublicBook), true);
   assert.equal(priorityBooks.every(book => book.chapters.length >= 4), true);
   assert.equal(priorityBooks.every(book => book.contentWordCount >= 5000), true);
+  assert.deepEqual(priorityCourses.map(course => course.id).sort(), [
+    "digital-literacy-essentials",
+    "ext-cisco-intro-cybersecurity",
+    "ext-freecodecamp-python-certification",
+    "ext-kaggle-intro-machine-learning",
+    "ext-openlearn-leadership-followership",
+    "hubspot-digital-marketing-certification",
+    "hubspot-sales-management-training",
+    "hubspot-social-media-marketing-certification",
+    "kaggle-intro-to-programming",
+    "mental-health-awareness-students",
+    "mental-health-club-coordinator-training",
+    "microsoft-introduction-to-ai-concepts",
+    "parent-communication-teen-support",
+    "student-leadership-foundations",
+    "teacher-mental-health-support-basics",
+  ]);
+  assert.equal(priorityCourses.every(isPublicCourse), true);
+  const internalPriorityCourses = priorityCourses.filter(course => course.courseType === "internal");
+  const externalPriorityCourses = priorityCourses.filter(course => course.courseType === "external");
+  assert.equal(internalPriorityCourses.length, 6);
+  assert.equal(internalPriorityCourses.every(course => course.modules.length === 6), true);
+  assert.equal(internalPriorityCourses.every(course => course.lessonCount === 18), true);
+  assert.equal(internalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.internalCourseWords), true);
+  assert.equal(externalPriorityCourses.length, 9);
+  assert.equal(externalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.externalCourseEditorialWords), true);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
