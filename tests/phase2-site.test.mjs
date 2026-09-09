@@ -111,6 +111,10 @@ test("local HTML asset and route references resolve", async () => {
 test("development snippets are excluded from Firebase Hosting", async () => {
   const firebase = JSON.parse(await readFile(path.join(root, "firebase.json"), "utf8"));
   assert.ok(firebase.hosting.ignore.includes("demo/**"));
+  assert.ok(firebase.hosting.ignore.includes("firestore-seed/*.mjs"));
+  assert.equal(firebase.hosting.ignore.includes("firestore-seed/**"), false);
+  assert.equal(firebase.hosting.ignore.includes("firestore-seed/audience-guides.json"), false);
+  assert.equal(firebase.hosting.ignore.includes("firestore-seed/priority-library-books.json"), false);
 });
 
 test("legacy portal aliases redirect to their maintained routes", async () => {
