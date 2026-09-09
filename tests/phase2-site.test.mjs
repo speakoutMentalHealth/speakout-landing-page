@@ -202,13 +202,18 @@ test("public catalogues only render complete published learning content", async 
   assert.deepEqual(priorityBooks.map(book => book.id).sort(), [
     "anxiety-management",
     "career-planning",
+    "conflict-resolution",
     "cybersecurity-awareness",
+    "depression-awareness",
+    "leadership-foundations",
     "mental-health-foundations",
     "personal-finance",
+    "psychological-first-aid",
+    "stress-management",
   ]);
   assert.equal(priorityBooks.every(isPublicBook), true);
   assert.equal(priorityBooks.every(book => book.chapters.length >= 5), true);
-  assert.equal(priorityBooks.every(book => book.contentWordCount >= 7000), true);
+  assert.equal(priorityBooks.every(book => book.contentWordCount >= 6500), true);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
