@@ -731,6 +731,7 @@ import {
   trackBookOpen,
   trackBookDownload
 } from "./progress-tracker.js";
+import { isPublicBook } from "./js/content-visibility.js";
 
 
 const params =
@@ -1967,6 +1968,17 @@ async function loadBook(){
       id:snap.id,
       ...snap.data()
     };
+
+    if(!isPublicBook(currentBook)){
+
+      loading.textContent =
+        "This book is not published yet.";
+
+      loading.className =
+        "loading bad";
+
+      return;
+    }
 
 
     renderBook(

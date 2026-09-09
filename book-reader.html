@@ -78,6 +78,7 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { trackBookOpen } from "./progress-tracker.js";
+import { isPublicBook } from "./js/content-visibility.js";
 
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
@@ -449,6 +450,10 @@ async function loadItem(){
     }
 
     item = {id:snap.id,...snap.data()};
+    if(!isPublicBook(item)){
+      loading.textContent = "This resource is not published yet.";
+      return;
+    }
 
     const allowed = canAccess(item);
 

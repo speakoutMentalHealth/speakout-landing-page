@@ -32,9 +32,12 @@
 <script src="auth-guard.js" type="module"></script>
 <script type="module">
 import { SO } from "./dashboard-shared.js";
+import { isPublicCourse } from "./js/content-visibility.js";
 
-let courses=[];async function load(){courses=await SO.getAll("courses");total.textContent=SO.num(courses.length);digital.textContent=SO.num(courses.filter(c=>c.category==="Digital Skills").length);leadership.textContent=SO.num(courses.filter(c=>c.category==="Leadership").length);[...new Set(courses.map(c=>c.category).filter(Boolean))].forEach(c=>category.innerHTML+=`<option>${c}</option>`);render()}
-function render(){let q=search.value.toLowerCase();let out=courses.filter(c=>(category.value==="all"||c.category===category.value)&&`${c.title} ${c.category} ${c.level}`.toLowerCase().includes(q));cards.innerHTML=out.length?out.map(c=>`<article class="card"><div class="icon">🎓</div><span class="label">${SO.safe(c.category)}</span><h2>${SO.safe(c.title)}</h2><p>${SO.safe(c.description)}</p><p><strong>${SO.safe(c.level)}</strong> • ${SO.safe(c.duration)}</p><a class="btn primary" href="${c.courseUrl||'#'}" target="_blank">Start Course</a></article>`).join(""):`<div class="notice"><h3>No courses found.</h3><p>Admin needs to add courses from admin-courses.html.</p></div>`}
+const httpUrl=value=>/^https?:\/\//i.test(String(value||""))?value:"";
+const courseHref=c=>String(c.courseType||"").toLowerCase()==="external"?([c.externalUrl,c.courseUrl,c.providerCourseUrl].map(httpUrl).find(Boolean)||`course-details.html?id=${encodeURIComponent(c.id)}`):`course-player.html?id=${encodeURIComponent(c.id)}`;
+let courses=[];async function load(){courses=(await SO.getAll("courses")).filter(isPublicCourse);total.textContent=SO.num(courses.length);digital.textContent=SO.num(courses.filter(c=>c.category==="Digital Skills").length);leadership.textContent=SO.num(courses.filter(c=>c.category==="Leadership").length);[...new Set(courses.map(c=>c.category).filter(Boolean))].forEach(c=>category.innerHTML+=`<option>${SO.safe(c)}</option>`);render()}
+function render(){let q=search.value.toLowerCase();let out=courses.filter(c=>(category.value==="all"||c.category===category.value)&&`${c.title} ${c.category} ${c.level}`.toLowerCase().includes(q));cards.innerHTML=out.length?out.map(c=>`<article class="card"><div class="icon">🎓</div><span class="label">${SO.safe(c.category)}</span><h2>${SO.safe(c.title)}</h2><p>${SO.safe(c.description||c.shortDescription)}</p><p><strong>${SO.safe(c.level||c.difficulty)}</strong> • ${SO.safe(c.duration)}</p><a class="btn primary" href="${SO.safe(courseHref(c))}">Start Course</a></article>`).join(""):`<div class="notice"><h3>No published courses found.</h3><p>Try another filter or check back when new learning is ready.</p></div>`}
 search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};load();
 
 </script>

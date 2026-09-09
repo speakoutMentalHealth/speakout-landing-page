@@ -94,6 +94,7 @@ import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { learningApi } from "./js/platform-api.js";
 import { sanitizeRichHtml } from "./js/safe-dom.js";
+import { isPublicCourse } from "./js/content-visibility.js";
 
 const params=new URLSearchParams(location.search);
 const courseId=params.get("id");
@@ -399,6 +400,7 @@ async function loadCourse(){
  const s=await getDoc(doc(db,"courses",courseId));
  if(!s.exists()){loading.textContent="Course not found.";return}
  course={id:s.id,...s.data()};
+ if(!isPublicCourse(course)){loading.textContent="This course is not published yet.";return}
  if(isExternal(course)){loading.innerHTML=`External course detected. <a class="btn primary" href="course-details.html?id=${encodeURIComponent(courseId)}">Return to Course Details</a>`;return}
  if(isInstructorLed(course)){loading.innerHTML=`Instructor-led course. <a class="btn primary" href="course-details.html?id=${encodeURIComponent(courseId)}">View Enrollment Details</a>`;return}
 
