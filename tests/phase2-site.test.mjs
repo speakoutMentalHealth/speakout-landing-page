@@ -194,10 +194,21 @@ test("public catalogues only render complete published learning content", async 
   const parseSeed = async file => JSON.parse((await readFile(path.join(root, file), "utf8")).replace(/^\uFEFF/, ""));
   const placeholderBooks = await parseSeed("books-seed.json");
   const audienceGuides = await parseSeed("firestore-seed/audience-guides.json");
+  const priorityBooks = await parseSeed("firestore-seed/priority-library-books.json");
   assert.equal(placeholderBooks.some(isPublicBook), false);
   assert.equal(audienceGuides.length, 3);
   assert.equal(audienceGuides.every(isPublicBook), true);
   assert.equal(audienceGuides.every(guide => guide.contentWordCount >= CONTENT_THRESHOLDS.bookWords), true);
+  assert.deepEqual(priorityBooks.map(book => book.id).sort(), [
+    "anxiety-management",
+    "career-planning",
+    "cybersecurity-awareness",
+    "mental-health-foundations",
+    "personal-finance",
+  ]);
+  assert.equal(priorityBooks.every(isPublicBook), true);
+  assert.equal(priorityBooks.every(book => book.chapters.length >= 5), true);
+  assert.equal(priorityBooks.every(book => book.contentWordCount >= 7000), true);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
