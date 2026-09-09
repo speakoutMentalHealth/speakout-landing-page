@@ -227,6 +227,11 @@ test("public catalogues only render complete published learning content", async 
   assert.match(courseAdmin, /Cannot publish:/u);
   assert.match(bookAdmin, /bookReadiness/u);
   assert.match(bookAdmin, /Saved as draft:/u);
+  assert.match(bookAdmin, /id="importLibraryBtn"/u);
+  assert.match(bookAdmin, /audience-guides\.json/u);
+  assert.match(bookAdmin, /priority-library-books\.json/u);
+  assert.match(bookAdmin, /items\.filter\(item=>!bookReadiness\(item\)\.ready\)/u);
+  assert.match(bookAdmin, /setDoc\(doc\(db,"books",item\.id\)/u);
 });
 
 test("public learning catalogues provide mobile-friendly discovery and filter feedback", async () => {
