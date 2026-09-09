@@ -38,7 +38,7 @@ Import the three resulting records into the `books` collection using their `id` 
 
 ## Priority library expansion
 
-`firestore-seed/priority-library-books.json` upgrades ten existing placeholder document IDs with full publications:
+`firestore-seed/priority-library-books.json` upgrades fifteen existing placeholder document IDs with full publications:
 
 - Mental Health Foundations Handbook
 - Anxiety Management Workbook
@@ -50,6 +50,11 @@ Import the three resulting records into the `books` collection using their `id` 
 - Psychological First Aid Field Guide
 - Leadership Foundations Handbook
 - Conflict Resolution Practice Guide
+- Student Leadership Practice Handbook
+- Community Leadership Field Guide
+- Team Leadership and Performance Handbook
+- Computer Basics Practical Guide
+- Microsoft Excel Applied Workbook
 
 Each record contains five or six chapters and at least 6,500 meaningful content words. Rebuild the pack after editing its source courses with:
 

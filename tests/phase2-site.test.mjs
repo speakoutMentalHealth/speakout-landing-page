@@ -202,14 +202,19 @@ test("public catalogues only render complete published learning content", async 
   assert.deepEqual(priorityBooks.map(book => book.id).sort(), [
     "anxiety-management",
     "career-planning",
+    "community-leadership",
+    "computer-basics",
     "conflict-resolution",
     "cybersecurity-awareness",
     "depression-awareness",
     "leadership-foundations",
     "mental-health-foundations",
+    "microsoft-excel",
     "personal-finance",
     "psychological-first-aid",
     "stress-management",
+    "student-leadership",
+    "team-leadership",
   ]);
   assert.equal(priorityBooks.every(isPublicBook), true);
   assert.equal(priorityBooks.every(book => book.chapters.length >= 5), true);
