@@ -227,6 +227,9 @@ test("public catalogues only render complete published learning content", async 
   assert.match(courseAdmin, /Cannot publish:/u);
   assert.match(bookAdmin, /bookReadiness/u);
   assert.match(bookAdmin, /Saved as draft:/u);
+  assert.match(bookAdmin, /requireRoles\(\["admin","super_admin"\]/u);
+  assert.doesNotMatch(bookAdmin, /src="auth-guard\.js"/u);
+  assert.doesNotMatch(bookAdmin, /function isAdmin/u);
   assert.match(bookAdmin, /id="importLibraryBtn"/u);
   assert.match(bookAdmin, /audience-guides\.json/u);
   assert.match(bookAdmin, /priority-library-books\.json/u);
