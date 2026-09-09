@@ -150,7 +150,7 @@ test("generic CMS pages use the shared authorized UI controller", async () => {
 });
 
 test("public catalogues only render complete published learning content", async () => {
-  const { CONTENT_THRESHOLDS, countWords, isPublicBook, isPublicCourse } = await import("../js/content-visibility.js");
+  const { CONTENT_THRESHOLDS, bookReadiness, countWords, courseReadiness, isPublicBook, isPublicCourse } = await import("../js/content-visibility.js");
   const lesson = { title: "Lesson one", content: "Ready learning content" };
   const course = {
     status: "active",
@@ -175,11 +175,13 @@ test("public catalogues only render complete published learning content", async 
   };
 
   assert.equal(isPublicCourse(course), true);
+  assert.equal(courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.internalCourseWords, true);
   assert.equal(isPublicCourse({ ...course, status: "draft" }), false);
   assert.equal(isPublicCourse({ ...course, modules: [] }), false);
   assert.equal(isPublicCourse({ ...course, courseType: "external", provider: "Partner", modules: undefined, description: "overview ".repeat(75), externalUrl: "https://example.com/course" }), true);
   assert.equal(isPublicCourse({ ...course, courseType: "external", provider: "Partner", modules: undefined, externalUrl: "javascript:alert(1)" }), false);
   assert.equal(isPublicBook(book), true);
+  assert.equal(bookReadiness(book).wordCount >= CONTENT_THRESHOLDS.bookWords, true);
   assert.equal(isPublicBook({ ...book, coverUrl: "" }), false);
   assert.equal(isPublicBook({ ...book, status: "active", chapters: [] }), false);
   assert.deepEqual(CONTENT_THRESHOLDS, {
@@ -203,6 +205,12 @@ test("public catalogues only render complete published learning content", async 
   for (const file of ["e-library.html", "my-library.html", "book-details.html", "book-reader.html", "teacher-library.html", "student-library.html", "parent-library.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicBook/u, file);
   }
+  const courseAdmin = await readFile(path.join(root, "admin-courses.html"), "utf8");
+  const bookAdmin = await readFile(path.join(root, "admin-books.html"), "utf8");
+  assert.match(courseAdmin, /courseReadiness/u);
+  assert.match(courseAdmin, /Cannot publish:/u);
+  assert.match(bookAdmin, /bookReadiness/u);
+  assert.match(bookAdmin, /Saved as draft:/u);
 });
 
 test("public learning catalogues provide mobile-friendly discovery and filter feedback", async () => {
