@@ -117,6 +117,15 @@ test("development snippets are excluded from Firebase Hosting", async () => {
   assert.equal(firebase.hosting.ignore.includes("firestore-seed/priority-library-books.json"), false);
 });
 
+test("publishable library packs are included in GitHub Pages", async () => {
+  const config = await readFile(path.join(root, "_config.yml"), "utf8");
+  assert.equal(/^\s*-\s+firestore-seed\s*$/m.test(config), false);
+  assert.equal(config.includes("firestore-seed/audience-guides.json"), false);
+  assert.equal(config.includes("firestore-seed/priority-library-books.json"), false);
+  assert.equal(config.includes("firestore-seed/build-audience-guides.mjs"), true);
+  assert.equal(config.includes("firestore-seed/build-priority-library.mjs"), true);
+});
+
 test("legacy portal aliases redirect to their maintained routes", async () => {
   const firebase = JSON.parse(await readFile(path.join(root, "firebase.json"), "utf8"));
   const redirects = new Map(firebase.hosting.redirects.map(item => [item.source, item]));

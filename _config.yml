@@ -7,7 +7,19 @@ exclude:
   - tests
   - docs
   - firestore-schema
-  - firestore-seed
+  - firestore-seed/all-starter-content.json
+  - firestore-seed/announcements-starter.json
+  - firestore-seed/books-starter.json
+  - firestore-seed/build-audience-guides.mjs
+  - firestore-seed/build-priority-library.mjs
+  - firestore-seed/courses-starter.json
+  - firestore-seed/events-starter.json
+  - firestore-seed/help.md
+  - firestore-seed/media-starter.json
+  - firestore-seed/student-wellbeing-book.json
+  - firestore-seed/student-wellbeing-course.json
+  - firestore-seed/student-wellbeing-quiz-bank.json
+  - firestore-seed/student-wellbeing-workbook.json
   - speakout-landing-page
   - courses-seed.json
   - books-seed.json
