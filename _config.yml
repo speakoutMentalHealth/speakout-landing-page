@@ -13,6 +13,7 @@ exclude:
   - firestore-seed/build-audience-guides.mjs
   - firestore-seed/build-priority-library.mjs
   - firestore-seed/migrate-course-assessments.mjs
+  - firestore-seed/migrate-live-course-assessments.mjs
   - firestore-seed/courses-starter.json
   - firestore-seed/events-starter.json
   - firestore-seed/help.md

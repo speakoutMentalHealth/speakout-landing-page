@@ -111,46 +111,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__0",
           "title": "Understanding Mental Health Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Mental health is best understood as:",
-              "type": "multiple-choice",
-              "options": [
-                "A fixed trait that a person either has or lacks",
-                "A spectrum of emotional, psychological and social wellbeing that everyone has",
-                "Something only relevant to people with a diagnosis",
-                "The complete absence of any problems"
-              ],
-              "answer": 1,
-              "explanation": "Everyone has mental health, and it exists on a changing spectrum, not a fixed healthy/unhealthy category."
-            },
-            {
-              "question": "According to this module, struggling with mental health is:",
-              "type": "multiple-choice",
-              "options": [
-                "A sign of personal weakness",
-                "Influenced by biology, circumstances and stress, not a character flaw",
-                "Something that only happens to certain personality types",
-                "Best handled by avoiding the topic entirely"
-              ],
-              "answer": 1,
-              "explanation": "Mental health difficulties are shaped by factors largely outside a person's control, not weakness."
-            },
-            {
-              "question": "Which is described as a protective factor for mental health?",
-              "type": "multiple-choice",
-              "options": [
-                "Chronic isolation",
-                "Supportive relationships and predictable routines",
-                "Avoiding all coping skills",
-                "Unstable circumstances"
-              ],
-              "answer": 1,
-              "explanation": "Supportive relationships, safety, routines and access to care are protective factors."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-1",
         "order": 1,
@@ -216,46 +180,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__1",
           "title": "Emotional Wellbeing Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module describes emotions as:",
-              "type": "multiple-choice",
-              "options": [
-                "Malfunctions that should be eliminated",
-                "Signals that give information about needs or circumstances",
-                "Only relevant during a crisis",
-                "The same thing as actions"
-              ],
-              "answer": 1,
-              "explanation": "Emotions are signals, including uncomfortable ones, not problems to eliminate."
-            },
-            {
-              "question": "According to this module, self-awareness is:",
-              "type": "multiple-choice",
-              "options": [
-                "A fixed trait some people simply have",
-                "A skill that improves with practice",
-                "Only useful for identifying other people's emotions",
-                "Unrelated to physical sensations"
-              ],
-              "answer": 1,
-              "explanation": "Self-awareness is a practicable skill, not a fixed personality trait."
-            },
-            {
-              "question": "Which of these is described as a strategy that provides short-term relief but causes longer-term harm?",
-              "type": "multiple-choice",
-              "options": [
-                "Slow breathing",
-                "Talking things through with someone you trust",
-                "Using substances to numb feelings",
-                "Regular physical activity"
-              ],
-              "answer": 2,
-              "explanation": "Substance use to numb feelings is flagged as harmful despite short-term relief."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-2",
         "order": 2,
@@ -321,46 +249,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__2",
           "title": "Stress and Anxiety Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Stress and anxiety become harmful, according to this module, when they are:",
-              "type": "multiple-choice",
-              "options": [
-                "Occasional and mild",
-                "Constant, disproportionate, or interfering with daily functioning",
-                "Noticed early in the body",
-                "Never present at all"
-              ],
-              "answer": 1,
-              "explanation": "Stress/anxiety are harmful when constant, disproportionate, or interfering with daily life."
-            },
-            {
-              "question": "The 5-4-3-2-1 technique described in this module is an example of:",
-              "type": "multiple-choice",
-              "options": [
-                "A long-term lifestyle change",
-                "A grounding technique that redirects attention to the present",
-                "A professional treatment method",
-                "A way to avoid a stressful situation entirely"
-              ],
-              "answer": 1,
-              "explanation": "5-4-3-2-1 is a grounding technique that uses the senses to anchor attention in the present."
-            },
-            {
-              "question": "According to this module, when should someone seek additional support for anxiety?",
-              "type": "multiple-choice",
-              "options": [
-                "Only once it becomes unbearable",
-                "When it is frequent, disproportionate, or stopping them from daily activities",
-                "Never - self-management is always sufficient",
-                "Only if a professional notices first"
-              ],
-              "answer": 1,
-              "explanation": "Support is appropriate once anxiety is frequent, disproportionate, or interferes with daily life."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-3",
         "order": 3,
@@ -426,46 +318,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__3",
           "title": "Depression Awareness Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module distinguishes depression from ordinary sadness mainly by:",
-              "type": "multiple-choice",
-              "options": [
-                "Duration, intensity and impact on daily functioning",
-                "Whether the person cries",
-                "The person's age",
-                "There is no meaningful difference"
-              ],
-              "answer": 0,
-              "explanation": "Depression tends to persist longer and affect functioning more broadly than ordinary sadness."
-            },
-            {
-              "question": "If someone mentions self-harm or not wanting to be here, this module says you should:",
-              "type": "multiple-choice",
-              "options": [
-                "Keep it secret if they ask you to",
-                "Take it seriously and involve a trusted adult or professional",
-                "Assume they are seeking attention",
-                "Wait to see if they bring it up again"
-              ],
-              "answer": 1,
-              "explanation": "Mentions of self-harm or suicidal thoughts should always be taken seriously and escalated."
-            },
-            {
-              "question": "According to this module, supporting someone with possible depression means:",
-              "type": "multiple-choice",
-              "options": [
-                "Diagnosing and fixing the problem yourself",
-                "Safe, consistent, non-judgmental presence and encouraging professional support",
-                "Comparing their situation to someone else's",
-                "Avoiding the topic to prevent making things worse"
-              ],
-              "answer": 1,
-              "explanation": "Supportive presence and gentle encouragement toward professional help is the recommended approach."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-4",
         "order": 4,
@@ -531,46 +387,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__4",
           "title": "Building Wellbeing Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, insufficient or irregular sleep is linked to:",
-              "type": "multiple-choice",
-              "options": [
-                "Improved concentration",
-                "Lower mood and reduced stress tolerance",
-                "No noticeable effects",
-                "Better emotional regulation"
-              ],
-              "answer": 1,
-              "explanation": "Sleep is one of the most influential factors on mood and stress tolerance."
-            },
-            {
-              "question": "This module says isolation and low mood create a pull toward:",
-              "type": "multiple-choice",
-              "options": [
-                "Seeking out more social connection automatically",
-                "Withdrawing from others, which usually makes things worse",
-                "No noticeable change in behavior",
-                "Improved relationships"
-              ],
-              "answer": 1,
-              "explanation": "Stress and low mood often push people to withdraw, which tends to be unhelpful."
-            },
-            {
-              "question": "This module recommends building sustainable routines by:",
-              "type": "multiple-choice",
-              "options": [
-                "Making five major changes at once",
-                "Starting with one small habit and anchoring it to an existing routine",
-                "Aiming for unbroken perfection with no setbacks",
-                "Avoiding any planning in advance"
-              ],
-              "answer": 1,
-              "explanation": "Small, anchored habits are more sustainable than large simultaneous changes."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-5",
         "order": 5,
@@ -636,46 +456,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-awareness-students__module__5",
           "title": "Mental Health Advocacy Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, effective everyday advocacy relies more on:",
-              "type": "multiple-choice",
-              "options": [
-                "A formal public platform",
-                "Consistently modeling healthy attitudes in ordinary moments",
-                "One dramatic public statement",
-                "Avoiding the topic of mental health entirely"
-              ],
-              "answer": 1,
-              "explanation": "Consistent, everyday modeling of healthy attitudes tends to be more effective than occasional grand gestures."
-            },
-            {
-              "question": "This module says sharing someone else's mental health disclosure without permission is:",
-              "type": "multiple-choice",
-              "options": [
-                "Always acceptable if the intent is good",
-                "Something to avoid, except where there is an immediate safety concern",
-                "Required for effective advocacy",
-                "Only a concern for adults"
-              ],
-              "answer": 1,
-              "explanation": "Privacy should be respected unless there is a genuine safety concern requiring escalation."
-            },
-            {
-              "question": "According to this module, sustainable community advocacy is best supported by:",
-              "type": "multiple-choice",
-              "options": [
-                "Working in isolation from existing resources",
-                "Partnering with school counsellors and established organizations",
-                "One large one-off campaign with no follow-up",
-                "Avoiding any measurement of impact"
-              ],
-              "answer": 1,
-              "explanation": "Partnering with existing resources extends reach and ensures appropriate expertise and referral pathways."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-awareness-students-module-6",
         "order": 6,
@@ -684,106 +468,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "mental-health-awareness-students__final",
       "title": "Mental Health Awareness for Students Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "Mental health is best understood as:",
-          "type": "multiple-choice",
-          "options": [
-            "A fixed trait a person either has or lacks",
-            "A spectrum of emotional, psychological and social wellbeing that everyone has",
-            "Something only relevant to people with a diagnosis",
-            "The complete absence of any problems"
-          ],
-          "answer": 1,
-          "explanation": "Everyone has mental health, and it exists on a changing spectrum."
-        },
-        {
-          "question": "Feeling a strong emotion and acting on it are, according to this course:",
-          "type": "multiple-choice",
-          "options": [
-            "The same thing",
-            "Two separate steps - you can feel something and still choose your response",
-            "Something that cannot be separated",
-            "Only relevant to positive emotions"
-          ],
-          "answer": 1,
-          "explanation": "Recognizing an emotion does not obligate acting on the first impulse it produces."
-        },
-        {
-          "question": "This course recommends grounding techniques such as 5-4-3-2-1 for:",
-          "type": "multiple-choice",
-          "options": [
-            "Diagnosing anxiety",
-            "Bringing attention back to the present during a stress or anxiety spike",
-            "Avoiding all future stressful situations",
-            "Replacing professional treatment"
-          ],
-          "answer": 1,
-          "explanation": "Grounding techniques redirect attention to the present moment during acute stress or anxiety."
-        },
-        {
-          "question": "This course distinguishes depression from ordinary sadness mainly by:",
-          "type": "multiple-choice",
-          "options": [
-            "Duration, intensity and impact on daily functioning",
-            "Whether tears are involved",
-            "The person's age",
-            "There being no meaningful difference"
-          ],
-          "answer": 0,
-          "explanation": "Depression tends to persist longer and affect functioning more broadly than ordinary sadness."
-        },
-        {
-          "question": "If someone mentions self-harm or not wanting to be here, this course says the appropriate response is to:",
-          "type": "multiple-choice",
-          "options": [
-            "Keep it private if asked to",
-            "Take it seriously and involve a trusted adult or professional",
-            "Assume they are seeking attention",
-            "Wait and see if it happens again"
-          ],
-          "answer": 1,
-          "explanation": "Mentions of self-harm or suicidal thoughts should always be taken seriously and escalated appropriately."
-        },
-        {
-          "question": "According to this course, sleep, movement and nutrition:",
-          "type": "multiple-choice",
-          "options": [
-            "Are a guaranteed cure for mental health conditions",
-            "Form a practical foundation supporting wellbeing, but are not a cure on their own",
-            "Have no relationship to mental health",
-            "Only matter for physical health"
-          ],
-          "answer": 1,
-          "explanation": "These habits support wellbeing but are not a substitute for professional treatment when needed."
-        },
-        {
-          "question": "This course describes effective everyday mental health advocacy as relying mainly on:",
-          "type": "multiple-choice",
-          "options": [
-            "A single dramatic public statement",
-            "Consistently modeling healthy attitudes in ordinary moments",
-            "Avoiding the topic to prevent discomfort",
-            "Sharing others' disclosures widely to raise awareness"
-          ],
-          "answer": 1,
-          "explanation": "Consistency in everyday interactions tends to matter more than occasional grand statements."
-        },
-        {
-          "question": "What is the strongest way to demonstrate learning from this course?",
-          "type": "multiple-choice",
-          "options": [
-            "Apply the concepts responsibly in realistic situations",
-            "Memorize terminology only",
-            "Avoid feedback and reflection",
-            "Skip the practical activities"
-          ],
-          "answer": 0,
-          "explanation": "This course prioritizes practical application, reflection and responsible decision-making over memorization."
-        }
-      ]
+      "questionCount": 8
     },
     "minimumCompletion": 100,
     "minimumScore": 70,
@@ -910,46 +598,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__0",
           "title": "Student Leadership Mindset Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module says student leadership is primarily about:",
-              "type": "multiple-choice",
-              "options": [
-                "Holding an official title like class president",
-                "The choice to take responsibility and help others, regardless of role",
-                "Being the most popular student",
-                "Waiting to be given authority before acting"
-              ],
-              "answer": 1,
-              "explanation": "Leadership is framed as a choice available to any student, not something requiring a title."
-            },
-            {
-              "question": "According to this module, admitting a mistake in front of others:",
-              "type": "multiple-choice",
-              "options": [
-                "Damages trust more than hiding it",
-                "Tends to build more respect than pretending to be perfect",
-                "Should always be avoided",
-                "Is irrelevant to leadership"
-              ],
-              "answer": 1,
-              "explanation": "Owning mistakes builds trust more effectively than covering them up."
-            },
-            {
-              "question": "This module describes peer influence as:",
-              "type": "multiple-choice",
-              "options": [
-                "Something that only formal leaders have",
-                "Already happening whether you intend it or not",
-                "Irrelevant to student leadership",
-                "Only relevant in negative situations"
-              ],
-              "answer": 1,
-              "explanation": "Peer influence happens regardless of intention; leaders use it deliberately and positively."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-1",
         "order": 1,
@@ -1015,46 +667,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__1",
           "title": "Confidence and Voice Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module describes nervousness before speaking as:",
-              "type": "multiple-choice",
-              "options": [
-                "Proof you shouldn't speak up",
-                "A normal physical response, not a character flaw",
-                "Something only unprepared people feel",
-                "A sign of weak leadership"
-              ],
-              "answer": 1,
-              "explanation": "Nervousness is a normal response, and even experienced speakers usually still feel it."
-            },
-            {
-              "question": "This module suggests building the habit of participation by:",
-              "type": "multiple-choice",
-              "options": [
-                "Waiting until you have a perfect answer",
-                "Starting small, like preparing one question or comment in advance",
-                "Avoiding group discussions entirely",
-                "Only speaking when directly called on"
-              ],
-              "answer": 1,
-              "explanation": "Small, prepared contributions build the habit of participation more effectively than waiting for a perfect moment."
-            },
-            {
-              "question": "According to this module, confident self-expression means:",
-              "type": "multiple-choice",
-              "options": [
-                "Being the loudest voice in the room",
-                "Expressing your view clearly while remaining respectful",
-                "Avoiding disagreement entirely",
-                "Talking over others to be heard"
-              ],
-              "answer": 1,
-              "explanation": "Confidence is framed as clear, respectful expression, not volume or dominance."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-2",
         "order": 2,
@@ -1120,46 +736,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__2",
           "title": "Teamwork Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module says clear team roles help prevent:",
-              "type": "multiple-choice",
-              "options": [
-                "Any flexibility within the team",
-                "Duplicated work and missed tasks",
-                "The need for communication",
-                "Matching tasks to strengths"
-              ],
-              "answer": 1,
-              "explanation": "Clear roles prevent overlap and gaps that occur when responsibility is unclear."
-            },
-            {
-              "question": "This module recommends handling group disagreements by:",
-              "type": "multiple-choice",
-              "options": [
-                "Criticizing the person who suggested the idea",
-                "Focusing feedback on the task, not the person",
-                "Avoiding disagreement entirely",
-                "Always deferring to the loudest member"
-              ],
-              "answer": 1,
-              "explanation": "Keeping feedback about the work rather than the person avoids unnecessary tension."
-            },
-            {
-              "question": "According to this module, if you're falling behind on a group commitment, you should:",
-              "type": "multiple-choice",
-              "options": [
-                "Wait until the deadline to say anything",
-                "Communicate early so the team can adjust",
-                "Quietly do less without telling anyone",
-                "Blame other team members"
-              ],
-              "answer": 1,
-              "explanation": "Early communication gives the team time to adjust, unlike waiting until the deadline."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-3",
         "order": 3,
@@ -1225,46 +805,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__3",
           "title": "Student Problem-Solving Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module says a good problem statement should be:",
-              "type": "multiple-choice",
-              "options": [
-                "As vague as possible",
-                "Specific enough to actually act on",
-                "Based only on your own assumptions",
-                "Impossible to solve with student resources"
-              ],
-              "answer": 1,
-              "explanation": "Specific problem statements are more actionable than vague complaints."
-            },
-            {
-              "question": "According to this module, when generating solutions, you should:",
-              "type": "multiple-choice",
-              "options": [
-                "Settle on the first idea immediately",
-                "Brainstorm several ideas before narrowing to one realistic option",
-                "Avoid considering what's achievable",
-                "Ignore who needs to approve the idea"
-              ],
-              "answer": 1,
-              "explanation": "Generating multiple ideas before narrowing avoids settling too quickly on a suboptimal first idea."
-            },
-            {
-              "question": "This module recommends treating an initial plan as:",
-              "type": "multiple-choice",
-              "options": [
-                "A fixed contract that can't change",
-                "A starting point that will likely need adjustment",
-                "Unnecessary if the idea is good",
-                "Something to skip entirely"
-              ],
-              "answer": 1,
-              "explanation": "Plans commonly need adjustment; treating them as a starting point keeps momentum when things change."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-4",
         "order": 4,
@@ -1330,46 +874,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__4",
           "title": "Conflict and Peer Leadership Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "When mediating a peer conflict, this module recommends:",
-              "type": "multiple-choice",
-              "options": [
-                "Picking a side quickly",
-                "Hearing both sides fully before forming a view",
-                "Only listening to whoever spoke first",
-                "Ignoring the conflict entirely"
-              ],
-              "answer": 1,
-              "explanation": "A fair, complete hearing for both sides avoids bias in resolving peer conflict."
-            },
-            {
-              "question": "This module describes exclusion in student groups as often being:",
-              "type": "multiple-choice",
-              "options": [
-                "Always intentional and malicious",
-                "Often unintentional, from defaulting to familiar circles",
-                "Impossible to change",
-                "Not something leaders should address"
-              ],
-              "answer": 1,
-              "explanation": "Exclusion often happens unintentionally, and noticing it is the first step to addressing it."
-            },
-            {
-              "question": "If a peer shares something serious involving safety, this module says a peer leader should:",
-              "type": "multiple-choice",
-              "options": [
-                "Try to handle it alone to protect their friend's privacy",
-                "Escalate it to a trusted adult immediately",
-                "Ignore it unless asked to help",
-                "Wait to see if it happens again"
-              ],
-              "answer": 1,
-              "explanation": "Serious safety concerns should always be escalated to a trusted adult, not handled alone by a peer."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-5",
         "order": 5,
@@ -1435,46 +943,10 @@
           }
         ],
         "quiz": {
+          "id": "student-leadership-foundations__module__5",
           "title": "Student Impact Project Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module recommends a project goal statement that is:",
-              "type": "multiple-choice",
-              "options": [
-                "As broad and inspirational as possible",
-                "Specific and measurable",
-                "Impossible to complete in one term",
-                "Left undefined until the project starts"
-              ],
-              "answer": 1,
-              "explanation": "A specific, measurable goal statement is more actionable than a vague aspiration."
-            },
-            {
-              "question": "When obstacles come up during a project, this module recommends:",
-              "type": "multiple-choice",
-              "options": [
-                "Treating it as a sign of failure and quitting",
-                "Treating it as normal and adjusting the plan",
-                "Ignoring the obstacle entirely",
-                "Blaming teammates immediately"
-              ],
-              "answer": 1,
-              "explanation": "Obstacles are framed as a normal part of execution, not evidence of failure."
-            },
-            {
-              "question": "This module says honest reflection on a project should include:",
-              "type": "multiple-choice",
-              "options": [
-                "Only the successes",
-                "What worked and what didn't",
-                "No mention of problems encountered",
-                "Only other people's feedback"
-              ],
-              "answer": 1,
-              "explanation": "Genuine reflection includes what went wrong, since that's often where the most useful lessons are."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "student-leadership-foundations-module-6",
         "order": 6,
@@ -1483,106 +955,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "student-leadership-foundations__final",
       "title": "Student Leadership Foundations Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "This course describes student leadership as primarily:",
-          "type": "multiple-choice",
-          "options": [
-            "Requiring an official title like class president",
-            "A choice to take responsibility and help others, available to any student",
-            "Only for the most popular students",
-            "Something to wait for permission to do"
-          ],
-          "answer": 1,
-          "explanation": "Leadership is framed as a choice available to any student, regardless of formal position."
-        },
-        {
-          "question": "According to this course, admitting a mistake in front of others:",
-          "type": "multiple-choice",
-          "options": [
-            "Damages trust more than hiding it",
-            "Tends to build more respect than pretending to be perfect",
-            "Should always be avoided",
-            "Is irrelevant to leadership"
-          ],
-          "answer": 1,
-          "explanation": "Owning mistakes builds trust more effectively than covering them up."
-        },
-        {
-          "question": "This course frames nervousness before speaking up as:",
-          "type": "multiple-choice",
-          "options": [
-            "Proof you shouldn't speak up",
-            "A normal physical response, not a character flaw",
-            "Something only unprepared people feel",
-            "A permanent barrier to leadership"
-          ],
-          "answer": 1,
-          "explanation": "Nervousness is a normal response; even experienced speakers usually still feel it."
-        },
-        {
-          "question": "This course says clear team roles in group projects primarily help prevent:",
-          "type": "multiple-choice",
-          "options": [
-            "Any flexibility within the team",
-            "Duplicated work and missed tasks",
-            "The need for communication",
-            "Matching tasks to strengths"
-          ],
-          "answer": 1,
-          "explanation": "Clear roles prevent overlap and gaps that occur when responsibility is unclear."
-        },
-        {
-          "question": "When generating solutions to a school problem, this course recommends:",
-          "type": "multiple-choice",
-          "options": [
-            "Settling on the first idea immediately",
-            "Brainstorming several ideas before narrowing to a realistic option",
-            "Ignoring who needs to approve the idea",
-            "Avoiding consideration of what's achievable"
-          ],
-          "answer": 1,
-          "explanation": "Generating multiple ideas before narrowing helps avoid settling too quickly on a weak first idea."
-        },
-        {
-          "question": "When mediating a conflict between peers, this course recommends:",
-          "type": "multiple-choice",
-          "options": [
-            "Picking a side quickly",
-            "Hearing both sides fully before forming a view",
-            "Only listening to whoever spoke first",
-            "Avoiding the conflict entirely"
-          ],
-          "answer": 1,
-          "explanation": "A fair, complete hearing for both sides avoids bias in resolving peer conflict."
-        },
-        {
-          "question": "If a peer shares something serious involving safety, this course says a peer leader should:",
-          "type": "multiple-choice",
-          "options": [
-            "Try to handle it alone to protect their friend's privacy",
-            "Escalate it to a trusted adult immediately",
-            "Ignore it unless asked to help",
-            "Wait to see if it happens again"
-          ],
-          "answer": 1,
-          "explanation": "Serious safety concerns should always be escalated to a trusted adult, not handled alone by a peer."
-        },
-        {
-          "question": "This course recommends a student impact project goal statement that is:",
-          "type": "multiple-choice",
-          "options": [
-            "As broad and inspirational as possible",
-            "Specific and measurable",
-            "Left undefined until the project starts",
-            "Impossible to complete in one term"
-          ],
-          "answer": 1,
-          "explanation": "A specific, measurable goal statement is more actionable than a vague aspiration."
-        }
-      ]
+      "questionCount": 8
     },
     "minimumCompletion": 100,
     "minimumScore": 70,
@@ -1713,46 +1089,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__0",
           "title": "Computer Foundations Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module explains that RAM, unlike a storage drive, is:",
-              "type": "multiple-choice",
-              "options": [
-                "Permanent storage that keeps files when the power is off",
-                "Memory that holds active work and clears when the computer shuts down",
-                "A type of software, not hardware",
-                "The same thing as the processor"
-              ],
-              "answer": 1,
-              "explanation": "RAM holds what's actively being worked on and is cleared when the device powers off, unlike a storage drive."
-            },
-            {
-              "question": "According to this module, the operating system's role is to:",
-              "type": "multiple-choice",
-              "options": [
-                "Only run one specific application",
-                "Manage files, run programs, and provide the environment you interact with",
-                "Replace the need for any applications",
-                "Only matter on desktop computers, not phones"
-              ],
-              "answer": 1,
-              "explanation": "The operating system manages the whole device, including files, running programs, and the visual environment."
-            },
-            {
-              "question": "This module recommends which approach for finding a program or file quickly?",
-              "type": "multiple-choice",
-              "options": [
-                "Always browsing through every folder manually",
-                "Using the built-in search function",
-                "Restarting the computer each time",
-                "Avoiding right-click menus entirely"
-              ],
-              "answer": 1,
-              "explanation": "Searching directly for a program, file, or setting is usually faster than browsing through menus."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-1",
         "order": 1,
@@ -1818,46 +1158,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__1",
           "title": "Files and Folders Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module recommends naming files with:",
-              "type": "multiple-choice",
-              "options": [
-                "Generic default names like \"Document1\"",
-                "A consistent, descriptive pattern including date and topic",
-                "Random characters to make them unique",
-                "The word \"final\" repeated for each new version"
-              ],
-              "answer": 1,
-              "explanation": "Descriptive, consistent names make files identifiable and sortable without opening them."
-            },
-            {
-              "question": "According to this module, the difference between moving and copying a file is that copying:",
-              "type": "multiple-choice",
-              "options": [
-                "Removes the file from its original location",
-                "Leaves the file in both the original and new location",
-                "Deletes the file permanently",
-                "Only works with folders, not files"
-              ],
-              "answer": 1,
-              "explanation": "Copying creates a duplicate in the new location while leaving the original file in place, unlike moving."
-            },
-            {
-              "question": "This module says an important file should exist:",
-              "type": "multiple-choice",
-              "options": [
-                "In only one place, to avoid confusion",
-                "In at least two places, such as a device and cloud storage",
-                "Only in cloud storage, never on a device",
-                "Nowhere, once it has been opened once"
-              ],
-              "answer": 1,
-              "explanation": "Keeping a second copy somewhere else protects against device loss, damage, or failure."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-2",
         "order": 2,
@@ -1923,46 +1227,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__2",
           "title": "Internet and Search Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module recommends opening a link you want to check later in:",
-              "type": "multiple-choice",
-              "options": [
-                "The same tab, replacing your current page",
-                "A new tab, keeping your original page open",
-                "A new browser entirely",
-                "Nowhere; links should never be opened separately"
-              ],
-              "answer": 1,
-              "explanation": "Opening a link in a new tab lets you keep your place while checking something else."
-            },
-            {
-              "question": "According to this module, searching with specific keywords instead of a full sentence:",
-              "type": "multiple-choice",
-              "options": [
-                "Always returns worse results",
-                "Typically returns more relevant results",
-                "Makes no difference to search results",
-                "Only works on certain search engines"
-              ],
-              "answer": 1,
-              "explanation": "Specific keywords generally help a search engine match more relevant results than a full conversational sentence."
-            },
-            {
-              "question": "This module recommends checking important claims online by:",
-              "type": "multiple-choice",
-              "options": [
-                "Trusting the first result automatically",
-                "Cross-checking against at least one other credible source",
-                "Ignoring the source entirely",
-                "Only checking anonymous blogs"
-              ],
-              "answer": 1,
-              "explanation": "Cross-checking important information against another credible source reduces the risk of relying on something inaccurate."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-3",
         "order": 3,
@@ -2028,46 +1296,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__3",
           "title": "Passwords and Authentication Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, what makes a password genuinely strong?",
-              "type": "multiple-choice",
-              "options": [
-                "Substituting letters with symbols, like @ for a",
-                "Length and uniqueness, such as a long passphrase",
-                "Using the same strong password everywhere for consistency",
-                "Adding your birth year to the end"
-              ],
-              "answer": 1,
-              "explanation": "Length and uniqueness (such as a random four-word passphrase) matter far more than symbol substitution or complexity alone."
-            },
-            {
-              "question": "This module explains that a password manager is valuable mainly because it:",
-              "type": "multiple-choice",
-              "options": [
-                "Eliminates the need for any master password",
-                "Makes using a unique, strong password for every account realistic",
-                "Is only useful for businesses, not individuals",
-                "Replaces the need for multi-factor authentication"
-              ],
-              "answer": 1,
-              "explanation": "A password manager generates and stores unique strong passwords for every account, making uniqueness practical without requiring memorization."
-            },
-            {
-              "question": "Why does this module recommend enabling MFA on your email account first?",
-              "type": "multiple-choice",
-              "options": [
-                "Email is rarely targeted by attackers",
-                "Email is often used to reset passwords for other accounts, making it a master key",
-                "MFA on email is required by law",
-                "Email accounts don't support strong passwords"
-              ],
-              "answer": 1,
-              "explanation": "Because email is commonly used to reset passwords for other accounts, a compromised email can cascade into many other compromised accounts."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-4",
         "order": 4,
@@ -2133,46 +1365,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__4",
           "title": "Phishing and Social Engineering Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, why is a display name alone not enough to trust a sender?",
-              "type": "multiple-choice",
-              "options": [
-                "Display names cannot be changed by attackers",
-                "Display names are trivial to fake, so the actual address must be checked",
-                "Display names are only used in phone calls",
-                "Email providers block all fake display names automatically"
-              ],
-              "answer": 1,
-              "explanation": "A display name can say anything; the actual email address or phone number must be checked to verify the real sender."
-            },
-            {
-              "question": "This module describes 'smishing' as:",
-              "type": "multiple-choice",
-              "options": [
-                "Phishing conducted through text messages",
-                "A type of strong password",
-                "A form of multi-factor authentication",
-                "A legitimate customer service tool"
-              ],
-              "answer": 0,
-              "explanation": "Smishing is phishing carried out through text messages, often using urgency and suspicious links, just like email phishing."
-            },
-            {
-              "question": "What does this module recommend as the most reliable defense against phishing and social engineering?",
-              "type": "multiple-choice",
-              "options": [
-                "Responding quickly to resolve the issue before it escalates",
-                "Using the contact information provided in the suspicious message",
-                "Verifying through a separate, independently known channel before acting",
-                "Ignoring all unexpected messages permanently"
-              ],
-              "answer": 2,
-              "explanation": "Verifying independently, rather than through contact details given in the suspicious message itself, is the most reliable defense."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-5",
         "order": 5,
@@ -2238,46 +1434,10 @@
           }
         ],
         "quiz": {
+          "id": "digital-literacy-essentials__module__5",
           "title": "Privacy and Digital Footprint Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, when should an app permission request raise concern?",
-              "type": "multiple-choice",
-              "options": [
-                "Whenever an app requests any permission at all",
-                "When the permission doesn't match what the app actually needs to function",
-                "Only when the app is free to download",
-                "Permissions never need to be questioned"
-              ],
-              "answer": 1,
-              "explanation": "A permission request that doesn't match the app's actual function (like a flashlight app requesting contacts) is a reasonable reason to question or deny it."
-            },
-            {
-              "question": "This module explains that once something is posted online, you should generally assume:",
-              "type": "multiple-choice",
-              "options": [
-                "It disappears completely once deleted",
-                "It may be permanent due to screenshots, archives, or shares",
-                "Only the platform can ever see it",
-                "It cannot affect your digital footprint"
-              ],
-              "answer": 1,
-              "explanation": "Screenshots, archives, and shares mean that deleting a post does not guarantee the information is truly gone."
-            },
-            {
-              "question": "What common pattern does this module identify across many scams, including romance scams?",
-              "type": "multiple-choice",
-              "options": [
-                "They always involve a phone call from a blocked number",
-                "They exploit trust, urgency, or emotional connection rather than technical tricks",
-                "They only target businesses, never individuals",
-                "They require advanced technical skill to fall for"
-              ],
-              "answer": 1,
-              "explanation": "Many scams succeed by exploiting trust, generosity, urgency, or emotional connection rather than relying on technical sophistication."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "digital-literacy-essentials-module-6",
         "order": 6,
@@ -2286,154 +1446,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "digital-literacy-essentials__final",
       "title": "Digital Literacy Essentials Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "This course explains that RAM is different from a storage drive because RAM:",
-          "type": "multiple-choice",
-          "options": [
-            "Holds active work and clears when the device powers off",
-            "Is the same thing as the operating system",
-            "Permanently stores files even without power",
-            "Is a type of software, not hardware"
-          ],
-          "answer": 0,
-          "explanation": "RAM holds what is actively being worked on and is cleared on shutdown, unlike permanent storage."
-        },
-        {
-          "question": "According to this course, files should be named using:",
-          "type": "multiple-choice",
-          "options": [
-            "Generic default names",
-            "A consistent, descriptive pattern including date and topic",
-            "The word \"final\" repeated for each version",
-            "Random characters"
-          ],
-          "answer": 1,
-          "explanation": "Descriptive, consistent file names make files identifiable and easy to sort without opening them."
-        },
-        {
-          "question": "This course recommends keeping an important file safe by:",
-          "type": "multiple-choice",
-          "options": [
-            "Keeping it in only one location",
-            "Keeping a second copy somewhere else, such as cloud storage",
-            "Never backing it up to avoid duplicates",
-            "Relying only on memory to recreate it if lost"
-          ],
-          "answer": 1,
-          "explanation": "An important file should exist in at least two places to protect against device loss or failure."
-        },
-        {
-          "question": "This course explains that searching with specific keywords instead of a full question:",
-          "type": "multiple-choice",
-          "options": [
-            "Always returns worse results",
-            "Typically returns more relevant results",
-            "Makes no real difference",
-            "Only works on one search engine"
-          ],
-          "answer": 1,
-          "explanation": "Specific keywords generally help a search engine match more relevant pages than a conversational sentence."
-        },
-        {
-          "question": "According to this course, a good email subject line should:",
-          "type": "multiple-choice",
-          "options": [
-            "Be vague, like \"Question\"",
-            "Clearly describe what the email is about",
-            "Always be left blank",
-            "Repeat the full email body"
-          ],
-          "answer": 1,
-          "explanation": "A specific subject line helps the recipient understand the email's purpose and find it later."
-        },
-        {
-          "question": "This course explains that a spreadsheet formula referencing a cell range will:",
-          "type": "multiple-choice",
-          "options": [
-            "Calculate once and never update",
-            "Update automatically when the referenced numbers change",
-            "Only work if retyped every time",
-            "Break the spreadsheet"
-          ],
-          "answer": 1,
-          "explanation": "Formulas reference cell addresses, so results update automatically when the underlying data changes."
-        },
-        {
-          "question": "This course says accounts are best protected through:",
-          "type": "multiple-choice",
-          "options": [
-            "Reusing one memorable password everywhere",
-            "Long, unique passwords plus two-factor authentication",
-            "Sharing passwords with trusted contacts",
-            "Short passwords with symbol substitutions"
-          ],
-          "answer": 1,
-          "explanation": "Long, unique passwords combined with two-factor authentication provide meaningfully stronger protection."
-        },
-        {
-          "question": "According to this course, a common warning sign of a phishing message is:",
-          "type": "multiple-choice",
-          "options": [
-            "A calm, unhurried request",
-            "Urgency or fear pressuring immediate action",
-            "A sender address that exactly matches the real organization",
-            "No links or attachments at all"
-          ],
-          "answer": 1,
-          "explanation": "Phishing messages commonly create artificial urgency to make people act before thinking carefully."
-        },
-        {
-          "question": "Why is an ordinary personal account still a valuable target for attackers?",
-          "type": "multiple-choice",
-          "options": [
-            "It can be used to scam contacts or access linked accounts",
-            "Attackers only target wealthy individuals",
-            "Personal accounts cannot be compromised",
-            "It has no value unless it holds financial data"
-          ],
-          "answer": 0,
-          "explanation": "Even accounts with no direct financial value can be used to scam contacts or gain access to other linked accounts."
-        },
-        {
-          "question": "What makes a passphrase like a string of four random words stronger than a short, complex password?",
-          "type": "multiple-choice",
-          "options": [
-            "It uses more special characters",
-            "Its greater length makes it much harder to crack, despite being easier to remember",
-            "It is shorter and simpler to guess",
-            "It never needs to be changed"
-          ],
-          "answer": 1,
-          "explanation": "Length matters more than complexity; a long passphrase is dramatically harder to crack than a short, complex password."
-        },
-        {
-          "question": "Why does this course recommend enabling multi-factor authentication on your email account first?",
-          "type": "multiple-choice",
-          "options": [
-            "Email is rarely a target for attackers",
-            "Email is often used to reset passwords for other accounts, making it a master key",
-            "MFA is only available for email accounts",
-            "Email accounts cannot use strong passwords"
-          ],
-          "answer": 1,
-          "explanation": "Because email often controls password resets for other accounts, protecting it with MFA has an outsized impact on your overall security."
-        },
-        {
-          "question": "What is the most reliable way to verify a suspicious message asking for sensitive information or urgent action?",
-          "type": "multiple-choice",
-          "options": [
-            "Reply directly to the message asking if it's real",
-            "Call the number provided in the suspicious message",
-            "Verify independently through a separately known, trusted contact method",
-            "Comply quickly to avoid any consequences"
-          ],
-          "answer": 2,
-          "explanation": "Verifying through an independently known channel, not the contact details in the suspicious message itself, is the most reliable defense."
-        }
-      ]
+      "questionCount": 12
     },
     "minimumCompletion": 100,
     "minimumScore": 70,
@@ -2558,46 +1574,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__0",
           "title": "Understanding Mental Health Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Mental health is best understood as:",
-              "type": "multiple-choice",
-              "options": [
-                "A fixed trait that a person either has or lacks",
-                "A spectrum of emotional, psychological and social wellbeing that everyone has",
-                "Something only relevant to people with a diagnosis",
-                "The complete absence of any problems"
-              ],
-              "answer": 1,
-              "explanation": "Everyone has mental health, and it exists on a changing spectrum, not a fixed healthy/unhealthy category."
-            },
-            {
-              "question": "According to this module, struggling with mental health is:",
-              "type": "multiple-choice",
-              "options": [
-                "A sign of personal weakness",
-                "Influenced by biology, circumstances and stress, not a character flaw",
-                "Something that only happens to certain personality types",
-                "Best handled by avoiding the topic entirely"
-              ],
-              "answer": 1,
-              "explanation": "Mental health difficulties are shaped by factors largely outside a person's control, not weakness."
-            },
-            {
-              "question": "Which is described as a protective factor for mental health?",
-              "type": "multiple-choice",
-              "options": [
-                "Chronic isolation",
-                "Supportive relationships and predictable routines",
-                "Avoiding all coping skills",
-                "Unstable circumstances"
-              ],
-              "answer": 1,
-              "explanation": "Supportive relationships, safety, routines and access to care are protective factors."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-1",
         "order": 1,
@@ -2663,46 +1643,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__1",
           "title": "Stress and Anxiety Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Stress and anxiety become harmful, according to this module, when they are:",
-              "type": "multiple-choice",
-              "options": [
-                "Occasional and mild",
-                "Constant, disproportionate, or interfering with daily functioning",
-                "Noticed early in the body",
-                "Never present at all"
-              ],
-              "answer": 1,
-              "explanation": "Stress/anxiety are harmful when constant, disproportionate, or interfering with daily life."
-            },
-            {
-              "question": "The 5-4-3-2-1 technique described in this module is an example of:",
-              "type": "multiple-choice",
-              "options": [
-                "A long-term lifestyle change",
-                "A grounding technique that redirects attention to the present",
-                "A professional treatment method",
-                "A way to avoid a stressful situation entirely"
-              ],
-              "answer": 1,
-              "explanation": "5-4-3-2-1 is a grounding technique that uses the senses to anchor attention in the present."
-            },
-            {
-              "question": "According to this module, when should someone seek additional support for anxiety?",
-              "type": "multiple-choice",
-              "options": [
-                "Only once it becomes unbearable",
-                "When it is frequent, disproportionate, or stopping them from daily activities",
-                "Never - self-management is always sufficient",
-                "Only if a professional notices first"
-              ],
-              "answer": 1,
-              "explanation": "Support is appropriate once anxiety is frequent, disproportionate, or interferes with daily life."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-2",
         "order": 2,
@@ -2768,46 +1712,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__2",
           "title": "Depression Awareness Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module distinguishes depression from ordinary sadness mainly by:",
-              "type": "multiple-choice",
-              "options": [
-                "Duration, intensity and impact on daily functioning",
-                "Whether the person cries",
-                "The person's age",
-                "There is no meaningful difference"
-              ],
-              "answer": 0,
-              "explanation": "Depression tends to persist longer and affect functioning more broadly than ordinary sadness."
-            },
-            {
-              "question": "If someone mentions self-harm or not wanting to be here, this module says you should:",
-              "type": "multiple-choice",
-              "options": [
-                "Keep it secret if they ask you to",
-                "Take it seriously and involve a trusted adult or professional",
-                "Assume they are seeking attention",
-                "Wait to see if they bring it up again"
-              ],
-              "answer": 1,
-              "explanation": "Mentions of self-harm or suicidal thoughts should always be taken seriously and escalated."
-            },
-            {
-              "question": "According to this module, supporting someone with possible depression means:",
-              "type": "multiple-choice",
-              "options": [
-                "Diagnosing and fixing the problem yourself",
-                "Safe, consistent, non-judgmental presence and encouraging professional support",
-                "Comparing their situation to someone else's",
-                "Avoiding the topic to prevent making things worse"
-              ],
-              "answer": 1,
-              "explanation": "Supportive presence and gentle encouragement toward professional help is the recommended approach."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-3",
         "order": 3,
@@ -2873,46 +1781,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__3",
           "title": "PFA Foundations Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Psychological First Aid is best described as:",
-              "type": "multiple-choice",
-              "options": [
-                "A form of psychotherapy",
-                "A humane, practical way of supporting someone after a distressing event",
-                "A clinical diagnosis process",
-                "Something only licensed therapists can provide"
-              ],
-              "answer": 1,
-              "explanation": "PFA is a practical, humane support response, not therapy or diagnosis."
-            },
-            {
-              "question": "The three actions in the Look, Listen, Link framework are best summarized as:",
-              "type": "multiple-choice",
-              "options": [
-                "Diagnose, treat, discharge",
-                "Check safety, listen without pressuring, connect to help",
-                "Interrogate, record, report",
-                "Ignore, wait, escalate"
-              ],
-              "answer": 1,
-              "explanation": "Look checks safety, Listen means approaching calmly without pressure, and Link connects people to practical help."
-            },
-            {
-              "question": "A PFA helper's confidentiality should be broken when:",
-              "type": "multiple-choice",
-              "options": [
-                "Never, under any circumstance",
-                "There is a safeguarding concern or risk to safety",
-                "The helper simply feels like sharing",
-                "Only if asked by a stranger"
-              ],
-              "answer": 1,
-              "explanation": "Confidentiality generally holds except where safeguarding or safety risks require escalation."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-4",
         "order": 4,
@@ -2978,46 +1850,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__4",
           "title": "Listen Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Before offering help, this module recommends:",
-              "type": "multiple-choice",
-              "options": [
-                "Assuming the person wants help and proceeding",
-                "Asking permission first, respecting their autonomy",
-                "Waiting silently without introducing yourself",
-                "Insisting they accept help"
-              ],
-              "answer": 1,
-              "explanation": "Asking permission respects the person's autonomy rather than assuming what they want."
-            },
-            {
-              "question": "This module says asking someone to describe a traumatic event in detail:",
-              "type": "multiple-choice",
-              "options": [
-                "Is a required part of PFA",
-                "Is unnecessary for PFA and can retraumatize the person",
-                "Should always be done immediately",
-                "Has no effect on the person"
-              ],
-              "answer": 1,
-              "explanation": "PFA does not require detailed accounts, and pushing for them can retraumatize someone."
-            },
-            {
-              "question": "Validation, as described in this module, means:",
-              "type": "multiple-choice",
-              "options": [
-                "Agreeing with every conclusion the person draws",
-                "Acknowledging someone's feelings as real and understandable",
-                "Telling them it could be worse",
-                "Dismissing their experience to keep them calm"
-              ],
-              "answer": 1,
-              "explanation": "Validation acknowledges feelings as real without necessarily agreeing with every interpretation."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-5",
         "order": 5,
@@ -3083,46 +1919,10 @@
           }
         ],
         "quiz": {
+          "id": "teacher-mental-health-support-basics__module__5",
           "title": "Link Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module suggests finding out what someone needs practically by:",
-              "type": "multiple-choice",
-              "options": [
-                "Assuming what they need without asking",
-                "Asking what would be most helpful right now",
-                "Ignoring practical needs entirely",
-                "Only offering emotional support"
-              ],
-              "answer": 1,
-              "explanation": "Asking what would help lets the person direct the kind of support that matters most to them."
-            },
-            {
-              "question": "When helping someone reconnect with their social support, this module recommends:",
-              "type": "multiple-choice",
-              "options": [
-                "Contacting whoever you think is best without asking",
-                "Asking who they'd like reached, rather than assuming",
-                "Avoiding contacting anyone",
-                "Only contacting professional services"
-              ],
-              "answer": 1,
-              "explanation": "Respecting the person's choice about who to contact is part of respectful support."
-            },
-            {
-              "question": "An effective referral, according to this module, involves:",
-              "type": "multiple-choice",
-              "options": [
-                "Just naming a service and moving on",
-                "Explaining what the service does and offering to help make contact",
-                "Avoiding mentioning specific services",
-                "Referring to services you know nothing about"
-              ],
-              "answer": 1,
-              "explanation": "Clear explanation and offering to help with contact increases the chance a referral is followed through."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "teacher-mental-health-support-basics-module-6",
         "order": 6,
@@ -3131,154 +1931,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "teacher-mental-health-support-basics__final",
       "title": "Teacher Mental Health Support Basics Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "Mental health is best understood as:",
-          "type": "multiple-choice",
-          "options": [
-            "A fixed trait a person either has or lacks",
-            "A spectrum of emotional, psychological and social wellbeing that everyone has",
-            "Something only relevant to people with a diagnosis",
-            "The complete absence of any problems"
-          ],
-          "answer": 1,
-          "explanation": "Everyone has mental health, and it exists on a changing spectrum."
-        },
-        {
-          "question": "Feeling a strong emotion and acting on it are, according to this course:",
-          "type": "multiple-choice",
-          "options": [
-            "The same thing",
-            "Two separate steps - you can feel something and still choose your response",
-            "Something that cannot be separated",
-            "Only relevant to positive emotions"
-          ],
-          "answer": 1,
-          "explanation": "Recognizing an emotion does not obligate acting on the first impulse it produces."
-        },
-        {
-          "question": "This course recommends grounding techniques such as 5-4-3-2-1 for:",
-          "type": "multiple-choice",
-          "options": [
-            "Diagnosing anxiety",
-            "Bringing attention back to the present during a stress or anxiety spike",
-            "Avoiding all future stressful situations",
-            "Replacing professional treatment"
-          ],
-          "answer": 1,
-          "explanation": "Grounding techniques redirect attention to the present moment during acute stress or anxiety."
-        },
-        {
-          "question": "This course distinguishes depression from ordinary sadness mainly by:",
-          "type": "multiple-choice",
-          "options": [
-            "Duration, intensity and impact on daily functioning",
-            "Whether tears are involved",
-            "The person's age",
-            "There being no meaningful difference"
-          ],
-          "answer": 0,
-          "explanation": "Depression tends to persist longer and affect functioning more broadly than ordinary sadness."
-        },
-        {
-          "question": "If someone mentions self-harm or not wanting to be here, this course says the appropriate response is to:",
-          "type": "multiple-choice",
-          "options": [
-            "Keep it private if asked to",
-            "Take it seriously and involve a trusted adult or professional",
-            "Assume they are seeking attention",
-            "Wait and see if it happens again"
-          ],
-          "answer": 1,
-          "explanation": "Mentions of self-harm or suicidal thoughts should always be taken seriously and escalated appropriately."
-        },
-        {
-          "question": "According to this course, sleep, movement and nutrition:",
-          "type": "multiple-choice",
-          "options": [
-            "Are a guaranteed cure for mental health conditions",
-            "Form a practical foundation supporting wellbeing, but are not a cure on their own",
-            "Have no relationship to mental health",
-            "Only matter for physical health"
-          ],
-          "answer": 1,
-          "explanation": "These habits support wellbeing but are not a substitute for professional treatment when needed."
-        },
-        {
-          "question": "This course describes effective everyday mental health advocacy as relying mainly on:",
-          "type": "multiple-choice",
-          "options": [
-            "A single dramatic public statement",
-            "Consistently modeling healthy attitudes in ordinary moments",
-            "Avoiding the topic to prevent discomfort",
-            "Sharing others' disclosures widely to raise awareness"
-          ],
-          "answer": 1,
-          "explanation": "Consistency in everyday interactions tends to matter more than occasional grand statements."
-        },
-        {
-          "question": "What is the strongest way to demonstrate learning from this course?",
-          "type": "multiple-choice",
-          "options": [
-            "Apply the concepts responsibly in realistic situations",
-            "Memorize terminology only",
-            "Avoid feedback and reflection",
-            "Skip the practical activities"
-          ],
-          "answer": 0,
-          "explanation": "This course prioritizes practical application, reflection and responsible decision-making over memorization."
-        },
-        {
-          "question": "Psychological First Aid is best described as:",
-          "type": "multiple-choice",
-          "options": [
-            "A form of psychotherapy requiring a clinical license",
-            "A humane, practical way of supporting someone after a distressing event",
-            "A method for diagnosing trauma",
-            "Something reserved only for emergency professionals"
-          ],
-          "answer": 1,
-          "explanation": "PFA is a practical, humane support response, not therapy, diagnosis, or a licensed-only activity."
-        },
-        {
-          "question": "Before engaging with someone in distress, a helper should first:",
-          "type": "multiple-choice",
-          "options": [
-            "Begin asking detailed questions immediately",
-            "Scan the environment for immediate safety risks, including their own",
-            "Assume they want to talk in detail",
-            "Wait for someone else to act"
-          ],
-          "answer": 1,
-          "explanation": "Checking immediate safety, including the helper's own, comes first in the Look step."
-        },
-        {
-          "question": "Asking someone to describe a traumatic event in detail during PFA is:",
-          "type": "multiple-choice",
-          "options": [
-            "A required step",
-            "Unnecessary and can retraumatize the person",
-            "The main goal of PFA",
-            "Something to insist on"
-          ],
-          "answer": 1,
-          "explanation": "PFA does not require detailed accounts, and pushing for them can cause additional harm."
-        },
-        {
-          "question": "The 'Link' step of PFA primarily involves:",
-          "type": "multiple-choice",
-          "options": [
-            "Diagnosing the underlying cause of distress",
-            "Connecting the person with practical help, trusted people, and services",
-            "Keeping the person isolated until professionals arrive",
-            "Providing medication"
-          ],
-          "answer": 1,
-          "explanation": "Link focuses on connecting people with practical assistance and appropriate support."
-        }
-      ]
+      "questionCount": 12
     },
     "minimumCompletion": 100,
     "minimumScore": 70,
@@ -3405,46 +2061,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__0",
           "title": "Understanding Mental Health Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Mental health is best understood as:",
-              "type": "multiple-choice",
-              "options": [
-                "A fixed trait that a person either has or lacks",
-                "A spectrum of emotional, psychological and social wellbeing that everyone has",
-                "Something only relevant to people with a diagnosis",
-                "The complete absence of any problems"
-              ],
-              "answer": 1,
-              "explanation": "Everyone has mental health, and it exists on a changing spectrum, not a fixed healthy/unhealthy category."
-            },
-            {
-              "question": "According to this module, struggling with mental health is:",
-              "type": "multiple-choice",
-              "options": [
-                "A sign of personal weakness",
-                "Influenced by biology, circumstances and stress, not a character flaw",
-                "Something that only happens to certain personality types",
-                "Best handled by avoiding the topic entirely"
-              ],
-              "answer": 1,
-              "explanation": "Mental health difficulties are shaped by factors largely outside a person's control, not weakness."
-            },
-            {
-              "question": "Which is described as a protective factor for mental health?",
-              "type": "multiple-choice",
-              "options": [
-                "Chronic isolation",
-                "Supportive relationships and predictable routines",
-                "Avoiding all coping skills",
-                "Unstable circumstances"
-              ],
-              "answer": 1,
-              "explanation": "Supportive relationships, safety, routines and access to care are protective factors."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "parent-communication-teen-support-module-1",
         "order": 1,
@@ -3510,46 +2130,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__1",
           "title": "Building Wellbeing Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, insufficient or irregular sleep is linked to:",
-              "type": "multiple-choice",
-              "options": [
-                "Improved concentration",
-                "Lower mood and reduced stress tolerance",
-                "No noticeable effects",
-                "Better emotional regulation"
-              ],
-              "answer": 1,
-              "explanation": "Sleep is one of the most influential factors on mood and stress tolerance."
-            },
-            {
-              "question": "This module says isolation and low mood create a pull toward:",
-              "type": "multiple-choice",
-              "options": [
-                "Seeking out more social connection automatically",
-                "Withdrawing from others, which usually makes things worse",
-                "No noticeable change in behavior",
-                "Improved relationships"
-              ],
-              "answer": 1,
-              "explanation": "Stress and low mood often push people to withdraw, which tends to be unhelpful."
-            },
-            {
-              "question": "This module recommends building sustainable routines by:",
-              "type": "multiple-choice",
-              "options": [
-                "Making five major changes at once",
-                "Starting with one small habit and anchoring it to an existing routine",
-                "Aiming for unbroken perfection with no setbacks",
-                "Avoiding any planning in advance"
-              ],
-              "answer": 1,
-              "explanation": "Small, anchored habits are more sustainable than large simultaneous changes."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "parent-communication-teen-support-module-2",
         "order": 2,
@@ -3615,58 +2199,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__2",
           "title": "Triggers, Thoughts and Body Responses Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, the purpose of tracking your own anxiety patterns is:",
-              "type": "multiple-choice",
-              "options": [
-                "To criticize yourself for having them",
-                "To gather useful information, not to judge yourself",
-                "To prove anxiety is not real",
-                "To share with others as proof of weakness"
-              ],
-              "answer": 1,
-              "explanation": "Tracking patterns is meant to provide useful information, without self-judgment."
-            },
-            {
-              "question": "This module recommends replacing absolute language (\"always,\" \"never\") in anxious thoughts because it:",
-              "type": "multiple-choice",
-              "options": [
-                "Has no real effect on the thought",
-                "Tends to signal an exaggerated, less accurate thought",
-                "Is always factually correct",
-                "Should be replaced with even stronger language"
-              ],
-              "answer": 1,
-              "explanation": "Absolute language often exaggerates a prediction; more specific language tends to be more accurate."
-            },
-            {
-              "question": "This module says physical symptoms during anxiety are:",
-              "type": "multiple-choice",
-              "options": [
-                "Imaginary and not actually happening",
-                "Real sensations, even when the trigger is psychological",
-                "Always a sign of serious physical illness",
-                "Something to ignore completely"
-              ],
-              "answer": 1,
-              "explanation": "Physical symptoms are genuinely real even when triggered by psychological rather than physical threat."
-            },
-            {
-              "question": "According to this module, persistent or unexplained physical symptoms should be:",
-              "type": "multiple-choice",
-              "options": [
-                "Automatically attributed to anxiety without further thought",
-                "Medically assessed rather than assumed to be anxiety",
-                "Ignored entirely",
-                "Only discussed with friends, never a doctor"
-              ],
-              "answer": 1,
-              "explanation": "Ruling out other medical causes is a responsible step, not a contradiction of anxiety management."
-            }
-          ]
+          "questionCount": 4
         },
         "id": "parent-communication-teen-support-module-3",
         "order": 3,
@@ -3732,58 +2268,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__3",
           "title": "Communication and Support Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module recommends communicating an anxiety-related need by:",
-              "type": "multiple-choice",
-              "options": [
-                "Expecting others to guess what's wrong",
-                "Being concrete about the situation, its effect, and the specific help wanted",
-                "Avoiding the topic entirely",
-                "Sharing every detail regardless of comfort level"
-              ],
-              "answer": 1,
-              "explanation": "Concrete, specific communication gives others something actionable to respond to."
-            },
-            {
-              "question": "According to this module, a helpful first response to someone who is anxious is to:",
-              "type": "multiple-choice",
-              "options": [
-                "Immediately offer a solution without asking",
-                "Listen, validate, and ask what they actually need",
-                "Confirm that their worst-case prediction is accurate",
-                "Take over the problem entirely on their behalf"
-              ],
-              "answer": 1,
-              "explanation": "Listening and validating, then asking what's needed, tends to help more than jumping to solutions."
-            },
-            {
-              "question": "This module says confidentiality should be broken when:",
-              "type": "multiple-choice",
-              "options": [
-                "Never, under any circumstances",
-                "There is a genuine safety concern",
-                "The supporter simply feels like sharing",
-                "Only if a teacher asks directly"
-              ],
-              "answer": 1,
-              "explanation": "Genuine safety concerns override a promise of secrecy, and should be escalated."
-            },
-            {
-              "question": "According to this module, seeking professional help for anxiety is:",
-              "type": "multiple-choice",
-              "options": [
-                "A sign of failing to cope",
-                "A practical, responsible response to real impairment",
-                "Only appropriate as an absolute last resort",
-                "Something peers should always be able to replace"
-              ],
-              "answer": 1,
-              "explanation": "Professional support is a structured, appropriate option, not a sign of failure."
-            }
-          ]
+          "questionCount": 4
         },
         "id": "parent-communication-teen-support-module-4",
         "order": 4,
@@ -3849,46 +2337,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__4",
           "title": "Signs and Symptoms Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module distinguishes emotional/cognitive signs of depression from an ordinary bad day mainly by:",
-              "type": "multiple-choice",
-              "options": [
-                "Whether the person mentions feeling sad at all",
-                "Duration - a pattern lasting two weeks or more affecting most days",
-                "The person's age",
-                "Whether anyone else notices"
-              ],
-              "answer": 1,
-              "explanation": "A sustained pattern lasting two weeks or more is what distinguishes these signs from an ordinary bad day."
-            },
-            {
-              "question": "According to this module, physical signs of depression are sometimes overlooked because:",
-              "type": "multiple-choice",
-              "options": [
-                "They never actually occur",
-                "They may be pursued as purely medical issues without considering depression",
-                "They only affect certain age groups",
-                "They are always obvious to everyone"
-              ],
-              "answer": 1,
-              "explanation": "Physical signs can be missed as contributors to depression if treated as purely medical without broader context."
-            },
-            {
-              "question": "This module says a single behavioral change (like withdrawal) should be interpreted as:",
-              "type": "multiple-choice",
-              "options": [
-                "Definitive proof of depression on its own",
-                "Part of a wider pattern to consider alongside other signs, not proof alone",
-                "Irrelevant and not worth noticing",
-                "Always a sign of carelessness"
-              ],
-              "answer": 1,
-              "explanation": "It's the combination of signs sustained over time that forms a meaningful pattern, not one change alone."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "parent-communication-teen-support-module-5",
         "order": 5,
@@ -3954,46 +2406,10 @@
           }
         ],
         "quiz": {
+          "id": "parent-communication-teen-support__module__5",
           "title": "Privacy and Digital Footprint Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, when should an app permission request raise concern?",
-              "type": "multiple-choice",
-              "options": [
-                "Whenever an app requests any permission at all",
-                "When the permission doesn't match what the app actually needs to function",
-                "Only when the app is free to download",
-                "Permissions never need to be questioned"
-              ],
-              "answer": 1,
-              "explanation": "A permission request that doesn't match the app's actual function (like a flashlight app requesting contacts) is a reasonable reason to question or deny it."
-            },
-            {
-              "question": "This module explains that once something is posted online, you should generally assume:",
-              "type": "multiple-choice",
-              "options": [
-                "It disappears completely once deleted",
-                "It may be permanent due to screenshots, archives, or shares",
-                "Only the platform can ever see it",
-                "It cannot affect your digital footprint"
-              ],
-              "answer": 1,
-              "explanation": "Screenshots, archives, and shares mean that deleting a post does not guarantee the information is truly gone."
-            },
-            {
-              "question": "What common pattern does this module identify across many scams, including romance scams?",
-              "type": "multiple-choice",
-              "options": [
-                "They always involve a phone call from a blocked number",
-                "They exploit trust, urgency, or emotional connection rather than technical tricks",
-                "They only target businesses, never individuals",
-                "They require advanced technical skill to fall for"
-              ],
-              "answer": 1,
-              "explanation": "Many scams succeed by exploiting trust, generosity, urgency, or emotional connection rather than relying on technical sophistication."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "parent-communication-teen-support-module-6",
         "order": 6,
@@ -4002,154 +2418,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "parent-communication-teen-support__final",
       "title": "Parent Communication and Teen Support Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "Mental health is best understood as:",
-          "type": "multiple-choice",
-          "options": [
-            "A fixed trait a person either has or lacks",
-            "A spectrum of emotional, psychological and social wellbeing that everyone has",
-            "Something only relevant to people with a diagnosis",
-            "The complete absence of any problems"
-          ],
-          "answer": 1,
-          "explanation": "Everyone has mental health, and it exists on a changing spectrum."
-        },
-        {
-          "question": "Feeling a strong emotion and acting on it are, according to this course:",
-          "type": "multiple-choice",
-          "options": [
-            "The same thing",
-            "Two separate steps - you can feel something and still choose your response",
-            "Something that cannot be separated",
-            "Only relevant to positive emotions"
-          ],
-          "answer": 1,
-          "explanation": "Recognizing an emotion does not obligate acting on the first impulse it produces."
-        },
-        {
-          "question": "This course recommends grounding techniques such as 5-4-3-2-1 for:",
-          "type": "multiple-choice",
-          "options": [
-            "Diagnosing anxiety",
-            "Bringing attention back to the present during a stress or anxiety spike",
-            "Avoiding all future stressful situations",
-            "Replacing professional treatment"
-          ],
-          "answer": 1,
-          "explanation": "Grounding techniques redirect attention to the present moment during acute stress or anxiety."
-        },
-        {
-          "question": "This course distinguishes depression from ordinary sadness mainly by:",
-          "type": "multiple-choice",
-          "options": [
-            "Duration, intensity and impact on daily functioning",
-            "Whether tears are involved",
-            "The person's age",
-            "There being no meaningful difference"
-          ],
-          "answer": 0,
-          "explanation": "Depression tends to persist longer and affect functioning more broadly than ordinary sadness."
-        },
-        {
-          "question": "If someone mentions self-harm or not wanting to be here, this course says the appropriate response is to:",
-          "type": "multiple-choice",
-          "options": [
-            "Keep it private if asked to",
-            "Take it seriously and involve a trusted adult or professional",
-            "Assume they are seeking attention",
-            "Wait and see if it happens again"
-          ],
-          "answer": 1,
-          "explanation": "Mentions of self-harm or suicidal thoughts should always be taken seriously and escalated appropriately."
-        },
-        {
-          "question": "According to this course, sleep, movement and nutrition:",
-          "type": "multiple-choice",
-          "options": [
-            "Are a guaranteed cure for mental health conditions",
-            "Form a practical foundation supporting wellbeing, but are not a cure on their own",
-            "Have no relationship to mental health",
-            "Only matter for physical health"
-          ],
-          "answer": 1,
-          "explanation": "These habits support wellbeing but are not a substitute for professional treatment when needed."
-        },
-        {
-          "question": "This course describes effective everyday mental health advocacy as relying mainly on:",
-          "type": "multiple-choice",
-          "options": [
-            "A single dramatic public statement",
-            "Consistently modeling healthy attitudes in ordinary moments",
-            "Avoiding the topic to prevent discomfort",
-            "Sharing others' disclosures widely to raise awareness"
-          ],
-          "answer": 1,
-          "explanation": "Consistency in everyday interactions tends to matter more than occasional grand statements."
-        },
-        {
-          "question": "What is the strongest way to demonstrate learning from this course?",
-          "type": "multiple-choice",
-          "options": [
-            "Apply the concepts responsibly in realistic situations",
-            "Memorize terminology only",
-            "Avoid feedback and reflection",
-            "Skip the practical activities"
-          ],
-          "answer": 0,
-          "explanation": "This course prioritizes practical application, reflection and responsible decision-making over memorization."
-        },
-        {
-          "question": "Why can anxiety feel automatic and hard to reason with?",
-          "type": "multiple-choice",
-          "options": [
-            "It is always a deliberate choice",
-            "The threat-response system can activate before conscious reasoning catches up",
-            "Conscious reasoning always overrides it instantly",
-            "It only happens to illogical people"
-          ],
-          "answer": 1,
-          "explanation": "The threat response is physiological and can activate faster than conscious thought."
-        },
-        {
-          "question": "Why does avoidance strengthen the anxiety cycle rather than resolve it?",
-          "type": "multiple-choice",
-          "options": [
-            "Avoidance has no effect either way",
-            "The quick relief teaches the brain the situation was genuinely dangerous",
-            "Avoidance permanently eliminates anxiety",
-            "Avoidance is the professionally recommended treatment"
-          ],
-          "answer": 1,
-          "explanation": "Short-term relief from avoidance reinforces the belief that the trigger is dangerous."
-        },
-        {
-          "question": "What combination of factors determines whether anxiety is a cause for concern?",
-          "type": "multiple-choice",
-          "options": [
-            "Any single anxious moment, regardless of context",
-            "Frequency, intensity, duration and functional impact together",
-            "Only whether the person looks visibly anxious",
-            "Whether anyone else has noticed"
-          ],
-          "answer": 1,
-          "explanation": "It is the combination of these factors, not one isolated symptom, that matters."
-        },
-        {
-          "question": "What is the purpose of tracking your own anxiety patterns?",
-          "type": "multiple-choice",
-          "options": [
-            "To criticize yourself for having them",
-            "To gather useful information without self-judgment",
-            "To prove anxiety is not real",
-            "To share with others as proof of weakness"
-          ],
-          "answer": 1,
-          "explanation": "Tracking is meant to provide information, not to fuel self-criticism."
-        }
-      ]
+      "questionCount": 12
     },
     "minimumCompletion": 100,
     "minimumScore": 70,
@@ -4276,46 +2548,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__0",
           "title": "Foundations of Leadership Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module describes leadership as primarily:",
-              "type": "multiple-choice",
-              "options": [
-                "A formal job title",
-                "A set of behaviors anyone can practice regardless of position",
-                "Something only managers can do",
-                "Unrelated to trust or credibility"
-              ],
-              "answer": 1,
-              "explanation": "Leadership is framed as behavior and influence, available to anyone regardless of formal title."
-            },
-            {
-              "question": "According to this module, achieving a good result through dishonest means:",
-              "type": "multiple-choice",
-              "options": [
-                "Is always acceptable if the outcome is good",
-                "Still undermines trust, even if not immediately visible",
-                "Has no effect on leadership credibility",
-                "Is the fastest path to becoming a leader"
-              ],
-              "answer": 1,
-              "explanation": "Results don't excuse unethical methods, since trust erodes even when the harm isn't immediately obvious."
-            },
-            {
-              "question": "This module says a strength like decisiveness can become a weakness when:",
-              "type": "multiple-choice",
-              "options": [
-                "It is never used",
-                "It is overused without adapting to the situation",
-                "Feedback is sought too often",
-                "It is paired with self-awareness"
-              ],
-              "answer": 1,
-              "explanation": "Overused strengths can tip into weaknesses; adapting style to the situation matters."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-1",
         "order": 1,
@@ -4381,46 +2617,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__1",
           "title": "Teams, Delegation and Conflict Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This lesson says the way a leader responds the first time someone raises a mistake:",
-              "type": "multiple-choice",
-              "options": [
-                "Has no effect on future behavior",
-                "Sets the tone for whether people will raise the next one",
-                "Should always involve blame",
-                "Is irrelevant to psychological safety"
-              ],
-              "answer": 1,
-              "explanation": "The first response to a raised mistake shapes whether people feel safe raising future ones."
-            },
-            {
-              "question": "According to this lesson, effective delegation requires:",
-              "type": "multiple-choice",
-              "options": [
-                "Retaining every decision yourself",
-                "Explaining the outcome and clarifying decision rights",
-                "Assigning tasks without any context",
-                "Reviewing every step continuously"
-              ],
-              "answer": 1,
-              "explanation": "Real delegation includes explaining why the outcome matters and clarifying what the person can decide."
-            },
-            {
-              "question": "This lesson warns against assuming that silence means:",
-              "type": "multiple-choice",
-              "options": [
-                "Disagreement",
-                "Agreement",
-                "Confusion",
-                "Nothing in particular"
-              ],
-              "answer": 1,
-              "explanation": "Silence is not reliable evidence of agreement, and unaddressed disagreement can resurface later."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-2",
         "order": 2,
@@ -4486,46 +2686,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__2",
           "title": "Understanding Conflict Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, the presence of conflict in a group:",
-              "type": "multiple-choice",
-              "options": [
-                "Always means something has gone wrong",
-                "Is normal and not automatically a sign of failure",
-                "Should always be avoided entirely",
-                "Only happens in poorly managed teams"
-              ],
-              "answer": 1,
-              "explanation": "Conflict is a normal result of people having different goals or views; what matters is how it's handled."
-            },
-            {
-              "question": "This module describes collaborating as a conflict style that:",
-              "type": "multiple-choice",
-              "options": [
-                "Is always the fastest option",
-                "Takes more effort but usually produces the most durable outcome",
-                "Means always giving in to the other person",
-                "Should be avoided in most situations"
-              ],
-              "answer": 1,
-              "explanation": "Collaborating addresses both sides' real concerns, which usually produces a more durable resolution despite taking more effort."
-            },
-            {
-              "question": "This module says conflict typically escalates by moving from:",
-              "type": "multiple-choice",
-              "options": [
-                "Personal attacks to disagreeing about the issue",
-                "Disagreeing about the issue to questioning character to personal attacks",
-                "Silence directly to resolution",
-                "One clear step with no pattern"
-              ],
-              "answer": 1,
-              "explanation": "Escalation typically follows a sequence from the specific issue to character questioning to personal attacks."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-3",
         "order": 3,
@@ -4591,46 +2755,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__3",
           "title": "Listening and De-escalation Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "This module says most people, when they think they're listening, are actually:",
-              "type": "multiple-choice",
-              "options": [
-                "Fully absorbing what's being said",
-                "Preparing their next response",
-                "Taking notes",
-                "Agreeing silently"
-              ],
-              "answer": 1,
-              "explanation": "Real listening requires setting aside the urge to prepare a reply while the other person is still speaking."
-            },
-            {
-              "question": "According to this module, tone and body language during a tense conversation:",
-              "type": "multiple-choice",
-              "options": [
-                "Matter less than the exact words used",
-                "Often carry more weight than the words themselves",
-                "Have no real effect on the outcome",
-                "Only matter in formal settings"
-              ],
-              "answer": 1,
-              "explanation": "A calm tone and open body language often influence a tense conversation more than the specific words chosen."
-            },
-            {
-              "question": "This module explains that validating someone's feelings means:",
-              "type": "multiple-choice",
-              "options": [
-                "Agreeing with their position",
-                "Acknowledging their reaction makes sense, without necessarily agreeing with them",
-                "Pretending to agree to end the conversation",
-                "Ignoring their emotional state"
-              ],
-              "answer": 1,
-              "explanation": "Validation acknowledges the feeling as understandable without requiring agreement with the underlying position."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-4",
         "order": 4,
@@ -4696,46 +2824,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__4",
           "title": "PFA Foundations Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "Psychological First Aid is best described as:",
-              "type": "multiple-choice",
-              "options": [
-                "A form of psychotherapy",
-                "A humane, practical way of supporting someone after a distressing event",
-                "A clinical diagnosis process",
-                "Something only licensed therapists can provide"
-              ],
-              "answer": 1,
-              "explanation": "PFA is a practical, humane support response, not therapy or diagnosis."
-            },
-            {
-              "question": "The three actions in the Look, Listen, Link framework are best summarized as:",
-              "type": "multiple-choice",
-              "options": [
-                "Diagnose, treat, discharge",
-                "Check safety, listen without pressuring, connect to help",
-                "Interrogate, record, report",
-                "Ignore, wait, escalate"
-              ],
-              "answer": 1,
-              "explanation": "Look checks safety, Listen means approaching calmly without pressure, and Link connects people to practical help."
-            },
-            {
-              "question": "A PFA helper's confidentiality should be broken when:",
-              "type": "multiple-choice",
-              "options": [
-                "Never, under any circumstance",
-                "There is a safeguarding concern or risk to safety",
-                "The helper simply feels like sharing",
-                "Only if asked by a stranger"
-              ],
-              "answer": 1,
-              "explanation": "Confidentiality generally holds except where safeguarding or safety risks require escalation."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-5",
         "order": 5,
@@ -4801,46 +2893,10 @@
           }
         ],
         "quiz": {
+          "id": "mental-health-club-coordinator-training__module__5",
           "title": "Helper Safety and Practice Quiz",
           "passMark": 70,
-          "questions": [
-            {
-              "question": "According to this module, stepping back from a situation that exceeds your capacity is:",
-              "type": "multiple-choice",
-              "options": [
-                "A failure on the helper's part",
-                "A responsible choice, not a failure",
-                "Never appropriate",
-                "Only allowed for professionals"
-              ],
-              "answer": 1,
-              "explanation": "Recognizing limits and referring on is part of responsible helping, not a failure."
-            },
-            {
-              "question": "This module frames rest and debriefing after helping as:",
-              "type": "multiple-choice",
-              "options": [
-                "Optional self-indulgence",
-                "Part of sustaining your ability to keep helping well",
-                "Unnecessary for volunteers",
-                "Only needed after extreme events"
-              ],
-              "answer": 1,
-              "explanation": "Rest and debriefing sustain a helper's capacity and are part of doing the role responsibly."
-            },
-            {
-              "question": "Simple documentation after providing PFA is useful because it:",
-              "type": "multiple-choice",
-              "options": [
-                "Is required to diagnose the person",
-                "Supports continuity of care and accountability",
-                "Replaces the need for referrals",
-                "Should include a full personal history"
-              ],
-              "answer": 1,
-              "explanation": "Basic documentation of what happened and what was done supports continuity and accountability, not diagnosis."
-            }
-          ]
+          "questionCount": 3
         },
         "id": "mental-health-club-coordinator-training-module-6",
         "order": 6,
@@ -4849,154 +2905,10 @@
     ],
     "lessonCount": 18,
     "finalAssessment": {
+      "id": "mental-health-club-coordinator-training__final",
       "title": "Mental Health Club Coordinator Training Final Assessment",
       "passMark": 70,
-      "questions": [
-        {
-          "question": "This course describes leadership as primarily:",
-          "type": "multiple-choice",
-          "options": [
-            "A formal job title",
-            "A set of behaviors anyone can practice regardless of position",
-            "Something only managers can do",
-            "Unrelated to trust or credibility"
-          ],
-          "answer": 1,
-          "explanation": "Leadership is framed as behavior and influence, available to anyone regardless of formal title."
-        },
-        {
-          "question": "According to this course, achieving a good result through dishonest means:",
-          "type": "multiple-choice",
-          "options": [
-            "Is always acceptable if the outcome is good",
-            "Still undermines trust, even if not immediately visible",
-            "Has no effect on leadership credibility",
-            "Is the fastest path to becoming a leader"
-          ],
-          "answer": 1,
-          "explanation": "Results don't excuse unethical methods, since trust erodes even when harm isn't immediately obvious."
-        },
-        {
-          "question": "This course says a vision becomes actionable primarily when it is:",
-          "type": "multiple-choice",
-          "options": [
-            "Kept abstract and inspirational",
-            "Translated into specific, observable outcomes",
-            "Layered with more initiatives",
-            "Never revised"
-          ],
-          "answer": 1,
-          "explanation": "Translating aspiration into observable outcomes is what makes a vision actionable."
-        },
-        {
-          "question": "This course recommends improving decisions by:",
-          "type": "multiple-choice",
-          "options": [
-            "Avoiding dissenting opinions",
-            "Actively seeking a dissenting view before committing",
-            "Committing as fast as possible regardless of evidence",
-            "Never reviewing outcomes afterward"
-          ],
-          "answer": 1,
-          "explanation": "Seeking dissenting views before committing helps surface blind spots."
-        },
-        {
-          "question": "This course recommends giving feedback by:",
-          "type": "multiple-choice",
-          "options": [
-            "Labeling the person's character",
-            "Describing observable behavior and its impact",
-            "Avoiding any mention of impact",
-            "Never agreeing on a next step"
-          ],
-          "answer": 1,
-          "explanation": "Effective feedback focuses on specific behavior and impact rather than character labels."
-        },
-        {
-          "question": "This course frames sustainable influence as coming from:",
-          "type": "multiple-choice",
-          "options": [
-            "Pressure and manipulation",
-            "Credibility and genuine relationships",
-            "Formal authority alone",
-            "Repeating your own priorities louder"
-          ],
-          "answer": 1,
-          "explanation": "Credibility and relationships sustain influence, while pressure erodes trust over time."
-        },
-        {
-          "question": "According to this course, effective delegation requires:",
-          "type": "multiple-choice",
-          "options": [
-            "Retaining every decision yourself",
-            "Explaining the outcome and clarifying decision rights",
-            "Assigning tasks without context",
-            "Reviewing every step continuously"
-          ],
-          "answer": 1,
-          "explanation": "Real delegation includes explaining why an outcome matters and what the person can decide."
-        },
-        {
-          "question": "This course frames rest and recovery for leaders as:",
-          "type": "multiple-choice",
-          "options": [
-            "An indulgent extra unrelated to performance",
-            "Something that supports clear judgment and emotional regulation",
-            "Only necessary for junior staff",
-            "A sign of weak leadership"
-          ],
-          "answer": 1,
-          "explanation": "Depleted energy makes emotional regulation and clear judgment measurably harder."
-        },
-        {
-          "question": "This course explains that the presence of conflict in a relationship or team is:",
-          "type": "multiple-choice",
-          "options": [
-            "Always a sign something has gone wrong",
-            "Normal, and not automatically a failure",
-            "A reason to end the relationship",
-            "Something that should never be discussed"
-          ],
-          "answer": 1,
-          "explanation": "Conflict is a normal result of differing goals or views; what matters most is how it is handled."
-        },
-        {
-          "question": "According to this course, real listening during a disagreement means:",
-          "type": "multiple-choice",
-          "options": [
-            "Preparing your response while the other person talks",
-            "Giving full attention and reflecting back what you heard",
-            "Interrupting to correct inaccuracies immediately",
-            "Waiting silently without engaging"
-          ],
-          "answer": 1,
-          "explanation": "Genuine listening requires full attention and confirming understanding, not preparing a rebuttal."
-        },
-        {
-          "question": "This course distinguishes a position from an interest by explaining that an interest is:",
-          "type": "multiple-choice",
-          "options": [
-            "Exactly the same as the stated position",
-            "The underlying reason behind what someone is asking for",
-            "Irrelevant to resolving the conflict",
-            "Something that should never be discussed directly"
-          ],
-          "answer": 1,
-          "explanation": "An interest is the reason behind a stated position, and usually leaves more room for solutions."
-        },
-        {
-          "question": "This course recommends generating multiple solution options before deciding because:",
-          "type": "multiple-choice",
-          "options": [
-            "The first idea is always correct",
-            "Evaluating ideas too early discourages better options from emerging",
-            "Only one side should ever propose solutions",
-            "It wastes valuable time"
-          ],
-          "answer": 1,
-          "explanation": "Separating idea generation from evaluation produces more, and often better, solution options."
-        }
-      ]
+      "questionCount": 12
     },
     "minimumCompletion": 100,
     "minimumScore": 70,

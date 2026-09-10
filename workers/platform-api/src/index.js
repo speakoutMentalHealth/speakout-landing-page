@@ -261,6 +261,12 @@ function requireAdmin(user) {
   }
 }
 
+function requireCloudinary(env) {
+  for (const name of ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]) {
+    if (!clean(env[name])) throw Object.assign(new Error("Secure evidence service is not configured."), { status: 503 });
+  }
+}
+
 const modulesOf = course => Array.isArray(course.modules) ? course.modules : [];
 const lessonsOf = module => Array.isArray(module?.lessons) ? module.lessons : [];
 const lessonId = (courseId, mi, lesson, li) => lesson?.id || `${courseId}-m${mi + 1}-l${li + 1}`;
@@ -399,6 +405,7 @@ async function route(request, env, path, data) {
 
   if (path === "/v1/admin/media/evidence") {
     requireAdmin(user);
+    requireCloudinary(env);
     const recordId = safeId(data.recordId, "record identifier");
     const record = await getDocument(env, `externalLearningRecords/${recordId}`);
     if (!record) throw Object.assign(new Error("Evidence record not found."), { status: 404 });
@@ -406,6 +413,7 @@ async function route(request, env, path, data) {
   }
 
   if (path === "/v1/media/evidence") {
+    requireCloudinary(env);
     const file = data.file;
     if (!(file instanceof File)) throw Object.assign(new Error("Select an evidence image."), { status: 400 });
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {

@@ -10,6 +10,7 @@ test("production Worker configuration is ready while the frontend remains fail-c
   assert.doesNotMatch(config, /speakout-platform-api\.speakout-platform-api\.workers\.dev/u);
   assert.match(config, /:\s*"";/u);
   assert.equal(workerConfig.vars.FIREBASE_PROJECT_ID, "speaakout-portal");
+  assert.deepEqual(workerConfig.secrets.required.sort(), ["FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"]);
   assert.match(workerConfig.vars.ALLOWED_ORIGINS, /https:\/\/speakoutmentalhealth\.org/u);
   assert.equal(workerConfig.observability.enabled, true);
   assert.ok(workerConfig.compatibility_flags.includes("nodejs_compat"));
