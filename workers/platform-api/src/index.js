@@ -197,6 +197,30 @@ async function queryDocumentsByField(env, collectionId, fieldPath, value, limit 
   return { documents, truncated: documents.length === limit };
 }
 
+async function queryDocumentsByValues(env, collectionId, fieldPath, values, limit = 300) {
+  const unique = [...new Set((values || []).map(clean).filter(Boolean))].slice(0, limit);
+  const documents = [];
+  for (let start = 0; start < unique.length; start += 30) {
+    const chunk = unique.slice(start, start + 30);
+    const rows = await firestoreRequest(env, `${databaseUrl(env)}/documents:runQuery`, {
+      method: "POST",
+      body: JSON.stringify({ structuredQuery: {
+        from: [{ collectionId }],
+        where: { fieldFilter: { field: { fieldPath }, op: "IN", value: toFirestore(chunk) } },
+        limit: Math.min(limit - documents.length, 300)
+      } })
+    });
+    for (const row of rows || []) {
+      if (row.document) documents.push({
+        id: row.document.name.split("/").pop(),
+        ...decodeFields(row.document.fields)
+      });
+    }
+    if (documents.length >= limit) break;
+  }
+  return { documents: documents.slice(0, limit), truncated: unique.length >= limit || documents.length >= limit };
+}
+
 function documentWrite(env, path, data) {
   return { update: { name: `${databaseName(env)}/documents/${path}`, fields: encodeFields(data) } };
 }
@@ -249,7 +273,7 @@ async function authenticatedUser(request, env) {
   const { payload } = await jwtVerify(token, jwks, { issuer, audience: env.FIREBASE_PROJECT_ID });
   const uid = clean(payload.sub);
   const profile = await getDocument(env, `users/${uid}`);
-  if (!profile || normalized(profile.status) !== "approved") {
+  if (!profile || (profile.approved !== true && normalized(profile.status) !== "approved")) {
     throw Object.assign(new Error("Approved account required."), { status: 403 });
   }
   return { uid, email: clean(payload.email), profile };
@@ -259,6 +283,112 @@ function requireAdmin(user) {
   if (!["admin", "super_admin"].includes(normalized(user.profile.role))) {
     throw Object.assign(new Error("Administrator access required."), { status: 403 });
   }
+}
+
+function requireRole(user, roles) {
+  if (!roles.includes(normalized(user.profile.role))) {
+    throw Object.assign(new Error("This account cannot access the requested role data."), { status: 403 });
+  }
+}
+
+function sameSchool(profile, record) {
+  const schoolId = clean(profile.schoolId);
+  const schoolCode = clean(profile.schoolCode);
+  return Boolean(
+    (schoolId && clean(record.schoolId) === schoolId) ||
+    (schoolCode && clean(record.schoolCode) === schoolCode)
+  );
+}
+
+const publicSubject = subject => ({
+  id: subject.id,
+  fullName: clean(subject.fullName) || `${clean(subject.firstName)} ${clean(subject.lastName)}`.trim() || "Learner",
+  firstName: clean(subject.firstName),
+  lastName: clean(subject.lastName),
+  studentId: clean(subject.studentId),
+  role: clean(subject.role),
+  status: clean(subject.status),
+  classLevel: clean(subject.classLevel || subject.occupation),
+  schoolId: clean(subject.schoolId),
+  schoolCode: clean(subject.schoolCode),
+  schoolName: clean(subject.schoolName)
+});
+
+const publicRoleProgress = item => ({
+  id: item.id, userId: clean(item.userId), type: clean(item.type), courseId: clean(item.courseId), bookId: clean(item.bookId),
+  title: clean(item.title || item.courseTitle || item.bookTitle), status: clean(item.status),
+  percent: Math.max(0, Math.min(100, Number(item.percent ?? item.progressPercent ?? item.progress ?? 0) || 0)),
+  completed: item.completed === true, updatedAt: item.updatedAt || item.createdAt || null
+});
+
+const publicRoleCertificate = item => ({
+  id: item.id, userId: clean(item.userId || item.recipientId), courseId: clean(item.courseId),
+  title: clean(item.title || item.courseTitle || item.programmeTitle || "Certificate"), type: clean(item.type),
+  status: clean(item.status || item.verificationStatus), verificationCode: clean(item.verificationCode),
+  issueDate: item.issueDate || item.issuedAt || item.createdAt || null
+});
+
+async function roleOverview(env, user, requestedSubjectId = "") {
+  const role = normalized(user.profile.role);
+  let subjects = [];
+
+  if (["admin", "super_admin"].includes(role)) {
+    if (clean(requestedSubjectId)) {
+      const subjectId = safeId(requestedSubjectId, "student identifier");
+      const subject = await getDocument(env, `users/${subjectId}`);
+      if (subject) subjects = [subject];
+    } else {
+      const usersPage = await listDocuments(env, "users", 300);
+      subjects = usersPage.documents.filter(item => normalized(item.role) === "student");
+    }
+  } else if (role === "parent") {
+    const links = await queryDocumentsByField(env, "parentStudentLinks", "parentId", user.uid, 100);
+    const subjectIds = links.documents
+      .filter(link => normalized(link.status) === "approved")
+      .map(link => clean(link.studentId)).filter(Boolean).slice(0, 20);
+    for (const subjectId of subjectIds) {
+      const subject = await getDocument(env, `users/${safeId(subjectId, "student identifier")}`);
+      if (subject && normalized(subject.role) === "student") subjects.push(subject);
+    }
+  } else if (role === "teacher") {
+    const assignments = await queryDocumentsByField(env, "teacherStudents", "teacherId", user.uid, 100);
+    const assignedIds = assignments.documents.map(item => clean(item.studentId || item.userId)).filter(Boolean).slice(0, 40);
+    for (const subjectId of assignedIds) {
+      const subject = await getDocument(env, `users/${safeId(subjectId, "student identifier")}`);
+      if (subject && normalized(subject.role) === "student" && sameSchool(user.profile, subject)) subjects.push(subject);
+    }
+    if (!subjects.length) {
+      const schoolField = clean(user.profile.schoolId) ? "schoolId" : "schoolCode";
+      const schoolValue = clean(user.profile.schoolId || user.profile.schoolCode);
+      if (schoolValue) {
+        const schoolUsers = await queryDocumentsByField(env, "users", schoolField, schoolValue, 200);
+        subjects = schoolUsers.documents.filter(item => normalized(item.role) === "student" && sameSchool(user.profile, item));
+      }
+    }
+  } else if (role === "school_admin" || role === "school") {
+    const schoolField = clean(user.profile.schoolId) ? "schoolId" : "schoolCode";
+    const schoolValue = clean(user.profile.schoolId || user.profile.schoolCode);
+    if (schoolValue) {
+      const schoolUsers = await queryDocumentsByField(env, "users", schoolField, schoolValue, 300);
+      subjects = schoolUsers.documents.filter(item => sameSchool(user.profile, item));
+    }
+  } else {
+    requireRole(user, ["parent", "teacher", "school_admin", "school", "admin", "super_admin"]);
+  }
+
+  const uniqueSubjects = [...new Map(subjects.map(subject => [subject.id, subject])).values()].slice(0, 300);
+  const subjectIds = uniqueSubjects.map(subject => subject.id);
+  const [progressPage, certificatePage] = await Promise.all([
+    queryDocumentsByValues(env, "userProgress", "userId", subjectIds),
+    queryDocumentsByValues(env, "certificates", "userId", subjectIds)
+  ]);
+  return {
+    role,
+    subjects: uniqueSubjects.map(publicSubject),
+    progress: progressPage.documents.map(publicRoleProgress),
+    certificates: certificatePage.documents.map(publicRoleCertificate),
+    truncated: uniqueSubjects.length >= 300 || progressPage.truncated || certificatePage.truncated
+  };
 }
 
 function requireCloudinary(env) {
@@ -570,6 +700,39 @@ async function route(request, env, path, data) {
       await removePrivateEvidence(env, uploaded);
       throw error;
     }
+  }
+
+  if (path === "/v1/roles/overview") {
+    return roleOverview(env, user, clean(data.subjectId));
+  }
+
+  if (path === "/v1/roles/school/users/status") {
+    requireRole(user, ["school_admin", "school", "admin", "super_admin"]);
+    const targetUserId = safeId(data.userId, "user identifier");
+    const status = normalized(data.status);
+    if (!["approved", "pending_school_approval", "rejected", "suspended"].includes(status)) {
+      throw Object.assign(new Error("Invalid account status."), { status: 400 });
+    }
+    return runTransaction(env, async tx => {
+      const target = await tx.get(`users/${targetUserId}`);
+      if (!target) throw Object.assign(new Error("User account not found."), { status: 404 });
+      if (!["admin", "super_admin"].includes(normalized(user.profile.role)) && !sameSchool(user.profile, target)) {
+        throw Object.assign(new Error("You can update only users in your school."), { status: 403 });
+      }
+      if (!["student", "teacher", "parent"].includes(normalized(target.role))) {
+        throw Object.assign(new Error("This account role cannot be managed here."), { status: 403 });
+      }
+      const now = new Date().toISOString();
+      tx.set(`users/${targetUserId}`, {
+        ...target,
+        status,
+        approved: status === "approved",
+        updatedAt: now,
+        reviewedAt: now,
+        reviewedBy: user.uid
+      });
+      return { ok: true, userId: targetUserId, status };
+    });
   }
 
   if (path === "/v1/learning/dashboard") {

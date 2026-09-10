@@ -523,6 +523,7 @@ import {
   serverTimestamp,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { roleApi } from "./js/platform-api.js";
 
 
 let SCHOOL = null;
@@ -878,23 +879,7 @@ function render(){
 
             button.disabled = true;
 
-            await updateDoc(
-              doc(
-                db,
-                "users",
-                button.dataset.id
-              ),
-              {
-                status:button.dataset.status,
-
-                approved:
-                  button.dataset.status ===
-                  "approved",
-
-                updatedAt:
-                  serverTimestamp()
-              }
-            );
+            await roleApi.updateSchoolUserStatus(button.dataset.id,button.dataset.status);
 
             show(
               `Parent status updated to ${pretty(button.dataset.status)}.`,

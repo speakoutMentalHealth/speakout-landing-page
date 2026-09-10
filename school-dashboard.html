@@ -675,6 +675,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { roleApi } from "./js/platform-api.js";
 
 
 let currentProfile = null;
@@ -1110,31 +1111,8 @@ async function loadLearningActivity(){
 
   try{
 
-    const schoolUserIds = new Set(
-      schoolUsers.map(user=>user.id)
-    );
-
-    const progressSnap = await getDocs(
-      collection(db,"userProgress")
-    );
-
-    const relevant = [];
-
-    progressSnap.forEach(document=>{
-
-      const item = {
-        id:document.id,
-        ...document.data()
-      };
-
-      if(
-        schoolUserIds.has(item.userId) &&
-        isCourseProgress(item)
-      ){
-        relevant.push(item);
-      }
-
-    });
+    const overview = await roleApi.overview();
+    const relevant = (overview.progress || []).filter(isCourseProgress);
 
     const distinctLearners = new Set(
       relevant
@@ -1461,41 +1439,8 @@ async function loadCertificates(){
 
   try{
 
-    const schoolUserIds = new Set(
-      schoolUsers.map(user=>user.id)
-    );
-
-    const snap = await getDocs(
-      collection(db,"certificates")
-    );
-
-    const relevant = [];
-
-    snap.forEach(document=>{
-
-      const record = {
-        id:document.id,
-        ...document.data()
-      };
-
-      const sameSchool =
-        record.schoolId === currentSchool.id ||
-        (
-          currentSchool.schoolCode &&
-          record.schoolCode === currentSchool.schoolCode
-        );
-
-      const linkedRecipient =
-        schoolUserIds.has(
-          record.recipientId ||
-          record.userId
-        );
-
-      if(sameSchool || linkedRecipient){
-        relevant.push(record);
-      }
-
-    });
+    const overview = await roleApi.overview();
+    const relevant = overview.certificates || [];
 
     certificateCount.textContent =
       relevant.length;

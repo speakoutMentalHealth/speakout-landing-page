@@ -90,6 +90,12 @@ export const learningApi = {
     platformRequest("/v1/learning/assessments/submit", { courseId, type, moduleIndex, answers })
 };
 
+export const roleApi = {
+  overview: subjectId => platformRequest("/v1/roles/overview", subjectId ? { subjectId } : {}),
+  updateSchoolUserStatus: (userId, status) =>
+    platformRequest("/v1/roles/school/users/status", { userId, status })
+};
+
 export const adminApi = {
   retrieveEvidence,
   listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),

@@ -707,6 +707,7 @@ import {
   where,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { learningApi, roleApi } from "./js/platform-api.js";
 
 
 let currentUser = null;
@@ -1542,14 +1543,13 @@ async function loadChildActivity(){
 
   try{
 
+    const overview = await roleApi.overview();
+
     const approvedLinks =
-      linkedChildren.filter(
-        item =>
-          normalize(
-            item.link.status
-          ) === "approved" &&
-          item.link.studentId
-      );
+      (overview.subjects || []).map(student=>({
+        student,
+        link:{status:"approved",studentId:student.id}
+      }));
 
 
     if(!approvedLinks.length){
@@ -1580,23 +1580,9 @@ async function loadChildActivity(){
 
       try{
 
-        const progressSnap =
-          await getDocs(
-            query(
-              collection(db,"userProgress"),
-              where("userId","==",studentId)
-            )
-          );
-
-
         const courseProgress =
-          progressSnap.docs
-            .map(
-              document=>({
-                id:document.id,
-                ...document.data()
-              })
-            )
+          (overview.progress || [])
+            .filter(item=>item.userId===studentId)
             .filter(
               isCourseProgress
             );
@@ -1697,36 +1683,21 @@ async function loadCertificates(){
 
   try{
 
-    let snap = await getDocs(
-      query(
-        collection(db,"certificates"),
-        where("recipientId","==",currentUser.uid)
-      )
-    );
-
-    if(snap.empty){
-
-      snap = await getDocs(
-        query(
-          collection(db,"certificates"),
-          where("userId","==",currentUser.uid)
-        )
-      );
-
-    }
+    const dashboard = await learningApi.dashboard();
+    const certificates = dashboard.certificates || [];
 
     certificateCountBox.textContent =
-      snap.size;
+      certificates.length;
 
     certificateList.innerHTML =
-      snap.size
-        ? snap.docs
+      certificates.length
+        ? certificates
             .slice(0,8)
             .map(
-              document=>
+              certificate=>
                 certificateCard(
-                  document.data(),
-                  document.id
+                  certificate,
+                  certificate.id
                 )
             )
             .join("")

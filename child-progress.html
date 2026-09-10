@@ -450,6 +450,8 @@ import {
   doc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { roleApi } from "./js/platform-api.js";
+import { requireRoles } from "./launch-role-guard.js";
 
 
 const params =
@@ -493,6 +495,7 @@ const logoutLink =
 let currentUser = null;
 let parentProfile = null;
 let studentProfile = null;
+let secureOverview = null;
 
 
 function show(message,type=""){
@@ -606,142 +609,22 @@ function isCompleted(item){
 
 
 async function verifyAccess(user,profile){
-
-  const role =
-    normalize(profile.role);
-
-
   if(!targetStudentId){
-
-    show(
-      "No student was selected.",
-      "bad"
-    );
-
+    show("No student was selected.","bad");
     return false;
   }
-
-
-  if(
-    role === "admin" ||
-    role === "super_admin"
-  ){
-    return true;
-  }
-
-
-  if(role !== "parent"){
-
-    location.href =
-      "parent-dashboard.html";
-
+  studentProfile = secureOverview?.subjects?.find(item=>item.id===targetStudentId) || null;
+  if(!studentProfile){
+    show("You do not have approved access to this student.","bad");
     return false;
   }
-
-
-  const accountStatus =
-    normalize(
-      profile.status
-    );
-
-
-  if(accountStatus !== "approved"){
-
-    show(
-      "Your parent account is not approved for child progress access.",
-      "warn"
-    );
-
-    return false;
-  }
-
-
-  const linkSnap =
-    await getDocs(
-      query(
-        collection(
-          db,
-          "parentStudentLinks"
-        ),
-        where(
-          "parentId",
-          "==",
-          user.uid
-        ),
-        where(
-          "studentId",
-          "==",
-          targetStudentId
-        ),
-        where(
-          "status",
-          "==",
-          "approved"
-        )
-      )
-    );
-
-
-  if(linkSnap.empty){
-
-    show(
-      "You do not have approved access to this student.",
-      "bad"
-    );
-
-    return false;
-  }
-
-
   return true;
 }
 
 
 async function loadStudent(){
-
-  const snapshot =
-    await getDoc(
-      doc(
-        db,
-        "users",
-        targetStudentId
-      )
-    );
-
-
-  if(!snapshot.exists()){
-
-    show(
-      "Student profile not found.",
-      "bad"
-    );
-
-    return false;
-  }
-
-
-  const student = {
-    id:snapshot.id,
-    ...snapshot.data()
-  };
-
-
-  if(
-    normalize(student.role) !==
-    "student"
-  ){
-
-    show(
-      "The selected account is not a student account.",
-      "bad"
-    );
-
-    return false;
-  }
-
-
-  studentProfile =
-    student;
+  const student = studentProfile;
+  if(!student){ show("Student profile not found.","bad"); return false; }
 
 
   const fullName =
@@ -756,7 +639,7 @@ async function loadStudent(){
 
           <img
             class="avatar"
-            src="${escapeHtml(student.photoData || student.photoURL || "logo.png")}"
+            src="logo.png"
             alt="Student profile photo"
           >
 
@@ -812,32 +695,9 @@ async function loadStudent(){
 
 
 async function loadCertificates(){
-
   try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "certificates"
-          ),
-          where(
-            "recipientId",
-            "==",
-            targetStudentId
-          )
-        )
-      );
-
-
     const certificates =
-      snap.docs.map(
-        document=>({
-          id:document.id,
-          ...document.data()
-        })
-      );
+      (secureOverview?.certificates || []).filter(item=>item.userId===targetStudentId);
 
 
     certificateCount.textContent =
@@ -937,32 +797,9 @@ async function loadCertificates(){
 
 
 async function loadProgress(){
-
   try{
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "userProgress"
-          ),
-          where(
-            "userId",
-            "==",
-            targetStudentId
-          )
-        )
-      );
-
-
     const items =
-      snap.docs.map(
-        document=>({
-          id:document.id,
-          ...document.data()
-        })
-      );
+      (secureOverview?.progress || []).filter(item=>item.userId===targetStudentId);
 
 
     const courses =
@@ -1115,6 +952,8 @@ async function initialise(user,profile){
   parentProfile =
     profile;
 
+  secureOverview = await roleApi.overview(targetStudentId);
+
 
   const access =
     await verifyAccess(
@@ -1172,74 +1011,14 @@ logoutLink.addEventListener(
 );
 
 
-onAuthStateChanged(
-  auth,
-  async user=>{
-
-    if(!user){
-
-      location.href =
-        "auth.html";
-
-      return;
-
-    }
-
-
-    try{
-
-      const profileSnap =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            user.uid
-          )
-        );
-
-
-      if(!profileSnap.exists()){
-
-        show(
-          "Your user profile could not be found.",
-          "bad"
-        );
-
-        return;
-
-      }
-
-
-      const profile = {
-        uid:user.uid,
-        ...profileSnap.data()
-      };
-
-
-      await initialise(
-        user,
-        profile
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Child progress access error:",
-        error
-      );
-
-
-      show(
-        error.message ||
-        "Could not verify access to this child.",
-        "bad"
-      );
-
-    }
-
+requireRoles(["parent"],async(user,profile)=>{
+  try{
+    await initialise(user,profile);
+  }catch(error){
+    console.error("Child progress access error:",error);
+    show(error.message||"Could not verify access to this child.","bad");
   }
-);
+});
 
 </script>
 <script defer="" src="portal-ui.js"></script>
