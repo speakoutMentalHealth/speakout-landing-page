@@ -4,11 +4,10 @@ import test from "node:test";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("production Worker configuration is ready while the frontend remains fail-closed before deployment", () => {
+test("production frontend targets the deployed production learning API", () => {
   const config = read("js/platform-config.js");
   const workerConfig = JSON.parse(read("workers/platform-api/wrangler.production.jsonc"));
-  assert.doesNotMatch(config, /speakout-platform-api\.speakout-platform-api\.workers\.dev/u);
-  assert.match(config, /:\s*"";/u);
+  assert.match(config, /speakout-platform-api\.speakout-platform-api\.workers\.dev/u);
   assert.equal(workerConfig.vars.FIREBASE_PROJECT_ID, "speaakout-portal");
   assert.deepEqual(workerConfig.secrets.required.sort(), ["FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"]);
   assert.match(workerConfig.vars.ALLOWED_ORIGINS, /https:\/\/speakoutmentalhealth\.org/u);
