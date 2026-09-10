@@ -245,7 +245,9 @@ export async function trackBookOpen(book){
         ),
 
       status:
-        "opened",
+        existing.exists()
+          ? existing.data().status || "opened"
+          : "opened",
 
       openedAt:
         existing.exists()
