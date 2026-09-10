@@ -203,6 +203,7 @@ test("public catalogues only render complete published learning content", async 
     internalCourseWords: 5000,
     externalCourseEditorialWords: 75,
     bookWords: 2500,
+    audienceGuideWords: 5000,
   });
   assert.equal(countWords("<h2>Three useful words</h2>"), 3);
 
@@ -214,7 +215,8 @@ test("public catalogues only render complete published learning content", async 
   assert.equal(placeholderBooks.some(isPublicBook), false);
   assert.equal(audienceGuides.length, 3);
   assert.equal(audienceGuides.every(isPublicBook), true);
-  assert.equal(audienceGuides.every(guide => guide.contentWordCount >= CONTENT_THRESHOLDS.bookWords), true);
+  assert.equal(audienceGuides.every(guide => guide.contentWordCount >= CONTENT_THRESHOLDS.audienceGuideWords), true);
+  assert.equal(audienceGuides.every(guide => bookReadiness(guide).kind === "audience-guide"), true);
   assert.deepEqual(priorityBooks.map(book => book.id).sort(), [
     "anxiety-management",
     "budgeting",

@@ -5,6 +5,7 @@ export const CONTENT_THRESHOLDS = Object.freeze({
   internalCourseWords: 5000,
   externalCourseEditorialWords: 75,
   bookWords: 2500,
+  audienceGuideWords: 5000,
 });
 
 export function countWords(value) {
@@ -104,12 +105,14 @@ export function bookReadiness(item = {}) {
   const hasChapters = hasChapterBodies || hasUnifiedBody;
   const hasDestination = [item.purchaseUrl, item.downloadUrl, item.bookUrl, item.fileUrl, item.readUrl].some(hasValidWebUrl) || hasChapters;
   const wordCount = countWords([item.content, item.readerHtml, item.contentHtml, chapterList.map(chapter => [chapter.content, chapter.body])]);
+  const isAudienceGuide = normalize(item.editorialStandard).includes("audience guide") || /\bguide\b/.test(normalize(item.title)) && Array.isArray(item.audience);
+  const minimumWords = isAudienceGuide ? CONTENT_THRESHOLDS.audienceGuideWords : CONTENT_THRESHOLDS.bookWords;
   if (!hasAuthor) reasons.push("Add an author");
   if (!hasCover) reasons.push("Add a safe cover image");
   if (!hasStructuredChapters) reasons.push("Add at least three titled chapters");
   if (!hasDestination) reasons.push("Add readable chapter content or a valid destination");
-  if (wordCount < CONTENT_THRESHOLDS.bookWords) reasons.push(`Add ${CONTENT_THRESHOLDS.bookWords - wordCount} more content words`);
-  return { ready: reasons.length === 0, reasons, wordCount, minimumWords: CONTENT_THRESHOLDS.bookWords, kind: "book" };
+  if (wordCount < minimumWords) reasons.push(`Add ${minimumWords - wordCount} more content words`);
+  return { ready: reasons.length === 0, reasons, wordCount, minimumWords, kind: isAudienceGuide ? "audience-guide" : "book" };
 }
 
 const COURSE_COVERS = Object.freeze({
