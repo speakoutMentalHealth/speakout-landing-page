@@ -351,6 +351,7 @@ Close
 <script type="module">
 
 import { auth, db } from "./firebase-config.js";
+import { requireRoles } from "./launch-role-guard.js";
 
 import {
 collection,
@@ -362,6 +363,20 @@ serverTimestamp
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 let PAYMENTS=[];
+let unsubscribePayments=null;
+
+function safe(value){
+return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+
+function safeProofUrl(value){
+try{
+const parsed=new URL(String(value||""),window.location.href);
+return parsed.protocol==="https:" ? parsed.href : "";
+}catch{
+return "";
+}
+}
 
 function render(){
 
@@ -387,34 +402,31 @@ rows.innerHTML=filtered.map(p=>`
 
 <tr>
 
-<td>${p.payerName||"Unknown"}</td>
+<td>${safe(p.payerName||"Unknown")}</td>
 
-<td>${p.itemTitle||"Payment"}</td>
+<td>${safe(p.itemTitle||"Payment")}</td>
 
-<td>${p.currency||"₦"}${Number(p.amount||0).toLocaleString()}</td>
+<td>${safe(p.currency||"₦")}${Number(p.amount||0).toLocaleString()}</td>
 
-<td>${p.reference||"-"}</td>
+<td>${safe(p.reference||"-")}</td>
 
 <td>
-<span class="pill ${p.status}">
-${p.status}
+<span class="pill ${safe(p.status)}">
+${safe(p.status)}
 </span>
 </td>
 
 <td>
 
-<button class="btn soft"
-onclick="viewPayment('${p.id}')">
+<button class="btn soft" data-action="view" data-id="${safe(p.id)}">
 View
 </button>
 
-<button class="btn success"
-onclick="updatePayment('${p.id}','approved')">
+<button class="btn success" data-action="approve" data-id="${safe(p.id)}">
 Approve
 </button>
 
-<button class="btn danger"
-onclick="updatePayment('${p.id}','rejected')">
+<button class="btn danger" data-action="reject" data-id="${safe(p.id)}">
 Reject
 </button>
 
@@ -424,6 +436,15 @@ Reject
 
 `).join("");
 
+rows.querySelectorAll("button[data-action]").forEach(button=>{
+button.addEventListener("click",()=>{
+const action=button.dataset.action;
+if(action==="view") window.viewPayment(button.dataset.id);
+if(action==="approve") window.updatePayment(button.dataset.id,"approved");
+if(action==="reject") window.updatePayment(button.dataset.id,"rejected");
+});
+});
+
 }
 
 window.viewPayment=id=>{
@@ -432,15 +453,17 @@ const p=PAYMENTS.find(x=>x.id===id);
 
 paymentDetails.innerHTML=`
 
-<p><b>Name:</b> ${p.payerName}</p>
-<p><b>Email:</b> ${p.email}</p>
-<p><b>Amount:</b> ${p.currency||"₦"}${p.amount}</p>
-<p><b>Reference:</b> ${p.reference}</p>
-<p><b>Item:</b> ${p.itemTitle}</p>
+<p><b>Name:</b> ${safe(p.payerName)}</p>
+<p><b>Email:</b> ${safe(p.email)}</p>
+<p><b>Amount:</b> ${safe(p.currency||"₦")}${safe(p.amount)}</p>
+<p><b>Reference:</b> ${safe(p.reference)}</p>
+<p><b>Item:</b> ${safe(p.itemTitle)}</p>
 
 `;
 
-proofLink.href=p.proofUrl||"#";
+const proofUrl=safeProofUrl(p.proofUrl);
+proofLink.href=proofUrl||"#";
+proofLink.hidden=!proofUrl;
 
 paymentModal.style.display="block";
 
@@ -458,7 +481,9 @@ updatedAt:serverTimestamp()
 
 };
 
-onSnapshot(collection(db,"payments"),snap=>{
+function startRealtime(){
+if(unsubscribePayments) unsubscribePayments();
+unsubscribePayments=onSnapshot(collection(db,"payments"),snap=>{
 
 PAYMENTS=[];
 
@@ -486,10 +511,17 @@ render();
 
 statusBox.textContent="Payments loaded.";
 
+},error=>{
+console.error(error);
+statusBox.textContent="Could not load payments.";
+
 });
+}
 
 searchInput.addEventListener("input",render);
 statusFilter.addEventListener("change",render);
+
+requireRoles(["admin","super_admin"],startRealtime);
 
 </script>
 <script defer="" src="portal-ui.js"></script>

@@ -72,6 +72,7 @@ section{padding:34px 0}.grid{display:grid;gap:16px}.g5{grid-template-columns:rep
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { requireRoles } from "./launch-role-guard.js";
 
 let BOOKS=[], COURSES=[], unsubBooks=null, unsubCourses=null;
 
@@ -81,16 +82,7 @@ function normalize(v){return (v||"").toLowerCase().trim()}
 function pill(v){return `<span class="pill ${normalize(v)}">${safe(v)}</span>`}
 
 async function requireAdmin(callback){
- onAuthStateChanged(auth, async user=>{
-   if(!user){location.href="auth.html";return}
-   const snap=await getDoc(doc(db,"users",user.uid));
-   if(!snap.exists()){location.href="auth.html#pending";return}
-   const profile={uid:user.uid,...snap.data()};
-   const role=normalize(profile.role), status=normalize(profile.status);
-   if(status!=="approved"){location.href="auth.html#pending";return}
-   if(role!=="admin"&&role!=="super_admin"){location.href="index.html";return}
-   callback(user,profile);
- });
+ return requireRoles(["admin","super_admin"],callback);
 }
 
 function allItems(){return [...BOOKS.map(x=>({...x,type:"books"})),...COURSES.map(x=>({...x,type:"courses"}))]}

@@ -128,6 +128,7 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { adminApi } from "./js/platform-api.js";
+import { requireRoles } from "./launch-role-guard.js";
 
 let ITEMS = [];
 
@@ -151,21 +152,7 @@ function pill(value) {
 }
 
 async function requireAdmin(callback) {
-  onAuthStateChanged(auth, async user => {
-    if (!user) { location.href = "auth.html"; return; }
-
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (!snap.exists()) { location.href = "auth.html#pending"; return; }
-
-    const profile = { uid: user.uid, ...snap.data() };
-    const role = normalize(profile.role);
-    const status = normalize(profile.status);
-
-    if (status !== "approved") { location.href = "auth.html#pending"; return; }
-    if (role !== "admin" && role !== "super_admin") { location.href = "index.html"; return; }
-
-    callback(user, profile);
-  });
+  return requireRoles(["admin", "super_admin"], callback);
 }
 
 function updateStats() {

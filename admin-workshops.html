@@ -8,6 +8,7 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { requireRoles } from "./launch-role-guard.js";
 
 window.ADM = { auth, db, collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp };
 
@@ -20,23 +21,7 @@ window.safe = function(v){ return v || "—"; };
 window.pill = function(v){ return `<span class="pill ${(v||"").toLowerCase()}">${window.safe(v)}</span>`; };
 
 window.requireAdmin = function(callback){
- onAuthStateChanged(auth, async user=>{
-   if(!user){ location.href="auth.html"; return; }
-   const snap=await getDoc(doc(db,"users",user.uid));
-   if(!snap.exists()){ location.href="auth.html#pending"; return; }
-   const profile={uid:user.uid,...snap.data()};
-   const role=(profile.role||"").toLowerCase().trim();
-   const status=(profile.status||"").toLowerCase().trim();
-
-   if(status!=="approved"){ location.href="portal.html"; return; }
-
-   if(role!=="admin" && role!=="super_admin"){
-     location.href="portal.html";
-     return;
-   }
-
-   callback(user,profile);
- });
+ return requireRoles(["admin","super_admin"],callback);
 };
 </script><script type="module">
 let ITEMS=[];

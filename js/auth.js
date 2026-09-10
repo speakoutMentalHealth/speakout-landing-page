@@ -5,6 +5,7 @@ import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
@@ -858,14 +859,8 @@ async function handleLogout(event) {
 
 
 /* =========================================================
-   PASSWORD RESET LINK PLACEHOLDER
+   PASSWORD RESET
 ========================================================= */
-
-/*
-  Your current auth page has a Forgot Password link.
-
-  Password-reset functionality can be connected separately.
-*/
 
 const forgotPasswordLink =
   document.getElementById(
@@ -877,15 +872,49 @@ if(forgotPasswordLink) {
 
   forgotPasswordLink.addEventListener(
     "click",
-    event => {
+    async event => {
 
       event.preventDefault();
 
-
-      showLoginMessage(
-        "Password reset will be available here.",
-        "info"
+      const email = getValue(
+        "[data-login-email]",
+        "#loginEmail",
+        "input[name='loginEmail']"
       );
+
+      if(!email) {
+        showLoginMessage(
+          "Enter your email address above, then select Forgot password again.",
+          "warning"
+        );
+        getInput("[data-login-email]", "#loginEmail")?.focus();
+        return;
+      }
+
+      forgotPasswordLink.setAttribute("aria-busy", "true");
+      showLoginMessage("Sending password reset instructions...", "info");
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+
+        /*
+          Keep the response generic so the page does not reveal whether
+          a particular address has a SpeakOut account.
+        */
+        showLoginMessage(
+          "If an account exists for that email, password reset instructions have been sent.",
+          "success"
+        );
+      } catch(error) {
+        console.error("Password reset error:", error);
+        const message = error?.code === "auth/invalid-email"
+          ? "Enter a valid email address and try again."
+          : "Password reset could not be started. Please check your connection and try again.";
+        showLoginMessage(message, "error");
+      } finally {
+        forgotPasswordLink.removeAttribute("aria-busy");
+      }
+
 
     }
   );
