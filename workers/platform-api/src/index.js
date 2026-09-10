@@ -267,6 +267,84 @@ function requireCloudinary(env) {
   }
 }
 
+function evidenceFile(data) {
+  const file = data.file;
+  if (!(file instanceof File)) throw Object.assign(new Error("Select an evidence image."), { status: 400 });
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {
+    throw Object.assign(new Error("Evidence must be a JPG, PNG or WebP image below 8 MB."), { status: 400 });
+  }
+  return file;
+}
+
+function evidenceFormat(file) {
+  return ({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" })[file.type];
+}
+
+async function uploadPrivateEvidence(env, user, file) {
+  const assetId = crypto.randomUUID();
+  const publicId = `speakout/private-evidence/${user.uid}/${crypto.randomUUID()}`;
+  const format = evidenceFormat(file);
+  if (env.EVIDENCE_BUCKET) {
+    const stored = await env.EVIDENCE_BUCKET.put(publicId, file.stream(), {
+      httpMetadata: { contentType: file.type, contentDisposition: `inline; filename=\"evidence.${format}\"`, cacheControl: "private, no-store, max-age=0" },
+      customMetadata: { ownerId: user.uid, assetId, format }
+    });
+    if (!stored) throw Object.assign(new Error("Secure evidence upload failed."), { status: 502 });
+    return { assetId, publicId, version: 1, format, resourceType: "image", storage: "r2" };
+  }
+  requireCloudinary(env);
+  const timestamp = Math.floor(Date.now() / 1000);
+  const folder = `speakout/private-evidence/${user.uid}`;
+  const cloudinaryPublicId = publicId.slice(folder.length + 1);
+  const signatureBase = `folder=${folder}&public_id=${cloudinaryPublicId}&timestamp=${timestamp}&type=authenticated${env.CLOUDINARY_API_SECRET}`;
+  const upload = new FormData();
+  upload.append("file", file);
+  upload.append("api_key", env.CLOUDINARY_API_KEY);
+  upload.append("timestamp", String(timestamp));
+  upload.append("folder", folder);
+  upload.append("public_id", cloudinaryPublicId);
+  upload.append("type", "authenticated");
+  upload.append("signature", await sha1Hex(signatureBase));
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: upload });
+  const result = await response.json();
+  if (!response.ok) throw Object.assign(new Error("Secure evidence upload failed."), { status: 502 });
+  return { assetId: result.asset_id, publicId: result.public_id, version: result.version, format: result.format, resourceType: result.resource_type, storage: "cloudinary" };
+}
+
+async function removePrivateEvidence(env, uploaded) {
+  if (uploaded?.storage === "r2" && env.EVIDENCE_BUCKET) {
+    await env.EVIDENCE_BUCKET.delete(uploaded.publicId).catch(() => null);
+    return;
+  }
+  if (uploaded?.storage === "cloudinary") {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const signature = await sha1Hex(`public_id=${uploaded.publicId}&timestamp=${timestamp}&type=authenticated${env.CLOUDINARY_API_SECRET}`);
+    const body = new URLSearchParams({ public_id: uploaded.publicId, timestamp: String(timestamp), type: "authenticated", api_key: env.CLOUDINARY_API_KEY, signature });
+    await fetch(`https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/destroy`, {
+      method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body
+    }).catch(() => null);
+  }
+}
+
+function bounded(value, max, label) {
+  const result = clean(value);
+  if (result.length > max) throw Object.assign(new Error(`${label} is too long.`), { status: 400 });
+  return result;
+}
+
+function optionalHttpsUrl(value, label) {
+  const result = clean(value);
+  if (!result) return "";
+  let parsed;
+  try { parsed = new URL(result); } catch { throw Object.assign(new Error(`${label} must be a valid HTTPS URL.`), { status: 400 }); }
+  if (parsed.protocol !== "https:") throw Object.assign(new Error(`${label} must be a valid HTTPS URL.`), { status: 400 });
+  return parsed.toString();
+}
+
+function externalCourse(course) {
+  return normalized(course?.courseType) === "external" || normalized(course?.completionMethod) === "certificate-upload" || course?.externalProvider === true;
+}
+
 const modulesOf = course => Array.isArray(course.modules) ? course.modules : [];
 const lessonsOf = module => Array.isArray(module?.lessons) ? module.lessons : [];
 const lessonId = (courseId, mi, lesson, li) => lesson?.id || `${courseId}-m${mi + 1}-l${li + 1}`;
@@ -362,7 +440,7 @@ async function assessmentContext(env, user, courseId, type, mi, reader = path =>
   return { ...ctx, assessment };
 }
 
-async function authenticatedEvidenceResponse(env, record) {
+function evidenceDescriptor(record) {
   const publicId = clean(record.evidencePublicId);
   const ownerId = safeId(record.userId, "evidence owner identifier");
   const version = Number(record.evidenceVersion);
@@ -373,6 +451,32 @@ async function authenticatedEvidenceResponse(env, record) {
   if (!publicId.startsWith(expectedPrefix) || !/^[A-Za-z0-9-]{8,80}$/.test(assetName) || !Number.isInteger(version) || version < 1 || !/^[a-z0-9]{2,12}$/.test(format) || resourceType !== "image") {
     throw Object.assign(new Error("This evidence record needs migration before it can be viewed securely."), { status: 409 });
   }
+  if (!/^[A-Za-z0-9_-]{8,180}$/.test(clean(record.evidenceAssetId))) {
+    throw Object.assign(new Error("This evidence record needs migration before it can be viewed securely."), { status: 409 });
+  }
+  return { publicId, ownerId, version, format, resourceType };
+}
+
+async function authenticatedEvidenceResponse(env, record) {
+  const { publicId, ownerId, version, format, resourceType } = evidenceDescriptor(record);
+  if (env.EVIDENCE_BUCKET) {
+    const object = await env.EVIDENCE_BUCKET.get(publicId);
+    if (object) {
+      if (object.customMetadata?.ownerId !== ownerId || object.customMetadata?.assetId !== clean(record.evidenceAssetId)) {
+        throw Object.assign(new Error("Evidence ownership validation failed."), { status: 403 });
+      }
+      const headers = new Headers();
+      object.writeHttpMetadata(headers);
+      headers.set("content-type", headers.get("content-type") || `image/${format}`);
+      headers.set("content-disposition", `inline; filename=\"evidence.${format}\"`);
+      headers.set("cache-control", "private, no-store, max-age=0");
+      headers.set("x-content-type-options", "nosniff");
+      headers.set("x-robots-tag", "noindex, nofollow");
+      return new Response(object.body, { status: 200, headers });
+    }
+    if (normalized(record.evidenceStorage) === "r2") throw Object.assign(new Error("Secure evidence was not found."), { status: 404 });
+  }
+  requireCloudinary(env);
   const encodedPublicId = publicId.split("/").map(encodeURIComponent).join("/");
   const deliveryTail = `v${version}/${encodedPublicId}.${format}`;
   const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, 8);
@@ -405,42 +509,67 @@ async function route(request, env, path, data) {
 
   if (path === "/v1/admin/media/evidence") {
     requireAdmin(user);
-    requireCloudinary(env);
     const recordId = safeId(data.recordId, "record identifier");
     const record = await getDocument(env, `externalLearningRecords/${recordId}`);
     if (!record) throw Object.assign(new Error("Evidence record not found."), { status: 404 });
     return authenticatedEvidenceResponse(env, record);
   }
 
-  if (path === "/v1/media/evidence") {
-    requireCloudinary(env);
-    const file = data.file;
-    if (!(file instanceof File)) throw Object.assign(new Error("Select an evidence image."), { status: 400 });
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024) {
-      throw Object.assign(new Error("Evidence must be a JPG, PNG or WebP image below 8 MB."), { status: 400 });
+  if (path === "/v1/external-learning/status") {
+    const requestedCourseId = safeId(data.courseId, "course identifier");
+    const page = await queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid);
+    const records = page.documents.filter(item => item.courseId === requestedCourseId)
+      .sort((a, b) => String(b.updatedAt || b.submittedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || "")));
+    return { record: records[0] || null };
+  }
+
+  if (path === "/v1/external-learning/submit") {
+    const requestedCourseId = safeId(data.courseId, "course identifier");
+    const course = await getDocument(env, `courses/${requestedCourseId}`);
+    if (!course || !externalCourse(course) || !["active", "published"].includes(normalized(course.status || "active"))) {
+      throw Object.assign(new Error("This external course is not available for submission."), { status: 409 });
     }
-    const timestamp = Math.floor(Date.now() / 1000);
-    const folder = `speakout/private-evidence/${user.uid}`;
-    const publicId = crypto.randomUUID();
-    const signatureBase = `folder=${folder}&public_id=${publicId}&timestamp=${timestamp}&type=authenticated${env.CLOUDINARY_API_SECRET}`;
-    const upload = new FormData();
-    upload.append("file", file);
-    upload.append("api_key", env.CLOUDINARY_API_KEY);
-    upload.append("timestamp", String(timestamp));
-    upload.append("folder", folder);
-    upload.append("public_id", publicId);
-    upload.append("type", "authenticated");
-    upload.append("signature", await sha1Hex(signatureBase));
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${env.CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: upload });
-    const result = await response.json();
-    if (!response.ok) throw Object.assign(new Error("Secure evidence upload failed."), { status: 502 });
-    return {
-      assetId: result.asset_id,
-      publicId: result.public_id,
-      version: result.version,
-      format: result.format,
-      resourceType: result.resource_type
-    };
+    const completionDate = bounded(data.completionDate, 10, "Completion date");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(completionDate) || completionDate > new Date().toISOString().slice(0, 10)) {
+      throw Object.assign(new Error("Enter a valid completion date that is not in the future."), { status: 400 });
+    }
+    const certificateNumber = bounded(data.certificateNumber, 120, "Certificate number");
+    const learnerNote = bounded(data.learnerNote, 1200, "Learner note");
+    const verificationUrl = optionalHttpsUrl(data.verificationUrl, "Verification URL");
+    const uploaded = await uploadPrivateEvidence(env, user, evidenceFile(data));
+    const recordId = safeId(`${user.uid}_${requestedCourseId}`, "record identifier");
+    try {
+      return await runTransaction(env, async tx => {
+        const existing = await tx.get(`externalLearningRecords/${recordId}`);
+        if (existing && !["rejected", "resubmission_required"].includes(normalized(existing.status))) {
+          throw Object.assign(new Error("This submission is already awaiting review or has been approved."), { status: 409 });
+        }
+        const now = new Date().toISOString();
+        const provider = bounded(course.provider || "External Provider", 160, "Provider");
+        const record = {
+          ...(existing || {}), userId: user.uid, userEmail: user.email || clean(user.profile.email),
+          learnerName: clean(user.profile.fullName) || `${clean(user.profile.firstName)} ${clean(user.profile.lastName)}`.trim() || user.email,
+          learnerRole: clean(user.profile.role) || "user", schoolId: clean(user.profile.schoolId), schoolCode: clean(user.profile.schoolCode),
+          courseId: requestedCourseId, courseTitle: bounded(course.title || "External course", 240, "Course title"),
+          courseCategory: bounded(course.category, 120, "Course category"), courseType: "external", provider,
+          providerCourseUrl: optionalHttpsUrl(course.externalUrl || course.courseUrl || course.providerCourseUrl || course.providerUrl || course.url, "Provider course URL"),
+          certificateIssuer: bounded(course.certificate?.issuer || course.certificateIssuer || provider, 160, "Certificate issuer"),
+          completionDate, certificateNumber, verificationUrl, learnerNote,
+          proofType: uploaded.storage === "r2" ? "private-r2-image" : "cloudinary-authenticated-image",
+          evidenceAssetId: uploaded.assetId, evidencePublicId: uploaded.publicId, evidenceVersion: uploaded.version,
+          evidenceFormat: uploaded.format, evidenceResourceType: uploaded.resourceType, evidenceStorage: uploaded.storage,
+          status: "pending_review", verificationStatus: "pending", submittedBy: user.uid, submittedAt: now,
+          createdAt: existing?.createdAt || now, updatedAt: now,
+          resubmissionCount: existing ? Number(existing.resubmissionCount || 0) + 1 : 0,
+          reviewerFeedback: "", reviewedBy: "", reviewedAt: null
+        };
+        tx.set(`externalLearningRecords/${recordId}`, record);
+        return { ok: true, record: { id: recordId, ...record } };
+      });
+    } catch (error) {
+      await removePrivateEvidence(env, uploaded);
+      throw error;
+    }
   }
 
   if (path === "/v1/learning/dashboard") {
@@ -645,6 +774,14 @@ async function route(request, env, path, data) {
     });
   }
 
+  if (path === "/v1/admin/external-learning/list") {
+    requireAdmin(user);
+    const page = await listDocuments(env, "externalLearningRecords");
+    const records = page.documents.map(({ proofData, proofUrl, evidenceUrl, secureUrl, ...record }) => record)
+      .sort((a, b) => String(b.updatedAt || b.submittedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || "")));
+    return { records, truncated: page.truncated };
+  }
+
   if (path === "/v1/admin/external-learning/review") {
     requireAdmin(user);
     const recordId = safeId(data.recordId, "record identifier");
@@ -654,6 +791,7 @@ async function route(request, env, path, data) {
       const record = await tx.get(`externalLearningRecords/${recordId}`);
       if (!record) throw Object.assign(new Error("Submission not found."), { status: 404 });
       if (!["pending_review", "pending", "submitted"].includes(normalized(record.status))) throw Object.assign(new Error("This submission is not awaiting review."), { status: 409 });
+      if (decision === "approved") evidenceDescriptor(record);
       const now = new Date().toISOString();
       tx.set(`externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
       let certificate = null;

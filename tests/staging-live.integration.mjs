@@ -18,6 +18,7 @@ assert.equal(serviceAccount.project_id, projectId);
 
 const suffix = `${Date.now()}-${randomBytes(3).toString("hex")}`;
 const courseId = `integration-${suffix}`;
+const externalCourseId = `external-${suffix}`;
 const password = `Stage-${randomBytes(18).toString("base64url")}!9a`;
 const authUrl = operation => `https://identitytoolkit.googleapis.com/v1/accounts:${operation}?key=${apiKey}`;
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
@@ -120,6 +121,7 @@ try {
     [learnerProfile, { uid: learner.localId, email: learner.email, fullName: "Staging Learner", role: "student", status: "approved", approved: true }],
     [adminProfile, { uid: admin.localId, email: admin.email, fullName: "Staging Admin", role: "admin", status: "approved", approved: true }],
     [`courses/${courseId}`, { title: "Staging Integration Course", status: "active", modules: [{ title: "Module 1", lessons: [{ id: "lesson-1", title: "Lesson 1" }], quiz: { id: `${courseId}__module__0`, title: "Module Quiz", passMark: 70, questionCount: 1 } }], finalAssessment: { id: `${courseId}__final`, title: "Final", passMark: 70, questionCount: 1 } }],
+    [`courses/${externalCourseId}`, { title: "Staging External Course", status: "active", courseType: "external", completionMethod: "certificate-upload", provider: "Staging Provider", externalUrl: "https://example.com/staging-course" }],
     [`courseAssessments/${courseId}__module__0`, { id: `${courseId}__module__0`, courseId, type: "module", moduleIndex: 0, title: "Module Quiz", passMark: 70, questions: [{ question: "Choose A", options: ["A", "B"], answer: 0 }] }],
     [`courseAssessments/${courseId}__final`, { id: `${courseId}__final`, courseId, type: "final", title: "Final", passMark: 70, questions: [{ question: "Choose A", options: ["A", "B"], answer: 0 }] }]
   ]) {
@@ -158,16 +160,17 @@ try {
   assert.equal("userId" in projection.data, false);
 
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
-  const uploadForm = new FormData();
-  uploadForm.append("file", new File([png], "evidence.png", { type: "image/png" }));
-  uploadForm.append("purpose", "external-course-evidence");
-  const upload = await worker("/v1/media/evidence", learner.idToken, uploadForm, true);
-  assert.equal(upload.response.ok, true, `authenticated Cloudinary upload failed (${upload.response.status}): ${JSON.stringify(upload.body)}`);
-  evidencePublicId = upload.body.publicId;
-  const externalId = `${learner.localId}_${courseId}`;
-  const externalData = { userId: learner.localId, courseId, learnerName: "Staging Learner", courseTitle: "Staging External Course", provider: "Staging Provider", status: "pending_review", verificationStatus: "pending", proofType: "cloudinary-authenticated-image", evidenceAssetId: upload.body.assetId, evidencePublicId: upload.body.publicId, evidenceVersion: upload.body.version, evidenceFormat: upload.body.format, evidenceResourceType: upload.body.resourceType, submittedAt: new Date().toISOString() };
-  const learnerEvidenceWrite = await firestore(`externalLearningRecords/${externalId}`, { method: "PATCH", data: externalData, token: learner.idToken });
-  assert.equal(learnerEvidenceWrite.response.ok, true, "live rules rejected valid protected evidence metadata");
+  const submissionForm = new FormData();
+  submissionForm.append("file", new File([png], "evidence.png", { type: "image/png" }));
+  submissionForm.append("courseId", externalCourseId);
+  submissionForm.append("completionDate", new Date().toISOString().slice(0, 10));
+  submissionForm.append("certificateNumber", `STAGE-${suffix}`);
+  submissionForm.append("verificationUrl", "https://example.com/verify/staging");
+  submissionForm.append("learnerNote", "Staging integration evidence");
+  const submission = await worker("/v1/external-learning/submit", learner.idToken, submissionForm, true);
+  assert.equal(submission.response.ok, true, `authenticated external submission failed (${submission.response.status}): ${JSON.stringify(submission.body)}`);
+  evidencePublicId = submission.body.record.evidencePublicId;
+  const externalId = `${learner.localId}_${externalCourseId}`;
   cleanupPaths.push(`externalLearningRecords/${externalId}`);
   const evidence = await worker("/v1/admin/media/evidence", admin.idToken, { recordId: externalId });
   assert.equal(evidence.response.ok, true, "protected evidence retrieval failed");

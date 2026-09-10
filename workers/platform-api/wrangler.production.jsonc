@@ -14,6 +14,12 @@
     "FIREBASE_PROJECT_ID": "speaakout-portal",
     "ALLOWED_ORIGINS": "https://speakoutmentalhealth.org,https://www.speakoutmentalhealth.org,https://speaakout-portal.web.app,https://speaakout-portal.firebaseapp.com"
   },
+  "r2_buckets": [
+    {
+      "binding": "EVIDENCE_BUCKET",
+      "bucket_name": "speakout-private-evidence"
+    }
+  ],
   "observability": {
     "enabled": true,
     "logs": { "head_sampling_rate": 1 }

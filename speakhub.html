@@ -226,12 +226,12 @@ function externalSubmitLabel(item){
 }
 
 function startUrl(i){
-  if(isExternalCourse(i))return i.externalUrl||i.courseUrl||i.providerCourseUrl||`course-details.html?id=${encodeURIComponent(i.id)}`;
+  if(isExternalCourse(i))return `course-details.html?id=${encodeURIComponent(i.id)}`;
   if(isInstructorLed(i))return i.enrollmentUrl||i.contactUrl||`course-details.html?id=${encodeURIComponent(i.id)}`;
   return `course-player.html?id=${encodeURIComponent(i.id)}`;
 }
 function startLabel(i){
-  if(isExternalCourse(i))return (i.externalUrl||i.courseUrl||i.providerCourseUrl)?"Start with Provider":"View Course";
+  if(isExternalCourse(i))return "View External Course";
   if(isInstructorLed(i))return"Enrollment";
   return progressPercent(i)>0?"Continue Course":"Start Course";
 }
@@ -242,7 +242,7 @@ function courseCard(item,featured=false){
   const percent=Math.max(0,Math.min(100,progressPercent(item)));
   const id=encodeURIComponent(item.id),external=isExternalCourse(item),instructorLed=isInstructorLed(item);
   const provider=providerName(item),audiences=audienceArray(item),audienceText=audiences.slice(0,3).map(pretty).join(", "),more=audiences.length>3?` +${audiences.length-3}`:"";
-  const startHref=startUrl(item),target=external&&(item.externalUrl||item.courseUrl||item.providerCourseUrl)?`target="_blank" rel="noopener noreferrer"`:"";
+  const startHref=startUrl(item),target="";
   const ext=externalStatus(item);
   const progressBlock=external
     ? `<div class="progress-wrap"><div class="progress-text">Complete with ${escapeHtml(provider)}, then return to SpeakHub to submit the provider certificate or proof of completion.</div></div>`
@@ -387,7 +387,7 @@ function openCoursePreview(id){
     ${external?`<div class="modal-note"><strong>External course flow:</strong> Take the course on ${escapeHtml(provider)}'s official platform, obtain the provider's certificate or completion proof, then return to SpeakHub and submit it for review. The original provider remains the credential issuer.</div>`:""}
   `;
   modalStartBtn.href=startUrl(item);modalStartBtn.textContent=startLabel(item);
-  if(external&&(item.externalUrl||item.courseUrl||item.providerCourseUrl)){modalStartBtn.target="_blank";modalStartBtn.rel="noopener noreferrer"}else{modalStartBtn.removeAttribute("target");modalStartBtn.removeAttribute("rel")}
+  modalStartBtn.removeAttribute("target");modalStartBtn.removeAttribute("rel");
   modalDetailsBtn.href=`course-details.html?id=${encodeURIComponent(item.id)}`;
   if(external){modalSubmitBtn.style.display="inline-flex";modalSubmitBtn.href=`external-learning-submit.html?courseId=${encodeURIComponent(item.id)}`;modalSubmitBtn.textContent=externalSubmitLabel(item)}else{modalSubmitBtn.style.display="none"}
   courseModal.style.display="block";document.body.style.overflow="hidden";

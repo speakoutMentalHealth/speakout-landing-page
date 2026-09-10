@@ -41,12 +41,12 @@ export async function platformRequest(path, payload = {}) {
   return parseResponse(response);
 }
 
-export async function uploadEvidence(file, purpose) {
+export async function submitExternalLearning(file, fields) {
   if (!(file instanceof File)) throw new Error("Select a file to upload.");
   const form = new FormData();
   form.append("file", file);
-  form.append("purpose", purpose);
-  const response = await fetch(endpoint("/v1/media/evidence"), {
+  for (const [key, value] of Object.entries(fields || {})) form.append(key, String(value ?? ""));
+  const response = await fetch(endpoint("/v1/external-learning/submit"), {
     method: "POST",
     headers: { Authorization: await authorizationHeader() },
     body: form,
@@ -54,6 +54,11 @@ export async function uploadEvidence(file, purpose) {
   });
   return parseResponse(response);
 }
+
+export const externalLearningApi = {
+  status: courseId => platformRequest("/v1/external-learning/status", { courseId }),
+  submit: submitExternalLearning
+};
 
 export async function retrieveEvidence(recordId) {
   const response = await fetch(endpoint("/v1/admin/media/evidence"), {
@@ -87,6 +92,7 @@ export const learningApi = {
 
 export const adminApi = {
   retrieveEvidence,
+  listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
   reviewBook: (submissionId, decision, note) =>
     platformRequest("/v1/admin/book-submissions/review", { submissionId, decision, note }),
   reviewExternalCertificate: (recordId, decision, note) =>

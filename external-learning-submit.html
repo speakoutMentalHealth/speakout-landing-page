@@ -148,10 +148,8 @@ textarea{min-height:110px;resize:vertical}
 <script type="module">
 import { auth,db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import {
-  doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { uploadEvidence } from "./js/platform-api.js";
+import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { externalLearningApi } from "./js/platform-api.js";
 
 const courseId=new URLSearchParams(location.search).get("courseId");
 const $=id=>document.getElementById(id);
@@ -168,7 +166,10 @@ let currentUser=null,currentProfile=null,course=null,existingRecord=null;
 function normalize(v){return String(v||"").trim().toLowerCase()}
 function pretty(v){return String(v||"—").replaceAll("-"," ").replace(/\b\w/g,l=>l.toUpperCase())}
 function show(message,type=""){statusBox.textContent=message;statusBox.className=`notice ${type}`}
-function externalUrl(item){return item.externalUrl||item.courseUrl||item.providerCourseUrl||item.providerUrl||item.url||""}
+function externalUrl(item){
+  const raw=item.externalUrl||item.courseUrl||item.providerCourseUrl||item.providerUrl||item.url||"";
+  try{const url=new URL(raw);return url.protocol==="https:"?url.toString():""}catch{return""}
+}
 function isExternal(item){return normalize(item.courseType)==="external"||normalize(item.completionMethod)==="certificate-upload"||item.externalProvider===true}
 function recordStatus(record){
   const s=normalize(record?.verificationStatus||record?.status||"");
@@ -212,10 +213,8 @@ function compressImage(file){
 
 async function loadExisting(){
   existingRecord=null;
-  const snap=await getDocs(query(collection(db,"externalLearningRecords"),where("userId","==",currentUser.uid),where("courseId","==",courseId)));
-  if(snap.empty){renderExisting();return;}
-  const records=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt?.seconds||b.submittedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.submittedAt?.seconds||a.createdAt?.seconds||0));
-  existingRecord=records[0];
+  const result=await externalLearningApi.status(courseId);
+  existingRecord=result.record||null;
   renderExisting();
 }
 
@@ -293,63 +292,16 @@ submissionForm.addEventListener("submit",async event=>{
 
     const verification=verificationUrl.value.trim();
     if(verification){
-      try{new URL(verification)}catch{throw new Error("Enter a valid provider verification URL beginning with http:// or https://.");}
+      try{if(new URL(verification).protocol!=="https:")throw new Error()}catch{throw new Error("Enter a valid secure provider verification URL beginning with https://.");}
     }
 
-    const uploaded=await uploadEvidence(file,"external-course-evidence");
-    const recordId=`${currentUser.uid}_${courseId}`;
-    const submissionData=existingRecord?{
+    await externalLearningApi.submit(file,{
+      courseId,
       completionDate:completionDate.value,
       certificateNumber:certificateNumber.value.trim(),
       verificationUrl:verification,
-      learnerNote:learnerNote.value.trim(),
-      proofType:"cloudinary-authenticated-image",
-      evidenceAssetId:uploaded.assetId,
-      evidencePublicId:uploaded.publicId,
-      evidenceVersion:uploaded.version,
-      evidenceFormat:uploaded.format,
-      evidenceResourceType:uploaded.resourceType,
-      status:"pending_review",
-      verificationStatus:"pending",
-      submittedAt:serverTimestamp(),
-      updatedAt:serverTimestamp()
-    }:{
-      userId:currentUser.uid,
-      userEmail:currentUser.email||currentProfile.email||"",
-      learnerName:currentProfile.fullName||`${currentProfile.firstName||""} ${currentProfile.lastName||""}`.trim(),
-      learnerRole:currentProfile.role||"user",
-      schoolId:currentProfile.schoolId||"",
-      schoolCode:currentProfile.schoolCode||"",
-      courseId:course.id,
-      courseTitle:course.title||"",
-      courseCategory:course.category||"",
-      courseType:"external",
-      provider:course.provider||"External Provider",
-      providerCourseUrl:externalUrl(course),
-      certificateIssuer:course.certificate?.issuer||course.certificateIssuer||course.provider||"External Provider",
-      completionDate:completionDate.value,
-      certificateNumber:certificateNumber.value.trim(),
-      verificationUrl:verification,
-      learnerNote:learnerNote.value.trim(),
-      proofType:"cloudinary-authenticated-image",
-      evidenceAssetId:uploaded.assetId,
-      evidencePublicId:uploaded.publicId,
-      evidenceVersion:uploaded.version,
-      evidenceFormat:uploaded.format,
-      evidenceResourceType:uploaded.resourceType,
-      status:"pending_review",
-      verificationStatus:"pending",
-      submittedBy:currentUser.uid,
-      submittedAt:serverTimestamp(),
-      createdAt:serverTimestamp(),
-      updatedAt:serverTimestamp(),
-      resubmissionCount:0,
-      reviewerFeedback:"",
-      reviewedBy:"",
-      reviewedAt:null
-    };
-
-    await setDoc(doc(db,"externalLearningRecords",recordId),submissionData,{merge:true});
+      learnerNote:learnerNote.value.trim()
+    });
 
     resultBox.className="notice ok";
     resultBox.innerHTML="<strong>Submission received.</strong><br>Your external learning evidence is now pending SpeakHub review.";

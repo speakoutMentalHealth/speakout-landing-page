@@ -106,7 +106,7 @@ test("reading position is self-writable but cannot masquerade as course progress
   }));
 });
 
-test("external evidence requires private Cloudinary metadata and cannot self-approve", async () => {
+test("external evidence writes are restricted to the trusted API", async () => {
   await seed("users/student-a", profile("student-a", "student"));
   const db = testEnv.authenticatedContext("student-a").firestore();
   const valid = {
@@ -120,7 +120,7 @@ test("external evidence requires private Cloudinary metadata and cannot self-app
     evidenceFormat: "png",
     evidenceResourceType: "image"
   };
-  await assertSucceeds(setDoc(doc(db, "externalLearningRecords/submission-a"), valid));
+  await assertFails(setDoc(doc(db, "externalLearningRecords/submission-a"), valid));
   await assertFails(setDoc(doc(db, "externalLearningRecords/submission-b"), {
     ...valid,
     status: "approved"

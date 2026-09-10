@@ -126,11 +126,10 @@ textarea{min-height:70px;resize:vertical}
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { adminApi } from "./js/platform-api.js";
 
 let ITEMS = [];
-let unsubscribe = null;
 
 function show(message, type = "") {
   statusBox.textContent = message;
@@ -285,6 +284,7 @@ async function reviewSubmission(recordId, decision) {
     show("Submitting review...", "");
     await adminApi.reviewExternalCertificate(recordId, decision, note);
     show(`Submission ${decision.replaceAll("_", " ")}.`, "ok");
+    await startRealtime();
   } catch (error) {
     console.error(error);
     show(error.message || "Could not submit this review.", "bad");
@@ -292,24 +292,18 @@ async function reviewSubmission(recordId, decision) {
   }
 }
 
-function startRealtime() {
-  if (unsubscribe) unsubscribe();
-
-  unsubscribe = onSnapshot(
-    collection(db, "externalLearningRecords"),
-    snapshot => {
-      ITEMS = [];
-      snapshot.forEach(d => ITEMS.push({ id: d.id, ...d.data() }));
-      ITEMS.sort((a, b) => (b.submittedAt?.seconds || b.createdAt?.seconds || 0) - (a.submittedAt?.seconds || a.createdAt?.seconds || 0));
-      updateStats();
-      render();
-      show("External certificate submissions loaded.", "ok");
-    },
-    error => {
-      console.error(error);
-      show("Could not load external certificate submissions.", "bad");
-    }
-  );
+async function startRealtime() {
+  try {
+    show("Loading external certificate submissions...", "");
+    const result = await adminApi.listExternalLearning();
+    ITEMS = result.records || [];
+    updateStats();
+    render();
+    show(result.truncated ? "Latest submissions loaded; the result was truncated." : "External certificate submissions loaded.", result.truncated ? "warn" : "ok");
+  } catch (error) {
+    console.error(error);
+    show(error.message || "Could not load external certificate submissions.", "bad");
+  }
 }
 
 searchInput.addEventListener("input", render);

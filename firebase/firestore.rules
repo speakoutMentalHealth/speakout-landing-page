@@ -102,25 +102,6 @@ service cloud.firestore {
       ]);
     }
 
-    function validEvidenceMetadata() {
-      return request.resource.data.userId == request.auth.uid &&
-        request.resource.data.courseId is string &&
-        request.resource.data.courseId.matches('^[A-Za-z0-9_-]{1,180}$') &&
-        request.resource.data.evidenceAssetId is string &&
-        request.resource.data.evidenceAssetId.matches('^[A-Za-z0-9_-]{8,180}$') &&
-        request.resource.data.evidencePublicId is string &&
-        request.resource.data.evidencePublicId.matches(
-          '^speakout/private-evidence/' + request.auth.uid + '/[A-Za-z0-9-]+$'
-        ) &&
-        request.resource.data.evidenceVersion is int &&
-        request.resource.data.evidenceVersion > 0 &&
-        request.resource.data.evidenceFormat in ["jpg", "jpeg", "png", "webp"] &&
-        request.resource.data.evidenceResourceType == "image" &&
-        !("proofData" in request.resource.data) &&
-        !("proofUrl" in request.resource.data) &&
-        !("secureUrl" in request.resource.data);
-    }
-
     function isUserInSchool(userId, schoolId) {
       return exists(/databases/$(database)/documents/users/$(userId)) &&
         get(/databases/$(database)/documents/users/$(userId)).data.schoolId == schoolId;
@@ -360,52 +341,17 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
-    /* Learners submit proof of an externally-completed course here, and
-       may resubmit after a rejection (external-learning-submit.html
-       always writes status "pending_review" / verificationStatus
-       "pending" on every submit — first-time or resubmit). That's the
-       only state a learner's own write may ever set: they cannot write
-       "approved" into their own record, so self-approval is impossible.
-       Only Cloud Functions (reviewExternalCertificate) or an admin may
-       move a record to "approved"/"rejected". */
+    /* External evidence submissions and reviews are written only by the
+       trusted platform API. Learners may read their own status, while
+       super-admins retain direct emergency access. Ordinary admins use
+       the authenticated review API so both roles share one audit path. */
     match /externalLearningRecords/{recordId} {
-      allow create: if isApproved() &&
-        request.resource.data.userId == request.auth.uid &&
-        request.resource.data.status == "pending_review" &&
-        request.resource.data.verificationStatus == "pending" &&
-        validEvidenceMetadata();
-
-      allow update: if isApproved() &&
-        resource.data.userId == request.auth.uid &&
-        request.resource.data.userId == request.auth.uid &&
-        resource.data.status in ["rejected", "resubmission_required"] &&
-        request.resource.data.status == "pending_review" &&
-        request.resource.data.verificationStatus == "pending" &&
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          "certificateNumber",
-          "completionDate",
-          "verificationUrl",
-          "evidenceAssetId",
-          "evidencePublicId",
-          "evidenceVersion",
-          "evidenceFormat",
-          "evidenceResourceType",
-          "proofType",
-          "learnerNote",
-          "status",
-          "verificationStatus",
-          "submittedAt",
-          "updatedAt"
-        ]) &&
-        validEvidenceMetadata();
-
       allow read: if isApproved() &&
         (
           resource.data.userId == request.auth.uid ||
           isSuperAdmin()
         );
-
-      allow update, delete: if isSuperAdmin();
+      allow create, update, delete: if isSuperAdmin();
     }
 
     match /contributors/{contributorId} {

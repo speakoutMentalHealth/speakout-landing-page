@@ -117,6 +117,7 @@ import { db,auth } from "./firebase-config.js";
 import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { courseCoverUrl, isPublicCourse } from "./js/content-visibility.js";
+import { externalLearningApi } from "./js/platform-api.js";
 
 const id=new URLSearchParams(location.search).get("id");
 const $=id=>document.getElementById(id);
@@ -137,7 +138,10 @@ function pretty(v){if(!v)return"—";return String(v).replaceAll("-"," ").replac
 function audienceText(v){return Array.isArray(v)?v.map(pretty).join(", "):pretty(v||"general")}
 function accessType(c){if(c.free===true)return"free";if(c.free===false)return"premium";const a=normalize(c.accessType||c.access||"free");return a==="paid"?"premium":(a||"free")}
 function isExternalCourse(c){return normalize(c.courseType)==="external"||normalize(c.completionMethod)==="certificate-upload"||c.externalProvider===true}
-function externalCourseUrl(c){return c.externalUrl||c.courseUrl||c.providerCourseUrl||c.providerUrl||c.url||""}
+function externalCourseUrl(c){
+  const raw=c.externalUrl||c.courseUrl||c.providerCourseUrl||c.providerUrl||c.url||"";
+  try{const url=new URL(raw);return url.protocol==="https:"?url.toString():""}catch{return""}
+}
 function certificateIssuer(c){return c.certificate?.issuer||c.certificateIssuer||c.provider||"SpeakHub Academy"}
 function certificateUploadRequired(c){return c.certificate?.uploadRequired===true||normalize(c.completionMethod)==="certificate-upload"||isExternalCourse(c)}
 function certificateVerificationRequired(c){return c.certificate?.verificationRequired===true||isExternalCourse(c)}
@@ -209,9 +213,8 @@ async function loadExternalRecord(){
   currentExternalRecord=null;
   if(!currentUser||!id)return;
   try{
-    const s=await getDocs(query(collection(db,"externalLearningRecords"),where("userId","==",currentUser.uid),where("courseId","==",id)));
-    const records=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt?.seconds||b.submittedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.submittedAt?.seconds||a.createdAt?.seconds||0));
-    currentExternalRecord=records[0]||null;
+    const result=await externalLearningApi.status(id);
+    currentExternalRecord=result.record||null;
   }catch(e){console.warn("Could not load external record:",e)}
 }
 
