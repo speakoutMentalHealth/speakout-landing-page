@@ -1,0 +1,1 @@
+This folder contains the built output assets for the worker "speakout-platform-api-staging" generated at 2026-09-09T07:12:44.698Z.

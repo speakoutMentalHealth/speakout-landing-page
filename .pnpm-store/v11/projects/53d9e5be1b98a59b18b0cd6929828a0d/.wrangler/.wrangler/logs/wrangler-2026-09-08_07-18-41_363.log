@@ -1,0 +1,78 @@
+
+--- 2026-09-08T07:18:41.801Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\.wrangler\logs\wrangler-2026-09-08_07-18-41_363.log"
+---
+
+--- 2026-09-08T07:18:41.801Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:18:41.803Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:18:41.868Z log
+
+ ⛅️ wrangler 4.129.1
+────────────────────
+---
+
+--- 2026-09-08T07:18:41.924Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command started","timestamp":1788851921924,"properties":{"amplitude_session_id":1788851921886,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config","dryRun","outdir","secretsFile"],"argsCombination":"config, dryRun, outdir, secretsFile","sanitizedCommand":"deploy","sanitizedArgs":{"dryRun":true},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:18:42.857Z log
+Total Upload: 81.25 KiB / gzip: 20.64 KiB
+---
+
+--- 2026-09-08T07:18:42.863Z log
+Your Worker has access to the following bindings:
+---
+
+--- 2026-09-08T07:18:42.864Z log
+Binding                                                                     Resource                  
+---
+
+--- 2026-09-08T07:18:42.864Z log
+env.FIREBASE_PROJECT_ID ("speakout-portal-staging")                         Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.865Z log
+env.ALLOWED_ORIGINS ("http://127.0.0.1:5000,http://localhos...")            Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.866Z log
+env.FIREBASE_CLIENT_EMAIL ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.866Z log
+env.FIREBASE_PRIVATE_KEY ("(hidden)")                                       Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.867Z log
+env.CLOUDINARY_CLOUD_NAME ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.868Z log
+env.CLOUDINARY_API_KEY ("(hidden)")                                         Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.868Z log
+env.CLOUDINARY_API_SECRET ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:18:42.869Z log
+
+---
+
+--- 2026-09-08T07:18:42.870Z log
+--dry-run: exiting now.
+---
+
+--- 2026-09-08T07:18:42.873Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"deploy worker script","timestamp":1788851922873,"properties":{"amplitude_session_id":1788851922870,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","category":"Workers","os":"win32:x64","usesTypeScript":false,"durationMs":838,"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:18:42.880Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command completed","timestamp":1788851922880,"properties":{"amplitude_session_id":1788851921886,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config","dryRun","outdir","secretsFile"],"argsCombination":"config, dryRun, outdir, secretsFile","sanitizedCommand":"deploy","sanitizedArgs":{"dryRun":true},"durationMs":1044,"currentAgentSkillsInstalled":false}}
+---

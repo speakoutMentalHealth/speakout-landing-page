@@ -44,6 +44,7 @@ test("admins review through one API queue and approval issues a verifiable certi
   assert.match(page, /adminApi\.listExternalLearning\(\)/u);
   assert.doesNotMatch(page, /onSnapshot\(/u);
   assert.match(client, /\/v1\/admin\/external-learning\/list/u);
+  assert.match(worker, /queryAllDocuments\(env, "externalLearningRecords"\)/u);
   assert.match(worker, /tx\.set\(`certificates\/\$\{id\}`/u);
   assert.match(worker, /tx\.set\(`publicCertificateVerifications\/\$\{verificationCode\}`/u);
   assert.match(worker, /achievementType: "externally-completed course verified by SpeakOut"/u);

@@ -1,0 +1,34 @@
+
+--- 2026-09-08T07:05:49.232Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\.wrangler\logs\wrangler-2026-09-08_07-05-48_819.log"
+---
+
+--- 2026-09-08T07:05:49.232Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:05:49.234Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:05:49.297Z log
+
+ ⛅️ wrangler 4.129.1
+────────────────────
+---
+
+--- 2026-09-08T07:05:49.370Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command started","timestamp":1788851149369,"properties":{"amplitude_session_id":1788851149300,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":[],"argsCombination":"","sanitizedCommand":"logout","sanitizedArgs":{},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:05:50.771Z log
+Successfully logged out.
+---
+
+--- 2026-09-08T07:05:50.793Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"logout user","timestamp":1788851150793,"properties":{"amplitude_session_id":1788851150789,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","category":"Workers","os":"win32:x64","currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:05:50.796Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command completed","timestamp":1788851150796,"properties":{"amplitude_session_id":1788851149300,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":[],"argsCombination":"","sanitizedCommand":"logout","sanitizedArgs":{},"durationMs":1554,"currentAgentSkillsInstalled":false}}
+---

@@ -1,0 +1,466 @@
+
+--- 2026-09-08T07:44:57.451Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\.wrangler\logs\wrangler-2026-09-08_07-44-57_030.log"
+---
+
+--- 2026-09-08T07:44:57.451Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:44:57.453Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:44:57.521Z log
+
+ ⛅️ wrangler 4.129.1
+────────────────────
+---
+
+--- 2026-09-08T07:44:57.567Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command started","timestamp":1788853497567,"properties":{"amplitude_session_id":1788853497536,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config","message","secretsFile"],"argsCombination":"config, message, secretsFile","sanitizedCommand":"deploy","sanitizedArgs":{},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:44:57.868Z debug
+Starting verifyWorkerMatchesCITag() with tag: undefined, name: speakout-platform-api-staging
+---
+
+--- 2026-09-08T07:44:57.868Z debug
+No WRANGLER_CI_MATCH_TAG variable provided, aborting verifyWorkerMatchesCITag()
+---
+
+--- 2026-09-08T07:44:57.874Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/services/speakout-platform-api-staging
+---
+
+--- 2026-09-08T07:44:57.874Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:44:57.875Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:44:57.875Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:44:57.876Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:00.954Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:00.955Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:00.955Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:00.955Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:00.961Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/secrets
+---
+
+--- 2026-09-08T07:45:00.962Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:00.962Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:00.962Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:00.962Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:02.680Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:02.681Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:02.681Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:02.681Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:02.685Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/deployments
+---
+
+--- 2026-09-08T07:45:02.686Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:02.686Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:02.686Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:02.686Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:04.299Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:04.299Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:04.299Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:04.299Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:04.331Z log
+Total Upload: 81.35 KiB / gzip: 20.66 KiB
+---
+
+--- 2026-09-08T07:45:04.337Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/settings
+---
+
+--- 2026-09-08T07:45:04.337Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:04.337Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:04.338Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:04.338Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:05.942Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:05.943Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.943Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.943Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:05.950Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/versions
+---
+
+--- 2026-09-08T07:45:05.950Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.950Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.951Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.953Z debug
+BODY: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:05.954Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:08.842Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:08.842Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:08.842Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:08.842Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:08.846Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/deployments
+---
+
+--- 2026-09-08T07:45:08.847Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:08.847Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:08.847Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:08.847Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:10.985Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:10.985Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:10.985Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:10.985Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:10.989Z debug
+-- START CF API REQUEST: PATCH https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/script-settings
+---
+
+--- 2026-09-08T07:45:10.989Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:10.990Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:10.990Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:10.990Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:13.378Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:13.378Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:13.378Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:13.378Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:13.379Z log
+Worker Startup Time: 5 ms
+---
+
+--- 2026-09-08T07:45:13.382Z log
+Your Worker has access to the following bindings:
+---
+
+--- 2026-09-08T07:45:13.383Z log
+Binding                                                                     Resource                  
+---
+
+--- 2026-09-08T07:45:13.383Z log
+env.FIREBASE_PROJECT_ID ("speakout-portal-staging")                         Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.383Z log
+env.ALLOWED_ORIGINS ("http://127.0.0.1:5000,http://localhos...")            Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.384Z log
+env.FIREBASE_CLIENT_EMAIL ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.384Z log
+env.FIREBASE_PRIVATE_KEY ("(hidden)")                                       Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.385Z log
+env.CLOUDINARY_CLOUD_NAME ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.385Z log
+env.CLOUDINARY_API_KEY ("(hidden)")                                         Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.385Z log
+env.CLOUDINARY_API_SECRET ("(hidden)")                                      Environment Variable      
+---
+
+--- 2026-09-08T07:45:13.386Z log
+
+---
+
+--- 2026-09-08T07:45:13.386Z log
+Uploaded speakout-platform-api-staging (10.70 sec)
+---
+
+--- 2026-09-08T07:45:13.393Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/subdomain
+---
+
+--- 2026-09-08T07:45:13.393Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:13.393Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:13.394Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:13.394Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:15.148Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:15.149Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:15.149Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:15.149Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:15.153Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/subdomain
+---
+
+--- 2026-09-08T07:45:15.153Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:15.153Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:15.153Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:15.153Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:16.763Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:16.763Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:16.763Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:16.763Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:16.767Z debug
+-- START CF API REQUEST: POST https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api-staging/subdomain
+---
+
+--- 2026-09-08T07:45:16.767Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:16.768Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:16.768Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:16.768Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-08T07:45:18.496Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-08T07:45:18.496Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:18.496Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-08T07:45:18.496Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-08T07:45:18.497Z log
+Deployed speakout-platform-api-staging triggers (5.11 sec)
+---
+
+--- 2026-09-08T07:45:18.497Z log
+  https://speakout-platform-api-staging.speakout-platform-api.workers.dev
+---
+
+--- 2026-09-08T07:45:18.498Z log
+Current Version ID: 111f31cd-69c0-4cc6-8c61-45deb4d814b5
+---
+
+--- 2026-09-08T07:45:18.504Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"deploy worker script","timestamp":1788853518503,"properties":{"amplitude_session_id":1788853518499,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","category":"Workers","os":"win32:x64","usesTypeScript":false,"durationMs":20827,"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:45:18.510Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command completed","timestamp":1788853518510,"properties":{"amplitude_session_id":1788853497536,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config","message","secretsFile"],"argsCombination":"config, message, secretsFile","sanitizedCommand":"deploy","sanitizedArgs":{},"durationMs":21050,"currentAgentSkillsInstalled":false}}
+---

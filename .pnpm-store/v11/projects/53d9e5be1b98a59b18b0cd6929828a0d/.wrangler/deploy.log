@@ -1,0 +1,211 @@
+
+--- 2026-09-10T06:51:48.794Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\deploy.log"
+---
+
+--- 2026-09-10T06:51:48.794Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-10T06:51:48.798Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-10T06:51:48.890Z log
+
+ ⛅️ wrangler 4.129.1 (update available 4.130.0)
+───────────────────────────────────────────────
+---
+
+--- 2026-09-10T06:51:48.967Z debug
+Metrics dispatcher: Posting data {"deviceId":"5c3821ea-a96f-44a1-959f-075aaf563813","event":"wrangler command started","timestamp":1789023108967,"properties":{"amplitude_session_id":1789023108929,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config"],"argsCombination":"config","sanitizedCommand":"deploy","sanitizedArgs":{},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-10T06:51:50.231Z debug
+Starting verifyWorkerMatchesCITag() with tag: undefined, name: speakout-platform-api
+---
+
+--- 2026-09-10T06:51:50.231Z debug
+No WRANGLER_CI_MATCH_TAG variable provided, aborting verifyWorkerMatchesCITag()
+---
+
+--- 2026-09-10T06:51:50.237Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/services/speakout-platform-api
+---
+
+--- 2026-09-10T06:51:50.237Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:50.238Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:50.238Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:50.238Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-10T06:51:53.688Z debug
+-- START CF API RESPONSE: Not Found 404
+---
+
+--- 2026-09-10T06:51:53.689Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:53.689Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:53.689Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-10T06:51:53.694Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api/secrets
+---
+
+--- 2026-09-10T06:51:53.694Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:53.694Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:53.694Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:53.694Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-10T06:51:55.400Z debug
+-- START CF API RESPONSE: Not Found 404
+---
+
+--- 2026-09-10T06:51:55.400Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:55.400Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:55.400Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-10T06:51:55.405Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/subdomain
+---
+
+--- 2026-09-10T06:51:55.405Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:55.405Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:55.405Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:55.405Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-10T06:51:57.019Z debug
+-- START CF API RESPONSE: OK 200
+---
+
+--- 2026-09-10T06:51:57.019Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:57.019Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:57.019Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-10T06:51:57.024Z debug
+-- START CF API REQUEST: GET https://api.cloudflare.com/client/v4/accounts/081a10f9db6bff84cde97c6644204c84/workers/scripts/speakout-platform-api/deployments
+---
+
+--- 2026-09-10T06:51:57.024Z debug
+QUERY STRING: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:57.024Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:57.024Z debug
+INIT: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:57.024Z debug
+-- END CF API REQUEST
+---
+
+--- 2026-09-10T06:51:58.559Z debug
+-- START CF API RESPONSE: Not Found 404
+---
+
+--- 2026-09-10T06:51:58.559Z debug
+HEADERS: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:58.559Z debug
+RESPONSE: omitted; set WRANGLER_LOG_SANITIZE=false to include sanitized data
+---
+
+--- 2026-09-10T06:51:58.559Z debug
+-- END CF API RESPONSE
+---
+
+--- 2026-09-10T06:51:58.569Z log
+
+---
+
+--- 2026-09-10T06:51:59.137Z error
+X [ERROR] The following required secrets have not been set: FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+
+  This Worker does not exist yet, so secrets cannot be set in advance with `wrangler secret put`.
+  To deploy a new Worker with secrets, supply them via a secrets file:
+    wrangler deploy --secrets-file <path-to-file>
+  where the file contains lines in the format `SECRET_NAME=value` (or JSON).
+  See https://developers.cloudflare.com/workers/configuration/secrets/#secrets-on-deployed-workers for more information.
+
+
+---
+
+--- 2026-09-10T06:51:59.138Z debug
+Error: The following required secrets have not been set: FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+This Worker does not exist yet, so secrets cannot be set in advance with `wrangler secret put`.
+To deploy a new Worker with secrets, supply them via a secrets file:
+  wrangler deploy --secrets-file <path-to-file>
+where the file contains lines in the format `SECRET_NAME=value` (or JSON).
+See https://developers.cloudflare.com/workers/configuration/secrets/#secrets-on-deployed-workers for more information.
+    at addRequiredSecretsInheritBindings (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:157447:11)
+    at deployWorker (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:161841:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async deploy (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:161736:18)
+    at async runDeployCommandHandler (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:281732:49)
+    at async Object.handler (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:281857:9)
+    at async C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:222436:26
+    at async Object.handler (C:\Users\Administrator\speakout-landing-page\workers\platform-api\node_modules\wrangler\wrangler-dist\cli.js:222373:7)
+---
+
+--- 2026-09-10T06:51:59.138Z debug
+Metrics dispatcher: Posting data {"deviceId":"5c3821ea-a96f-44a1-959f-075aaf563813","event":"wrangler command errored","timestamp":1789023119138,"properties":{"amplitude_session_id":1789023108929,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"jsonc","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":false,"hasAssets":false,"agent":"codex","argsUsed":["config"],"argsCombination":"config","sanitizedCommand":"deploy","sanitizedArgs":{},"durationMs":9765,"errorType":"UserError","errorMessage":"required secrets missing before first deploy","currentAgentSkillsInstalled":false}}
+---

@@ -1,0 +1,238 @@
+
+--- 2026-09-08T07:06:10.050Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\.wrangler\logs\wrangler-2026-09-08_07-06-09_620.log"
+---
+
+--- 2026-09-08T07:06:10.049Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:06:10.051Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-08T07:06:10.119Z log
+
+ ⛅️ wrangler 4.129.1
+────────────────────
+---
+
+--- 2026-09-08T07:06:10.168Z log
+Attempting to login via OAuth Device Authorization Grant...
+---
+
+--- 2026-09-08T07:06:10.169Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:10.170Z debug
+Access switch not cached for: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:10.200Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command started","timestamp":1788851170200,"properties":{"amplitude_session_id":1788851170136,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","argsUsed":["device","scopes"],"argsCombination":"device, scopes","sanitizedCommand":"login","sanitizedArgs":{},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:06:11.181Z debug
+Fetching device authorization from https://dash.cloudflare.com/oauth2/device/auth
+---
+
+--- 2026-09-08T07:06:12.894Z log
+To authorize Wrangler, please visit:
+
+  https://dash.cloudflare.com/oauth2/device/verify
+
+and enter the code:
+
+  Dr9LfxeC
+
+You have 5 minutes to approve this request.
+---
+
+--- 2026-09-08T07:06:12.896Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:12.897Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:12.897Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:12.897Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:14.178Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:19.189Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:19.189Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:19.190Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:19.190Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:20.485Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:25.496Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:25.496Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:25.496Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:25.497Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:27.087Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:32.095Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:32.095Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:32.096Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:32.096Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:33.345Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:38.365Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:38.366Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:38.366Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:38.366Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:39.658Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:44.671Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:44.672Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:44.672Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:44.672Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:45.936Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:50.942Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:50.943Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:50.943Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:50.943Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:52.285Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:06:57.294Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:06:57.294Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:06:57.294Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:06:57.294Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:06:58.544Z debug
+Failed to fetch auth token: 400 Bad Request
+---
+
+--- 2026-09-08T07:07:03.552Z debug
+fetching auth token grant_type=urn:ietf:params:oauth:grant-type:device_code
+---
+
+--- 2026-09-08T07:07:03.552Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-08T07:07:03.552Z debug
+Using cached Access switch for: dash.cloudflare.com false
+---
+
+--- 2026-09-08T07:07:03.553Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-08T07:07:04.728Z log
+Successfully logged in.
+---
+
+--- 2026-09-08T07:07:04.737Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"login user","timestamp":1788851224737,"properties":{"amplitude_session_id":1788851224732,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","category":"Workers","os":"win32:x64","currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-08T07:07:04.740Z debug
+Metrics dispatcher: Posting data {"deviceId":"794754b1-0883-4c49-83a0-1bb81de44493","event":"wrangler command completed","timestamp":1788851224740,"properties":{"amplitude_session_id":1788851170136,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","argsUsed":["device","scopes"],"argsCombination":"device, scopes","sanitizedCommand":"login","sanitizedArgs":{},"durationMs":54680,"currentAgentSkillsInstalled":false}}
+---

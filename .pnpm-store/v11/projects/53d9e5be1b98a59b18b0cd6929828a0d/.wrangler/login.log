@@ -1,0 +1,62 @@
+
+--- 2026-09-10T06:46:34.328Z debug
+🪵  Writing logs to "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.wrangler\login.log"
+---
+
+--- 2026-09-10T06:46:34.328Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-10T06:46:34.332Z debug
+.env file not found at "C:\Users\Administrator\speakout-landing-page\workers\platform-api\.env.local". Continuing... For more details, refer to https://developers.cloudflare.com/workers/wrangler/system-environment-variables/
+---
+
+--- 2026-09-10T06:46:34.495Z log
+
+ ⛅️ wrangler 4.129.1
+────────────────────
+---
+
+--- 2026-09-10T06:46:34.771Z log
+Attempting to login via OAuth...
+---
+
+--- 2026-09-10T06:46:35.260Z log
+Opening a link in your default browser: https://dash.cloudflare.com/oauth2/auth?response_type=code&client_id=54d11594-84e4-41aa-b438-e81b8fa78ee7&redirect_uri=http%3A%2F%2Flocalhost%3A8976%2Foauth%2Fcallback&scope=account%3Aread%20user%3Aread%20workers%3Awrite%20workers_kv%3Awrite%20workers_routes%3Awrite%20workers_scripts%3Awrite%20workers_tail%3Aread%20d1%3Awrite%20pages%3Awrite%20zone%3Aread%20ssl_certs%3Awrite%20ai%3Awrite%20ai-search%3Awrite%20ai-search%3Arun%20websearch.run%20agent-memory%3Awrite%20queues%3Awrite%20pipelines%3Awrite%20secrets_store%3Awrite%20artifacts%3Awrite%20flagship%3Awrite%20containers%3Awrite%20cloudchamber%3Awrite%20connectivity%3Aadmin%20email_routing%3Awrite%20email_sending%3Awrite%20browser%3Awrite%20challenge-widgets.write%20offline_access&state=5NxNB5i0e8hc1RRrD9uX-nBtm8iITgbf&code_challenge=Q_BPwBrpHpFULEYR4EQcxQp4h5nVZYCHnKk3_NJyt-s&code_challenge_method=S256
+---
+
+--- 2026-09-10T06:46:36.869Z debug
+Metrics dispatcher: Posting data {"deviceId":"5c3821ea-a96f-44a1-959f-075aaf563813","event":"wrangler command started","timestamp":1789022796869,"properties":{"amplitude_session_id":1789022794513,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","argsUsed":[],"argsCombination":"","sanitizedCommand":"login","sanitizedArgs":{},"currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-10T06:47:04.062Z debug
+fetching auth token grant_type=authorization_code
+---
+
+--- 2026-09-10T06:47:04.062Z debug
+Checking if domain has Access enabled: dash.cloudflare.com
+---
+
+--- 2026-09-10T06:47:04.062Z debug
+Access switch not cached for: dash.cloudflare.com
+---
+
+--- 2026-09-10T06:47:04.537Z debug
+Caching access switch for: dash.cloudflare.com
+---
+
+--- 2026-09-10T06:47:04.537Z debug
+Fetching auth token from https://dash.cloudflare.com/oauth2/token
+---
+
+--- 2026-09-10T06:47:05.808Z log
+Successfully logged in.
+---
+
+--- 2026-09-10T06:47:05.827Z debug
+Metrics dispatcher: Posting data {"deviceId":"5c3821ea-a96f-44a1-959f-075aaf563813","event":"login user","timestamp":1789022825827,"properties":{"amplitude_session_id":1789022825822,"amplitude_event_id":0,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","category":"Workers","os":"win32:x64","currentAgentSkillsInstalled":false}}
+---
+
+--- 2026-09-10T06:47:05.830Z debug
+Metrics dispatcher: Posting data {"deviceId":"5c3821ea-a96f-44a1-959f-075aaf563813","event":"wrangler command completed","timestamp":1789022825830,"properties":{"amplitude_session_id":1789022794513,"amplitude_event_id":1,"wranglerVersion":"4.129.1","wranglerMajorVersion":4,"wranglerMinorVersion":129,"wranglerPatchVersion":1,"osPlatform":"Windows","osVersion":"Windows 11 Pro","nodeVersion":24,"isFirstUsage":false,"configFileType":"none","isCI":false,"isPagesCI":false,"isWorkersCI":false,"isInteractive":true,"hasAssets":false,"agent":"codex","argsUsed":[],"argsCombination":"","sanitizedCommand":"login","sanitizedArgs":{},"durationMs":31488,"currentAgentSkillsInstalled":false}}
+---
