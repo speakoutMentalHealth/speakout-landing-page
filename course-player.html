@@ -126,7 +126,10 @@ courseProvider=$("courseProvider"),providerPill=$("providerPill"),levelPill=$("l
 moduleMenu=$("moduleMenu"),finalMenu=$("finalMenu"),lessonTitle=$("lessonTitle"),lessonContent=$("lessonContent"),
 assessmentArea=$("assessmentArea"),progressBar=$("progressBar"),progressText=$("progressText"),progressDetail=$("progressDetail"),
 previousButton=$("previousButton"),nextButton=$("nextButton"),completeButton=$("completeButton"),detailsButton=$("detailsButton"),
-courseNotice=$("courseNotice"),lessonCover=$("lessonCover"),sourceNote=$("sourceNote"),navigationRow=$("navigationRow");
+courseNotice=$("courseNotice"),lessonCover=$("lessonCover"),sourceNote=$("sourceNote"),navigationRow=$("navigationRow"),
+courseSidebar=$("courseSidebar"),courseMenuBackdrop=$("courseMenuBackdrop"),mobileModuleButton=$("mobileModuleButton"),
+sidebarClose=$("sidebarClose"),mobileLessonPosition=$("mobileLessonPosition"),mobileLessonTitle=$("mobileLessonTitle"),
+lessonSnapshot=$("lessonSnapshot"),reflectionCard=$("reflectionCard");
 
 let course=null,modules=[],lessons=[],currentUser=null,currentProfile=null,currentView={type:"lesson",lessonIndex:0};
 let completedLessons=new Set(),passedModuleQuizzes={},moduleQuizScores={},finalAssessmentPassed=false,finalAssessmentScore=0,certificateId="";
@@ -136,6 +139,29 @@ function norm(v){return String(v||"").trim().toLowerCase()}
 function pretty(v){return !v?"—":String(v).replaceAll("-"," ").replace(/\b\w/g,l=>l.toUpperCase())}
 function isExternal(c){return norm(c?.courseType)==="external"||norm(c?.completionMethod)==="certificate-upload"}
 function isInstructorLed(c){return norm(c?.courseType)==="instructor-led"}
+function lessonIcon(value=""){
+ const text=norm(value);
+ if(/mental|wellbeing|emotion|stress|anxiety|mind/.test(text))return "🧠";
+ if(/communicat|conflict|listen|speak|voice/.test(text))return "💬";
+ if(/leader|team|influence|integrity/.test(text))return "🧭";
+ if(/digital|computer|cyber|program|data|internet/.test(text))return "💻";
+ if(/parent|family|home|child/.test(text))return "🤝";
+ if(/teacher|class|school|student/.test(text))return "🎓";
+ return "💡";
+}
+function closeCourseMenu({restoreFocus=false}={}){
+ courseSidebar.classList.remove("open");courseMenuBackdrop.classList.remove("open");document.body.classList.remove("course-menu-open");
+ mobileModuleButton.setAttribute("aria-expanded","false");
+ if(restoreFocus)mobileModuleButton.focus();
+}
+function openCourseMenu(){
+ courseSidebar.classList.add("open");courseMenuBackdrop.classList.add("open");document.body.classList.add("course-menu-open");
+ mobileModuleButton.setAttribute("aria-expanded","true");
+ setTimeout(()=>{courseSidebar.querySelector(".lesson-item.active")?.scrollIntoView({block:"center"});sidebarClose.focus()},30);
+}
+function focusLesson(){
+ if(matchMedia("(max-width: 900px)").matches)document.querySelector(".mobile-course-tools")?.scrollIntoView({block:"start",behavior:"smooth"});
+}
 
 function normalizeEmbeddedModules(raw){
  return (raw||[]).map((m,mi)=>{
@@ -226,7 +252,7 @@ function renderSidebar(){
      const item=document.createElement("div");
      item.className="lesson-item"+(completedLessons.has(l.id)?" completed":"")+(!unlocked?" locked":"")+(currentView.type==="lesson"&&currentView.lessonIndex===idx?" active":"");
      item.innerHTML=`${completedLessons.has(l.id)?"✓ ":""}${esc(l.title)}${l.duration?`<span class="lesson-meta">${esc(l.duration)}</span>`:""}`;
-     if(unlocked)item.onclick=()=>{currentView={type:"lesson",lessonIndex:idx};renderCurrentView()};
+     if(unlocked)item.onclick=()=>{currentView={type:"lesson",lessonIndex:idx};closeCourseMenu();renderCurrentView();focusLesson()};
      wrap.appendChild(item);
    });
    if(m.quiz){
@@ -234,7 +260,7 @@ function renderSidebar(){
      const item=document.createElement("div");
      item.className="lesson-item assessment-item"+(passed?" passed":"")+(!unlocked?" locked":"")+(currentView.type==="moduleQuiz"&&currentView.moduleIndex===mi?" active":"");
      item.innerHTML=`${passed?"✓ ":""}${esc(m.quiz.title||`${m.title} Quiz`)}<span class="lesson-meta">${passed?`Passed ${moduleQuizScores[mi]||0}%`:`Pass mark ${Number(m.quiz.passMark||70)}%`}</span>`;
-     if(unlocked)item.onclick=()=>{currentView={type:"moduleQuiz",moduleIndex:mi};renderCurrentView()};
+     if(unlocked)item.onclick=()=>{currentView={type:"moduleQuiz",moduleIndex:mi};closeCourseMenu();renderCurrentView();focusLesson()};
      wrap.appendChild(item);
    }
    moduleMenu.appendChild(wrap);
@@ -245,17 +271,33 @@ function renderSidebar(){
    finalMenu.innerHTML=`<h3>Final Assessment</h3><div id="finalAssessmentMenuItem" class="lesson-item final-item ${passed?"passed":""} ${!unlocked?"locked":""} ${currentView.type==="final"?"active":""}">
      ${passed?"✓ ":""}${esc(fa.title||"Final Assessment")}<span class="lesson-meta">${passed?`Passed ${finalAssessmentScore}%`:`Unlocks at 100% • Pass mark ${Number(fa.passMark||70)}%`}</span></div>`;
    const el=$("finalAssessmentMenuItem");
-   if(unlocked)el.onclick=()=>{currentView={type:"final"};renderCurrentView()};
+   if(unlocked)el.onclick=()=>{currentView={type:"final"};closeCourseMenu();renderCurrentView();focusLesson()};
  }else finalMenu.innerHTML="";
  updateProgress();
+ const activeLesson=currentView.type==="lesson"?lessons[currentView.lessonIndex]:null;
+ if(activeLesson){
+   mobileLessonPosition.textContent=`Module ${activeLesson.moduleIndex+1} • Lesson ${activeLesson.lessonIndex+1} of ${modules[activeLesson.moduleIndex].lessons.length} • ${coursePercent()}% complete`;
+   mobileLessonTitle.textContent=activeLesson.title;
+ }else{
+   mobileLessonPosition.textContent=currentView.type==="final"?"Final assessment":`Module ${Number(currentView.moduleIndex||0)+1} assessment`;
+   mobileLessonTitle.textContent=currentView.type==="final"?(course?.finalAssessment?.title||"Final assessment"):(modules[currentView.moduleIndex]?.quiz?.title||"Module quiz");
+ }
 }
 
 function renderLesson(){
  const l=lessons[currentView.lessonIndex];
  if(!l){return}
  lessonTitle.textContent=l.title;
- lessonCover.innerHTML=l.coverUrl?`<img src="${esc(l.coverUrl)}" alt="${esc(l.title)}"><h2>${esc(l.title)}</h2>`:`<h2>${esc(l.title)}</h2>`;
+ const visual=l.coverUrl||course.coverUrl||course.image||course.thumbnail||"";
+ const icon=lessonIcon(`${course.title} ${modules[l.moduleIndex].title} ${l.title}`);
+ lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="Illustration for ${esc(l.title)}"><h2>${esc(l.title)}</h2>`:`<div class="cover-art" aria-hidden="true"><span>${icon}</span></div><h2>${esc(l.title)}</h2>`;
  lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
+ const wordCount=(lessonContent.textContent.trim().match(/\S+/g)||[]).length;
+ const readMinutes=Math.max(1,Math.ceil(wordCount/190));
+ lessonSnapshot.style.display="grid";
+ lessonSnapshot.innerHTML=`<div class="snapshot-icon" aria-hidden="true">${icon}</div><div><span class="snapshot-label">Your focus for this lesson</span><span class="snapshot-title">${esc(modules[l.moduleIndex].title)}</span><span class="snapshot-meta">Lesson ${l.lessonIndex+1} of ${modules[l.moduleIndex].lessons.length} • About ${readMinutes} min • Read one section at a time</span></div>`;
+ reflectionCard.style.display="grid";
+ reflectionCard.innerHTML=`<div class="reflection-icon" aria-hidden="true">✍️</div><div><strong>Pause and make it practical</strong><p>Before moving on, name one idea from “${esc(l.title)}” that you can use in a real situation this week.</p></div>`;
  assessmentArea.innerHTML="";
  navigationRow.style.display="flex";
  previousButton.disabled=currentView.lessonIndex===0;
@@ -276,6 +318,7 @@ function renderLesson(){
 }
 
 async function renderAssessment(metadata,type,moduleIndex=null){
+ lessonSnapshot.style.display="none";reflectionCard.style.display="none";
  if(previewMode){
    lessonTitle.textContent=metadata?.title||"Assessment";
    lessonContent.innerHTML="";
@@ -345,7 +388,7 @@ async function scoreAssessment(assessment,type,moduleIndex){
    if(b)b.onclick=()=>{
      if(nextModule<modules.length){currentView={type:"lesson",lessonIndex:lessonGlobalIndex(modules[nextModule].lessons[0].id)}}
      else if(finalUnlocked()){currentView={type:"final"}}
-     renderCurrentView();
+     renderCurrentView();focusLesson();
    };
  }
  if(passed&&type==="final"){await showCompletion()}
@@ -362,6 +405,7 @@ async function showCompletion(){
  lessonTitle.textContent="Course Completed";
  lessonCover.innerHTML="<h2>Congratulations — Course Completed</h2>";
  lessonContent.innerHTML="";
+ lessonSnapshot.style.display="none";reflectionCard.style.display="none";
  assessmentArea.innerHTML=`<div class="completion-card">
  <div class="completion-badge" style="width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;margin:0 auto 14px;font-size:1.8rem">🎓</div>
  <h2>Congratulations, ${esc(profileName())}</h2>
@@ -387,8 +431,13 @@ async function renderCurrentView(){
 
 previousButton.onclick=()=>{
  if(currentView.type!=="lesson"||currentView.lessonIndex<=0)return;
- currentView={type:"lesson",lessonIndex:currentView.lessonIndex-1};renderCurrentView();window.scrollTo({top:0,behavior:"smooth"});
+ currentView={type:"lesson",lessonIndex:currentView.lessonIndex-1};renderCurrentView();focusLesson();
 };
+
+mobileModuleButton.onclick=()=>courseSidebar.classList.contains("open")?closeCourseMenu({restoreFocus:true}):openCourseMenu();
+sidebarClose.onclick=()=>closeCourseMenu({restoreFocus:true});
+courseMenuBackdrop.onclick=()=>closeCourseMenu({restoreFocus:true});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&courseSidebar.classList.contains("open"))closeCourseMenu({restoreFocus:true})});
 
 completeButton.onclick=async()=>{
  if(currentView.type!=="lesson"||previewMode)return;
@@ -410,10 +459,10 @@ nextButton.onclick=()=>{
  const l=lessons[currentView.lessonIndex];
  if(!completedLessons.has(l.id))return;
  const m=modules[l.moduleIndex], last=l.lessonIndex===m.lessons.length-1;
- if(last&&m.quiz&&!passedModuleQuizzes[l.moduleIndex]){currentView={type:"moduleQuiz",moduleIndex:l.moduleIndex};renderCurrentView();return}
+ if(last&&m.quiz&&!passedModuleQuizzes[l.moduleIndex]){currentView={type:"moduleQuiz",moduleIndex:l.moduleIndex};renderCurrentView();focusLesson();return}
  const nextIdx=currentView.lessonIndex+1;
- if(nextIdx<lessons.length&&lessonUnlocked(lessons[nextIdx])){currentView={type:"lesson",lessonIndex:nextIdx};renderCurrentView()}
- else if(finalUnlocked()){currentView={type:"final"};renderCurrentView()}
+ if(nextIdx<lessons.length&&lessonUnlocked(lessons[nextIdx])){currentView={type:"lesson",lessonIndex:nextIdx};renderCurrentView();focusLesson()}
+ else if(finalUnlocked()){currentView={type:"final"};renderCurrentView();focusLesson()}
 };
 
 async function loadCourse(){

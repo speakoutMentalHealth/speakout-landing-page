@@ -36,6 +36,19 @@ test("lesson order, server grading, and atomic certificate issuance remain enfor
   assert.doesNotMatch(read("course-player.html"), /q\.answer|correctAnswer/u);
 });
 
+test("course player has mobile module navigation and visual lesson scaffolding", () => {
+  const player = read("course-player.html");
+  assert.match(player, /id="mobileModuleButton"[^>]+aria-controls="courseSidebar"/u);
+  assert.match(player, /class="course-menu-backdrop"/u);
+  assert.match(player, /function openCourseMenu\(\)/u);
+  assert.match(player, /event\.key==="Escape"/u);
+  assert.match(player, /l\.coverUrl\|\|course\.coverUrl/u);
+  assert.match(player, /id="lessonSnapshot"/u);
+  assert.match(player, /id="reflectionCard"/u);
+  assert.match(player, /About \$\{readMinutes\} min/u);
+  assert.match(player, /prefers-reduced-motion:reduce/u);
+});
+
 test("learner dashboards use the authenticated API instead of incompatible Firestore queries", () => {
   const worker = read("workers/platform-api/src/index.js");
   assert.match(worker, /\/v1\/learning\/dashboard/u);
