@@ -18,6 +18,16 @@ function corsHeaders(request, env) {
 
 const clean = value => String(value || "").trim();
 const normalized = value => clean(value).toLowerCase();
+const looksLikeEmail = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(clean(value));
+function humanName(profile = {}) {
+  const candidates = [
+    profile.fullName,
+    `${clean(profile.firstName)} ${clean(profile.lastName)}`.trim(),
+    profile.displayName,
+    profile.name
+  ].map(clean);
+  return candidates.find(value => value && !looksLikeEmail(value)) || "Learner";
+}
 function safeId(value, label = "identifier") {
   const id = clean(value);
   if (!/^[A-Za-z0-9_-]{1,180}$/.test(id)) throw Object.assign(new Error(`Invalid ${label}.`), { status: 400 });
@@ -693,7 +703,7 @@ async function route(request, env, path, data) {
         const provider = bounded(course.provider || "External Provider", 160, "Provider");
         const record = {
           ...(existing || {}), userId: user.uid, userEmail: user.email || clean(user.profile.email),
-          learnerName: clean(user.profile.fullName) || `${clean(user.profile.firstName)} ${clean(user.profile.lastName)}`.trim() || user.email,
+          learnerName: humanName(user.profile),
           learnerRole: clean(user.profile.role) || "user", schoolId: clean(user.profile.schoolId), schoolCode: clean(user.profile.schoolCode),
           courseId: requestedCourseId, courseTitle: bounded(course.title || "External course", 240, "Course title"),
           courseCategory: bounded(course.category, 120, "Course category"), courseType: "external", provider,
@@ -837,7 +847,7 @@ async function route(request, env, path, data) {
           const existing = await tx.get(`certificates/${id}`);
           if (!existing) {
             const verificationCode = await deterministicVerificationCode(`course:${id}`);
-            const record = { id, userId: user.uid, recipientName: user.profile.fullName || user.email, courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+            const record = { id, userId: user.uid, recipientName: humanName(user.profile), recipientEmail: user.email || clean(user.profile.email), courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
             tx.set(`certificates/${id}`, record);
             tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: record.recipientName, awardTitle: record.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: record.issueDate, status: record.status, certificateNumber: id });
             certificate = { id, verificationCode };

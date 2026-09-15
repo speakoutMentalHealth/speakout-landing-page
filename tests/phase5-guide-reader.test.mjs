@@ -38,6 +38,22 @@ test("guide reader supports accessible navigation and printing", () => {
   assert.match(reader, /event\.key === "ArrowRight"/u);
 });
 
+test("guide reader supports read-aloud and mobile section navigation", () => {
+  const reader = read("book-reader.html");
+  const library = read("e-library.html");
+  assert.match(reader, /id="listenBtn"[^>]+aria-pressed="false"/u);
+  assert.match(reader, /SpeechSynthesisUtterance/u);
+  assert.match(reader, /function splitSpeechText/u);
+  assert.match(reader, /speechSynthesis\.pause\(\)/u);
+  assert.match(reader, /speechSynthesis\.resume\(\)/u);
+  assert.match(reader, /id="listenRate"/u);
+  assert.match(reader, /id="mobileSectionsButton"[^>]+aria-controls="readerSidebar"/u);
+  assert.match(reader, /event\.key === "Escape"/u);
+  assert.match(reader, /prefers-reduced-motion:reduce/u);
+  assert.match(library, /Read or Listen/u);
+  assert.match(library, /Interactive reading features/u);
+});
+
 test("guide reader sanitizes rich content and constrains media URLs", () => {
   const reader = read("book-reader.html");
 

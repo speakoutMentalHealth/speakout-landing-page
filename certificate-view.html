@@ -790,6 +790,37 @@ function normalise(value){
     .toLowerCase();
 }
 
+function looksLikeEmail(value){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(String(value || "").trim());
+}
+
+function humanName(source={}){
+  const candidates = [
+    source.fullName,
+    `${source.firstName || ""} ${source.lastName || ""}`.trim(),
+    source.displayName,
+    source.recipientName,
+    source.learnerName,
+    source.name
+  ].map(value=>String(value || "").trim());
+  return candidates.find(value=>value && !looksLikeEmail(value)) || "";
+}
+
+async function resolveRecipient(record){
+  const storedName = humanName(record);
+  if(storedName) return storedName;
+  const ownerId = record.userId || record.recipientId || record.learnerId;
+  if(ownerId){
+    try{
+      const profile = await getDoc(doc(db,"users",ownerId));
+      if(profile.exists()) return humanName(profile.data()) || "Learner";
+    }catch(error){
+      console.warn("Could not resolve the certificate owner profile.",error);
+    }
+  }
+  return "Learner";
+}
+
 
 function formatLabel(value){
 
@@ -990,7 +1021,7 @@ async function findCertificate(publicId){
 }
 
 
-function renderCertificate(record,docId){
+function renderCertificate(record,docId,resolvedRecipient=""){
 
   const status =
     statusOf(record);
@@ -1007,9 +1038,8 @@ function renderCertificate(record,docId){
 
 
   const recipient =
-    record.recipientName ||
-    record.learnerName ||
-    record.name ||
+    resolvedRecipient ||
+    humanName(record) ||
     "Recipient";
 
 
@@ -1340,9 +1370,12 @@ async function load(){
     }
 
 
+    const resolvedRecipient = await resolveRecipient(result.record);
+
     renderCertificate(
       result.record,
-      result.docId
+      result.docId,
+      resolvedRecipient
     );
 
 
