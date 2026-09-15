@@ -291,10 +291,11 @@ test("public catalogues only render complete published learning content", async 
   assert.match(bookAdmin, /setDoc\(doc\(db,"books",item\.id\)/u);
 });
 
-test("the public course catalogue can read course metadata without exposing protected learning data", async () => {
+test("embedded course lessons cannot be exposed through public course reads", async () => {
   const rules = await readFile(path.join(root, "firebase/firestore.rules"), "utf8");
   const courses = rules.match(/match \/courses\/\{courseId\}[\s\S]*?match \/courseModules/u)?.[0] || "";
-  assert.match(courses, /allow read: if true;/u);
+  assert.match(courses, /allow read: if isApproved\(\);/u);
+  assert.doesNotMatch(courses, /allow read: if true;/u);
   assert.match(courses, /allow write: if isSuperAdmin\(\);/u);
   const assessments = rules.match(/match \/courseAssessments\/\{assessmentId\}[\s\S]*?\n\s*\}/u)?.[0] || "";
   assert.match(assessments, /allow read, write: if false;/u);

@@ -25,7 +25,7 @@ Status: **Not ready for final sign-off**
 
 The public SpeakHub catalogue currently shows zero courses and reports `Missing or insufficient permissions` because production rules require an approved session to read `courses`.
 
-Commit `7c8c4d4` changes only course metadata reads to public access. Course modules, lessons, progress, certificates and assessments remain protected. The rule change is committed and tested but is not deployed pending explicit production security approval.
+Course lessons are embedded inside each course document, so allowing public reads on `courses` would expose lesson content as well as catalogue metadata. That unsafe rule was never deployed and has been removed from the repository. The catalogue must instead load a deliberately filtered public metadata response while authenticated players continue reading protected course documents.
 
 ### 2. Authenticated visual walkthrough
 
@@ -45,7 +45,7 @@ The production Firestore database currently has zero scheduled backup policies. 
 
 ## Required decisions
 
-1. Approve deploying the tested rule that makes only `courses` metadata publicly readable.
+1. Implement and deploy a filtered public course-catalogue endpoint without exposing embedded lessons.
 2. Select an analytics provider and supply its production site/property identifier.
 3. Approve a Firestore backup policy. Recommended baseline: daily backups retained for 7 days and weekly Sunday backups retained for 14 weeks.
 4. Enable the Chrome DevTools MCP service or provide an accessible Chrome/Edge test surface for authenticated visual and performance QA.
