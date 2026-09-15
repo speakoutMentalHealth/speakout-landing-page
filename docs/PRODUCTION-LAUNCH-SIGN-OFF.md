@@ -15,9 +15,14 @@ Status: **Not ready for final sign-off**
 - Mobile checks at 390 x 844 found no horizontal overflow on the member-access page or public landing page.
 - The mobile course player now keeps module navigation in a sticky, accessible bottom sheet and returns learners directly to the lesson after navigation.
 - Internal lessons now use course artwork, estimated reading time, focused reading cards, styled content sections and reflection prompts instead of an uninterrupted wall of text.
+- The public e-library now introduces its interactive reading features, identifies books that support listening, and gives internal books a clear `Read or Listen` action.
+- The book reader now provides browser-native read-aloud controls (play, pause/resume, stop and four playback speeds), a focused reading measure, styled content blocks and a sticky mobile sections drawer.
+- Certificate rendering no longer substitutes an email address for the learner name. New internal certificates store the human name separately from `recipientEmail`, while legacy certificates resolve the owner profile and fall back to `Learner` rather than printing an email address.
 - The production player returned HTTP 200 with the new mobile and visual-learning components after deployment.
+- The production library, book reader and certificate viewer returned HTTP 200 with their rollout markers after deployment.
+- Production Worker version `15b8dbc2-0e59-4528-a91b-3038482c0d56` is active, and its unauthenticated learning-dashboard guard correctly returns HTTP 401.
 - The current curriculum contains 15 published course records: 6 internal courses with 108 lessons (minimum 324 words; average 426 words) and 9 external learning pathways.
-- The complete static regression suite passes: 47 tests, 0 failures.
+- The complete static regression suite passes: 49 tests, 0 failures.
 
 ## Open launch blockers
 
