@@ -274,7 +274,10 @@ service cloud.firestore {
     }
 
     match /courses/{courseId} {
-      allow read: if isApproved();
+      /* The course catalogue is public. The browser only renders records that
+         pass the published-status and readiness checks; lessons, progress and
+         assessments remain protected below. */
+      allow read: if true;
       allow write: if isSuperAdmin();
     }
 

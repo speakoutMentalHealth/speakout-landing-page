@@ -291,6 +291,15 @@ test("public catalogues only render complete published learning content", async 
   assert.match(bookAdmin, /setDoc\(doc\(db,"books",item\.id\)/u);
 });
 
+test("the public course catalogue can read course metadata without exposing protected learning data", async () => {
+  const rules = await readFile(path.join(root, "firebase/firestore.rules"), "utf8");
+  const courses = rules.match(/match \/courses\/\{courseId\}[\s\S]*?match \/courseModules/u)?.[0] || "";
+  assert.match(courses, /allow read: if true;/u);
+  assert.match(courses, /allow write: if isSuperAdmin\(\);/u);
+  const assessments = rules.match(/match \/courseAssessments\/\{assessmentId\}[\s\S]*?\n\s*\}/u)?.[0] || "";
+  assert.match(assessments, /allow read, write: if false;/u);
+});
+
 test("public learning catalogues provide mobile-friendly discovery and filter feedback", async () => {
   const academy = await readFile(path.join(root, "speakhub.html"), "utf8");
   const library = await readFile(path.join(root, "e-library.html"), "utf8");
