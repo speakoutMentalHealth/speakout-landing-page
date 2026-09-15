@@ -13,7 +13,11 @@ Status: **Not ready for final sign-off**
 - The production Cloudflare learning API is deployed and its authenticated role endpoints return HTTP 200.
 - The external-learning admin queue matches Firestore and exposes no private evidence URLs.
 - Mobile checks at 390 x 844 found no horizontal overflow on the member-access page or public landing page.
-- The complete static regression suite passes: 46 tests, 0 failures.
+- The mobile course player now keeps module navigation in a sticky, accessible bottom sheet and returns learners directly to the lesson after navigation.
+- Internal lessons now use course artwork, estimated reading time, focused reading cards, styled content sections and reflection prompts instead of an uninterrupted wall of text.
+- The production player returned HTTP 200 with the new mobile and visual-learning components after deployment.
+- The current curriculum contains 15 published course records: 6 internal courses with 108 lessons (minimum 324 words; average 426 words) and 9 external learning pathways.
+- The complete static regression suite passes: 47 tests, 0 failures.
 
 ## Open launch blockers
 
