@@ -11,7 +11,7 @@ function corsHeaders(request, env) {
   return allowed.includes(origin) ? {
     "access-control-allow-origin": origin,
     "access-control-allow-headers": "authorization,content-type",
-    "access-control-allow-methods": "POST,OPTIONS",
+    "access-control-allow-methods": "GET,POST,OPTIONS",
     "vary": "Origin"
   } : {};
 }
@@ -27,6 +27,76 @@ function humanName(profile = {}) {
     profile.name
   ].map(clean);
   return candidates.find(value => value && !looksLikeEmail(value)) || "Learner";
+}
+
+const publicCourseStatus = course => ["active", "published"].includes(normalized(course?.status));
+const publicWebUrl = value => {
+  try {
+    const url = new URL(clean(value));
+    return ["http:", "https:"].includes(url.protocol);
+  } catch {
+    return false;
+  }
+};
+const textWords = value => {
+  const text = Array.isArray(value)
+    ? value.map(textWords).join(" ")
+    : value && typeof value === "object"
+      ? Object.values(value).map(textWords).join(" ")
+      : typeof value === "string" ? value.replace(/<[^>]*>/gu, " ") : "";
+  return text.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)?.length || 0;
+};
+
+function courseIsCatalogueReady(course = {}) {
+  if (!publicCourseStatus(course) || !clean(course.title) || !clean(course.category)) return false;
+  const type = normalized(course.courseType || course.type || "internal");
+  const external = type === "external" || normalized(course.completionMethod) === "certificate-upload" || course.externalProvider === true;
+  if (external) {
+    const hasDestination = [course.externalUrl, course.courseUrl, course.providerCourseUrl].some(publicWebUrl);
+    return Boolean(clean(course.provider) && hasDestination && textWords([
+      course.title, course.shortDescription, course.description, course.outcomes, course.prerequisites, course.tags
+    ]) >= 75);
+  }
+  if (type === "instructor-led") {
+    return [course.enrollmentUrl, course.contactUrl].some(publicWebUrl) &&
+      textWords([course.description, course.shortDescription, course.outcomes, course.prerequisites]) >= 75;
+  }
+  const modules = Array.isArray(course.modules) ? course.modules : [];
+  const completeModules = modules.length > 0 && modules.every(module =>
+    clean(module?.title) && Array.isArray(module.lessons) && module.lessons.length > 0 &&
+    module.lessons.every(lesson => clean(lesson?.title) && [lesson.content, lesson.videoUrl, lesson.audioUrl, lesson.resourceUrl].some(clean))
+  );
+  return completeModules && textWords([
+    course.description, course.shortDescription, course.outcomes, course.prerequisites, modules, course.finalAssessment
+  ]) >= 5000;
+}
+
+function publicCourseMetadata(course = {}) {
+  const fields = [
+    "id", "title", "courseType", "provider", "providerLogo", "category", "audience", "difficulty", "duration",
+    "description", "status", "featured", "free", "certificateEligible", "completionMethod", "slug", "instructor",
+    "level", "accessType", "coverUrl", "shortDescription", "fullDescription", "outcomes", "prerequisites", "tags",
+    "lessonCount", "minimumCompletion", "minimumScore", "instructionalStandard", "instructionalStructure", "externalProvider",
+    "externalUrl", "courseUrl", "providerCourseUrl", "providerUrl", "url", "enrollmentUrl", "contactUrl"
+  ];
+  const result = Object.fromEntries(fields.filter(field => course[field] !== undefined).map(field => [field, course[field]]));
+  if (course.certificate && typeof course.certificate === "object") {
+    result.certificate = {
+      available: course.certificate.available === true,
+      issuer: clean(course.certificate.issuer),
+      verificationRequired: course.certificate.verificationRequired === true,
+      uploadRequired: course.certificate.uploadRequired === true
+    };
+  }
+  if (Array.isArray(course.modules)) {
+    result.modules = course.modules.map((module, index) => ({
+      id: clean(module?.id) || `${clean(course.id)}-module-${index + 1}`,
+      title: clean(module?.title) || `Module ${index + 1}`,
+      description: clean(module?.description),
+      lessonCount: Array.isArray(module?.lessons) ? module.lessons.length : Number(module?.lessonCount || 0)
+    }));
+  }
+  return result;
 }
 function safeId(value, label = "identifier") {
   const id = clean(value);
@@ -652,6 +722,15 @@ async function authenticatedEvidenceResponse(env, record) {
 }
 
 async function route(request, env, path, data) {
+  if (path === "/v1/catalog/courses") {
+    const page = await listDocuments(env, "courses", 500);
+    const courses = page.documents.filter(courseIsCatalogueReady).map(publicCourseMetadata)
+      .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || clean(a.title).localeCompare(clean(b.title)));
+    return json({ courses, truncated: page.truncated }, 200, {
+      "cache-control": "public, max-age=120, s-maxage=300",
+      "x-content-type-options": "nosniff"
+    });
+  }
   const user = await authenticatedUser(request, env);
   const courseSpecificLearningPaths = new Set([
     "/v1/learning/enroll",
@@ -1062,7 +1141,9 @@ export default {
   async fetch(request, env) {
     const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
-    if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, headers);
+    const path = new URL(request.url).pathname;
+    const isPublicCatalogue = request.method === "GET" && path === "/v1/catalog/courses";
+    if (request.method !== "POST" && !isPublicCatalogue) return json({ error: "Method not allowed." }, 405, headers);
     const origin = request.headers.get("origin") || "";
     if (origin && !headers["access-control-allow-origin"]) return json({ error: "Origin not allowed." }, 403);
     try {
@@ -1073,7 +1154,7 @@ export default {
         const form = await request.formData();
         data = Object.fromEntries(form.entries());
       }
-      const result = await route(request, env, new URL(request.url).pathname, data);
+      const result = await route(request, env, path, data);
       if (result instanceof Response) {
         const responseHeaders = new Headers(result.headers);
         Object.entries(headers).forEach(([key, value]) => responseHeaders.set(key, value));
