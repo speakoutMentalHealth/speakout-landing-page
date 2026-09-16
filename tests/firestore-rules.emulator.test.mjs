@@ -28,6 +28,52 @@ async function seed(path, value) {
   });
 }
 
+const otmApplication = (id = "SOM-20260916-ABCDEF12") => ({
+  applicationId: id,
+  organizationName: "Example Community School",
+  organizationType: "School",
+  country: "Nigeria",
+  state: "Nasarawa",
+  city: "Keffi",
+  contactName: "Programme Contact",
+  contactRole: "Coordinator",
+  email: "coordinator@example.test",
+  phone: "+2348000000000",
+  program: "School Wellness",
+  audience: "Students",
+  ageRange: "13-17",
+  expectedReach: 120,
+  reason: "We want structured mental health education and practical wellbeing support for our students.",
+  needs: "Students would benefit from stigma reduction, wellbeing skills, early support awareness and referral information.",
+  venue: "School hall",
+  logistics: "available",
+  funding: "require_sponsorship",
+  clubInterest: "maybe",
+  partnershipInterest: "yes",
+  declaration: true,
+  status: "new",
+  source: "on-the-move-web",
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+const sponsorEnquiry = (id = "SOMS-20260916-1234ABCD") => ({
+  enquiryId: id,
+  contactName: "Sponsor Contact",
+  organizationName: "Example Foundation",
+  contactRole: "Partnership Lead",
+  email: "partner@example.test",
+  phone: "+2348000000001",
+  country: "Nigeria",
+  scope: "Sponsor a school",
+  message: "We would like to discuss supporting responsible delivery of a SpeakOut On The Move school programme.",
+  declaration: true,
+  status: "new",
+  source: "on-the-move-sponsor-web",
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
 before(async () => {
   testEnv = await initializeTestEnvironment({
     projectId: PROJECT_ID,
@@ -121,14 +167,8 @@ test("external evidence writes are restricted to the trusted API", async () => {
     evidenceResourceType: "image"
   };
   await assertFails(setDoc(doc(db, "externalLearningRecords/submission-a"), valid));
-  await assertFails(setDoc(doc(db, "externalLearningRecords/submission-b"), {
-    ...valid,
-    status: "approved"
-  }));
-  await assertFails(setDoc(doc(db, "externalLearningRecords/submission-c"), {
-    ...valid,
-    proofData: "data:image/png;base64,secret"
-  }));
+  await assertFails(setDoc(doc(db, "externalLearningRecords/submission-b"), { ...valid, status: "approved" }));
+  await assertFails(setDoc(doc(db, "externalLearningRecords/submission-c"), { ...valid, proofData: "data:image/png;base64,secret" }));
 });
 
 test("parent/student links cannot cross school tenancy", async () => {
@@ -137,16 +177,10 @@ test("parent/student links cannot cross school tenancy", async () => {
   await seed("users/student-b", profile("student-b", "student", "school-b"));
   const db = testEnv.authenticatedContext("parent-a").firestore();
   await assertSucceeds(setDoc(doc(db, "parentStudentLinks/link-a"), {
-    parentId: "parent-a",
-    studentId: "student-a",
-    schoolId: "school-a",
-    status: "pending"
+    parentId: "parent-a", studentId: "student-a", schoolId: "school-a", status: "pending"
   }));
   await assertFails(setDoc(doc(db, "parentStudentLinks/link-b"), {
-    parentId: "parent-a",
-    studentId: "student-b",
-    schoolId: "school-b",
-    status: "pending"
+    parentId: "parent-a", studentId: "student-b", schoolId: "school-b", status: "pending"
   }));
 });
 
@@ -154,17 +188,78 @@ test("admin access does not weaken public verification privacy", async () => {
   await seed("users/admin-a", profile("admin-a", "admin"));
   const adminDb = testEnv.authenticatedContext("admin-a").firestore();
   await assertSucceeds(setDoc(doc(adminDb, "certificates/cert-a"), {
-    userId: "student-a",
-    verificationCode: "SAFE123",
-    finalScore: 90
+    userId: "student-a", verificationCode: "SAFE123", finalScore: 90
   }));
   await assertSucceeds(setDoc(doc(adminDb, "publicCertificateVerifications/SAFE123"), {
-    recipientName: "Learner",
-    awardTitle: "Course",
-    status: "active"
+    recipientName: "Learner", awardTitle: "Course", status: "active"
   }));
   const publicDb = testEnv.unauthenticatedContext().firestore();
   const projection = await assertSucceeds(getDoc(doc(publicDb, "publicCertificateVerifications/SAFE123")));
   assert.equal(projection.data().finalScore, undefined);
   await assertFails(getDoc(doc(publicDb, "certificates/cert-a")));
+});
+
+test("anonymous visitor may submit a valid On The Move application but cannot read or change it", async () => {
+  const db = testEnv.unauthenticatedContext().firestore();
+  const id = "SOM-20260916-ABCDEF12";
+  await assertSucceeds(setDoc(doc(db, `onTheMoveApplications/${id}`), otmApplication(id)));
+  await assertFails(getDoc(doc(db, `onTheMoveApplications/${id}`)));
+  await assertFails(updateDoc(doc(db, `onTheMoveApplications/${id}`), { status: "approved" }));
+});
+
+test("On The Move public create validation rejects forged status, identifier and unexpected fields", async () => {
+  const db = testEnv.unauthenticatedContext().firestore();
+  await assertFails(setDoc(doc(db, "onTheMoveApplications/SOM-20260916-BAD00001"), {
+    ...otmApplication("SOM-20260916-BAD00001"), status: "approved"
+  }));
+  await assertFails(setDoc(doc(db, "onTheMoveApplications/guessable-id"), {
+    ...otmApplication("guessable-id")
+  }));
+  await assertFails(setDoc(doc(db, "onTheMoveApplications/SOM-20260916-BAD00002"), {
+    ...otmApplication("SOM-20260916-BAD00002"), privateHealthDisclosure: "sensitive"
+  }));
+});
+
+test("ordinary approved portal users cannot read or manage On The Move applications", async () => {
+  await seed("users/student-a", profile("student-a", "student"));
+  const id = "SOM-20260916-ABCDEF12";
+  await seed(`onTheMoveApplications/${id}`, otmApplication(id));
+  const db = testEnv.authenticatedContext("student-a").firestore();
+  await assertFails(getDoc(doc(db, `onTheMoveApplications/${id}`)));
+  await assertFails(updateDoc(doc(db, `onTheMoveApplications/${id}`), { status: "screening" }));
+});
+
+test("approved admin can read and manage On The Move applications", async () => {
+  await seed("users/admin-a", profile("admin-a", "admin"));
+  const id = "SOM-20260916-ABCDEF12";
+  await seed(`onTheMoveApplications/${id}`, otmApplication(id));
+  const db = testEnv.authenticatedContext("admin-a").firestore();
+  await assertSucceeds(getDoc(doc(db, `onTheMoveApplications/${id}`)));
+  await assertSucceeds(updateDoc(doc(db, `onTheMoveApplications/${id}`), {
+    status: "screening",
+    assignedTo: "Programme Team",
+    internalNotes: "Initial institutional review started."
+  }));
+});
+
+test("anonymous sponsor enquiry is write-only and cannot choose an internal status", async () => {
+  const db = testEnv.unauthenticatedContext().firestore();
+  const id = "SOMS-20260916-1234ABCD";
+  await assertSucceeds(setDoc(doc(db, `onTheMoveSponsorEnquiries/${id}`), sponsorEnquiry(id)));
+  await assertFails(getDoc(doc(db, `onTheMoveSponsorEnquiries/${id}`)));
+  await assertFails(setDoc(doc(db, "onTheMoveSponsorEnquiries/SOMS-20260916-BAD00001"), {
+    ...sponsorEnquiry("SOMS-20260916-BAD00001"), status: "approved"
+  }));
+});
+
+test("approved admin can review sponsor enquiries while ordinary users cannot", async () => {
+  await seed("users/admin-a", profile("admin-a", "admin"));
+  await seed("users/student-a", profile("student-a", "student"));
+  const id = "SOMS-20260916-1234ABCD";
+  await seed(`onTheMoveSponsorEnquiries/${id}`, sponsorEnquiry(id));
+  const adminDb = testEnv.authenticatedContext("admin-a").firestore();
+  const studentDb = testEnv.authenticatedContext("student-a").firestore();
+  await assertSucceeds(getDoc(doc(adminDb, `onTheMoveSponsorEnquiries/${id}`)));
+  await assertSucceeds(updateDoc(doc(adminDb, `onTheMoveSponsorEnquiries/${id}`), { status: "contacted" }));
+  await assertFails(getDoc(doc(studentDb, `onTheMoveSponsorEnquiries/${id}`)));
 });
