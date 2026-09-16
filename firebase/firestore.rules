@@ -3,416 +3,71 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isSignedIn() {
-      return request.auth != null;
+    function isSignedIn() { return request.auth != null; }
+    function userExists() { return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function userDoc() { return get(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function userRole() { return userExists() ? userDoc().data.role : ""; }
+    function userSchoolId() { return userExists() ? userDoc().data.schoolId : ""; }
+    function isApproved() { return userExists() && userDoc().data.status == "approved"; }
+    function isSuperAdmin() { return isApproved() && (userRole() == "super_admin" || userRole() == "admin"); }
+    function isSchoolAdmin() { return isApproved() && userRole() == "school_admin"; }
+    function isTeacher() { return isApproved() && userRole() == "teacher"; }
+    function isParent() { return isApproved() && userRole() == "parent"; }
+    function isStudent() { return isApproved() && userRole() == "student"; }
+    function isAmbassador() { return isApproved() && userRole() == "ambassador"; }
+    function isPublicRole(role) { return role in ["student","parent","teacher","school","school_admin","ambassador","contributor","volunteer"]; }
+    function validNewUser(userId) { return request.resource.data.keys().hasAll(["uid","email","role","status","approved"]) && request.resource.data.uid == userId && request.auth.uid == userId && request.resource.data.status == "pending" && request.resource.data.approved == false && isPublicRole(request.resource.data.role) && request.resource.data.email is string; }
+    function onlyEditableProfileFieldsChanged() { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["firstName","lastName","fullName","phone","country","state","city","location","occupation","bio","photoURL","profileCompleted","updatedAt"]); }
+    function isUserInSchool(userId, schoolId) { return exists(/databases/$(database)/documents/users/$(userId)) && get(/databases/$(database)/documents/users/$(userId)).data.schoolId == schoolId; }
+
+    match /users/{userId} { allow create: if isSignedIn() && request.auth.uid == userId && validNewUser(userId); allow read: if isApproved() && (request.auth.uid == userId || isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId())); allow update: if isSuperAdmin() || (isApproved() && request.auth.uid == userId && onlyEditableProfileFieldsChanged()); allow delete: if isSuperAdmin(); }
+    match /schools/{schoolId} { allow create: if isSuperAdmin(); allow read: if isApproved() && (isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId) || ((isTeacher() || isParent() || isStudent()) && userSchoolId() == schoolId)); allow update: if isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId); allow delete: if isSuperAdmin(); }
+    match /parentStudentLinks/{linkId} { allow create: if isSuperAdmin() || (isApproved() && request.resource.data.schoolId == userSchoolId() && isUserInSchool(request.resource.data.studentId,userSchoolId()) && ((isSchoolAdmin() && isUserInSchool(request.resource.data.parentId,userSchoolId())) || (isParent() && request.resource.data.parentId == request.auth.uid))); allow read: if isApproved() && (isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) || resource.data.parentId == request.auth.uid || resource.data.studentId == request.auth.uid); allow update: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId() && request.resource.data.schoolId == userSchoolId() && request.resource.data.parentId == resource.data.parentId && request.resource.data.studentId == resource.data.studentId); allow delete: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId()); }
+    match /books/{bookId} { allow read: if true; allow write: if isSuperAdmin(); }
+    match /bookSubmissions/{submissionId} { allow create: if isSignedIn() && request.resource.data.submittedBy == request.auth.uid && request.resource.data.status == "pending"; allow read: if isSignedIn() && (resource.data.submittedBy == request.auth.uid || isSuperAdmin()); allow update, delete: if isSuperAdmin(); }
+    match /parentResources/{resourceId} { allow read: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin()); allow write: if isSuperAdmin(); }
+    match /teacherResources/{resourceId} { allow read: if isApproved() && (isTeacher() || isSchoolAdmin() || isSuperAdmin()); allow write: if isSuperAdmin(); }
+    match /studentResources/{resourceId} { allow read: if isApproved() && (isStudent() || isTeacher() || isSchoolAdmin() || isSuperAdmin()); allow write: if isSuperAdmin(); }
+    match /schoolResources/{resourceId} { allow read: if isApproved() && (isSuperAdmin() || (resource.data.schoolId == userSchoolId() && (isSchoolAdmin() || isTeacher() || isParent() || isStudent()))); allow create: if isSuperAdmin() || (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId()); allow update: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId() && request.resource.data.schoolId == userSchoolId()); allow delete: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId()); }
+    match /workshops/{workshopId} { allow read: if isApproved() && (isSuperAdmin() || (resource.data.schoolId == userSchoolId() && (isSchoolAdmin() || isTeacher() || isParent() || isStudent()))); allow create: if isSuperAdmin() || (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId()); allow update: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId() && request.resource.data.schoolId == userSchoolId()); allow delete: if isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId()); }
+    match /courses/{courseId} { allow read: if isApproved(); allow write: if isSuperAdmin(); }
+    match /courseModules/{moduleId} { allow read: if isApproved(); allow write: if isSuperAdmin(); }
+    match /courseLessons/{lessonId} { allow read: if isApproved(); allow write: if isSuperAdmin(); }
+    match /courseAssessments/{assessmentId} { allow read, write: if false; }
+    match /userProgress/{progressId} { allow read: if isApproved() && (resource.data.userId == request.auth.uid || isSuperAdmin()); allow write: if isSuperAdmin(); }
+    match /readingProgress/{progressId} { allow read: if isApproved() && resource.data.userId == request.auth.uid; allow create: if isApproved() && request.resource.data.userId == request.auth.uid && request.resource.data.type in ["book","kiddies"]; allow update: if isApproved() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid && request.resource.data.type in ["book","kiddies"]; allow delete: if isApproved() && resource.data.userId == request.auth.uid; }
+    match /certificates/{certificateId} { allow read: if isSuperAdmin() || (isApproved() && resource.data.userId == request.auth.uid); allow create, update, delete: if isSuperAdmin(); }
+    match /publicCertificateVerifications/{verificationCode} { allow read: if true; allow write: if isSuperAdmin(); }
+    match /certificateTemplates/{templateId} { allow read: if isApproved(); allow write: if isSuperAdmin(); }
+    match /externalLearningRecords/{recordId} { allow read: if isApproved() && (resource.data.userId == request.auth.uid || isSuperAdmin()); allow create, update, delete: if isSuperAdmin(); }
+    match /contributors/{contributorId} { allow read: if isApproved(); allow write: if isSuperAdmin(); }
+    match /contributorApplications/{applicationId} { allow create: if isSignedIn(); allow read, update, delete: if isSuperAdmin(); }
+    match /kiddiesResources/{resourceId} { allow read: if isApproved() && (isStudent() || isParent() || isTeacher() || isSchoolAdmin() || isSuperAdmin()); allow write: if isSuperAdmin(); }
+    match /homepageMedia/{mediaId} { allow read: if true; allow write: if isSuperAdmin(); }
+    match /newsEvents/{eventId} { allow read: if true; allow write: if isSuperAdmin(); }
+    match /payments/{paymentId} { allow create: if isApproved() && request.resource.data.userId == request.auth.uid && request.resource.data.status == "pending"; allow read: if isSuperAdmin() || (isApproved() && resource.data.userId == request.auth.uid); allow update, delete: if isSuperAdmin(); }
+    match /donations/{donationId} { allow create: if true; allow read, update, delete: if isSuperAdmin(); }
+    match /contactMessages/{messageId} { allow create: if true; allow read, update, delete: if isSuperAdmin(); }
+    match /schoolApplications/{applicationId} { allow create: if true; allow read, update, delete: if isSuperAdmin(); }
+
+    function validOnTheMoveApplication(applicationId) {
+      return request.resource.data.keys().hasAll(["applicationId","organizationName","organizationType","country","state","city","contactName","contactRole","email","phone","program","audience","ageRange","expectedReach","reason","needs","venue","logistics","funding","clubInterest","partnershipInterest","declaration","status","source","createdAt","updatedAt"]) &&
+        request.resource.data.keys().hasOnly(["applicationId","organizationName","organizationType","website","country","state","city","contactName","contactRole","email","phone","program","audience","ageRange","expectedReach","reason","needs","preferredDate","alternativeDate","venue","logistics","facilities","funding","clubInterest","partnershipInterest","declaration","status","source","createdAt","updatedAt"]) &&
+        request.resource.data.applicationId == applicationId &&
+        applicationId.matches('SOM-[0-9]{8}-[A-F0-9]{8}') &&
+        request.resource.data.status == "new" && request.resource.data.source == "on-the-move-web" && request.resource.data.declaration == true &&
+        request.resource.data.organizationName is string && request.resource.data.organizationName.size() >= 2 && request.resource.data.organizationName.size() <= 120 &&
+        request.resource.data.email is string && request.resource.data.email.size() >= 5 && request.resource.data.email.size() <= 160 &&
+        request.resource.data.phone is string && request.resource.data.phone.size() >= 5 && request.resource.data.phone.size() <= 40 &&
+        request.resource.data.reason is string && request.resource.data.reason.size() >= 30 && request.resource.data.reason.size() <= 1500 &&
+        request.resource.data.needs is string && request.resource.data.needs.size() >= 20 && request.resource.data.needs.size() <= 1500 &&
+        request.resource.data.expectedReach is number && request.resource.data.expectedReach >= 5 && request.resource.data.expectedReach <= 100000;
     }
-
-    function userExists() {
-      return isSignedIn() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid));
-    }
-
-    function userDoc() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid));
-    }
-
-    function userRole() {
-      return userExists() ? userDoc().data.role : "";
-    }
-
-    function userSchoolId() {
-      return userExists() ? userDoc().data.schoolId : "";
-    }
-
-    /* Many existing accounts have no `approved` field at all (only
-       `status`), so requiring it here rejected real accounts — including
-       login itself. The app's own client code (auth.js) already treats
-       status == "approved" as sufficient on its own; match that here. */
-    function isApproved() {
-      return userExists() &&
-        userDoc().data.status == "approved";
-    }
-
-    function isSuperAdmin() {
-      return isApproved() &&
-        (userRole() == "super_admin" || userRole() == "admin");
-    }
-
-    function isSchoolAdmin() {
-      return isApproved() && userRole() == "school_admin";
-    }
-
-    function isTeacher() {
-      return isApproved() && userRole() == "teacher";
-    }
-
-    function isParent() {
-      return isApproved() && userRole() == "parent";
-    }
-
-    function isStudent() {
-      return isApproved() && userRole() == "student";
-    }
-
-    function isAmbassador() {
-      return isApproved() && userRole() == "ambassador";
-    }
-
-    function isPublicRole(role) {
-      return role in [
-        "student",
-        "parent",
-        "teacher",
-        "school",
-        "school_admin",
-        "ambassador",
-        "contributor",
-        "volunteer"
-      ];
-    }
-
-    function validNewUser(userId) {
-      return request.resource.data.keys().hasAll(["uid", "email", "role", "status", "approved"]) &&
-        request.resource.data.uid == userId &&
-        request.auth.uid == userId &&
-        request.resource.data.status == "pending" &&
-        request.resource.data.approved == false &&
-        request.resource.data.role in [
-          "student", "parent", "teacher", "school", "school_admin",
-          "ambassador", "contributor", "volunteer"
-        ] &&
-        request.resource.data.email is string;
-    }
-
-    function onlyEditableProfileFieldsChanged() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-        "firstName",
-        "lastName",
-        "fullName",
-        "phone",
-        "country",
-        "state",
-        "city",
-        "location",
-        "occupation",
-        "bio",
-        "photoURL",
-        "profileCompleted",
-        "updatedAt"
-      ]);
-    }
-
-    function isUserInSchool(userId, schoolId) {
-      return exists(/databases/$(database)/documents/users/$(userId)) &&
-        get(/databases/$(database)/documents/users/$(userId)).data.schoolId == schoolId;
-    }
-
-    match /users/{userId} {
-      allow create: if isSignedIn() &&
-        request.auth.uid == userId &&
-        validNewUser(userId);
-
-      allow read: if isApproved() &&
-        (
-          request.auth.uid == userId ||
-          isSuperAdmin() ||
-          (
-            isSchoolAdmin() &&
-            resource.data.schoolId == userSchoolId()
-          )
-        );
-
-      /* Ordinary users may edit presentation/profile fields only. Role,
-         approval, status, email, school membership and ownership fields are
-         immutable from their browser. Administrative account changes require
-         an existing super-admin session (or the external trusted API). */
-      allow update: if isSuperAdmin() ||
-        (
-          isApproved() &&
-          request.auth.uid == userId &&
-          onlyEditableProfileFieldsChanged()
-        );
-
-      allow delete: if isSuperAdmin();
-    }
-
-    match /schools/{schoolId} {
-      /* School creation/activation is privileged. Public applications belong
-         in /schoolApplications and are reviewed before a school is created. */
-      allow create: if isSuperAdmin();
-
-      allow read: if isApproved() &&
-        (
-          isSuperAdmin() ||
-          (
-            isSchoolAdmin() &&
-            userSchoolId() == schoolId
-          ) ||
-          (
-            (isTeacher() || isParent() || isStudent()) &&
-            userSchoolId() == schoolId
-          )
-        );
-
-      allow update: if isSuperAdmin() ||
-        (
-          isSchoolAdmin() &&
-          userSchoolId() == schoolId
-        );
-
-      allow delete: if isSuperAdmin();
-    }
-
-    match /parentStudentLinks/{linkId} {
-      allow create: if isSuperAdmin() ||
-        (
-          isApproved() &&
-          request.resource.data.schoolId == userSchoolId() &&
-          isUserInSchool(request.resource.data.studentId, userSchoolId()) &&
-          (
-            (isSchoolAdmin() && isUserInSchool(request.resource.data.parentId, userSchoolId())) ||
-            (isParent() && request.resource.data.parentId == request.auth.uid)
-          )
-        );
-
-      allow read: if isApproved() &&
-        (
-          isSuperAdmin() ||
-          (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
-          resource.data.parentId == request.auth.uid ||
-          resource.data.studentId == request.auth.uid
-        );
-
-      allow update: if isSuperAdmin() ||
-        (isSchoolAdmin() &&
-          resource.data.schoolId == userSchoolId() &&
-          request.resource.data.schoolId == userSchoolId() &&
-          request.resource.data.parentId == resource.data.parentId &&
-          request.resource.data.studentId == resource.data.studentId);
-      allow delete: if isSuperAdmin() ||
-        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
-    }
-
-    /* The E-Library is a public showcase (free and paid/external books),
-       so anyone can browse it without a portal account — only writes
-       stay admin-only. */
-    match /books/{bookId} {
-      allow read: if true;
-      allow write: if isSuperAdmin();
-    }
-
-    /* Anyone signed in (no portal/school approval required) can submit a
-       book for the E-Library. Their own write may only ever set
-       status "pending" — approval/rejection happens through the
-       reviewBookSubmission Cloud Function or an admin, never the
-       submitter themselves. */
-    match /bookSubmissions/{submissionId} {
-      allow create: if isSignedIn() &&
-        request.resource.data.submittedBy == request.auth.uid &&
-        request.resource.data.status == "pending";
-
-      allow read: if isSignedIn() &&
-        (
-          resource.data.submittedBy == request.auth.uid ||
-          isSuperAdmin()
-        );
-
-      allow update, delete: if isSuperAdmin();
-    }
-
-    match /parentResources/{resourceId} {
-      allow read: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin());
-      allow write: if isSuperAdmin();
-    }
-
-    match /teacherResources/{resourceId} {
-      allow read: if isApproved() && (isTeacher() || isSchoolAdmin() || isSuperAdmin());
-      allow write: if isSuperAdmin();
-    }
-
-    match /studentResources/{resourceId} {
-      allow read: if isApproved() && (isStudent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
-      allow write: if isSuperAdmin();
-    }
-
-    match /schoolResources/{resourceId} {
-      allow read: if isApproved() &&
-        (
-          isSuperAdmin() ||
-          (
-            resource.data.schoolId == userSchoolId() &&
-            (isSchoolAdmin() || isTeacher() || isParent() || isStudent())
-          )
-        );
-
-      allow create: if isSuperAdmin() ||
-        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
-      allow update: if isSuperAdmin() ||
-        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
-          request.resource.data.schoolId == userSchoolId());
-      allow delete: if isSuperAdmin() ||
-        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
-    }
-
-    match /workshops/{workshopId} {
-      allow read: if isApproved() &&
-        (
-          isSuperAdmin() ||
-          (
-            resource.data.schoolId == userSchoolId() &&
-            (isSchoolAdmin() || isTeacher() || isParent() || isStudent())
-          )
-        );
-
-      allow create: if isSuperAdmin() ||
-        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
-      allow update: if isSuperAdmin() ||
-        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
-          request.resource.data.schoolId == userSchoolId());
-      allow delete: if isSuperAdmin() ||
-        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
-    }
-
-    match /courses/{courseId} {
-      /* Internal lesson content is embedded in each course document, so direct
-         public reads would expose the curriculum as well as its metadata. */
-      allow read: if isApproved();
-      allow write: if isSuperAdmin();
-    }
-
-    match /courseModules/{moduleId} {
-      allow read: if isApproved();
-      allow write: if isSuperAdmin();
-    }
-
-    match /courseLessons/{lessonId} {
-      allow read: if isApproved();
-      allow write: if isSuperAdmin();
-    }
-
-    /* PRIVATE ANSWER KEYS.
-       Cloud Functions Admin SDK bypasses these rules entirely.
-       No browser/client may ever read or write this collection. */
-    match /courseAssessments/{assessmentId} {
-      allow read, write: if false;
-    }
-
-    /* Authoritative learning records. Learners can read their own progress,
-       but only a trusted server-side service or a super admin may write it.
-       The external service uses Google IAM and is not governed by client SDK
-       rules. */
-    match /userProgress/{progressId} {
-      allow read: if isApproved() &&
-        (
-          resource.data.userId == request.auth.uid ||
-          isSuperAdmin()
-        );
-
-      allow write: if isSuperAdmin();
-    }
-
-    /* Non-credential reading position. This collection cannot unlock courses
-       or issue certificates and is intentionally separate from userProgress. */
-    match /readingProgress/{progressId} {
-      allow read: if isApproved() && resource.data.userId == request.auth.uid;
-      allow create: if isApproved() &&
-        request.resource.data.userId == request.auth.uid &&
-        request.resource.data.type in ["book", "kiddies"];
-      allow update: if isApproved() &&
-        resource.data.userId == request.auth.uid &&
-        request.resource.data.userId == request.auth.uid &&
-        request.resource.data.type in ["book", "kiddies"];
-      allow delete: if isApproved() && resource.data.userId == request.auth.uid;
-    }
-
-    match /certificates/{certificateId} {
-      allow read: if isSuperAdmin() ||
-        (isApproved() && resource.data.userId == request.auth.uid);
-      allow create, update, delete: if isSuperAdmin();
-    }
-
-    /* Deliberately limited public projection written by the trusted API.
-       Never include email, uid, score, reviewer notes or evidence here. */
-    match /publicCertificateVerifications/{verificationCode} {
-      allow read: if true;
-      allow write: if isSuperAdmin();
-    }
-
-    match /certificateTemplates/{templateId} {
-      allow read: if isApproved();
-      allow write: if isSuperAdmin();
-    }
-
-    /* External evidence submissions and reviews are written only by the
-       trusted platform API. Learners may read their own status, while
-       super-admins retain direct emergency access. Ordinary admins use
-       the authenticated review API so both roles share one audit path. */
-    match /externalLearningRecords/{recordId} {
-      allow read: if isApproved() &&
-        (
-          resource.data.userId == request.auth.uid ||
-          isSuperAdmin()
-        );
-      allow create, update, delete: if isSuperAdmin();
-    }
-
-    match /contributors/{contributorId} {
-      allow read: if isApproved();
-      allow write: if isSuperAdmin();
-    }
-
-    match /contributorApplications/{applicationId} {
-      allow create: if isSignedIn();
-
+    match /onTheMoveApplications/{applicationId} {
+      allow create: if validOnTheMoveApplication(applicationId);
       allow read, update, delete: if isSuperAdmin();
     }
 
-    match /kiddiesResources/{resourceId} {
-      allow read: if isApproved() && (isStudent() || isParent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
-      allow write: if isSuperAdmin();
-    }
-
-    match /homepageMedia/{mediaId} {
-      allow read: if true;
-      allow write: if isSuperAdmin();
-    }
-
-    match /newsEvents/{eventId} {
-      allow read: if true;
-      allow write: if isSuperAdmin();
-    }
-
-    match /payments/{paymentId} {
-      allow create: if isApproved() &&
-        request.resource.data.userId == request.auth.uid &&
-        request.resource.data.status == "pending";
-
-      allow read: if isSuperAdmin() ||
-        (
-          isApproved() &&
-          resource.data.userId == request.auth.uid
-        );
-
-      allow update, delete: if isSuperAdmin();
-    }
-
-    match /donations/{donationId} {
-      allow create: if true;
-      allow read, update, delete: if isSuperAdmin();
-    }
-
-    match /contactMessages/{messageId} {
-      allow create: if true;
-      allow read, update, delete: if isSuperAdmin();
-    }
-
-    match /schoolApplications/{applicationId} {
-      allow create: if true;
-      allow read, update, delete: if isSuperAdmin();
-    }
-
-    match /{document=**} {
-      allow read, write: if isSuperAdmin();
-    }
+    match /{document=**} { allow read, write: if isSuperAdmin(); }
   }
 }
