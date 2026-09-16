@@ -76,7 +76,8 @@ test("staging Worker declares every required secret", () => {
     "CLOUDINARY_API_SECRET",
     "CLOUDINARY_CLOUD_NAME",
     "FIREBASE_CLIENT_EMAIL",
-    "FIREBASE_PRIVATE_KEY"
+    "FIREBASE_PRIVATE_KEY",
+    "RESEND_API_KEY"
   ]);
   assert.equal(config.vars.FIREBASE_PROJECT_ID, "speakout-portal-staging");
 });

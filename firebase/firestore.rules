@@ -316,7 +316,10 @@ service cloud.firestore {
 
     match /onTheMoveApplications/{applicationId} {
       allow create: if validOTM(applicationId);
-      allow read, update, delete: if isSuperAdmin();
+      allow read: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
 
     function validSponsor(enquiryId) {
@@ -341,11 +344,19 @@ service cloud.firestore {
 
     match /onTheMoveSponsorEnquiries/{enquiryId} {
       allow create: if validSponsor(enquiryId);
-      allow read, update, delete: if isSuperAdmin();
+      allow read: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
 
     match /{document=**} {
-      allow read, write: if isSuperAdmin();
+      allow read: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if isSuperAdmin() &&
+        !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
 }
