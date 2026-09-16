@@ -61,6 +61,17 @@ test("course player has mobile module navigation and visual lesson scaffolding",
   assert.match(player, /prefers-reduced-motion:reduce/u);
 });
 
+test("course player keeps lesson text and controls inside narrow phone viewports", () => {
+  const player = read("course-player.html");
+  assert.match(player, /\.layout\{[^}]*grid-template-columns:360px minmax\(0,1fr\)/u);
+  assert.match(player, /@media\(max-width:900px\)\{[\s\S]*?\.layout\{grid-template-columns:minmax\(0,1fr\)/u);
+  assert.match(player, /\.sidebar,\.content\{min-width:0/u);
+  assert.match(player, /\.lesson-content\{[^}]*overflow-wrap:anywhere/u);
+  assert.match(player, /\.slide-image h2\{[^}]*overflow-wrap:anywhere/u);
+  assert.match(player, /\.lesson-snapshot\{[^}]*grid-template-columns:auto minmax\(0,1fr\)/u);
+  assert.match(player, /\.btn-row\{display:grid!important;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/u);
+});
+
 test("learner dashboards use the authenticated API instead of incompatible Firestore queries", () => {
   const worker = read("workers/platform-api/src/index.js");
   assert.match(worker, /\/v1\/learning\/dashboard/u);
