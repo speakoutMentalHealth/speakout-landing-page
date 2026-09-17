@@ -240,6 +240,10 @@ test("approved admin can read and manage On The Move applications", async () => 
     assignedTo: "Programme Team",
     internalNotes: "Initial institutional review started."
   }));
+  await assertFails(updateDoc(doc(db, `onTheMoveApplications/${id}`), {
+    communicationHistory: [{ subject: "Forged send", deliveryStatus: "accepted" }]
+  }));
+  await assertFails(updateDoc(doc(db, `onTheMoveApplications/${id}`), { lastCommunicationAt: new Date() }));
 });
 
 test("anonymous sponsor enquiry is write-only and cannot choose an internal status", async () => {
@@ -261,5 +265,8 @@ test("approved admin can review sponsor enquiries while ordinary users cannot", 
   const studentDb = testEnv.authenticatedContext("student-a").firestore();
   await assertSucceeds(getDoc(doc(adminDb, `onTheMoveSponsorEnquiries/${id}`)));
   await assertSucceeds(updateDoc(doc(adminDb, `onTheMoveSponsorEnquiries/${id}`), { status: "contacted" }));
+  await assertFails(updateDoc(doc(adminDb, `onTheMoveSponsorEnquiries/${id}`), {
+    communicationHistory: [{ subject: "Forged send", deliveryStatus: "accepted" }]
+  }));
   await assertFails(getDoc(doc(studentDb, `onTheMoveSponsorEnquiries/${id}`)));
 });

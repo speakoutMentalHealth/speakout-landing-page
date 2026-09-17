@@ -7,11 +7,13 @@
   "secrets": {
     "required": [
       "FIREBASE_CLIENT_EMAIL",
-      "FIREBASE_PRIVATE_KEY"
+      "FIREBASE_PRIVATE_KEY",
+      "RESEND_API_KEY"
     ]
   },
   "vars": {
     "FIREBASE_PROJECT_ID": "speaakout-portal",
+    "RESEND_FROM_EMAIL": "SpeakOut On The Move <on-the-move@speakoutmentalhealth.org>",
     "ALLOWED_ORIGINS": "https://speakoutmentalhealth.org,https://www.speakoutmentalhealth.org,https://speaakout-portal.web.app,https://speaakout-portal.firebaseapp.com"
   },
   "r2_buckets": [

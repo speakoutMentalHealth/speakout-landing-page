@@ -320,6 +320,10 @@ function documentWrite(env, path, data) {
   return { update: { name: `${databaseName(env)}/documents/${path}`, fields: encodeFields(data) } };
 }
 
+function documentPatch(env, path, data) {
+  return { ...documentWrite(env, path, data), updateMask: { fieldPaths: Object.keys(data) } };
+}
+
 function documentDelete(env, path) {
   return { delete: `${databaseName(env)}/documents/${path}` };
 }
@@ -344,6 +348,7 @@ async function runTransaction(env, operation, maxAttempts = 4) {
       const result = await operation({
         get: path => getDocument(env, path, transaction),
         set: (path, data) => writes.push(documentWrite(env, path, data)),
+        patch: (path, data) => writes.push(documentPatch(env, path, data)),
         delete: path => writes.push(documentDelete(env, path))
       });
       await firestoreRequest(env, `${databaseUrl(env)}/documents:commit`, {
@@ -378,6 +383,60 @@ function requireAdmin(user) {
   if (!["admin", "super_admin"].includes(normalized(user.profile.role))) {
     throw Object.assign(new Error("Administrator access required."), { status: 403 });
   }
+}
+
+const onTheMoveCollections = {
+  hosts: { name: "onTheMoveApplications", statuses: ["new", "screening", "needs_assessment", "funding_check", "approved", "planning", "confirmed", "delivered", "follow_up", "closed", "declined", "waitlisted"] },
+  sponsors: { name: "onTheMoveSponsorEnquiries", statuses: ["new", "contacted", "qualified", "proposal", "committed", "closed", "declined"] }
+};
+
+async function sendOnTheMoveEmail(env, user, data) {
+  requireAdmin(user);
+  const type = clean(data.type);
+  const target = onTheMoveCollections[type];
+  if (!target) throw Object.assign(new Error("Invalid request type."), { status: 400 });
+  const id = safeId(data.id, "request identifier");
+  const requestId = clean(data.requestId);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) {
+    throw Object.assign(new Error("Invalid send request identifier."), { status: 400 });
+  }
+  const subject = clean(data.subject);
+  const body = clean(data.body);
+  if (!subject || subject.length > 200 || /[\r\n]/.test(subject) || !body || body.length > 10000) {
+    throw Object.assign(new Error("Subject or message length is invalid."), { status: 400 });
+  }
+  const path = `${target.name}/${id}`;
+  const record = await getDocument(env, path);
+  if (!record) throw Object.assign(new Error("Request not found."), { status: 404 });
+  if (clean(record[type === "hosts" ? "applicationId" : "enquiryId"]) !== id || !target.statuses.includes(normalized(record.status))) {
+    throw Object.assign(new Error("Request identifier or status is invalid."), { status: 409 });
+  }
+  const previous = (Array.isArray(record.communicationHistory) ? record.communicationHistory : []).find(entry => entry.requestId === requestId);
+  if (previous) return { ok: true, entry: previous };
+  const to = clean(record.email);
+  const name = clean(record.contactName);
+  if (!looksLikeEmail(to) || to.length > 160 || !name || name.length > 120) {
+    throw Object.assign(new Error("The saved contact details are invalid."), { status: 422 });
+  }
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL) throw Object.assign(new Error("Email service is not configured."), { status: 503 });
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json", "Idempotency-Key": `on-the-move/${requestId}` },
+    body: JSON.stringify({ from: env.RESEND_FROM_EMAIL, to: [to], subject, text: body })
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !clean(result.id)) {
+    throw Object.assign(new Error("Email provider did not accept the message. Please retry with the same draft."), { status: 502 });
+  }
+  const entry = { requestId, providerMessageId: clean(result.id), deliveryStatus: "accepted", status: normalized(record.status), subject, channel: "email", sentAt: new Date().toISOString(), recordedByUid: user.uid, recordedByEmail: user.email, recipientEmail: to, recipientName: name };
+  await runTransaction(env, async tx => {
+    const current = await tx.get(path);
+    if (!current) throw Object.assign(new Error("Request disappeared after email acceptance."), { status: 500 });
+    const history = Array.isArray(current.communicationHistory) ? current.communicationHistory : [];
+    if (history.some(item => item.requestId === requestId)) return;
+    tx.patch(path, { communicationHistory: [...history, entry], lastCommunicationAt: entry.sentAt });
+  });
+  return { ok: true, entry };
 }
 
 function requireRole(user, roles) {
@@ -732,6 +791,7 @@ async function route(request, env, path, data) {
     });
   }
   const user = await authenticatedUser(request, env);
+  if (path === "/v1/admin/on-the-move/send-email") return sendOnTheMoveEmail(env, user, data);
   const courseSpecificLearningPaths = new Set([
     "/v1/learning/enroll",
     "/v1/learning/state",
