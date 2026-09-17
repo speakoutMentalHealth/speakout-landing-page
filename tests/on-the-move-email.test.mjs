@@ -7,10 +7,11 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8"
 const source = read("workers/platform-api/src/index.js");
 const implementation = source.slice(source.indexOf("const onTheMoveCollections ="), source.indexOf("function requireRole(")).trim();
 
-function harness({ role = "admin", providerOk = true, storedEmail = "saved@example.org", status = "new" } = {}) {
+function harness({ role = "admin", providerOk = true, storedEmail = "saved@example.org", status = "new", type = "hosts" } = {}) {
   let providerCalls = 0;
   let saved;
-  const document = { id: "SOM-123", applicationId: "SOM-123", status, email: storedEmail, contactName: "Saved Contact", communicationHistory: [] };
+  const id = type === "hosts" ? "SOM-123" : "SOMS-123";
+  const document = { id, status, email: storedEmail, contactName: "Saved Contact", communicationHistory: [], ...(type === "hosts" ? { applicationId: id } : { enquiryId: id }) };
   const context = {
     clean: value => String(value || "").trim(),
     normalized: value => String(value || "").trim().toLowerCase(),
@@ -23,7 +24,7 @@ function harness({ role = "admin", providerOk = true, storedEmail = "saved@examp
     Date
   };
   const send = vm.runInNewContext(`${implementation}\nsendOnTheMoveEmail`, context);
-  const data = { type: "hosts", id: "SOM-123", requestId: "12345678-1234-4234-8234-123456789abc", subject: "Update", body: "Message", to: "attacker@example.org" };
+  const data = { type, id, requestId: "12345678-1234-4234-8234-123456789abc", subject: "Update", body: "Message", to: "attacker@example.org" };
   const user = { uid: "admin-1", email: "admin@example.org", profile: { role } };
   const env = { RESEND_API_KEY: "test-key", RESEND_FROM_EMAIL: "SpeakOut <sender@example.org>" };
   return { send: () => send(env, user, data), data, get calls() { return providerCalls; }, get saved() { return saved; } };
@@ -48,6 +49,21 @@ test("provider rejection creates no sent audit", async () => {
   const h = harness({ providerOk: false });
   await assert.rejects(h.send(), { status: 502 });
   assert.equal(h.saved, undefined);
+});
+
+test("all current host and sponsor workflow statuses can reach the provider", async () => {
+  const hostStatuses = ["new", "under_review", "action_required", "approved", "confirmed", "completed", "declined", "waitlisted"];
+  const sponsorStatuses = ["new", "contacted", "qualified", "proposal", "committed", "closed", "declined"];
+  for (const status of hostStatuses) {
+    const h = harness({ status });
+    await h.send();
+    assert.equal(h.calls, 1, `host status ${status} should be sendable`);
+  }
+  for (const status of sponsorStatuses) {
+    const h = harness({ status, type: "sponsors" });
+    await h.send();
+    assert.equal(h.calls, 1, `sponsor status ${status} should be sendable`);
+  }
 });
 
 test("invalid request type and persisted status cannot reach provider", async () => {
