@@ -386,7 +386,7 @@ function requireAdmin(user) {
 }
 
 const onTheMoveCollections = {
-  hosts: { name: "onTheMoveApplications", statuses: ["new", "screening", "needs_assessment", "funding_check", "approved", "planning", "confirmed", "delivered", "follow_up", "closed", "declined", "waitlisted"] },
+  hosts: { name: "onTheMoveApplications", statuses: ["new", "under_review", "action_required", "approved", "confirmed", "completed", "declined", "waitlisted", "screening", "needs_assessment", "funding_check", "planning", "delivered", "follow_up", "closed"] },
   sponsors: { name: "onTheMoveSponsorEnquiries", statuses: ["new", "contacted", "qualified", "proposal", "committed", "closed", "declined"] }
 };
 
