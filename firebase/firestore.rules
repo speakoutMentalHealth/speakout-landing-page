@@ -257,6 +257,16 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    match /tvEpisodes/{episodeId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvShows/{showId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
     match /newsEvents/{eventId} {
       allow read: if true;
       allow write: if isSuperAdmin();
