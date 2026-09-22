@@ -71,3 +71,16 @@ linear-gradient(180deg,#071226,#050b16 70%);padding-bottom:110px;color:#f7fbff}
 .ios-series-card span{font-size:.7rem;color:var(--tv-orange);margin-top:5px}
 @media(min-width:851px){.ios-series-strip{grid-auto-columns:210px}}
 @media(max-width:430px){.ios-series-strip{grid-auto-columns:58%}}
+
+/* Selectable Spotify episode rail */
+.ios-audio-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,46%);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:11px 1px 2px;scrollbar-width:none}
+.ios-audio-strip::-webkit-scrollbar{display:none}
+.ios-audio-episode{scroll-snap-align:start;display:grid;grid-template-columns:54px 1fr;gap:10px;align-items:center;min-height:72px;padding:9px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.055);color:#fff;text-align:left;cursor:pointer}
+.ios-audio-episode img,.ios-audio-art{width:54px;height:54px;border-radius:13px;object-fit:cover;background:linear-gradient(145deg,rgba(244,162,28,.22),rgba(10,95,191,.2));display:grid;place-items:center;color:var(--tv-orange)}
+.ios-audio-episode span,.ios-audio-episode strong,.ios-audio-episode small{display:block;min-width:0}
+.ios-audio-episode small{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#93a7c1}
+.ios-audio-episode strong{font-size:.78rem;line-height:1.18;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ios-audio-episode.active{border-color:rgba(244,162,28,.75);background:rgba(244,162,28,.08)}
+.ios-audio-empty{color:#91a4bd;font-size:.75rem;padding:8px 2px}
+@media(min-width:851px){.ios-audio-strip{grid-auto-columns:240px}}
+@media(max-width:430px){.ios-audio-strip{grid-auto-columns:70%}}
