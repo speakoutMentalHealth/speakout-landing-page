@@ -61,3 +61,13 @@ linear-gradient(180deg,#071226,#050b16 70%);padding-bottom:110px;color:#f7fbff}
 .ios-help{right:14px;bottom:82px;padding:8px 11px;font-size:.7rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);color:#fff;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 @media(min-width:851px){.tv-ios{padding-bottom:40px}.ios-shell{width:min(880px,100%);margin:auto}.ios-episode-strip{grid-auto-columns:220px}.ios-tabbar{display:none}.ios-help{bottom:22px}.ios-intro{padding-top:38px}}
 @media(max-width:430px){.tv-container{width:calc(100% - 24px)}.ios-intro{padding-top:19px}.ios-intro h1{font-size:2rem}.ios-section{padding:18px 0}.ios-glass{border-radius:22px}.ios-episode-strip{grid-auto-columns:54%}.ios-card-copy{padding:12px 13px 14px}.ios-spotify iframe{height:152px}}
+
+/* Minimal series rail */
+.ios-series-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(180px,44%);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:1px 1px 3px;scrollbar-width:none}
+.ios-series-strip::-webkit-scrollbar{display:none}
+.ios-series-card{scroll-snap-align:start;min-height:118px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;gap:3px}
+.ios-series-card small{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#9fb0c7}
+.ios-series-card strong{font-size:1rem;line-height:1.12}
+.ios-series-card span{font-size:.7rem;color:var(--tv-orange);margin-top:5px}
+@media(min-width:851px){.ios-series-strip{grid-auto-columns:210px}}
+@media(max-width:430px){.ios-series-strip{grid-auto-columns:58%}}
