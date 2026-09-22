@@ -27,6 +27,7 @@ const ytId=raw=>{try{const u=new URL(raw);if(u.hostname==="youtu.be")return u.pa
 const embed=raw=>{try{const u=new URL(raw),host=u.hostname.replace(/^www\./,""),y=ytId(raw);if(y)return "https://www.youtube-nocookie.com/embed/"+encodeURIComponent(y)+"?rel=0";if(host==="vimeo.com"){const id=u.pathname.split("/").filter(Boolean)[0];if(id)return "https://player.vimeo.com/video/"+encodeURIComponent(id)}if(host==="player.vimeo.com")return raw;if(host.endsWith("twitch.tv")){const ch=u.pathname.split("/").filter(Boolean)[0];if(ch)return "https://player.twitch.tv/?channel="+encodeURIComponent(ch)+"&parent="+encodeURIComponent(location.hostname)}}catch{}return null};
 const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
+const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
 
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src)return;
@@ -39,6 +40,10 @@ function episodeCard(x){
 }
 function seriesCard(x){
  return '<a class="ios-series-card ios-glass" href="show.html?show='+encodeURIComponent(x.slug)+'"><small>'+esc(x.label)+'</small><strong>'+esc(x.title)+'</strong><span>View series ›</span></a>';
+}
+function audioCard(x){
+ const art=x.imageUrl||"";
+ return '<button class="ios-audio-episode" type="button" data-audio-id="'+esc(x.id)+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':'<div class="ios-audio-art">◉</div>')+'<span><small>'+esc(x.audioType||"Spotify")+'</small><strong>'+esc(x.title||"SpeakOut Audio")+'</strong></span></button>';
 }
 
 async function load(){
@@ -61,6 +66,14 @@ async function load(){
  if(first){setFrame($("#episodePlayer"),first,false);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||""}
  $("#latestRail").innerHTML=regular.map(episodeCard).join("");
  $("#seriesRail").innerHTML=series.map(seriesCard).join("");
+
+ let audio=[];
+ try{const a=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));a.forEach(d=>audio.push({id:d.id,...d.data()}))}catch{}
+ audio.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
+ const spotifyAudio=audio.filter(x=>spotifyEmbed(x.url||""));
+ $("#audioRail").innerHTML=spotifyAudio.length?spotifyAudio.map(audioCard).join(""):'<div class="ios-audio-empty">Published Spotify episodes will appear here.</div>';
+ $("#audioRail").addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId);const src=spotifyEmbed(item?.url||"");if(!item||!src)return;$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';document.querySelectorAll(".ios-audio-episode").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("audio")?.scrollIntoView({behavior:"smooth",block:"start"})});
+
  $("#latestRail").addEventListener("click",e=>{const b=e.target.closest(".ios-episode-card");if(!b)return;const item=regular.find(x=>x.id===b.dataset.episodeId);if(!item)return;setFrame($("#episodePlayer"),item,true);$("#episodeTitle").textContent=item.title||"SpeakOut TV";$("#episodeDescription").textContent=item.description||"";document.querySelectorAll(".ios-episode-card").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("episodes")?.scrollIntoView({behavior:"smooth",block:"start"})});
  const requested=new URLSearchParams(location.search).get("episode");
  if(requested){const item=regular.find(x=>x.id===requested);if(item){setFrame($("#episodePlayer"),item,false);$("#episodeTitle").textContent=item.title||"SpeakOut TV";$("#episodeDescription").textContent=item.description||"";document.getElementById("episodes")?.scrollIntoView({block:"start"})}}
