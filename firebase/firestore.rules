@@ -262,7 +262,12 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
-    match /tvAudio/{audioId} {\n      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();\n      allow write: if isSuperAdmin();\n    }\n\n    match /tvShows/{showId} {
+    match /tvAudio/{audioId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvShows/{showId} {
       allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
       allow write: if isSuperAdmin();
     }
