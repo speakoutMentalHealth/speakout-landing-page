@@ -110,7 +110,10 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePartners: ["title", "description", "logoUrl", "websiteUrl", "category"],
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
-  homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"]
+  homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
+  tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
 
 function cmsCollection(value) {
@@ -133,12 +136,38 @@ function cmsRecord(collectionName, input) {
   }
   if (!record.title) throw Object.assign(new Error("Title is required."), { status: 400 });
   const status = normalized(input.status) || "active";
-  if (!["active", "draft", "hidden"].includes(status)) {
+  if (!["active", "published", "draft", "hidden"].includes(status)) {
     throw Object.assign(new Error("Invalid content status."), { status: 400 });
   }
   const order = Number(input.order || 0);
   if (!Number.isFinite(order) || !Number.isInteger(order) || Math.abs(order) > 100000) {
     throw Object.assign(new Error("Invalid content order."), { status: 400 });
+  }
+  if (collectionName === "tvEpisodes") {
+    const format = normalized(record.format || "episode");
+    if (!["episode", "live", "short"].includes(format)) {
+      throw Object.assign(new Error("Invalid TV content type."), { status: 400 });
+    }
+    try {
+      const mediaUrl = new URL(record.url);
+      const host = mediaUrl.hostname.replace(/^www\./u, "").toLowerCase();
+      const allowed = host === "youtu.be" || ["youtube.com", "m.youtube.com", "music.youtube.com", "vimeo.com", "player.vimeo.com", "twitch.tv"].includes(host);
+      if (!["http:", "https:"].includes(mediaUrl.protocol) || !allowed) throw new Error();
+    } catch {
+      throw Object.assign(new Error("Use a supported YouTube, Vimeo or Twitch URL."), { status: 400 });
+    }
+    if (status === "published" && normalized(record.minorInvolved) === "yes" &&
+        (normalized(record.consentConfirmed) !== "yes" || normalized(record.editorialReview) !== "complete")) {
+      throw Object.assign(new Error("Published content involving a minor requires confirmed consent and completed editorial review."), { status: 409 });
+    }
+  }
+  if (collectionName === "tvAudio" && record.url) {
+    try {
+      const mediaUrl = new URL(record.url);
+      if (!["http:", "https:"].includes(mediaUrl.protocol)) throw new Error();
+    } catch {
+      throw Object.assign(new Error("Use a valid audio or Spotify URL."), { status: 400 });
+    }
   }
   return { ...record, status, order };
 }
@@ -1162,7 +1191,7 @@ async function route(request, env, path, data) {
     const collectionName = cmsCollection(data.collection);
     const recordId = safeId(data.id, "content identifier");
     const status = normalized(data.status);
-    if (!["active", "draft", "hidden"].includes(status)) {
+    if (!["active", "published", "draft", "hidden"].includes(status)) {
       throw Object.assign(new Error("Invalid content status."), { status: 400 });
     }
     return runTransaction(env, async tx => {
