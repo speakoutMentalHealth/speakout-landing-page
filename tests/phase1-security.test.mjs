@@ -158,3 +158,11 @@ test("TV Studio supports common YouTube share and live URLs", () => {
   assert.match(script, /youtube-nocookie\.com\/embed/u);
   assert.match(script, /oembed/u);
 });
+
+
+test("TV CMS validates media providers and minor publication safeguards", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  assert.match(worker, /Use a supported YouTube, Vimeo or Twitch URL/u);
+  assert.match(worker, /Published content involving a minor requires confirmed consent and completed editorial review/u);
+  assert.match(worker, /collectionName === "tvAudio"/u);
+});
