@@ -136,3 +136,25 @@ test("homepage CMS provides accessible responsive editing feedback", () => {
     assert.match(read(file), /css\/admin-cms\.css/u, file);
   }
 });
+
+
+test("TV and Radio CMS collections are allowed by the secure Worker", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  for (const collectionName of ["tvEpisodes", "tvAudio", "tvShows"]) {
+    assert.match(worker, new RegExp(`${collectionName}: \\\\[`, "u"));
+  }
+  assert.match(worker, /"published"/u);
+  const tvAdmin = read("admin-tv.html");
+  assert.match(tvAdmin, /collectionName:"tvEpisodes"/u);
+  assert.doesNotMatch(tvAdmin, /css\/portal-ui\.css/u);
+  assert.doesNotMatch(tvAdmin, /css\/production-ready\.css/u);
+});
+
+test("TV Studio supports common YouTube share and live URLs", () => {
+  const script = read("js/tv-admin-live.js");
+  assert.match(script, /youtu\.be/u);
+  assert.match(script, /youtube\.com/u);
+  assert.match(script, /\\\/(?:live\|embed\|shorts)\\\//u);
+  assert.match(script, /youtube-nocookie\.com\/embed/u);
+  assert.match(script, /oembed/u);
+});
