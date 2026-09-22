@@ -29,3 +29,6 @@ Production already requires an encrypted `RESEND_API_KEY`. Before deploying stag
 The current implementation supplies authenticated learning state, lesson completion, private assessment delivery/scoring, idempotent certificate issuance, transactional external-course submission, atomic review decisions, private R2 evidence upload/retrieval with a staging Cloudinary fallback, and a read-only assessment/certificate/evidence migration inventory. Unknown privileged endpoints still fail closed with `501`.
 
 Evidence retrieval never returns an R2 or Cloudinary delivery URL. An approved administrator requests a record through the Worker, which validates ownership metadata, fetches the private object server-side, and streams the bytes with private, no-store response headers.
+
+
+Production deployments are automated from `main` through `.github/workflows/deploy-platform-api.yml` after validation succeeds.
