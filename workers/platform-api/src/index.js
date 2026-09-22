@@ -110,7 +110,10 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePartners: ["title", "description", "logoUrl", "websiteUrl", "category"],
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
-  homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"]
+  homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
+  tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
 
 function cmsCollection(value) {
@@ -133,7 +136,7 @@ function cmsRecord(collectionName, input) {
   }
   if (!record.title) throw Object.assign(new Error("Title is required."), { status: 400 });
   const status = normalized(input.status) || "active";
-  if (!["active", "draft", "hidden"].includes(status)) {
+  if (!["active", "published", "draft", "hidden"].includes(status)) {
     throw Object.assign(new Error("Invalid content status."), { status: 400 });
   }
   const order = Number(input.order || 0);
@@ -1162,7 +1165,7 @@ async function route(request, env, path, data) {
     const collectionName = cmsCollection(data.collection);
     const recordId = safeId(data.id, "content identifier");
     const status = normalized(data.status);
-    if (!["active", "draft", "hidden"].includes(status)) {
+    if (!["active", "published", "draft", "hidden"].includes(status)) {
       throw Object.assign(new Error("Invalid content status."), { status: 400 });
     }
     return runTransaction(env, async tx => {
