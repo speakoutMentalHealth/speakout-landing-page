@@ -143,6 +143,32 @@ function cmsRecord(collectionName, input) {
   if (!Number.isFinite(order) || !Number.isInteger(order) || Math.abs(order) > 100000) {
     throw Object.assign(new Error("Invalid content order."), { status: 400 });
   }
+  if (collectionName === "tvEpisodes") {
+    const format = normalized(record.format || "episode");
+    if (!["episode", "live", "short"].includes(format)) {
+      throw Object.assign(new Error("Invalid TV content type."), { status: 400 });
+    }
+    try {
+      const mediaUrl = new URL(record.url);
+      const host = mediaUrl.hostname.replace(/^www\./u, "").toLowerCase();
+      const allowed = host === "youtu.be" || ["youtube.com", "m.youtube.com", "music.youtube.com", "vimeo.com", "player.vimeo.com", "twitch.tv"].includes(host);
+      if (!["http:", "https:"].includes(mediaUrl.protocol) || !allowed) throw new Error();
+    } catch {
+      throw Object.assign(new Error("Use a supported YouTube, Vimeo or Twitch URL."), { status: 400 });
+    }
+    if (status === "published" && normalized(record.minorInvolved) === "yes" &&
+        (normalized(record.consentConfirmed) !== "yes" || normalized(record.editorialReview) !== "complete")) {
+      throw Object.assign(new Error("Published content involving a minor requires confirmed consent and completed editorial review."), { status: 409 });
+    }
+  }
+  if (collectionName === "tvAudio" && record.url) {
+    try {
+      const mediaUrl = new URL(record.url);
+      if (!["http:", "https:"].includes(mediaUrl.protocol)) throw new Error();
+    } catch {
+      throw Object.assign(new Error("Use a valid audio or Spotify URL."), { status: 400 });
+    }
+  }
   return { ...record, status, order };
 }
 
