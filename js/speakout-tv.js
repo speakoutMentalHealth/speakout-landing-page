@@ -1,35 +1,54 @@
-import { db } from "../firebase-config.js";
-import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-const fallbackShows=[{slug:"on-the-move",title:"SpeakOut On The Move",category:"Street Series",description:"Real conversations with people where they are.",tone:"orange"},{slug:"podcast",title:"SpeakOut Podcast",category:"Studio",description:"Long-form conversations with guests and professionals.",tone:"blue"},{slug:"how-are-you-really",title:"How Are You, Really?",category:"Wellbeing",description:"Short, human conversations about mental wellbeing.",tone:"teal"},{slug:"youth-voices",title:"Youth Voices",category:"Youth",description:"A platform for young people to discuss what affects them.",tone:"blue"},{slug:"campus-connect",title:"Campus Connect",category:"Schools",description:"Stories and conversations from schools and campuses.",tone:"orange"},{slug:"expert-corner",title:"Expert Corner",category:"Education",description:"Informed educational conversations with qualified guests.",tone:"teal"},{slug:"speakout-stories",title:"SpeakOut Stories",category:"Stories",description:"Human and community stories that deserve to be heard.",tone:"blue"},{slug:"speakout-special",title:"SpeakOut Special",category:"Special",description:"Events, campaigns and special coverage.",tone:"orange"}];
+import {db} from "../firebase-config.js";
+import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 const starterEpisodes=[
-{id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"A SpeakOut video from our existing YouTube archive.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,order:901},
-{id:"archive-adhd-men",title:"Dear Men With ADHD: This Is For You | Spoken Word",show:"SpeakOut Stories",description:"Spoken-word content from our existing YouTube archive.",url:"https://www.youtube.com/watch?v=ixDjSGFBA5Q",format:"episode",status:"published",archive:true,order:902},
-{id:"archive-religion",title:"This Might Change How You See Religion Forever",show:"SpeakOut Stories",description:"A conversation from our existing YouTube archive.",url:"https://www.youtube.com/watch?v=PSq-nwyzrNk",format:"episode",status:"published",archive:true,order:903},
-{id:"archive-tired-nation",title:"Heavy Heart of a Tired Nation (Nigeria as a Case Study)",show:"SpeakOut Stories",description:"A SpeakOut reflection from our existing YouTube archive.",url:"https://www.youtube.com/watch?v=EFOEWzO1a3E",format:"episode",status:"published",archive:true,order:904},
-{id:"archive-marital-decay",title:"The Silent Architect of Marital Decay",show:"SpeakOut Stories",description:"A SpeakOut conversation from our existing YouTube archive.",url:"https://www.youtube.com/watch?v=akWDTQmn9K0",format:"episode",status:"published",archive:true,order:905}
+{id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,order:901},
+{id:"archive-adhd-men",title:"Dear Men With ADHD: This Is For You | Spoken Word",description:"A spoken-word conversation from SpeakOut.",url:"https://www.youtube.com/watch?v=ixDjSGFBA5Q",format:"episode",status:"published",archive:true,order:902},
+{id:"archive-religion",title:"This Might Change How You See Religion Forever",description:"A SpeakOut conversation from our video archive.",url:"https://www.youtube.com/watch?v=PSq-nwyzrNk",format:"episode",status:"published",archive:true,order:903},
+{id:"archive-tired-nation",title:"Heavy Heart of a Tired Nation (Nigeria as a Case Study)",description:"A SpeakOut reflection from our video archive.",url:"https://www.youtube.com/watch?v=EFOEWzO1a3E",format:"episode",status:"published",archive:true,order:904},
+{id:"archive-marital-decay",title:"The Silent Architect of Marital Decay",description:"A SpeakOut conversation from our video archive.",url:"https://www.youtube.com/watch?v=akWDTQmn9K0",format:"episode",status:"published",archive:true,order:905}
 ];
-const $=s=>document.querySelector(s);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-const ytId=url=>{try{const u=new URL(url);if(u.hostname==="youtu.be")return u.pathname.slice(1);if(u.hostname.endsWith("youtube.com"))return u.searchParams.get("v")||u.pathname.match(/\/(?:embed|live|shorts)\/([^/?]+)/)?.[1]||null}catch{}return null};
-const providerEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");const y=ytId(raw);if(y)return "https://www.youtube-nocookie.com/embed/"+encodeURIComponent(y)+"?rel=0";if(h==="player.vimeo.com")return raw;if(h==="vimeo.com"){const id=u.pathname.split("/").filter(Boolean)[0];if(id)return "https://player.vimeo.com/video/"+encodeURIComponent(id)}if(h.endsWith("twitch.tv")){const ch=u.pathname.split("/").filter(Boolean)[0];if(ch)return "https://player.twitch.tv/?channel="+encodeURIComponent(ch)+"&parent="+encodeURIComponent(location.hostname)}}catch{}return null};
-const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.date||0)||0;
-function episodeCard(x){const y=ytId(x.url||x.videoUrl);const image=x.imageUrl||x.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"");return '<a data-episode-id="'+esc(x.id)+'" class="card episode-card" href="#watch">'+(image?'<img class="episode-thumb" src="'+esc(image)+'" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/'+esc(y||"")+'/mqdefault.jpg\'">':'<div class="thumb">'+esc(x.show||x.category||"SPEAKOUT TV")+'</div>')+'<div class="card-body"><small>'+esc(x.show||x.category||"EPISODE")+'</small><h3>'+esc(x.title||"Untitled episode")+'</h3><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></div></a>'}
-function showCard(x){return '<a class="card show-art-card '+esc(x.tone||"")+'" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="show-art-copy"><small>'+esc(x.category||"ORIGINAL")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.description||"")+'</p><span class="art-arrow">›</span></div></a>'}
-async function load(){let episodes=[],shows=fallbackShows;try{const epSnap=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));epSnap.forEach(d=>episodes.push({id:d.id,...d.data()}));}catch(e){console.info("SpeakOut TV launch mode");}
-const knownUrls=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));starterEpisodes.forEach(x=>{const id=ytId(x.url);if(!knownUrls.has(id))episodes.push(x)});
-episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
-let currentIndex=0;
-function playOnStage(item,autoplay=false){
- const src=providerEmbed(item?.url||item?.videoUrl); if(!item||!src)return;
- currentIndex=Math.max(0,episodes.findIndex(x=>x.id===item.id));
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const ytId=raw=>{try{const u=new URL(raw);if(u.hostname==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||null;if(u.hostname.endsWith("youtube.com"))return u.searchParams.get("v")||u.pathname.match(/\/(?:embed|live|shorts)\/([^/?]+)/)?.[1]||null}catch{}return null};
+const embed=raw=>{try{const u=new URL(raw),host=u.hostname.replace(/^www\./,""),y=ytId(raw);if(y)return "https://www.youtube-nocookie.com/embed/"+encodeURIComponent(y)+"?rel=0";if(host==="vimeo.com"){const id=u.pathname.split("/").filter(Boolean)[0];if(id)return "https://player.vimeo.com/video/"+encodeURIComponent(id)}if(host==="player.vimeo.com")return raw;if(host.endsWith("twitch.tv")){const ch=u.pathname.split("/").filter(Boolean)[0];if(ch)return "https://player.twitch.tv/?channel="+encodeURIComponent(ch)+"&parent="+encodeURIComponent(location.hostname)}}catch{}return null};
+const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
+const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
+
+function setFrame(target,item,autoplay=false){
+ const src=embed(item?.url||item?.videoUrl);if(!src)return;
  const finalSrc=src+(autoplay?(src.includes("?")?"&":"?")+"autoplay=1":"");
- const player=$("#featuredPlayer"); if(player)player.innerHTML='<iframe src="'+esc(finalSrc)+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
- $("#featuredTitle").textContent=item.title||"SpeakOut TV"; $("#featuredDescription").textContent=item.description||"Watch on SpeakOut TV.";
- const meta=[item.show,item.presenter&&"Host: "+item.presenter,item.guest&&"Guest: "+item.guest,item.guestRole].filter(Boolean); const metaEl=$("#featuredMeta"); if(metaEl)metaEl.innerHTML=meta.map(v=>"<span>"+esc(v)+"</span>").join("");
- const sponsor=$("#featuredSponsor"); if(sponsor){sponsor.hidden=!item.sponsor;sponsor.textContent=item.sponsor?"Supported by "+item.sponsor:"";}
- $("#featuredLink").href=item.archive?"#watch":"watch.html?id="+encodeURIComponent(item.id);
- localStorage.setItem("speakout-tv-progress",JSON.stringify({id:item.id,title:item.title||"Watch",show:item.show||"SpeakOut TV",updatedAt:Date.now()}));
-}const now=Date.now();const live=episodes.find(x=>String(x.format||x.type||"").toLowerCase()==="live"&&(!x.scheduledAt||Date.parse(x.scheduledAt)<=now));const featured=live||episodes.find(x=>x.featured===true||x.featured==="true")||episodes[0];const liveStatus=$("#liveStatus"),frameStatus=$("#tvFrameStatus"),liveCta=$("#liveCta");if(live){if(liveStatus)liveStatus.innerHTML="<i></i> LIVE NOW";if(frameStatus)frameStatus.textContent="LIVE CHANNEL";if(liveCta){liveCta.href="watch.html?id="+encodeURIComponent(live.id);liveCta.innerHTML="Watch Live <span>↗</span>"}}else{if(liveStatus)liveStatus.textContent="SPEAKOUT TV";if(frameStatus)frameStatus.textContent="FEATURED";if(liveCta){liveCta.href=featured?"watch.html?id="+encodeURIComponent(featured.id):"#shows";liveCta.innerHTML=featured?"Watch Featured <span>↗</span>":"Browse Shows <span>↗</span>"}}if(featured){playOnStage(featured,false);localStorage.setItem("speakout-last-featured",JSON.stringify({id:featured.id,title:featured.title||"Featured",show:featured.show||"SpeakOut TV"}))}const latestRail=$("#latestRail");if(latestRail)latestRail.innerHTML=episodes.length?episodes.slice(0,6).map(episodeCard).join(""):"";
-function bindStageCards(root){document.querySelectorAll(root+" .episode-card").forEach(card=>card.addEventListener("click",e=>{const item=episodes.find(x=>x.id===card.dataset.episodeId);if(!item)return;e.preventDefault();playOnStage(item,true);document.getElementById("watch")?.scrollIntoView({behavior:"smooth",block:"start"});}));}
-bindStageCards("#latestRail");const showsRail=$("#showsRail");if(showsRail)showsRail.innerHTML=shows.slice(0,6).map(showCard).join("");const shorts=episodes.filter(x=>x.format==="short"||x.type==="short");const shortsRail=$("#shortsRail");if(shortsRail){shortsRail.innerHTML=shorts.length?shorts.slice(0,12).map(episodeCard).join(""):"";bindStageCards("#shortsRail");}const upcoming=episodes.filter(x=>x.scheduledAt&&Date.parse(x.scheduledAt)>now).sort((a,b)=>Date.parse(a.scheduledAt)-Date.parse(b.scheduledAt)).slice(0,6),grid=$("#scheduleGrid");if(grid&&upcoming.length)grid.innerHTML=upcoming.map(x=>`<article><span>${esc(new Date(x.scheduledAt).toLocaleString([], {dateStyle:"medium",timeStyle:"short"}))}</span><strong>${esc(x.title||x.show||"SpeakOut TV")}</strong><small>${esc(x.show||"Upcoming program")}</small><a class="schedule-calendar" href="${calendarUrl(x)}" target="_blank" rel="noopener">Add to Calendar ↗</a></article>`).join("")}function calendarUrl(x){const d=new Date(x.scheduledAt),e=new Date(d.getTime()+60*60*1000),fmt=v=>v.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(x.title||"SpeakOut TV")+"&dates="+fmt(d)+"/"+fmt(e)+"&details="+encodeURIComponent(x.description||"SpeakOut TV program")}$("#prevEpisode")?.addEventListener("click",()=>{if(episodes.length)playOnStage(episodes[(currentIndex-1+episodes.length)%episodes.length],true)});$("#nextEpisode")?.addEventListener("click",()=>{if(episodes.length)playOnStage(episodes[(currentIndex+1)%episodes.length],true)});$("#copyFeatured")?.addEventListener("click",async()=>{const item=episodes[currentIndex];const url=item?.archive?location.href.split("#")[0]+"#watch":new URL("watch.html?id="+encodeURIComponent(item?.id||""),location.href).href;try{await navigator.clipboard.writeText(url);$("#copyFeatured").textContent="Copied"}catch{$("#copyFeatured").textContent="Copy link"}});load();
-const resume=(()=>{try{return JSON.parse(localStorage.getItem("speakout-tv-progress")||"null")}catch{return null}})();if(resume?.id){const latest=document.getElementById("latest");if(latest){const box=document.createElement("div");box.className="tv-container continue-strip";box.innerHTML='<a href="watch.html?id='+encodeURIComponent(resume.id)+'"><span>CONTINUE WATCHING</span><strong>'+esc(resume.title||"Resume program")+'</strong><small>Continue →</small></a>';latest.before(box)}}
-let deferredInstall;addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const b=document.getElementById("installTv");if(b)b.hidden=false});document.getElementById("installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById("installTv").hidden=true});
+ target.innerHTML='<iframe src="'+esc(finalSrc)+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+}
+function episodeCard(x){
+ const y=ytId(x.url||x.videoUrl),img=x.imageUrl||x.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"");
+ return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">TV</div>')+'<span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
+}
+
+async function load(){
+ let episodes=[];
+ try{const snap=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));snap.forEach(d=>episodes.push({id:d.id,...d.data()}))}catch{}
+ const known=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));starterEpisodes.forEach(x=>{const id=ytId(x.url);if(!known.has(id))episodes.push(x)});
+ episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
+
+ const now=Date.now();
+ const live=episodes.find(x=>String(x.format||x.type||"").toLowerCase()==="live"&&(!x.scheduledAt||Date.parse(x.scheduledAt)<=now));
+ if(live){
+   $("#liveStatus").textContent="Live Now";$("#liveStatus").classList.add("is-live");
+   $("#liveTitle").textContent=live.title||"SpeakOut Live";
+   $("#liveDescription").textContent=live.description||"Live now on SpeakOut TV.";
+   setFrame($("#livePlayer"),live,false);
+ }
+
+ const regular=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
+ const first=regular[0]||episodes[0];
+ if(first){setFrame($("#episodePlayer"),first,false);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||""}
+ $("#latestRail").innerHTML=regular.slice(0,8).map(episodeCard).join("");
+ $("#latestRail").addEventListener("click",e=>{const b=e.target.closest(".ios-episode-card");if(!b)return;const item=regular.find(x=>x.id===b.dataset.episodeId);if(!item)return;setFrame($("#episodePlayer"),item,true);$("#episodeTitle").textContent=item.title||"SpeakOut TV";$("#episodeDescription").textContent=item.description||"";document.querySelectorAll(".ios-episode-card").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("episodes")?.scrollIntoView({behavior:"smooth",block:"start"})});
+}
+load();
+
+let deferredInstall;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const b=$("#installTv");if(b)b.hidden=false});
+$("#installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installTv").hidden=true});
