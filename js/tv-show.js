@@ -30,6 +30,7 @@ const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publ
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const watchHref=x=>"watch.html?id="+encodeURIComponent(x.id);
+const setMeta=(name,value,property=false)=>{if(!value)return;document.querySelector(property?'meta[property="'+name+'"]':'meta[name="'+name+'"]')?.setAttribute("content",value)};
 
 function episodeCard(x,index){
  const img=imageFor(x);
@@ -65,6 +66,8 @@ $("#showTitle").textContent=meta[0];
 $("#showLabel").textContent=(meta[1]||"SpeakOut Original").toUpperCase()+" · SPEAKOUT ORIGINAL";
 $("#showDescription").textContent=meta[2];
 document.title=meta[0]+" | SpeakOut TV";
+setMeta("description",meta[2]);setMeta("og:title",meta[0]+" | SpeakOut TV",true);setMeta("og:description",meta[2],true);
+const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
 
 let episodes=[];
 try{
@@ -88,8 +91,8 @@ if(first){
  $("#featuredEpisode").innerHTML=featuredCard(first);
  $("#startWatching").addEventListener("click",()=>location.href=watchHref(first));
  const heroImg=showImage||imageFor(first);
- if(heroImg){$("#showArtwork").style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image")}
+ if(heroImg){$("#showArtwork").style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image");setMeta("og:image",heroImg,true)}
 }else{
  $("#startWatching").hidden=true;
- if(showImage){$("#showArtwork").style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image")}
+ if(showImage){$("#showArtwork").style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image");setMeta("og:image",showImage,true)}
 }
