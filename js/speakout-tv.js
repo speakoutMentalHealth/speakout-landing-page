@@ -83,6 +83,74 @@ function topicMatch(x,topic){
  return (groups[topic]||[topic]).some(k=>hay.includes(k));
 }
 
+const dailyProgramming=[
+ {title:"Reset & Perspective",description:"A calmer mix for slowing down, reflecting and starting again.",topic:"stress"},
+ {title:"Focus & Momentum",description:"Stories and conversations about attention, confidence and taking the next step.",topic:"motivation"},
+ {title:"Real Stories",description:"Human experiences and reflections that make difficult conversations easier to enter.",topic:"stories"},
+ {title:"Student Life",description:"Campus voices, school pressure and conversations about growing through change.",topic:"school"},
+ {title:"Relationships & Connection",description:"Perspectives on family, friendship, communication and connection.",topic:"relationships"},
+ {title:"Confidence & Possibility",description:"A mix for perspective, motivation and moving into the weekend with intention.",topic:"motivation"},
+ {title:"Youth Voices",description:"Stories and ideas centered on young people, community and everyday life.",topic:"youth"}
+];
+let dailyFocusItems=[];
+
+function diverseItems(items,limit=10){
+ const result=[],seenShows=new Set();
+ for(const item of items){
+  const key=normalize(item.show||"");
+  if(key&&!seenShows.has(key)){result.push(item);seenShows.add(key)}
+  if(result.length>=limit)return result;
+ }
+ for(const item of items){
+  if(!result.includes(item))result.push(item);
+  if(result.length>=limit)break;
+ }
+ return result;
+}
+function dailySeed(){
+ const d=new Date();
+ return Number(String(d.getFullYear())+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"));
+}
+function renderDailyProgramming(){
+ const plan=dailyProgramming[new Date().getDay()]||dailyProgramming[0];
+ $("#dailyFocusEyebrow").textContent="TODAY · "+new Intl.DateTimeFormat(undefined,{weekday:"long"}).format(new Date()).toUpperCase();
+ let picks=regularEpisodes.filter(x=>topicMatch(x,plan.topic));
+ if(!picks.length)picks=regularEpisodes;
+ dailyFocusItems=diverseItems(picks,10);
+ $("#dailyFocusTitle").textContent=plan.title;
+ $("#dailyFocusDescription").textContent=plan.description;
+ $("#dailyFocusRail").innerHTML=dailyFocusItems.map(contentCard).join("")||'<div class="ios-audio-empty">More curated content is coming.</div>';
+}
+function renderFresh(){
+ const section=$("#fresh"),rail=$("#freshRail");
+ const dated=regularEpisodes.filter(x=>dateValue(x)>0).sort((a,b)=>dateValue(b)-dateValue(a));
+ if(!dated.length){section.hidden=true;return}
+ const weekAgo=Date.now()-7*24*60*60*1000;
+ const thisWeek=dated.filter(x=>dateValue(x)>=weekAgo);
+ const picks=diverseItems((thisWeek.length?thisWeek:dated).slice(0,12),8);
+ section.hidden=!picks.length;
+ $("#freshEyebrow").textContent=thisWeek.length?"NEW THIS WEEK":"RECENTLY ADDED";
+ $("#freshTitle").textContent=thisWeek.length?"Fresh on SpeakOut TV":"Recently Added";
+ $("#freshSub").textContent=thisWeek.length?"Newly published conversations and stories from this week.":"The most recently published SpeakOut TV content.";
+ rail.innerHTML=picks.map(contentCard).join("");
+}
+function pickFeatured(){
+ if(!regularEpisodes.length)return null;
+ const editorial=regularEpisodes.filter(x=>x.featured===true||String(x.featured).toLowerCase()==="true");
+ if(editorial.length)return editorial[0];
+ const pool=dailyFocusItems.length?dailyFocusItems:regularEpisodes;
+ return pool[dailySeed()%pool.length]||regularEpisodes[0];
+}
+function pickSomething(){
+ const pool=dailyFocusItems.length?dailyFocusItems:regularEpisodes;
+ if(!pool.length)return;
+ const recent=new Set(readShelf().recent);
+ const unseen=pool.filter(x=>!recent.has(x.id));
+ const source=unseen.length?unseen:pool;
+ const item=source[dailySeed()%source.length]||source[0];
+ if(item)playEpisode(item,true);
+}
+
 let regularEpisodes=[],currentEpisode=null;
 const shelfKey="speakout-tv-shelf-v1";
 function readShelf(){try{const raw=JSON.parse(localStorage.getItem(shelfKey)||"{}");return {recent:Array.isArray(raw.recent)?raw.recent:[],saved:Array.isArray(raw.saved)?raw.saved:[]}}catch{return {recent:[],saved:[]}}}
@@ -114,7 +182,8 @@ function playEpisode(item,autoplay=true){
 function renderForYou(topic="all"){
  let picks=regularEpisodes.filter(x=>topicMatch(x,topic));
  if(!picks.length)picks=regularEpisodes;
- $("#forYouRail").innerHTML=picks.slice(0,12).map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
+ picks=diverseItems(picks,12);
+ $("#forYouRail").innerHTML=picks.map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
 }
 
@@ -228,8 +297,8 @@ function renderLiveExperience(allEpisodes){
 }
 
 const viewGroups={
- home:["home","featured","for-you","reset","series","stories","episodes","audio","live"],
- discover:["for-you","shelf","reset","series","stories"],
+ home:["home","featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories","episodes","audio","live"],
+ discover:["today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"],
  watch:["episodes"],
  listen:["audio"],
  live:["live"]
@@ -261,12 +330,17 @@ async function load(){
  renderLiveExperience(episodes);
 
  regularEpisodes=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
- const first=regularEpisodes[0]||episodes[0];
+ renderDailyProgramming();
+ renderFresh();
+ const featured=pickFeatured()||regularEpisodes[0]||episodes[0];
+ const first=regularEpisodes[0]||featured;
  if(first){
    currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
-   $("#introTitle").textContent=first.title||"Real conversations. No pretending.";$("#introDescription").textContent=first.description||"Original SpeakOut stories and conversations.";
-   const img=imageFor(first),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
-   $("#introPlay")?.addEventListener("click",()=>playEpisode(first,true));
+ }
+ if(featured){
+   $("#introTitle").textContent=featured.title||"Real conversations. No pretending.";$("#introDescription").textContent=featured.description||"Original SpeakOut stories and conversations.";
+   const img=imageFor(featured),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
+   $("#introPlay")?.addEventListener("click",()=>playEpisode(featured,true));
  }
  $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("");
  renderForYou();
@@ -291,6 +365,7 @@ document.addEventListener("click",e=>{
  const open=e.target.closest("[data-episode-open]");if(open){const item=regularEpisodes.find(x=>x.id===open.dataset.episodeOpen);if(item)playEpisode(item,true);return}
  const ep=e.target.closest(".ios-episode-card[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
  const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:preferredScrollBehavior(),block:"start"});return}
+ const pick=e.target.closest("#pickForMe");if(pick){pickSomething();return}
  const reset=e.target.closest("[data-reset]");if(reset){const messages={breathe:"Unclench your jaw, lower your shoulders and take one slow breath. Give yourself a minute before the next thing.",ground:"Look around and quietly notice five things you can see, four you can feel, and three you can hear. No rush.",focus:"Choose one small task that matters next. Finish that one before deciding what comes after it."};const panel=$("#resetPanel");panel.textContent=messages[reset.dataset.reset]||"";panel.hidden=false;return}
  const reminder=e.target.closest("[data-live-calendar]");if(reminder){const item=liveItems.find(x=>x.id===reminder.dataset.liveCalendar);if(item)addLiveReminder(item);return}
  const shareLiveBtn=e.target.closest("[data-live-share]");if(shareLiveBtn){const item=liveItems.find(x=>x.id===shareLiveBtn.dataset.liveShare);if(item)shareLive(item);return}
