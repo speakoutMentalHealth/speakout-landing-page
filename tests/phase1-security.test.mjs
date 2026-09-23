@@ -293,3 +293,10 @@ test("SpeakOut TV service worker pre-caches local interaction scripts", () => {
   assert.match(sw, /event\.request\.mode==="navigate"/u);
   assert.match(sw, /return Response\.error\(\)/u);
 });
+
+
+test("SpeakOut TV bottom navigation updates every tab safely", () => {
+  const script=read("js/speakout-tv.js");
+  assert.match(script, /\$\$\("\.youth-nav a"\)\.forEach/u);
+  assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-nav a"\)\.forEach/u);
+});
