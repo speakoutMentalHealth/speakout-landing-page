@@ -397,3 +397,47 @@ test("TV discovery searches editorial metadata and updates all filter tabs safel
   assert.ok((script.match(/\$\$\("\[data-filter\]"\)\.forEach/gu)||[]).length >= 2);
   assert.doesNotMatch(script,/(?<!\$)\$\("\[data-filter\]"\)\.forEach/u);
 });
+
+
+test("TV Studio programming preview mirrors editorial homepage controls", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  for (const id of ["programmingControl","programmingHealth","programmingFeaturedTitle","programmingDailyTitle","programmingLibraryCount","programmingWarnings"]) {
+    assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+  }
+  for (const readiness of ["placement","pillar","audience"]) {
+    assert.match(page,new RegExp(`data-readiness="${readiness}"`,"u"),readiness);
+  }
+  assert.match(script,/const programmingWarnings = \[\]/u);
+  assert.match(script,/programmingFeaturedTitle/u);
+  assert.match(script,/programmingDailyTitle/u);
+  assert.match(script,/programmingLibraryCount/u);
+  assert.match(styles,/\.programming-preview-grid/u);
+  assert.match(styles,/\.programming-warning-list/u);
+});
+
+test("TV Studio keeps Main Stage legacy flag synchronized with placement", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/function syncPlacement\(source = "placement"\)/u);
+  assert.match(script,/featured\.value = homePlacement\.value === "featured" \? "true" : "false"/u);
+  assert.match(script,/else if \(homePlacement\.value === "featured"\) homePlacement\.value = "auto"/u);
+});
+
+test("secure TV publishing enforces the same quality gates as Studio", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/clear title of at least 8 characters/u);
+  assert.match(worker,/useful description of at least 50 characters/u);
+  assert.match(worker,/at least two discovery tags/u);
+  assert.match(worker,/valid artwork URL/u);
+  assert.match(worker,/Live broadcasts use the Live channel and cannot use Main Stage or Today’s Focus placement/u);
+});
+
+test("library-only TV records never fall back into homepage discovery rails", () => {
+  const script=read("js/speakout-tv.js");
+  assert.match(script,/const homeEpisodes=regularEpisodes\.filter\(discoveryEligible\)/u);
+  assert.match(script,/\$\("#latestRail"\)\.innerHTML=homeEpisodes\.map\(episodeCard\)/u);
+  assert.match(script,/\$\("#storiesRail"\)\.innerHTML=homeEpisodes\.filter/u);
+  assert.match(script,/const pool=dailyFocusItems\.length\?dailyFocusItems:homePool/u);
+  assert.doesNotMatch(script,/homePool\.length\?homePool:regularEpisodes/u);
+});
