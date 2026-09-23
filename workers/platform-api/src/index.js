@@ -111,7 +111,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "homePlacement", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -190,6 +190,32 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("Invalid TV audience."), { status: 400 });
     }
     record.audience = audience;
+
+    const programmingDays = normalized(record.programmingDays || "all");
+    if (!["all", "weekdays", "weekend", "mon", "tue", "wed", "thu", "fri", "sat", "sun"].includes(programmingDays)) {
+      throw Object.assign(new Error("Invalid TV programming day pattern."), { status: 400 });
+    }
+    record.programmingDays = programmingDays;
+
+    const placementPriority = Number(record.placementPriority || 100);
+    if (!Number.isFinite(placementPriority) || !Number.isInteger(placementPriority) || placementPriority < 0 || placementPriority > 999) {
+      throw Object.assign(new Error("TV placement priority must be a whole number from 0 to 999."), { status: 400 });
+    }
+    record.placementPriority = placementPriority;
+
+    const placementDate = (value, label) => {
+      const raw = clean(value);
+      if (!raw) return "";
+      if (!/^\d{4}-\d{2}-\d{2}$/u.test(raw) || Number.isNaN(Date.parse(raw+"T00:00:00Z"))) {
+        throw Object.assign(new Error(`Invalid TV ${label} date.`), { status: 400 });
+      }
+      return raw;
+    };
+    record.placementStart = placementDate(record.placementStart, "placement start");
+    record.placementEnd = placementDate(record.placementEnd, "placement end");
+    if (record.placementStart && record.placementEnd && record.placementEnd < record.placementStart) {
+      throw Object.assign(new Error("TV placement end date cannot be before the start date."), { status: 400 });
+    }
     if (status === "published") {
       if (record.title.trim().length < 8) {
         throw Object.assign(new Error("Published TV content requires a clear title of at least 8 characters."), { status: 409 });
