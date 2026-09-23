@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/speakout-tv.css">
-<meta name="theme-color" content="#071226">
+<link rel="canonical" href="https://speakoutmentalhealth.org/tv-search.html">
+<meta name="theme-color" content="#071226"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
 <body class="tv-ios youth-search-page">
 <header class="ios-topbar youth-topbar">
@@ -42,11 +43,11 @@
   </div>
 
   <div class="search-kind-tabs" role="tablist" aria-label="Filter results">
-    <button class="active" type="button" data-filter="all">All</button>
-    <button type="button" data-filter="series">Series</button>
-    <button type="button" data-filter="video">Watch</button>
-    <button type="button" data-filter="audio">Listen</button>
-    <button type="button" data-filter="live">Live</button>
+    <button class="active" type="button" role="tab" aria-selected="true" data-filter="all">All</button>
+    <button type="button" role="tab" aria-selected="false" data-filter="series">Series</button>
+    <button type="button" role="tab" aria-selected="false" data-filter="video">Watch</button>
+    <button type="button" role="tab" aria-selected="false" data-filter="audio">Listen</button>
+    <button type="button" role="tab" aria-selected="false" data-filter="live">Live</button>
   </div>
 </section>
 
