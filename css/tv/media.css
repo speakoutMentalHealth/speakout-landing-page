@@ -141,3 +141,6 @@ body.youth-tv[data-tv-view="live"] .live-only{padding-top:20px}
   .live-cinema-shell{grid-template-columns:minmax(0,1.5fr) minmax(260px,.5fr)}
   .listen-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+.show-world-art>.tv-art-fallback{position:absolute;inset:0}
+.show-world-art>.tv-art-bug{left:clamp(14px,3vw,32px);bottom:clamp(14px,3vw,28px)}
