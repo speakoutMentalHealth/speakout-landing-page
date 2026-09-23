@@ -50,7 +50,8 @@ function kindOf(x){
 function hrefFor(x){
  const kind=kindOf(x);
  if(kind==="series")return "show.html?show="+encodeURIComponent(x.slug||slugFor(x.title));
- if(kind==="audio")return "radio.html";
+ if(kind==="audio")return "radio.html?audio="+encodeURIComponent(x.id);
+ if(kind==="live")return "tv.html?live="+encodeURIComponent(x.id)+"#live";
  return "watch.html?id="+encodeURIComponent(x.id);
 }
 function mediaCard(x){
@@ -125,6 +126,7 @@ async function load(){
 
  const initial=new URLSearchParams(location.search).get("q")||"";
  if(initial)$("#tvSearch").value=initial;
+ $("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
  render();
  $("#tvSearch").focus({preventScroll:true});
 }
@@ -135,7 +137,7 @@ $("#showEverything").addEventListener("click",()=>{$("#tvSearch").value="";filte
 
 $$("[data-filter]").forEach(button=>button.addEventListener("click",()=>{
  filter=button.dataset.filter||"all";
- $$("[data-filter]").forEach(x=>x.classList.toggle("active",x===button));
+ $("[data-filter]").forEach(x=>{const active=x===button;x.classList.toggle("active",active);x.setAttribute("aria-selected",String(active))});
  render();
 }));
 
