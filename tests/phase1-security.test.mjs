@@ -468,3 +468,48 @@ test("TV detail pages route Discover to the dedicated discovery page", () => {
     assert.doesNotMatch(page,/href="tv\.html#discover"/u,file);
   }
 });
+
+
+test("SpeakOut TV Series Studio manages published show identity safely", () => {
+  const page=read("admin-tv-series.html");
+  const script=read("js/tv-series-admin.js");
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(page,/collectionName:"tvShows"/u);
+  for(const id of ["title","slug","category","description","imageUrl","status","order"]) {
+    assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+  }
+  assert.match(script,/function quality\(\)/u);
+  assert.match(script,/Unique slug/u);
+  assert.match(script,/status\.value==="published"/u);
+  assert.match(worker,/function validatePublicTvShow/u);
+  assert.match(worker,/Published TV series requires a valid lowercase URL slug/u);
+  assert.match(worker,/Published TV series requires a useful description of at least 40 characters/u);
+  assert.match(worker,/Published TV series requires a valid artwork URL/u);
+});
+
+test("TV Studio and Audio Studio link to the Series Studio", () => {
+  assert.match(read("admin-tv.html"),/href="admin-tv-series\.html"/u);
+  assert.match(read("admin-radio.html"),/href="admin-tv-series\.html"/u);
+});
+
+test("SpeakOut TV homepage and Discover use managed series ordering", () => {
+  const home=read("js/speakout-tv.js");
+  const search=read("js/tv-search.js");
+  assert.match(home,/collection\(db,"tvShows"\)/u);
+  assert.match(home,/defaultSeries/u);
+  assert.match(home,/x\.imageUrl\|\|imageFor\(episode\)/u);
+  assert.match(search,/shows\.sort/u);
+  assert.match(search,/orderValue/u);
+});
+
+test("Series Studio browser module passes JavaScript syntax check", () => {
+  const path=fileURLToPath(new URL("../js/tv-series-admin.js",import.meta.url));
+  assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}));
+});
+
+test("specialized CMS studios receive the latest collection state", () => {
+  const controller=read("js/admin-cms-ui.js");
+  assert.match(controller,/new CustomEvent\("cms:render"/u);
+  assert.match(controller,/collectionName, items: items\.map/u);
+  assert.match(controller,/\.side a,\.studio-side a/u);
+});
