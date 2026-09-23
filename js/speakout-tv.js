@@ -31,13 +31,14 @@ const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const scheduleValue=x=>x?.scheduledAt?.toMillis?.()||Date.parse(x?.scheduledAt||"")||0;
 const formatSchedule=(ms,opts={})=>ms?new Intl.DateTimeFormat(undefined,{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",...opts}).format(new Date(ms)):"";
 const livePeople=x=>[x?.presenter?"Host · "+x.presenter:"",x?.guest?"Guest · "+x.guest:"",x?.guestRole||"",x?.sponsor?"Supported by "+x.sponsor:""].filter(Boolean);
 
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
- target.innerHTML='<iframe src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+ target.innerHTML='<iframe loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
 function contentCard(x){
  const img=imageFor(x),saved=isSaved(x.id);
@@ -215,12 +216,12 @@ function showView(view,{push=false}={}){
    const id=el.id||"";
    el.hidden=chosen!=="home"&&!viewGroups[chosen].includes(id);
  });
- $$(".youth-nav a").forEach(a=>a.classList.toggle("active",a.dataset.view===chosen));
+ $(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(a.dataset.view)a.setAttribute("aria-current",active?"page":"false")});
  if(push){
    const next=chosen==="home"?"tv.html":"#"+chosen;
    history.pushState({tvView:chosen},"",next);
  }
- window.scrollTo({top:0,behavior:"smooth"});
+ window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 
 async function load(){
@@ -262,12 +263,12 @@ document.addEventListener("click",e=>{
  const save=e.target.closest("[data-save-id]");if(save){e.preventDefault();e.stopPropagation();const saved=toggleSaved(save.dataset.saveId);save.classList.toggle("is-saved",saved);save.textContent=saved?"✓":"＋";save.setAttribute("aria-label",saved?"Remove from saved":"Save for later");return}
  const open=e.target.closest("[data-episode-open]");if(open){const item=regularEpisodes.find(x=>x.id===open.dataset.episodeOpen);if(item)playEpisode(item,true);return}
  const ep=e.target.closest(".ios-episode-card[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
- const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:"smooth",block:"start"});return}
+ const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:preferredScrollBehavior(),block:"start"});return}
  const reset=e.target.closest("[data-reset]");if(reset){const messages={breathe:"Unclench your jaw, lower your shoulders and take one slow breath. Give yourself a minute before the next thing.",ground:"Look around and quietly notice five things you can see, four you can feel, and three you can hear. No rush.",focus:"Choose one small task that matters next. Finish that one before deciding what comes after it."};const panel=$("#resetPanel");panel.textContent=messages[reset.dataset.reset]||"";panel.hidden=false;return}
  const reminder=e.target.closest("[data-live-calendar]");if(reminder){const item=liveItems.find(x=>x.id===reminder.dataset.liveCalendar);if(item)addLiveReminder(item);return}
  const shareLiveBtn=e.target.closest("[data-live-share]");if(shareLiveBtn){const item=liveItems.find(x=>x.id===shareLiveBtn.dataset.liveShare);if(item)shareLive(item);return}
- const watchLive=e.target.closest("[data-live-watch]");if(watchLive){const item=liveItems.find(x=>x.id===watchLive.dataset.liveWatch);if(item){setFrame($("#livePlayer"),item,true);$("#liveTitle").textContent=item.title||"SpeakOut Live";$("#liveDescription").textContent=item.description||"";$("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveMeta").innerHTML=liveMetaMarkup(item);$("#live").scrollIntoView({behavior:"smooth",block:"start"})}return}
- const nav=e.target.closest(".youth-nav a");if(nav){e.preventDefault();showView(nav.dataset.view||"home",{push:true})}
+ const watchLive=e.target.closest("[data-live-watch]");if(watchLive){const item=liveItems.find(x=>x.id===watchLive.dataset.liveWatch);if(item){setFrame($("#livePlayer"),item,true);$("#liveTitle").textContent=item.title||"SpeakOut Live";$("#liveDescription").textContent=item.description||"";$("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveMeta").innerHTML=liveMetaMarkup(item);$("#live").scrollIntoView({behavior:preferredScrollBehavior(),block:"start"})}return}
+ const nav=e.target.closest(".youth-nav a[data-view]");if(nav){e.preventDefault();showView(nav.dataset.view,{push:true})}
 });
 addEventListener("popstate",()=>showView(location.hash.slice(1)||"home"));
 showView(location.hash.slice(1)||"home");
