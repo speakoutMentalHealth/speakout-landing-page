@@ -1,5 +1,4 @@
-import {db} from "../firebase-config.js";
-import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {loadTvEpisodes,loadTvShows} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const slug=new URLSearchParams(location.search).get("show")||"";
@@ -45,9 +44,8 @@ let meta=defaults[slug]||[slug.replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCas
 let showImage="";
 
 try{
- const ss=await getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])));
- ss.forEach(d=>{
-   const x=d.data();
+ const shows=await loadTvShows();
+ shows.forEach(x=>{
    if((x.slug||norm(x.title))===slug){
      meta=[x.title||meta[0],x.category||meta[1],x.description||meta[2]];
      showImage=x.imageUrl||"";
@@ -65,8 +63,8 @@ const canonical=document.querySelector('link[rel="canonical"]');if(canonical)can
 
 let episodes=[];
 try{
- const s=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));
- s.forEach(d=>{const x={id:d.id,...d.data()};if(norm(x.show)===slug&&String(x.format||x.type||"").toLowerCase()!=="live")episodes.push(x)});
+ const all=await loadTvEpisodes();
+ episodes=all.filter(x=>norm(x.show)===slug&&String(x.format||x.type||"").toLowerCase()!=="live");
 }catch{}
 
 const videoIds=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));
