@@ -84,3 +84,74 @@ linear-gradient(180deg,#071226,#050b16 70%);padding-bottom:110px;color:#f7fbff}
 .ios-audio-empty{color:#91a4bd;font-size:.75rem;padding:8px 2px}
 @media(min-width:851px){.ios-audio-strip{grid-auto-columns:240px}}
 @media(max-width:430px){.ios-audio-strip{grid-auto-columns:70%}}
+
+
+/* 2026 premium segmented TV experience */
+.tv-ios{position:relative;isolation:isolate;background:
+radial-gradient(900px 520px at 12% -8%,rgba(25,111,230,.23),transparent 62%),
+radial-gradient(760px 520px at 92% 18%,rgba(244,162,28,.11),transparent 60%),
+radial-gradient(700px 520px at 48% 82%,rgba(23,111,184,.10),transparent 64%),
+linear-gradient(135deg,#071326 0%,#050c18 48%,#030812 100%);background-attachment:fixed}
+.tv-ios:before,.tv-ios:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(.2px)}
+.tv-ios:before{width:540px;height:540px;right:-270px;top:110px;border:1px solid rgba(255,255,255,.055);box-shadow:0 0 0 52px rgba(255,255,255,.014),0 0 0 108px rgba(59,142,234,.018),inset 0 0 90px rgba(59,142,234,.045)}
+.tv-ios:after{width:420px;height:420px;left:-250px;bottom:8%;background:radial-gradient(circle,rgba(244,162,28,.065),transparent 68%)}
+.ios-topbar{box-shadow:0 10px 40px rgba(0,0,0,.16)}
+.ios-brand{letter-spacing:-.02em}.ios-brand img{box-shadow:0 8px 26px rgba(0,0,0,.32)}
+.ios-intro{position:relative}.ios-intro:after{content:"PRIVATE BROADCAST EXPERIENCE";position:absolute;right:0;top:26px;font-size:.56rem;letter-spacing:.18em;color:rgba(255,255,255,.27);font-weight:800}
+.ios-intro h1{background:linear-gradient(110deg,#fff 20%,#cfe3ff 60%,#fff1d0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ios-section{position:relative;animation:tvSectionIn .28s ease both}
+@keyframes tvSectionIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tv-view-filtered .ios-intro{display:none}
+.tv-view-filtered .ios-section{display:none}
+.tv-view-filtered .ios-section.tv-view-active{display:block;padding-top:34px}
+.tv-view-filtered .ios-section.tv-view-active:before{content:"";position:absolute;inset:12px -5% auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+.tv-view-filtered .ios-section.tv-view-active .ios-section-head{margin-bottom:18px}
+.ios-section-head h2{font-weight:700}
+.ios-glass{border-color:rgba(255,255,255,.14);background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.032));box-shadow:inset 0 1px rgba(255,255,255,.11),0 24px 70px rgba(0,0,0,.24)}
+.ios-live-card,.ios-episode-stage{box-shadow:0 32px 90px rgba(0,0,0,.30),0 0 0 1px rgba(255,255,255,.025),inset 0 1px rgba(255,255,255,.1)}
+.ios-episode-card img,.ios-thumb-fallback,.ios-series-card,.ios-audio-episode{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.ios-episode-card:hover img,.ios-series-card:hover,.ios-audio-episode:hover{transform:translateY(-3px);border-color:rgba(244,162,28,.45);box-shadow:0 18px 42px rgba(0,0,0,.26)}
+.ios-tabbar a{transition:background .2s ease,color .2s ease,transform .2s ease}
+.ios-tabbar a:hover{color:#fff}
+.ios-tabbar a.active{color:#fff;background:linear-gradient(145deg,rgba(244,162,28,.18),rgba(59,142,234,.12));box-shadow:inset 0 1px rgba(255,255,255,.12)}
+@media(min-width:851px){
+ .tv-ios{padding-bottom:54px}
+ .ios-shell{width:min(1320px,calc(100% - 56px));margin:auto;padding-top:0}
+ .ios-topbar-inner{width:min(1320px,calc(100% - 56px));min-height:74px}
+ .ios-brand{font-size:1.05rem}.ios-brand img{width:40px;height:40px;border-radius:13px}
+ .ios-icon-btn{width:42px;height:42px}
+ .ios-intro{padding:52px 0 28px}
+ .ios-intro h1{font-size:clamp(3.5rem,5.2vw,5.8rem);max-width:930px;line-height:.92;letter-spacing:-.06em}
+ .ios-kicker{font-size:.72rem;letter-spacing:.15em}
+ .ios-tabbar{position:sticky;left:auto;transform:none;top:86px;bottom:auto;z-index:70;width:min(760px,calc(100% - 56px));margin:0 auto 20px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);border-radius:22px;background:rgba(9,22,42,.68);box-shadow:0 18px 55px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.08)}
+ .ios-tabbar a{min-height:48px;flex-direction:row;gap:8px;border-radius:16px;font-size:.8rem}
+ .ios-tabbar a small{font-size:.72rem}.ios-tabbar a span{font-size:.92rem}
+ .ios-section{padding:36px 0 42px}
+ .ios-section-head{margin-bottom:16px}
+ .ios-section-head h2{font-size:2.05rem}
+ .ios-section-head .ios-kicker{font-size:.66rem}
+ .ios-live-card,.ios-episode-stage{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(280px,.55fr);align-items:stretch;border-radius:30px;min-height:380px}
+ .ios-live-card .ios-player,.ios-episode-stage .ios-player{aspect-ratio:auto;min-height:380px}
+ .ios-live-card .ios-card-copy,.ios-episode-stage .ios-card-copy{padding:30px;display:flex;flex-direction:column;justify-content:flex-end;border-left:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}
+ .ios-live-card .ios-card-copy h3,.ios-episode-stage .ios-card-copy h3{font-size:1.55rem;line-height:1.05;margin-bottom:10px}
+ .ios-live-card .ios-card-copy p,.ios-episode-stage .ios-card-copy p{font-size:.92rem;line-height:1.55;white-space:normal;color:#adbed3}
+ .ios-episode-strip{grid-auto-columns:280px;gap:14px;padding-top:15px}
+ .ios-series-strip{grid-auto-columns:250px;gap:14px}
+ .ios-series-card{min-height:150px;padding:22px;border-radius:24px}
+ .ios-series-card strong{font-size:1.15rem}
+ .ios-audio-card{padding:18px 20px;border-radius:22px}
+ .ios-spotify{border:1px solid rgba(255,255,255,.09);box-shadow:0 22px 55px rgba(0,0,0,.22)}
+ .ios-audio-strip{grid-auto-columns:270px;gap:13px;padding-top:14px}
+ .ios-help{bottom:24px;right:24px}
+ .tv-view-filtered .ios-section.tv-view-active{padding-top:42px}
+ .tv-view-filtered .ios-section.tv-view-active .ios-section-head h2{font-size:2.45rem}
+}
+@media(max-width:850px){
+ .ios-tabbar a.active{transform:translateY(-1px)}
+ .tv-view-filtered .ios-section.tv-view-active{padding-top:24px}
+ .tv-view-filtered .ios-section.tv-view-active:before{inset:6px 0 auto}
+}
+@media(max-width:430px){
+ .tv-ios:before{width:360px;height:360px;right:-230px;top:120px}
+ .ios-intro:after{display:none}
+}
