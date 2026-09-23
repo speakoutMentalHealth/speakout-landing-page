@@ -7,7 +7,11 @@
 <link rel="icon" href="images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/speakout-tv.css">
+<link rel="stylesheet" href="css/tv/tokens.css">
+<link rel="stylesheet" href="css/tv/base.css">
+<link rel="stylesheet" href="css/tv/home.css">
+<link rel="stylesheet" href="css/tv/media.css">
+<link rel="stylesheet" href="css/tv/discover.css">
 <link rel="preconnect" href="https://www.youtube-nocookie.com"><link rel="preconnect" href="https://i.ytimg.com">
 <link rel="canonical" href="https://speakoutmentalhealth.org/show.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SpeakOut TV">
@@ -20,7 +24,7 @@
 <header class="ios-topbar youth-topbar">
   <div class="tv-container ios-topbar-inner">
     <a class="ios-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
-    <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV">⌕</a>
+    <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.5 15.5 4 4"/></svg></a>
   </div>
 </header>
 
@@ -60,12 +64,12 @@
 </section>
 </main>
 
-<nav class="ios-tabbar youth-nav show-nav" aria-label="SpeakOut TV navigation">
-<a href="tv.html"><span>⌂</span><small>Home</small></a>
-<a href="tv-search.html" class="active" aria-current="page"><span>✦</span><small>Discover</small></a>
-<a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
-<a href="radio.html"><span>◉</span><small>Listen</small></a>
-<a href="tv.html#live"><span>●</span><small>Live</small></a>
+<nav class="ios-tabbar youth-nav search-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 10.7 12 3.8l8.5 6.9v9.1H14.8v-5.6H9.2v5.6H3.5z"/></svg></span><small>Home</small></a>
+<a href="tv-search.html" class="active" aria-current="page"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m14.8 9.2-2 4.1-4.1 2 2-4.1z"/></svg></span><small>Discover</small></a>
+<a href="tv.html#watch"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></span><small>Watch</small></a>
+<a href="radio.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13v-2a7 7 0 0 1 14 0v2"/><rect x="3.5" y="12" width="4" height="7" rx="2"/><rect x="16.5" y="12" width="4" height="7" rx="2"/></svg></span><small>Listen</small></a>
+<a href="tv.html#live"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M7.7 7.7a6 6 0 0 0 0 8.6M16.3 7.7a6 6 0 0 1 0 8.6"/><path d="M4.7 4.7a10.2 10.2 0 0 0 0 14.6M19.3 4.7a10.2 10.2 0 0 1 0 14.6"/></svg></span><small>Live</small></a>
 </nav>
 
 <script type="module" src="js/tv-show.js"></script>
