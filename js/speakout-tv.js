@@ -130,7 +130,7 @@ function calendarText(item){
  const end=start+60*60*1000;
  const stamp=ms=>new Date(ms).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
  const clean=s=>String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
- const url=location.origin+location.pathname+"#live";
+ const url=new URL(location.origin+location.pathname);url.searchParams.set("live",item.id||"");url.hash="live";
  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//SpeakOut TV//Live//EN","BEGIN:VEVENT",
   "UID:"+clean((item.id||"live")+"@speakoutmentalhealth.org"),"DTSTAMP:"+stamp(Date.now()),"DTSTART:"+stamp(start),"DTEND:"+stamp(end),
   "SUMMARY:"+clean(item.title||"SpeakOut Live"),"DESCRIPTION:"+clean(item.description||"Join SpeakOut Live."),"URL:"+url,"END:VEVENT","END:VCALENDAR"].join("\r\n");
@@ -146,8 +146,8 @@ async function shareLive(item){
  if(!item)return;
  const url=location.origin+location.pathname+"#live";
  try{
-  if(navigator.share)await navigator.share({title:item.title||"SpeakOut Live",text:item.description||"Join SpeakOut Live.",url});
-  else{await navigator.clipboard.writeText(url);$("#liveActionStatus").textContent="Live link copied."}
+  if(navigator.share)await navigator.share({title:item.title||"SpeakOut Live",text:item.description||"Join SpeakOut Live.",url:url.href});
+  else{await navigator.clipboard.writeText(url.href);$("#liveActionStatus").textContent="Live link copied."}
  }catch(error){if(error?.name!=="AbortError")$("#liveActionStatus").textContent="Use your browser address bar to copy the live link."}
 }
 function startLiveCountdown(item){
@@ -215,7 +215,7 @@ function showView(view,{push=false}={}){
    const id=el.id||"";
    el.hidden=chosen!=="home"&&!viewGroups[chosen].includes(id);
  });
- $$(".youth-nav a").forEach(a=>a.classList.toggle("active",a.dataset.view===chosen));
+ $(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
  if(push){
    const next=chosen==="home"?"tv.html":"#"+chosen;
    history.pushState({tvView:chosen},"",next);
