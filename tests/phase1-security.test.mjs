@@ -242,3 +242,29 @@ test("TV detail pages expose consistent canonical and install metadata", () => {
     assert.match(page, /rel="apple-touch-icon" href="images\/logo\.png"/u, file);
   }
 });
+
+
+test("SpeakOut TV defers heavy home media until viewers engage", () => {
+  const page = read("tv.html");
+  const script = read("js/speakout-tv.js");
+  assert.doesNotMatch(page, /id="audioPlayer"><iframe/u);
+  assert.match(page, /tv-audio-placeholder/u);
+  assert.match(script, /renderEpisodePreview/u);
+  assert.match(script, /ensureDefaultAudioPlayer/u);
+  assert.match(script, /chosen==="watch"/u);
+  assert.match(script, /chosen==="listen"/u);
+});
+
+test("TV secondary navigation sends Listen to the dedicated audio experience", () => {
+  for (const file of ["watch.html", "show.html", "tv-search.html"]) {
+    const page = read(file);
+    assert.match(page, /href="radio\.html"><span>◉<\/span><small>Listen<\/small><\/a>/u, file);
+    assert.doesNotMatch(page, /href="tv\.html#listen"><span>◉/u, file);
+  }
+});
+
+test("TV direct-entry pages register the shared service worker", () => {
+  for (const file of ["watch.html", "show.html", "tv-search.html", "radio.html"]) {
+    assert.match(read(file), /serviceWorker\.register\("tv-sw\.js"\)/u, file);
+  }
+});
