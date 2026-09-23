@@ -33,7 +33,16 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   const form = $("cmsForm");
   const statusBox = $("statusBox");
   const publishButton = form?.querySelector('button[type="submit"]');
+  const librarySearch = $("librarySearch");
+  const libraryStatusFilter = $("libraryStatusFilter");
+  const libraryFormatFilter = $("libraryFormatFilter");
+  const libraryPlacementFilter = $("libraryPlacementFilter");
+  const libraryQualityFilter = $("libraryQualityFilter");
+  const libraryReset = $("libraryReset");
+  const libraryVisibleCount = $("libraryVisibleCount");
   let lastDetection = null;
+  let studioItems = [];
+  let editingRecordId = null;
 
   function parse(raw) {
     try {
@@ -239,6 +248,48 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[char]));
 
+  const mediaKey = raw => {
+    const result = parse(raw);
+    if (!result) return "";
+    if (result.id) return (result.name.startsWith("YouTube") ? "youtube:" : "media:")+result.id.toLowerCase();
+    try {
+      const u = new URL(String(raw || "").trim());
+      return result.name.toLowerCase()+":"+u.hostname.replace(/^www\./u,"").toLowerCase()+u.pathname.replace(/\/+$/u,"");
+    } catch { return ""; }
+  };
+
+  function qualityIssues(item) {
+    const issues = [];
+    if (String(item.title || "").trim().length < 8) issues.push("short title");
+    if (!parse(item.url)) issues.push("unsupported media");
+    if (String(item.description || "").trim().length < 50) issues.push("short description");
+    if (!validArtwork(item.imageUrl)) issues.push("missing artwork");
+    const itemTags = Array.isArray(item.tags) ? item.tags : String(item.tags || "").split(",");
+    if (itemTags.map(value => String(value).trim()).filter(Boolean).length < 2) issues.push("few tags");
+    if (!String(item.contentPillar || "").trim()) issues.push("missing pillar");
+    if (!String(item.audience || "").trim()) issues.push("missing audience");
+    const placement = placementOf(item);
+    if (String(item.format || "").toLowerCase() === "live" && ["featured","daily"].includes(placement)) issues.push("live placement");
+    if (["featured","daily"].includes(placement) && !scheduleState(item).valid) issues.push("invalid schedule");
+    if (String(item.editorialReview || "").toLowerCase() !== "complete") issues.push("review pending");
+    if (String(item.minorInvolved || "").toLowerCase() === "yes" && String(item.consentConfirmed || "").toLowerCase() !== "yes") issues.push("minor consent");
+    return issues;
+  }
+
+  function duplicateIdSet(items = studioItems) {
+    const byKey = new Map();
+    items.forEach(item => {
+      const key = mediaKey(item.url);
+      if (!key) return;
+      const list = byKey.get(key) || [];
+      list.push(item.id);
+      byKey.set(key,list);
+    });
+    const ids = new Set();
+    byKey.forEach(list => { if (list.length > 1) list.forEach(id => ids.add(id)); });
+    return ids;
+  }
+
   const placementOf = item => String(item?.homePlacement || "auto").trim().toLowerCase().replace(/\s+/g,"_");
   const viewerDate = item => timestampValue(item?.publishedAt) || timestampValue(item?.publishDate) || timestampValue(item?.date);
   const localDateKey = date => String(date.getFullYear())+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
@@ -274,23 +325,8 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   const programmingSort = (a,b) => scheduleState(a).priority-scheduleState(b).priority || (Number(a.order)||999)-(Number(b.order)||999) || viewerDate(b)-viewerDate(a);
 
   function recordIssues(item) {
-    const issues = [];
     const published = ["published","active"].includes(String(item.status || "").toLowerCase());
-    if (!published) return issues;
-    if (String(item.title || "").trim().length < 8) issues.push("short title");
-    if (!parse(item.url)) issues.push("unsupported media");
-    if (String(item.description || "").trim().length < 50) issues.push("short description");
-    if (!validArtwork(item.imageUrl)) issues.push("missing artwork");
-    const itemTags = Array.isArray(item.tags) ? item.tags : String(item.tags || "").split(",");
-    if (itemTags.map(value => String(value).trim()).filter(Boolean).length < 2) issues.push("few tags");
-    if (!String(item.contentPillar || "").trim()) issues.push("missing pillar");
-    if (!String(item.audience || "").trim()) issues.push("missing audience");
-    const placement = placementOf(item);
-    if (String(item.format || "").toLowerCase() === "live" && ["featured","daily"].includes(placement)) issues.push("live placement");
-    if (["featured","daily"].includes(placement) && !scheduleState(item).valid) issues.push("invalid schedule");
-    if (String(item.editorialReview || "").toLowerCase() !== "complete") issues.push("review pending");
-    if (String(item.minorInvolved || "").toLowerCase() === "yes" && String(item.consentConfirmed || "").toLowerCase() !== "yes") issues.push("minor consent");
-    return issues;
+    return published ? qualityIssues(item) : [];
   }
 
   async function refreshEditorialDashboard() {
@@ -383,6 +419,129 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     }
   }
 
+  function scheduledForOperations(item) {
+    const liveStart = timestampValue(item.scheduledAt);
+    return liveStart > Date.now() || scheduleState(item).upcoming;
+  }
+
+  function expiringSoon(item) {
+    const end = String(item?.placementEnd || "").trim();
+    if (!end || !["featured","daily"].includes(placementOf(item))) return false;
+    const endTime = Date.parse(end+"T23:59:59");
+    const diff = endTime-Date.now();
+    return diff >= 0 && diff <= 7*24*60*60*1000;
+  }
+
+  function matchesLibraryFilter(item, duplicateIds) {
+    const query = String(librarySearch?.value || "").trim().toLowerCase();
+    const hay = [item.title,item.show,item.presenter,item.guest,item.guestRole,item.tags,item.contentPillar,item.audience].flat().join(" ").toLowerCase();
+    if (query && !hay.includes(query)) return false;
+    if (libraryStatusFilter?.value && libraryStatusFilter.value !== "all" && String(item.status || "").toLowerCase() !== libraryStatusFilter.value) return false;
+    if (libraryFormatFilter?.value && libraryFormatFilter.value !== "all" && String(item.format || "episode").toLowerCase() !== libraryFormatFilter.value) return false;
+    if (libraryPlacementFilter?.value && libraryPlacementFilter.value !== "all" && placementOf(item) !== libraryPlacementFilter.value) return false;
+    const quality = libraryQualityFilter?.value || "all";
+    if (quality === "ready" && qualityIssues(item).length) return false;
+    if (quality === "attention" && !qualityIssues(item).length) return false;
+    if (quality === "scheduled" && !scheduledForOperations(item)) return false;
+    if (quality === "duplicate" && !duplicateIds.has(item.id)) return false;
+    return true;
+  }
+
+  function applyLibraryFilters() {
+    const duplicateIds = duplicateIdSet();
+    let visible = 0;
+    studioItems.forEach(item => {
+      const row = document.querySelector('#rows tr[data-record-id="'+CSS.escape(item.id)+'"]');
+      if (!row) return;
+      const show = matchesLibraryFilter(item,duplicateIds);
+      row.hidden = !show;
+      if (show) visible += 1;
+    });
+    if (libraryVisibleCount) libraryVisibleCount.textContent = visible+" of "+studioItems.length+" shown";
+  }
+
+  function decorateLibraryRows() {
+    const duplicateIds = duplicateIdSet();
+    studioItems.forEach(item => {
+      const row = document.querySelector('#rows tr[data-record-id="'+CSS.escape(item.id)+'"]');
+      if (!row) return;
+      const sub = row.querySelector("[data-record-sub]");
+      const issues = qualityIssues(item);
+      if (sub) {
+        const parts = [item.show || "SpeakOut TV"];
+        if (issues.length) parts.push(issues.length+" check"+(issues.length===1?"":"s"));
+        if (duplicateIds.has(item.id)) parts.push("duplicate media");
+        sub.textContent = parts.join(" · ");
+        sub.classList.toggle("attention",Boolean(issues.length||duplicateIds.has(item.id)));
+      }
+      const actions = row.querySelector(".actions");
+      if (actions && !actions.querySelector("[data-public-view]")) {
+        const link = document.createElement("a");
+        link.className = "btn soft";
+        link.dataset.publicView = item.id;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.href = String(item.format || "").toLowerCase() === "live" ? "tv.html?live="+encodeURIComponent(item.id)+"#live" : "watch.html?id="+encodeURIComponent(item.id);
+        link.textContent = "View";
+        actions.prepend(link);
+      }
+    });
+  }
+
+  function openRecord(id) {
+    const button = document.querySelector('[data-edit="'+CSS.escape(id)+'"]');
+    if (button) button.click();
+  }
+
+  function renderOperationsQueue() {
+    const drafts = studioItems.filter(item => String(item.status || "").toLowerCase() === "draft");
+    const readyDrafts = drafts.filter(item => qualityIssues(item).length === 0);
+    const blockedDrafts = drafts.filter(item => qualityIssues(item).length > 0);
+    const duplicates = duplicateIdSet();
+    const expiring = studioItems.filter(expiringSoon);
+    $("readyDraftCount").textContent = readyDrafts.length;
+    $("blockedDraftCount").textContent = blockedDrafts.length;
+    $("expiringPlacementCount").textContent = expiring.length;
+    $("duplicateMediaCount").textContent = duplicates.size;
+
+    const publicAttention = studioItems.filter(item => recordIssues(item).length);
+    const scheduled = studioItems.filter(scheduledForOperations);
+    const queue = [
+      ...readyDrafts.map(item => ({item,label:"Ready draft",detail:"Editorial checks complete — ready for final publishing decision.",tone:"ready"})),
+      ...publicAttention.map(item => ({item,label:"Public issue",detail:qualityIssues(item).join(" · "),tone:"attention"})),
+      ...expiring.map(item => ({item,label:"Placement ending",detail:"Homepage placement ends "+String(item.placementEnd||"soon")+".",tone:"schedule"})),
+      ...[...duplicates].map(id => studioItems.find(item => item.id===id)).filter(Boolean).map(item => ({item,label:"Duplicate media",detail:"Another library record points to the same media source.",tone:"attention"})),
+      ...scheduled.filter(item => !readyDrafts.includes(item)).slice(0,4).map(item => ({item,label:"Upcoming",detail:String(item.scheduledAt||item.placementStart||"Scheduled programming"),tone:"schedule"}))
+    ];
+    const unique = [];
+    const seen = new Set();
+    queue.forEach(entry => {
+      const key = entry.item.id+":"+entry.label;
+      if (!seen.has(key)) { seen.add(key); unique.push(entry); }
+    });
+
+    const target = $("operationsQueue");
+    if (!target) return;
+    if (!unique.length) {
+      target.innerHTML = '<div class="editorial-clear"><span>✓</span><div><strong>No urgent editorial actions</strong><small>Drafts, public records and programming schedules are currently aligned.</small></div></div>';
+      $("operationsHealth").textContent = "Queue clear";
+      $("operationsHealth").classList.remove("attention");
+      return;
+    }
+    $("operationsHealth").textContent = unique.length+" action"+(unique.length===1?"":"s");
+    $("operationsHealth").classList.toggle("attention",Boolean(publicAttention.length||blockedDrafts.length||duplicates.size));
+    target.innerHTML = '<div class="operations-list">'+unique.slice(0,12).map(({item,label,detail,tone}) =>
+      '<article class="operation-item '+tone+'"><div><small>'+safe(label)+'</small><strong>'+safe(item.title||"Untitled")+'</strong><span>'+safe(item.show||"SpeakOut TV")+'</span></div><p>'+safe(detail)+'</p><button type="button" data-queue-edit="'+safe(item.id)+'">Edit</button></article>'
+    ).join("")+'</div>'+(unique.length>12?'<p class="admin-muted editorial-more">+'+(unique.length-12)+' more actions are available through the filtered library.</p>':"");
+  }
+
+  function refreshOperations(items) {
+    studioItems = Array.isArray(items) ? items.map(item => ({...item})) : [];
+    renderOperationsQueue();
+    decorateLibraryRows();
+    applyLibraryFilters();
+  }
+
   function syncPlacement(source = "placement") {
     if (!homePlacement || !featured) return;
     if (source === "placement") {
@@ -395,6 +554,49 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   homePlacement?.addEventListener("change", () => { syncPlacement("placement"); updateReadiness(); });
   featured?.addEventListener("change", () => { syncPlacement("featured"); updateReadiness(); });
   format?.addEventListener("change", updateReadiness);
+
+  [librarySearch,libraryStatusFilter,libraryFormatFilter,libraryPlacementFilter,libraryQualityFilter].filter(Boolean).forEach(control => {
+    control.addEventListener(control.tagName === "INPUT" ? "input" : "change",applyLibraryFilters);
+  });
+  libraryReset?.addEventListener("click",() => {
+    if (librarySearch) librarySearch.value = "";
+    if (libraryStatusFilter) libraryStatusFilter.value = "all";
+    if (libraryFormatFilter) libraryFormatFilter.value = "all";
+    if (libraryPlacementFilter) libraryPlacementFilter.value = "all";
+    if (libraryQualityFilter) libraryQualityFilter.value = "all";
+    applyLibraryFilters();
+  });
+  document.addEventListener("click",event => {
+    const edit = event.target.closest("[data-queue-edit]");
+    if (edit) { openRecord(edit.dataset.queueEdit); return; }
+    const preset = event.target.closest("[data-library-preset]");
+    if (!preset) return;
+    if (librarySearch) librarySearch.value = "";
+    if (libraryStatusFilter) libraryStatusFilter.value = preset.dataset.libraryPreset === "draft" ? "draft" : "all";
+    if (libraryFormatFilter) libraryFormatFilter.value = "all";
+    if (libraryPlacementFilter) libraryPlacementFilter.value = "all";
+    if (libraryQualityFilter) libraryQualityFilter.value = ({attention:"attention",scheduled:"scheduled",duplicate:"duplicate"})[preset.dataset.libraryPreset] || "all";
+    applyLibraryFilters();
+    $("library")?.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  document.addEventListener("cms:render",event => {
+    if (event.detail?.collectionName === "tvEpisodes") refreshOperations(event.detail.items || []);
+  });
+  document.addEventListener("cms:edit-start",event => {
+    if (event.detail?.collectionName !== "tvEpisodes") return;
+    editingRecordId = event.detail.item?.id || null;
+    setTimeout(() => {
+      const result = parse(url?.value);
+      if (result) preview(result);
+      updateReadiness();
+      syncPlacement("placement");
+    },0);
+  });
+  document.addEventListener("cms:edit-reset",event => {
+    if (event.detail?.collectionName !== "tvEpisodes") return;
+    editingRecordId = null;
+    setTimeout(updateReadiness,0);
+  });
 
   const rows = document.getElementById("rows");
   if (rows) new MutationObserver(() => {
