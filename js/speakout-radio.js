@@ -1,5 +1,4 @@
-import {db} from "../firebase-config.js";
-import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {loadTvAudio} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const $=s=>document.querySelector(s);
@@ -147,10 +146,7 @@ async function shareCurrent(){
 }
 
 async function load(){
- try{
-  const snap=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));
-  snap.forEach(d=>items.push({id:d.id,...d.data()}));
- }catch{}
+ try{items=await loadTvAudio()}catch{items=[]}
  items.sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||dateValue(b)-dateValue(a));
  renderLibrary();
  renderShelf();
