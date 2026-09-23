@@ -513,3 +513,22 @@ test("specialized CMS studios receive the latest collection state", () => {
   assert.match(controller,/collectionName, items: items\.map/u);
   assert.match(controller,/\.side a,\.studio-side a/u);
 });
+
+
+test("SpeakOut TV section tabs switch every matching section and keep media views focused", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  const radio=read("radio.html");
+  const styles=read("css/speakout-tv.css");
+  assert.match(script, /\$\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
+  assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
+  assert.match(script, /document\.body\.dataset\.tvView=chosen/u);
+  assert.match(page, /id="episodes"[\s\S]*?<h2>Video<\/h2>/u);
+  assert.match(page, /id="audio"[\s\S]*?<h2>Audio<\/h2>/u);
+  assert.match(page, /id="live"[\s\S]*?<h2>Live & Upcoming<\/h2>/u);
+  assert.match(radio, /listen-hero-compact/u);
+  assert.doesNotMatch(radio, /Press play\./u);
+  assert.match(styles, /Bright Youth UI v3/u);
+  assert.match(styles, /body\.youth-tv\[data-tv-view="watch"\]/u);
+  assert.match(styles, /body\.youth-tv\[data-tv-view="live"\]/u);
+});

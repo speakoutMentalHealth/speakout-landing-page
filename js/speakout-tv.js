@@ -314,8 +314,9 @@ const viewGroups={
 };
 function showView(view,{push=false}={}){
  const chosen=viewGroups[view]?view:"home";
+ document.body.dataset.tvView=chosen;
  document.body.classList.toggle("youth-view-filtered",chosen!=="home");
- $(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
+ $$(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
    const id=el.id||"";
    el.hidden=id?!viewGroups[chosen].includes(id):chosen!=="home";
  });
