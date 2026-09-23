@@ -76,7 +76,7 @@ starterEpisodes.forEach(x=>{
 episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
 
 $("#episodeCount").textContent=episodes.length+(episodes.length===1?" episode":" episodes");
-$("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv.html#discover">Explore other SpeakOut originals →</a></div>';
+$("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv-search.html">Explore other SpeakOut originals →</a></div>';
 
 const first=episodes[0];
 if(first){
