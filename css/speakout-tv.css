@@ -272,3 +272,6 @@ linear-gradient(145deg,#173a68,#071121 72%);background-size:cover;background-pos
 @media(max-width:850px){
  .content-save{width:32px;height:32px;right:8px;top:8px}
 }
+
+
+.youth-content-open{display:block;width:100%;border:0;padding:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
