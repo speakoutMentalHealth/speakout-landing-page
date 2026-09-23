@@ -1799,3 +1799,16 @@ body.youth-tv[data-tv-view="live"]{
 @media(prefers-reduced-motion:reduce){
   .live-signal i{animation:none!important;opacity:.28}
 }
+
+
+.tv-action-btn{
+  min-height:46px;padding:0 17px;border-radius:12px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font:inherit;font-size:.82rem;font-weight:800;cursor:pointer;
+}
+.tv-action-btn.primary{background:#fff;color:#071225;border:0}
+.tv-action-btn.secondary{
+  color:#fff;background:rgba(7,18,34,.74);
+  border:1px solid rgba(255,255,255,.20);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)
+}
