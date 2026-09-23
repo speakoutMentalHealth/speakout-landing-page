@@ -694,3 +694,36 @@ test("TV Studio operations browser modules pass syntax checks", () => {
     assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}),file);
   }
 });
+
+
+test("SpeakOut TV keeps Featured and mixed discovery content home-only", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  assert.match(page,/class="tv-container youth-feature home-only" id="featured"/u);
+  assert.match(page,/document\.documentElement\.dataset\.tvRoute/u);
+  assert.match(script,/document\.documentElement\.dataset\.tvRoute=chosen/u);
+  assert.match(script,/if\(hash==="listen"\|\|hash==="audio"\)\{location\.replace\("radio\.html"\)/u);
+  assert.match(script,/home:\["home","featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"\]/u);
+  assert.match(script,/watch:\["episodes"\]/u);
+  assert.match(script,/live:\["live"\]/u);
+});
+
+test("SpeakOut TV hierarchy sweep restrains oversized Featured Watch Live Audio and Discover typography", () => {
+  const styles=read("css/speakout-tv.css");
+  assert.match(styles,/TV hierarchy sweep/u);
+  assert.match(styles,/\.youth-tv\[data-tv-view="home"\] \.youth-feature/u);
+  assert.match(styles,/min-height:clamp\(285px,34vw,420px\)!important/u);
+  assert.match(styles,/\.feature-copy h2/u);
+  assert.match(styles,/body\.youth-tv\[data-tv-view="live"\] \.live-only \.compact-media-head h2/u);
+  assert.match(styles,/\.youth-listen-page \.listen-hero-compact h1/u);
+  assert.match(styles,/\.youth-search-page \.search-discovery-hero h1/u);
+});
+
+test("SpeakOut TV initial route CSS prevents home content flashing into media-only views", () => {
+  const page=read("tv.html");
+  const styles=read("css/speakout-tv.css");
+  assert.match(page,/data\.tvRoute=h==="live"\?"live":\(h==="watch"\|\|h==="episodes"\?"watch":"home"\)/u);
+  assert.match(styles,/html\[data-tv-route="watch"\] \.home-only/u);
+  assert.match(styles,/html\[data-tv-route="live"\] \.home-only/u);
+  assert.match(styles,/html\[data-tv-route="home"\] \.media-only-view/u);
+});
