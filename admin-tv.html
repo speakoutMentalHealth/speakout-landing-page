@@ -10,20 +10,20 @@
 </head>
 <body class="tv-admin">
 <header class="studio-bar">
-<a href="tv.html" class="studio-brand"><img src="images/logo.png" alt=""><span>SPEAKOUT <b>TV</b><small>Studio</small></span></a>
+<a href="tv.html" class="studio-brand"><img src="images/logo.png" alt=""><span>SPEAKOUT <b>TV</b><small>Editorial Studio</small></span></a>
 <div class="studio-bar-actions"><a class="studio-view" href="admin-radio.html">Audio</a><a class="studio-view primary-view" href="tv.html" target="_blank" rel="noopener">View Channel ↗</a></div>
 </header>
 
 <main>
 <section class="studio-hero">
-<div><span class="live-chip"><i></i> TV STUDIO · EDITORIAL 2.0</span><h1>Publish with editorial control.</h1><p>Prepare the media, control its homepage placement, complete review, then publish.</p></div>
-<div class="studio-steps" aria-label="Publishing steps"><span><b>1</b> Paste</span><span><b>2</b> Preview</span><span><b>3</b> Review</span><span><b>4</b> Publish</span></div>
+<div><span class="live-chip"><i></i> TV STUDIO · EDITORIAL 2.0</span><h1>Control what reaches the audience.</h1><p>Prepare media, choose placement, complete editorial review, then publish.</p></div>
+<div class="studio-steps" aria-label="Publishing workflow"><span><b>1</b> Add</span><span><b>2</b> Prepare</span><span><b>3</b> Review</span><span><b>4</b> Publish</span></div>
 </section>
 
 <section class="studio-shell">
 <aside class="studio-side" aria-label="TV Studio navigation">
 <strong>Studio</strong>
-<a class="active" href="#publish">＋ New broadcast</a>
+<a class="active" href="#publish">＋ New content</a>
 <a href="#editorial">✦ Editorial desk</a>
 <a href="#library">▣ Library</a>
 <a href="#dashboard">⌁ Overview</a>
@@ -35,41 +35,31 @@
 <div class="notice" id="statusBox">Checking administrator access…</div>
 
 <section class="studio-card studio-dashboard" id="dashboard">
-<div class="card-title"><div><span class="eyebrow">OVERVIEW</span><h2>TV at a glance</h2></div></div>
+<div class="card-title"><div><span class="eyebrow">OVERVIEW</span><h2>TV at a glance</h2><p class="admin-muted">A quick editorial picture of the published and draft library.</p></div></div>
 <div class="studio-metrics">
 <article><strong id="publishedCount">—</strong><span>Published</span></article>
 <article><strong id="draftCount">—</strong><span>Drafts</span></article>
 <article><strong id="liveCount">—</strong><span>Live / scheduled</span></article>
-<article><strong id="readyCount">—</strong><span>Ready to publish</span></article>
 <article><strong id="featuredCount">—</strong><span>Main Stage</span></article>
-<article><strong id="reviewCount">—</strong><span>Needs review</span></article>
+<article><strong id="reviewCount">—</strong><span>Needs attention</span></article>
+<article><strong id="readyCount">—</strong><span>Editorially ready</span></article>
 </div>
-</section>
-
-<section class="studio-card editorial-desk" id="editorialDesk">
-<div class="card-title"><div><span class="eyebrow">EDITORIAL DESK</span><h2>Publishing quality</h2><p class="admin-muted">See which broadcasts need artwork, metadata or review before they are promoted.</p></div><span class="secure-pill" id="editorialHealth">Checking…</span></div>
-<div class="editorial-summary-grid">
-<article><span>Ready</span><strong id="readyEditorialCount">—</strong><small>Published records with complete core metadata.</small></article>
-<article><span>Attention</span><strong id="attentionEditorialCount">—</strong><small>Records with one or more quality gaps.</small></article>
-<article><span>Scheduled</span><strong id="scheduledEditorialCount">—</strong><small>Future live sessions with a schedule.</small></article>
-</div>
-<div class="editorial-attention" id="editorialAttention"><p class="admin-muted">Loading editorial checks…</p></div>
 </section>
 
 <section class="studio-card publish-card" id="publish">
-<div class="card-title"><div><span class="eyebrow">NEW CONTENT</span><h2>Add to SpeakOut TV</h2><p class="admin-muted">YouTube, YouTube Live, Vimeo and Twitch are supported.</p></div><span class="secure-pill">Admin only</span></div>
+<div class="card-title"><div><span class="eyebrow">NEW CONTENT</span><h2>Add to SpeakOut TV</h2><p class="admin-muted">YouTube, YouTube Live, Vimeo and Twitch are supported. New content starts as a draft.</p></div><span class="secure-pill">Admin only</span></div>
 
 <form id="cmsForm">
 <div class="url-zone">
-<label for="url">Video or live link</label>
+<label for="url">Video or live link *</label>
 <div class="url-row"><input id="url" type="url" autocomplete="url" placeholder="Paste a YouTube, YouTube Live, Vimeo or Twitch link" required><button type="button" id="previewBtn">Preview</button></div>
-<div class="link-feedback"><span id="providerBadge">Waiting for link</span><small id="providerHint">Paste a link and we’ll detect it automatically.</small></div>
+<div class="link-feedback"><span id="providerBadge">Waiting for link</span><small id="providerHint">Paste a link and the Studio will inspect it.</small></div>
 </div>
 
-<div class="preview-shell" id="previewShell"><div id="previewFrame"><div class="preview-empty"><span>▶</span><strong>Preview</strong><small>Your video will appear here before publishing.</small></div></div></div>
+<div class="preview-shell" id="previewShell"><div id="previewFrame"><div class="preview-empty"><span>▶</span><strong>Preview</strong><small>Your media appears here before publishing.</small></div></div></div>
 
 <div class="form-section">
-<div class="section-line"><h3>Details</h3><small>Required fields are marked *</small></div>
+<div class="section-line"><h3>Viewer-facing details</h3><small>Clear metadata improves discovery.</small></div>
 <div class="premium-grid">
 <label>Title *<input id="title" placeholder="Episode or broadcast title" required></label>
 <label>Series / program
@@ -84,14 +74,14 @@
 <option value="Expert Corner">Expert Corner</option>
 <option value="SpeakOut Stories">SpeakOut Stories</option>
 </select></label>
-<label class="wide">Description<textarea id="description" placeholder="Short description"></textarea></label>
+<label class="wide">Description<textarea id="description" placeholder="What is this about, and why should a young viewer care?"></textarea></label>
 <label>Content type<select id="format"><option value="episode">Episode</option><option value="live">Live broadcast</option><option value="short">Short / highlight</option></select></label>
 <label>Visibility<select id="status"><option value="draft" selected>Draft — review first</option><option value="published">Published — visible</option><option value="hidden">Hidden</option></select></label>
 <label>Homepage placement<select id="homePlacement">
 <option value="auto">Automatic</option>
 <option value="featured">Main Stage / Featured</option>
 <option value="daily">Today’s Focus priority</option>
-<option value="library_only">Library only — skip featured/discovery rails</option>
+<option value="library_only">Library only</option>
 </select></label>
 <label>Content pillar<select id="contentPillar">
 <option value="general">General wellbeing</option>
@@ -111,31 +101,32 @@
 <option value="parents">Parents / caregivers</option>
 <option value="educators">Educators</option>
 </select></label>
-<label>Main Stage legacy flag<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
+<input id="featured" type="hidden" value="false">
 <label>Publish date<input id="publishDate" type="date"></label>
 <label>Schedule live date & time<input id="scheduledAt" type="datetime-local"></label>
 <label>Presenter / host<input id="presenter" placeholder="Optional"></label>
 <label>Guest<input id="guest" placeholder="Optional"></label>
 <label>Guest role / organization<input id="guestRole" placeholder="Optional"></label>
-<label class="wide">Discovery tags<input id="tags" placeholder="youth, wellbeing, student, motivation"><small class="field-help">Use clear topic words so Discover, Today’s Focus and For You can place the content well.</small>
+<label class="wide">Discovery tags<input id="tags" placeholder="youth, wellbeing, student, motivation">
+<small class="field-help">Use plain topic words. These help Discover, Today’s Focus and For You organize content.</small>
 <div class="tag-suggestions" id="tagSuggestions" aria-label="Suggested discovery tags">
-<button type="button" data-tag="youth">Youth</button><button type="button" data-tag="student">Student</button><button type="button" data-tag="stress">Stress</button><button type="button" data-tag="motivation">Motivation</button><button type="button" data-tag="adhd">ADHD</button><button type="button" data-tag="relationships">Relationships</button><button type="button" data-tag="stories">Stories</button>
+<button type="button" data-tag="youth">Youth</button><button type="button" data-tag="student">Student</button><button type="button" data-tag="stress">Stress</button><button type="button" data-tag="motivation">Motivation</button><button type="button" data-tag="adhd">ADHD</button><button type="button" data-tag="relationships">Relationships</button><button type="button" data-tag="stories">Stories</button><button type="button" data-tag="community">Community</button>
 </div></label>
-<label>Thumbnail URL<input id="imageUrl" type="url" placeholder="Filled automatically for YouTube"></label>
+<label>Thumbnail URL<input id="imageUrl" type="url" placeholder="Filled automatically for YouTube where available"></label>
 <label>Display order<input id="order" type="number" placeholder="0"></label>
 <label>Sponsor / supporter<input id="sponsor" placeholder="Optional"></label>
 </div>
 </div>
 
 <details class="editorial-panel" open><summary>Editorial review & consent</summary><div class="premium-grid editorial-grid">
-<label>Editorial review<select id="editorialReview"><option value="pending">Pending — keep as draft</option><option value="complete">Complete — approved for publishing</option></select></label>
+<label>Editorial review<select id="editorialReview"><option value="pending">Pending — keep as draft</option><option value="complete">Complete — approved</option></select></label>
 <label>Minor involved<select id="minorInvolved"><option value="no">No</option><option value="yes">Yes</option></select></label>
 <label>Consent confirmed<select id="consentConfirmed"><option value="not_applicable">Not applicable</option><option value="yes">Yes</option><option value="no">No</option></select></label>
 </div></details>
 
 <section class="readiness-panel" id="readinessPanel" aria-live="polite">
 <div class="readiness-top"><div><span class="eyebrow">PUBLISHING READINESS</span><h3 id="readinessTitle">Draft can be saved now</h3></div><span class="readiness-badge" id="readinessBadge">Draft mode</span></div>
-<div class="readiness-grid">
+<div class="readiness-grid" id="readinessGrid">
 <span data-readiness="media">Media link</span>
 <span data-readiness="title">Title</span>
 <span data-readiness="description">Description</span>
@@ -144,20 +135,26 @@
 <span data-readiness="review">Editorial review</span>
 <span data-readiness="consent">Consent check</span>
 </div>
-<p id="readinessNote">Publishing is intentionally draft-first. Complete the review checks before switching visibility to Published.</p>
+<p id="readinessNote">Drafts can be saved while preparation is still in progress.</p>
 </section>
 
-<div class="publish-bar"><div><strong id="publishSummary">Draft-first publishing</strong><small id="publishHint">Save as draft while you prepare it. Published content must complete editorial review.</small></div><button class="publish-btn" type="submit">Save content</button></div>
+<div class="publish-bar"><div><strong id="publishSummary">Draft-first publishing</strong><small id="publishHint">Published content requires completed editorial review. Featured placement also needs strong metadata and artwork.</small></div><button class="publish-btn" type="submit">Save content</button></div>
 </form>
 </section>
 
 <section class="studio-card editorial-desk" id="editorial">
-<div class="card-title"><div><span class="eyebrow">EDITORIAL CONTROL</span><h2>Ready, missing or featured</h2><p class="admin-muted">See what needs attention before it reaches viewers. This is an editorial quality check, not a mental-health assessment.</p></div><span class="secure-pill">Internal</span></div>
-<div class="editorial-toolbar">
-  <button type="button" class="editorial-filter active" data-editorial-filter="all">All</button>
-  <button type="button" class="editorial-filter" data-editorial-filter="needs">Needs attention</button>
-  <button type="button" class="editorial-filter" data-editorial-filter="ready">Ready</button>
-  <button type="button" class="editorial-filter" data-editorial-filter="featured">Featured</button>
+<div class="card-title"><div><span class="eyebrow">EDITORIAL DESK</span><h2>Ready, missing or promoted</h2><p class="admin-muted">This checks publishing completeness and presentation quality. It is not a mental-health assessment.</p></div><span class="secure-pill" id="editorialHealth">Checking…</span></div>
+<div class="editorial-summary-grid">
+<article><span>Ready</span><strong id="readyEditorialCount">—</strong><small>Records with complete publishing essentials.</small></article>
+<article><span>Attention</span><strong id="attentionEditorialCount">—</strong><small>Records with one or more quality gaps.</small></article>
+<article><span>Scheduled</span><strong id="scheduledEditorialCount">—</strong><small>Future live sessions with a date and time.</small></article>
+</div>
+<div class="editorial-toolbar" role="toolbar" aria-label="Editorial filters">
+<button type="button" class="editorial-filter active" data-editorial-filter="all">All</button>
+<button type="button" class="editorial-filter" data-editorial-filter="needs">Needs attention</button>
+<button type="button" class="editorial-filter" data-editorial-filter="ready">Ready</button>
+<button type="button" class="editorial-filter" data-editorial-filter="featured">Main Stage</button>
+<button type="button" class="editorial-filter" data-editorial-filter="daily">Today’s Focus</button>
 </div>
 <div class="editorial-queue" id="editorialQueue"><div class="editorial-empty">Loading editorial status…</div></div>
 </section>
@@ -178,5 +175,5 @@
 </main>
 
 <script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
-<script type="module" src="js/tv-admin-live.js"></script>
+<script src="js/tv-admin-live.js"></script>
 </body></html>
