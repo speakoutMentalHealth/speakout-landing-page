@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v7/u);
+  assert.match(sw, /speakout-tv-v8/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -234,7 +234,8 @@ test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
     "js/speakout-radio.js",
     "js/tv-search.js",
     "js/tv-show.js",
-    "js/tv-watch.js"
+    "js/tv-watch.js",
+    "js/tv-art.js"
   ]) {
     const path=fileURLToPath(new URL(`../${file}`, import.meta.url));
     assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }), file);
@@ -594,8 +595,8 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v7/u);
-  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css"]) {
+  assert.match(sw, /speakout-tv-v8/u);
+  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
 });
@@ -748,3 +749,39 @@ test("SpeakOut TV Featured requires explicit editorial configuration", () => {
   assert.match(styles,/\.youth-feature\.feature-empty\{display:none\}/u);
 });
 
+
+
+test("SpeakOut TV art direction gives core series distinct branded identities", () => {
+  const art=read("js/tv-art.js");
+  const styles=read("css/tv/art.css");
+  for(const skin of ["move","podcast","checkin","youth","campus","expert","stories","special","live"]) {
+    assert.match(styles,new RegExp("\\.tv-art-"+skin+"\\{","u"),skin);
+  }
+  for(const name of ["on the move","podcast","how are you really","youth voices","campus connect","expert corner","speakout stories","speakout special"]) {
+    assert.ok(art.includes(name),name);
+  }
+  assert.match(art,/export function artFallback/u);
+  assert.match(art,/export function artOverlay/u);
+});
+
+test("SpeakOut TV uses one art system across Home Discover Series Watch and Listen", () => {
+  for(const file of ["tv.html","show.html","watch.html","tv-search.html","radio.html"]) {
+    assert.match(read(file),/css\/tv\/art\.css/u,file);
+  }
+  for(const file of ["js/speakout-tv.js","js/tv-search.js","js/tv-show.js","js/tv-watch.js","js/speakout-radio.js"]) {
+    assert.match(read(file),/from "\.\/tv-art\.js"/u,file);
+  }
+  const main=read("js/speakout-tv.js");
+  assert.match(main,/artOverlay\(x\)/u);
+  assert.match(main,/artFallback\(item,"series"\)/u);
+  assert.match(main,/artClass\(x,"audio"\)/u);
+});
+
+test("TV art fallbacks remain text-led and do not require fabricated imagery", () => {
+  const styles=read("css/tv/art.css");
+  const art=read("js/tv-art.js");
+  assert.match(styles,/tv-art-fallback/u);
+  assert.match(styles,/linear-gradient/u);
+  assert.doesNotMatch(art,/https?:\/\//u);
+  assert.doesNotMatch(art,/fetch\(/u);
+});
