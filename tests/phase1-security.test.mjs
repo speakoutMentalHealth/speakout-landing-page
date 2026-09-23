@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v8/u);
+  assert.match(sw, /speakout-tv-v9/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -235,7 +235,8 @@ test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
     "js/tv-search.js",
     "js/tv-show.js",
     "js/tv-watch.js",
-    "js/tv-art.js"
+    "js/tv-art.js",
+    "js/tv-data.js"
   ]) {
     const path=fileURLToPath(new URL(`../${file}`, import.meta.url));
     assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }), file);
@@ -536,7 +537,9 @@ test("TV Studio and Audio Studio link to the Series Studio", () => {
 test("SpeakOut TV homepage and Discover use managed series ordering", () => {
   const home=read("js/speakout-tv.js");
   const search=read("js/tv-search.js");
-  assert.match(home,/collection\(db,"tvShows"\)/u);
+  const data=read("js/tv-data.js");
+  assert.match(home,/loadTvShows/u);
+  assert.match(data,/export async function loadTvShows/u);
   assert.match(home,/defaultSeries/u);
   assert.match(home,/x\.imageUrl\|\|imageFor\(episode\)/u);
   assert.match(search,/shows\.sort/u);
@@ -595,8 +598,8 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v8/u);
-  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js"]) {
+  assert.match(sw, /speakout-tv-v9/u);
+  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
 });
@@ -839,4 +842,69 @@ test("TV content intelligence reads managed series and refreshes after CMS chang
 test("TV content intelligence browser module remains syntactically valid", () => {
   const path=fileURLToPath(new URL("../js/tv-admin-live.js",import.meta.url));
   assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}));
+});
+
+
+test("Quick Reset unfolds beneath the selected card and tracks only this visit", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  const styles=read("css/tv/home.css");
+  for(const id of ["breathe","ground","focus"]) {
+    assert.match(page,new RegExp(`data-reset-card="${id}"`,"u"),id);
+    assert.match(page,new RegExp(`data-reset-reveal="${id}"`,"u"),id);
+  }
+  assert.match(page,/id="resetProgressCount">0\/3/u);
+  assert.match(script,/const resetFlows=/u);
+  assert.match(script,/function renderResetStep/u);
+  assert.match(script,/function advanceReset/u);
+  assert.match(script,/completed:new Set\(\)/u);
+  assert.doesNotMatch(script,/localStorage[^\n]*(?:reset|breathe|ground|focus)/iu);
+  assert.match(styles,/\.reset-reveal/u);
+  assert.match(styles,/@keyframes resetUnfold/u);
+});
+
+test("TV media surfaces load backend-published content through one resilient public loader", () => {
+  const data=read("js/tv-data.js");
+  for(const file of ["js/speakout-tv.js","js/speakout-radio.js","js/tv-search.js","js/tv-watch.js","js/tv-show.js"]) {
+    assert.match(read(file),/from "\.\/tv-data\.js"/u,file);
+  }
+  assert.match(data,/\/v1\/media\/tv/u);
+  assert.match(data,/\/v1\/media\/audio/u);
+  assert.match(data,/where\("status","==","published"\)/u);
+  assert.match(data,/where\("status","==","active"\)/u);
+  assert.doesNotMatch(data,/where\("status","in"/u);
+});
+
+test("Platform API exposes only public TV media and restores legacy published YouTube entries", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/path === "\/v1\/media\/tv"/u);
+  assert.match(worker,/path === "\/v1\/media\/audio"/u);
+  assert.match(worker,/queryAllDocuments\(env, "tvEpisodes"\)/u);
+  assert.match(worker,/queryAllDocuments\(env, "homepageVideos"\)/u);
+  assert.match(worker,/source: "legacy-homepage-video"/u);
+  assert.match(worker,/filter\(publicMediaStatus\)/u);
+  assert.match(worker,/publicGetPaths = new Set/u);
+});
+
+test("Spotify show sync merges new podcast episodes without duplicating manual audio", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  const config=read("workers/platform-api/wrangler.production.jsonc");
+  assert.match(worker,/async function spotifyClientToken/u);
+  assert.match(worker,/async function spotifyShowEpisodes/u);
+  assert.match(worker,/api\.spotify\.com\/v1\/shows\//u);
+  assert.match(worker,/spotifyEpisodeId/u);
+  assert.match(worker,/spotifyConfigured/u);
+  assert.match(config,/"SPOTIFY_SHOW_ID": "4Z8Ua9vAYLT5YJEWYV1gfx"/u);
+  assert.match(config,/"SPOTIFY_MARKET": "US"/u);
+  assert.doesNotMatch(config,/SPOTIFY_CLIENT_SECRET/u);
+});
+
+test("Radio keeps Spotify source attribution and does not brand over Spotify artwork", () => {
+  const script=read("js/speakout-radio.js");
+  const main=read("js/speakout-tv.js");
+  const styles=read("css/tv/media.css");
+  assert.match(script,/spotify-attribution/u);
+  assert.match(script,/spotify\?'':artOverlay/u);
+  assert.match(main,/spotify\?'':artOverlay/u);
+  assert.match(styles,/\.listen-card\.is-spotify \.listen-card-art img/u);
 });
