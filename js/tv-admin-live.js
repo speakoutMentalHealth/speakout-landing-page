@@ -18,6 +18,10 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   const minorInvolved = $("minorInvolved");
   const consentConfirmed = $("consentConfirmed");
   const homePlacement = $("homePlacement");
+  const programmingDays = $("programmingDays");
+  const placementPriority = $("placementPriority");
+  const placementStart = $("placementStart");
+  const placementEnd = $("placementEnd");
   const contentPillar = $("contentPillar");
   const audience = $("audience");
   const featured = $("featured");
@@ -65,6 +69,22 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     el.classList.toggle("warn", !ok && warning);
   }
 
+  function dateOnlyValid(value) {
+    const raw = String(value || "").trim();
+    return !raw || (/^\d{4}-\d{2}-\d{2}$/u.test(raw) && !Number.isNaN(Date.parse(raw+"T00:00:00Z")));
+  }
+
+  function scheduleInputState() {
+    const days = String(programmingDays?.value || "all").toLowerCase();
+    const priority = Number(placementPriority?.value || 100);
+    const start = String(placementStart?.value || "").trim();
+    const end = String(placementEnd?.value || "").trim();
+    const daysOk = ["all","weekdays","weekend","mon","tue","wed","thu","fri","sat","sun"].includes(days);
+    const priorityOk = Number.isInteger(priority) && priority >= 0 && priority <= 999;
+    const datesOk = dateOnlyValid(start) && dateOnlyValid(end) && !(start && end && end < start);
+    return {days,priority,start,end,valid:daysOk&&priorityOk&&datesOk};
+  }
+
   function readinessState() {
     const mediaOk = Boolean(parse(url?.value));
     const titleOk = title?.value.trim().length >= 8;
@@ -75,9 +95,11 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     const reviewOk = editorialReview?.value === "complete";
     const consentOk = minorInvolved?.value !== "yes" || consentConfirmed?.value === "yes";
     const placementOk = Boolean(homePlacement?.value) && !(format?.value === "live" && ["featured","daily"].includes(homePlacement?.value));
+    const placementScheduled = ["featured","daily"].includes(homePlacement?.value);
+    const scheduleOk = !placementScheduled || scheduleInputState().valid;
     const pillarOk = Boolean(contentPillar?.value);
     const audienceOk = Boolean(audience?.value);
-    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk,placementOk,pillarOk,audienceOk};
+    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk,placementOk,scheduleOk,pillarOk,audienceOk};
     return {...checks,ready:Object.values(checks).every(Boolean)};
   }
 
@@ -89,6 +111,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     setReadiness("artwork", state.artworkOk, true);
     setReadiness("tags", state.tagsOk, true);
     setReadiness("placement", state.placementOk, true);
+    setReadiness("schedule", state.scheduleOk, true);
     setReadiness("pillar", state.pillarOk, true);
     setReadiness("audience", state.audienceOk, true);
     setReadiness("review", state.reviewOk, true);
@@ -108,7 +131,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       readinessTitle.textContent = "Complete the highlighted checks";
       readinessBadge.textContent = "Needs attention";
       readinessBadge.className = "readiness-badge blocked";
-      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, valid programming placement, content pillar, audience, completed editorial review and any required consent.";
+      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, valid programming placement and schedule, content pillar, audience, completed editorial review and any required consent.";
       summary.textContent = "Publishing is not ready yet";
       publishHint.textContent = "Complete the highlighted editorial checks or switch visibility back to Draft.";
       publishButton?.setAttribute("data-blocked","true");
