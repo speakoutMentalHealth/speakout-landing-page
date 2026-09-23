@@ -334,7 +334,7 @@ test("TV Studio Editorial Control 2.0 is draft-first and exposes placement contr
   const page=read("admin-tv.html");
   const script=read("js/tv-admin-live.js");
   const styles=read("css/tv-admin-premium.css");
-  assert.match(page, /TV STUDIO · EDITORIAL 2\.0/u);
+  assert.match(page, /TV STUDIO · EDITORIAL \+ INTELLIGENCE/u);
   assert.match(page, /<option value="draft" selected>/u);
   for (const id of ["homePlacement","contentPillar","audience","editorialReview","readinessPanel"]) {
     assert.match(page, new RegExp(`id="${id}"`, "u"), id);
@@ -784,4 +784,59 @@ test("TV art fallbacks remain text-led and do not require fabricated imagery", (
   assert.match(styles,/linear-gradient/u);
   assert.doesNotMatch(art,/https?:\/\//u);
   assert.doesNotMatch(art,/fetch\(/u);
+});
+
+
+test("TV Studio Content Intelligence 1.0 exposes coverage series freshness and artwork signals", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  for(const id of [
+    "contentIntelligence","intelligenceHealth","fresh30Count","coverageGapCount",
+    "seriesGapCount","artworkSignalCount","coverageMap","seriesBalance",
+    "contentOpportunities","artworkWatch"
+  ]) assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+  assert.match(script,/const intelligencePillars = \[/u);
+  assert.match(script,/function renderContentIntelligence/u);
+  assert.match(script,/const coverageGaps = coverage\.filter/u);
+  assert.match(script,/const seriesGaps = seriesEntries\.filter/u);
+  assert.match(script,/const artSignals = new Map\(\)/u);
+  assert.match(styles,/\.intelligence-metrics/u);
+  assert.match(styles,/\.coverage-map/u);
+  assert.match(styles,/\.series-balance/u);
+  assert.match(styles,/\.opportunity-list/u);
+});
+
+test("TV content intelligence uses objective recency and exact artwork reuse signals", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/30\*dayMs/u);
+  assert.match(script,/90\*dayMs/u);
+  assert.match(script,/age===null\|\|age>120/u);
+  assert.match(script,/host === "i\.ytimg\.com"/u);
+  assert.match(script,/if \(group\.length > 1\) group\.forEach/u);
+  assert.match(script,/Exact artwork reused/u);
+  assert.doesNotMatch(script,/AI score|engagement score|mental health score/iu);
+});
+
+test("TV content intelligence planning actions never auto-publish content", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/data-intelligence-plan-pillar/u);
+  assert.match(script,/data-intelligence-plan-show/u);
+  assert.match(script,/if \(status\) status\.value = "draft"/u);
+  assert.match(script,/if \(editorialReview\) editorialReview\.value = "pending"/u);
+  assert.match(script,/Finish or cancel the record you are editing/u);
+  assert.doesNotMatch(script,/data-intelligence-plan-[^\n]+status\.value = "published"/u);
+});
+
+test("TV content intelligence reads managed series and refreshes after CMS changes", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/getDocs\(collection\(db,"tvShows"\)\)/u);
+  assert.match(script,/studioShows = \[\]/u);
+  assert.match(script,/renderContentIntelligence\(items,studioShows\)/u);
+  assert.match(script,/renderContentIntelligence\(studioItems,studioShows\)/u);
+});
+
+test("TV content intelligence browser module remains syntactically valid", () => {
+  const path=fileURLToPath(new URL("../js/tv-admin-live.js",import.meta.url));
+  assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}));
 });
