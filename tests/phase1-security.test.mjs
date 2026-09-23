@@ -224,7 +224,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v3/u);
+  assert.match(sw, /speakout-tv-v4/u);
 });
 
 
