@@ -168,7 +168,13 @@ function renderLiveExperience(allEpisodes){
  const unscheduled=liveItems.filter(x=>!scheduleValue(x));
  const recent=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<=now&&(now-t)<=6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
  const previous=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<now-6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
+ const requestedLiveId=new URLSearchParams(location.search).get("live")||"";
+ const requestedLive=liveItems.find(x=>x.id===requestedLiveId)||null;
+ const requestedTime=scheduleValue(requestedLive);
  currentLive=unscheduled[0]||recent[0]||null;nextLive=future[0]||null;
+ if(requestedLive&&requestedTime>now)nextLive=requestedLive;
+ if(requestedLive&&(!requestedTime||(requestedTime<=now&&(now-requestedTime)<=6*60*60*1000)))currentLive=requestedLive;
+ const requestedReplay=requestedLive&&requestedTime&&requestedTime<now-6*60*60*1000?requestedLive:null;
 
  const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar");
  if(currentLive){
@@ -186,6 +192,12 @@ function renderLiveExperience(allEpisodes){
   $("#liveTitle").textContent="The next conversation starts here.";
   $("#liveDescription").textContent=nextLive?"A new SpeakOut Live session is scheduled. See the details below and add a reminder.":"Live conversations, interviews and special coverage will appear here when scheduled.";
   meta.innerHTML="";share.hidden=true;calendar.hidden=true;
+ }
+ if(requestedReplay){
+  status.textContent="Replay";status.classList.remove("is-live");stageTime.textContent="Previously live · "+formatSchedule(scheduleValue(requestedReplay));
+  $("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveTitle").textContent=requestedReplay.title||"SpeakOut Live";
+  $("#liveDescription").textContent=requestedReplay.description||"Watch this previous SpeakOut live conversation.";
+  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;
  }
 
  const nextPanel=$("#nextLivePanel");
@@ -277,6 +289,6 @@ addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;
 $("#installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installTv").hidden=true});
 
 load();
-$("#liveShare")?.addEventListener("click",()=>shareLive(currentLive||nextLive));
+$("#liveShare")?.addEventListener("click",()=>{const requested=new URLSearchParams(location.search).get("live");shareLive(liveItems.find(x=>x.id===requested)||currentLive||nextLive)});
 $("#liveCalendar")?.addEventListener("click",()=>{const item=currentLive||nextLive;if(item)addLiveReminder(item)});
 $("#nextLiveReminder")?.addEventListener("click",()=>{if(nextLive)addLiveReminder(nextLive)});
