@@ -327,6 +327,7 @@ const viewGroups={
 };
 function showView(view,{push=false}={}){
  const chosen=viewGroups[view]?view:"home";
+ document.documentElement.dataset.tvRoute=chosen;
  document.body.dataset.tvView=chosen;
  document.body.classList.toggle("youth-view-filtered",chosen!=="home");
  $$(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
@@ -407,6 +408,7 @@ document.addEventListener("click",e=>{
 function routeTvHash(){
  const hash=location.hash.slice(1);
  if(hash==="discover"){location.replace("tv-search.html");return}
+ if(hash==="listen"||hash==="audio"){location.replace("radio.html");return}
  showView(hash||"home");
 }
 addEventListener("popstate",routeTvHash);
