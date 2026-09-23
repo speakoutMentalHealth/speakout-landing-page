@@ -352,12 +352,11 @@ async function load(){
    const img=imageFor(featured),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
    $("#introPlay")?.addEventListener("click",()=>playEpisode(featured,true));
  }
- $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("");
+ $("#latestRail").innerHTML=homeEpisodes.map(episodeCard).join("")||'<div class="ios-audio-empty">Published TV episodes will appear here.</div>';
  renderForYou();
  renderShelf();
- const homeEpisodes=regularEpisodes.filter(discoveryEligible);
  $("#storiesRail").innerHTML=homeEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||homeEpisodes.slice(0,5).map(contentCard).join("");
- $("#seriesRail").innerHTML=series.map(s=>originalCard(s,regularEpisodes.find(ep=>normalize(ep.show)===normalize(s.title)))).join("");
+ $("#seriesRail").innerHTML=series.map(s=>originalCard(s,homeEpisodes.find(ep=>normalize(ep.show)===normalize(s.title)))).join("");
  $("#introSeries")?.addEventListener("click",()=>showView("discover",{push:true}));
 
  let audio=[];
