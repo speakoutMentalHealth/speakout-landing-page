@@ -70,7 +70,7 @@ function audioCard(x){
 }
 function topicMatch(x,topic){
  if(topic==="all")return true;
- const hay=normalize([x.title,x.description,x.show,(Array.isArray(x.tags)?x.tags.join(" "):x.tags)].join(" "));
+ const hay=normalize([x.title,x.description,x.show,x.contentPillar,x.audience,(Array.isArray(x.tags)?x.tags.join(" "):x.tags)].join(" "));
  const groups={
   stress:["stress","tired","pressure","burnout","heavy"],
   overthinking:["overthinking","thought","worry","religion","mind"],
