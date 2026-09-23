@@ -165,7 +165,8 @@ test("TV Studio supports common YouTube share and live URLs", () => {
 test("TV CMS validates media providers and minor publication safeguards", () => {
   const worker = read("workers/platform-api/src/index.js");
   assert.match(worker, /Use a supported YouTube, Vimeo or Twitch URL/u);
-  assert.match(worker, /Published content involving a minor requires confirmed consent and completed editorial review/u);
+  assert.match(worker, /Published TV content requires completed editorial review/u);
+  assert.match(worker, /Published content involving a minor requires confirmed consent/u);
   assert.match(worker, /collectionName === "tvAudio"/u);
 });
 
@@ -325,4 +326,42 @@ test("SpeakOut TV content engine preserves safe multi-tab navigation", () => {
   assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-nav a"\)\.forEach/u);
   assert.match(script, /today-focus/u);
   assert.match(script, /topic-journeys/u);
+});
+
+
+test("TV Studio Editorial Control 2.0 is draft-first and exposes placement controls", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  assert.match(page, /TV STUDIO · EDITORIAL 2\.0/u);
+  assert.match(page, /<option value="draft" selected>/u);
+  for (const id of ["homePlacement","contentPillar","audience","editorialReview","readinessPanel"]) {
+    assert.match(page, new RegExp(`id="${id}"`, "u"), id);
+  }
+  assert.match(script, /function readinessState/u);
+  assert.match(script, /status\?\.value !== "published"/u);
+  assert.match(script, /event\.stopImmediatePropagation\(\)/u);
+  assert.match(styles, /\.readiness-panel/u);
+});
+
+test("secure TV CMS validates editorial metadata and review before publishing", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  for (const field of ["homePlacement","contentPillar","audience"]) assert.match(worker, new RegExp(field, "u"));
+  assert.match(worker, /\["auto", "featured", "daily", "library_only"\]/u);
+  assert.match(worker, /Published TV content requires completed editorial review/u);
+  assert.match(worker, /Published content involving a minor requires confirmed consent/u);
+});
+
+test("SpeakOut TV discovery honors editorial homepage placement", () => {
+  const script=read("js/speakout-tv.js");
+  assert.match(script, /const placementOf=/u);
+  assert.match(script, /const discoveryEligible=/u);
+  assert.match(script, /placementOf\(x\)==="daily"/u);
+  assert.match(script, /placementOf\(x\)==="featured"/u);
+  assert.match(script, /placementOf\(x\)!=="library_only"/u);
+});
+
+test("TV Studio helper script passes JavaScript syntax checks", () => {
+  const path=fileURLToPath(new URL("../js/tv-admin-live.js", import.meta.url));
+  assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }));
 });

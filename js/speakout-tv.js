@@ -70,7 +70,7 @@ function audioCard(x){
 }
 function topicMatch(x,topic){
  if(topic==="all")return true;
- const hay=normalize([x.title,x.description,x.show,(Array.isArray(x.tags)?x.tags.join(" "):x.tags)].join(" "));
+ const hay=normalize([x.title,x.description,x.show,x.contentPillar,x.audience,(Array.isArray(x.tags)?x.tags.join(" "):x.tags)].join(" "));
  const groups={
   stress:["stress","tired","pressure","burnout","heavy"],
   overthinking:["overthinking","thought","worry","religion","mind"],
@@ -93,6 +93,8 @@ const dailyProgramming=[
  {title:"Youth Voices",description:"Stories and ideas centered on young people, community and everyday life.",topic:"youth"}
 ];
 let dailyFocusItems=[];
+const placementOf=x=>normalize(x?.homePlacement||"auto").replace(/\s+/g,"_");
+const discoveryEligible=x=>placementOf(x)!=="library_only";
 
 function diverseItems(items,limit=10){
  const result=[],seenShows=new Set();
@@ -114,8 +116,11 @@ function dailySeed(){
 function renderDailyProgramming(){
  const plan=dailyProgramming[new Date().getDay()]||dailyProgramming[0];
  $("#dailyFocusEyebrow").textContent="TODAY · "+new Intl.DateTimeFormat(undefined,{weekday:"long"}).format(new Date()).toUpperCase();
- let picks=regularEpisodes.filter(x=>topicMatch(x,plan.topic));
- if(!picks.length)picks=regularEpisodes;
+ const homePool=regularEpisodes.filter(discoveryEligible);
+ const editorial=homePool.filter(x=>placementOf(x)==="daily");
+ const topicPicks=homePool.filter(x=>topicMatch(x,plan.topic)&&!editorial.includes(x));
+ let picks=[...editorial,...topicPicks];
+ if(!picks.length)picks=homePool.length?homePool:regularEpisodes;
  dailyFocusItems=diverseItems(picks,10);
  $("#dailyFocusTitle").textContent=plan.title;
  $("#dailyFocusDescription").textContent=plan.description;
@@ -123,7 +128,7 @@ function renderDailyProgramming(){
 }
 function renderFresh(){
  const section=$("#fresh"),rail=$("#freshRail");
- const dated=regularEpisodes.filter(x=>dateValue(x)>0).sort((a,b)=>dateValue(b)-dateValue(a));
+ const dated=regularEpisodes.filter(x=>discoveryEligible(x)&&dateValue(x)>0).sort((a,b)=>dateValue(b)-dateValue(a));
  if(!dated.length){section.hidden=true;return}
  const weekAgo=Date.now()-7*24*60*60*1000;
  const thisWeek=dated.filter(x=>dateValue(x)>=weekAgo);
@@ -136,9 +141,12 @@ function renderFresh(){
 }
 function pickFeatured(){
  if(!regularEpisodes.length)return null;
- const editorial=regularEpisodes.filter(x=>x.featured===true||String(x.featured).toLowerCase()==="true");
+ const homePool=regularEpisodes.filter(discoveryEligible);
+ const placed=homePool.filter(x=>placementOf(x)==="featured");
+ if(placed.length)return placed[0];
+ const editorial=homePool.filter(x=>x.featured===true||String(x.featured).toLowerCase()==="true");
  if(editorial.length)return editorial[0];
- const pool=dailyFocusItems.length?dailyFocusItems:regularEpisodes;
+ const pool=dailyFocusItems.length?dailyFocusItems:(homePool.length?homePool:regularEpisodes);
  return pool[dailySeed()%pool.length]||regularEpisodes[0];
 }
 function pickSomething(){
@@ -180,8 +188,9 @@ function playEpisode(item,autoplay=true){
  showView("watch",{push:true});
 }
 function renderForYou(topic="all"){
- let picks=regularEpisodes.filter(x=>topicMatch(x,topic));
- if(!picks.length)picks=regularEpisodes;
+ const homePool=regularEpisodes.filter(discoveryEligible);
+ let picks=homePool.filter(x=>topicMatch(x,topic));
+ if(!picks.length)picks=homePool.length?homePool:regularEpisodes;
  picks=diverseItems(picks,12);
  $("#forYouRail").innerHTML=picks.map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
@@ -345,7 +354,8 @@ async function load(){
  $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("");
  renderForYou();
  renderShelf();
- $("#storiesRail").innerHTML=regularEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||regularEpisodes.slice(0,5).map(contentCard).join("");
+ const homeEpisodes=regularEpisodes.filter(discoveryEligible);
+ $("#storiesRail").innerHTML=homeEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||homeEpisodes.slice(0,5).map(contentCard).join("");
  $("#seriesRail").innerHTML=series.map(s=>originalCard(s,regularEpisodes.find(ep=>normalize(ep.show)===normalize(s.title)))).join("");
  $("#introSeries")?.addEventListener("click",()=>showView("discover",{push:true}));
 

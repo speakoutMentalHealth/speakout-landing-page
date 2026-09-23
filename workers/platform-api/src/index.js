@@ -111,7 +111,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "homePlacement", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -156,9 +156,27 @@ function cmsRecord(collectionName, input) {
     } catch {
       throw Object.assign(new Error("Use a supported YouTube, Vimeo or Twitch URL."), { status: 400 });
     }
+    const homePlacement = normalized(record.homePlacement || "auto");
+    if (!["auto", "featured", "daily", "library_only"].includes(homePlacement)) {
+      throw Object.assign(new Error("Invalid TV homepage placement."), { status: 400 });
+    }
+    record.homePlacement = homePlacement;
+    const contentPillar = normalized(record.contentPillar || "general");
+    if (!["general", "youth", "school", "adhd", "relationships", "motivation", "stories", "community", "advocacy"].includes(contentPillar)) {
+      throw Object.assign(new Error("Invalid TV content pillar."), { status: 400 });
+    }
+    record.contentPillar = contentPillar;
+    const audience = normalized(record.audience || "youth");
+    if (!["youth", "students", "everyone", "parents", "educators"].includes(audience)) {
+      throw Object.assign(new Error("Invalid TV audience."), { status: 400 });
+    }
+    record.audience = audience;
+    if (status === "published" && normalized(record.editorialReview) !== "complete") {
+      throw Object.assign(new Error("Published TV content requires completed editorial review."), { status: 409 });
+    }
     if (status === "published" && normalized(record.minorInvolved) === "yes" &&
-        (normalized(record.consentConfirmed) !== "yes" || normalized(record.editorialReview) !== "complete")) {
-      throw Object.assign(new Error("Published content involving a minor requires confirmed consent and completed editorial review."), { status: 409 });
+        normalized(record.consentConfirmed) !== "yes") {
+      throw Object.assign(new Error("Published content involving a minor requires confirmed consent."), { status: 409 });
     }
   }
   if (collectionName === "tvAudio" && record.url) {
