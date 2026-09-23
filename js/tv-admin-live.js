@@ -304,7 +304,7 @@
   $(".editorial-toolbar")?.addEventListener("click",event=>{
     const button=event.target.closest("[data-editorial-filter]");if(!button)return;
     editorialFilter=button.dataset.editorialFilter||"all";
-    $$("[data-editorial-filter]").forEach(candidate=>candidate.classList.toggle("active",candidate===button));
+    $("[data-editorial-filter]").forEach(candidate=>{const active=candidate===button;candidate.classList.toggle("active",active);candidate.setAttribute("aria-pressed",String(active))});
     renderQueue();
   });
 
@@ -320,7 +320,7 @@
     document.getElementById(id)?.addEventListener("change",refreshReadiness);
   });
 
-  form?.addEventListener("reset",()=>setTimeout(()=>{normalizeEditorDefaults();refreshReadiness()},0));
+  form?.addEventListener("reset",()=>{editingId=null;setTimeout(()=>{normalizeEditorDefaults();refreshReadiness()},0)});
 
   window.addEventListener("cms:items",event=>{
     if(event.detail?.collectionName!=="tvEpisodes")return;
