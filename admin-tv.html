@@ -95,13 +95,28 @@
 </select></label>
 <label class="wide">Description<textarea id="description" placeholder="Short description"></textarea></label>
 <label>Content type<select id="format"><option value="episode">Episode</option><option value="live">Live broadcast</option><option value="short">Short / highlight</option></select></label>
-<label>Visibility<select id="status"><option value="draft" selected>Draft — review first</option><option value="published">Published — visible</option><option value="hidden">Hidden</option></select></label>
+<label>Visibility<select id="status"><option value="draft" selected>Draft — review first</option><option value="published">Published — visible</option><option value="active">Active — legacy public</option><option value="hidden">Hidden</option></select></label>
 <label>Homepage placement<select id="homePlacement">
 <option value="auto">Automatic</option>
 <option value="featured">Main Stage / Featured</option>
 <option value="daily">Today’s Focus priority</option>
 <option value="library_only">Library only — skip featured/discovery rails</option>
 </select></label>
+<label>Programming days<select id="programmingDays">
+<option value="all">Every day</option>
+<option value="weekdays">Weekdays</option>
+<option value="weekend">Weekend</option>
+<option value="mon">Monday</option>
+<option value="tue">Tuesday</option>
+<option value="wed">Wednesday</option>
+<option value="thu">Thursday</option>
+<option value="fri">Friday</option>
+<option value="sat">Saturday</option>
+<option value="sun">Sunday</option>
+</select></label>
+<label>Placement priority<input id="placementPriority" type="number" min="0" max="999" step="1" value="100" inputmode="numeric"><small>Lower numbers lead when multiple items share the same placement.</small></label>
+<label>Placement starts<input id="placementStart" type="date"><small>Optional. Leave blank to start immediately.</small></label>
+<label>Placement ends<input id="placementEnd" type="date"><small>Optional. Leave blank to keep running.</small></label>
 <label>Content pillar<select id="contentPillar">
 <option value="general">General wellbeing</option>
 <option value="youth">Youth voices</option>
@@ -148,6 +163,7 @@
 <span data-readiness="artwork">Artwork</span>
 <span data-readiness="tags">Tags</span>
 <span data-readiness="placement">Placement</span>
+<span data-readiness="schedule">Schedule</span>
 <span data-readiness="pillar">Content pillar</span>
 <span data-readiness="audience">Audience</span>
 <span data-readiness="review">Editorial review</span>
@@ -168,6 +184,6 @@
 </section>
 </main>
 
-<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
 <script type="module" src="js/tv-admin-live.js"></script>
 </body></html>

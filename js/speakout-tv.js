@@ -96,6 +96,25 @@ const dailyProgramming=[
 let dailyFocusItems=[];
 const placementOf=x=>normalize(x?.homePlacement||"auto").replace(/\s+/g,"_");
 const discoveryEligible=x=>placementOf(x)!=="library_only";
+const placementPriority=x=>{const n=Number(String(x?.placementPriority??"").trim()||100);return Number.isInteger(n)&&n>=0&&n<=999?n:100};
+const localDateKey=d=>String(d.getFullYear())+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const programmingDayMatches=(pattern,date=new Date())=>{
+ const value=normalize(pattern||"all");
+ const day=date.getDay();
+ if(value==="all"||!value)return true;
+ if(value==="weekdays")return day>=1&&day<=5;
+ if(value==="weekend")return day===0||day===6;
+ return ["sun","mon","tue","wed","thu","fri","sat"][day]===value;
+};
+const placementScheduleActive=(x,date=new Date())=>{
+ if(!programmingDayMatches(x?.programmingDays,date))return false;
+ const today=localDateKey(date),start=String(x?.placementStart||"").trim(),end=String(x?.placementEnd||"").trim();
+ if(start&&today<start)return false;
+ if(end&&today>end)return false;
+ return true;
+};
+const activePlacement=(x,name,date=new Date())=>placementOf(x)===name&&placementScheduleActive(x,date);
+const editorialPlacementSort=(a,b)=>placementPriority(a)-placementPriority(b)||order(a,b)||dateValue(b)-dateValue(a);
 
 function diverseItems(items,limit=10){
  const result=[],seenShows=new Set();
@@ -118,7 +137,7 @@ function renderDailyProgramming(){
  const plan=dailyProgramming[new Date().getDay()]||dailyProgramming[0];
  $("#dailyFocusEyebrow").textContent="TODAY · "+new Intl.DateTimeFormat(undefined,{weekday:"long"}).format(new Date()).toUpperCase();
  const homePool=regularEpisodes.filter(discoveryEligible);
- const editorial=homePool.filter(x=>placementOf(x)==="daily");
+ const editorial=homePool.filter(x=>activePlacement(x,"daily")).sort(editorialPlacementSort);
  const topicPicks=homePool.filter(x=>topicMatch(x,plan.topic)&&!editorial.includes(x));
  const picks=[...editorial,...topicPicks];
  dailyFocusItems=diverseItems(picks.length?picks:homePool,10);
@@ -142,9 +161,9 @@ function renderFresh(){
 function pickFeatured(){
  if(!regularEpisodes.length)return null;
  const homePool=regularEpisodes.filter(discoveryEligible);
- const placed=homePool.filter(x=>placementOf(x)==="featured");
+ const placed=homePool.filter(x=>activePlacement(x,"featured")).sort(editorialPlacementSort);
  if(placed.length)return placed[0];
- const editorial=homePool.filter(x=>x.featured===true||String(x.featured).toLowerCase()==="true");
+ const editorial=homePool.filter(x=>placementOf(x)==="auto"&&(x.featured===true||String(x.featured).toLowerCase()==="true")&&placementScheduleActive(x)).sort(editorialPlacementSort);
  if(editorial.length)return editorial[0];
  const pool=dailyFocusItems.length?dailyFocusItems:homePool;
  return pool.length ? pool[dailySeed()%pool.length] : null;
