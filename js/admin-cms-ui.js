@@ -93,7 +93,6 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
 
   function render() {
     recordCount.textContent = `${items.length} ${items.length === 1 ? "record" : "records"}`;
-    window.dispatchEvent(new CustomEvent("cms:items", { detail: { collectionName, items: items.map(item => ({ ...item })) } }));
     rows.innerHTML = items.map(item => {
       const title = item.title || item.name || item.label || "Untitled";
       return `<tr class="row"><td data-label="Title"><strong>${SO.safe(title)}</strong></td><td data-label="Status"><span class="cms-status cms-status-${SO.safe(item.status || "active")}">${SO.safe(item.status || "active")}</span></td><td data-label="Order">${SO.safe(item.order ?? 0)}</td><td data-label="Actions"><div class="actions"><button class="btn soft" data-edit="${SO.safe(item.id)}" type="button" aria-label="Edit ${SO.safe(title)}">Edit</button><button class="btn dark" data-hide="${SO.safe(item.id)}" type="button" aria-label="Hide ${SO.safe(title)}">Hide</button><button class="btn cms-danger" data-del="${SO.safe(item.id)}" type="button" aria-label="Delete ${SO.safe(title)}">Delete</button></div></td></tr>`;
@@ -133,6 +132,7 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
         } finally { setBusy(false); }
       };
     });
+    window.dispatchEvent(new CustomEvent("cms:items", { detail: { collectionName, items: items.map(item => ({ ...item })) } }));
   }
 
   async function load() {
