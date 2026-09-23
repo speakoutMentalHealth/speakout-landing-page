@@ -37,8 +37,8 @@ function setFrame(target,item,autoplay=false){
  target.innerHTML='<iframe src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
 function contentCard(x){
- const img=imageFor(x);
- return '<button class="youth-content-card" type="button" data-episode-id="'+esc(x.id)+'"><div class="youth-content-thumb">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'')+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button>';
+ const img=imageFor(x),saved=isSaved(x.id);
+ return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'')+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
 }
 function episodeCard(x){
  const img=imageFor(x);
@@ -68,12 +68,30 @@ function topicMatch(x,topic){
 }
 
 let regularEpisodes=[];
+const shelfKey="speakout-tv-shelf-v1";
+function readShelf(){try{const raw=JSON.parse(localStorage.getItem(shelfKey)||"{}");return {recent:Array.isArray(raw.recent)?raw.recent:[],saved:Array.isArray(raw.saved)?raw.saved:[]}}catch{return {recent:[],saved:[]}}}
+function writeShelf(data){try{localStorage.setItem(shelfKey,JSON.stringify({recent:data.recent.slice(0,8),saved:data.saved.slice(0,24)}))}catch{}}
+function isSaved(id){return readShelf().saved.includes(id)}
+function markRecent(id){if(!id)return;const s=readShelf();s.recent=[id,...s.recent.filter(x=>x!==id)].slice(0,8);writeShelf(s);renderShelf()}
+function toggleSaved(id){const s=readShelf();s.saved=s.saved.includes(id)?s.saved.filter(x=>x!==id):[id,...s.saved];writeShelf(s);renderShelf();renderForYou(document.querySelector(".mood-chip.active")?.dataset.topic||"all");return s.saved.includes(id)}
+function renderShelf(){
+ const shelf=readShelf();
+ const recent=shelf.recent.map(id=>regularEpisodes.find(x=>x.id===id)).filter(Boolean);
+ const saved=shelf.saved.map(id=>regularEpisodes.find(x=>x.id===id)).filter(Boolean);
+ const section=$("#shelf"),continueBlock=$("#continueBlock"),savedBlock=$("#savedBlock");
+ if($("#continueRail"))$("#continueRail").innerHTML=recent.map(contentCard).join("");
+ if($("#savedRail"))$("#savedRail").innerHTML=saved.map(contentCard).join("");
+ if(continueBlock)continueBlock.hidden=!recent.length;
+ if(savedBlock)savedBlock.hidden=!saved.length;
+ if(section)section.hidden=!(recent.length||saved.length);
+}
 function playEpisode(item,autoplay=true){
  if(!item)return;
  setFrame($("#episodePlayer"),item,autoplay);
  $("#episodeTitle").textContent=item.title||"SpeakOut TV";
  $("#episodeDescription").textContent=item.description||"";
- $$(".ios-episode-card,.youth-content-card").forEach(el=>el.classList.toggle("active",el.dataset.episodeId===item.id));
+ $(".ios-episode-card,.youth-content-card").forEach(el=>el.classList.toggle("active",el.dataset.episodeId===item.id));
+ markRecent(item.id);
  showView("watch",{push:true});
 }
 function renderForYou(topic="all"){
@@ -85,7 +103,7 @@ function renderForYou(topic="all"){
 
 const viewGroups={
  home:["home","featured","for-you","reset","series","stories","episodes","audio","live"],
- discover:["for-you","reset","series","stories"],
+ discover:["for-you","shelf","reset","series","stories"],
  watch:["episodes"],
  listen:["audio"],
  live:["live"]
@@ -129,6 +147,7 @@ async function load(){
  }
  $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("");
  renderForYou();
+ renderShelf();
  $("#storiesRail").innerHTML=regularEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||regularEpisodes.slice(0,5).map(contentCard).join("");
  $("#seriesRail").innerHTML=series.map(s=>originalCard(s,regularEpisodes.find(ep=>normalize(ep.show)===normalize(s.title)))).join("");
  $("#introSeries")?.addEventListener("click",()=>showView("discover",{push:true}));
@@ -145,7 +164,9 @@ async function load(){
 }
 
 document.addEventListener("click",e=>{
- const ep=e.target.closest("[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
+ const save=e.target.closest("[data-save-id]");if(save){e.preventDefault();e.stopPropagation();const saved=toggleSaved(save.dataset.saveId);save.classList.toggle("is-saved",saved);save.textContent=saved?"✓":"＋";save.setAttribute("aria-label",saved?"Remove from saved":"Save for later");return}
+ const open=e.target.closest("[data-episode-open]");if(open){const item=regularEpisodes.find(x=>x.id===open.dataset.episodeOpen);if(item)playEpisode(item,true);return}
+ const ep=e.target.closest(".ios-episode-card[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
  const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:"smooth",block:"start"});return}
  const reset=e.target.closest("[data-reset]");if(reset){const messages={breathe:"Unclench your jaw, lower your shoulders and take one slow breath. Give yourself a minute before the next thing.",ground:"Look around and quietly notice five things you can see, four you can feel, and three you can hear. No rush.",focus:"Choose one small task that matters next. Finish that one before deciding what comes after it."};const panel=$("#resetPanel");panel.textContent=messages[reset.dataset.reset]||"";panel.hidden=false;return}
  const nav=e.target.closest(".youth-nav a");if(nav){e.preventDefault();showView(nav.dataset.view||"home",{push:true})}
