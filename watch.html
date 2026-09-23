@@ -13,7 +13,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/speakout-tv.css">
-<meta name="theme-color" content="#071226">
+<link rel="preconnect" href="https://www.youtube-nocookie.com"><link rel="preconnect" href="https://i.ytimg.com">
+<meta name="theme-color" content="#071226"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
 <body class="tv-ios youth-watch-page">
 <header class="ios-topbar youth-topbar">
@@ -82,10 +83,11 @@
 <nav class="ios-tabbar youth-nav watch-nav" aria-label="SpeakOut TV navigation">
 <a href="tv.html"><span>⌂</span><small>Home</small></a>
 <a href="tv.html#discover"><span>✦</span><small>Discover</small></a>
-<a href="tv.html#watch" class="active"><span>▶</span><small>Watch</small></a>
+<a href="tv.html#watch" class="active" aria-current="page"><span>▶</span><small>Watch</small></a>
 <a href="radio.html"><span>◉</span><small>Listen</small></a>
 <a href="tv.html#live"><span>●</span><small>Live</small></a>
 </nav>
 
 <script type="module" src="js/tv-watch.js"></script>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
 </body></html>

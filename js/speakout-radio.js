@@ -2,7 +2,7 @@ import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const $=s=>document.querySelector(s);
-const $=s=>[...document.querySelectorAll(s)];
+const $$=s=>[...document.querySelectorAll(s)];
 const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const shelfKey="speakout-listen-shelf-v2";

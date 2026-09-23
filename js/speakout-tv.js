@@ -40,6 +40,18 @@ function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
  target.innerHTML='<iframe loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
 }
+function renderEpisodePreview(target,item){
+ if(!target||!item)return;
+ const img=imageFor(item);
+ target.innerHTML='<button class="tv-player-preview" type="button" data-episode-open="'+esc(item.id)+'">'+
+  (img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">SPEAKOUT TV</div>')+
+  '<span class="tv-player-preview-play">▶</span><span class="sr-only">Play '+esc(item.title||"SpeakOut TV")+'</span></button>';
+}
+const defaultSpotifySrc="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0";
+function ensureDefaultAudioPlayer(){
+ const host=$("#audioPlayer");if(!host||host.querySelector("iframe"))return;
+ host.innerHTML='<iframe loading="lazy" src="'+esc(defaultSpotifySrc)+'" title="SpeakOut podcast" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';
+}
 function contentCard(x){
  const img=imageFor(x),saved=isSaved(x.id);
  return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'')+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
@@ -71,7 +83,7 @@ function topicMatch(x,topic){
  return (groups[topic]||[topic]).some(k=>hay.includes(k));
 }
 
-let regularEpisodes=[];
+let regularEpisodes=[],currentEpisode=null;
 const shelfKey="speakout-tv-shelf-v1";
 function readShelf(){try{const raw=JSON.parse(localStorage.getItem(shelfKey)||"{}");return {recent:Array.isArray(raw.recent)?raw.recent:[],saved:Array.isArray(raw.saved)?raw.saved:[]}}catch{return {recent:[],saved:[]}}}
 function writeShelf(data){try{localStorage.setItem(shelfKey,JSON.stringify({recent:data.recent.slice(0,8),saved:data.saved.slice(0,24)}))}catch{}}
@@ -91,6 +103,7 @@ function renderShelf(){
 }
 function playEpisode(item,autoplay=true){
  if(!item)return;
+ currentEpisode=item;
  setFrame($("#episodePlayer"),item,autoplay);
  $("#episodeTitle").textContent=item.title||"SpeakOut TV";
  $("#episodeDescription").textContent=item.description||"";
@@ -145,10 +158,10 @@ function addLiveReminder(item){
 }
 async function shareLive(item){
  if(!item)return;
- const url=location.origin+location.pathname+"#live";
+ const url=new URL(location.origin+location.pathname);url.searchParams.set("live",item.id||"");url.hash="live";
  try{
-  if(navigator.share)await navigator.share({title:item.title||"SpeakOut Live",text:item.description||"Join SpeakOut Live.",url});
-  else{await navigator.clipboard.writeText(url);$("#liveActionStatus").textContent="Live link copied."}
+  if(navigator.share)await navigator.share({title:item.title||"SpeakOut Live",text:item.description||"Join SpeakOut Live.",url:url.href});
+  else{await navigator.clipboard.writeText(url.href);$("#liveActionStatus").textContent="Live link copied."}
  }catch(error){if(error?.name!=="AbortError")$("#liveActionStatus").textContent="Use your browser address bar to copy the live link."}
 }
 function startLiveCountdown(item){
@@ -169,7 +182,13 @@ function renderLiveExperience(allEpisodes){
  const unscheduled=liveItems.filter(x=>!scheduleValue(x));
  const recent=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<=now&&(now-t)<=6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
  const previous=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<now-6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
+ const requestedLiveId=new URLSearchParams(location.search).get("live")||"";
+ const requestedLive=liveItems.find(x=>x.id===requestedLiveId)||null;
+ const requestedTime=scheduleValue(requestedLive);
  currentLive=unscheduled[0]||recent[0]||null;nextLive=future[0]||null;
+ if(requestedLive&&requestedTime>now)nextLive=requestedLive;
+ if(requestedLive&&(!requestedTime||(requestedTime<=now&&(now-requestedTime)<=6*60*60*1000)))currentLive=requestedLive;
+ const requestedReplay=requestedLive&&requestedTime&&requestedTime<now-6*60*60*1000?requestedLive:null;
 
  const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar");
  if(currentLive){
@@ -187,6 +206,12 @@ function renderLiveExperience(allEpisodes){
   $("#liveTitle").textContent="The next conversation starts here.";
   $("#liveDescription").textContent=nextLive?"A new SpeakOut Live session is scheduled. See the details below and add a reminder.":"Live conversations, interviews and special coverage will appear here when scheduled.";
   meta.innerHTML="";share.hidden=true;calendar.hidden=true;
+ }
+ if(requestedReplay){
+  status.textContent="Replay";status.classList.remove("is-live");stageTime.textContent="Previously live · "+formatSchedule(scheduleValue(requestedReplay));
+  $("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveTitle").textContent=requestedReplay.title||"SpeakOut Live";
+  $("#liveDescription").textContent=requestedReplay.description||"Watch this previous SpeakOut live conversation.";
+  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;
  }
 
  const nextPanel=$("#nextLivePanel");
@@ -216,7 +241,9 @@ function showView(view,{push=false}={}){
    const id=el.id||"";
    el.hidden=chosen!=="home"&&!viewGroups[chosen].includes(id);
  });
- $(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(a.dataset.view)a.setAttribute("aria-current",active?"page":"false")});
+ $(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+ if(chosen==="watch"&&currentEpisode&&!$("#episodePlayer iframe"))setFrame($("#episodePlayer"),currentEpisode,false);
+ if(chosen==="listen")ensureDefaultAudioPlayer();
  if(push){
    const next=chosen==="home"?"tv.html":"#"+chosen;
    history.pushState({tvView:chosen},"",next);
@@ -236,7 +263,7 @@ async function load(){
  regularEpisodes=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
  const first=regularEpisodes[0]||episodes[0];
  if(first){
-   setFrame($("#episodePlayer"),first,false);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
+   currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
    $("#introTitle").textContent=first.title||"Real conversations. No pretending.";$("#introDescription").textContent=first.description||"Original SpeakOut stories and conversations.";
    const img=imageFor(first),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
    $("#introPlay")?.addEventListener("click",()=>playEpisode(first,true));
@@ -278,6 +305,6 @@ addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;
 $("#installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installTv").hidden=true});
 
 load();
-$("#liveShare")?.addEventListener("click",()=>shareLive(currentLive||nextLive));
+$("#liveShare")?.addEventListener("click",()=>{const requested=new URLSearchParams(location.search).get("live");shareLive(liveItems.find(x=>x.id===requested)||currentLive||nextLive)});
 $("#liveCalendar")?.addEventListener("click",()=>{const item=currentLive||nextLive;if(item)addLiveReminder(item)});
 $("#nextLiveReminder")?.addEventListener("click",()=>{if(nextLive)addLiveReminder(nextLive)});
