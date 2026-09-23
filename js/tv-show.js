@@ -40,13 +40,6 @@ function episodeCard(x,index){
    '<div class="show-episode-copy"><small>'+esc(x.presenter?"HOST · "+x.presenter:x.show||"EPISODE")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
 }
 
-function featuredCard(x){
- const img=imageFor(x);
- return '<a class="show-feature-card" href="'+watchHref(x)+'">'+
-  '<div class="show-feature-art">'+(img?'<img src="'+esc(img)+'" alt="">':'')+'<span class="show-feature-play">▶</span></div>'+
-  '<div class="show-feature-copy"><small>FEATURED EPISODE</small><h3>'+esc(x.title||"SpeakOut TV")+'</h3><p>'+esc(x.description||"")+'</p><span class="show-watch-cta">Watch episode →</span></div></a>';
-}
-
 let meta=defaults[slug]||[slug.replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase()),"Original","SpeakOut TV original programming."];
 let showImage="";
 
@@ -83,12 +76,10 @@ starterEpisodes.forEach(x=>{
 episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
 
 $("#episodeCount").textContent=episodes.length+(episodes.length===1?" episode":" episodes");
-$("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv.html#discover">Explore other SpeakOut originals →</a></div>';
+$("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv-search.html">Explore other SpeakOut originals →</a></div>';
 
-const first=episodes.find(x=>x.featured===true||String(x.featured)==="true")||episodes[0];
+const first=episodes[0];
 if(first){
- $("#startHere").hidden=false;
- $("#featuredEpisode").innerHTML=featuredCard(first);
  $("#startWatching").addEventListener("click",()=>location.href=watchHref(first));
  const heroImg=showImage||imageFor(first);
  if(heroImg){$("#showArtwork").style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image");setMeta("og:image",heroImg,true)}

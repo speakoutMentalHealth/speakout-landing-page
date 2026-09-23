@@ -186,7 +186,6 @@ test("episode watch page supports contextual discovery and on-device My List", (
   assert.match(page, /id="saveEpisode"/u);
   assert.match(page, /id="relatedRail"/u);
   assert.match(page, /id="upNextSection"/u);
-  assert.match(page, /pages\/resources\.html/u);
   assert.match(script, /speakout-tv-shelf-v1/u);
   assert.match(script, /navigator\.share/u);
   assert.match(script, /youtube-nocookie\.com\/embed/u);
@@ -224,7 +223,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v4/u);
+  assert.match(sw, /speakout-tv-v5/u);
 });
 
 
@@ -523,9 +522,9 @@ test("SpeakOut TV section tabs switch every matching section and keep media view
   assert.match(script, /\$\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
   assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
   assert.match(script, /document\.body\.dataset\.tvView=chosen/u);
-  assert.match(page, /id="episodes"[\s\S]*?<h2>Video<\/h2>/u);
+  assert.match(page, /id="episodes"[\s\S]*?<h2>Videos<\/h2>/u);
   assert.match(page, /id="audio"[\s\S]*?<h2>Audio<\/h2>/u);
-  assert.match(page, /id="live"[\s\S]*?<h2>Live & Upcoming<\/h2>/u);
+  assert.match(page, /id="live"[\s\S]*?<h2>SpeakOut Live<\/h2>/u);
   assert.match(radio, /listen-hero-compact/u);
   assert.doesNotMatch(radio, /Press play\./u);
   assert.match(styles, /Bright Youth UI v3/u);
@@ -551,5 +550,52 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 });
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
-  assert.match(read("tv-sw.js"), /speakout-tv-v4/u);
+  assert.match(read("tv-sw.js"), /speakout-tv-v5/u);
+});
+
+
+test("SpeakOut TV keeps Featured exclusively on the home experience", () => {
+  const home=read("tv.html");
+  const show=read("show.html");
+  const showScript=read("js/tv-show.js");
+  assert.match(home,/id="featured"/u);
+  assert.match(home,/FEATURED TODAY/u);
+  assert.doesNotMatch(show,/featuredEpisode|id="startHere"/u);
+  assert.doesNotMatch(showScript,/featuredCard|FEATURED EPISODE/u);
+});
+
+test("Watch remains a video-only viewing surface", () => {
+  const home=read("tv.html");
+  const watch=read("watch.html");
+  assert.match(home,/class="tv-container youth-section watch-section media-only-view watch-only"/u);
+  assert.match(home,/class="watch-cinema-shell"/u);
+  assert.match(home,/id="latestRail"/u);
+  assert.doesNotMatch(watch,/pages\/resources\.html/u);
+  assert.match(watch,/id="watchPlayer"/u);
+  assert.match(watch,/id="upNextSection"/u);
+  assert.match(watch,/id="relatedRail"/u);
+});
+
+test("Live is a single cinematic standby stage with only next-session information", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  const styles=read("css/speakout-tv.css");
+  assert.match(page,/class="live-cinema-shell"/u);
+  assert.match(page,/class="live-signal"/u);
+  assert.match(page,/We’ll be live here\./u);
+  assert.doesNotMatch(page,/id="liveScheduleSection"|id="livePreviousSection"/u);
+  assert.doesNotMatch(script,/scheduleSection\.hidden|previousSection\.hidden/u);
+  assert.match(script,/status\.textContent=nextLive\?"Upcoming":"Standby"/u);
+  assert.match(styles,/SpeakOut TV Visual System v5 — Night Signal/u);
+  assert.match(styles,/\.live-v2-player[\s\S]*min-height:min\(70vh,760px\)/u);
+});
+
+test("Night Signal v5 uses one explicit high-contrast dark palette", () => {
+  const styles=read("css/speakout-tv.css");
+  assert.match(styles,/--tv-ink:#f8fbff/u);
+  assert.match(styles,/--tv-text:#f8fbff/u);
+  assert.match(styles,/--tv-muted:#b6c5d8/u);
+  assert.match(styles,/body\.youth-tv,[\s\S]*linear-gradient\(180deg,#071426 0%,#030812 54%,#02050b 100%\)/u);
+  assert.match(styles,/\.youth-listen-page \.listen-card[\s\S]*background:linear-gradient/u);
+  assert.match(styles,/\.discovery-search-box input[\s\S]*color:#fff/u);
 });
