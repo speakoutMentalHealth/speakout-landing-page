@@ -1,0 +1,77 @@
+/* SpeakOut TV art direction */
+.tv-art{--art-a:#1d5f9f;--art-b:#081522;--art-c:#58a6ff}
+.tv-art-default{--art-a:#195184;--art-b:#071421;--art-c:#58a6ff}
+.tv-art-move{--art-a:#0d74c8;--art-b:#071422;--art-c:#ff9d1f}
+.tv-art-podcast{--art-a:#5637b8;--art-b:#0a1020;--art-c:#ffad33}
+.tv-art-checkin{--art-a:#236cb7;--art-b:#071422;--art-c:#5bc6ff}
+.tv-art-youth{--art-a:#703bc7;--art-b:#081523;--art-c:#49c8ff}
+.tv-art-campus{--art-a:#087b7d;--art-b:#071723;--art-c:#54d2d0}
+.tv-art-expert{--art-a:#7b365d;--art-b:#10101a;--art-c:#ffb454}
+.tv-art-stories{--art-a:#735019;--art-b:#081522;--art-c:#ffb13b}
+.tv-art-special{--art-a:#d46f12;--art-b:#091522;--art-c:#ffd168}
+.tv-art-live{--art-a:#8f2030;--art-b:#090f19;--art-c:#ff5265}
+
+.tv-art-fallback{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
+  padding:14px;overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 18%,color-mix(in srgb,var(--art-c) 42%,transparent),transparent 27%),
+    linear-gradient(135deg,var(--art-a),var(--art-b) 68%);
+}
+.tv-art-fallback::before{
+  content:"";position:absolute;right:-18%;bottom:-34%;width:72%;aspect-ratio:1;
+  border:1px solid color-mix(in srgb,var(--art-c) 34%,transparent);
+  border-radius:50%;box-shadow:0 0 0 18px color-mix(in srgb,var(--art-c) 5%,transparent),0 0 0 42px color-mix(in srgb,var(--art-c) 4%,transparent);
+}
+.tv-art-fallback::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 36%,rgba(2,7,13,.68));
+}
+.tv-art-fallback>span,.tv-art-fallback>strong{position:relative;z-index:2}
+.tv-art-fallback>span{
+  color:var(--art-c);font-size:.5rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase;
+}
+.tv-art-fallback>strong{
+  max-width:90%;margin-top:5px;color:#fff;font-family:"Space Grotesk",Manrope,sans-serif;
+  font-size:clamp(.9rem,2.3vw,1.2rem);line-height:1.03;letter-spacing:-.035em;
+}
+.tv-art-fallback>i{
+  position:absolute;z-index:1;left:14px;top:14px;width:24px;height:3px;border-radius:999px;background:var(--art-c);
+}
+
+.tv-art-bug{
+  position:absolute;z-index:4;left:8px;bottom:8px;
+  display:inline-flex;align-items:center;max-width:calc(100% - 52px);min-height:22px;padding:0 7px;
+  border:1px solid rgba(255,255,255,.14);border-radius:7px;
+  background:rgba(4,11,20,.72);backdrop-filter:blur(8px);
+  color:#f8fbff;font-size:.48rem;font-weight:900;letter-spacing:.075em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tv-art-bug::before{
+  content:"";width:5px;height:5px;margin-right:5px;border-radius:50%;background:var(--art-c);flex:0 0 auto;
+}
+.tv-art-bug.tv-art-live::before{background:#ff4658;box-shadow:0 0 0 4px rgba(255,70,88,.12)}
+.tv-art-bug.tv-art-special::before,.tv-art-bug.tv-art-stories::before{background:#ffad33}
+
+.youth-content-thumb,.discovery-media-art,.show-episode-art,.watch-related-art,.listen-card-art,.original-art{isolation:isolate}
+.youth-content-thumb::after,.discovery-media-art::after,.show-episode-art::after,.watch-related-art::after,.listen-card-art::after{
+  content:"";position:absolute;z-index:2;inset:auto 0 0;height:38%;
+  background:linear-gradient(180deg,transparent,rgba(3,9,16,.42));pointer-events:none;
+}
+
+.original-card{position:relative}
+.original-art{position:relative}
+.original-art.tv-art-fallback{position:absolute}
+.original-art+.original-copy{position:relative;z-index:2;background:linear-gradient(180deg,rgba(5,16,29,.35),var(--tv-surface) 36%)}
+.original-card.no-image .original-art{min-height:150px;position:relative}
+.original-card.no-image .original-art.tv-art-fallback{position:relative;inset:auto}
+
+.show-world-art.tv-art-fallback{
+  position:absolute;inset:0;padding:clamp(28px,6vw,72px);
+}
+.show-world-art.tv-art-fallback>strong{font-size:clamp(2.2rem,7vw,5.8rem);max-width:700px}
+.show-world-art.tv-art-fallback>span{font-size:.7rem}
+
+.listen-now-art.tv-art-fallback{position:relative;inset:auto;min-height:260px}
+.listen-now-art.tv-art-fallback>strong{font-size:1.35rem}

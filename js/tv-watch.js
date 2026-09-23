@@ -1,5 +1,6 @@
 import {db} from "../firebase-config.js";
 import {collection,doc,getDoc,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const id=new URLSearchParams(location.search).get("id")||"";
 const $=s=>document.querySelector(s);
@@ -61,7 +62,7 @@ function formatDate(raw){
 function relatedCard(x){
  const img=imageFor(x);
  return '<a class="watch-related-card" href="watch.html?id='+encodeURIComponent(x.id)+'">'+
-  '<div class="watch-related-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="show-episode-fallback">SPEAKOUT TV</div>')+'<span>▶</span></div>'+
+  '<div class="watch-related-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+'<span>▶</span></div>'+
   '<small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"Watch on SpeakOut TV")+'</strong></a>';
 }
 
