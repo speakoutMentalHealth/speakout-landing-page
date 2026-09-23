@@ -1,5 +1,6 @@
 import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const slug=new URLSearchParams(location.search).get("show")||"";
 const defaults={
@@ -35,7 +36,7 @@ const setMeta=(name,value,property=false)=>{if(!value)return;document.querySelec
 function episodeCard(x,index){
  const img=imageFor(x);
  return '<a class="show-episode-card" href="'+watchHref(x)+'">'+
-   '<div class="show-episode-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="show-episode-fallback">SPEAKOUT TV</div>')+
+   '<div class="show-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+
    '<span class="show-episode-number">'+String(index+1).padStart(2,"0")+'</span><span class="show-play">▶</span></div>'+
    '<div class="show-episode-copy"><small>'+esc(x.presenter?"HOST · "+x.presenter:x.show||"EPISODE")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
 }
@@ -79,11 +80,16 @@ $("#episodeCount").textContent=episodes.length+(episodes.length===1?" episode":"
 $("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv-search.html">Explore other SpeakOut originals →</a></div>';
 
 const first=episodes[0];
+const showArtItem={slug,title:meta[0],category:meta[1],show:meta[0]};
+const artwork=$("#showArtwork");
+artClass(showArtItem,"series").split(" ").forEach(cls=>artwork.classList.add(cls));
 if(first){
  $("#startWatching").addEventListener("click",()=>location.href=watchHref(first));
  const heroImg=showImage||imageFor(first);
- if(heroImg){$("#showArtwork").style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image");setMeta("og:image",heroImg,true)}
+ if(heroImg){artwork.style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",heroImg,true)}
+ else artwork.innerHTML=artFallback(showArtItem,"series");
 }else{
  $("#startWatching").hidden=true;
- if(showImage){$("#showArtwork").style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image");setMeta("og:image",showImage,true)}
+ if(showImage){artwork.style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",showImage,true)}
+ else artwork.innerHTML=artFallback(showArtItem,"series");
 }
