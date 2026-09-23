@@ -113,6 +113,7 @@ function dailySeed(){
 }
 function renderDailyProgramming(){
  const plan=dailyProgramming[new Date().getDay()]||dailyProgramming[0];
+ $("#dailyFocusEyebrow").textContent="TODAY · "+new Intl.DateTimeFormat(undefined,{weekday:"long"}).format(new Date()).toUpperCase();
  let picks=regularEpisodes.filter(x=>topicMatch(x,plan.topic));
  if(!picks.length)picks=regularEpisodes;
  dailyFocusItems=diverseItems(picks,10);
@@ -181,7 +182,8 @@ function playEpisode(item,autoplay=true){
 function renderForYou(topic="all"){
  let picks=regularEpisodes.filter(x=>topicMatch(x,topic));
  if(!picks.length)picks=regularEpisodes;
- $("#forYouRail").innerHTML=picks.slice(0,12).map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
+ picks=diverseItems(picks,12);
+ $("#forYouRail").innerHTML=picks.map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
 }
 
