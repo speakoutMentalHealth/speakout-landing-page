@@ -171,12 +171,25 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("Invalid TV audience."), { status: 400 });
     }
     record.audience = audience;
+    if (record.imageUrl && !publicWebUrl(record.imageUrl)) {
+      throw Object.assign(new Error("Use a valid public thumbnail URL."), { status: 400 });
+    }
+    if (record.publishDate && !Number.isFinite(Date.parse(record.publishDate))) {
+      throw Object.assign(new Error("Use a valid TV publish date."), { status: 400 });
+    }
+    if (record.scheduledAt && !Number.isFinite(Date.parse(record.scheduledAt))) {
+      throw Object.assign(new Error("Use a valid live schedule date and time."), { status: 400 });
+    }
     if (status === "published" && normalized(record.editorialReview) !== "complete") {
       throw Object.assign(new Error("Published TV content requires completed editorial review."), { status: 409 });
     }
     if (status === "published" && normalized(record.minorInvolved) === "yes" &&
         normalized(record.consentConfirmed) !== "yes") {
       throw Object.assign(new Error("Published content involving a minor requires confirmed consent."), { status: 409 });
+    }
+    if (status === "published" && ["featured", "daily"].includes(record.homePlacement) &&
+        (clean(record.description).length < 40 || !clean(record.imageUrl) || !clean(record.tags))) {
+      throw Object.assign(new Error("Featured or Today’s Focus content requires a fuller description, artwork and discovery tags."), { status: 409 });
     }
   }
   if (collectionName === "tvAudio" && record.url) {
@@ -1215,6 +1228,9 @@ async function route(request, env, path, data) {
     return runTransaction(env, async tx => {
       const existing = await tx.get(`${collectionName}/${recordId}`);
       if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
+      if (collectionName === "tvEpisodes" && status === "published") {
+        cmsRecord(collectionName, { ...existing, status });
+      }
       tx.set(`${collectionName}/${recordId}`, {
         ...existing,
         status,
