@@ -166,3 +166,33 @@ test("TV CMS validates media providers and minor publication safeguards", () => 
   assert.match(worker, /Published content involving a minor requires confirmed consent and completed editorial review/u);
   assert.match(worker, /collectionName === "tvAudio"/u);
 });
+
+
+test("SpeakOut TV offline fallback only returns the TV document for navigation requests", () => {
+  const sw = read("tv-sw.js");
+  assert.match(sw, /event\.request\.mode==="navigate"/u);
+  assert.match(sw, /return caches\.match\("\.\/tv\.html"\)/u);
+  assert.match(sw, /return Response\.error\(\)/u);
+  assert.doesNotMatch(sw, /r\|\|caches\.match\("\.\/tv\.html"\)/u);
+});
+
+test("episode watch page supports contextual discovery and on-device My List", () => {
+  const page = read("watch.html");
+  const script = read("js/tv-watch.js");
+  assert.match(page, /id="watchPlayer"/u);
+  assert.match(page, /id="saveEpisode"/u);
+  assert.match(page, /id="relatedRail"/u);
+  assert.match(page, /id="upNextSection"/u);
+  assert.match(page, /pages\/resources\.html/u);
+  assert.match(script, /speakout-tv-shelf-v1/u);
+  assert.match(script, /navigator\.share/u);
+  assert.match(script, /youtube-nocookie\.com\/embed/u);
+  assert.match(script, /relevance\(current,candidate\)/u);
+  assert.match(script, /VideoObject/u);
+});
+
+test("series archive episodes use the dedicated episode page", () => {
+  const script = read("js/tv-show.js");
+  assert.match(script, /const watchHref=x=>"watch\.html\?id="/u);
+  assert.doesNotMatch(script, /archive-"\)\?"tv\.html\?episode=/u);
+});
