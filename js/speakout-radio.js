@@ -1,5 +1,6 @@
 import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -54,8 +55,8 @@ function card(x,{compact=false}={}){
  const art=artFor(x),saved=isSaved(x.id);
  return '<article class="listen-card'+(compact?' compact':'')+'" data-audio-id="'+esc(x.id)+'">'+
   '<button class="listen-card-open" type="button" data-audio-open="'+esc(x.id)+'" aria-label="Open '+esc(x.title||"SpeakOut audio")+'">'+
-   '<div class="listen-card-art">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':'<div class="listen-card-fallback"><span>◉</span><b>SPEAKOUT</b></div>')+
-   '<span class="listen-card-type">'+esc(x.audioType||"AUDIO")+'</span><span class="listen-card-play">▶</span></div>'+
+   '<div class="listen-card-art '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+
+   artOverlay(x,"audio")+'<span class="listen-card-play">▶</span></div>'+
    '<div class="listen-card-copy"><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><p>'+esc(x.description||"")+'</p></div>'+
   '</button>'+
   '<button class="listen-card-save'+(saved?' is-saved':'')+'" type="button" data-save-audio="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button>'+
