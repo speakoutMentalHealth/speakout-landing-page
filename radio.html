@@ -1,1 +1,112 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpeakOut Radio | SpeakOut TV</title><meta name="description" content="Listen to SpeakOut podcasts, spoken word and audio programs."><link rel="icon" href="images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/speakout-tv.css"><meta name="theme-color" content="#061126"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png"></head><body><header class="tv-nav"><div class="tv-container tv-nav-inner"><a class="tv-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a><nav class="tv-links"><a href="tv.html">TV</a><a href="radio.html" class="active">Radio</a><a href="tv-search.html">Search</a></nav></div></header><main><section class="radio-hero"><div class="tv-container radio-hero-grid"><div><span class="eyebrow">SPEAKOUT RADIO</span><h1>Press play. Keep listening.</h1><p>Podcasts, conversations, spoken word and audio stories from SpeakOut.</p></div><div class="radio-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></section><section class="section"><div class="tv-container"><div class="radio-now"><div><span class="eyebrow">SPEAK PODCAST</span><h2>Listen on SpeakOut Radio</h2><p>Mental health, culture and everyday life.</p></div><iframe loading="lazy" src="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0" title="SPEAK podcast on Spotify" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe></div></div></section><section class="section"><div class="tv-container"><div class="section-head"><div><h2>Audio Library</h2><p>Latest published audio from SpeakOut.</p></div></div><div class="audio-filters"><button class="active" data-audio-filter="all">All</button><button data-audio-filter="Podcast">Podcasts</button><button data-audio-filter="Spoken Word">Spoken Word</button><button data-audio-filter="Interview">Interviews</button><button data-audio-filter="Music">Music</button></div><div class="audio-grid" id="audioGrid"></div><div class="radio-recent" id="radioRecent" hidden></div><div id="miniPlayer" class="mini-player" hidden><div><small>NOW PLAYING</small><strong id="miniTitle">SpeakOut Radio</strong></div><audio id="persistentAudio" controls preload="metadata"></audio></div></div></section></main><a class="tv-support" href="pages/resources.html">Find Support</a><nav class="mobile-dock" aria-label="SpeakOut TV mobile navigation"><a href="tv.html"><span>⌂</span>TV</a><a href="radio.html" class="active"><span>◉</span>Radio</a><a href="tv.html#shows"><span>▣</span>Shows</a><a href="tv-search.html"><span>⌕</span>Search</a></nav><footer class="tv-footer"><div class="tv-container"><strong>SpeakOut Radio</strong><p>Audio from the SpeakOut TV network.</p></div></footer><script type="module" src="js/speakout-radio.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Listen | SpeakOut TV</title>
+<meta name="description" content="Listen to SpeakOut podcasts, spoken word, interviews and audio programs.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/speakout-tv.css">
+<meta name="theme-color" content="#071226">
+<link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
+</head>
+<body class="tv-ios youth-listen-page">
+<header class="ios-topbar youth-topbar">
+  <div class="tv-container ios-topbar-inner">
+    <a class="ios-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
+    <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV">⌕</a>
+  </div>
+</header>
+
+<main>
+<section class="tv-container listen-hero">
+  <span class="youth-eyebrow">SPEAKOUT LISTEN</span>
+  <h1>Press play.<br><em>Stay with the conversation.</em></h1>
+  <p>Podcasts, spoken word, interviews and audio stories from SpeakOut — designed for moments when you would rather listen than watch.</p>
+</section>
+
+<section class="tv-container listen-now-section" id="nowPlaying">
+  <div class="listen-now-card">
+    <div class="listen-now-art" id="listenArtwork">
+      <div class="listen-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="listen-now-copy">
+      <span id="listenType">SPEAK PODCAST</span>
+      <h2 id="listenTitle">SpeakOut Podcast</h2>
+      <p id="listenDescription">Mental health, culture and everyday life — in conversation.</p>
+      <div id="listenPlayer" class="listen-player-host">
+        <iframe loading="lazy" src="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0" title="SPEAK podcast on Spotify" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>
+      </div>
+      <div class="listen-now-actions">
+        <button id="saveCurrentAudio" type="button" class="listen-action" hidden>＋ Save</button>
+        <button id="shareCurrentAudio" type="button" class="listen-action" hidden>Share</button>
+      </div>
+      <p id="listenStatus" class="listen-status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section class="tv-container youth-section listen-shelf" id="listenShelf" hidden>
+  <div class="youth-section-head">
+    <div><span>YOUR LISTENING</span><h2>Pick Up Where You Left Off</h2><p>Recent and saved audio stays on this device.</p></div>
+  </div>
+  <div class="listen-shelf-block" id="recentAudioBlock" hidden>
+    <h3>Recently played</h3>
+    <div class="listen-rail" id="recentAudioRail"></div>
+  </div>
+  <div class="listen-shelf-block" id="savedAudioBlock" hidden>
+    <h3>Saved for later</h3>
+    <div class="listen-rail" id="savedAudioRail"></div>
+  </div>
+</section>
+
+<section class="tv-container youth-section listen-library-section">
+  <div class="youth-section-head">
+    <div><span>AUDIO LIBRARY</span><h2>Find Something Worth Hearing</h2><p>Browse published SpeakOut audio by format.</p></div>
+    <a href="tv-search.html">Search all</a>
+  </div>
+
+  <div class="listen-filter-rail" aria-label="Filter audio">
+    <button class="active" type="button" data-audio-filter="all">All</button>
+    <button type="button" data-audio-filter="Podcast">Podcasts</button>
+    <button type="button" data-audio-filter="Spoken Word">Spoken Word</button>
+    <button type="button" data-audio-filter="Interview">Interviews</button>
+    <button type="button" data-audio-filter="Music">Music</button>
+    <button type="button" data-audio-filter="Radio">Radio</button>
+  </div>
+
+  <div class="listen-library-grid" id="audioGrid">
+    <p class="empty-note">Loading published audio…</p>
+  </div>
+</section>
+
+<section class="tv-container listen-closing">
+  <div>
+    <span>KEEP EXPLORING</span>
+    <h2>Prefer to watch? SpeakOut TV has stories, series and conversations waiting for you.</h2>
+  </div>
+  <a href="tv.html#discover">Discover SpeakOut TV →</a>
+</section>
+</main>
+
+<div id="miniPlayer" class="listen-mini-player" hidden>
+  <div class="listen-mini-copy">
+    <small>NOW PLAYING</small>
+    <strong id="miniTitle">SpeakOut Listen</strong>
+  </div>
+  <audio id="persistentAudio" controls preload="metadata"></audio>
+  <button id="closeMiniPlayer" type="button" aria-label="Close player">×</button>
+</div>
+
+<nav class="ios-tabbar youth-nav listen-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html"><span>⌂</span><small>Home</small></a>
+<a href="tv.html#discover"><span>✦</span><small>Discover</small></a>
+<a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
+<a href="radio.html" class="active"><span>◉</span><small>Listen</small></a>
+<a href="tv.html#live"><span>●</span><small>Live</small></a>
+</nav>
+
+<script type="module" src="js/speakout-radio.js"></script>
+</body>
+</html>
