@@ -608,3 +608,18 @@ linear-gradient(145deg,#173c6b,#071426 74%);background-size:cover;background-pos
 }
 @media(max-width:560px){.live-schedule-grid{grid-template-columns:1fr}.live-countdown span{flex:1;min-width:0}.live-previous-card{flex-basis:82%}.live-offline-state{padding:28px 18px}}
 @media(prefers-reduced-motion:reduce){.live-schedule-card,.live-schedule-art img{transition:none}}
+
+
+/* Final TV accessibility and interaction polish */
+.tv-ios :where(a,button,input,select,textarea):focus-visible{
+ outline:3px solid rgba(244,162,28,.95);
+ outline-offset:3px;
+}
+.tv-ios :where(button,a){-webkit-tap-highlight-color:transparent}
+.tv-ios img{max-width:100%}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ .tv-ios *, .tv-ios *::before, .tv-ios *::after{
+  scroll-behavior:auto!important;
+ }
+}
