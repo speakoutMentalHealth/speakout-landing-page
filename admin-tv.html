@@ -25,6 +25,7 @@
 <strong>Studio</strong>
 <a class="active" href="#publish">＋ New broadcast</a>
 <a href="#operationsDesk">⌁ Operations</a>
+<a href="#contentIntelligence">◈ Intelligence</a>
 <a href="#library">▣ Library</a>
 <a href="#dashboard">◫ Overview</a>
 <a href="admin-tv-series.html">✦ Series</a>
@@ -54,6 +55,41 @@
 <article><span>Scheduled</span><strong id="scheduledEditorialCount">—</strong><small>Future live sessions with a schedule.</small></article>
 </div>
 <div class="editorial-attention" id="editorialAttention"><p class="admin-muted">Loading editorial checks…</p></div>
+</section>
+
+<section class="studio-card content-intelligence" id="contentIntelligence">
+<div class="card-title"><div><span class="eyebrow">CONTENT INTELLIGENCE 1.0</span><h2>What the library is missing</h2><p class="admin-muted">Objective editorial signals from published metadata, recency, series balance and artwork reuse. These are planning signals, not automatic publishing decisions.</p></div><span class="secure-pill" id="intelligenceHealth">Analyzing…</span></div>
+
+<div class="intelligence-metrics">
+<article><span>Fresh · 30 days</span><strong id="fresh30Count">—</strong><small>Published regular videos added in the last 30 days.</small></article>
+<article><span>Coverage gaps</span><strong id="coverageGapCount">—</strong><small>Core content pillars with no recent published video.</small></article>
+<article><span>Series gaps</span><strong id="seriesGapCount">—</strong><small>Published series with no recent episode or no episode yet.</small></article>
+<article><span>Artwork signals</span><strong id="artworkSignalCount">—</strong><small>Missing, source-only or exactly reused artwork needing review.</small></article>
+</div>
+
+<div class="intelligence-grid">
+<section class="intelligence-panel">
+<div class="intelligence-panel-head"><div><span>TOPIC COVERAGE</span><h3>Are we covering the mission?</h3></div><small>Recent = 90 days</small></div>
+<div class="coverage-map" id="coverageMap"><p class="admin-muted">Analyzing content pillars…</p></div>
+</section>
+
+<section class="intelligence-panel">
+<div class="intelligence-panel-head"><div><span>SERIES BALANCE</span><h3>Where are we over- or under-publishing?</h3></div><small>Stale = 120 days</small></div>
+<div class="series-balance" id="seriesBalance"><p class="admin-muted">Analyzing series…</p></div>
+</section>
+</div>
+
+<div class="intelligence-grid intelligence-lower">
+<section class="intelligence-panel">
+<div class="intelligence-panel-head"><div><span>NEXT CONTENT OPPORTUNITIES</span><h3>Evidence-based planning prompts</h3></div></div>
+<div class="content-opportunities" id="contentOpportunities"><p class="admin-muted">Building planning prompts…</p></div>
+</section>
+
+<section class="intelligence-panel">
+<div class="intelligence-panel-head"><div><span>ARTWORK WATCH</span><h3>Where presentation needs attention</h3></div><small>Exact signals only</small></div>
+<div class="artwork-watch" id="artworkWatch"><p class="admin-muted">Checking artwork usage…</p></div>
+</section>
+</div>
 </section>
 
 <section class="studio-card programming-control" id="programmingControl">
