@@ -29,7 +29,7 @@ const ytId=raw=>{try{const u=new URL(raw);if(u.hostname==="youtu.be")return u.pa
 const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
-const watchHref=x=>x.id?.startsWith("archive-")?"tv.html?episode="+encodeURIComponent(x.id)+"#watch":"watch.html?id="+encodeURIComponent(x.id);
+const watchHref=x=>"watch.html?id="+encodeURIComponent(x.id);
 
 function episodeCard(x,index){
  const img=imageFor(x);
