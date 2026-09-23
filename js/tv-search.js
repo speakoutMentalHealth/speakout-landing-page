@@ -34,7 +34,7 @@ const defaultSeries=[
 let items=[],filter="all";
 
 function searchable(x){
- return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host].flat().join(" "));
+ return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience].flat().join(" "));
 }
 function matchesQuery(x,q){
  if(!q)return true;
