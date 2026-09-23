@@ -1,4 +1,4 @@
-const CACHE="speakout-tv-v3";
+const CACHE="speakout-tv-v4";
 const STATIC=[
  "./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html",
  "./css/speakout-tv.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",
