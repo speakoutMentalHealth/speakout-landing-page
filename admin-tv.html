@@ -117,7 +117,10 @@
 <label>Presenter / host<input id="presenter" placeholder="Optional"></label>
 <label>Guest<input id="guest" placeholder="Optional"></label>
 <label>Guest role / organization<input id="guestRole" placeholder="Optional"></label>
-<label>Tags<input id="tags" placeholder="youth, wellbeing"></label>
+<label class="wide">Discovery tags<input id="tags" placeholder="youth, wellbeing, student, motivation"><small class="field-help">Use clear topic words so Discover, Today’s Focus and For You can place the content well.</small>
+<div class="tag-suggestions" id="tagSuggestions" aria-label="Suggested discovery tags">
+<button type="button" data-tag="youth">Youth</button><button type="button" data-tag="student">Student</button><button type="button" data-tag="stress">Stress</button><button type="button" data-tag="motivation">Motivation</button><button type="button" data-tag="adhd">ADHD</button><button type="button" data-tag="relationships">Relationships</button><button type="button" data-tag="stories">Stories</button>
+</div></label>
 <label>Thumbnail URL<input id="imageUrl" type="url" placeholder="Filled automatically for YouTube"></label>
 <label>Display order<input id="order" type="number" placeholder="0"></label>
 <label>Sponsor / supporter<input id="sponsor" placeholder="Optional"></label>
@@ -160,7 +163,14 @@
 </section>
 
 <section class="studio-card" id="library">
-<div class="card-title"><div><span class="eyebrow">LIBRARY</span><h2>Broadcast library</h2><p class="admin-muted">Edit, hide or remove existing content.</p></div></div>
+<div class="card-title"><div><span class="eyebrow">LIBRARY</span><h2>Broadcast library</h2><p class="admin-muted">Search, filter, edit, hide or remove existing content.</p></div></div>
+<div class="library-controls">
+<label>Search library<input id="librarySearch" type="search" placeholder="Search title, series or tags"></label>
+<label>Status<select id="libraryStatus"><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Draft</option><option value="hidden">Hidden</option><option value="active">Active</option></select></label>
+<label>Type<select id="libraryFormat"><option value="all">All types</option><option value="episode">Episode</option><option value="short">Short / highlight</option><option value="live">Live</option></select></label>
+<label>Series<select id="libraryShow"><option value="all">All series</option></select></label>
+</div>
+<div class="library-filter-status" id="libraryFilterStatus" aria-live="polite"></div>
 <div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Status</th><th>Order</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div>
 </section>
 </div>
