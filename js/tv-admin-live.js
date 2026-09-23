@@ -401,11 +401,13 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       });
     });
     seriesGaps.forEach(entry => {
+      const showSelect = $("show");
+      const canStartEpisode = Boolean(showSelect && [...showSelect.options].some(option => option.value === entry.label));
       opportunities.push({
         type:entry.count?"Series refresh":"Empty series",
         title:entry.label,
         detail:entry.count ? "No episode published in the last 120 days." : "This published series has no regular video episode yet.",
-        action:"show",
+        action:canStartEpisode?"show":"series",
         value:entry.label
       });
     });
