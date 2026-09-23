@@ -899,6 +899,154 @@ async function authenticatedEvidenceResponse(env, record) {
   });
 }
 
+
+const publicMediaStatus = item => ["active","published"].includes(normalized(item?.status));
+
+function pickPublicFields(item, fields) {
+  const out = {};
+  for (const field of fields) {
+    if (item?.[field] !== undefined && item?.[field] !== null) out[field] = item[field];
+  }
+  return out;
+}
+
+function publicTvEpisode(item = {}) {
+  return pickPublicFields(item, [
+    "id","title","show","description","presenter","guest","guestRole","tags","url","imageUrl",
+    "format","featured","homePlacement","programmingDays","placementPriority","placementStart",
+    "placementEnd","contentPillar","audience","publishDate","scheduledAt","sponsor","status","order",
+    "createdAt","updatedAt"
+  ]);
+}
+
+function publicTvShow(item = {}) {
+  return pickPublicFields(item, [
+    "id","title","slug","description","host","imageUrl","category","status","order","createdAt","updatedAt"
+  ]);
+}
+
+function publicTvAudio(item = {}) {
+  return pickPublicFields(item, [
+    "id","title","audioType","description","url","imageUrl","publishDate","status","order",
+    "source","durationMs","explicit","createdAt","updatedAt"
+  ]);
+}
+
+function spotifyEpisodeId(raw) {
+  try {
+    const url = new URL(clean(raw));
+    if (url.hostname.replace(/^www\./u,"").toLowerCase() !== "open.spotify.com") return "";
+    return url.pathname.match(/^\/episode\/([^/?#]+)/u)?.[1] || "";
+  } catch {
+    return "";
+  }
+}
+
+async function spotifyClientToken(env) {
+  const clientId = clean(env.SPOTIFY_CLIENT_ID);
+  const clientSecret = clean(env.SPOTIFY_CLIENT_SECRET);
+  if (!clientId || !clientSecret) return "";
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "authorization": "Basic " + btoa(clientId + ":" + clientSecret),
+      "content-type": "application/x-www-form-urlencoded"
+    },
+    body: "grant_type=client_credentials"
+  });
+  if (!response.ok) throw Object.assign(new Error("Spotify authorization failed."), { status: 502 });
+  const body = await response.json();
+  return clean(body.access_token);
+}
+
+async function spotifyShowEpisodes(env) {
+  const showId = clean(env.SPOTIFY_SHOW_ID);
+  if (!showId) return { configured: false, items: [] };
+  const token = await spotifyClientToken(env);
+  if (!token) return { configured: false, items: [] };
+  const market = clean(env.SPOTIFY_MARKET || "US").toUpperCase();
+  const items = [];
+  let offset = 0;
+  const limit = 50;
+  for (let page = 0; page < 4; page++) {
+    const url = new URL("https://api.spotify.com/v1/shows/" + encodeURIComponent(showId) + "/episodes");
+    url.searchParams.set("limit", String(limit));
+    url.searchParams.set("offset", String(offset));
+    if (/^[A-Z]{2}$/u.test(market)) url.searchParams.set("market", market);
+    const response = await fetch(url.href, {
+      headers: { "authorization": "Bearer " + token, "accept": "application/json" }
+    });
+    if (!response.ok) throw Object.assign(new Error("Spotify episode sync failed."), { status: 502 });
+    const body = await response.json();
+    const pageItems = Array.isArray(body.items) ? body.items : [];
+    for (const episode of pageItems) {
+      const id = clean(episode?.id);
+      if (!id) continue;
+      const image = Array.isArray(episode.images) ? episode.images.find(entry => publicWebUrl(entry?.url))?.url || "" : "";
+      items.push({
+        id: "spotify-" + id,
+        title: clean(episode.name) || "SpeakOut Podcast",
+        audioType: "Podcast",
+        description: clean(episode.description || episode.html_description),
+        url: clean(episode.external_urls?.spotify) || "https://open.spotify.com/episode/" + id,
+        imageUrl: image,
+        publishDate: clean(episode.release_date),
+        status: "published",
+        order: 0,
+        source: "spotify",
+        durationMs: Number(episode.duration_ms || 0),
+        explicit: episode.explicit === true
+      });
+    }
+    if (!body.next || pageItems.length < limit) break;
+    offset += limit;
+  }
+  return { configured: true, items };
+}
+
+async function publicTvBundle(env) {
+  const [episodesPage, showsPage] = await Promise.all([
+    queryAllDocuments(env, "tvEpisodes"),
+    queryAllDocuments(env, "tvShows")
+  ]);
+  const episodes = episodesPage.documents.filter(publicMediaStatus).map(publicTvEpisode);
+  const shows = showsPage.documents.filter(publicMediaStatus).map(publicTvShow);
+  return {
+    episodes,
+    shows,
+    truncated: episodesPage.truncated || showsPage.truncated
+  };
+}
+
+async function publicAudioBundle(env) {
+  const page = await queryAllDocuments(env, "tvAudio");
+  const manual = page.documents.filter(publicMediaStatus).map(publicTvAudio);
+  let spotify = { configured: false, items: [] };
+  try {
+    spotify = await spotifyShowEpisodes(env);
+  } catch (error) {
+    console.error("Spotify sync:", error);
+  }
+  const seen = new Set();
+  const items = [];
+  for (const item of manual) {
+    const key = spotifyEpisodeId(item.url) || clean(item.id);
+    if (key) seen.add(key);
+    items.push(item);
+  }
+  for (const item of spotify.items) {
+    const key = spotifyEpisodeId(item.url) || clean(item.id);
+    if (key && seen.has(key)) continue;
+    if (key) seen.add(key);
+    items.push(item);
+  }
+  items.sort((a,b) =>
+    String(b.publishDate || "").localeCompare(String(a.publishDate || "")) ||
+    Number(a.order || 0) - Number(b.order || 0)
+  );
+  return { items, spotifyConfigured: spotify.configured, truncated: page.truncated };
+}
+
 async function route(request, env, path, data) {
   if (path === "/v1/catalog/courses") {
     const page = await listDocuments(env, "courses", 500);
@@ -906,6 +1054,18 @@ async function route(request, env, path, data) {
       .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || clean(a.title).localeCompare(clean(b.title)));
     return json({ courses, truncated: page.truncated }, 200, {
       "cache-control": "public, max-age=120, s-maxage=300",
+      "x-content-type-options": "nosniff"
+    });
+  }
+  if (path === "/v1/media/tv") {
+    return json(await publicTvBundle(env), 200, {
+      "cache-control": "public, max-age=60, s-maxage=180",
+      "x-content-type-options": "nosniff"
+    });
+  }
+  if (path === "/v1/media/audio") {
+    return json(await publicAudioBundle(env), 200, {
+      "cache-control": "public, max-age=60, s-maxage=180",
       "x-content-type-options": "nosniff"
     });
   }
@@ -1326,8 +1486,9 @@ export default {
     const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     const path = new URL(request.url).pathname;
-    const isPublicCatalogue = request.method === "GET" && path === "/v1/catalog/courses";
-    if (request.method !== "POST" && !isPublicCatalogue) return json({ error: "Method not allowed." }, 405, headers);
+    const publicGetPaths = new Set(["/v1/catalog/courses","/v1/media/tv","/v1/media/audio"]);
+    const isPublicGet = request.method === "GET" && publicGetPaths.has(path);
+    if (request.method !== "POST" && !isPublicGet) return json({ error: "Method not allowed." }, 405, headers);
     const origin = request.headers.get("origin") || "";
     if (origin && !headers["access-control-allow-origin"]) return json({ error: "Origin not allowed." }, 403);
     try {
