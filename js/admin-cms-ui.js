@@ -28,7 +28,7 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
 
   for (const id of fieldIds) {
     const control = document.getElementById(id);
-    if (!control || control.closest("label")) continue;
+    if (!control || control.closest("label") || control.type === "hidden") continue;
     const label = document.createElement("label");
     label.className = "cms-field";
     const labelText = document.createElement("span");
