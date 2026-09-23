@@ -196,3 +196,49 @@ test("series archive episodes use the dedicated episode page", () => {
   assert.match(script, /const watchHref=x=>"watch\.html\?id="/u);
   assert.doesNotMatch(script, /archive-"\)\?"tv\.html\?episode=/u);
 });
+
+
+test("SpeakOut TV viewer interactions and deep links stay functional", () => {
+  const tv = read("js/speakout-tv.js");
+  const search = read("js/tv-search.js");
+  assert.match(tv, /\$\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
+  assert.doesNotMatch(tv, /\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
+  assert.match(tv, /new URLSearchParams\(location\.search\)\.get\("live"\)/u);
+  assert.match(search, /radio\.html\?audio=/u);
+  assert.match(search, /tv\.html\?live=/u);
+});
+
+test("SpeakOut TV discovery filters expose tab state to assistive technology", () => {
+  const page = read("tv-search.html");
+  const script = read("js/tv-search.js");
+  assert.match(page, /role="tab" aria-selected="true" data-filter="all"/u);
+  assert.ok((page.match(/role="tab"/gu) || []).length >= 5);
+  assert.match(script, /setAttribute\("aria-selected",String\(active\)\)/u);
+});
+
+test("SpeakOut TV PWA refresh caches the current local viewing shell", () => {
+  const sw = read("tv-sw.js");
+  assert.match(sw, /speakout-tv-v3/u);
+  for (const asset of [
+    "./js/speakout-tv.js",
+    "./js/speakout-radio.js",
+    "./js/tv-search.js",
+    "./js/tv-show.js",
+    "./js/tv-watch.js",
+    "./firebase-config.js"
+  ]) assert.ok(sw.includes(asset), asset);
+  assert.match(sw, /event\.request\.mode==="navigate"/u);
+  assert.match(sw, /return Response\.error\(\)/u);
+});
+
+test("TV detail pages expose consistent canonical and install metadata", () => {
+  for (const file of ["watch.html", "show.html", "tv-search.html", "radio.html"]) {
+    const page = read(file);
+    assert.match(page, /rel="canonical"/u, file);
+  }
+  for (const file of ["watch.html", "show.html", "tv-search.html"]) {
+    const page = read(file);
+    assert.match(page, /rel="manifest" href="tv\.webmanifest"/u, file);
+    assert.match(page, /rel="apple-touch-icon" href="images\/logo\.png"/u, file);
+  }
+});
