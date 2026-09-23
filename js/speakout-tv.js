@@ -66,8 +66,8 @@ function originalCard(x,episode){
  return '<a class="original-card'+(img?'':' no-image')+'" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="original-art '+artClass(item)+'"'+style+'>'+(img?'':artFallback(item,"series"))+artOverlay(item,"series")+'</div><div class="original-copy"><small>'+esc(label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series →</span></div></a>';
 }
 function audioCard(x){
- const art=x.imageUrl||"";
- return '<button class="ios-audio-episode" type="button" data-audio-id="'+esc(x.id)+'"><div class="ios-audio-artwork '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+artOverlay(x,"audio")+'</div><span><small>'+esc(x.audioType||"Audio")+'</small><strong>'+esc(x.title||"SpeakOut Audio")+'</strong></span></button>';
+ const art=x.imageUrl||"",spotify=Boolean(spotifyEmbed(x.url||"")||x.source==="spotify");
+ return '<button class="ios-audio-episode'+(spotify?' is-spotify':'')+'" type="button" data-audio-id="'+esc(x.id)+'"><div class="ios-audio-artwork '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+(spotify?'':artOverlay(x,"audio"))+'</div><span><small>'+esc(spotify?"Spotify · "+(x.audioType||"Podcast"):x.audioType||"Audio")+'</small><strong>'+esc(x.title||"SpeakOut Audio")+'</strong></span></button>';
 }
 function topicMatch(x,topic){
  if(topic==="all")return true;
