@@ -537,7 +537,9 @@ test("TV Studio and Audio Studio link to the Series Studio", () => {
 test("SpeakOut TV homepage and Discover use managed series ordering", () => {
   const home=read("js/speakout-tv.js");
   const search=read("js/tv-search.js");
-  assert.match(home,/collection\(db,"tvShows"\)/u);
+  const data=read("js/tv-data.js");
+  assert.match(home,/loadTvShows/u);
+  assert.match(data,/export async function loadTvShows/u);
   assert.match(home,/defaultSeries/u);
   assert.match(home,/x\.imageUrl\|\|imageFor\(episode\)/u);
   assert.match(search,/shows\.sort/u);
