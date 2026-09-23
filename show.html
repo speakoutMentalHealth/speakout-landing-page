@@ -8,7 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/speakout-tv.css">
-<meta name="theme-color" content="#071226">
+<link rel="preconnect" href="https://www.youtube-nocookie.com"><link rel="preconnect" href="https://i.ytimg.com">
+<link rel="canonical" href="https://speakoutmentalhealth.org/show.html">
+<meta property="og:type" content="website"><meta property="og:site_name" content="SpeakOut TV">
+<meta property="og:title" content="Series | SpeakOut TV"><meta property="og:description" content="Explore a SpeakOut TV original series and watch published episodes.">
+<meta property="og:image" content="https://speakoutmentalhealth.org/images/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#071226"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
 <body class="tv-ios youth-show-page">
 <header class="ios-topbar youth-topbar">
@@ -63,11 +69,12 @@
 
 <nav class="ios-tabbar youth-nav show-nav" aria-label="SpeakOut TV navigation">
 <a href="tv.html"><span>⌂</span><small>Home</small></a>
-<a href="tv.html#discover" class="active"><span>✦</span><small>Discover</small></a>
+<a href="tv.html#discover" class="active" aria-current="page"><span>✦</span><small>Discover</small></a>
 <a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
 <a href="radio.html"><span>◉</span><small>Listen</small></a>
 <a href="tv.html#live"><span>●</span><small>Live</small></a>
 </nav>
 
 <script type="module" src="js/tv-show.js"></script>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
 </body></html>
