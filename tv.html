@@ -120,27 +120,33 @@
 </section>
 
 <section class="tv-container youth-section quick-reset home-only" id="reset">
-  <div class="youth-section-head">
-    <div><span>TAKE A MOMENT</span><h2>Quick Reset</h2><p>Short, practical wellbeing content for a busy day.</p></div>
+  <div class="youth-section-head reset-head">
+    <div><span>TAKE A MOMENT</span><h2>Quick Reset</h2><p>Tap one. It unfolds right where you are.</p></div>
+    <div class="reset-progress" aria-live="polite"><strong id="resetProgressCount">0/3</strong><small>explored</small></div>
   </div>
-  <div class="reset-grid">
-    <article class="reset-card">
-      <div class="reset-icon">◌</div><small>1 MINUTE</small><h3>Pause & breathe</h3>
-      <p>Step away from the noise for one quiet minute.</p>
-      <button type="button" data-reset="breathe">Start</button>
+  <div class="reset-grid" id="resetGrid">
+    <article class="reset-card" data-reset-card="breathe">
+      <div class="reset-card-top">
+        <div class="reset-icon">◌</div><div><small>1 MINUTE</small><h3>Pause & breathe</h3><p>Step away from the noise for one quiet minute.</p></div>
+        <button type="button" data-reset="breathe" aria-expanded="false">Start</button>
+      </div>
+      <div class="reset-reveal" data-reset-reveal="breathe" hidden aria-live="polite"></div>
     </article>
-    <article class="reset-card">
-      <div class="reset-icon">◎</div><small>2 MINUTES</small><h3>Ground yourself</h3>
-      <p>Notice what is around you and reconnect with the moment.</p>
-      <button type="button" data-reset="ground">Start</button>
+    <article class="reset-card" data-reset-card="ground">
+      <div class="reset-card-top">
+        <div class="reset-icon">◎</div><div><small>2 MINUTES</small><h3>Ground yourself</h3><p>Notice what is around you and reconnect with the moment.</p></div>
+        <button type="button" data-reset="ground" aria-expanded="false">Start</button>
+      </div>
+      <div class="reset-reveal" data-reset-reveal="ground" hidden aria-live="polite"></div>
     </article>
-    <article class="reset-card">
-      <div class="reset-icon">↗</div><small>QUICK CHECK-IN</small><h3>Reset your focus</h3>
-      <p>Choose one small next step instead of solving everything at once.</p>
-      <button type="button" data-reset="focus">Start</button>
+    <article class="reset-card" data-reset-card="focus">
+      <div class="reset-card-top">
+        <div class="reset-icon">↗</div><div><small>QUICK CHECK-IN</small><h3>Reset your focus</h3><p>Choose one small next step instead of solving everything at once.</p></div>
+        <button type="button" data-reset="focus" aria-expanded="false">Start</button>
+      </div>
+      <div class="reset-reveal" data-reset-reveal="focus" hidden aria-live="polite"></div>
     </article>
   </div>
-  <div class="reset-panel" id="resetPanel" hidden aria-live="polite"></div>
 </section>
 
 <section class="tv-container youth-section home-only" id="series">
