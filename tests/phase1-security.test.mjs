@@ -338,7 +338,7 @@ test("TV Studio Editorial Control 2.0 is draft-first and exposes placement contr
     assert.match(page, new RegExp(`id="${id}"`, "u"), id);
   }
   assert.match(script, /function readinessState/u);
-  assert.match(script, /status\?\.value !== "published"/u);
+  assert.match(script, /\["published","active"\]\.includes\(status\?\.value\)/u);
   assert.match(script, /event\.stopImmediatePropagation\(\)/u);
   assert.match(styles, /\.readiness-panel/u);
 });
@@ -461,6 +461,16 @@ test("secure TV publishing enforces the same quality gates as Studio", () => {
   assert.match(worker,/at least two discovery tags/u);
   assert.match(worker,/valid artwork URL/u);
   assert.match(worker,/Live broadcasts use the Live channel and cannot use Main Stage or Today’s Focus placement/u);
+});
+
+test("public TV status changes cannot bypass editorial validation", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  const studio=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  assert.match(worker,/const publicTvStatus = \["active", "published"\]\.includes\(status\)/u);
+  assert.match(worker,/cmsRecord\(collectionName, \{ \.\.\.existing, status \}\)/u);
+  assert.match(studio,/<option value="active">Active — legacy public<\/option>/u);
+  assert.match(script,/\["published","active"\]\.includes\(status\?\.value\)/u);
 });
 
 test("library-only TV records never fall back into homepage discovery rails", () => {
