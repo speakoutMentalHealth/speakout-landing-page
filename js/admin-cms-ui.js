@@ -112,6 +112,10 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
         } finally { setBusy(false); }
       };
     });
+    document.dispatchEvent(new CustomEvent("cms:render", {
+      detail: { collectionName, items: items.map(item => ({ ...item })) }
+    }));
+
     rows.querySelectorAll("[data-del]").forEach(button => {
       button.onclick = async () => {
         const item = items.find(candidate => candidate.id === button.dataset.del);
