@@ -1,5 +1,4 @@
-import {db} from "../firebase-config.js";
-import {collection,doc,getDoc,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {loadTvEpisodes} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const id=new URLSearchParams(location.search).get("id")||"";
@@ -115,25 +114,15 @@ function applySeo(x,playerUrl){
 }
 
 async function loadAllEpisodes(){
- const episodes=[];
- try{
-  const snap=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));
-  snap.forEach(d=>episodes.push({id:d.id,...d.data()}));
- }catch{}
+ let episodes=[];
+ try{episodes=await loadTvEpisodes()}catch{}
  const videoIds=new Set(episodes.map(x=>youtubeId(x.url||x.videoUrl)).filter(Boolean));
  for(const x of starterEpisodes){const y=youtubeId(x.url);if(!videoIds.has(y))episodes.push(x)}
  return episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
 }
 
 async function loadCurrent(all){
- let current=all.find(x=>x.id===id)||null;
- if(!current&&id){
-  try{
-   const snap=await getDoc(doc(db,"tvEpisodes",id));
-   if(snap.exists()){const x={id:snap.id,...snap.data()};if(["active","published"].includes(x.status))current=x}
-  }catch{}
- }
- return current;
+ return all.find(x=>x.id===id)||null;
 }
 
 function renderCurrent(x,all){
