@@ -167,3 +167,102 @@ linear-gradient(145deg,#153a69,#071426);background-size:cover;background-positio
  .library-search{grid-column:auto}
  .operations-preset-row{display:grid;grid-template-columns:1fr 1fr}
 }
+
+
+/* Content Intelligence 1.0 */
+.content-intelligence{overflow:hidden}
+.intelligence-metrics{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px
+}
+.intelligence-metrics article{
+ padding:15px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)
+}
+.intelligence-metrics span{
+ display:block;color:#9fb1c8;font-size:.61rem;font-weight:850;letter-spacing:.075em;text-transform:uppercase
+}
+.intelligence-metrics strong{display:block;margin-top:5px;color:#fff;font-size:1.55rem}
+.intelligence-metrics small{display:block;margin-top:4px;color:#8094ac;font-size:.67rem;line-height:1.4}
+
+.intelligence-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px}
+.intelligence-lower{align-items:start}
+.intelligence-panel{
+ min-width:0;padding:14px;border:1px solid var(--line);border-radius:17px;background:rgba(4,12,25,.34)
+}
+.intelligence-panel-head{
+ display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.intelligence-panel-head span{
+ color:var(--orange);font-size:.56rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase
+}
+.intelligence-panel-head h3{margin:4px 0 0;color:#fff;font-size:.95rem;line-height:1.2}
+.intelligence-panel-head>small{color:#71869e;font-size:.58rem;white-space:nowrap}
+
+.coverage-map,.series-balance{display:grid;gap:8px;margin-top:10px}
+.coverage-row,.series-balance-row{
+ display:grid;grid-template-columns:minmax(160px,1fr) minmax(90px,.55fr) auto;gap:10px;align-items:center;
+ padding:9px 0;border-bottom:1px solid rgba(255,255,255,.045)
+}
+.coverage-row:last-child,.series-balance-row:last-child{border-bottom:0}
+.coverage-copy strong,.series-balance-row strong{display:block;color:#eaf1f8;font-size:.73rem;line-height:1.25}
+.coverage-copy small,.series-balance-row small{display:block;margin-top:3px;color:#7f93aa;font-size:.59rem;line-height:1.35}
+.coverage-row.stale .coverage-copy strong,.series-balance-row.stale strong{color:#edc57e}
+.coverage-row.empty .coverage-copy strong,.series-balance-row.empty strong{color:#e6947e}
+.coverage-meter,.series-balance-meter{
+ height:5px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.06)
+}
+.coverage-meter i,.series-balance-meter i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3f90e4,#6ab7ff)}
+.coverage-row.stale .coverage-meter i,.series-balance-row.stale .series-balance-meter i{background:#d99d41}
+.coverage-row.empty .coverage-meter i,.series-balance-row.empty .series-balance-meter i{background:#b85c4b}
+.coverage-row button,.series-balance-row button{
+ min-height:32px;padding:0 9px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.04);
+ color:#cbd8e5;font:inherit;font-size:.61rem;font-weight:800;cursor:pointer
+}
+.coverage-row button:hover,.series-balance-row button:hover{color:#fff;border-color:rgba(244,162,28,.28)}
+.intelligence-note{
+ margin:10px 0 0;padding:9px 10px;border-radius:10px;background:rgba(244,162,28,.06);color:#aebed0;font-size:.63rem;line-height:1.4
+}
+.intelligence-note span{display:block;margin-bottom:2px;color:#eab86d;font-size:.54rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+
+.opportunity-list,.artwork-signal-list{display:grid;gap:8px;margin-top:10px}
+.opportunity-list article,.artwork-signal-list article{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 11px;
+ border:1px solid rgba(255,255,255,.06);border-radius:12px;background:rgba(255,255,255,.02)
+}
+.opportunity-list article>div small{
+ display:block;color:var(--orange);font-size:.52rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase
+}
+.opportunity-list article>div strong,.artwork-signal-list article>div strong{
+ display:block;margin-top:2px;color:#fff;font-size:.74rem;line-height:1.25
+}
+.opportunity-list article p{margin:3px 0 0;color:#8498ae;font-size:.61rem;line-height:1.4}
+.opportunity-list button,.opportunity-list a,.artwork-signal-list button{
+ display:inline-flex;align-items:center;justify-content:center;min-height:33px;padding:0 9px;border:1px solid var(--line);
+ border-radius:9px;background:rgba(255,255,255,.045);color:#dbe6f0;font:inherit;font-size:.6rem;font-weight:800;text-decoration:none;cursor:pointer
+}
+.opportunity-list button:hover,.opportunity-list a:hover,.artwork-signal-list button:hover{border-color:rgba(244,162,28,.3);color:#fff}
+.artwork-signal-list article{grid-template-columns:minmax(0,1fr) minmax(120px,.7fr) auto}
+.artwork-signal-list small{display:block;margin-top:2px;color:#71869e;font-size:.58rem}
+.artwork-signal-list>article>span{color:#d1aa6c;font-size:.59rem;line-height:1.35}
+.intelligence-clear{
+ display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding:12px;border:1px solid rgba(66,190,143,.14);
+ border-radius:12px;background:rgba(66,190,143,.04)
+}
+.intelligence-clear>span{display:grid;place-items:center;flex:0 0 24px;height:24px;border-radius:50%;background:rgba(66,190,143,.12);color:#76dbb3;font-size:.7rem}
+.intelligence-clear strong{display:block;color:#e8f4ef;font-size:.72rem}
+.intelligence-clear small{display:block;margin-top:3px;color:#7e9a90;font-size:.6rem;line-height:1.4}
+
+@media(max-width:1100px){
+ .intelligence-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .intelligence-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .coverage-row,.series-balance-row{grid-template-columns:1fr auto}
+ .coverage-meter,.series-balance-meter{grid-column:1/-1;grid-row:2}
+ .artwork-signal-list article{grid-template-columns:1fr auto}
+ .artwork-signal-list>article>span{grid-column:1/-1}
+}
+@media(max-width:520px){
+ .intelligence-metrics{grid-template-columns:1fr 1fr}
+ .opportunity-list article,.artwork-signal-list article{grid-template-columns:1fr}
+ .opportunity-list button,.opportunity-list a,.artwork-signal-list button{justify-self:start}
+}
