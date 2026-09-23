@@ -224,7 +224,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v3/u);
+  assert.match(sw, /speakout-tv-v4/u);
 });
 
 
@@ -531,4 +531,25 @@ test("SpeakOut TV section tabs switch every matching section and keep media view
   assert.match(styles, /Bright Youth UI v3/u);
   assert.match(styles, /body\.youth-tv\[data-tv-view="watch"\]/u);
   assert.match(styles, /body\.youth-tv\[data-tv-view="live"\]/u);
+});
+
+
+test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () => {
+  const styles=read("css/speakout-tv.css");
+  for (const page of ["tv.html","show.html","watch.html","tv-search.html","radio.html"]) {
+    const html=read(page);
+    assert.match(html, /family=Manrope/u, page);
+    assert.match(html, /family=Space\+Grotesk/u, page);
+    assert.match(html, /meta name="theme-color" content="#071225"/u, page);
+  }
+  assert.match(styles, /--tv-font-body:"Manrope"/u);
+  assert.match(styles, /--tv-font-display:"Space Grotesk"/u);
+  assert.match(styles, /--tv-text:#f8fbff/u);
+  assert.match(styles, /--tv-muted:#bdc9d9/u);
+  assert.match(styles, /feature-art\.has-image:after/u);
+  assert.match(styles, /youth-content-card p[\s\S]*#bcc9da/u);
+});
+
+test("SpeakOut TV cache refreshes for the new visual system", () => {
+  assert.match(read("tv-sw.js"), /speakout-tv-v4/u);
 });

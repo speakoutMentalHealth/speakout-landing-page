@@ -1060,3 +1060,340 @@ body.youth-show-page main{position:relative;z-index:1}
  .youth-welcome:before{animation:none}
  .ios-icon-btn,.feature-btn,.programming-pick,.mood-chip{transition:none!important}
 }
+
+
+/* SpeakOut TV Visual System v3 — youth-first typography, contrast and depth */
+:root{
+  --tv-bg:#050b14;
+  --tv-bg-2:#071225;
+  --tv-surface:#0b1b31;
+  --tv-surface-2:#102640;
+  --tv-surface-3:#132d4d;
+  --tv-text:#f8fbff;
+  --tv-text-soft:#e7eef8;
+  --tv-muted:#bdc9d9;
+  --tv-subtle:#9eb0c7;
+  --tv-orange:#f5a623;
+  --tv-orange-soft:#ffd28a;
+  --tv-blue:#3d91f2;
+  --tv-line:rgba(255,255,255,.145);
+  --tv-shadow:0 28px 80px rgba(0,0,0,.30);
+  --tv-font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --tv-font-display:"Space Grotesk","Manrope",system-ui,sans-serif;
+}
+html{color-scheme:dark}
+body,
+body.tv-ios,
+body.youth-tv,
+body.youth-show-page,
+body.youth-watch-page,
+body.youth-search-page,
+body.youth-listen-page{
+  font-family:var(--tv-font-body)!important;
+  color:var(--tv-text);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+:is(h1,h2,h3,.network-mark,.ios-brand,.tv-brand,.show-world-copy h1,.watch-copy-main h1,.listen-hero h1,.search-discovery-hero h1){
+  font-family:var(--tv-font-display)!important;
+  color:var(--tv-text);
+  font-weight:700;
+  text-wrap:balance;
+}
+:is(p,small,.admin-muted,.empty-note){text-wrap:pretty}
+.youth-tv,
+.youth-show-page,
+.youth-watch-page,
+.youth-search-page,
+.youth-listen-page{
+  background:
+    radial-gradient(980px 620px at 8% -8%,rgba(53,137,238,.24),transparent 62%),
+    radial-gradient(760px 540px at 96% 12%,rgba(245,166,35,.10),transparent 60%),
+    linear-gradient(180deg,#071426 0%,#050b14 52%,#03070d 100%)!important;
+}
+
+/* Navigation: clearer, more premium, still light */
+.youth-topbar,.ios-topbar{
+  background:rgba(5,12,24,.90)!important;
+  border-color:rgba(255,255,255,.11)!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.16);
+}
+.ios-brand{font-family:var(--tv-font-display)!important;font-weight:700!important;letter-spacing:-.02em}
+.ios-brand span,.youth-now{color:var(--tv-text-soft)!important}
+.youth-now{font-size:.72rem!important;font-weight:650}
+.ios-icon-btn{
+  color:#fff!important;
+  background:rgba(255,255,255,.075)!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+.ios-tabbar{
+  background:rgba(8,18,34,.88)!important;
+  border-color:rgba(255,255,255,.16)!important;
+}
+.ios-tabbar a{color:#b7c5d6!important}
+.ios-tabbar a.active,.ios-tabbar a[aria-current="page"]{
+  color:var(--tv-orange)!important;
+  background:rgba(255,255,255,.09)!important
+}
+.ios-tabbar a small{font-weight:750!important;letter-spacing:.015em}
+
+/* Hero / opening: protect copy from photography and make it feel authored */
+.youth-welcome{padding-top:64px!important}
+.youth-eyebrow,.youth-section-head span,.youth-closing span,.listen-side>span,.player-label,
+.show-world-label,.discovery-results-head span:first-child,.live-next-copy>span,.live-subhead span{
+  color:#abc0d9!important;
+  font-weight:800!important;
+  letter-spacing:.115em!important;
+}
+.youth-welcome h1{
+  letter-spacing:-.052em!important;
+  line-height:.92!important;
+  max-width:980px;
+}
+.youth-welcome p,.search-discovery-hero>p,.show-world-copy>p,.listen-hero>p{
+  color:#d6e0ec!important;
+  font-size:clamp(.98rem,1.4vw,1.08rem)!important;
+  line-height:1.7!important;
+}
+.youth-feature{
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 38px 100px rgba(0,0,0,.42)!important;
+}
+.feature-art.has-image:after{
+  background:
+    linear-gradient(90deg,rgba(2,7,14,.98) 0%,rgba(2,7,14,.82) 38%,rgba(2,7,14,.34) 73%,rgba(2,7,14,.46) 100%)!important;
+}
+.feature-shade{
+  background:linear-gradient(0deg,rgba(2,7,14,.99),rgba(2,7,14,.46) 52%,rgba(2,7,14,.08) 82%)!important;
+}
+.feature-copy{
+  max-width:780px!important;
+  text-shadow:0 2px 20px rgba(0,0,0,.45);
+}
+.feature-copy h2{
+  letter-spacing:-.046em!important;
+  line-height:.95!important;
+}
+.feature-copy p{
+  color:#edf3fa!important;
+  font-size:1rem!important;
+  line-height:1.65!important;
+}
+.feature-badge{
+  color:#ffe2aa!important;
+  background:rgba(245,166,35,.18)!important;
+  border-color:rgba(245,166,35,.38)!important;
+}
+.feature-btn.secondary{
+  background:rgba(7,18,34,.74)!important;
+  border-color:rgba(255,255,255,.22)!important;
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
+}
+
+/* Sections: stronger hierarchy and readable descriptions */
+.youth-section{padding-top:48px!important}
+.youth-section-head h2{
+  color:#fff!important;
+  font-size:clamp(1.8rem,3.5vw,2.9rem)!important;
+  letter-spacing:-.032em!important;
+  line-height:1.02!important;
+}
+.youth-section-head p{
+  color:#c0ccdc!important;
+  font-size:.88rem!important;
+  line-height:1.55!important;
+}
+.youth-section-head>a,.show-world-footer a,.listen-closing a,.show-watch-cta{
+  color:#ffd28a!important;
+  font-weight:800!important;
+}
+.programming-pick{
+  color:#fff0cf!important;
+  background:rgba(245,166,35,.13)!important;
+  border-color:rgba(245,166,35,.42)!important;
+}
+
+/* Discovery/content cards: text no longer floats into the background */
+.youth-content-card{
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:21px!important;
+  background:linear-gradient(180deg,rgba(15,37,65,.92),rgba(8,20,37,.96))!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+  overflow:hidden;
+}
+.youth-content-open{padding-bottom:15px!important}
+.youth-content-thumb{
+  border:0!important;
+  border-radius:0!important;
+  background:#0c223d!important;
+}
+.youth-content-card small,
+.youth-content-card strong,
+.youth-content-card p{
+  margin-left:14px!important;
+  margin-right:14px!important;
+}
+.youth-content-card small{
+  margin-top:12px!important;
+  color:#ffbf56!important;
+  font-size:.62rem!important;
+}
+.youth-content-card strong{
+  color:#fff!important;
+  font-family:var(--tv-font-display)!important;
+  font-size:.96rem!important;
+  line-height:1.27!important;
+}
+.youth-content-card p{
+  color:#bcc9da!important;
+  font-size:.76rem!important;
+  line-height:1.48!important;
+}
+.youth-content-card:hover{
+  border-color:rgba(245,166,35,.36)!important;
+  box-shadow:0 22px 54px rgba(0,0,0,.26);
+  transform:translateY(-3px);
+}
+.content-save{
+  background:rgba(4,10,20,.88)!important;
+  border-color:rgba(255,255,255,.22)!important;
+}
+
+/* Topic journeys and reset tools */
+.topic-journey-card,.reset-card,.original-card,.listen-side,.show-feature-card,.show-episode-card,
+.discovery-media-card,.listen-card,.live-schedule-card{
+  border-color:rgba(255,255,255,.12)!important;
+}
+.topic-journey-card strong,.reset-card h3,.original-copy strong,.listen-side h3,
+.show-feature-copy h3,.show-episode-copy strong,.discovery-media-copy strong,.listen-card-copy strong{
+  color:#fff!important;
+  font-family:var(--tv-font-display)!important;
+}
+.topic-journey-card small,.reset-card p,.listen-side p,.show-feature-copy p,.show-episode-copy p,
+.discovery-media-copy p,.listen-card-copy p,.live-schedule-copy>p{
+  color:#b9c7d8!important;
+}
+.reset-card small,.original-copy small,.discovery-series-copy small,.show-feature-copy small,.show-episode-copy small{
+  color:#ffc766!important;
+}
+.reset-panel{color:#f3f7fb!important;background:rgba(245,166,35,.12)!important}
+
+/* Series pages: cinematic but readable */
+.show-world-art.has-image:after{
+  background:linear-gradient(90deg,rgba(2,7,14,.99) 0%,rgba(2,7,14,.88) 40%,rgba(2,7,14,.34) 74%,rgba(2,7,14,.48) 100%)!important;
+}
+.show-world-shade{
+  background:linear-gradient(0deg,#050b14 0%,rgba(5,11,20,.76) 30%,rgba(5,11,20,.12) 68%)!important;
+}
+.show-world-copy h1{
+  letter-spacing:-.052em!important;
+  text-shadow:0 4px 26px rgba(0,0,0,.55);
+}
+.show-back,.show-world-meta span{color:#d1dbea!important}
+.show-world-meta span{background:rgba(5,13,25,.66)!important;border-color:rgba(255,255,255,.15)!important}
+
+/* Watch page */
+.watch-details,.up-next-card,.watch-resource-bridge{
+  border-color:rgba(255,255,255,.12)!important;
+}
+.watch-copy-main h1{letter-spacing:-.04em!important}
+.watch-copy-main p,.watch-resource-bridge p,#nextDescription,.episode-meta span{
+  color:#c3cfde!important;
+}
+.watch-action:not(.primary){
+  color:#f2f6fb!important;
+  background:rgba(255,255,255,.07)!important;
+  border-color:rgba(255,255,255,.16)!important;
+}
+
+/* Discover */
+.search-discovery-hero h1{
+  letter-spacing:-.05em!important;
+  line-height:.93!important;
+}
+.discovery-search-box input{
+  background:rgba(10,27,49,.96)!important;
+  border-color:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+}
+.discovery-search-box input::placeholder{color:#a5b5c9!important}
+.search-topic-rail button,.search-kind-tabs button,.listen-filter-rail button{
+  color:#d7e0eb!important;
+  background:rgba(255,255,255,.065)!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+.search-topic-rail button.active,.search-kind-tabs button.active,.listen-filter-rail button.active{
+  color:#1e1202!important;
+  background:var(--tv-orange)!important;
+}
+#resultCount,.discovery-group-title span{color:#aebdd0!important}
+.discovery-series-copy p{color:#b9c7d8!important}
+.discovery-series-copy strong{font-family:var(--tv-font-display)!important;color:#fff!important}
+
+/* Listen */
+.listen-hero h1{letter-spacing:-.045em!important}
+.listen-now-card{border-color:rgba(255,255,255,.13)!important;box-shadow:var(--tv-shadow)!important}
+.listen-now-copy>p,.listen-status,.listen-shelf-block h3{color:#c0ccdc!important}
+.listen-now-copy h2{letter-spacing:-.035em!important}
+.listen-card-type{color:#fff!important;background:rgba(3,9,18,.82)!important}
+.listen-action{color:#f3f7fb!important;border-color:rgba(255,255,255,.16)!important;background:rgba(255,255,255,.07)!important}
+
+/* Live */
+.live-stage,.live-info-card,.live-next-panel{
+  border-color:rgba(255,255,255,.13)!important;
+  box-shadow:0 26px 72px rgba(0,0,0,.22);
+}
+.live-info-card>p,.live-next-copy>p,.live-subhead>p,.live-stage-time{
+  color:#bcc9da!important;
+}
+.live-meta span,.live-next-meta span{
+  color:#d5dfea!important;
+  background:rgba(255,255,255,.065)!important;
+  border-color:rgba(255,255,255,.13)!important;
+}
+
+/* Consistent readability across utility and empty states */
+:is(.empty-note,.ios-audio-empty,.show-empty,.discovery-empty p,.listen-empty p,.ios-empty,.tv-audio-placeholder){
+  color:#b4c2d4!important;
+}
+:is(.ios-card-copy p,.ios-audio-copy span,.ios-series-card small,.ios-audio-episode small){
+  color:#b6c4d6!important;
+}
+:is(.ios-card-copy h3,.ios-audio-copy strong,.ios-series-card strong,.ios-audio-episode strong){
+  color:#f8fbff!important;
+}
+.mood-chip{
+  color:#e5edf6!important;
+  background:rgba(255,255,255,.07)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  font-weight:750!important;
+}
+.mood-chip.active{color:#1e1202!important;background:var(--tv-orange)!important}
+.tv-ios :is(a,button,input,select,textarea):focus-visible{
+  outline:3px solid #ffc766!important;
+  outline-offset:3px!important;
+}
+
+/* Make the interface feel responsive without becoming frantic */
+@media(hover:hover){
+  .topic-journey-card,.original-card,.show-episode-card,.discovery-media-card,.listen-card,.live-schedule-card{
+    transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+  }
+  .topic-journey-card:hover,.original-card:hover,.show-episode-card:hover,.discovery-media-card:hover,.listen-card:hover,.live-schedule-card:hover{
+    transform:translateY(-4px)!important;
+    border-color:rgba(245,166,35,.34)!important;
+    box-shadow:0 22px 58px rgba(0,0,0,.28)!important;
+  }
+}
+@media(max-width:850px){
+  .youth-welcome{padding-top:40px!important}
+  .feature-copy{padding:31px 24px!important}
+  .feature-copy p{font-size:.92rem!important}
+  .youth-section{padding-top:38px!important}
+  .youth-section-head p{font-size:.82rem!important}
+  .youth-content-card strong{font-size:.94rem!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .youth-content-card,.topic-journey-card,.original-card,.show-episode-card,.discovery-media-card,.listen-card,.live-schedule-card{transform:none!important}
+}
