@@ -1,5 +1,4 @@
-import {db} from "../firebase-config.js";
-import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {loadTvEpisodes,loadTvShows,loadTvAudio} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const starterEpisodes=[
@@ -418,7 +417,7 @@ function showView(view,{push=false}={}){
 
 async function load(){
  let episodes=[];
- try{const snap=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));snap.forEach(d=>episodes.push({id:d.id,...d.data()}))}catch{}
+ try{episodes=await loadTvEpisodes()}catch{}
  const known=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));
  starterEpisodes.forEach(x=>{const id=ytId(x.url);if(!known.has(id))episodes.push(x)});
  episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
@@ -445,10 +444,7 @@ async function load(){
  renderShelf();
  $("#storiesRail").innerHTML=homeEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||homeEpisodes.slice(0,5).map(contentCard).join("");
  let seriesItems=[];
- try{
-   const snap=await getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])));
-   snap.forEach(d=>seriesItems.push({id:d.id,...d.data()}));
- }catch{}
+ try{seriesItems=await loadTvShows()}catch{}
  const knownSeries=new Set(seriesItems.map(x=>normalize(x.slug||x.title).replace(/ /g,"-")));
  defaultSeries.forEach(x=>{if(!knownSeries.has(x.slug))seriesItems.push(x)});
  seriesItems.sort((a,b)=>order(a,b)||String(a.title||"").localeCompare(String(b.title||"")));
@@ -456,7 +452,7 @@ async function load(){
  $("#introSeries")?.addEventListener("click",()=>location.href="tv-search.html");
 
  let audio=[];
- try{const snap=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));snap.forEach(d=>audio.push({id:d.id,...d.data()}))}catch{}
+ try{audio=await loadTvAudio()}catch{}
  audio.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
  const spotifyAudio=audio.filter(x=>spotifyEmbed(x.url||""));
  $("#audioRail").innerHTML=spotifyAudio.length?spotifyAudio.map(audioCard).join(""):'<div class="ios-audio-empty">Published audio episodes will appear here.</div>';
