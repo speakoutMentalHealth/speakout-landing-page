@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpeakOut TV Series Studio</title>
+<link rel="icon" href="images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="css/admin-cms.css" rel="stylesheet">
+<link href="css/tv-admin-premium.css" rel="stylesheet">
+</head>
+<body class="tv-admin">
+<header class="studio-bar">
+<a href="tv.html" class="studio-brand"><img src="images/logo.png" alt=""><span>SPEAKOUT <b>TV</b><small>Series Studio</small></span></a>
+<div class="studio-bar-actions"><a class="studio-view" href="admin-tv.html">TV Studio</a><a class="studio-view primary-view" href="tv-search.html" target="_blank" rel="noopener">View Discover ↗</a></div>
+</header>
+
+<main>
+<section class="studio-hero">
+<div><span class="live-chip"><i></i> SERIES STUDIO</span><h1>Build the worlds behind every show.</h1><p>Control series identity, artwork, host, category and the order viewers discover them.</p></div>
+<div class="studio-steps" aria-label="Series publishing steps"><span><b>1</b> Identity</span><span><b>2</b> Artwork</span><span><b>3</b> Review</span><span><b>4</b> Publish</span></div>
+</section>
+
+<section class="studio-shell">
+<aside class="studio-side" aria-label="Series Studio navigation">
+<strong>Series Studio</strong>
+<a class="active" href="#seriesEditor">＋ New series</a>
+<a href="#seriesLibrary">▣ Series library</a>
+<a href="admin-tv.html">▶ TV Studio</a>
+<a href="admin-radio.html">◉ Audio Studio</a>
+</aside>
+
+<div class="studio-main">
+<div class="notice" id="statusBox">Checking administrator access…</div>
+
+<section class="studio-card series-preview-card">
+<div class="card-title"><div><span class="eyebrow">SERIES PREVIEW</span><h2>How the series will feel</h2><p class="admin-muted">Artwork and metadata here feed Discover and the dedicated series page.</p></div><span class="secure-pill" id="seriesReadiness">Draft</span></div>
+<div class="series-studio-preview" id="seriesPreview">
+  <div class="series-studio-art" id="seriesPreviewArt"></div>
+  <div class="series-studio-copy"><small id="seriesPreviewCategory">SPEAKOUT ORIGINAL</small><strong id="seriesPreviewTitle">Untitled Series</strong><p id="seriesPreviewDescription">Add a clear description so viewers know why this series is worth entering.</p><span id="seriesPreviewHost">Host optional</span></div>
+</div>
+<div class="series-readiness-list" id="seriesReadinessList" aria-live="polite"></div>
+</section>
+
+<section class="studio-card publish-card" id="seriesEditor">
+<div class="card-title"><div><span class="eyebrow">SERIES IDENTITY</span><h2>Create or update a series</h2><p class="admin-muted">Published series appear in SpeakOut TV discovery. Start as draft until the identity is complete.</p></div><span class="secure-pill">Admin only</span></div>
+
+<form id="cmsForm">
+<div class="premium-grid">
+<label>Series title *<input id="title" required placeholder="e.g. Youth Voices"></label>
+<label>URL slug *<input id="slug" required inputmode="url" placeholder="youth-voices"><small class="admin-muted">Used in the public series URL. Lowercase words and hyphens only.</small></label>
+<label>Category *<input id="category" required placeholder="e.g. Youth, Campus, Stories"></label>
+<label>Host / presenter<input id="host" placeholder="Optional"></label>
+<label class="wide">Description *<textarea id="description" required placeholder="What is this series about, and what should viewers expect?"></textarea></label>
+<label class="wide">Series artwork URL *<input id="imageUrl" type="url" required placeholder="https://…"><small class="admin-muted">Use strong landscape artwork or a clean show cover. This becomes the series hero image.</small></label>
+<label>Visibility
+<select id="status">
+<option value="draft" selected>Draft — review first</option>
+<option value="published">Published — visible</option>
+<option value="hidden">Hidden</option>
+</select></label>
+<label>Display order<input id="order" type="number" min="-100000" max="100000" value="0"></label>
+</div>
+<div class="publish-bar"><div><strong id="seriesPublishSummary">Save as draft while you build the identity.</strong><small>Published series must pass the identity checks above.</small></div><button class="publish-btn" type="submit">Save Series</button></div>
+</form>
+</section>
+
+<section class="studio-card" id="seriesLibrary">
+<div class="card-title"><div><span class="eyebrow">SERIES LIBRARY</span><h2>SpeakOut Originals</h2><p class="admin-muted">Edit, hide or remove series metadata without changing the episodes themselves.</p></div></div>
+<div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Status</th><th>Order</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+</div>
+</section>
+</main>
+
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvShows",fieldIds:["title","slug","category","host","description","imageUrl","status","order"]});</script>
+<script src="js/tv-series-admin.js"></script>
+</body>
+</html>
