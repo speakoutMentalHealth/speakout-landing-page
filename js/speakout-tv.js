@@ -164,9 +164,7 @@ function pickFeatured(){
  const placed=homePool.filter(x=>activePlacement(x,"featured")).sort(editorialPlacementSort);
  if(placed.length)return placed[0];
  const editorial=homePool.filter(x=>placementOf(x)==="auto"&&(x.featured===true||String(x.featured).toLowerCase()==="true")&&placementScheduleActive(x)).sort(editorialPlacementSort);
- if(editorial.length)return editorial[0];
- const pool=dailyFocusItems.length?dailyFocusItems:homePool;
- return pool.length ? pool[dailySeed()%pool.length] : null;
+ return editorial[0]||null;
 }
 function pickSomething(){
  const homePool=regularEpisodes.filter(discoveryEligible);
@@ -327,6 +325,7 @@ const viewGroups={
 };
 function showView(view,{push=false}={}){
  const chosen=viewGroups[view]?view:"home";
+ document.documentElement.dataset.tvRoute=chosen;
  document.body.dataset.tvView=chosen;
  document.body.classList.toggle("youth-view-filtered",chosen!=="home");
  $$(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
@@ -362,7 +361,8 @@ async function load(){
    currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
  }
  if(featured){
-   $("#introTitle").textContent=featured.title||"Real conversations. No pretending.";$("#introDescription").textContent=featured.description||"Original SpeakOut stories and conversations.";
+   $("#featured")?.classList.remove("feature-empty");
+   $("#introTitle").textContent=featured.title||"Worth watching now.";$("#introDescription").textContent=featured.description||"Original SpeakOut stories and conversations.";
    const img=imageFor(featured),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
    $("#introPlay")?.addEventListener("click",()=>playEpisode(featured,true));
  }
@@ -407,6 +407,7 @@ document.addEventListener("click",e=>{
 function routeTvHash(){
  const hash=location.hash.slice(1);
  if(hash==="discover"){location.replace("tv-search.html");return}
+ if(hash==="listen"||hash==="audio"){location.replace("radio.html");return}
  showView(hash||"home");
 }
 addEventListener("popstate",routeTvHash);

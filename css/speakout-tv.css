@@ -1812,3 +1812,250 @@ body.youth-tv[data-tv-view="live"]{
   border:1px solid rgba(255,255,255,.20);
   -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)
 }
+
+
+/* TV hierarchy sweep — compact, route-pure media experience */
+[hidden]{display:none!important}
+
+/* Prevent Home content flashing on Watch/Live before the module finishes loading. */
+html[data-tv-route="home"] .media-only-view{display:none!important}
+html[data-tv-route="watch"] .home-only,
+html[data-tv-route="watch"] .media-only-view:not(.watch-only){display:none!important}
+html[data-tv-route="live"] .home-only,
+html[data-tv-route="live"] .media-only-view:not(.live-only){display:none!important}
+
+/* Home: Featured is supporting content, not the whole page. */
+.youth-tv[data-tv-view="home"] .youth-welcome{
+  margin-top:18px!important;
+  padding:clamp(24px,3.2vw,40px)!important;
+  border-radius:26px!important;
+}
+.youth-tv[data-tv-view="home"] .youth-welcome h1{
+  max-width:760px!important;
+  font-size:clamp(2.45rem,5.4vw,5rem)!important;
+  line-height:.94!important;
+}
+.youth-tv[data-tv-view="home"] .youth-welcome p{
+  max-width:650px!important;
+  font-size:clamp(.88rem,1.15vw,.98rem)!important;
+  line-height:1.58!important;
+}
+.youth-tv[data-tv-view="home"] .youth-feature{
+  min-height:clamp(285px,34vw,420px)!important;
+  border-radius:24px!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.25)!important;
+}
+.youth-tv[data-tv-view="home"] .feature-copy{
+  max-width:620px!important;
+  padding:clamp(24px,3.2vw,36px)!important;
+}
+.youth-tv[data-tv-view="home"] .feature-badge{
+  min-height:24px!important;
+  padding:0 8px!important;
+  font-size:.55rem!important;
+}
+.youth-tv[data-tv-view="home"] .feature-copy h2{
+  margin:8px 0 9px!important;
+  font-size:clamp(1.75rem,3.5vw,3.25rem)!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+}
+.youth-tv[data-tv-view="home"] .feature-copy p{
+  max-width:540px!important;
+  font-size:clamp(.76rem,1vw,.88rem)!important;
+  line-height:1.5!important;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.youth-tv[data-tv-view="home"] .feature-actions{margin-top:15px!important}
+.youth-tv[data-tv-view="home"] .feature-btn,
+.youth-tv[data-tv-view="home"] .ios-pill{
+  min-height:39px!important;
+  padding:0 13px!important;
+  border-radius:10px!important;
+  font-size:.72rem!important;
+}
+.youth-tv[data-tv-view="home"] .youth-section{
+  padding-top:32px!important;
+}
+.youth-tv[data-tv-view="home"] .youth-section-head h2{
+  font-size:clamp(1.45rem,2.6vw,2.2rem)!important;
+}
+.youth-tv[data-tv-view="home"] .youth-section-head p{
+  max-width:560px!important;
+  font-size:.74rem!important;
+  line-height:1.45!important;
+}
+
+/* Watch: only video, with a clear but restrained header. */
+body.youth-tv[data-tv-view="watch"] .watch-only{
+  width:min(1180px,94%)!important;
+  margin-top:22px!important;
+  padding:18px 0 30px!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-only .compact-media-head h2{
+  font-size:clamp(2rem,4.6vw,4rem)!important;
+  line-height:.94!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-only .compact-media-head p{
+  display:none!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-cinema-shell{
+  border-radius:24px!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.38)!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-cinema-meta{
+  padding:16px 20px 19px!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-cinema-meta h3{
+  font-size:clamp(1.2rem,2vw,1.85rem)!important;
+}
+body.youth-tv[data-tv-view="watch"] .watch-cinema-meta p{
+  font-size:.76rem!important;
+}
+
+/* Live: no Home/Featured material, no oversized billboard typography. */
+body.youth-tv[data-tv-view="live"] .live-only{
+  width:min(1220px,94%)!important;
+  margin-top:22px!important;
+  padding:18px 0 30px!important;
+}
+body.youth-tv[data-tv-view="live"] .live-only .compact-media-head{
+  margin-bottom:12px!important;
+}
+body.youth-tv[data-tv-view="live"] .live-only .compact-media-head h2{
+  font-size:clamp(2rem,4.6vw,4rem)!important;
+  line-height:.94!important;
+}
+body.youth-tv[data-tv-view="live"] .live-only .compact-media-head p{
+  display:none!important;
+}
+body.youth-tv[data-tv-view="live"] .live-cinema-shell{
+  border-radius:24px!important;
+  box-shadow:0 30px 88px rgba(0,0,0,.42)!important;
+}
+body.youth-tv[data-tv-view="live"] .live-v2-player{
+  min-height:clamp(300px,48vw,610px)!important;
+}
+body.youth-tv[data-tv-view="live"] .live-info-card{
+  padding:18px 20px!important;
+  gap:16px!important;
+}
+body.youth-tv[data-tv-view="live"] .live-info-card h3{
+  font-size:clamp(1.25rem,2.5vw,2.05rem)!important;
+}
+body.youth-tv[data-tv-view="live"] .live-info-card>div>p{
+  max-width:680px!important;
+  font-size:.74rem!important;
+  line-height:1.45!important;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+body.youth-tv[data-tv-view="live"] .live-next-panel{
+  padding:17px 18px!important;
+  border-radius:18px!important;
+}
+body.youth-tv[data-tv-view="live"] .live-next-copy h3{
+  font-size:1.2rem!important;
+}
+body.youth-tv[data-tv-view="live"] .live-countdown span{
+  min-width:56px!important;
+  padding:8px 6px!important;
+}
+body.youth-tv[data-tv-view="live"] .live-countdown b{
+  font-size:1.08rem!important;
+}
+
+/* Audio: a dedicated, compact listening destination. */
+.youth-listen-page .listen-hero{
+  padding:30px 0 8px!important;
+}
+.youth-listen-page .listen-hero-compact h1{
+  font-size:clamp(2.5rem,6vw,5rem)!important;
+  line-height:.92!important;
+  letter-spacing:-.055em!important;
+}
+.youth-listen-page .listen-now-card{
+  grid-template-columns:minmax(240px,.62fr) minmax(0,1.38fr)!important;
+  min-height:330px!important;
+  border-radius:24px!important;
+}
+.youth-listen-page .listen-now-art{min-height:330px!important}
+.youth-listen-page .listen-now-copy{padding:26px!important}
+.youth-listen-page .listen-now-copy h2{
+  font-size:clamp(1.65rem,3vw,2.7rem)!important;
+}
+.youth-listen-page .listen-now-copy>p{
+  font-size:.78rem!important;
+  line-height:1.48!important;
+}
+.youth-listen-page .listen-library-section{padding-top:30px!important}
+
+/* Discover: search first, spectacle second. */
+.youth-search-page .search-discovery-hero{padding:38px 0 18px!important}
+.youth-search-page .search-discovery-hero h1{
+  max-width:760px!important;
+  font-size:clamp(2.35rem,5.4vw,4.8rem)!important;
+  line-height:.94!important;
+}
+.youth-search-page .search-discovery-hero>p{
+  max-width:620px!important;
+  font-size:.86rem!important;
+  line-height:1.5!important;
+}
+.youth-search-page .discovery-search-box{
+  max-width:800px!important;
+  margin-top:21px!important;
+}
+.youth-search-page .discovery-search-box input{
+  min-height:56px!important;
+  border-radius:16px!important;
+}
+
+/* Standalone Watch detail: keep the page focused on the video itself. */
+.youth-watch-page .watch-experience{padding-top:28px!important}
+.youth-watch-page .watch-details h1{
+  font-size:clamp(1.75rem,3.6vw,3rem)!important;
+  line-height:1!important;
+}
+.youth-watch-page .watch-related-section{padding-top:30px!important}
+
+@media(max-width:850px){
+  .youth-tv[data-tv-view="home"] .youth-welcome{
+    padding:22px 18px!important;
+    border-radius:22px!important;
+  }
+  .youth-tv[data-tv-view="home"] .youth-welcome h1{
+    font-size:clamp(2.35rem,12vw,3.75rem)!important;
+  }
+  .youth-tv[data-tv-view="home"] .youth-feature{
+    min-height:340px!important;
+    border-radius:22px!important;
+  }
+  .youth-tv[data-tv-view="home"] .feature-copy{
+    padding:21px 18px 23px!important;
+  }
+  .youth-tv[data-tv-view="home"] .feature-copy h2{
+    font-size:clamp(1.7rem,8.5vw,2.75rem)!important;
+  }
+  body.youth-tv[data-tv-view="watch"] .watch-only,
+  body.youth-tv[data-tv-view="live"] .live-only{
+    width:calc(100% - 20px)!important;
+    margin-top:14px!important;
+  }
+  body.youth-tv[data-tv-view="watch"] .watch-only .compact-media-head h2,
+  body.youth-tv[data-tv-view="live"] .live-only .compact-media-head h2{
+    font-size:clamp(2rem,10vw,3.1rem)!important;
+  }
+  body.youth-tv[data-tv-view="live"] .live-v2-player{min-height:auto!important}
+  .youth-listen-page .listen-now-card{grid-template-columns:1fr!important}
+  .youth-listen-page .listen-now-art{min-height:220px!important}
+  .youth-listen-page .listen-now-copy{padding:20px!important}
+}
+
+
+.youth-feature.feature-empty{display:none!important}
