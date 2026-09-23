@@ -96,7 +96,7 @@ const dailyProgramming=[
 let dailyFocusItems=[];
 const placementOf=x=>normalize(x?.homePlacement||"auto").replace(/\s+/g,"_");
 const discoveryEligible=x=>placementOf(x)!=="library_only";
-const placementPriority=x=>{const n=Number(x?.placementPriority);return Number.isInteger(n)&&n>=0&&n<=999?n:100};
+const placementPriority=x=>{const n=Number(String(x?.placementPriority??"").trim()||100);return Number.isInteger(n)&&n>=0&&n<=999?n:100};
 const localDateKey=d=>String(d.getFullYear())+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const programmingDayMatches=(pattern,date=new Date())=>{
  const value=normalize(pattern||"all");
