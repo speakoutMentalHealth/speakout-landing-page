@@ -398,3 +398,33 @@ test("TV discovery searches editorial pillar and audience and updates every filt
   assert.ok((script.match(/\$\$\("\[data-filter\]"\)\.forEach/gu)||[]).length >= 2);
   assert.doesNotMatch(script,/(?<!\$)\$\("\[data-filter\]"\)\.forEach/u);
 });
+
+
+test("TV Studio exposes editorial completeness controls without weakening publish safeguards", () => {
+  const page = read("admin-tv.html");
+  const studio = read("js/tv-admin-live.js");
+  const controller = read("js/admin-cms-ui.js");
+  assert.match(page, /id="editorialQueue"/u);
+  assert.match(page, /id="readinessScore"/u);
+  assert.match(page, /id="librarySearch"/u);
+  assert.match(page, /data-tag="adhd"/u);
+  assert.match(studio, /function qualityFlags/u);
+  assert.match(studio, /function refreshReadiness/u);
+  assert.match(studio, /duplicateUrl/u);
+  assert.match(studio, /Publishing blocked: content involving a minor/u);
+  assert.match(controller, /cms:before-submit/u);
+  assert.match(controller, /cms:items/u);
+  assert.match(controller, /cms:editing/u);
+});
+
+test("TV Studio editorial script passes JavaScript syntax checks", () => {
+  const path=fileURLToPath(new URL("../js/tv-admin-live.js", import.meta.url));
+  assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }));
+});
+
+test("TV Studio quality controls remain advisory except existing safety and duplicate protections", () => {
+  const studio = read("js/tv-admin-live.js");
+  assert.match(studio, /Publishing with quality items still needing attention/u);
+  assert.doesNotMatch(studio, /event\.preventDefault\(\);\s*showStudioMessage\([^\n]*(?:description|artwork|tags)/iu);
+  assert.match(studio, /event\.preventDefault\(\);\s*showStudioMessage\('This media link is already/u);
+});
