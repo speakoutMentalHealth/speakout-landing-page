@@ -2056,3 +2056,6 @@ body.youth-tv[data-tv-view="live"] .live-countdown b{
   .youth-listen-page .listen-now-art{min-height:220px!important}
   .youth-listen-page .listen-now-copy{padding:20px!important}
 }
+
+
+.youth-feature.feature-empty{display:none!important}
