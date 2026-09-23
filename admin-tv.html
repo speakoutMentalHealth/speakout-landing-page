@@ -24,6 +24,7 @@
 <aside class="studio-side" aria-label="TV Studio navigation">
 <strong>Studio</strong>
 <a class="active" href="#publish">＋ New broadcast</a>
+<a href="#editorial">✦ Editorial desk</a>
 <a href="#library">▣ Library</a>
 <a href="#dashboard">⌁ Overview</a>
 <a href="admin-radio.html">◉ Audio</a>
@@ -39,6 +40,7 @@
 <article><strong id="publishedCount">—</strong><span>Published</span></article>
 <article><strong id="draftCount">—</strong><span>Drafts</span></article>
 <article><strong id="liveCount">—</strong><span>Live / scheduled</span></article>
+<article><strong id="readyCount">—</strong><span>Ready to publish</span></article>
 <article><strong id="featuredCount">—</strong><span>Main Stage</span></article>
 <article><strong id="reviewCount">—</strong><span>Needs review</span></article>
 </div>
@@ -144,6 +146,17 @@
 
 <div class="publish-bar"><div><strong id="publishSummary">Draft-first publishing</strong><small id="publishHint">Save as draft while you prepare it. Published content must complete editorial review.</small></div><button class="publish-btn" type="submit">Save content</button></div>
 </form>
+</section>
+
+<section class="studio-card editorial-desk" id="editorial">
+<div class="card-title"><div><span class="eyebrow">EDITORIAL CONTROL</span><h2>Ready, missing or featured</h2><p class="admin-muted">See what needs attention before it reaches viewers. This is an editorial quality check, not a mental-health assessment.</p></div><span class="secure-pill">Internal</span></div>
+<div class="editorial-toolbar">
+  <button type="button" class="editorial-filter active" data-editorial-filter="all">All</button>
+  <button type="button" class="editorial-filter" data-editorial-filter="needs">Needs attention</button>
+  <button type="button" class="editorial-filter" data-editorial-filter="ready">Ready</button>
+  <button type="button" class="editorial-filter" data-editorial-filter="featured">Featured</button>
+</div>
+<div class="editorial-queue" id="editorialQueue"><div class="editorial-empty">Loading editorial status…</div></div>
 </section>
 
 <section class="studio-card" id="library">
