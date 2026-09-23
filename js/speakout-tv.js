@@ -215,6 +215,79 @@ function renderForYou(topic="all"){
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
 }
 
+const resetFlows={
+ breathe:[
+  {label:"Settle",title:"Make a little room",text:"Let your shoulders drop and loosen your jaw. You do not need to solve anything for this minute."},
+  {label:"Breathe",title:"One slow breath",text:"Breathe in comfortably, then let the breath out a little slower. Keep it easy rather than forcing a deep breath."},
+  {label:"Notice",title:"Check the difference",text:"Notice one small thing that feels calmer, clearer or simply different. Even a tiny shift counts."}
+ ],
+ ground:[
+  {label:"Look",title:"Find three colors",text:"Look around and notice three different colors in the space you are in."},
+  {label:"Feel",title:"Notice contact",text:"Notice where your feet, hands or body meet the floor, chair or another surface."},
+  {label:"Listen",title:"Land in the moment",text:"Pick one ordinary sound nearby and let your attention rest on it for a few seconds."}
+ ],
+ focus:[
+  {label:"Choose",title:"Name the next thing",text:"Pick one task that actually matters next. Not the whole day — just the next thing."},
+  {label:"Shrink",title:"Make it smaller",text:"Turn that task into one first action you could begin in about five minutes or less."},
+  {label:"Begin",title:"Give it one clean start",text:"Put the other tasks aside for now and begin only that first action."}
+ ]
+};
+const resetState={active:"",step:0,completed:new Set()};
+
+function updateResetProgress(){
+ const count=resetState.completed.size;
+ const out=$("#resetProgressCount");
+ if(out)out.textContent=count+"/3";
+}
+function resetDots(total,current){
+ return '<span class="reset-step-dots" aria-hidden="true">'+Array.from({length:total},(_,i)=>'<i class="'+(i<=current?'active':'')+'"></i>').join("")+'</span>';
+}
+function closeReset(id){
+ const card=document.querySelector('[data-reset-card="'+id+'"]');
+ const reveal=document.querySelector('[data-reset-reveal="'+id+'"]');
+ const button=card?.querySelector("[data-reset]");
+ if(card)card.classList.remove("is-open");
+ if(reveal)reveal.hidden=true;
+ if(button){button.setAttribute("aria-expanded","false");button.textContent=resetState.completed.has(id)?"Again":"Start"}
+ if(resetState.active===id)resetState.active="";
+}
+function renderResetStep(id,index){
+ const steps=resetFlows[id]||[];
+ const step=steps[index];
+ const reveal=document.querySelector('[data-reset-reveal="'+id+'"]');
+ const card=document.querySelector('[data-reset-card="'+id+'"]');
+ const button=card?.querySelector("[data-reset]");
+ if(!step||!reveal||!card)return;
+ resetState.active=id;resetState.step=index;
+ card.classList.add("is-open");
+ reveal.hidden=false;
+ if(button){button.setAttribute("aria-expanded","true");button.textContent="Close"}
+ const last=index===steps.length-1;
+ reveal.innerHTML='<div class="reset-step"><span class="reset-step-badge">'+esc(String(index+1))+'</span><div class="reset-step-copy"><strong>'+esc(step.title)+'</strong><p>'+esc(step.text)+'</p></div></div>'+
+  '<div class="reset-step-actions">'+resetDots(steps.length,index)+'<button class="primary" type="button" data-reset-next="'+esc(id)+'">'+(last?"Finish":"Next")+'</button></div>';
+}
+function startReset(id){
+ if(resetState.active===id){
+  closeReset(id);return;
+ }
+ if(resetState.active)closeReset(resetState.active);
+ renderResetStep(id,0);
+ document.querySelector('[data-reset-card="'+id+'"]')?.scrollIntoView({behavior:preferredScrollBehavior(),block:"center"});
+}
+function advanceReset(id){
+ const steps=resetFlows[id]||[];
+ if(resetState.active!==id){startReset(id);return}
+ if(resetState.step<steps.length-1){renderResetStep(id,resetState.step+1);return}
+ resetState.completed.add(id);
+ const card=document.querySelector('[data-reset-card="'+id+'"]');
+ const reveal=document.querySelector('[data-reset-reveal="'+id+'"]');
+ const button=card?.querySelector("[data-reset]");
+ card?.classList.add("is-complete");
+ if(reveal)reveal.innerHTML='<div class="reset-complete"><strong>✓ Reset explored</strong><p>Nice. Keep the useful part and move on with your day — no streaks, no pressure.</p></div><div class="reset-step-actions">'+resetDots(steps.length,steps.length-1)+'<button type="button" data-reset-close="'+esc(id)+'">Done</button></div>';
+ if(button){button.textContent="Again";button.setAttribute("aria-expanded","true")}
+ updateResetProgress();
+}
+
 let liveItems=[],currentLive=null,nextLive=null,liveCountdownTimer=null;
 function liveMetaMarkup(item){
  const bits=[];
@@ -399,7 +472,9 @@ document.addEventListener("click",e=>{
  const ep=e.target.closest(".ios-episode-card[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
  const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:preferredScrollBehavior(),block:"start"});return}
  const pick=e.target.closest("#pickForMe");if(pick){pickSomething();return}
- const reset=e.target.closest("[data-reset]");if(reset){const messages={breathe:"Unclench your jaw, lower your shoulders and take one slow breath. Give yourself a minute before the next thing.",ground:"Look around and quietly notice five things you can see, four you can feel, and three you can hear. No rush.",focus:"Choose one small task that matters next. Finish that one before deciding what comes after it."};const panel=$("#resetPanel");panel.textContent=messages[reset.dataset.reset]||"";panel.hidden=false;return}
+ const reset=e.target.closest("[data-reset]");if(reset){startReset(reset.dataset.reset);return}
+ const resetNext=e.target.closest("[data-reset-next]");if(resetNext){advanceReset(resetNext.dataset.resetNext);return}
+ const resetClose=e.target.closest("[data-reset-close]");if(resetClose){closeReset(resetClose.dataset.resetClose);return}
  const reminder=e.target.closest("[data-live-calendar]");if(reminder){const item=liveItems.find(x=>x.id===reminder.dataset.liveCalendar);if(item)addLiveReminder(item);return}
  const shareLiveBtn=e.target.closest("[data-live-share]");if(shareLiveBtn){const item=liveItems.find(x=>x.id===shareLiveBtn.dataset.liveShare);if(item)shareLive(item);return}
  const watchLive=e.target.closest("[data-live-watch]");if(watchLive){const item=liveItems.find(x=>x.id===watchLive.dataset.liveWatch);if(item){setFrame($("#livePlayer"),item,true);$("#liveTitle").textContent=item.title||"SpeakOut Live";$("#liveDescription").textContent=item.description||"";$("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveMeta").innerHTML=liveMetaMarkup(item);$("#live").scrollIntoView({behavior:preferredScrollBehavior(),block:"start"})}return}
