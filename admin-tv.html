@@ -24,8 +24,9 @@
 <aside class="studio-side" aria-label="TV Studio navigation">
 <strong>Studio</strong>
 <a class="active" href="#publish">＋ New broadcast</a>
+<a href="#operationsDesk">⌁ Operations</a>
 <a href="#library">▣ Library</a>
-<a href="#dashboard">⌁ Overview</a>
+<a href="#dashboard">◫ Overview</a>
 <a href="admin-tv-series.html">✦ Series</a>
 <a href="admin-radio.html">◉ Audio</a>
 <a href="tv.html#live">● Live channel</a>
@@ -63,6 +64,23 @@
 <article class="programming-preview"><span>LIBRARY ONLY</span><strong id="programmingLibraryCount">0</strong><small>Published records intentionally excluded from homepage discovery.</small></article>
 </div>
 <div class="programming-warnings" id="programmingWarnings"><p class="admin-muted">Loading programming checks…</p></div>
+</section>
+
+<section class="studio-card operations-desk" id="operationsDesk">
+<div class="card-title"><div><span class="eyebrow">EDITORIAL OPERATIONS 4.0</span><h2>What needs action next</h2><p class="admin-muted">A working queue for drafts, publishing gaps, expiring homepage placements and duplicate media.</p></div><span class="secure-pill" id="operationsHealth">Checking…</span></div>
+<div class="operations-metrics">
+<article><span>Drafts ready</span><strong id="readyDraftCount">—</strong><small>Drafts that already satisfy publishing checks.</small></article>
+<article><span>Drafts blocked</span><strong id="blockedDraftCount">—</strong><small>Drafts still missing one or more publishing requirements.</small></article>
+<article><span>Expiring soon</span><strong id="expiringPlacementCount">—</strong><small>Homepage placements ending within seven days.</small></article>
+<article><span>Duplicate media</span><strong id="duplicateMediaCount">—</strong><small>Records pointing to the same media source.</small></article>
+</div>
+<div class="operations-preset-row" aria-label="Library quick filters">
+<button type="button" data-library-preset="draft">Drafts</button>
+<button type="button" data-library-preset="attention">Needs attention</button>
+<button type="button" data-library-preset="scheduled">Scheduled</button>
+<button type="button" data-library-preset="duplicate">Duplicates</button>
+</div>
+<div class="operations-queue" id="operationsQueue"><p class="admin-muted">Building the editorial work queue…</p></div>
 </section>
 
 <section class="studio-card publish-card" id="publish">
@@ -176,14 +194,22 @@
 </form>
 </section>
 
-<section class="studio-card" id="library">
-<div class="card-title"><div><span class="eyebrow">LIBRARY</span><h2>Broadcast library</h2><p class="admin-muted">Edit, hide or remove existing content.</p></div></div>
-<div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Status</th><th>Order</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div>
+<section class="studio-card library-studio" id="library">
+<div class="card-title"><div><span class="eyebrow">LIBRARY</span><h2>Broadcast library</h2><p class="admin-muted">Search, filter, inspect and edit existing SpeakOut TV content.</p></div><span class="secure-pill" id="libraryVisibleCount">Loading…</span></div>
+<div class="library-controls" id="libraryControls">
+<label class="library-search">Search<input id="librarySearch" type="search" placeholder="Title, series, guest or tag" autocomplete="off"></label>
+<label>Status<select id="libraryStatusFilter"><option value="all">All statuses</option><option value="draft">Draft</option><option value="published">Published</option><option value="active">Active legacy</option><option value="hidden">Hidden</option></select></label>
+<label>Type<select id="libraryFormatFilter"><option value="all">All types</option><option value="episode">Episode</option><option value="short">Short</option><option value="live">Live</option></select></label>
+<label>Placement<select id="libraryPlacementFilter"><option value="all">All placements</option><option value="auto">Automatic</option><option value="featured">Main Stage</option><option value="daily">Today’s Focus</option><option value="library_only">Library only</option></select></label>
+<label>Quality<select id="libraryQualityFilter"><option value="all">All quality states</option><option value="ready">Ready</option><option value="attention">Needs attention</option><option value="scheduled">Scheduled / upcoming</option><option value="duplicate">Duplicate media</option></select></label>
+<button id="libraryReset" type="button">Reset</button>
+</div>
+<div class="table-wrap"><table class="table"><thead><tr><th>Title</th><th>Type</th><th>Placement</th><th>Status</th><th>Order</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div>
 </section>
 </div>
 </section>
 </main>
 
-<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"],libraryFields:["format","homePlacement"],thumbnailField:"imageUrl"});</script>
 <script type="module" src="js/tv-admin-live.js"></script>
 </body></html>

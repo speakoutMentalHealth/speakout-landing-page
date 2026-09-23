@@ -640,3 +640,57 @@ test("Night Signal v5 uses one explicit high-contrast dark palette", () => {
   assert.match(styles,/\.youth-listen-page \.listen-card[\s\S]*background:linear-gradient/u);
   assert.match(styles,/\.discovery-search-box input[\s\S]*color:#fff/u);
 });
+
+
+test("TV Studio Editorial Operations 4.0 exposes a searchable work queue and library", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  for (const id of [
+    "operationsDesk","operationsHealth","readyDraftCount","blockedDraftCount",
+    "expiringPlacementCount","duplicateMediaCount","operationsQueue",
+    "librarySearch","libraryStatusFilter","libraryFormatFilter",
+    "libraryPlacementFilter","libraryQualityFilter","libraryReset","libraryVisibleCount"
+  ]) assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+  assert.match(page,/data-library-preset="draft"/u);
+  assert.match(page,/data-library-preset="attention"/u);
+  assert.match(page,/data-library-preset="scheduled"/u);
+  assert.match(page,/data-library-preset="duplicate"/u);
+  assert.match(script,/function qualityIssues/u);
+  assert.match(script,/function duplicateIdSet/u);
+  assert.match(script,/function applyLibraryFilters/u);
+  assert.match(script,/function renderOperationsQueue/u);
+  assert.match(script,/function refreshOperations/u);
+  assert.match(styles,/\.operations-metrics/u);
+  assert.match(styles,/\.library-controls/u);
+});
+
+test("specialized CMS libraries support extra columns thumbnails and edit lifecycle events", () => {
+  const page=read("admin-tv.html");
+  const controller=read("js/admin-cms-ui.js");
+  assert.match(page,/libraryFields:\["format","homePlacement"\]/u);
+  assert.match(page,/thumbnailField:"imageUrl"/u);
+  assert.match(page,/<th>Title<\/th><th>Type<\/th><th>Placement<\/th><th>Status<\/th><th>Order<\/th><th>Action<\/th>/u);
+  assert.match(controller,/libraryFields = \[\], thumbnailField = ""/u);
+  assert.match(controller,/data-record-id/u);
+  assert.match(controller,/cms-row-thumb/u);
+  assert.match(controller,/new CustomEvent\("cms:edit-start"/u);
+  assert.match(controller,/new CustomEvent\("cms:edit-reset"/u);
+});
+
+test("TV Studio operations preserve viewer links and record filtering hooks", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/watch\.html\?id=/u);
+  assert.match(script,/tv\.html\?live=/u);
+  assert.match(script,/cms:render/u);
+  assert.match(script,/cms:edit-start/u);
+  assert.match(script,/data-queue-edit/u);
+  assert.match(script,/CSS\.escape/u);
+});
+
+test("TV Studio operations browser modules pass syntax checks", () => {
+  for (const file of ["js/admin-cms-ui.js","js/tv-admin-live.js"]) {
+    const path=fileURLToPath(new URL(`../${file}`,import.meta.url));
+    assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}),file);
+  }
+});
