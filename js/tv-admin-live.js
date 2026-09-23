@@ -117,7 +117,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     setReadiness("review", state.reviewOk, true);
     setReadiness("consent", state.consentOk, true);
 
-    const publishing = status?.value === "published";
+    const publishing = ["published","active"].includes(status?.value);
     const hidden = status?.value === "hidden";
     if (publishing && state.ready) {
       readinessTitle.textContent = "Approved and ready to publish";
@@ -210,7 +210,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   }, 0));
 
   form?.addEventListener("submit", event => {
-    if (status?.value !== "published") return;
+    if (!["published","active"].includes(status?.value)) return;
     const state = updateReadiness();
     if (state.ready) return;
     event.preventDefault();
