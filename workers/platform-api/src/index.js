@@ -124,6 +124,25 @@ function cmsCollection(value) {
   return collectionName;
 }
 
+function validatePublicTvShow(record = {}) {
+  const slug = clean(record.slug).toLowerCase();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) {
+    throw Object.assign(new Error("Published TV series requires a valid lowercase URL slug."), { status: 409 });
+  }
+  if (clean(record.title).length < 3) {
+    throw Object.assign(new Error("Published TV series requires a clear title."), { status: 409 });
+  }
+  if (clean(record.category).length < 2) {
+    throw Object.assign(new Error("Published TV series requires a category."), { status: 409 });
+  }
+  if (clean(record.description).length < 40) {
+    throw Object.assign(new Error("Published TV series requires a useful description of at least 40 characters."), { status: 409 });
+  }
+  if (!publicWebUrl(record.imageUrl)) {
+    throw Object.assign(new Error("Published TV series requires a valid artwork URL."), { status: 409 });
+  }
+}
+
 function cmsRecord(collectionName, input) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     throw Object.assign(new Error("Invalid content record."), { status: 400 });
@@ -207,6 +226,10 @@ function cmsRecord(collectionName, input) {
     } catch {
       throw Object.assign(new Error("Use a valid audio or Spotify URL."), { status: 400 });
     }
+  }
+  if (collectionName === "tvShows") {
+    record.slug = clean(record.slug).toLowerCase();
+    if (["active", "published"].includes(status)) validatePublicTvShow(record);
   }
   return { ...record, status, order };
 }
@@ -1236,6 +1259,7 @@ async function route(request, env, path, data) {
     return runTransaction(env, async tx => {
       const existing = await tx.get(`${collectionName}/${recordId}`);
       if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
+      if (collectionName === "tvShows" && ["active", "published"].includes(status)) validatePublicTvShow(existing);
       tx.set(`${collectionName}/${recordId}`, {
         ...existing,
         status,
