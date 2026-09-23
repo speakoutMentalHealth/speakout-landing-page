@@ -334,7 +334,7 @@ test("TV Studio Editorial Control 2.0 is draft-first and exposes placement contr
   const page=read("admin-tv.html");
   const script=read("js/tv-admin-live.js");
   const styles=read("css/tv-admin-premium.css");
-  assert.match(page, /TV STUDIO · EDITORIAL 2\.0/u);
+  assert.match(page, /TV STUDIO · EDITORIAL \+ INTELLIGENCE/u);
   assert.match(page, /<option value="draft" selected>/u);
   for (const id of ["homePlacement","contentPillar","audience","editorialReview","readinessPanel"]) {
     assert.match(page, new RegExp(`id="${id}"`, "u"), id);
