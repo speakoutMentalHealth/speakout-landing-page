@@ -908,3 +908,9 @@ test("Radio keeps Spotify source attribution and does not brand over Spotify art
   assert.match(main,/spotify\?'':artOverlay/u);
   assert.match(styles,/\.listen-card\.is-spotify \.listen-card-art img/u);
 });
+
+
+test("automatic Spotify sync excludes episodes marked explicit", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/if \(!id \|\| episode\?\.explicit === true\) continue;/u);
+});
