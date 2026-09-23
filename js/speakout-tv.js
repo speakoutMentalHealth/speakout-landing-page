@@ -83,3 +83,33 @@ load();
 let deferredInstall;
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const b=$("#installTv");if(b)b.hidden=false});
 $("#installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installTv").hidden=true});
+
+/* Segmented navigation: each channel tab becomes its own focused view. */
+const TV_VIEWS=new Set(["live","episodes","series","audio"]);
+function setTvView(view,{push=false,scroll=true}={}){
+  const normalized=TV_VIEWS.has(view)?view:"home";
+  document.body.classList.toggle("tv-view-filtered",normalized!=="home");
+  document.querySelectorAll(".ios-section").forEach(section=>section.classList.toggle("tv-view-active",normalized!=="home"&&section.id===normalized));
+  document.querySelectorAll(".ios-tabbar a").forEach(link=>{
+    const href=link.getAttribute("href")||"";
+    const target=href.startsWith("#")?href.slice(1):"home";
+    link.classList.toggle("active",target===normalized);
+    link.setAttribute("aria-current",target===normalized?"page":"false");
+  });
+  if(push){
+    const next=normalized==="home"?"tv.html":"#"+normalized;
+    history.pushState({tvView:normalized},"",next);
+  }
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelector(".ios-tabbar")?.addEventListener("click",event=>{
+  const link=event.target.closest("a");if(!link)return;
+  const href=link.getAttribute("href")||"";
+  const target=href.startsWith("#")?href.slice(1):"home";
+  if(target==="home"||TV_VIEWS.has(target)){
+    event.preventDefault();
+    setTvView(target,{push:true,scroll:true});
+  }
+});
+addEventListener("popstate",()=>setTvView(location.hash.slice(1),{push:false,scroll:false}));
+setTvView(location.hash.slice(1),{push:false,scroll:false});
