@@ -151,14 +151,18 @@
   <div class="content-rail" id="storiesRail"></div>
 </section>
 
-<section class="tv-container youth-section watch-section media-only-view" id="episodes">
+<section class="tv-container youth-section watch-section media-only-view watch-only" id="episodes">
   <div class="youth-section-head compact-media-head">
-    <div><span>WATCH</span><h2>Video</h2></div>
-    <a href="tv-search.html?filter=video">All videos</a>
+    <div><span>WATCH</span><h2>Videos</h2><p>Nothing else competing for your attention — just SpeakOut video.</p></div>
+    <a href="tv-search.html?filter=video">Browse all videos</a>
   </div>
-  <div class="ios-glass ios-episode-stage youth-player-stage">
-    <div class="ios-player" id="episodePlayer"><div class="ios-empty"><strong>Select something to watch</strong></div></div>
-    <div class="ios-card-copy"><span class="player-label">NOW PLAYING</span><h3 id="episodeTitle">SpeakOut TV</h3><p id="episodeDescription">Pick an episode below.</p></div>
+  <div class="watch-cinema-shell">
+    <div class="ios-player watch-cinema-screen" id="episodePlayer"><div class="ios-empty"><strong>Select something to watch</strong></div></div>
+    <div class="watch-cinema-meta">
+      <span class="player-label">NOW PLAYING</span>
+      <h3 id="episodeTitle">SpeakOut TV</h3>
+      <p id="episodeDescription">Pick an episode below.</p>
+    </div>
   </div>
   <div class="ios-episode-strip" id="latestRail"></div>
 </section>
@@ -172,37 +176,42 @@
   <div class="ios-audio-strip" id="audioRail"></div>
 </section>
 
-<section class="tv-container youth-section live-section live-v2 media-only-view" id="live">
+<section class="tv-container youth-section live-section live-v2 media-only-view live-only" id="live">
   <div class="youth-section-head live-section-head compact-media-head">
-    <div><span>LIVE</span><h2>Live & Upcoming</h2></div>
-    <span class="ios-status" id="liveStatus">Live channel</span>
+    <div><span>LIVE</span><h2>SpeakOut Live</h2><p>This is the live room. When we go on air, the broadcast takes over this screen.</p></div>
+    <span class="ios-status" id="liveStatus">Standby</span>
   </div>
 
-  <div class="live-feature-shell">
+  <div class="live-cinema-shell">
     <div class="live-stage">
       <div class="live-stage-top">
         <span class="live-channel-chip"><i></i> SPEAKOUT LIVE</span>
-        <span class="live-stage-time" id="liveStageTime">No session on air</span>
+        <span class="live-stage-time" id="liveStageTime">Waiting for the next session</span>
       </div>
       <div class="ios-player live-v2-player" id="livePlayer">
         <div class="live-offline-state">
-          <span class="live-offline-mark">●</span>
-          <strong>The live room is quiet right now.</strong>
-          <small>Upcoming sessions appear below.</small>
+          <div class="live-signal" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="live-offline-kicker">STANDBY</span>
+          <strong>We’ll be live here.</strong>
+          <small>When a SpeakOut session is ready, the broadcast and countdown will appear on this screen.</small>
         </div>
       </div>
     </div>
 
     <aside class="live-info-card">
-      <span class="player-label" id="liveEyebrow">LIVE CHANNEL</span>
-      <h3 id="liveTitle">The next conversation starts here.</h3>
-      <p id="liveDescription">Live on SpeakOut TV.</p>
-      <div class="live-meta" id="liveMeta"></div>
-      <div class="live-actions">
-        <button type="button" class="live-action primary" id="liveShare" hidden>Share session</button>
-        <button type="button" class="live-action" id="liveCalendar" hidden>Add reminder</button>
+      <div>
+        <span class="player-label" id="liveEyebrow">LIVE CHANNEL</span>
+        <h3 id="liveTitle">The next conversation starts here.</h3>
+        <p id="liveDescription">Interviews, youth conversations and special SpeakOut sessions — live when scheduled.</p>
+        <div class="live-meta" id="liveMeta"></div>
       </div>
-      <p class="live-action-status" id="liveActionStatus" aria-live="polite"></p>
+      <div>
+        <div class="live-actions">
+          <button type="button" class="live-action primary" id="liveShare" hidden>Share session</button>
+          <button type="button" class="live-action" id="liveCalendar" hidden>Add reminder</button>
+        </div>
+        <p class="live-action-status" id="liveActionStatus" aria-live="polite"></p>
+      </div>
     </aside>
   </div>
 
@@ -222,22 +231,6 @@
       </div>
       <button type="button" class="live-reminder-btn" id="nextLiveReminder">＋ Add reminder</button>
     </div>
-  </section>
-
-  <section class="live-schedule-section" id="liveScheduleSection" hidden>
-    <div class="live-subhead">
-      <div><span>COMING UP</span><h3>Upcoming Sessions</h3></div>
-      <p>Upcoming live sessions.</p>
-    </div>
-    <div class="live-schedule-grid" id="liveScheduleGrid"></div>
-  </section>
-
-  <section class="live-previous-section" id="livePreviousSection" hidden>
-    <div class="live-subhead">
-      <div><span>PREVIOUSLY LIVE</span><h3>Catch Up</h3></div>
-      <p>Earlier live broadcasts.</p>
-    </div>
-    <div class="live-previous-rail" id="livePreviousRail"></div>
   </section>
 </section>
 
