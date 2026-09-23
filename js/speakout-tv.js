@@ -94,7 +94,7 @@ function playEpisode(item,autoplay=true){
  setFrame($("#episodePlayer"),item,autoplay);
  $("#episodeTitle").textContent=item.title||"SpeakOut TV";
  $("#episodeDescription").textContent=item.description||"";
- $(".ios-episode-card,.youth-content-card").forEach(el=>el.classList.toggle("active",el.dataset.episodeId===item.id));
+ $$(".ios-episode-card,.youth-content-card").forEach(el=>el.classList.toggle("active",el.dataset.episodeId===item.id));
  markRecent(item.id);
  showView("watch",{push:true});
 }
