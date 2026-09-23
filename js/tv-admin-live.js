@@ -74,7 +74,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     const tagsOk = tagCount >= 2;
     const reviewOk = editorialReview?.value === "complete";
     const consentOk = minorInvolved?.value !== "yes" || consentConfirmed?.value === "yes";
-    const placementOk = Boolean(homePlacement?.value);
+    const placementOk = Boolean(homePlacement?.value) && !(format?.value === "live" && ["featured","daily"].includes(homePlacement?.value));
     const pillarOk = Boolean(contentPillar?.value);
     const audienceOk = Boolean(audience?.value);
     const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk,placementOk,pillarOk,audienceOk};
@@ -88,6 +88,9 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     setReadiness("description", state.descriptionOk, true);
     setReadiness("artwork", state.artworkOk, true);
     setReadiness("tags", state.tagsOk, true);
+    setReadiness("placement", state.placementOk, true);
+    setReadiness("pillar", state.pillarOk, true);
+    setReadiness("audience", state.audienceOk, true);
     setReadiness("review", state.reviewOk, true);
     setReadiness("consent", state.consentOk, true);
 
@@ -105,7 +108,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       readinessTitle.textContent = "Complete the highlighted checks";
       readinessBadge.textContent = "Needs attention";
       readinessBadge.className = "readiness-badge blocked";
-      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, completed editorial review and any required consent.";
+      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, valid programming placement, content pillar, audience, completed editorial review and any required consent.";
       summary.textContent = "Publishing is not ready yet";
       publishHint.textContent = "Complete the highlighted editorial checks or switch visibility back to Draft.";
       publishButton?.setAttribute("data-blocked","true");
@@ -213,14 +216,22 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[char]));
 
+  const placementOf = item => String(item?.homePlacement || "auto").trim().toLowerCase().replace(/\s+/g,"_");
+  const viewerDate = item => timestampValue(item?.publishedAt) || timestampValue(item?.publishDate) || timestampValue(item?.date);
+
   function recordIssues(item) {
     const issues = [];
     const published = ["published","active"].includes(String(item.status || "").toLowerCase());
     if (!published) return issues;
+    if (String(item.title || "").trim().length < 8) issues.push("short title");
+    if (!parse(item.url)) issues.push("unsupported media");
     if (String(item.description || "").trim().length < 50) issues.push("short description");
     if (!validArtwork(item.imageUrl)) issues.push("missing artwork");
     const itemTags = Array.isArray(item.tags) ? item.tags : String(item.tags || "").split(",");
     if (itemTags.map(value => String(value).trim()).filter(Boolean).length < 2) issues.push("few tags");
+    if (!String(item.contentPillar || "").trim()) issues.push("missing pillar");
+    if (!String(item.audience || "").trim()) issues.push("missing audience");
+    if (String(item.format || "").toLowerCase() === "live" && ["featured","daily"].includes(placementOf(item))) issues.push("live placement");
     if (String(item.editorialReview || "").toLowerCase() !== "complete") issues.push("review pending");
     if (String(item.minorInvolved || "").toLowerCase() === "yes" && String(item.consentConfirmed || "").toLowerCase() !== "yes") issues.push("minor consent");
     return issues;
@@ -235,7 +246,14 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       const published = items.filter(item => ["published","active"].includes(String(item.status || "").toLowerCase()));
       const drafts = items.filter(item => String(item.status || "").toLowerCase() === "draft");
       const live = items.filter(item => String(item.format || "").toLowerCase() === "live" && String(item.status || "").toLowerCase() !== "hidden");
-      const featuredItems = published.filter(item => String(item.homePlacement || "").toLowerCase() === "featured" || String(item.featured).toLowerCase() === "true");
+      const regularPublished = published
+        .filter(item => String(item.format || "episode").toLowerCase() !== "live")
+        .sort((a,b) => viewerDate(b)-viewerDate(a) || (Number(a.order)||999)-(Number(b.order)||999));
+      const featuredItems = regularPublished.filter(item => placementOf(item) === "featured" || String(item.featured).toLowerCase() === "true");
+      const dailyItems = regularPublished.filter(item => placementOf(item) === "daily");
+      const libraryOnlyItems = regularPublished.filter(item => placementOf(item) === "library_only");
+      const eligibleHome = regularPublished.filter(item => placementOf(item) !== "library_only");
+      const mainStage = featuredItems[0] || eligibleHome[0] || null;
       const attention = items.map(item => ({item,issues:recordIssues(item)})).filter(entry => entry.issues.length);
       const ready = published.filter(item => recordIssues(item).length === 0);
       const scheduled = live.filter(item => timestampValue(item.scheduledAt) > now);
@@ -248,6 +266,36 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       $("readyEditorialCount").textContent = ready.length;
       $("attentionEditorialCount").textContent = attention.length;
       $("scheduledEditorialCount").textContent = scheduled.length;
+
+      const programmingWarnings = [];
+      if (featuredItems.length > 1) programmingWarnings.push(featuredItems.length+" published records are marked for Main Stage; the newest/highest-priority eligible record will lead.");
+      const invalidLivePlacement = live.filter(item => ["featured","daily"].includes(placementOf(item)));
+      if (invalidLivePlacement.length) programmingWarnings.push(invalidLivePlacement.length+" live record(s) use a homepage placement reserved for regular episodes.");
+      if (!eligibleHome.length) programmingWarnings.push("No published regular episode is eligible for homepage discovery.");
+      if (mainStage && recordIssues(mainStage).length) programmingWarnings.push("The current Main Stage selection still has editorial quality gaps.");
+
+      if ($("programmingFeaturedTitle")) $("programmingFeaturedTitle").textContent = mainStage?.title || "Automatic selection";
+      if ($("programmingFeaturedMeta")) $("programmingFeaturedMeta").textContent = mainStage
+        ? (mainStage.show || "SpeakOut TV")+" · "+(placementOf(mainStage)==="featured" ? "Editorially featured" : "Automatic fallback")
+        : "Publish an eligible episode to activate the Main Stage.";
+      if ($("programmingDailyTitle")) $("programmingDailyTitle").textContent = dailyItems.length
+        ? dailyItems.slice(0,3).map(item => item.title || "Untitled").join(" · ")
+        : "Automatic mix";
+      if ($("programmingDailyMeta")) $("programmingDailyMeta").textContent = dailyItems.length
+        ? dailyItems.length+" editorial priorit"+(dailyItems.length===1?"y":"ies")+" will lead Today’s Focus before automatic topic picks."
+        : "No manual daily priority is set; the weekday content engine will build the mix automatically.";
+      if ($("programmingLibraryCount")) $("programmingLibraryCount").textContent = libraryOnlyItems.length;
+      const programmingHealth = $("programmingHealth");
+      if (programmingHealth) {
+        programmingHealth.textContent = programmingWarnings.length ? programmingWarnings.length+" programming warning"+(programmingWarnings.length===1?"":"s") : "Programming aligned";
+        programmingHealth.classList.toggle("attention", Boolean(programmingWarnings.length));
+      }
+      const warningsTarget = $("programmingWarnings");
+      if (warningsTarget) {
+        warningsTarget.innerHTML = programmingWarnings.length
+          ? '<div class="programming-warning-list">'+programmingWarnings.map(message => '<p><span>!</span>'+safe(message)+'</p>').join("")+'</div>'
+          : '<div class="editorial-clear"><span>✓</span><div><strong>Homepage programming is aligned</strong><small>Main Stage and daily priorities match the viewer content engine.</small></div></div>';
+      }
 
       const health = $("editorialHealth");
       health.textContent = attention.length ? attention.length+" need attention" : "Library healthy";
@@ -268,12 +316,18 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     }
   }
 
-  function syncPlacement() {
-    if (homePlacement?.value === "featured" && featured) featured.value = "true";
-    if (featured?.value === "true" && homePlacement?.value === "auto") homePlacement.value = "featured";
+  function syncPlacement(source = "placement") {
+    if (!homePlacement || !featured) return;
+    if (source === "placement") {
+      featured.value = homePlacement.value === "featured" ? "true" : "false";
+      return;
+    }
+    if (featured.value === "true") homePlacement.value = "featured";
+    else if (homePlacement.value === "featured") homePlacement.value = "auto";
   }
-  homePlacement?.addEventListener("change", () => { syncPlacement(); updateReadiness(); });
-  featured?.addEventListener("change", () => { syncPlacement(); updateReadiness(); });
+  homePlacement?.addEventListener("change", () => { syncPlacement("placement"); updateReadiness(); });
+  featured?.addEventListener("change", () => { syncPlacement("featured"); updateReadiness(); });
+  format?.addEventListener("change", updateReadiness);
 
   const rows = document.getElementById("rows");
   if (rows) new MutationObserver(() => {
