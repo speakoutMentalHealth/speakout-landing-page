@@ -981,7 +981,7 @@ async function spotifyShowEpisodes(env) {
     const pageItems = Array.isArray(body.items) ? body.items : [];
     for (const episode of pageItems) {
       const id = clean(episode?.id);
-      if (!id) continue;
+      if (!id || episode?.explicit === true) continue;
       const image = Array.isArray(episode.images) ? episode.images.find(entry => publicWebUrl(entry?.url))?.url || "" : "";
       items.push({
         id: "spotify-" + id,
