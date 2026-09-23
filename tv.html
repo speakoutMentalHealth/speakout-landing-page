@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/speakout-tv.css">
 <link rel="preconnect" href="https://www.youtube-nocookie.com"><link rel="preconnect" href="https://i.ytimg.com"><link rel="preconnect" href="https://open.spotify.com">
 <link rel="canonical" href="https://speakoutmentalhealth.org/tv.html">
-<meta name="theme-color" content="#071226"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
+<meta name="theme-color" content="#f7f9ff"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
 <body class="tv-ios youth-tv">
 <header class="ios-topbar youth-topbar">
@@ -151,10 +151,10 @@
   <div class="content-rail" id="storiesRail"></div>
 </section>
 
-<section class="tv-container youth-section watch-section" id="episodes">
-  <div class="youth-section-head">
-    <div><span>WATCH</span><h2>Watch Now</h2><p>Choose an episode and stay on SpeakOut TV.</p></div>
-    <a href="tv-search.html">View all</a>
+<section class="tv-container youth-section watch-section media-only-view" id="episodes">
+  <div class="youth-section-head compact-media-head">
+    <div><span>WATCH</span><h2>Video</h2></div>
+    <a href="tv-search.html?filter=video">All videos</a>
   </div>
   <div class="ios-glass ios-episode-stage youth-player-stage">
     <div class="ios-player" id="episodePlayer"><div class="ios-empty"><strong>Select something to watch</strong></div></div>
@@ -163,24 +163,18 @@
   <div class="ios-episode-strip" id="latestRail"></div>
 </section>
 
-<section class="tv-container youth-section listen-section" id="audio">
-  <div class="youth-section-head">
-    <div><span>LISTEN</span><h2>Audio for Your Headspace</h2><p>Podcasts, spoken word and conversations you can take with you.</p></div>
-    <a href="radio.html">Open Radio</a>
+<section class="tv-container youth-section listen-section media-only-view" id="audio">
+  <div class="youth-section-head compact-media-head">
+    <div><span>LISTEN</span><h2>Audio</h2></div>
+    <a href="radio.html">Open all audio</a>
   </div>
-  <div class="listen-layout">
-    <div class="ios-spotify" id="audioPlayer"><div class="tv-audio-placeholder"><span>◉</span><strong>Choose something to listen to</strong><small>Open Listen or pick an audio episode below.</small></div></div>
-    <div class="listen-side">
-      <span>LISTEN ANYWHERE</span><h3>SpeakOut Radio</h3><p>Long-form conversations, spoken word and voices worth hearing.</p>
-      <a href="radio.html">Open full radio →</a>
-    </div>
-  </div>
+  <div class="ios-spotify" id="audioPlayer"><div class="tv-audio-placeholder"><span>◉</span><strong>Select audio</strong></div></div>
   <div class="ios-audio-strip" id="audioRail"></div>
 </section>
 
-<section class="tv-container youth-section live-section live-v2" id="live">
-  <div class="youth-section-head live-section-head">
-    <div><span>LIVE & UPCOMING</span><h2>Be Part of the Conversation</h2><p>Join live conversations, interviews and special SpeakOut sessions as they happen.</p></div>
+<section class="tv-container youth-section live-section live-v2 media-only-view" id="live">
+  <div class="youth-section-head live-section-head compact-media-head">
+    <div><span>LIVE</span><h2>Live & Upcoming</h2></div>
     <span class="ios-status" id="liveStatus">Live channel</span>
   </div>
 
@@ -194,7 +188,7 @@
         <div class="live-offline-state">
           <span class="live-offline-mark">●</span>
           <strong>The live room is quiet right now.</strong>
-          <small>Check the upcoming schedule below for the next conversation.</small>
+          <small>Upcoming sessions appear below.</small>
         </div>
       </div>
     </div>
@@ -202,7 +196,7 @@
     <aside class="live-info-card">
       <span class="player-label" id="liveEyebrow">LIVE CHANNEL</span>
       <h3 id="liveTitle">The next conversation starts here.</h3>
-      <p id="liveDescription">Live sessions from SpeakOut bring young people, guests and useful conversations together in real time.</p>
+      <p id="liveDescription">Live on SpeakOut TV.</p>
       <div class="live-meta" id="liveMeta"></div>
       <div class="live-actions">
         <button type="button" class="live-action primary" id="liveShare" hidden>Share session</button>
@@ -233,7 +227,7 @@
   <section class="live-schedule-section" id="liveScheduleSection" hidden>
     <div class="live-subhead">
       <div><span>COMING UP</span><h3>Upcoming Sessions</h3></div>
-      <p>Save a session to your calendar so you can come back when it starts.</p>
+      <p>Upcoming live sessions.</p>
     </div>
     <div class="live-schedule-grid" id="liveScheduleGrid"></div>
   </section>
@@ -241,7 +235,7 @@
   <section class="live-previous-section" id="livePreviousSection" hidden>
     <div class="live-subhead">
       <div><span>PREVIOUSLY LIVE</span><h3>Catch Up</h3></div>
-      <p>Watch earlier SpeakOut live broadcasts that are still available.</p>
+      <p>Earlier live broadcasts.</p>
     </div>
     <div class="live-previous-rail" id="livePreviousRail"></div>
   </section>
