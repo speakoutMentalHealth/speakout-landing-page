@@ -144,3 +144,7 @@ body.youth-tv[data-tv-view="live"] .live-only{padding-top:20px}
 
 .show-world-art>.tv-art-fallback{position:absolute;inset:0}
 .show-world-art>.tv-art-bug{left:clamp(14px,3vw,32px);bottom:clamp(14px,3vw,28px)}
+
+.listen-card.is-spotify .listen-card-art img,.ios-audio-episode.is-spotify .ios-audio-artwork img{object-fit:contain;background:#111}
+.spotify-attribution{display:inline-flex;margin:0 13px 13px;color:#a9bbc9;font-size:.58rem;font-weight:800;text-decoration:none}
+.spotify-attribution:hover{color:#fff}
