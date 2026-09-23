@@ -258,32 +258,31 @@ function renderLiveExperience(allEpisodes){
  const now=Date.now();
  liveItems=allEpisodes.filter(x=>String(x.format||x.type||"").toLowerCase()==="live");
  const future=liveItems.filter(x=>scheduleValue(x)>now).sort((a,b)=>scheduleValue(a)-scheduleValue(b));
- const unscheduled=liveItems.filter(x=>!scheduleValue(x));
- const recent=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<=now&&(now-t)<=6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
+ const recent=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<=now&&(now-t)<=3*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
  const previous=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<now-6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
  const requestedLiveId=new URLSearchParams(location.search).get("live")||"";
  const requestedLive=liveItems.find(x=>x.id===requestedLiveId)||null;
  const requestedTime=scheduleValue(requestedLive);
- currentLive=unscheduled[0]||recent[0]||null;nextLive=future[0]||null;
+ currentLive=recent[0]||null;nextLive=future[0]||null;
  if(requestedLive&&requestedTime>now)nextLive=requestedLive;
  if(requestedLive&&(!requestedTime||(requestedTime<=now&&(now-requestedTime)<=6*60*60*1000)))currentLive=requestedLive;
  const requestedReplay=requestedLive&&requestedTime&&requestedTime<now-6*60*60*1000?requestedLive:null;
 
  const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar");
  if(currentLive){
-  status.textContent="Live Now";status.classList.add("is-live");
-  stageTime.textContent=scheduleValue(currentLive)?formatSchedule(scheduleValue(currentLive)):"On air now";
+  status.textContent="Scheduled now";status.classList.add("is-live");
+  stageTime.textContent="Scheduled · "+formatSchedule(scheduleValue(currentLive));
   $("#liveEyebrow").textContent="ON AIR";
   $("#liveTitle").textContent=currentLive.title||"SpeakOut Live";
   $("#liveDescription").textContent=currentLive.description||"Join the conversation live on SpeakOut TV.";
   meta.innerHTML=liveMetaMarkup(currentLive);setFrame($("#livePlayer"),currentLive,false);
   share.hidden=false;calendar.hidden=!scheduleValue(currentLive);
  }else{
-  status.textContent=nextLive?"Upcoming":"Live channel";status.classList.remove("is-live");
-  stageTime.textContent=nextLive?"Next · "+formatSchedule(scheduleValue(nextLive)):"No session on air";
+  status.textContent=nextLive?"Upcoming":"Standby";status.classList.remove("is-live");
+  stageTime.textContent=nextLive?"Next · "+formatSchedule(scheduleValue(nextLive)):"Waiting for the next session";
   $("#liveEyebrow").textContent="LIVE CHANNEL";
   $("#liveTitle").textContent="The next conversation starts here.";
-  $("#liveDescription").textContent=nextLive?"A new SpeakOut Live session is scheduled. See the details below and add a reminder.":"Live conversations, interviews and special coverage will appear here when scheduled.";
+  $("#liveDescription").textContent=nextLive?"A SpeakOut Live session is scheduled. The countdown and reminder are ready below.":"Interviews, youth conversations and special SpeakOut sessions will appear here when scheduled.";
   meta.innerHTML="";share.hidden=true;calendar.hidden=true;
  }
  if(requestedReplay){
@@ -299,11 +298,6 @@ function renderLiveExperience(allEpisodes){
   $("#nextLiveMeta").innerHTML=liveMetaMarkup(nextLive);startLiveCountdown(nextLive);
  }else nextPanel.hidden=true;
 
- const scheduleSection=$("#liveScheduleSection"),grid=$("#liveScheduleGrid");
- scheduleSection.hidden=!future.length;grid.innerHTML=future.slice(0,8).map(liveScheduleCard).join("");
-
- const previousSection=$("#livePreviousSection"),rail=$("#livePreviousRail");
- previousSection.hidden=!previous.length;rail.innerHTML=previous.slice(0,10).map(previousLiveCard).join("");
 }
 
 const viewGroups={
