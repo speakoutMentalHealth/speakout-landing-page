@@ -34,7 +34,7 @@ const defaultSeries=[
 let items=[],filter="all";
 
 function searchable(x){
- return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host].flat().join(" "));
+ return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience].flat().join(" "));
 }
 function matchesQuery(x,q){
  if(!q)return true;
@@ -126,7 +126,7 @@ async function load(){
 
  const initial=new URLSearchParams(location.search).get("q")||"";
  if(initial)$("#tvSearch").value=initial;
- $("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
+ $$("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
  render();
  $("#tvSearch").focus({preventScroll:true});
 }
@@ -137,7 +137,7 @@ $("#showEverything").addEventListener("click",()=>{$("#tvSearch").value="";filte
 
 $$("[data-filter]").forEach(button=>button.addEventListener("click",()=>{
  filter=button.dataset.filter||"all";
- $("[data-filter]").forEach(x=>{const active=x===button;x.classList.toggle("active",active);x.setAttribute("aria-selected",String(active))});
+ $$("[data-filter]").forEach(x=>{const active=x===button;x.classList.toggle("active",active);x.setAttribute("aria-selected",String(active))});
  render();
 }));
 
