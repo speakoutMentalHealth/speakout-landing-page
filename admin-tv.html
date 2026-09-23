@@ -16,8 +16,8 @@
 
 <main>
 <section class="studio-hero">
-<div><span class="live-chip"><i></i> TV STUDIO</span><h1>Publish to SpeakOut TV.</h1><p>Paste a link, preview it, add the details, then publish.</p></div>
-<div class="studio-steps" aria-label="Publishing steps"><span><b>1</b> Paste</span><span><b>2</b> Preview</span><span><b>3</b> Publish</span></div>
+<div><span class="live-chip"><i></i> TV STUDIO · EDITORIAL 2.0</span><h1>Publish with editorial control.</h1><p>Prepare the media, control its homepage placement, complete review, then publish.</p></div>
+<div class="studio-steps" aria-label="Publishing steps"><span><b>1</b> Paste</span><span><b>2</b> Preview</span><span><b>3</b> Review</span><span><b>4</b> Publish</span></div>
 </section>
 
 <section class="studio-shell">
@@ -72,8 +72,32 @@
 </select></label>
 <label class="wide">Description<textarea id="description" placeholder="Short description"></textarea></label>
 <label>Content type<select id="format"><option value="episode">Episode</option><option value="live">Live broadcast</option><option value="short">Short / highlight</option></select></label>
-<label>Visibility<select id="status"><option value="published" selected>Published — visible</option><option value="draft">Draft — not visible</option><option value="hidden">Hidden</option></select></label>
-<label>Main Stage<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
+<label>Visibility<select id="status"><option value="draft" selected>Draft — review first</option><option value="published">Published — visible</option><option value="hidden">Hidden</option></select></label>
+<label>Homepage placement<select id="homePlacement">
+<option value="auto">Automatic</option>
+<option value="featured">Main Stage / Featured</option>
+<option value="daily">Today’s Focus priority</option>
+<option value="library_only">Library only — keep off Home</option>
+</select></label>
+<label>Content pillar<select id="contentPillar">
+<option value="general">General wellbeing</option>
+<option value="youth">Youth voices</option>
+<option value="school">School & student life</option>
+<option value="adhd">ADHD & focus</option>
+<option value="relationships">Relationships</option>
+<option value="motivation">Confidence & motivation</option>
+<option value="stories">Real stories</option>
+<option value="community">Community</option>
+<option value="advocacy">Advocacy</option>
+</select></label>
+<label>Primary audience<select id="audience">
+<option value="youth">Young people</option>
+<option value="students">Students</option>
+<option value="everyone">Everyone</option>
+<option value="parents">Parents / caregivers</option>
+<option value="educators">Educators</option>
+</select></label>
+<label>Main Stage legacy flag<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
 <label>Publish date<input id="publishDate" type="date"></label>
 <label>Schedule live date & time<input id="scheduledAt" type="datetime-local"></label>
 <label>Presenter / host<input id="presenter" placeholder="Optional"></label>
@@ -86,13 +110,27 @@
 </div>
 </div>
 
-<details class="editorial-panel"><summary>Editorial & consent</summary><div class="premium-grid editorial-grid">
-<label>Consent confirmed<select id="consentConfirmed"><option value="not_applicable">Not applicable</option><option value="yes">Yes</option><option value="no">No</option></select></label>
+<details class="editorial-panel" open><summary>Editorial review & consent</summary><div class="premium-grid editorial-grid">
+<label>Editorial review<select id="editorialReview"><option value="pending">Pending — keep as draft</option><option value="complete">Complete — approved for publishing</option></select></label>
 <label>Minor involved<select id="minorInvolved"><option value="no">No</option><option value="yes">Yes</option></select></label>
-<label>Editorial review<select id="editorialReview"><option value="pending">Pending</option><option value="complete">Complete</option></select></label>
+<label>Consent confirmed<select id="consentConfirmed"><option value="not_applicable">Not applicable</option><option value="yes">Yes</option><option value="no">No</option></select></label>
 </div></details>
 
-<div class="publish-bar"><div><strong id="publishSummary">Ready to publish?</strong><small>Preview the link first. Published content appears on SpeakOut TV.</small></div><button class="publish-btn" type="submit">Publish to TV</button></div>
+<section class="readiness-panel" id="readinessPanel" aria-live="polite">
+<div class="readiness-top"><div><span class="eyebrow">PUBLISHING READINESS</span><h3 id="readinessTitle">Draft can be saved now</h3></div><span class="readiness-badge" id="readinessBadge">Draft mode</span></div>
+<div class="readiness-grid">
+<span data-readiness="media">Media link</span>
+<span data-readiness="title">Title</span>
+<span data-readiness="description">Description</span>
+<span data-readiness="artwork">Artwork</span>
+<span data-readiness="tags">Tags</span>
+<span data-readiness="review">Editorial review</span>
+<span data-readiness="consent">Consent check</span>
+</div>
+<p id="readinessNote">Publishing is intentionally draft-first. Complete the review checks before switching visibility to Published.</p>
+</section>
+
+<div class="publish-bar"><div><strong id="publishSummary">Draft-first publishing</strong><small id="publishHint">Save as draft while you prepare it. Published content must complete editorial review.</small></div><button class="publish-btn" type="submit">Save content</button></div>
 </form>
 </section>
 
@@ -104,6 +142,6 @@
 </section>
 </main>
 
-<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"]});</script>
 <script src="js/tv-admin-live.js"></script>
 </body></html>
