@@ -41,3 +41,7 @@
 @media(min-width:800px){
   .discovery-series-grid,.discovery-media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+.discovery-series-art{isolation:isolate}
+.discovery-series-art>.tv-art-fallback{position:absolute;inset:0}
+.discovery-series-card.no-image .discovery-series-art{background:none}
