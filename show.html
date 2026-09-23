@@ -1,1 +1,73 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Show | SpeakOut TV</title><link rel="icon" href="images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/speakout-tv.css"></head><body><header class="tv-nav"><div class="tv-container tv-nav-inner"><a class="tv-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a><nav class="tv-links"><a href="tv.html">TV Home</a><a href="index.html">SpeakOut</a></nav></div></header><main><section class="show-hero"><div class="tv-container"><span class="eyebrow">SPEAKOUT ORIGINAL</span><h1 id="showTitle">SpeakOut TV</h1><p id="showDescription">Episodes from SpeakOut TV.</p><div class="show-host" id="showHost"></div></div></section><section class="section"><div class="tv-container"><div class="section-head"><div><h2>Episodes</h2></div></div><div class="episode-grid" id="episodeGrid"><p class="empty-note">Loading episodes…</p></div></div></section></main><a class="tv-support" href="pages/resources.html">Find Support</a><nav class="mobile-dock" aria-label="SpeakOut TV mobile navigation"><a href="tv.html"><span>⌂</span>Home</a><a href="tv.html#shows" class="active"><span>▣</span>Shows</a><a href="tv.html#watch"><span>▶</span>Watch</a><a href="tv-search.html"><span>⌕</span>Search</a></nav><script type="module" src="js/tv-show.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Series | SpeakOut TV</title>
+<meta name="description" content="Explore a SpeakOut TV original series and watch published episodes.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/speakout-tv.css">
+<meta name="theme-color" content="#071226">
+</head>
+<body class="tv-ios youth-show-page">
+<header class="ios-topbar youth-topbar">
+  <div class="tv-container ios-topbar-inner">
+    <a class="ios-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
+    <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV">⌕</a>
+  </div>
+</header>
+
+<main>
+<section class="show-world-hero" id="showHero">
+  <div class="show-world-art" id="showArtwork" aria-hidden="true"></div>
+  <div class="show-world-shade" aria-hidden="true"></div>
+  <div class="tv-container show-world-copy">
+    <a class="show-back" href="tv.html#discover">← Discover</a>
+    <span class="show-world-label" id="showLabel">SPEAKOUT ORIGINAL</span>
+    <h1 id="showTitle">SpeakOut TV</h1>
+    <p id="showDescription">Stories, conversations and perspectives from SpeakOut TV.</p>
+    <div class="show-world-meta">
+      <span id="showHost" hidden></span>
+      <span id="episodeCount">Loading episodes…</span>
+    </div>
+    <div class="show-world-actions">
+      <button type="button" class="feature-btn primary" id="startWatching">▶ Start watching</button>
+      <a class="feature-btn secondary show-search-link" href="tv-search.html">Search TV</a>
+    </div>
+  </div>
+</section>
+
+<section class="tv-container show-world-section" id="startHere" hidden>
+  <div class="youth-section-head">
+    <div><span>START HERE</span><h2>First Up</h2><p>A good place to begin with this series.</p></div>
+  </div>
+  <div class="show-featured-episode" id="featuredEpisode"></div>
+</section>
+
+<section class="tv-container show-world-section">
+  <div class="youth-section-head">
+    <div><span>ALL EPISODES</span><h2>Keep Exploring</h2><p>Watch published episodes from this SpeakOut original.</p></div>
+  </div>
+  <div class="show-episode-grid" id="episodeGrid"><p class="empty-note">Loading episodes…</p></div>
+</section>
+
+<section class="tv-container show-world-footer">
+  <div>
+    <span>MORE FROM SPEAKOUT TV</span>
+    <h2>Keep discovering stories that feel relevant to where you are.</h2>
+  </div>
+  <a href="tv.html#discover">Back to Discover →</a>
+</section>
+</main>
+
+<nav class="ios-tabbar youth-nav show-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html"><span>⌂</span><small>Home</small></a>
+<a href="tv.html#discover" class="active"><span>✦</span><small>Discover</small></a>
+<a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
+<a href="tv.html#listen"><span>◉</span><small>Listen</small></a>
+<a href="tv.html#live"><span>●</span><small>Live</small></a>
+</nav>
+
+<script type="module" src="js/tv-show.js"></script>
+</body></html>

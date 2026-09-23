@@ -1,5 +1,19 @@
-import {db} from "../firebase-config.js";import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-const slug=new URLSearchParams(location.search).get("show")||"";const defaults={"on-the-walk":["On the Walk","Street conversations and reflections from SpeakOut."],"on-the-move":["SpeakOut On The Move","Real conversations with people where they are."],"podcast":["SpeakOut Podcast","Long-form conversations with guests and professionals."],"how-are-you-really":["How Are You, Really?","Short, human conversations about mental wellbeing."],"youth-voices":["Youth Voices","A platform for young people to discuss what affects them."],"campus-connect":["Campus Connect","Stories and conversations from schools and campuses."],"expert-corner":["Expert Corner","Informed educational conversations with qualified guests."],"speakout-stories":["SpeakOut Stories","Human and community stories that deserve to be heard."],"speakout-special":["SpeakOut Special","Events, campaigns and special coverage."]};
+import {db} from "../firebase-config.js";
+import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const slug=new URLSearchParams(location.search).get("show")||"";
+const defaults={
+ "on-the-walk":["On the Walk","Street","Street conversations and reflections from SpeakOut."],
+ "on-the-move":["SpeakOut On The Move","Street","Real conversations with people where they are."],
+ "podcast":["SpeakOut Podcast","Studio","Long-form conversations with guests and professionals."],
+ "how-are-you-really":["How Are You, Really?","Wellbeing","Short, human conversations about mental wellbeing."],
+ "youth-voices":["Youth Voices","Youth","A platform for young people to discuss what affects them."],
+ "campus-connect":["Campus Connect","Campus","Stories and conversations from schools and campuses."],
+ "expert-corner":["Expert Corner","Expert","Informed educational conversations with qualified guests."],
+ "speakout-stories":["SpeakOut Stories","Stories","Human and community stories that deserve to be heard."],
+ "speakout-special":["SpeakOut Special","Special","Events, campaigns and special coverage."]
+};
+
 const starterEpisodes=[
 {id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg"},
 {id:"archive-adhd-men",title:"Dear Men With ADHD: This Is For You | Spoken Word",show:"SpeakOut Stories",description:"A spoken-word conversation from SpeakOut.",url:"https://www.youtube.com/watch?v=ixDjSGFBA5Q"},
@@ -7,8 +21,75 @@ const starterEpisodes=[
 {id:"archive-tired-nation",title:"Heavy Heart of a Tired Nation (Nigeria as a Case Study)",show:"SpeakOut Stories",description:"A SpeakOut reflection from our video archive.",url:"https://www.youtube.com/watch?v=EFOEWzO1a3E"},
 {id:"archive-marital-decay",title:"The Silent Architect of Marital Decay",show:"SpeakOut Stories",description:"A SpeakOut conversation from our video archive.",url:"https://www.youtube.com/watch?v=akWDTQmn9K0"}
 ];
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-let meta=defaults[slug]||[slug.replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase()),"SpeakOut TV original programming."];
-try{const ss=await getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])));ss.forEach(d=>{const x=d.data();if((x.slug||norm(x.title))===slug){meta=[x.title||meta[0],x.description||meta[1]];document.getElementById("showHost").textContent=x.host?"Hosted by "+x.host:"";}})}catch{}
-document.getElementById("showTitle").textContent=meta[0];document.getElementById("showDescription").textContent=meta[1];document.title=meta[0]+" | SpeakOut TV";
-try{const s=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));const a=[];s.forEach(d=>{const x={id:d.id,...d.data()};if(norm(x.show)===slug)a.push(x)});const ids=new Set(a.map(x=>x.id));starterEpisodes.forEach(x=>{if(norm(x.show)===slug&&!ids.has(x.id))a.push(x)});document.getElementById("episodeGrid").innerHTML=a.length?a.map(x=>{let y="";try{const u=new URL(x.url||x.videoUrl);y=u.hostname==="youtu.be"?u.pathname.slice(1):u.searchParams.get("v")||u.pathname.match(/\/(?:live|shorts|embed)\/([^/?]+)/)?.[1]||""}catch{}const img=x.imageUrl||x.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"");return '<a class="card" href="'+(x.id.startsWith("archive-")?"tv.html?episode="+encodeURIComponent(x.id)+"#episodes":"watch.html?id="+encodeURIComponent(x.id))+'">'+(img?'<img class="episode-thumb" src="'+esc(img)+'" alt="" loading="lazy">':'<div class="thumb">'+esc(x.show||"SPEAKOUT TV")+'</div>')+'<div class="card-body"><small>'+esc(x.presenter?"HOST · "+x.presenter:x.show||"EPISODE")+'</small><h3>'+esc(x.title)+'</h3><p>'+esc(x.description||"")+'</p></div></a>'}).join(""):'<p class="empty-note">No published episodes yet.</p>'}catch{document.getElementById("episodeGrid").innerHTML='<p class="empty-note">No published episodes yet.</p>'}
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const ytId=raw=>{try{const u=new URL(raw);if(u.hostname==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||"";if(u.hostname.endsWith("youtube.com"))return u.searchParams.get("v")||u.pathname.match(/\/(?:live|shorts|embed)\/([^/?]+)/)?.[1]||""}catch{}return ""};
+const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
+const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
+const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
+const watchHref=x=>x.id?.startsWith("archive-")?"tv.html?episode="+encodeURIComponent(x.id)+"#watch":"watch.html?id="+encodeURIComponent(x.id);
+
+function episodeCard(x,index){
+ const img=imageFor(x);
+ return '<a class="show-episode-card" href="'+watchHref(x)+'">'+
+   '<div class="show-episode-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="show-episode-fallback">SPEAKOUT TV</div>')+
+   '<span class="show-episode-number">'+String(index+1).padStart(2,"0")+'</span><span class="show-play">▶</span></div>'+
+   '<div class="show-episode-copy"><small>'+esc(x.presenter?"HOST · "+x.presenter:x.show||"EPISODE")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
+}
+
+function featuredCard(x){
+ const img=imageFor(x);
+ return '<a class="show-feature-card" href="'+watchHref(x)+'">'+
+  '<div class="show-feature-art">'+(img?'<img src="'+esc(img)+'" alt="">':'')+'<span class="show-feature-play">▶</span></div>'+
+  '<div class="show-feature-copy"><small>FEATURED EPISODE</small><h3>'+esc(x.title||"SpeakOut TV")+'</h3><p>'+esc(x.description||"")+'</p><span class="show-watch-cta">Watch episode →</span></div></a>';
+}
+
+let meta=defaults[slug]||[slug.replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase()),"Original","SpeakOut TV original programming."];
+let showImage="";
+
+try{
+ const ss=await getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])));
+ ss.forEach(d=>{
+   const x=d.data();
+   if((x.slug||norm(x.title))===slug){
+     meta=[x.title||meta[0],x.category||meta[1],x.description||meta[2]];
+     showImage=x.imageUrl||"";
+     if(x.host){$("#showHost").textContent="Hosted by "+x.host;$("#showHost").hidden=false}
+   }
+ });
+}catch{}
+
+$("#showTitle").textContent=meta[0];
+$("#showLabel").textContent=(meta[1]||"SpeakOut Original").toUpperCase()+" · SPEAKOUT ORIGINAL";
+$("#showDescription").textContent=meta[2];
+document.title=meta[0]+" | SpeakOut TV";
+
+let episodes=[];
+try{
+ const s=await getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"])));
+ s.forEach(d=>{const x={id:d.id,...d.data()};if(norm(x.show)===slug&&String(x.format||x.type||"").toLowerCase()!=="live")episodes.push(x)});
+}catch{}
+
+const videoIds=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));
+starterEpisodes.forEach(x=>{
+ const y=ytId(x.url);
+ if(norm(x.show)===slug&&!videoIds.has(y))episodes.push(x);
+});
+episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
+
+$("#episodeCount").textContent=episodes.length+(episodes.length===1?" episode":" episodes");
+$("#episodeGrid").innerHTML=episodes.length?episodes.map(episodeCard).join(""):'<div class="show-empty"><strong>No published episodes yet</strong><p>New episodes will appear here when they are published.</p><a href="tv.html#discover">Explore other SpeakOut originals →</a></div>';
+
+const first=episodes.find(x=>x.featured===true||String(x.featured)==="true")||episodes[0];
+if(first){
+ $("#startHere").hidden=false;
+ $("#featuredEpisode").innerHTML=featuredCard(first);
+ $("#startWatching").addEventListener("click",()=>location.href=watchHref(first));
+ const heroImg=showImage||imageFor(first);
+ if(heroImg){$("#showArtwork").style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image")}
+}else{
+ $("#startWatching").hidden=true;
+ if(showImage){$("#showArtwork").style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';$("#showArtwork").classList.add("has-image")}
+}
