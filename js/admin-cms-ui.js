@@ -20,7 +20,7 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
   statusBox.setAttribute("role", "status");
   statusBox.setAttribute("aria-live", "polite");
   form.setAttribute("aria-busy", "false");
-  document.querySelectorAll(".side a").forEach(link => {
+  document.querySelectorAll(".side a,.studio-side a").forEach(link => {
     if (new URL(link.href, window.location.href).pathname === window.location.pathname) {
       link.setAttribute("aria-current", "page");
     }
@@ -112,6 +112,10 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
         } finally { setBusy(false); }
       };
     });
+    document.dispatchEvent(new CustomEvent("cms:render", {
+      detail: { collectionName, items: items.map(item => ({ ...item })) }
+    }));
+
     rows.querySelectorAll("[data-del]").forEach(button => {
       button.onclick = async () => {
         const item = items.find(candidate => candidate.id === button.dataset.del);
