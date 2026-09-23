@@ -38,8 +38,10 @@ function episodeCard(x){
  const y=ytId(x.url||x.videoUrl),img=x.imageUrl||x.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"");
  return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">TV</div>')+'<span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
 }
-function seriesCard(x){
- return '<a class="ios-series-card ios-glass" href="show.html?show='+encodeURIComponent(x.slug)+'"><small>'+esc(x.label)+'</small><strong>'+esc(x.title)+'</strong><span>View series ›</span></a>';
+function seriesCard(x,index,episode){
+ const y=ytId(episode?.url||episode?.videoUrl),img=episode?.imageUrl||episode?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"");
+ const art=img?' style="background-image:url(\''+esc(img)+'\')"':"";
+ return '<a class="ios-series-card" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="series-card-art"'+art+'></div><span class="series-card-index">'+String(index+1).padStart(2,"0")+'</span><div class="series-card-copy"><small>'+esc(x.label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series ›</span></div></a>';
 }
 function audioCard(x){
  const art=x.imageUrl||"";
@@ -65,7 +67,20 @@ async function load(){
  const first=regular[0]||episodes[0];
  if(first){setFrame($("#episodePlayer"),first,false);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||""}
  $("#latestRail").innerHTML=regular.map(episodeCard).join("");
- $("#seriesRail").innerHTML=series.map(seriesCard).join("");
+ const normalizedShow=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+ $("#seriesRail").innerHTML=series.map((item,index)=>{
+   const match=regular.find(ep=>normalizedShow(ep.show)===normalizedShow(item.title));
+   return seriesCard(item,index,match);
+ }).join("");
+ if(first){
+   const y=ytId(first.url||first.videoUrl),img=first.imageUrl||first.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/maxresdefault.jpg":"");
+   $("#introTitle").textContent=first.title||"Watch. Listen. Connect.";
+   $("#introDescription").textContent=first.description||"Original SpeakOut programming, stories and conversations.";
+   const backdrop=$("#introBackdrop");
+   if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
+   $("#introPlay")?.addEventListener("click",()=>{setTvView("episodes",{push:true,scroll:true});setFrame($("#episodePlayer"),first,true);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||""});
+ }
+ $("#introSeries")?.addEventListener("click",()=>setTvView("series",{push:true,scroll:true}));
 
  let audio=[];
  try{const a=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));a.forEach(d=>audio.push({id:d.id,...d.data()}))}catch{}
