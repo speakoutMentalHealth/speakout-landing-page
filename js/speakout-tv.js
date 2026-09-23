@@ -242,6 +242,8 @@ function showView(view,{push=false}={}){
    el.hidden=chosen!=="home"&&!viewGroups[chosen].includes(id);
  });
  $(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+ if(chosen==="watch"&&currentEpisode&&!$("#episodePlayer iframe"))setFrame($("#episodePlayer"),currentEpisode,false);
+ if(chosen==="listen")ensureDefaultAudioPlayer();
  if(push){
    const next=chosen==="home"?"tv.html":"#"+chosen;
    history.pushState({tvView:chosen},"",next);
