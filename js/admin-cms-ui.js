@@ -8,7 +8,7 @@ const humanize = value => String(value || "")
   .replace(/([a-z])([A-Z])/g, "$1 $2")
   .replace(/^./, letter => letter.toUpperCase());
 
-export function createAdminCmsController({ collectionName, fieldIds }) {
+export function createAdminCmsController({ collectionName, fieldIds, libraryFields = [], thumbnailField = "" }) {
   const rows = document.getElementById("rows");
   const form = document.getElementById("cmsForm");
   const statusBox = document.getElementById("statusBox");
@@ -68,11 +68,13 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
   }
 
   function resetEditor() {
+    const previousId = editingId;
     editingId = null;
     form.reset();
     submitButton.textContent = "Save record";
     cancelButton.hidden = true;
     document.querySelectorAll("[data-edit]").forEach(button => button.removeAttribute("aria-current"));
+    document.dispatchEvent(new CustomEvent("cms:edit-reset", { detail: { collectionName, previousId } }));
   }
 
   function startEditing(item, button) {
@@ -86,6 +88,7 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
     document.querySelectorAll("[data-edit]").forEach(candidate => candidate.removeAttribute("aria-current"));
     button.setAttribute("aria-current", "true");
     show(`Editing ${item.title || "record"}.`, "ok");
+    document.dispatchEvent(new CustomEvent("cms:edit-start", { detail: { collectionName, item: { ...item } } }));
     form.scrollIntoView({ behavior: "smooth", block: "center" });
     document.getElementById(fieldIds[0])?.focus();
   }
@@ -94,8 +97,11 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
     recordCount.textContent = `${items.length} ${items.length === 1 ? "record" : "records"}`;
     rows.innerHTML = items.map(item => {
       const title = item.title || item.name || item.label || "Untitled";
-      return `<tr class="row"><td data-label="Title"><strong>${SO.safe(title)}</strong></td><td data-label="Status"><span class="cms-status cms-status-${SO.safe(item.status || "active")}">${SO.safe(item.status || "active")}</span></td><td data-label="Order">${SO.safe(item.order ?? 0)}</td><td data-label="Actions"><div class="actions"><button class="btn soft" data-edit="${SO.safe(item.id)}" type="button" aria-label="Edit ${SO.safe(title)}">Edit</button><button class="btn dark" data-hide="${SO.safe(item.id)}" type="button" aria-label="Hide ${SO.safe(title)}">Hide</button><button class="btn cms-danger" data-del="${SO.safe(item.id)}" type="button" aria-label="Delete ${SO.safe(title)}">Delete</button></div></td></tr>`;
-    }).join("") || '<tr><td class="cms-empty" colspan="4">No records yet. Use the form above to create the first one.</td></tr>';
+      const thumbnail = thumbnailField && /^https?:\/\//iu.test(String(item[thumbnailField] || "")) ? String(item[thumbnailField]) : "";
+      const titleCell = '<td data-label="Title"><div class="cms-title-cell">'+(thumbnail?'<img class="cms-row-thumb" src="'+SO.safe(thumbnail)+'" alt="" loading="lazy">':'')+'<div><strong>'+SO.safe(title)+'</strong><small class="cms-row-sub" data-record-sub="'+SO.safe(item.id)+'"></small></div></div></td>';
+      const extraCells = libraryFields.map(id => '<td data-label="'+SO.safe(humanize(id))+'" data-library-field="'+SO.safe(id)+'">'+SO.safe(item[id] ?? "—")+'</td>').join("");
+      return '<tr class="row" data-record-id="'+SO.safe(item.id)+'">'+titleCell+extraCells+'<td data-label="Status"><span class="cms-status cms-status-'+SO.safe(item.status || "active")+'">'+SO.safe(item.status || "active")+'</span></td><td data-label="Order">'+SO.safe(item.order ?? 0)+'</td><td data-label="Actions"><div class="actions"><button class="btn soft" data-edit="'+SO.safe(item.id)+'" type="button" aria-label="Edit '+SO.safe(title)+'">Edit</button><button class="btn dark" data-hide="'+SO.safe(item.id)+'" type="button" aria-label="Hide '+SO.safe(title)+'">Hide</button><button class="btn cms-danger" data-del="'+SO.safe(item.id)+'" type="button" aria-label="Delete '+SO.safe(title)+'">Delete</button></div></td></tr>';
+    }).join("") || '<tr><td class="cms-empty" colspan="'+(4+libraryFields.length)+'">No records yet. Use the form above to create the first one.</td></tr>';
 
     rows.querySelectorAll("[data-edit]").forEach(button => {
       button.onclick = () => startEditing(items.find(item => item.id === button.dataset.edit), button);
