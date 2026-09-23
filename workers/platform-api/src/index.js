@@ -1005,16 +1005,39 @@ async function spotifyShowEpisodes(env) {
 }
 
 async function publicTvBundle(env) {
-  const [episodesPage, showsPage] = await Promise.all([
+  const [episodesPage, showsPage, legacyVideoPage] = await Promise.all([
     queryAllDocuments(env, "tvEpisodes"),
-    queryAllDocuments(env, "tvShows")
+    queryAllDocuments(env, "tvShows"),
+    queryAllDocuments(env, "homepageVideos")
   ]);
   const episodes = episodesPage.documents.filter(publicMediaStatus).map(publicTvEpisode);
+  const seenUrls = new Set(episodes.map(item => clean(item.url)).filter(Boolean));
+  for (const item of legacyVideoPage.documents.filter(publicMediaStatus)) {
+    const url = clean(item.youtubeUrl || item.url);
+    if (!url || seenUrls.has(url)) continue;
+    seenUrls.add(url);
+    episodes.push({
+      id: "legacy-" + clean(item.id),
+      title: clean(item.title) || "SpeakOut TV",
+      show: clean(item.category) || "SpeakOut Stories",
+      description: clean(item.description),
+      url,
+      imageUrl: clean(item.thumbnailUrl || item.imageUrl),
+      format: "episode",
+      status: "published",
+      homePlacement: "auto",
+      contentPillar: "general",
+      audience: "youth",
+      publishDate: clean(item.publishDate || item.createdAt),
+      order: Number(item.order || 0),
+      source: "legacy-homepage-video"
+    });
+  }
   const shows = showsPage.documents.filter(publicMediaStatus).map(publicTvShow);
   return {
     episodes,
     shows,
-    truncated: episodesPage.truncated || showsPage.truncated
+    truncated: episodesPage.truncated || showsPage.truncated || legacyVideoPage.truncated
   };
 }
 
