@@ -9,7 +9,7 @@ const starterEpisodes=[
 {id:"archive-marital-decay",title:"The Silent Architect of Marital Decay",show:"SpeakOut Stories",description:"A SpeakOut conversation from our video archive.",url:"https://www.youtube.com/watch?v=akWDTQmn9K0",format:"episode",status:"published",archive:true,order:905,tags:["relationships","stories"]}
 ];
 
-const series=[
+const defaultSeries=[
 {slug:"on-the-walk",title:"On the Walk",label:"Street"},
 {slug:"on-the-move",title:"SpeakOut On The Move",label:"Street"},
 {slug:"podcast",title:"SpeakOut Podcast",label:"Studio"},
@@ -61,8 +61,9 @@ function episodeCard(x){
  return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">TV</div>')+'<span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
 }
 function originalCard(x,episode){
- const img=imageFor(episode),style=img?' style="background-image:url(\''+esc(img)+'\')"':"";
- return '<a class="original-card" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="original-art"'+style+'></div><div class="original-copy"><small>'+esc(x.label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series →</span></div></a>';
+ const img=x.imageUrl||imageFor(episode),style=img?' style="background-image:url(\''+esc(img)+'\')"':"";
+ const label=x.category||x.label||"Original";
+ return '<a class="original-card" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="original-art"'+style+'></div><div class="original-copy"><small>'+esc(label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series →</span></div></a>';
 }
 function audioCard(x){
  const art=x.imageUrl||"";
@@ -355,8 +356,16 @@ async function load(){
  renderForYou();
  renderShelf();
  $("#storiesRail").innerHTML=homeEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||homeEpisodes.slice(0,5).map(contentCard).join("");
- $("#seriesRail").innerHTML=series.map(s=>originalCard(s,homeEpisodes.find(ep=>normalize(ep.show)===normalize(s.title)))).join("");
- $("#introSeries")?.addEventListener("click",()=>showView("discover",{push:true}));
+ let seriesItems=[];
+ try{
+   const snap=await getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])));
+   snap.forEach(d=>seriesItems.push({id:d.id,...d.data()}));
+ }catch{}
+ const knownSeries=new Set(seriesItems.map(x=>normalize(x.slug||x.title).replace(/ /g,"-")));
+ defaultSeries.forEach(x=>{if(!knownSeries.has(x.slug))seriesItems.push(x)});
+ seriesItems.sort((a,b)=>order(a,b)||String(a.title||"").localeCompare(String(b.title||"")));
+ $("#seriesRail").innerHTML=seriesItems.map(item=>originalCard(item,homeEpisodes.find(ep=>normalize(ep.show)===normalize(item.title)))).join("");
+ $("#introSeries")?.addEventListener("click",()=>location.href="tv-search.html");
 
  let audio=[];
  try{const snap=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));snap.forEach(d=>audio.push({id:d.id,...d.data()}))}catch{}
