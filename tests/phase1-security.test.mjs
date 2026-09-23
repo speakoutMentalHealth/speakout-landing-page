@@ -196,3 +196,30 @@ test("series archive episodes use the dedicated episode page", () => {
   assert.match(script, /const watchHref=x=>"watch\.html\?id="/u);
   assert.doesNotMatch(script, /archive-"\)\?"tv\.html\?episode=/u);
 });
+
+
+test("SpeakOut TV final viewer journey keeps navigation and interactions consistent", () => {
+  const home = read("tv.html");
+  const show = read("show.html");
+  const watch = read("watch.html");
+  const search = read("tv-search.html");
+  const script = read("js/speakout-tv.js");
+  const radio = read("js/speakout-radio.js");
+  const discovery = read("js/tv-search.js");
+  const styles = read("css/speakout-tv.css");
+  const sw = read("tv-sw.js");
+
+  assert.match(home, /href="radio\.html"><span>◉<\/span><small>Listen<\/small>/u);
+  for (const page of [show, watch, search]) assert.match(page, /href="radio\.html"/u);
+
+  assert.match(script, /\$\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
+  assert.doesNotMatch(script, /(?<!\$)\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
+  assert.match(script, /closest\("\.youth-nav a\[data-view\]"\)/u);
+  assert.match(script, /preferredScrollBehavior/u);
+  assert.match(radio, /preferredScrollBehavior/u);
+  assert.match(discovery, /preferredScrollBehavior/u);
+
+  assert.match(styles, /:focus-visible/u);
+  assert.match(styles, /prefers-reduced-motion:reduce/u);
+  assert.match(sw, /speakout-tv-v3/u);
+});
