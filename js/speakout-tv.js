@@ -37,7 +37,19 @@ const livePeople=x=>[x?.presenter?"Host · "+x.presenter:"",x?.guest?"Guest · "
 
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
- target.innerHTML='<iframe src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+ target.innerHTML='<iframe src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+}
+function renderEpisodePreview(target,item){
+ if(!target||!item)return;
+ const img=imageFor(item);
+ target.innerHTML='<button class="tv-player-preview" type="button" data-episode-open="'+esc(item.id)+'">'+
+  (img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">SPEAKOUT TV</div>')+
+  '<span class="tv-player-preview-play">▶</span><span class="sr-only">Play '+esc(item.title||"SpeakOut TV")+'</span></button>';
+}
+const defaultSpotifySrc="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0";
+function ensureDefaultAudioPlayer(){
+ const host=$("#audioPlayer");if(!host||host.querySelector("iframe"))return;
+ host.innerHTML='<iframe loading="lazy" src="'+esc(defaultSpotifySrc)+'" title="SpeakOut podcast" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';
 }
 function contentCard(x){
  const img=imageFor(x),saved=isSaved(x.id);
@@ -70,7 +82,7 @@ function topicMatch(x,topic){
  return (groups[topic]||[topic]).some(k=>hay.includes(k));
 }
 
-let regularEpisodes=[];
+let regularEpisodes=[],currentEpisode=null;
 const shelfKey="speakout-tv-shelf-v1";
 function readShelf(){try{const raw=JSON.parse(localStorage.getItem(shelfKey)||"{}");return {recent:Array.isArray(raw.recent)?raw.recent:[],saved:Array.isArray(raw.saved)?raw.saved:[]}}catch{return {recent:[],saved:[]}}}
 function writeShelf(data){try{localStorage.setItem(shelfKey,JSON.stringify({recent:data.recent.slice(0,8),saved:data.saved.slice(0,24)}))}catch{}}
@@ -90,6 +102,7 @@ function renderShelf(){
 }
 function playEpisode(item,autoplay=true){
  if(!item)return;
+ currentEpisode=item;
  setFrame($("#episodePlayer"),item,autoplay);
  $("#episodeTitle").textContent=item.title||"SpeakOut TV";
  $("#episodeDescription").textContent=item.description||"";
@@ -247,7 +260,7 @@ async function load(){
  regularEpisodes=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
  const first=regularEpisodes[0]||episodes[0];
  if(first){
-   setFrame($("#episodePlayer"),first,false);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
+   currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
    $("#introTitle").textContent=first.title||"Real conversations. No pretending.";$("#introDescription").textContent=first.description||"Original SpeakOut stories and conversations.";
    const img=imageFor(first),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
    $("#introPlay")?.addEventListener("click",()=>playEpisode(first,true));
