@@ -1,5 +1,9 @@
 const CACHE="speakout-tv-v3";
-const STATIC=["./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html","./css/speakout-tv.css","./images/logo.png","./tv.webmanifest"];
+const STATIC=[
+ "./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html",
+ "./css/speakout-tv.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",
+ "./js/speakout-tv.js","./js/speakout-radio.js","./js/tv-search.js","./js/tv-show.js","./js/tv-watch.js"
+];
 
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(STATIC)).then(()=>self.skipWaiting()));
