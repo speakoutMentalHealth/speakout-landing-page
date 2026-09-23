@@ -306,8 +306,7 @@ function renderLiveExperience(allEpisodes){
 }
 
 const viewGroups={
- home:["home","featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories","episodes","audio","live"],
- discover:["today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"],
+ home:["home","featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"],
  watch:["episodes"],
  listen:["audio"],
  live:["live"]
@@ -315,9 +314,9 @@ const viewGroups={
 function showView(view,{push=false}={}){
  const chosen=viewGroups[view]?view:"home";
  document.body.classList.toggle("youth-view-filtered",chosen!=="home");
- $$(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
+ $(".youth-welcome,.youth-feature,.youth-section,.youth-closing").forEach(el=>{
    const id=el.id||"";
-   el.hidden=chosen!=="home"&&!viewGroups[chosen].includes(id);
+   el.hidden=id?!viewGroups[chosen].includes(id):chosen!=="home";
  });
  $$(".youth-nav a").forEach(a=>{const active=a.dataset.view===chosen;a.classList.toggle("active",active);if(active)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
  if(chosen==="watch"&&currentEpisode&&!$("#episodePlayer iframe"))setFrame($("#episodePlayer"),currentEpisode,false);
@@ -382,8 +381,13 @@ document.addEventListener("click",e=>{
  const watchLive=e.target.closest("[data-live-watch]");if(watchLive){const item=liveItems.find(x=>x.id===watchLive.dataset.liveWatch);if(item){setFrame($("#livePlayer"),item,true);$("#liveTitle").textContent=item.title||"SpeakOut Live";$("#liveDescription").textContent=item.description||"";$("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveMeta").innerHTML=liveMetaMarkup(item);$("#live").scrollIntoView({behavior:preferredScrollBehavior(),block:"start"})}return}
  const nav=e.target.closest(".youth-nav a[data-view]");if(nav){e.preventDefault();showView(nav.dataset.view,{push:true})}
 });
-addEventListener("popstate",()=>showView(location.hash.slice(1)||"home"));
-showView(location.hash.slice(1)||"home");
+function routeTvHash(){
+ const hash=location.hash.slice(1);
+ if(hash==="discover"){location.replace("tv-search.html");return}
+ showView(hash||"home");
+}
+addEventListener("popstate",routeTvHash);
+routeTvHash();
 
 let deferredInstall;
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const b=$("#installTv");if(b)b.hidden=false});
