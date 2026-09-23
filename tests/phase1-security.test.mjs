@@ -365,3 +365,36 @@ test("TV Studio helper script passes JavaScript syntax checks", () => {
   const path=fileURLToPath(new URL("../js/tv-admin-live.js", import.meta.url));
   assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }));
 });
+
+
+test("TV Studio Editorial Control 2.0 surfaces library quality and placement health", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  for (const id of ["editorialDesk","featuredCount","reviewCount","readyEditorialCount","attentionEditorialCount","scheduledEditorialCount"]) {
+    assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+  }
+  assert.match(page,/type="module" src="js\/tv-admin-live\.js"/u);
+  assert.match(script,/collection\(db,"tvEpisodes"\)/u);
+  assert.match(script,/function recordIssues/u);
+  assert.match(script,/function refreshEditorialDashboard/u);
+  assert.match(script,/homePlacement\?\.value === "featured"/u);
+  assert.match(styles,/\.editorial-summary-grid/u);
+  assert.match(styles,/\.attention-list/u);
+});
+
+test("TV Studio publishing readiness matches secure backend expectations", () => {
+  const script=read("js/tv-admin-live.js");
+  assert.match(script,/title\?\.value\.trim\(\)\.length >= 8/u);
+  assert.match(script,/description\?\.value\.trim\(\)\.length >= 50/u);
+  assert.match(script,/tagCount >= 2/u);
+  assert.match(script,/editorialReview\?\.value === "complete"/u);
+  assert.match(script,/minorInvolved\?\.value !== "yes" \|\| consentConfirmed\?\.value === "yes"/u);
+});
+
+test("TV discovery searches editorial pillar and audience and updates every filter tab", () => {
+  const script=read("js/tv-search.js");
+  assert.match(script,/x\.contentPillar,x\.audience/u);
+  assert.ok((script.match(/\$\$\("\[data-filter\]"\)\.forEach/gu)||[]).length >= 2);
+  assert.doesNotMatch(script,/(?<!\$)\$\("\[data-filter\]"\)\.forEach/u);
+});
