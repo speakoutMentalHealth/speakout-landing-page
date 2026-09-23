@@ -2,7 +2,8 @@ import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const $=s=>document.querySelector(s);
-const $$=s=>[...document.querySelectorAll(s)];
+const $=s=>[...document.querySelectorAll(s)];
+const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const slugFor=s=>norm(s).replace(/\s+/g,"-");
@@ -130,7 +131,7 @@ async function load(){
 
 $("#tvSearch").addEventListener("input",()=>{$$("#topicRail button").forEach(b=>b.classList.remove("active"));render()});
 $("#clearSearch").addEventListener("click",()=>{$("#tvSearch").value="";$("#tvSearch").focus();render()});
-$("#showEverything").addEventListener("click",()=>{$("#tvSearch").value="";filter="all";$$("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter==="all"));$$("[data-topic]").forEach(b=>b.classList.remove("active"));render();window.scrollTo({top:0,behavior:"smooth"})});
+$("#showEverything").addEventListener("click",()=>{$("#tvSearch").value="";filter="all";$$("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter==="all"));$$("[data-topic]").forEach(b=>b.classList.remove("active"));render();window.scrollTo({top:0,behavior:preferredScrollBehavior()})});
 
 $$("[data-filter]").forEach(button=>button.addEventListener("click",()=>{
  filter=button.dataset.filter||"all";
