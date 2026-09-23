@@ -1,0 +1,164 @@
+*{box-sizing:border-box}
+html{background:var(--tv-bg);scroll-behavior:smooth}
+body{margin:0;background:
+  radial-gradient(800px 420px at 15% -10%,rgba(40,112,190,.12),transparent 65%),
+  var(--tv-bg);
+  color:var(--tv-text);
+  font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  padding-bottom:calc(var(--tv-nav-h) + 34px + env(safe-area-inset-bottom));
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{color:inherit}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.tv-container{width:min(var(--tv-max),calc(100% - 28px));margin-inline:auto}
+.youth-shell{padding-top:10px}
+.youth-eyebrow,.player-label,.feature-badge,.show-world-label,.youth-section-head>div>span,.live-subhead span,.listen-now-copy>span,.discovery-results-head>div>span{
+  color:var(--tv-blue);
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+h1,h2,h3,strong{font-family:"Space Grotesk",Manrope,sans-serif}
+:focus-visible{outline:2px solid var(--tv-orange);outline-offset:3px}
+
+/* header */
+.ios-topbar{
+  position:sticky;top:0;z-index:80;
+  background:rgba(5,16,29,.88);
+  backdrop-filter:blur(18px) saturate(130%);
+  border-bottom:1px solid var(--tv-line);
+}
+.ios-topbar-inner{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.ios-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;letter-spacing:-.03em}
+.ios-brand img{width:38px;height:38px;border-radius:10px;object-fit:cover;background:#fff}
+.ios-brand b{color:var(--tv-orange);font-weight:800}
+.youth-top-actions{display:flex;align-items:center;gap:10px}
+.youth-now{display:none;color:var(--tv-muted);font-size:.72rem}
+.ios-icon-btn{
+  width:40px;height:40px;border-radius:12px;
+  border:1px solid var(--tv-line);
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.035);
+  color:#dce6ef;font-size:1.15rem;
+}
+
+/* bottom navigation */
+.ios-tabbar{
+  position:fixed;z-index:90;
+  left:12px;right:12px;
+  bottom:max(10px,env(safe-area-inset-bottom));
+  min-height:var(--tv-nav-h);
+  padding:7px 8px;
+  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  background:rgba(5,16,29,.94);
+  backdrop-filter:blur(22px) saturate(135%);
+  box-shadow:0 18px 50px rgba(0,0,0,.38);
+}
+.ios-tabbar a{
+  min-width:0;min-height:52px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border-radius:14px;
+  color:#8799ac;
+  font-size:.72rem;font-weight:700;
+  transition:color .18s ease,background .18s ease,transform .18s ease;
+}
+.ios-tabbar a span{font-size:1rem;line-height:1}
+.ios-tabbar a small{font-size:.64rem;line-height:1;font-weight:700}
+.ios-tabbar a.active,.ios-tabbar a[aria-current="page"]{color:var(--tv-orange)}
+.ios-tabbar a.active span,.ios-tabbar a[aria-current="page"] span{color:var(--tv-orange)}
+.ios-tabbar a:active{transform:scale(.97)}
+
+/* section system */
+.youth-section{padding:30px 0 0}
+.youth-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}
+.youth-section-head h2{margin:4px 0 0;font-size:clamp(1.35rem,2.4vw,2rem);line-height:1;letter-spacing:-.04em}
+.youth-section-head p{margin:6px 0 0;color:var(--tv-muted);font-size:.78rem;line-height:1.5;max-width:560px}
+.youth-section-head>a{color:var(--tv-orange);font-size:.72rem;font-weight:800;white-space:nowrap}
+
+/* rails + cards */
+.content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.listen-rail,.live-previous-rail{
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 1px 10px;
+}
+.content-rail::-webkit-scrollbar,.originals-rail::-webkit-scrollbar,.ios-episode-strip::-webkit-scrollbar,.ios-audio-strip::-webkit-scrollbar,.listen-rail::-webkit-scrollbar,.live-previous-rail::-webkit-scrollbar{display:none}
+.youth-content-card,.ios-episode-card,.original-card,.ios-audio-episode,.listen-card,.show-episode-card,.watch-related-card,.discovery-media-card{
+  position:relative;flex:0 0 min(78vw,286px);scroll-snap-align:start;
+  overflow:hidden;border-radius:var(--tv-radius-md);
+  background:var(--tv-surface);border:1px solid var(--tv-line);
+}
+.youth-content-open,.listen-card-open{width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left}
+.youth-content-thumb,.ios-episode-card img,.original-art,.ios-audio-art,.listen-card-art,.show-episode-art,.watch-related-art,.discovery-media-art{
+  position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(145deg,#123253,#081420);
+}
+.youth-content-thumb img,.ios-episode-card img,.original-art img,.ios-audio-art img,.listen-card-art img,.show-episode-art img,.watch-related-art img,.discovery-media-art img{
+  width:100%;height:100%;object-fit:cover;
+}
+.youth-content-card h3,.original-copy strong,.listen-card-copy strong,.show-episode-copy strong,.watch-related-card strong,.discovery-media-copy strong{
+  display:block;margin:0;padding:12px 13px 4px;font-size:.91rem;line-height:1.28;letter-spacing:-.02em;
+}
+.youth-content-card p,.original-copy p,.listen-card-copy p,.show-episode-copy p,.watch-related-card p,.discovery-media-copy p{
+  margin:0;padding:0 13px 14px;color:var(--tv-muted);font-size:.69rem;line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.content-save,.listen-card-save{
+  position:absolute;z-index:3;right:8px;top:8px;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(4,11,20,.78);color:#fff;
+  display:grid;place-items:center;
+}
+.content-save.is-saved,.listen-card-save.is-saved{background:var(--tv-orange);color:#211100;border-color:var(--tv-orange)}
+.ios-audio-empty,.empty-note{color:var(--tv-muted);font-size:.78rem;padding:16px 2px}
+
+/* buttons */
+.feature-btn,.ios-pill,.programming-pick,.tv-action-btn,.watch-action,.live-action,.listen-action,.listen-direct-play,.live-reminder-btn{
+  min-height:40px;padding:0 13px;border-radius:10px;border:1px solid var(--tv-line);
+  background:rgba(255,255,255,.045);color:var(--tv-text);
+  font-size:.72rem;font-weight:800;cursor:pointer;
+}
+.feature-btn.primary,.tv-action-btn.primary,.watch-action.primary,.live-action.primary,.live-reminder-btn{
+  background:var(--tv-orange);color:#211100;border-color:var(--tv-orange);
+}
+
+/* route purity */
+html[data-tv-route="home"] .media-only-view{display:none}
+html[data-tv-route="watch"] .home-only,
+html[data-tv-route="watch"] .media-only-view:not(.watch-only){display:none}
+html[data-tv-route="live"] .home-only,
+html[data-tv-route="live"] .media-only-view:not(.live-only){display:none}
+.youth-feature.feature-empty{display:none}
+
+/* responsive */
+@media(min-width:760px){
+  .tv-container{width:min(var(--tv-max),calc(100% - 48px))}
+  .youth-now{display:inline}
+  .ios-tabbar{left:50%;right:auto;width:min(600px,calc(100% - 40px));transform:translateX(-50%)}
+  .youth-content-card,.ios-episode-card,.original-card,.ios-audio-episode,.listen-card,.watch-related-card,.discovery-media-card{flex-basis:280px}
+}
+@media(min-width:1024px){
+  .youth-section{padding-top:38px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+.youth-content-open>small{display:block;padding:10px 13px 0;color:var(--tv-blue);font-size:.55rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.youth-content-open>strong{display:block;padding:4px 13px 3px;font-size:.91rem;line-height:1.28;letter-spacing:-.02em}
+.ios-episode-card,.ios-audio-episode{padding:0;border:1px solid var(--tv-line);color:inherit;text-align:left;cursor:pointer}
+.ios-episode-card>span{display:block;padding:10px 12px 12px;font-size:.75rem;font-weight:750;line-height:1.3}
+.ios-thumb-fallback{height:100%;display:grid;place-items:center;color:var(--tv-muted);font-size:.62rem;font-weight:800;letter-spacing:.1em}
+.ios-audio-episode>img,.ios-audio-art{width:100%;aspect-ratio:1/1;object-fit:cover;background:linear-gradient(145deg,#173b60,#081522)}
+.ios-audio-art{display:grid;place-items:center;color:var(--tv-orange);font-size:1.6rem}
+.ios-audio-episode>span{display:block;padding:10px 12px 12px}
+.ios-audio-episode>span small{display:block;color:var(--tv-blue);font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.ios-audio-episode>span strong{display:block;margin-top:3px;font-size:.78rem;line-height:1.3}
+.original-art{background-size:cover;background-position:center}
+.original-copy>span{display:block;padding:0 13px 13px;color:var(--tv-orange);font-size:.62rem;font-weight:800}
+.ios-tabbar a span svg{display:block}

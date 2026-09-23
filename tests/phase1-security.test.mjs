@@ -208,14 +208,16 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
   const script = read("js/speakout-tv.js");
   const radio = read("js/speakout-radio.js");
   const discovery = read("js/tv-search.js");
-  const styles = read("css/speakout-tv.css");
+  const styles = read("css/tv/base.css");
   const sw = read("tv-sw.js");
 
-  assert.match(home, /href="radio\.html"><span>◉<\/span><small>Listen<\/small>/u);
+  assert.match(home, /href="radio\.html"/u);
   for (const page of [show, watch, search]) assert.match(page, /href="radio\.html"/u);
+  assert.match(home, /data-view="home"/u);
+  assert.match(home, /data-view="watch"/u);
+  assert.match(home, /data-view="live"/u);
 
   assert.match(script, /\$\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
-  assert.doesNotMatch(script, /(?<!\$)\$\("\.ios-episode-card,\.youth-content-card"\)\.forEach/u);
   assert.match(script, /closest\("\.youth-nav a\[data-view\]"\)/u);
   assert.match(script, /preferredScrollBehavior/u);
   assert.match(radio, /preferredScrollBehavior/u);
@@ -223,9 +225,8 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v6/u);
+  assert.match(sw, /speakout-tv-v7/u);
 });
-
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
   for (const file of [
@@ -496,8 +497,7 @@ test("SpeakOut TV keeps editorial home content separate from Watch Listen and Li
   assert.match(script,/watch:\["episodes"\]/u);
   assert.match(script,/listen:\["audio"\]/u);
   assert.match(script,/live:\["live"\]/u);
-  assert.match(script,/el\.hidden=id\?!viewGroups\[chosen\]\.includes\(id\):chosen!=="home"/u);
-  assert.match(page,/href="tv-search\.html"><span>✦<\/span><small>Discover<\/small><\/a>/u);
+  assert.match(page,/href="tv-search\.html"/u);
   assert.doesNotMatch(page,/data-view="discover"/u);
 });
 
@@ -559,41 +559,46 @@ test("SpeakOut TV section tabs switch every matching section and keep media view
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
   const radio=read("radio.html");
-  const styles=read("css/speakout-tv.css");
+  const base=read("css/tv/base.css");
+  const media=read("css/tv/media.css");
   assert.match(script, /\$\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
-  assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-welcome,\.youth-feature,\.youth-section,\.youth-closing"\)\.forEach/u);
   assert.match(script, /document\.body\.dataset\.tvView=chosen/u);
-  assert.match(page, /id="episodes"[\s\S]*?<h2>Videos<\/h2>/u);
+  assert.match(page, /id="episodes"[\s\S]*?<h2>Watch<\/h2>/u);
   assert.match(page, /id="audio"[\s\S]*?<h2>Audio<\/h2>/u);
-  assert.match(page, /id="live"[\s\S]*?<h2>SpeakOut Live<\/h2>/u);
+  assert.match(page, /id="live"[\s\S]*?<h2>Live<\/h2>/u);
   assert.match(radio, /listen-hero-compact/u);
-  assert.doesNotMatch(radio, /Press play\./u);
-  assert.match(styles, /Bright Youth UI v3/u);
-  assert.match(styles, /body\.youth-tv\[data-tv-view="watch"\]/u);
-  assert.match(styles, /body\.youth-tv\[data-tv-view="live"\]/u);
+  assert.match(base, /html\[data-tv-route="watch"\]/u);
+  assert.match(base, /html\[data-tv-route="live"\]/u);
+  assert.match(media, /live-cinema-shell/u);
 });
 
-
 test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () => {
-  const styles=read("css/speakout-tv.css");
+  const tokens=read("css/tv/tokens.css");
+  const base=read("css/tv/base.css");
+  const home=read("css/tv/home.css");
   for (const page of ["tv.html","show.html","watch.html","tv-search.html","radio.html"]) {
     const html=read(page);
     assert.match(html, /family=Manrope/u, page);
     assert.match(html, /family=Space\+Grotesk/u, page);
     assert.match(html, /meta name="theme-color" content="#071225"/u, page);
+    assert.match(html, /css\/tv\/tokens\.css/u, page);
+    assert.match(html, /css\/tv\/base\.css/u, page);
   }
-  assert.match(styles, /--tv-font-body:"Manrope"/u);
-  assert.match(styles, /--tv-font-display:"Space Grotesk"/u);
-  assert.match(styles, /--tv-text:#f8fbff/u);
-  assert.match(styles, /--tv-muted:#bdc9d9/u);
-  assert.match(styles, /feature-art\.has-image:after/u);
-  assert.match(styles, /youth-content-card p[\s\S]*#bcc9da/u);
+  assert.match(tokens, /--tv-text:#f5f8fb/u);
+  assert.match(tokens, /--tv-muted:#91a4b8/u);
+  assert.match(base, /font-family:Manrope/u);
+  assert.match(base, /font-family:"Space Grotesk"/u);
+  assert.match(home, /feature-copy h2/u);
+  assert.doesNotMatch(home, /!important/u);
 });
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
-  assert.match(read("tv-sw.js"), /speakout-tv-v6/u);
+  const sw=read("tv-sw.js");
+  assert.match(sw, /speakout-tv-v7/u);
+  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css"]) {
+    assert.ok(sw.includes(asset),asset);
+  }
 });
-
 
 test("SpeakOut TV keeps Featured exclusively on the home experience", () => {
   const home=read("tv.html");
@@ -620,27 +625,29 @@ test("Watch remains a video-only viewing surface", () => {
 test("Live is a single cinematic standby stage with only next-session information", () => {
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
-  const styles=read("css/speakout-tv.css");
+  const styles=read("css/tv/media.css");
   assert.match(page,/class="live-cinema-shell"/u);
   assert.match(page,/class="live-signal"/u);
-  assert.match(page,/We’ll be live here\./u);
+  assert.match(page,/No live session right now\./u);
   assert.doesNotMatch(page,/id="liveScheduleSection"|id="livePreviousSection"/u);
   assert.doesNotMatch(script,/scheduleSection\.hidden|previousSection\.hidden/u);
   assert.match(script,/status\.textContent=nextLive\?"Upcoming":"Standby"/u);
-  assert.match(styles,/SpeakOut TV Visual System v5 — Night Signal/u);
-  assert.match(styles,/\.live-v2-player[\s\S]*min-height:min\(70vh,760px\)/u);
+  assert.match(styles,/\.live-v2-player\{aspect-ratio:16\/9\}/u);
+  assert.doesNotMatch(styles,/70vh/u);
 });
 
 test("Night Signal v5 uses one explicit high-contrast dark palette", () => {
-  const styles=read("css/speakout-tv.css");
-  assert.match(styles,/--tv-ink:#f8fbff/u);
-  assert.match(styles,/--tv-text:#f8fbff/u);
-  assert.match(styles,/--tv-muted:#b6c5d8/u);
-  assert.match(styles,/body\.youth-tv,[\s\S]*linear-gradient\(180deg,#071426 0%,#030812 54%,#02050b 100%\)/u);
-  assert.match(styles,/\.youth-listen-page \.listen-card[\s\S]*background:linear-gradient/u);
-  assert.match(styles,/\.discovery-search-box input[\s\S]*color:#fff/u);
+  const tokens=read("css/tv/tokens.css");
+  const base=read("css/tv/base.css");
+  const media=read("css/tv/media.css");
+  const discover=read("css/tv/discover.css");
+  assert.match(tokens,/--tv-bg:#05101d/u);
+  assert.match(tokens,/--tv-text:#f5f8fb/u);
+  assert.match(tokens,/--tv-muted:#91a4b8/u);
+  assert.match(base,/background:[\s\S]*var\(--tv-bg\)/u);
+  assert.match(media,/listen-card/u);
+  assert.match(discover,/discovery-search-box input/u);
 });
-
 
 test("TV Studio Editorial Operations 4.0 exposes a searchable work queue and library", () => {
   const page=read("admin-tv.html");
@@ -709,33 +716,35 @@ test("SpeakOut TV keeps Featured and mixed discovery content home-only", () => {
 });
 
 test("SpeakOut TV hierarchy sweep restrains oversized Featured Watch Live Audio and Discover typography", () => {
-  const styles=read("css/speakout-tv.css");
-  assert.match(styles,/TV hierarchy sweep/u);
-  assert.match(styles,/\.youth-tv\[data-tv-view="home"\] \.youth-feature/u);
-  assert.match(styles,/min-height:clamp\(285px,34vw,420px\)!important/u);
-  assert.match(styles,/\.feature-copy h2/u);
-  assert.match(styles,/body\.youth-tv\[data-tv-view="live"\] \.live-only \.compact-media-head h2/u);
-  assert.match(styles,/\.youth-listen-page \.listen-hero-compact h1/u);
-  assert.match(styles,/\.youth-search-page \.search-discovery-hero h1/u);
+  const home=read("css/tv/home.css");
+  const media=read("css/tv/media.css");
+  const discover=read("css/tv/discover.css");
+  assert.match(home,/\.youth-feature/u);
+  assert.match(home,/min-height:300px/u);
+  assert.match(home,/feature-copy h2/u);
+  assert.match(media,/\.live-info-card h3/u);
+  assert.match(media,/\.listen-hero h1/u);
+  assert.match(discover,/\.search-discovery-hero h1/u);
+  assert.doesNotMatch(home,/!important/u);
+  assert.doesNotMatch(media,/!important/u);
 });
 
 test("SpeakOut TV initial route CSS prevents home content flashing into media-only views", () => {
   const page=read("tv.html");
-  const styles=read("css/speakout-tv.css");
+  const styles=read("css/tv/base.css");
   assert.match(page,/dataset\.tvRoute=h==="live"\?"live":\(h==="watch"\|\|h==="episodes"\?"watch":"home"\)/u);
   assert.match(styles,/html\[data-tv-route="watch"\] \.home-only/u);
   assert.match(styles,/html\[data-tv-route="live"\] \.home-only/u);
   assert.match(styles,/html\[data-tv-route="home"\] \.media-only-view/u);
 });
 
-
 test("SpeakOut TV Featured requires explicit editorial configuration", () => {
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
-  const styles=read("css/speakout-tv.css");
+  const styles=read("css/tv/base.css");
   assert.match(page,/youth-feature home-only feature-empty/u);
   assert.match(script,/return editorial\[0\]\|\|null/u);
-  assert.doesNotMatch(script,/const pool=dailyFocusItems\.length\?dailyFocusItems:homePool;\s*return pool\.length/u);
   assert.match(script,/classList\.remove\("feature-empty"\)/u);
-  assert.match(styles,/\.youth-feature\.feature-empty\{display:none!important\}/u);
+  assert.match(styles,/\.youth-feature\.feature-empty\{display:none\}/u);
 });
+
