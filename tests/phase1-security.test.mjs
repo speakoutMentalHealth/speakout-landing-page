@@ -441,3 +441,30 @@ test("library-only TV records never fall back into homepage discovery rails", ()
   assert.match(script,/const pool=dailyFocusItems\.length\?dailyFocusItems:homePool/u);
   assert.doesNotMatch(script,/homePool\.length\?homePool:regularEpisodes/u);
 });
+
+
+test("SpeakOut TV keeps editorial home content separate from Watch Listen and Live", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  const homeGroup=script.match(/home:\[([^\]]+)\]/u)?.[1] || "";
+  for (const id of ["featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"]) {
+    assert.match(homeGroup,new RegExp(`"${id}"`,"u"),id);
+  }
+  for (const id of ["episodes","audio","live"]) {
+    assert.doesNotMatch(homeGroup,new RegExp(`"${id}"`,"u"),id);
+  }
+  assert.match(script,/watch:\["episodes"\]/u);
+  assert.match(script,/listen:\["audio"\]/u);
+  assert.match(script,/live:\["live"\]/u);
+  assert.match(script,/el\.hidden=id\?!viewGroups\[chosen\]\.includes\(id\):chosen!=="home"/u);
+  assert.match(page,/href="tv-search\.html"><span>✦<\/span><small>Discover<\/small><\/a>/u);
+  assert.doesNotMatch(page,/data-view="discover"/u);
+});
+
+test("TV detail pages route Discover to the dedicated discovery page", () => {
+  for (const file of ["show.html","watch.html","radio.html"]) {
+    const page=read(file);
+    assert.match(page,/href="tv-search\.html"/u,file);
+    assert.doesNotMatch(page,/href="tv\.html#discover"/u,file);
+  }
+});
