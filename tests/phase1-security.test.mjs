@@ -600,7 +600,7 @@ test("SpeakOut TV keeps Featured exclusively on the home experience", () => {
   const show=read("show.html");
   const showScript=read("js/tv-show.js");
   assert.match(home,/id="featured"/u);
-  assert.match(home,/FEATURED TODAY/u);
+  assert.match(home,/class="feature-badge">FEATURED<\/span>/u);
   assert.doesNotMatch(show,/featuredEpisode|id="startHere"/u);
   assert.doesNotMatch(showScript,/featuredCard|FEATURED EPISODE/u);
 });
@@ -699,7 +699,7 @@ test("TV Studio operations browser modules pass syntax checks", () => {
 test("SpeakOut TV keeps Featured and mixed discovery content home-only", () => {
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
-  assert.match(page,/class="tv-container youth-feature home-only" id="featured"/u);
+  assert.match(page,/class="tv-container youth-feature home-only feature-empty" id="featured"/u);
   assert.match(page,/document\.documentElement\.dataset\.tvRoute/u);
   assert.match(script,/document\.documentElement\.dataset\.tvRoute=chosen/u);
   assert.match(script,/if\(hash==="listen"\|\|hash==="audio"\)\{location\.replace\("radio\.html"\)/u);
@@ -722,7 +722,7 @@ test("SpeakOut TV hierarchy sweep restrains oversized Featured Watch Live Audio 
 test("SpeakOut TV initial route CSS prevents home content flashing into media-only views", () => {
   const page=read("tv.html");
   const styles=read("css/speakout-tv.css");
-  assert.match(page,/data\.tvRoute=h==="live"\?"live":\(h==="watch"\|\|h==="episodes"\?"watch":"home"\)/u);
+  assert.match(page,/dataset\.tvRoute=h==="live"\?"live":\(h==="watch"\|\|h==="episodes"\?"watch":"home"\)/u);
   assert.match(styles,/html\[data-tv-route="watch"\] \.home-only/u);
   assert.match(styles,/html\[data-tv-route="live"\] \.home-only/u);
   assert.match(styles,/html\[data-tv-route="home"\] \.media-only-view/u);
