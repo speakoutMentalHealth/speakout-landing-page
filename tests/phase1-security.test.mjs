@@ -355,8 +355,8 @@ test("SpeakOut TV discovery honors editorial homepage placement", () => {
   const script=read("js/speakout-tv.js");
   assert.match(script, /const placementOf=/u);
   assert.match(script, /const discoveryEligible=/u);
-  assert.match(script, /placementOf\(x\)==="daily"/u);
-  assert.match(script, /placementOf\(x\)==="featured"/u);
+  assert.match(script, /activePlacement\(x,"daily"\)/u);
+  assert.match(script, /activePlacement\(x,"featured"\)/u);
   assert.match(script, /placementOf\(x\)!=="library_only"/u);
 });
 
@@ -388,6 +388,37 @@ test("TV Studio client readiness requires useful publishing metadata", () => {
   assert.match(script,/tagCount >= 2/u);
   assert.match(script,/editorialReview\?\.value === "complete"/u);
   assert.match(script,/minorInvolved\?\.value !== "yes" \|\| consentConfirmed\?\.value === "yes"/u);
+});
+
+test("TV Studio Programming Schedule 3.0 exposes bounded day and date controls", () => {
+  const page=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const worker=read("workers/platform-api/src/index.js");
+  for (const id of ["programmingDays","placementPriority","placementStart","placementEnd"]) {
+    assert.match(page,new RegExp(`id="${id}"`,"u"),id);
+    assert.match(worker,new RegExp(id,"u"),id);
+  }
+  assert.match(page,/data-readiness="schedule"/u);
+  assert.match(script,/function scheduleInputState/u);
+  assert.match(script,/function scheduleState/u);
+  assert.match(script,/function scheduleLabel/u);
+  assert.match(script,/programmingSort/u);
+  assert.match(worker,/Invalid TV programming day pattern/u);
+  assert.match(worker,/TV placement priority must be a whole number from 0 to 999/u);
+  assert.match(worker,/TV placement end date cannot be before the start date/u);
+});
+
+test("SpeakOut TV only activates scheduled featured and daily placements in their window", () => {
+  const script=read("js/speakout-tv.js");
+  assert.match(script,/const programmingDayMatches=/u);
+  assert.match(script,/const placementScheduleActive=/u);
+  assert.match(script,/const activePlacement=/u);
+  assert.match(script,/const editorialPlacementSort=/u);
+  assert.match(script,/activePlacement\(x,"daily"\)/u);
+  assert.match(script,/activePlacement\(x,"featured"\)/u);
+  assert.match(script,/placementPriority\(a\)-placementPriority\(b\)/u);
+  assert.match(script,/today<start/u);
+  assert.match(script,/today>end/u);
 });
 
 test("TV discovery searches editorial metadata and updates all filter tabs safely", () => {
@@ -550,7 +581,7 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 });
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
-  assert.match(read("tv-sw.js"), /speakout-tv-v5/u);
+  assert.match(read("tv-sw.js"), /speakout-tv-v6/u);
 });
 
 
