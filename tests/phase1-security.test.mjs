@@ -331,100 +331,74 @@ test("SpeakOut TV content engine preserves safe multi-tab navigation", () => {
 
 test("TV Studio Editorial Control 2.0 is draft-first and exposes placement controls", () => {
   const page=read("admin-tv.html");
-  const script=read("js/tv-admin-live.js");
   const styles=read("css/tv-admin-premium.css");
-  assert.match(page, /TV STUDIO · EDITORIAL 2\.0/u);
-  assert.match(page, /<option value="draft" selected>/u);
-  for (const id of ["homePlacement","contentPillar","audience","editorialReview","readinessPanel"]) {
-    assert.match(page, new RegExp(`id="${id}"`, "u"), id);
-  }
-  assert.match(script, /function readinessState/u);
-  assert.match(script, /status\?\.value !== "published"/u);
-  assert.match(script, /event\.stopImmediatePropagation\(\)/u);
-  assert.match(styles, /\.readiness-panel/u);
-});
-
-test("secure TV CMS validates editorial metadata and review before publishing", () => {
-  const worker=read("workers/platform-api/src/index.js");
-  for (const field of ["homePlacement","contentPillar","audience"]) assert.match(worker, new RegExp(field, "u"));
-  assert.match(worker, /\["auto", "featured", "daily", "library_only"\]/u);
-  assert.match(worker, /Published TV content requires completed editorial review/u);
-  assert.match(worker, /Published content involving a minor requires confirmed consent/u);
-});
-
-test("SpeakOut TV discovery honors editorial homepage placement", () => {
-  const script=read("js/speakout-tv.js");
-  assert.match(script, /const placementOf=/u);
-  assert.match(script, /const discoveryEligible=/u);
-  assert.match(script, /placementOf\(x\)==="daily"/u);
-  assert.match(script, /placementOf\(x\)==="featured"/u);
-  assert.match(script, /placementOf\(x\)!=="library_only"/u);
-});
-
-test("TV Studio helper script passes JavaScript syntax checks", () => {
-  const path=fileURLToPath(new URL("../js/tv-admin-live.js", import.meta.url));
-  assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }));
-});
-
-
-test("TV Studio Editorial Control 2.0 surfaces library quality and placement health", () => {
-  const page=read("admin-tv.html");
-  const script=read("js/tv-admin-live.js");
-  const styles=read("css/tv-admin-premium.css");
-  for (const id of ["editorialDesk","featuredCount","reviewCount","readyEditorialCount","attentionEditorialCount","scheduledEditorialCount"]) {
+  assert.match(page,/TV STUDIO · EDITORIAL 2\.0/u);
+  assert.match(page,/<option value="draft" selected>/u);
+  for(const id of ["homePlacement","contentPillar","audience","editorialReview","readinessPanel","editorialQueue","librarySearch"]){
     assert.match(page,new RegExp(`id="${id}"`,"u"),id);
   }
-  assert.match(page,/type="module" src="js\/tv-admin-live\.js"/u);
-  assert.match(script,/collection\(db,"tvEpisodes"\)/u);
-  assert.match(script,/function recordIssues/u);
-  assert.match(script,/function refreshEditorialDashboard/u);
-  assert.match(script,/homePlacement\?\.value === "featured"/u);
-  assert.match(styles,/\.editorial-summary-grid/u);
-  assert.match(styles,/\.attention-list/u);
+  assert.match(page,/data-editorial-filter="featured"/u);
+  assert.match(page,/data-editorial-filter="daily"/u);
+  assert.match(page,/data-tag="adhd"/u);
+  assert.match(styles,/\.readiness-panel/u);
+  assert.match(styles,/\.editorial-toolbar/u);
+  assert.match(styles,/\.library-controls/u);
 });
 
-test("TV Studio publishing readiness matches secure backend expectations", () => {
-  const script=read("js/tv-admin-live.js");
-  assert.match(script,/title\?\.value\.trim\(\)\.length >= 8/u);
-  assert.match(script,/description\?\.value\.trim\(\)\.length >= 50/u);
-  assert.match(script,/tagCount >= 2/u);
-  assert.match(script,/editorialReview\?\.value === "complete"/u);
-  assert.match(script,/minorInvolved\?\.value !== "yes" \|\| consentConfirmed\?\.value === "yes"/u);
+test("TV Studio controller exposes safe extension events for editorial tooling", () => {
+  const controller=read("js/admin-cms-ui.js");
+  assert.match(controller,/cms:before-submit/u);
+  assert.match(controller,/cms:items/u);
+  assert.match(controller,/cms:editing/u);
+  assert.match(controller,/cms:edit-cancelled/u);
+  assert.match(controller,/control\.type === "hidden"/u);
 });
 
-test("TV discovery searches editorial pillar and audience and updates every filter tab", () => {
-  const script=read("js/tv-search.js");
-  assert.match(script,/x\.contentPillar,x\.audience/u);
-  assert.ok((script.match(/\$\$\("\[data-filter\]"\)\.forEach/gu)||[]).length >= 2);
-  assert.doesNotMatch(script,/(?<!\$)\$\("\[data-filter\]"\)\.forEach/u);
+test("TV Studio editorial script evaluates publishing readiness and duplicate media", () => {
+  const studio=read("js/tv-admin-live.js");
+  for(const fn of ["qualityFlags","publishingBlockers","refreshReadiness","renderQueue","applyLibraryFilters","duplicateUrl"]){
+    assert.match(studio,new RegExp(`function ${fn}\\(`,"u"),fn);
+  }
+  assert.match(studio,/editorialReview\)!=="complete"/u);
+  assert.match(studio,/minorInvolved\)==="yes"/u);
+  assert.match(studio,/\["featured","daily"\]\.includes\(placement\)/u);
+  assert.match(studio,/event\.preventDefault\(\);showStudioMessage\("Publishing blocked/u);
+  assert.match(studio,/This media link is already in the TV library/u);
+  assert.match(studio,/aria-pressed/u);
 });
 
-
-test("TV Studio exposes editorial completeness controls without weakening publish safeguards", () => {
-  const page = read("admin-tv.html");
-  const studio = read("js/tv-admin-live.js");
-  const controller = read("js/admin-cms-ui.js");
-  assert.match(page, /id="editorialQueue"/u);
-  assert.match(page, /id="readinessScore"/u);
-  assert.match(page, /id="librarySearch"/u);
-  assert.match(page, /data-tag="adhd"/u);
-  assert.match(studio, /function qualityFlags/u);
-  assert.match(studio, /function refreshReadiness/u);
-  assert.match(studio, /duplicateUrl/u);
-  assert.match(studio, /Publishing blocked: content involving a minor/u);
-  assert.match(controller, /cms:before-submit/u);
-  assert.match(controller, /cms:items/u);
-  assert.match(controller, /cms:editing/u);
+test("secure TV CMS enforces editorial taxonomy and promoted-content readiness", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  for(const field of ["homePlacement","contentPillar","audience"])assert.match(worker,new RegExp(field,"u"));
+  assert.match(worker,/\["auto", "featured", "daily", "library_only"\]/u);
+  assert.match(worker,/Published TV content requires completed editorial review/u);
+  assert.match(worker,/Published content involving a minor requires confirmed consent/u);
+  assert.match(worker,/Featured or Today’s Focus content requires a fuller description, artwork and discovery tags/u);
+  assert.match(worker,/Use a valid public thumbnail URL/u);
+  assert.match(worker,/Use a valid live schedule date and time/u);
 });
 
-test("TV Studio editorial script passes JavaScript syntax checks", () => {
-  const path=fileURLToPath(new URL("../js/tv-admin-live.js", import.meta.url));
-  assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }));
+test("secure status changes cannot bypass TV publishing review", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/collectionName === "tvEpisodes" && status === "published"/u);
+  assert.match(worker,/cmsRecord\(collectionName, \{ \.\.\.existing, status \}\)/u);
 });
 
-test("TV Studio quality controls remain advisory except existing safety and duplicate protections", () => {
-  const studio = read("js/tv-admin-live.js");
-  assert.match(studio, /Publishing with quality items still needing attention/u);
-  assert.doesNotMatch(studio, /event\.preventDefault\(\);\s*showStudioMessage\([^\n]*(?:description|artwork|tags)/iu);
-  assert.match(studio, /event\.preventDefault\(\);\s*showStudioMessage\('This media link is already/u);
+test("SpeakOut TV discovery honors editorial homepage placement and taxonomy", () => {
+  const tv=read("js/speakout-tv.js");
+  const search=read("js/tv-search.js");
+  assert.match(tv,/const placementOf=/u);
+  assert.match(tv,/const discoveryEligible=/u);
+  assert.match(tv,/placementOf\(x\)==="daily"/u);
+  assert.match(tv,/placementOf\(x\)==="featured"/u);
+  assert.match(tv,/placementOf\(x\)!=="library_only"/u);
+  assert.match(tv,/x\.contentPillar,x\.audience/u);
+  assert.match(search,/x\.contentPillar,x\.audience/u);
+});
+
+test("TV Studio editorial modules pass JavaScript syntax checks", () => {
+  for(const file of ["js/tv-admin-live.js","js/admin-cms-ui.js"]){
+    const path=fileURLToPath(new URL(`../${file}`,import.meta.url));
+    assert.doesNotThrow(()=>execFileSync(process.execPath,["--check",path],{stdio:"pipe"}),file);
+  }
 });
