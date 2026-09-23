@@ -2,7 +2,8 @@ import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const $=s=>document.querySelector(s);
-const $$=s=>[...document.querySelectorAll(s)];
+const $=s=>[...document.querySelectorAll(s)];
+const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 const shelfKey="speakout-listen-shelf-v2";
 let items=[],filter="all",current=null;
@@ -117,7 +118,7 @@ function openAudio(x,{autoplay=false,scroll=true}={}){
  const url=new URL(location.href);
  url.searchParams.set("audio",x.id);
  history.replaceState(null,"",url.pathname+url.search);
- if(scroll)$("#nowPlaying").scrollIntoView({behavior:"smooth",block:"start"});
+ if(scroll)$("#nowPlaying").scrollIntoView({behavior:preferredScrollBehavior(),block:"start"});
 }
 function playDirect(x){
  const direct=safeAudio(x?.url||"");
