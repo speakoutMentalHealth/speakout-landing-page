@@ -608,3 +608,20 @@ linear-gradient(145deg,#173c6b,#071426 74%);background-size:cover;background-pos
 }
 @media(max-width:560px){.live-schedule-grid{grid-template-columns:1fr}.live-countdown span{flex:1;min-width:0}.live-previous-card{flex-basis:82%}.live-offline-state{padding:28px 18px}}
 @media(prefers-reduced-motion:reduce){.live-schedule-card,.live-schedule-art img{transition:none}}
+
+
+/* Final TV platform QA: accessibility, touch targets and navigation polish */
+.tv-ios :is(a,button,input,select,textarea):focus-visible{
+ outline:3px solid rgba(244,162,28,.72);
+ outline-offset:3px;
+}
+.youth-section,.youth-welcome,.youth-feature,.watch-experience,.show-world-section,.listen-now-section{scroll-margin-top:88px}
+.content-save,.listen-card-save,#clearSearch{min-width:42px;min-height:42px}
+.ios-tabbar a[aria-current="page"]{color:#fff}
+@media(max-width:850px){
+ .content-save,.listen-card-save,#clearSearch{min-width:42px;min-height:42px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .tv-ios *, .tv-ios *::before, .tv-ios *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
