@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -222,4 +224,72 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
   assert.match(sw, /speakout-tv-v3/u);
+});
+
+
+test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
+  for (const file of [
+    "js/speakout-tv.js",
+    "js/speakout-radio.js",
+    "js/tv-search.js",
+    "js/tv-show.js",
+    "js/tv-watch.js"
+  ]) {
+    const path=fileURLToPath(new URL(`../${file}`, import.meta.url));
+    assert.doesNotThrow(() => execFileSync(process.execPath, ["--check", path], { stdio: "pipe" }), file);
+  }
+});
+
+test("SpeakOut TV discovery preserves selected audio and live destinations", () => {
+  const search = read("js/tv-search.js");
+  const tv = read("js/speakout-tv.js");
+  assert.match(search, /radio\.html\?audio=/u);
+  assert.match(search, /tv\.html\?live=/u);
+  assert.match(tv, /new URLSearchParams\(location\.search\)\.get\("live"\)/u);
+  assert.match(tv, /status\.textContent="Replay"/u);
+});
+
+test("SpeakOut TV discovery filters expose current tab state", () => {
+  const page = read("tv-search.html");
+  const script = read("js/tv-search.js");
+  assert.match(page, /role="tab" aria-selected="true" data-filter="all"/u);
+  assert.ok((page.match(/role="tab"/gu) || []).length >= 5);
+  assert.match(script, /setAttribute\("aria-selected",String\(active\)\)/u);
+});
+
+test("SpeakOut TV defers heavy media on the home experience", () => {
+  const page = read("tv.html");
+  const script = read("js/speakout-tv.js");
+  assert.doesNotMatch(page, /id="audioPlayer"><iframe/u);
+  assert.match(page, /tv-audio-placeholder/u);
+  assert.match(script, /renderEpisodePreview/u);
+  assert.match(script, /currentEpisode=first/u);
+  assert.match(script, /chosen==="watch"/u);
+});
+
+test("SpeakOut TV direct-entry pages share metadata and PWA setup", () => {
+  for (const file of ["watch.html", "show.html", "tv-search.html", "radio.html"]) {
+    const page = read(file);
+    assert.match(page, /rel="canonical"/u, file);
+    assert.match(page, /serviceWorker\.register\("tv-sw\.js"\)/u, file);
+  }
+  for (const file of ["watch.html", "show.html", "tv-search.html"]) {
+    const page = read(file);
+    assert.match(page, /rel="manifest" href="tv\.webmanifest"/u, file);
+    assert.match(page, /rel="apple-touch-icon" href="images\/logo\.png"/u, file);
+  }
+});
+
+test("SpeakOut TV service worker pre-caches local interaction scripts", () => {
+  const sw=read("tv-sw.js");
+  for (const asset of [
+    "./js/speakout-tv.js",
+    "./js/speakout-radio.js",
+    "./js/tv-search.js",
+    "./js/tv-show.js",
+    "./js/tv-watch.js",
+    "./firebase-config.js"
+  ]) assert.ok(sw.includes(asset), asset);
+  assert.match(sw, /event\.request\.mode==="navigate"/u);
+  assert.match(sw, /return Response\.error\(\)/u);
 });
