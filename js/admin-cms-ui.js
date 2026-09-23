@@ -86,12 +86,14 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
     document.querySelectorAll("[data-edit]").forEach(candidate => candidate.removeAttribute("aria-current"));
     button.setAttribute("aria-current", "true");
     show(`Editing ${item.title || "record"}.`, "ok");
+    window.dispatchEvent(new CustomEvent("cms:editing", { detail: { collectionName, item: { ...item } } }));
     form.scrollIntoView({ behavior: "smooth", block: "center" });
     document.getElementById(fieldIds[0])?.focus();
   }
 
   function render() {
     recordCount.textContent = `${items.length} ${items.length === 1 ? "record" : "records"}`;
+    window.dispatchEvent(new CustomEvent("cms:items", { detail: { collectionName, items: items.map(item => ({ ...item })) } }));
     rows.innerHTML = items.map(item => {
       const title = item.title || item.name || item.label || "Untitled";
       return `<tr class="row"><td data-label="Title"><strong>${SO.safe(title)}</strong></td><td data-label="Status"><span class="cms-status cms-status-${SO.safe(item.status || "active")}">${SO.safe(item.status || "active")}</span></td><td data-label="Order">${SO.safe(item.order ?? 0)}</td><td data-label="Actions"><div class="actions"><button class="btn soft" data-edit="${SO.safe(item.id)}" type="button" aria-label="Edit ${SO.safe(title)}">Edit</button><button class="btn dark" data-hide="${SO.safe(item.id)}" type="button" aria-label="Hide ${SO.safe(title)}">Hide</button><button class="btn cms-danger" data-del="${SO.safe(item.id)}" type="button" aria-label="Delete ${SO.safe(title)}">Delete</button></div></td></tr>`;
@@ -152,6 +154,11 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
     if (busy) return;
     const payload = Object.fromEntries(fieldIds.map(id => [id, document.getElementById(id)?.value?.trim() || ""]));
     payload.order = Number(payload.order || 0);
+    const submitEvent = new CustomEvent("cms:before-submit", {
+      cancelable: true,
+      detail: { collectionName, payload: { ...payload }, editingId }
+    });
+    if (!window.dispatchEvent(submitEvent)) return;
     try {
       setBusy(true, editingId ? "Updating record…" : "Saving record…");
       await adminApi.upsertContent(collectionName, editingId, payload);
@@ -165,6 +172,7 @@ export function createAdminCmsController({ collectionName, fieldIds }) {
 
   cancelButton.onclick = () => {
     resetEditor();
+    window.dispatchEvent(new CustomEvent("cms:edit-cancelled", { detail: { collectionName } }));
     show("Edit cancelled.");
   };
 
