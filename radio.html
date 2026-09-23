@@ -7,7 +7,7 @@
 <link rel="icon" href="images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/speakout-tv.css">
+<link rel="stylesheet" href="css/speakout-tv.css">\n<link rel="preconnect" href="https://open.spotify.com">
 <link rel="canonical" href="https://speakoutmentalhealth.org/radio.html">
 <meta name="theme-color" content="#071226">
 <link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
@@ -109,5 +109,5 @@
 </nav>
 
 <script type="module" src="js/speakout-radio.js"></script>
-</body>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>\n</body>
 </html>
