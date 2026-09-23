@@ -51,13 +51,14 @@ function toggleSaved(id){
 function artFor(x){return x?.imageUrl||""}
 
 function card(x,{compact=false}={}){
- const art=artFor(x),saved=isSaved(x.id);
- return '<article class="listen-card'+(compact?' compact':'')+'" data-audio-id="'+esc(x.id)+'">'+
+ const art=artFor(x),saved=isSaved(x.id),spotify=Boolean(spotifyEmbed(x.url||"")||x.source==="spotify");
+ return '<article class="listen-card'+(compact?' compact':'')+(spotify?' is-spotify':'')+'" data-audio-id="'+esc(x.id)+'">'+
   '<button class="listen-card-open" type="button" data-audio-open="'+esc(x.id)+'" aria-label="Open '+esc(x.title||"SpeakOut audio")+'">'+
    '<div class="listen-card-art '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+
-   artOverlay(x,"audio")+'<span class="listen-card-play">▶</span></div>'+
+   (spotify?'':artOverlay(x,"audio"))+'<span class="listen-card-play">▶</span></div>'+
    '<div class="listen-card-copy"><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><p>'+esc(x.description||"")+'</p></div>'+
   '</button>'+
+  (spotify?'<a class="spotify-attribution" href="'+esc(x.url||"https://open.spotify.com")+'" target="_blank" rel="noopener">Spotify ↗</a>':'')+
   '<button class="listen-card-save'+(saved?' is-saved':'')+'" type="button" data-save-audio="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button>'+
  '</article>';
 }
