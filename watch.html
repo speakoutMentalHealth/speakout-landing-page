@@ -1,1 +1,91 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Watch | SpeakOut TV</title><meta name="description" content="Watch on SpeakOut TV"><meta property="og:type" content="video.other"><meta property="og:site_name" content="SpeakOut TV"><link rel="icon" href="images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/speakout-tv.css"></head><body><header class="tv-nav"><div class="tv-container tv-nav-inner"><a class="tv-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a><nav class="tv-links"><a href="tv.html">TV Home</a><a href="index.html">SpeakOut</a></nav></div></header><main><section class="watch-page"><div class="tv-container"><div class="player" id="watchPlayer"><div class="player-placeholder">Loading episode…</div></div><div class="watch-copy"><span class="eyebrow" id="watchShow">SPEAKOUT TV</span><h1 id="watchTitle">Watch</h1><p id="watchDescription"></p><div class="episode-meta" id="episodeMeta"></div><div class="share-row"><button class="tv-button" id="copyEpisodeLink" type="button">Copy episode link</button><a class="tv-button ghost" href="tv-search.html">Discover more</a></div><p class="share-status" id="shareStatus" role="status" aria-live="polite"></p></div></div></section></main><script type="module" src="js/tv-watch.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Watch | SpeakOut TV</title>
+<meta name="description" content="Watch on SpeakOut TV">
+<meta property="og:type" content="video.other"><meta property="og:site_name" content="SpeakOut TV">
+<meta property="og:title" content="Watch | SpeakOut TV"><meta property="og:description" content="Watch on SpeakOut TV">
+<meta property="og:image" content="https://speakoutmentalhealth.org/images/logo.png"><meta property="og:url" content="https://speakoutmentalhealth.org/watch.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://speakoutmentalhealth.org/watch.html">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/speakout-tv.css">
+<meta name="theme-color" content="#071226">
+</head>
+<body class="tv-ios youth-watch-page">
+<header class="ios-topbar youth-topbar">
+  <div class="tv-container ios-topbar-inner">
+    <a class="ios-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
+    <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV">⌕</a>
+  </div>
+</header>
+
+<main>
+<section class="tv-container watch-experience">
+  <a class="watch-back" href="tv.html#watch">← Back to Watch</a>
+
+  <div class="watch-player-shell">
+    <div class="watch-player" id="watchPlayer" aria-live="polite">
+      <div class="watch-loading"><span></span><strong>Loading episode…</strong></div>
+    </div>
+  </div>
+
+  <article class="watch-details">
+    <div class="watch-copy-main">
+      <a class="watch-series-pill" id="watchSeriesLink" href="tv.html#discover"><span id="watchShow">SPEAKOUT TV</span> <b>›</b></a>
+      <h1 id="watchTitle">Watch</h1>
+      <p id="watchDescription"></p>
+      <div class="episode-meta" id="episodeMeta"></div>
+    </div>
+
+    <div class="watch-actions" aria-label="Episode actions">
+      <button class="watch-action primary" id="shareEpisode" type="button">Share</button>
+      <button class="watch-action" id="saveEpisode" type="button" aria-pressed="false">＋ Save</button>
+      <a class="watch-action" href="pages/resources.html">Resources</a>
+    </div>
+    <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
+  </article>
+</section>
+
+<section class="tv-container up-next-section" id="upNextSection" hidden>
+  <div class="up-next-card">
+    <div>
+      <span>UP NEXT</span>
+      <h2 id="nextTitle">Another episode</h2>
+      <p id="nextDescription"></p>
+    </div>
+    <a id="nextEpisodeLink" class="feature-btn primary" href="#">Watch next ▶</a>
+  </div>
+</section>
+
+<section class="tv-container watch-related-section" id="relatedSection" hidden>
+  <div class="youth-section-head">
+    <div><span>KEEP EXPLORING</span><h2>Related to This</h2><p>More SpeakOut content connected by series or topic.</p></div>
+    <a id="allSeriesLink" href="tv.html#discover">Explore series</a>
+  </div>
+  <div class="content-rail" id="relatedRail"></div>
+</section>
+
+<section class="tv-container watch-resource-bridge">
+  <div>
+    <span>BEYOND THE VIDEO</span>
+    <h2>Want to understand the topic further?</h2>
+    <p>Explore SpeakOut’s educational and support resources alongside the conversation.</p>
+  </div>
+  <a href="pages/resources.html">Explore resources →</a>
+</section>
+</main>
+
+<nav class="ios-tabbar youth-nav watch-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html"><span>⌂</span><small>Home</small></a>
+<a href="tv.html#discover"><span>✦</span><small>Discover</small></a>
+<a href="tv.html#watch" class="active"><span>▶</span><small>Watch</small></a>
+<a href="tv.html#listen"><span>◉</span><small>Listen</small></a>
+<a href="tv.html#live"><span>●</span><small>Live</small></a>
+</nav>
+
+<script type="module" src="js/tv-watch.js"></script>
+</body></html>
