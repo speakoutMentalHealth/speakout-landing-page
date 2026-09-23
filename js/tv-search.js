@@ -9,6 +9,7 @@ const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const slugFor=s=>norm(s).replace(/\s+/g,"-");
 const ytId=raw=>{try{const u=new URL(raw);if(u.hostname==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||"";if(u.hostname.endsWith("youtube.com"))return u.searchParams.get("v")||u.pathname.match(/\/(?:embed|live|shorts)\/([^/?]+)/)?.[1]||""}catch{}return ""};
 const dateValue=x=>x?.publishedAt?.toMillis?.()||Date.parse(x?.publishedAt||x?.publishDate||x?.date||0)||0;
+const orderValue=x=>Number.isFinite(Number(x?.order))?Number(x.order):999;
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 
 const starterEpisodes=[
@@ -122,6 +123,7 @@ async function load(){
 
  episodes.sort((a,b)=>dateValue(b)-dateValue(a));
  audio.sort((a,b)=>dateValue(b)-dateValue(a));
+ shows.sort((a,b)=>orderValue(a)-orderValue(b)||String(a.title||"").localeCompare(String(b.title||"")));
  items=[...shows,...episodes,...audio];
 
  const initial=new URLSearchParams(location.search).get("q")||"";
