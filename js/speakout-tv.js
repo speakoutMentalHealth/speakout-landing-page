@@ -119,9 +119,8 @@ function renderDailyProgramming(){
  const homePool=regularEpisodes.filter(discoveryEligible);
  const editorial=homePool.filter(x=>placementOf(x)==="daily");
  const topicPicks=homePool.filter(x=>topicMatch(x,plan.topic)&&!editorial.includes(x));
- let picks=[...editorial,...topicPicks];
- if(!picks.length)picks=homePool.length?homePool:regularEpisodes;
- dailyFocusItems=diverseItems(picks,10);
+ const picks=[...editorial,...topicPicks];
+ dailyFocusItems=diverseItems(picks.length?picks:homePool,10);
  $("#dailyFocusTitle").textContent=plan.title;
  $("#dailyFocusDescription").textContent=plan.description;
  $("#dailyFocusRail").innerHTML=dailyFocusItems.map(contentCard).join("")||'<div class="ios-audio-empty">More curated content is coming.</div>';
@@ -146,11 +145,12 @@ function pickFeatured(){
  if(placed.length)return placed[0];
  const editorial=homePool.filter(x=>x.featured===true||String(x.featured).toLowerCase()==="true");
  if(editorial.length)return editorial[0];
- const pool=dailyFocusItems.length?dailyFocusItems:(homePool.length?homePool:regularEpisodes);
- return pool[dailySeed()%pool.length]||regularEpisodes[0];
+ const pool=dailyFocusItems.length?dailyFocusItems:homePool;
+ return pool.length ? pool[dailySeed()%pool.length] : null;
 }
 function pickSomething(){
- const pool=dailyFocusItems.length?dailyFocusItems:regularEpisodes;
+ const homePool=regularEpisodes.filter(discoveryEligible);
+ const pool=dailyFocusItems.length?dailyFocusItems:homePool;
  if(!pool.length)return;
  const recent=new Set(readShelf().recent);
  const unseen=pool.filter(x=>!recent.has(x.id));
@@ -190,7 +190,7 @@ function playEpisode(item,autoplay=true){
 function renderForYou(topic="all"){
  const homePool=regularEpisodes.filter(discoveryEligible);
  let picks=homePool.filter(x=>topicMatch(x,topic));
- if(!picks.length)picks=homePool.length?homePool:regularEpisodes;
+ if(!picks.length)picks=homePool;
  picks=diverseItems(picks,12);
  $("#forYouRail").innerHTML=picks.map(contentCard).join("")||'<div class="ios-audio-empty">More SpeakOut content is coming.</div>';
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
@@ -339,10 +339,11 @@ async function load(){
  renderLiveExperience(episodes);
 
  regularEpisodes=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
+ const homeEpisodes=regularEpisodes.filter(discoveryEligible);
  renderDailyProgramming();
  renderFresh();
- const featured=pickFeatured()||regularEpisodes[0]||episodes[0];
- const first=regularEpisodes[0]||featured;
+ const featured=pickFeatured();
+ const first=homeEpisodes[0]||featured;
  if(first){
    currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
  }
