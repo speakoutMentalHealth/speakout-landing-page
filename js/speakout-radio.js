@@ -1,6 +1,191 @@
-import{db}from"../firebase-config.js";import{collection,getDocs,query,where}from"https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";const out=document.getElementById("audioGrid"),player=document.getElementById("persistentAudio"),mini=document.getElementById("miniPlayer"),title=document.getElementById("miniTitle"),recent=document.getElementById("radioRecent"),buttons=[...document.querySelectorAll("[data-audio-filter]")],esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));let items=[],filter="all";
-function spotify(raw){try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return"https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null}function safeAudio(raw){try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}}
-function card(x){const s=spotify(x.url||"");const art=x.imageUrl?'<img class="audio-art" src="'+esc(x.imageUrl)+'" alt="" loading="lazy">':"";if(s)return'<article class="audio-card">'+art+'<span class="audio-type">'+esc(x.audioType||"SPOTIFY")+'</span><h3>'+esc(x.title||"SpeakOut Audio")+'</h3><p>'+esc(x.description||"")+'</p><iframe src="'+esc(s)+'" loading="lazy" title="'+esc(x.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe></article>';const u=safeAudio(x.url||"");return'<article class="audio-card">'+art+'<span class="audio-type">'+esc(x.audioType||"AUDIO")+'</span><h3>'+esc(x.title||"SpeakOut Audio")+'</h3><p>'+esc(x.description||"")+'</p>'+(u?'<button class="radio-play" data-url="'+esc(u)+'" data-title="'+esc(x.title||"SpeakOut Audio")+'">▶ Play</button>':"")+'</article>'}
-function render(){const a=filter==="all"?items:items.filter(x=>x.audioType===filter);out.innerHTML=a.map(card).join("")}try{const s=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));s.forEach(d=>items.push({id:d.id,...d.data()}));render()}catch{out.innerHTML=""}
-buttons.forEach(b=>b.addEventListener("click",()=>{buttons.forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.audioFilter;render()}));function remember(data){let list=[];try{list=JSON.parse(localStorage.getItem("speakout-radio-history")||"[]")}catch{}list=[data,...list.filter(x=>x.url!==data.url)].slice(0,5);localStorage.setItem("speakout-radio-history",JSON.stringify(list));renderRecent(list)}function renderRecent(list){if(!recent||!list.length)return;recent.hidden=false;recent.innerHTML="<span>RECENTLY PLAYED</span>"+list.map(x=>'<button class="radio-play" data-url="'+esc(x.url)+'" data-title="'+esc(x.title)+'">▶ '+esc(x.title)+"</button>").join("")}try{renderRecent(JSON.parse(localStorage.getItem("speakout-radio-history")||"[]"))}catch{}
-document.addEventListener("click",e=>{const b=e.target.closest(".radio-play");if(!b)return;const u=safeAudio(b.dataset.url);if(!u)return;player.src=u;title.textContent=b.dataset.title;mini.hidden=false;player.play().catch(()=>{});remember({title:b.dataset.title,url:u})});
+import {db} from "../firebase-config.js";
+import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const shelfKey="speakout-listen-shelf-v2";
+let items=[],filter="all",current=null;
+
+function spotifyEmbed(raw){
+ try{
+  const u=new URL(raw),host=u.hostname.replace(/^www\./,"");
+  if(host!=="open.spotify.com")return null;
+  const path=u.pathname.replace(/^\/embed/,"");
+  if(/^\/(episode|show|track)\//.test(path))return "https://open.spotify.com/embed"+path+"?theme=0";
+ }catch{}
+ return null;
+}
+function safeAudio(raw){
+ try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}
+}
+function dateValue(x){return Date.parse(x?.publishDate||x?.publishedAt||0)||0}
+function readShelf(){
+ try{
+  const raw=JSON.parse(localStorage.getItem(shelfKey)||"{}");
+  return {recent:Array.isArray(raw.recent)?raw.recent:[],saved:Array.isArray(raw.saved)?raw.saved:[]};
+ }catch{return {recent:[],saved:[]}}
+}
+function writeShelf(data){
+ try{localStorage.setItem(shelfKey,JSON.stringify({recent:data.recent.slice(0,10),saved:data.saved.slice(0,30)}))}catch{}
+}
+function isSaved(id){return readShelf().saved.includes(id)}
+function markRecent(id){
+ if(!id)return;
+ const shelf=readShelf();
+ shelf.recent=[id,...shelf.recent.filter(x=>x!==id)].slice(0,10);
+ writeShelf(shelf);
+ renderShelf();
+}
+function toggleSaved(id){
+ if(!id)return false;
+ const shelf=readShelf();
+ shelf.saved=shelf.saved.includes(id)?shelf.saved.filter(x=>x!==id):[id,...shelf.saved];
+ writeShelf(shelf);
+ renderShelf();
+ renderLibrary();
+ renderCurrentSave();
+ return shelf.saved.includes(id);
+}
+function artFor(x){return x?.imageUrl||""}
+
+function card(x,{compact=false}={}){
+ const art=artFor(x),saved=isSaved(x.id);
+ return '<article class="listen-card'+(compact?' compact':'')+'" data-audio-id="'+esc(x.id)+'">'+
+  '<button class="listen-card-open" type="button" data-audio-open="'+esc(x.id)+'" aria-label="Open '+esc(x.title||"SpeakOut audio")+'">'+
+   '<div class="listen-card-art">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':'<div class="listen-card-fallback"><span>◉</span><b>SPEAKOUT</b></div>')+
+   '<span class="listen-card-type">'+esc(x.audioType||"AUDIO")+'</span><span class="listen-card-play">▶</span></div>'+
+   '<div class="listen-card-copy"><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><p>'+esc(x.description||"")+'</p></div>'+
+  '</button>'+
+  '<button class="listen-card-save'+(saved?' is-saved':'')+'" type="button" data-save-audio="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button>'+
+ '</article>';
+}
+
+function renderLibrary(){
+ const out=$("#audioGrid");
+ const list=filter==="all"?items:items.filter(x=>String(x.audioType||"").toLowerCase()===filter.toLowerCase());
+ out.innerHTML=list.length?list.map(x=>card(x)).join(""):'<div class="listen-empty"><strong>No published audio in this category yet.</strong><p>Try another filter or check back later.</p></div>';
+}
+function renderShelf(){
+ const shelf=readShelf();
+ const recent=shelf.recent.map(id=>items.find(x=>x.id===id)).filter(Boolean);
+ const saved=shelf.saved.map(id=>items.find(x=>x.id===id)).filter(Boolean);
+ $("#listenShelf").hidden=!(recent.length||saved.length);
+ $("#recentAudioBlock").hidden=!recent.length;
+ $("#savedAudioBlock").hidden=!saved.length;
+ $("#recentAudioRail").innerHTML=recent.map(x=>card(x,{compact:true})).join("");
+ $("#savedAudioRail").innerHTML=saved.map(x=>card(x,{compact:true})).join("");
+}
+function renderCurrentSave(){
+ const button=$("#saveCurrentAudio");
+ if(!current){button.hidden=true;return}
+ const saved=isSaved(current.id);
+ button.hidden=false;
+ button.classList.toggle("is-saved",saved);
+ button.textContent=saved?"✓ Saved":"＋ Save";
+ button.setAttribute("aria-pressed",String(saved));
+}
+function setArtwork(x){
+ const host=$("#listenArtwork"),art=artFor(x);
+ host.style.backgroundImage=art?'url("'+art.replace(/"/g,"%22")+'")':"";
+ host.classList.toggle("has-image",Boolean(art));
+}
+function openAudio(x,{autoplay=false,scroll=true}={}){
+ if(!x)return;
+ current=x;
+ const spotify=spotifyEmbed(x.url||""),direct=safeAudio(x.url||"");
+ $("#listenType").textContent=(x.audioType||"SPEAKOUT AUDIO").toUpperCase();
+ $("#listenTitle").textContent=x.title||"SpeakOut Audio";
+ $("#listenDescription").textContent=x.description||"Listen on SpeakOut.";
+ setArtwork(x);
+ renderCurrentSave();
+ $("#shareCurrentAudio").hidden=false;
+ $("#listenStatus").textContent="";
+ const host=$("#listenPlayer");
+
+ if(spotify){
+  $("#persistentAudio").pause();
+  $("#miniPlayer").hidden=true;
+  host.innerHTML='<iframe src="'+esc(spotify)+'" title="'+esc(x.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="eager"></iframe>';
+ }else if(direct){
+  host.innerHTML='<div class="listen-direct-panel"><span>DIRECT AUDIO</span><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><button type="button" class="listen-direct-play" data-direct-play="'+esc(x.id)+'">▶ Play audio</button></div>';
+  if(autoplay)playDirect(x);
+ }else{
+  host.innerHTML='<div class="listen-unavailable"><strong>This audio is not available right now.</strong><p>Choose another item from the library.</p></div>';
+ }
+ markRecent(x.id);
+ const url=new URL(location.href);
+ url.searchParams.set("audio",x.id);
+ history.replaceState(null,"",url.pathname+url.search);
+ if(scroll)$("#nowPlaying").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function playDirect(x){
+ const direct=safeAudio(x?.url||"");
+ if(!direct)return;
+ const player=$("#persistentAudio");
+ if(player.src!==direct)player.src=direct;
+ $("#miniTitle").textContent=x.title||"SpeakOut Audio";
+ $("#miniPlayer").hidden=false;
+ player.play().catch(()=>{});
+}
+async function shareCurrent(){
+ if(!current)return;
+ const url=new URL(location.href);url.searchParams.set("audio",current.id);
+ try{
+  if(navigator.share){
+   await navigator.share({title:current.title||"SpeakOut Listen",text:"Listen on SpeakOut TV",url:url.href});
+   $("#listenStatus").textContent="Shared.";
+  }else{
+   await navigator.clipboard.writeText(url.href);
+   $("#listenStatus").textContent="Audio link copied.";
+  }
+ }catch(error){
+  if(error?.name!=="AbortError")$("#listenStatus").textContent="Use your browser address bar to copy this audio link.";
+ }
+}
+
+async function load(){
+ try{
+  const snap=await getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"])));
+  snap.forEach(d=>items.push({id:d.id,...d.data()}));
+ }catch{}
+ items.sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||dateValue(b)-dateValue(a));
+ renderLibrary();
+ renderShelf();
+
+ const selectedId=new URLSearchParams(location.search).get("audio");
+ const selected=items.find(x=>x.id===selectedId)||items[0]||null;
+ if(selected)openAudio(selected,{autoplay:false,scroll:false});
+}
+
+$$("[data-audio-filter]").forEach(button=>button.addEventListener("click",()=>{
+ filter=button.dataset.audioFilter||"all";
+ $$("[data-audio-filter]").forEach(x=>x.classList.toggle("active",x===button));
+ renderLibrary();
+}));
+
+document.addEventListener("click",event=>{
+ const save=event.target.closest("[data-save-audio]");
+ if(save){
+  event.preventDefault();event.stopPropagation();
+  const saved=toggleSaved(save.dataset.saveAudio);
+  $("#listenStatus").textContent=saved?"Saved on this device.":"Removed from saved.";
+  return;
+ }
+ const open=event.target.closest("[data-audio-open]");
+ if(open){openAudio(items.find(x=>x.id===open.dataset.audioOpen),{scroll:true});return}
+ const direct=event.target.closest("[data-direct-play]");
+ if(direct){playDirect(items.find(x=>x.id===direct.dataset.directPlay));return}
+});
+
+$("#saveCurrentAudio").addEventListener("click",()=>{
+ const saved=toggleSaved(current?.id);
+ $("#listenStatus").textContent=saved?"Saved on this device.":"Removed from saved.";
+});
+$("#shareCurrentAudio").addEventListener("click",shareCurrent);
+$("#closeMiniPlayer").addEventListener("click",()=>{
+ $("#persistentAudio").pause();
+ $("#miniPlayer").hidden=true;
+});
+
+load();
