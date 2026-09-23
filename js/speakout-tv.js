@@ -1,5 +1,6 @@
 import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const starterEpisodes=[
 {id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,order:901,tags:["motivation","youth"]},
@@ -54,20 +55,20 @@ function ensureDefaultAudioPlayer(){
 }
 function contentCard(x){
  const img=imageFor(x),saved=isSaved(x.id);
- return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'')+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
+ return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
 }
 function episodeCard(x){
  const img=imageFor(x);
- return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="ios-thumb-fallback">TV</div>')+'<span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
+ return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'"><div class="ios-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+'</div><span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
 }
 function originalCard(x,episode){
- const img=x.imageUrl||imageFor(episode),style=img?' style="background-image:url(\''+esc(img)+'\')"':"";
+ const item={...x,show:x.title},img=x.imageUrl||imageFor(episode),style=img?' style="background-image:url(\''+esc(img)+'\')"':"";
  const label=x.category||x.label||"Original";
- return '<a class="original-card" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="original-art"'+style+'></div><div class="original-copy"><small>'+esc(label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series →</span></div></a>';
+ return '<a class="original-card'+(img?'':' no-image')+'" href="show.html?show='+encodeURIComponent(x.slug)+'"><div class="original-art '+artClass(item)+'"'+style+'>'+(img?'':artFallback(item,"series"))+artOverlay(item,"series")+'</div><div class="original-copy"><small>'+esc(label)+'</small><strong>'+esc(x.title)+'</strong><span>Explore series →</span></div></a>';
 }
 function audioCard(x){
  const art=x.imageUrl||"";
- return '<button class="ios-audio-episode" type="button" data-audio-id="'+esc(x.id)+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':'<div class="ios-audio-art">◉</div>')+'<span><small>'+esc(x.audioType||"Audio")+'</small><strong>'+esc(x.title||"SpeakOut Audio")+'</strong></span></button>';
+ return '<button class="ios-audio-episode" type="button" data-audio-id="'+esc(x.id)+'"><div class="ios-audio-artwork '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+artOverlay(x,"audio")+'</div><span><small>'+esc(x.audioType||"Audio")+'</small><strong>'+esc(x.title||"SpeakOut Audio")+'</strong></span></button>';
 }
 function topicMatch(x,topic){
  if(topic==="all")return true;
