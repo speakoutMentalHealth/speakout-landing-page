@@ -241,6 +241,37 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
 
   const placementOf = item => String(item?.homePlacement || "auto").trim().toLowerCase().replace(/\s+/g,"_");
   const viewerDate = item => timestampValue(item?.publishedAt) || timestampValue(item?.publishDate) || timestampValue(item?.date);
+  const localDateKey = date => String(date.getFullYear())+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+  const dayLabels = {all:"Every day",weekdays:"Weekdays",weekend:"Weekend",mon:"Monday",tue:"Tuesday",wed:"Wednesday",thu:"Thursday",fri:"Friday",sat:"Saturday",sun:"Sunday"};
+
+  function scheduleState(item, date = new Date()) {
+    const days = String(item?.programmingDays || "all").trim().toLowerCase();
+    const priorityValue = Number(item?.placementPriority ?? 100);
+    const priority = Number.isInteger(priorityValue) && priorityValue >= 0 && priorityValue <= 999 ? priorityValue : 100;
+    const start = String(item?.placementStart || "").trim();
+    const end = String(item?.placementEnd || "").trim();
+    const validDays = Object.hasOwn(dayLabels, days);
+    const validPriority = Number.isInteger(priorityValue) && priorityValue >= 0 && priorityValue <= 999;
+    const validDates = dateOnlyValid(start) && dateOnlyValid(end) && !(start && end && end < start);
+    const valid = validDays && validPriority && validDates;
+    const today = localDateKey(date);
+    const day = date.getDay();
+    const dayMatches = days === "all" || (days === "weekdays" && day >= 1 && day <= 5) || (days === "weekend" && (day === 0 || day === 6)) || ["sun","mon","tue","wed","thu","fri","sat"][day] === days;
+    const upcoming = Boolean(start && today < start);
+    const expired = Boolean(end && today > end);
+    return {days,priority,start,end,valid,active:valid&&dayMatches&&!upcoming&&!expired,upcoming,expired};
+  }
+
+  function scheduleLabel(item) {
+    const state = scheduleState(item);
+    const bits = [dayLabels[state.days] || "Schedule"];
+    if (state.start) bits.push("from "+state.start);
+    if (state.end) bits.push("through "+state.end);
+    bits.push("priority "+state.priority);
+    return bits.join(" · ");
+  }
+
+  const programmingSort = (a,b) => scheduleState(a).priority-scheduleState(b).priority || (Number(a.order)||999)-(Number(b.order)||999) || viewerDate(b)-viewerDate(a);
 
   function recordIssues(item) {
     const issues = [];
@@ -254,7 +285,9 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     if (itemTags.map(value => String(value).trim()).filter(Boolean).length < 2) issues.push("few tags");
     if (!String(item.contentPillar || "").trim()) issues.push("missing pillar");
     if (!String(item.audience || "").trim()) issues.push("missing audience");
-    if (String(item.format || "").toLowerCase() === "live" && ["featured","daily"].includes(placementOf(item))) issues.push("live placement");
+    const placement = placementOf(item);
+    if (String(item.format || "").toLowerCase() === "live" && ["featured","daily"].includes(placement)) issues.push("live placement");
+    if (["featured","daily"].includes(placement) && !scheduleState(item).valid) issues.push("invalid schedule");
     if (String(item.editorialReview || "").toLowerCase() !== "complete") issues.push("review pending");
     if (String(item.minorInvolved || "").toLowerCase() === "yes" && String(item.consentConfirmed || "").toLowerCase() !== "yes") issues.push("minor consent");
     return issues;
@@ -266,20 +299,27 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       const items = [];
       snapshot.forEach(doc => items.push({id:doc.id,...doc.data()}));
       const now = Date.now();
+      const today = new Date();
       const published = items.filter(item => ["published","active"].includes(String(item.status || "").toLowerCase()));
       const drafts = items.filter(item => String(item.status || "").toLowerCase() === "draft");
       const live = items.filter(item => String(item.format || "").toLowerCase() === "live" && String(item.status || "").toLowerCase() !== "hidden");
       const regularPublished = published
         .filter(item => String(item.format || "episode").toLowerCase() !== "live")
         .sort((a,b) => viewerDate(b)-viewerDate(a) || (Number(a.order)||999)-(Number(b.order)||999));
-      const featuredItems = regularPublished.filter(item => placementOf(item) === "featured" || String(item.featured).toLowerCase() === "true");
-      const dailyItems = regularPublished.filter(item => placementOf(item) === "daily");
+      const featuredConfigured = regularPublished.filter(item => placementOf(item) === "featured" || (placementOf(item) === "auto" && String(item.featured).toLowerCase() === "true"));
+      const featuredItems = featuredConfigured.filter(item => scheduleState(item,today).active).sort(programmingSort);
+      const dailyConfigured = regularPublished.filter(item => placementOf(item) === "daily");
+      const dailyItems = dailyConfigured.filter(item => scheduleState(item,today).active).sort(programmingSort);
       const libraryOnlyItems = regularPublished.filter(item => placementOf(item) === "library_only");
       const eligibleHome = regularPublished.filter(item => placementOf(item) !== "library_only");
       const mainStage = featuredItems[0] || eligibleHome[0] || null;
       const attention = items.map(item => ({item,issues:recordIssues(item)})).filter(entry => entry.issues.length);
       const ready = published.filter(item => recordIssues(item).length === 0);
       const scheduled = live.filter(item => timestampValue(item.scheduledAt) > now);
+      const scheduledPlacements = [...featuredConfigured.filter(item => placementOf(item)==="featured"),...dailyConfigured];
+      const invalidSchedules = scheduledPlacements.filter(item => !scheduleState(item,today).valid);
+      const expiredPlacements = scheduledPlacements.filter(item => scheduleState(item,today).expired);
+      const upcomingPlacements = scheduledPlacements.filter(item => scheduleState(item,today).upcoming).sort((a,b)=>String(a.placementStart||"").localeCompare(String(b.placementStart||"")));
 
       $("publishedCount").textContent = published.length;
       $("draftCount").textContent = drafts.length;
@@ -291,22 +331,26 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       $("scheduledEditorialCount").textContent = scheduled.length;
 
       const programmingWarnings = [];
-      if (featuredItems.length > 1) programmingWarnings.push(featuredItems.length+" published records are marked for Main Stage; the newest/highest-priority eligible record will lead.");
+      if (featuredItems.length > 1) programmingWarnings.push(featuredItems.length+" Main Stage records are active today; priority "+scheduleState(featuredItems[0],today).priority+" will lead.");
       const invalidLivePlacement = live.filter(item => ["featured","daily"].includes(placementOf(item)));
       if (invalidLivePlacement.length) programmingWarnings.push(invalidLivePlacement.length+" live record(s) use a homepage placement reserved for regular episodes.");
+      if (invalidSchedules.length) programmingWarnings.push(invalidSchedules.length+" homepage placement schedule"+(invalidSchedules.length===1?" is":"s are")+" invalid.");
+      if (expiredPlacements.length) programmingWarnings.push(expiredPlacements.length+" homepage placement window"+(expiredPlacements.length===1?" has":"s have")+" ended and no longer affects Home.");
       if (!eligibleHome.length) programmingWarnings.push("No published regular episode is eligible for homepage discovery.");
       if (mainStage && recordIssues(mainStage).length) programmingWarnings.push("The current Main Stage selection still has editorial quality gaps.");
 
       if ($("programmingFeaturedTitle")) $("programmingFeaturedTitle").textContent = mainStage?.title || "Automatic selection";
       if ($("programmingFeaturedMeta")) $("programmingFeaturedMeta").textContent = mainStage
-        ? (mainStage.show || "SpeakOut TV")+" · "+(placementOf(mainStage)==="featured" ? "Editorially featured" : "Automatic fallback")
+        ? (mainStage.show || "SpeakOut TV")+" · "+(featuredItems[0]===mainStage ? "Scheduled feature · "+scheduleLabel(mainStage) : "Automatic fallback")
         : "Publish an eligible episode to activate the Main Stage.";
       if ($("programmingDailyTitle")) $("programmingDailyTitle").textContent = dailyItems.length
         ? dailyItems.slice(0,3).map(item => item.title || "Untitled").join(" · ")
         : "Automatic mix";
       if ($("programmingDailyMeta")) $("programmingDailyMeta").textContent = dailyItems.length
-        ? dailyItems.length+" editorial priorit"+(dailyItems.length===1?"y":"ies")+" will lead Today’s Focus before automatic topic picks."
-        : "No manual daily priority is set; the weekday content engine will build the mix automatically.";
+        ? dailyItems.length+" scheduled priorit"+(dailyItems.length===1?"y":"ies")+" active today; lower priority numbers lead."
+        : upcomingPlacements.length
+          ? "No manual priority is active today. Next scheduled placement starts "+String(upcomingPlacements[0].placementStart||"soon")+"."
+          : "No manual daily priority is active; the weekday content engine will build the mix automatically.";
       if ($("programmingLibraryCount")) $("programmingLibraryCount").textContent = libraryOnlyItems.length;
       const programmingHealth = $("programmingHealth");
       if (programmingHealth) {
@@ -317,7 +361,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
       if (warningsTarget) {
         warningsTarget.innerHTML = programmingWarnings.length
           ? '<div class="programming-warning-list">'+programmingWarnings.map(message => '<p><span>!</span>'+safe(message)+'</p>').join("")+'</div>'
-          : '<div class="editorial-clear"><span>✓</span><div><strong>Homepage programming is aligned</strong><small>Main Stage and daily priorities match the viewer content engine.</small></div></div>';
+          : '<div class="editorial-clear"><span>✓</span><div><strong>Homepage programming is aligned</strong><small>Main Stage and Today’s Focus schedules match the viewer content engine.</small></div></div>';
       }
 
       const health = $("editorialHealth");
