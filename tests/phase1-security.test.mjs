@@ -293,3 +293,29 @@ test("SpeakOut TV service worker pre-caches local interaction scripts", () => {
   assert.match(sw, /event\.request\.mode==="navigate"/u);
   assert.match(sw, /return Response\.error\(\)/u);
 });
+
+
+test("SpeakOut TV daily content engine stays privacy-respecting and editorially driven", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  assert.match(page, /id="today-focus"/u);
+  assert.match(page, /id="topic-journeys"/u);
+  assert.match(page, /id="fresh"/u);
+  assert.match(page, /Pick something for me/u);
+  assert.match(script, /const dailyProgramming=/u);
+  assert.match(script, /function diverseItems/u);
+  assert.match(script, /function renderDailyProgramming/u);
+  assert.match(script, /function renderFresh/u);
+  assert.match(script, /function pickFeatured/u);
+  assert.match(script, /featured===true/u);
+  assert.match(script, /localStorage\.getItem\(shelfKey\)/u);
+  assert.doesNotMatch(script, /localStorage\.setItem\([^)]*(?:mood|topic|stress|adhd)/iu);
+});
+
+test("SpeakOut TV content engine preserves safe multi-tab navigation", () => {
+  const script=read("js/speakout-tv.js");
+  assert.match(script, /\$\$\("\.youth-nav a"\)\.forEach/u);
+  assert.doesNotMatch(script, /(?<!\$)\$\("\.youth-nav a"\)\.forEach/u);
+  assert.match(script, /today-focus/u);
+  assert.match(script, /topic-journeys/u);
+});
