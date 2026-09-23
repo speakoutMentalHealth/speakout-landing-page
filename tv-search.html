@@ -1,1 +1,99 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Search | SpeakOut TV</title><meta name="description" content="Search published SpeakOut TV episodes and programs."><link rel="icon" href="images/logo.png"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/speakout-tv.css"></head><body><header class="tv-nav"><div class="tv-container tv-nav-inner"><a class="tv-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a><nav class="tv-links"><a href="tv.html">TV Home</a><a href="index.html">SpeakOut</a></nav></div></header><main><section class="show-hero"><div class="tv-container"><span class="eyebrow">DISCOVER</span><h1>Search SpeakOut TV</h1><p>Find video, audio, guests, shows and topics across the network.</p><label class="search-box"><span class="sr-only">Search SpeakOut TV</span><input id="tvSearch" type="search" placeholder="Search episodes, shows, guests or topics…" autocomplete="off"></label><div class="search-filters"><button class="active" data-filter="all">All</button><button data-filter="video">Video</button><button data-filter="audio">Audio</button><button data-filter="live">Live</button></div></div></section><section class="section"><div class="tv-container"><div class="episode-grid" id="searchResults"><p class="empty-note">Loading published episodes…</p></div></div></section></main><script type="module" src="js/tv-search.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discover | SpeakOut TV</title>
+<meta name="description" content="Search and discover published SpeakOut TV videos, series, audio, live programmes and youth wellbeing topics.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/speakout-tv.css">
+<meta name="theme-color" content="#071226">
+</head>
+<body class="tv-ios youth-search-page">
+<header class="ios-topbar youth-topbar">
+  <div class="tv-container ios-topbar-inner">
+    <a class="ios-brand" href="tv.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
+    <a class="ios-icon-btn" href="tv.html" aria-label="Close search">×</a>
+  </div>
+</header>
+
+<main>
+<section class="tv-container search-discovery-hero">
+  <span class="youth-eyebrow">DISCOVER SPEAKOUT TV</span>
+  <h1>What do you want to <em>find?</em></h1>
+  <p>Search conversations, stories, series, audio and topics — or start with something that feels relevant right now.</p>
+
+  <label class="discovery-search-box">
+    <span class="sr-only">Search SpeakOut TV</span>
+    <span class="search-glyph" aria-hidden="true">⌕</span>
+    <input id="tvSearch" type="search" placeholder="Try “ADHD”, “student life”, “relationships”…" autocomplete="off" enterkeyhint="search">
+    <button id="clearSearch" type="button" aria-label="Clear search" hidden>×</button>
+  </label>
+
+  <div class="search-topic-rail" id="topicRail" aria-label="Explore by topic">
+    <button type="button" data-topic="">Everything</button>
+    <button type="button" data-topic="adhd">ADHD</button>
+    <button type="button" data-topic="stress pressure">Stress & pressure</button>
+    <button type="button" data-topic="student campus school">Student life</button>
+    <button type="button" data-topic="relationships family">Relationships</button>
+    <button type="button" data-topic="motivation confidence">Motivation</button>
+    <button type="button" data-topic="stories youth">Real stories</button>
+  </div>
+
+  <div class="search-kind-tabs" role="tablist" aria-label="Filter results">
+    <button class="active" type="button" data-filter="all">All</button>
+    <button type="button" data-filter="series">Series</button>
+    <button type="button" data-filter="video">Watch</button>
+    <button type="button" data-filter="audio">Listen</button>
+    <button type="button" data-filter="live">Live</button>
+  </div>
+</section>
+
+<section class="tv-container discovery-results-section">
+  <div class="discovery-results-head">
+    <div><span id="resultEyebrow">EXPLORE</span><h2 id="resultTitle">Start discovering</h2></div>
+    <span id="resultCount" aria-live="polite">Loading…</span>
+  </div>
+
+  <div id="discoveryGroups">
+    <section class="discovery-group" id="seriesGroup" hidden>
+      <div class="discovery-group-title"><h3>Series</h3><span>Enter a SpeakOut original</span></div>
+      <div class="discovery-series-grid" id="seriesResults"></div>
+    </section>
+
+    <section class="discovery-group" id="videoGroup" hidden>
+      <div class="discovery-group-title"><h3>Watch</h3><span>Episodes, shorts and conversations</span></div>
+      <div class="discovery-media-grid" id="videoResults"></div>
+    </section>
+
+    <section class="discovery-group" id="audioGroup" hidden>
+      <div class="discovery-group-title"><h3>Listen</h3><span>Podcasts and spoken-word content</span></div>
+      <div class="discovery-media-grid" id="audioResults"></div>
+    </section>
+
+    <section class="discovery-group" id="liveGroup" hidden>
+      <div class="discovery-group-title"><h3>Live</h3><span>Published live and upcoming programmes</span></div>
+      <div class="discovery-media-grid" id="liveResults"></div>
+    </section>
+  </div>
+
+  <div class="discovery-empty" id="emptyResults" hidden>
+    <span>⌕</span>
+    <h2>No exact match yet</h2>
+    <p>Try a broader word, another topic, or explore the full SpeakOut TV library.</p>
+    <button type="button" id="showEverything">Show everything</button>
+  </div>
+</section>
+</main>
+
+<nav class="ios-tabbar youth-nav search-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html"><span>⌂</span><small>Home</small></a>
+<a href="tv.html#discover" class="active"><span>✦</span><small>Discover</small></a>
+<a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
+<a href="tv.html#listen"><span>◉</span><small>Listen</small></a>
+<a href="tv.html#live"><span>●</span><small>Live</small></a>
+</nav>
+
+<script type="module" src="js/tv-search.js"></script>
+</body></html>
