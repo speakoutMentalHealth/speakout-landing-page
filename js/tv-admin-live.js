@@ -42,6 +42,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   const libraryVisibleCount = $("libraryVisibleCount");
   let lastDetection = null;
   let studioItems = [];
+  let studioShows = [];
   let editingRecordId = null;
 
   function parse(raw) {
@@ -248,6 +249,200 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[char]));
 
+  const intelligencePillars = [
+    {id:"general",label:"General wellbeing"},
+    {id:"youth",label:"Youth voices"},
+    {id:"school",label:"School & student life"},
+    {id:"adhd",label:"ADHD & focus"},
+    {id:"relationships",label:"Relationships"},
+    {id:"motivation",label:"Confidence & motivation"},
+    {id:"stories",label:"Real stories"},
+    {id:"community",label:"Community"},
+    {id:"advocacy",label:"Advocacy"}
+  ];
+  const dayMs = 24*60*60*1000;
+  const intelligenceKey = value => String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/gu," ").trim();
+  const publicStatus = item => ["published","active"].includes(String(item?.status || "").toLowerCase());
+  const regularVideo = item => publicStatus(item) && String(item?.format || "episode").toLowerCase() !== "live";
+  const ageInDays = time => time ? Math.max(0,Math.floor((Date.now()-time)/dayMs)) : null;
+  const ageLabel = time => {
+    const days = ageInDays(time);
+    if (days === null) return "no publish date";
+    if (days === 0) return "today";
+    if (days === 1) return "1 day ago";
+    return days+" days ago";
+  };
+  const artworkKind = item => {
+    if (!validArtwork(item?.imageUrl)) return "missing";
+    try {
+      const host = new URL(String(item.imageUrl)).hostname.replace(/^www\./u,"").toLowerCase();
+      return host === "i.ytimg.com" || host === "img.youtube.com" || host.endsWith(".ytimg.com") ? "source" : "custom";
+    } catch { return "missing"; }
+  };
+  const artworkKey = item => {
+    if (!validArtwork(item?.imageUrl)) return "";
+    try {
+      const u = new URL(String(item.imageUrl).trim());
+      return u.hostname.replace(/^www\./u,"").toLowerCase()+u.pathname.replace(/\/+$/u,"");
+    } catch { return ""; }
+  };
+
+  function renderContentIntelligence(items = studioItems, shows = studioShows) {
+    if (!$("contentIntelligence")) return;
+    const published = items.filter(regularVideo);
+    const now = Date.now();
+    const fresh30 = published.filter(item => {
+      const value = viewerDate(item);
+      return value && now-value <= 30*dayMs;
+    });
+    const fresh90 = published.filter(item => {
+      const value = viewerDate(item);
+      return value && now-value <= 90*dayMs;
+    });
+
+    const coverage = intelligencePillars.map(pillar => {
+      const all = published.filter(item => intelligenceKey(item.contentPillar) === pillar.id);
+      const recent = fresh90.filter(item => intelligenceKey(item.contentPillar) === pillar.id);
+      const latest = Math.max(0,...all.map(viewerDate));
+      return {...pillar,total:all.length,recent:recent.length,latest,state:all.length===0?"empty":recent.length===0?"stale":"active"};
+    });
+    const coverageGaps = coverage.filter(entry => entry.recent === 0);
+    const maxCoverage = Math.max(1,...coverage.map(entry => entry.total));
+
+    $("fresh30Count").textContent = fresh30.length;
+    $("coverageGapCount").textContent = coverageGaps.length;
+    const coverageTarget = $("coverageMap");
+    if (coverageTarget) {
+      coverageTarget.innerHTML = coverage.map(entry => {
+        const width = Math.max(entry.total ? 10 : 2,Math.round(entry.total/maxCoverage*100));
+        const meta = entry.total
+          ? entry.total+" published · "+entry.recent+" recent · latest "+ageLabel(entry.latest)
+          : "No published regular video";
+        return '<article class="coverage-row '+entry.state+'"><div class="coverage-copy"><strong>'+safe(entry.label)+'</strong><small>'+safe(meta)+'</small></div><div class="coverage-meter" aria-hidden="true"><i style="width:'+width+'%"></i></div><button type="button" data-intelligence-search="'+safe(entry.id)+'">View</button></article>';
+      }).join("");
+    }
+
+    const publicShows = (Array.isArray(shows)?shows:[]).filter(show => {
+      const state = String(show?.status || "published").toLowerCase();
+      return !["draft","hidden"].includes(state);
+    });
+    const seriesNames = new Map();
+    publicShows.forEach(show => {
+      const title = String(show.title || "").trim();
+      if (title) seriesNames.set(intelligenceKey(title),title);
+    });
+    published.forEach(item => {
+      const title = String(item.show || "SpeakOut TV").trim() || "SpeakOut TV";
+      seriesNames.set(intelligenceKey(title),title);
+    });
+    const seriesEntries = [...seriesNames.entries()].map(([key,label]) => {
+      const all = published.filter(item => intelligenceKey(item.show || "SpeakOut TV") === key);
+      const latest = Math.max(0,...all.map(viewerDate));
+      const age = ageInDays(latest);
+      return {key,label,count:all.length,latest,age,state:all.length===0?"empty":age===null||age>120?"stale":"active"};
+    }).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+    const seriesGaps = seriesEntries.filter(entry => entry.state !== "active");
+    $("seriesGapCount").textContent = seriesGaps.length;
+    const topSeries = seriesEntries[0] || null;
+    const topShare = topSeries && published.length ? topSeries.count/published.length : 0;
+    const concentrated = Boolean(published.length >= 6 && topShare >= .5);
+
+    const seriesTarget = $("seriesBalance");
+    if (seriesTarget) {
+      if (!seriesEntries.length) {
+        seriesTarget.innerHTML = '<div class="intelligence-clear"><span>○</span><div><strong>No published series data yet</strong><small>Series balance will appear as episodes are published.</small></div></div>';
+      } else {
+        const maxSeries = Math.max(1,...seriesEntries.map(entry=>entry.count));
+        seriesTarget.innerHTML = seriesEntries.slice(0,10).map(entry => {
+          const share = published.length ? Math.round(entry.count/published.length*100) : 0;
+          const width = Math.max(entry.count?10:2,Math.round(entry.count/maxSeries*100));
+          const latest = entry.count ? " · latest "+ageLabel(entry.latest) : "";
+          return '<article class="series-balance-row '+entry.state+'"><div><strong>'+safe(entry.label)+'</strong><small>'+entry.count+' published · '+share+'% of library'+safe(latest)+'</small></div><div class="series-balance-meter" aria-hidden="true"><i style="width:'+width+'%"></i></div><button type="button" data-intelligence-search="'+safe(entry.label)+'">View</button></article>';
+        }).join("")+(concentrated?'<p class="intelligence-note"><span>Balance signal</span>'+safe(topSeries.label)+' currently represents '+Math.round(topShare*100)+'% of published regular video.</p>':"");
+      }
+    }
+
+    const artGroups = new Map();
+    published.forEach(item => {
+      const key = artworkKey(item);
+      if (!key) return;
+      const group = artGroups.get(key) || [];
+      group.push(item);
+      artGroups.set(key,group);
+    });
+    const repeatedArtIds = new Set();
+    artGroups.forEach(group => { if (group.length > 1) group.forEach(item => repeatedArtIds.add(item.id)); });
+    const artSignals = new Map();
+    published.forEach(item => {
+      const signals = [];
+      const kind = artworkKind(item);
+      if (kind === "missing") signals.push("No artwork URL");
+      if (kind === "source") signals.push("Source/YouTube thumbnail");
+      if (repeatedArtIds.has(item.id)) signals.push("Exact artwork reused");
+      if (signals.length) artSignals.set(item.id,{item,signals});
+    });
+    $("artworkSignalCount").textContent = artSignals.size;
+    const artTarget = $("artworkWatch");
+    if (artTarget) {
+      const list = [...artSignals.values()];
+      artTarget.innerHTML = list.length
+        ? '<div class="artwork-signal-list">'+list.slice(0,8).map(({item,signals}) => '<article><div><strong>'+safe(item.title||"Untitled")+'</strong><small>'+safe(item.show||"SpeakOut TV")+'</small></div><span>'+safe(signals.join(" · "))+'</span><button type="button" data-intelligence-edit="'+safe(item.id)+'">Edit</button></article>').join("")+'</div>'+(list.length>8?'<p class="admin-muted editorial-more">+'+(list.length-8)+' more artwork signals.</p>':"")
+        : '<div class="intelligence-clear"><span>✓</span><div><strong>No artwork reuse signals</strong><small>Published regular videos have distinct non-source artwork URLs.</small></div></div>';
+    }
+
+    const opportunities = [];
+    coverageGaps.forEach(entry => {
+      opportunities.push({
+        type:entry.total?"Refresh topic":"Coverage gap",
+        title:entry.label,
+        detail:entry.total ? "No published video in this pillar during the last 90 days." : "No published regular video is assigned to this pillar.",
+        action:"pillar",
+        value:entry.id
+      });
+    });
+    seriesGaps.forEach(entry => {
+      opportunities.push({
+        type:entry.count?"Series refresh":"Empty series",
+        title:entry.label,
+        detail:entry.count ? "No episode published in the last 120 days." : "This published series has no regular video episode yet.",
+        action:"show",
+        value:entry.label
+      });
+    });
+    if (published.length && !fresh30.length) {
+      opportunities.unshift({type:"Freshness",title:"Publish something current",detail:"No regular video has a publish date within the last 30 days.",action:"publish",value:""});
+    }
+    if (concentrated) {
+      opportunities.push({type:"Balance",title:"Broaden the series mix",detail:topSeries.label+" represents "+Math.round(topShare*100)+"% of published regular video.",action:"series",value:""});
+    }
+    if (artSignals.size) {
+      opportunities.push({type:"Presentation",title:"Upgrade artwork consistency",detail:artSignals.size+" published record"+(artSignals.size===1?" has":"s have")+" an objective artwork signal to review.",action:"artwork",value:""});
+    }
+
+    const opportunityTarget = $("contentOpportunities");
+    if (opportunityTarget) {
+      opportunityTarget.innerHTML = opportunities.length
+        ? '<div class="opportunity-list">'+opportunities.slice(0,10).map(entry => {
+            let action = "";
+            if (entry.action === "pillar") action = '<button type="button" data-intelligence-plan-pillar="'+safe(entry.value)+'">Start draft</button>';
+            else if (entry.action === "show") action = '<button type="button" data-intelligence-plan-show="'+safe(entry.value)+'">Start episode</button>';
+            else if (entry.action === "publish") action = '<a href="#publish">New content</a>';
+            else if (entry.action === "series") action = '<a href="admin-tv-series.html">Series Studio</a>';
+            else if (entry.action === "artwork") action = '<button type="button" data-library-preset="attention">Review library</button>';
+            return '<article><div><small>'+safe(entry.type)+'</small><strong>'+safe(entry.title)+'</strong><p>'+safe(entry.detail)+'</p></div>'+action+'</article>';
+          }).join("")+'</div>'
+        : '<div class="intelligence-clear"><span>✓</span><div><strong>No obvious content gaps from current metadata</strong><small>Keep using editorial judgment; this panel only measures the signals it can verify.</small></div></div>';
+    }
+
+    const signalCount = coverageGaps.length + seriesGaps.length + artSignals.size + (concentrated?1:0);
+    const health = $("intelligenceHealth");
+    if (health) {
+      health.textContent = signalCount ? signalCount+" planning signal"+(signalCount===1?"":"s") : "Coverage balanced";
+      health.classList.toggle("attention",Boolean(signalCount));
+    }
+  }
+
+
   const mediaKey = raw => {
     const result = parse(raw);
     if (!result) return "";
@@ -331,9 +526,15 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
 
   async function refreshEditorialDashboard() {
     try {
-      const snapshot = await getDocs(collection(db,"tvEpisodes"));
+      const [snapshot,showSnapshot] = await Promise.all([
+        getDocs(collection(db,"tvEpisodes")),
+        getDocs(collection(db,"tvShows"))
+      ]);
       const items = [];
       snapshot.forEach(doc => items.push({id:doc.id,...doc.data()}));
+      studioShows = [];
+      showSnapshot.forEach(doc => studioShows.push({id:doc.id,...doc.data()}));
+      renderContentIntelligence(items,studioShows);
       const now = Date.now();
       const today = new Date();
       const published = items.filter(item => ["published","active"].includes(String(item.status || "").toLowerCase()));
@@ -540,6 +741,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     renderOperationsQueue();
     decorateLibraryRows();
     applyLibraryFilters();
+    renderContentIntelligence(studioItems,studioShows);
   }
 
   function syncPlacement(source = "placement") {
@@ -567,6 +769,51 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     applyLibraryFilters();
   });
   document.addEventListener("click",event => {
+    const intelligenceEdit = event.target.closest("[data-intelligence-edit]");
+    if (intelligenceEdit) { openRecord(intelligenceEdit.dataset.intelligenceEdit); return; }
+
+    const intelligenceSearch = event.target.closest("[data-intelligence-search]");
+    if (intelligenceSearch) {
+      if (librarySearch) librarySearch.value = intelligenceSearch.dataset.intelligenceSearch || "";
+      if (libraryStatusFilter) libraryStatusFilter.value = "all";
+      if (libraryFormatFilter) libraryFormatFilter.value = "all";
+      if (libraryPlacementFilter) libraryPlacementFilter.value = "all";
+      if (libraryQualityFilter) libraryQualityFilter.value = "all";
+      applyLibraryFilters();
+      $("library")?.scrollIntoView({behavior:"smooth",block:"start"});
+      return;
+    }
+
+    const planPillar = event.target.closest("[data-intelligence-plan-pillar]");
+    const planShow = event.target.closest("[data-intelligence-plan-show]");
+    if (planPillar || planShow) {
+      if (editingRecordId) {
+        if (statusBox) {
+          statusBox.textContent = "Finish or cancel the record you are editing before starting a new content plan.";
+          statusBox.className = "notice bad";
+          statusBox.scrollIntoView({behavior:"smooth",block:"center"});
+        }
+        return;
+      }
+      form?.reset();
+      if (status) status.value = "draft";
+      if (editorialReview) editorialReview.value = "pending";
+      if (homePlacement) homePlacement.value = "auto";
+      if (featured) featured.value = "false";
+      if (planPillar && contentPillar) contentPillar.value = planPillar.dataset.intelligencePlanPillar || "general";
+      if (planShow) {
+        const showSelect = $("show");
+        if (showSelect && [...showSelect.options].some(option => option.value === planShow.dataset.intelligencePlanShow)) {
+          showSelect.value = planShow.dataset.intelligencePlanShow;
+        }
+      }
+      syncPlacement("placement");
+      updateReadiness();
+      $("publish")?.scrollIntoView({behavior:"smooth",block:"start"});
+      setTimeout(()=>title?.focus(),250);
+      return;
+    }
+
     const edit = event.target.closest("[data-queue-edit]");
     if (edit) { openRecord(edit.dataset.queueEdit); return; }
     const preset = event.target.closest("[data-library-preset]");
