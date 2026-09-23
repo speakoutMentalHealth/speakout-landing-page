@@ -1,3 +1,6 @@
+import { db } from "../firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 (()=> {
   const $ = id => document.getElementById(id);
   const url = $("url");
@@ -14,6 +17,10 @@
   const editorialReview = $("editorialReview");
   const minorInvolved = $("minorInvolved");
   const consentConfirmed = $("consentConfirmed");
+  const homePlacement = $("homePlacement");
+  const contentPillar = $("contentPillar");
+  const audience = $("audience");
+  const featured = $("featured");
   const summary = $("publishSummary");
   const publishHint = $("publishHint");
   const readinessTitle = $("readinessTitle");
@@ -60,13 +67,17 @@
 
   function readinessState() {
     const mediaOk = Boolean(parse(url?.value));
-    const titleOk = Boolean(title?.value.trim());
-    const descriptionOk = Boolean(description?.value.trim());
-    const artworkOk = Boolean(image?.value.trim());
-    const tagsOk = Boolean(tags?.value.trim());
+    const titleOk = title?.value.trim().length >= 8;
+    const descriptionOk = description?.value.trim().length >= 50;
+    const artworkOk = /^https?:\/\//iu.test(image?.value.trim() || "");
+    const tagCount = String(tags?.value || "").split(",").map(value => value.trim()).filter(Boolean).length;
+    const tagsOk = tagCount >= 2;
     const reviewOk = editorialReview?.value === "complete";
     const consentOk = minorInvolved?.value !== "yes" || consentConfirmed?.value === "yes";
-    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk};
+    const placementOk = Boolean(homePlacement?.value);
+    const pillarOk = Boolean(contentPillar?.value);
+    const audienceOk = Boolean(audience?.value);
+    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk,placementOk,pillarOk,audienceOk};
     return {...checks,ready:Object.values(checks).every(Boolean)};
   }
 
@@ -94,7 +105,7 @@
       readinessTitle.textContent = "Complete the highlighted checks";
       readinessBadge.textContent = "Needs attention";
       readinessBadge.className = "readiness-badge blocked";
-      readinessNote.textContent = "Published content needs a valid media link, title, description, artwork, tags, completed editorial review and any required consent.";
+      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, completed editorial review and any required consent.";
       summary.textContent = "Publishing is not ready yet";
       publishHint.textContent = "Complete the highlighted editorial checks or switch visibility back to Draft.";
       publishButton?.setAttribute("data-blocked","true");
@@ -185,17 +196,90 @@
     }
   }, true);
 
-  function refreshMetrics() {
-    const rows = [...document.querySelectorAll("#rows tr")];
-    const text = rows.map(row => row.textContent.toLowerCase());
-    const published = text.filter(x => x.includes("published") || x.includes("active")).length;
-    const drafts = text.filter(x => x.includes("draft")).length;
-    document.getElementById("publishedCount").textContent = published;
-    document.getElementById("draftCount").textContent = drafts;
-    document.getElementById("liveCount").textContent = text.filter(x => x.includes("live") || x.includes("scheduled")).length;
+  function timestampValue(value) {
+    if (!value) return 0;
+    if (typeof value?.toMillis === "function") return value.toMillis();
+    return Date.parse(value) || 0;
   }
+
+  function validArtwork(value) {
+    try {
+      const parsed = new URL(String(value || "").trim());
+      return ["http:","https:"].includes(parsed.protocol);
+    } catch { return false; }
+  }
+
+  const safe = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[char]));
+
+  function recordIssues(item) {
+    const issues = [];
+    const published = ["published","active"].includes(String(item.status || "").toLowerCase());
+    if (!published) return issues;
+    if (String(item.description || "").trim().length < 50) issues.push("short description");
+    if (!validArtwork(item.imageUrl)) issues.push("missing artwork");
+    const itemTags = Array.isArray(item.tags) ? item.tags : String(item.tags || "").split(",");
+    if (itemTags.map(value => String(value).trim()).filter(Boolean).length < 2) issues.push("few tags");
+    if (String(item.editorialReview || "").toLowerCase() !== "complete") issues.push("review pending");
+    if (String(item.minorInvolved || "").toLowerCase() === "yes" && String(item.consentConfirmed || "").toLowerCase() !== "yes") issues.push("minor consent");
+    return issues;
+  }
+
+  async function refreshEditorialDashboard() {
+    try {
+      const snapshot = await getDocs(collection(db,"tvEpisodes"));
+      const items = [];
+      snapshot.forEach(doc => items.push({id:doc.id,...doc.data()}));
+      const now = Date.now();
+      const published = items.filter(item => ["published","active"].includes(String(item.status || "").toLowerCase()));
+      const drafts = items.filter(item => String(item.status || "").toLowerCase() === "draft");
+      const live = items.filter(item => String(item.format || "").toLowerCase() === "live" && String(item.status || "").toLowerCase() !== "hidden");
+      const featuredItems = published.filter(item => String(item.homePlacement || "").toLowerCase() === "featured" || String(item.featured).toLowerCase() === "true");
+      const attention = items.map(item => ({item,issues:recordIssues(item)})).filter(entry => entry.issues.length);
+      const ready = published.filter(item => recordIssues(item).length === 0);
+      const scheduled = live.filter(item => timestampValue(item.scheduledAt) > now);
+
+      $("publishedCount").textContent = published.length;
+      $("draftCount").textContent = drafts.length;
+      $("liveCount").textContent = live.length;
+      $("featuredCount").textContent = featuredItems.length;
+      $("reviewCount").textContent = attention.length;
+      $("readyEditorialCount").textContent = ready.length;
+      $("attentionEditorialCount").textContent = attention.length;
+      $("scheduledEditorialCount").textContent = scheduled.length;
+
+      const health = $("editorialHealth");
+      health.textContent = attention.length ? attention.length+" need attention" : "Library healthy";
+      health.classList.toggle("attention", Boolean(attention.length));
+
+      const target = $("editorialAttention");
+      if (!attention.length) {
+        target.innerHTML = '<div class="editorial-clear"><span>✓</span><div><strong>No publishing gaps detected</strong><small>Published broadcasts have the core metadata needed for discovery.</small></div></div>';
+      } else {
+        target.innerHTML = '<div class="attention-list">'+attention.slice(0,8).map(({item,issues}) =>
+          '<article><div><strong>'+safe(item.title || "Untitled")+'</strong><small>'+safe(item.show || "SpeakOut TV")+'</small></div><span>'+safe(issues.join(" · "))+'</span></article>'
+        ).join("")+'</div>'+(attention.length > 8 ? '<p class="admin-muted editorial-more">+'+(attention.length-8)+' more records need attention.</p>' : "");
+      }
+    } catch (error) {
+      console.error(error);
+      if ($("editorialHealth")) $("editorialHealth").textContent = "Check unavailable";
+      if ($("editorialAttention")) $("editorialAttention").innerHTML = '<p class="admin-muted">Could not load editorial checks. Try refreshing the Studio.</p>';
+    }
+  }
+
+  function syncPlacement() {
+    if (homePlacement?.value === "featured" && featured) featured.value = "true";
+    if (featured?.value === "true" && homePlacement?.value === "auto") homePlacement.value = "featured";
+  }
+  homePlacement?.addEventListener("change", () => { syncPlacement(); updateReadiness(); });
+  featured?.addEventListener("change", () => { syncPlacement(); updateReadiness(); });
+
   const rows = document.getElementById("rows");
-  if (rows) new MutationObserver(refreshMetrics).observe(rows,{childList:true,subtree:true});
-  refreshMetrics();
+  if (rows) new MutationObserver(() => {
+    clearTimeout(window.__tvEditorialRefresh);
+    window.__tvEditorialRefresh = setTimeout(refreshEditorialDashboard, 220);
+  }).observe(rows,{childList:true,subtree:true});
+  refreshEditorialDashboard();
   updateReadiness();
 })();
