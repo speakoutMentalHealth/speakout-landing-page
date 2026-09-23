@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/speakout-tv.css">
+<link rel="preconnect" href="https://open.spotify.com">
+<link rel="canonical" href="https://speakoutmentalhealth.org/radio.html">
 <meta name="theme-color" content="#071226">
 <link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
@@ -103,10 +105,11 @@
 <a href="tv.html"><span>⌂</span><small>Home</small></a>
 <a href="tv.html#discover"><span>✦</span><small>Discover</small></a>
 <a href="tv.html#watch"><span>▶</span><small>Watch</small></a>
-<a href="radio.html" class="active"><span>◉</span><small>Listen</small></a>
+<a href="radio.html" class="active" aria-current="page"><span>◉</span><small>Listen</small></a>
 <a href="tv.html#live"><span>●</span><small>Live</small></a>
 </nav>
 
 <script type="module" src="js/speakout-radio.js"></script>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
 </body>
 </html>
