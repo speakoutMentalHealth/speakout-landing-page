@@ -1,5 +1,6 @@
 import {db} from "../firebase-config.js";
 import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -59,14 +60,15 @@ function mediaCard(x){
  const kind=kindOf(x),img=imageFor(x);
  const badge=kind==="audio"?(x.audioType||"AUDIO"):kind==="live"?"LIVE":(x.show||"SPEAKOUT TV");
  return '<a class="discovery-media-card" href="'+hrefFor(x)+'">'+
-  '<div class="discovery-media-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="discovery-media-fallback">'+esc(kind==="audio"?"LISTEN":"SPEAKOUT TV")+'</div>')+
-  '<span class="discovery-media-type">'+esc(badge)+'</span><span class="discovery-media-play">'+(kind==="audio"?"◉":"▶")+'</span></div>'+
+  '<div class="discovery-media-art '+artClass(x,kind)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x,kind))+
+  artOverlay(x,kind)+'<span class="discovery-media-play">'+(kind==="audio"?"◉":"▶")+'</span></div>'+
   '<div class="discovery-media-copy"><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
 }
 function seriesCard(x){
  const img=x.imageUrl||"";
- return '<a class="discovery-series-card" href="'+hrefFor(x)+'">'+
-  '<div class="discovery-series-art"'+(img?' style="background-image:url(\''+esc(img)+'\')"':"")+'></div>'+
+ const item={...x,show:x.title};
+ return '<a class="discovery-series-card'+(img?'':' no-image')+'" href="'+hrefFor(x)+'">'+
+  '<div class="discovery-series-art '+artClass(item,"series")+'"'+(img?' style="background-image:url(\''+esc(img)+'\')"':"")+'>'+(img?'':artFallback(item,"series"))+artOverlay(item,"series")+'</div>'+
   '<div class="discovery-series-copy"><small>'+esc(x.category||"ORIGINAL")+'</small><strong>'+esc(x.title||"SpeakOut Original")+'</strong><p>'+esc(x.description||"")+'</p><span>Enter series →</span></div></a>';
 }
 
