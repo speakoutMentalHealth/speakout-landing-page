@@ -31,6 +31,9 @@ const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const scheduleValue=x=>x?.scheduledAt?.toMillis?.()||Date.parse(x?.scheduledAt||"")||0;
+const formatSchedule=(ms,opts={})=>ms?new Intl.DateTimeFormat(undefined,{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",...opts}).format(new Date(ms)):"";
+const livePeople=x=>[x?.presenter?"Host · "+x.presenter:"",x?.guest?"Guest · "+x.guest:"",x?.guestRole||"",x?.sponsor?"Supported by "+x.sponsor:""].filter(Boolean);
 
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
@@ -101,6 +104,103 @@ function renderForYou(topic="all"){
  $("#forYouSub").textContent=topic==="all"?"A mix of stories, conversations and ideas worth your time.":"Showing content connected to what you picked for this visit.";
 }
 
+let liveItems=[],currentLive=null,nextLive=null,liveCountdownTimer=null;
+function liveMetaMarkup(item){
+ const bits=[];
+ const scheduled=scheduleValue(item);
+ if(scheduled)bits.push("<span>◷ "+esc(formatSchedule(scheduled))+"</span>");
+ livePeople(item).forEach(x=>bits.push("<span>"+esc(x)+"</span>"));
+ return bits.join("");
+}
+function liveScheduleCard(item){
+ const img=imageFor(item),when=scheduleValue(item);
+ return '<article class="live-schedule-card">'+
+  '<div class="live-schedule-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="live-schedule-fallback">SPEAKOUT LIVE</div>')+'<span>'+esc(formatSchedule(when,{weekday:"long"}))+'</span></div>'+
+  '<div class="live-schedule-copy"><small>'+esc(formatSchedule(when))+'</small><strong>'+esc(item.title||"SpeakOut Live")+'</strong><p>'+esc(item.description||"Join the conversation live on SpeakOut TV.")+'</p>'+
+  '<div class="live-card-actions"><button type="button" data-live-calendar="'+esc(item.id)+'">＋ Reminder</button><button type="button" data-live-share="'+esc(item.id)+'">Share</button></div></div></article>';
+}
+function previousLiveCard(item){
+ const img=imageFor(item);
+ return '<button class="live-previous-card" type="button" data-live-watch="'+esc(item.id)+'">'+
+  '<div class="live-previous-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':'<div class="live-schedule-fallback">LIVE</div>')+'<span>▶</span></div>'+
+  '<small>'+esc(item.show||"SpeakOut Live")+'</small><strong>'+esc(item.title||"SpeakOut Live")+'</strong></button>';
+}
+function calendarText(item){
+ const start=scheduleValue(item);if(!start)return "";
+ const end=start+60*60*1000;
+ const stamp=ms=>new Date(ms).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+ const clean=s=>String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+ const url=location.origin+location.pathname+"#live";
+ return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//SpeakOut TV//Live//EN","BEGIN:VEVENT",
+  "UID:"+clean((item.id||"live")+"@speakoutmentalhealth.org"),"DTSTAMP:"+stamp(Date.now()),"DTSTART:"+stamp(start),"DTEND:"+stamp(end),
+  "SUMMARY:"+clean(item.title||"SpeakOut Live"),"DESCRIPTION:"+clean(item.description||"Join SpeakOut Live."),"URL:"+url,"END:VEVENT","END:VCALENDAR"].join("\r\n");
+}
+function addLiveReminder(item){
+ const body=calendarText(item);if(!body)return;
+ const blob=new Blob([body],{type:"text/calendar;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(normalize(item.title||"speakout-live").replace(/ /g,"-")||"speakout-live")+".ics";
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ $("#liveActionStatus").textContent="Calendar reminder prepared.";
+}
+async function shareLive(item){
+ if(!item)return;
+ const url=location.origin+location.pathname+"#live";
+ try{
+  if(navigator.share)await navigator.share({title:item.title||"SpeakOut Live",text:item.description||"Join SpeakOut Live.",url});
+  else{await navigator.clipboard.writeText(url);$("#liveActionStatus").textContent="Live link copied."}
+ }catch(error){if(error?.name!=="AbortError")$("#liveActionStatus").textContent="Use your browser address bar to copy the live link."}
+}
+function startLiveCountdown(item){
+ if(liveCountdownTimer)clearInterval(liveCountdownTimer);
+ const target=scheduleValue(item),out=$("#liveCountdown");if(!target||!out)return;
+ const tick=()=>{
+  const left=Math.max(0,target-Date.now());
+  const days=Math.floor(left/86400000),hours=Math.floor((left%86400000)/3600000),mins=Math.floor((left%3600000)/60000);
+  const values=[days,hours,mins];out.querySelectorAll("b").forEach((b,i)=>b.textContent=String(values[i]??0).padStart(2,"0"));
+  if(left<=0){clearInterval(liveCountdownTimer);$("#liveActionStatus").textContent="This session is scheduled to begin now."}
+ };
+ tick();liveCountdownTimer=setInterval(tick,30000);
+}
+function renderLiveExperience(allEpisodes){
+ const now=Date.now();
+ liveItems=allEpisodes.filter(x=>String(x.format||x.type||"").toLowerCase()==="live");
+ const future=liveItems.filter(x=>scheduleValue(x)>now).sort((a,b)=>scheduleValue(a)-scheduleValue(b));
+ const unscheduled=liveItems.filter(x=>!scheduleValue(x));
+ const recent=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<=now&&(now-t)<=6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
+ const previous=liveItems.filter(x=>{const t=scheduleValue(x);return t&&t<now-6*60*60*1000}).sort((a,b)=>scheduleValue(b)-scheduleValue(a));
+ currentLive=unscheduled[0]||recent[0]||null;nextLive=future[0]||null;
+
+ const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar");
+ if(currentLive){
+  status.textContent="Live Now";status.classList.add("is-live");
+  stageTime.textContent=scheduleValue(currentLive)?formatSchedule(scheduleValue(currentLive)):"On air now";
+  $("#liveEyebrow").textContent="ON AIR";
+  $("#liveTitle").textContent=currentLive.title||"SpeakOut Live";
+  $("#liveDescription").textContent=currentLive.description||"Join the conversation live on SpeakOut TV.";
+  meta.innerHTML=liveMetaMarkup(currentLive);setFrame($("#livePlayer"),currentLive,false);
+  share.hidden=false;calendar.hidden=!scheduleValue(currentLive);
+ }else{
+  status.textContent=nextLive?"Upcoming":"Live channel";status.classList.remove("is-live");
+  stageTime.textContent=nextLive?"Next · "+formatSchedule(scheduleValue(nextLive)):"No session on air";
+  $("#liveEyebrow").textContent="LIVE CHANNEL";
+  $("#liveTitle").textContent="The next conversation starts here.";
+  $("#liveDescription").textContent=nextLive?"A new SpeakOut Live session is scheduled. See the details below and add a reminder.":"Live conversations, interviews and special coverage will appear here when scheduled.";
+  meta.innerHTML="";share.hidden=true;calendar.hidden=true;
+ }
+
+ const nextPanel=$("#nextLivePanel");
+ if(nextLive){
+  nextPanel.hidden=false;$("#nextLiveTitle").textContent=nextLive.title||"Upcoming SpeakOut Live";$("#nextLiveDescription").textContent=nextLive.description||"Join the next SpeakOut conversation live.";
+  $("#nextLiveMeta").innerHTML=liveMetaMarkup(nextLive);startLiveCountdown(nextLive);
+ }else nextPanel.hidden=true;
+
+ const scheduleSection=$("#liveScheduleSection"),grid=$("#liveScheduleGrid");
+ scheduleSection.hidden=!future.length;grid.innerHTML=future.slice(0,8).map(liveScheduleCard).join("");
+
+ const previousSection=$("#livePreviousSection"),rail=$("#livePreviousRail");
+ previousSection.hidden=!previous.length;rail.innerHTML=previous.slice(0,10).map(previousLiveCard).join("");
+}
+
 const viewGroups={
  home:["home","featured","for-you","reset","series","stories","episodes","audio","live"],
  discover:["for-you","shelf","reset","series","stories"],
@@ -130,12 +230,7 @@ async function load(){
  starterEpisodes.forEach(x=>{const id=ytId(x.url);if(!known.has(id))episodes.push(x)});
  episodes.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
 
- const now=Date.now();
- const live=episodes.find(x=>String(x.format||x.type||"").toLowerCase()==="live"&&(!x.scheduledAt||Date.parse(x.scheduledAt)<=now));
- if(live){
-   $("#liveStatus").textContent="Live Now";$("#liveStatus").classList.add("is-live");
-   $("#liveTitle").textContent=live.title||"SpeakOut Live";$("#liveDescription").textContent=live.description||"Live now on SpeakOut TV.";setFrame($("#livePlayer"),live,false);
- }
+ renderLiveExperience(episodes);
 
  regularEpisodes=episodes.filter(x=>String(x.format||x.type||"").toLowerCase()!=="live");
  const first=regularEpisodes[0]||episodes[0];
@@ -169,6 +264,9 @@ document.addEventListener("click",e=>{
  const ep=e.target.closest(".ios-episode-card[data-episode-id]");if(ep){const item=regularEpisodes.find(x=>x.id===ep.dataset.episodeId);if(item)playEpisode(item,true);return}
  const mood=e.target.closest(".mood-chip");if(mood){$$(".mood-chip").forEach(x=>x.classList.toggle("active",x===mood));renderForYou(mood.dataset.topic||"all");$("#for-you")?.scrollIntoView({behavior:"smooth",block:"start"});return}
  const reset=e.target.closest("[data-reset]");if(reset){const messages={breathe:"Unclench your jaw, lower your shoulders and take one slow breath. Give yourself a minute before the next thing.",ground:"Look around and quietly notice five things you can see, four you can feel, and three you can hear. No rush.",focus:"Choose one small task that matters next. Finish that one before deciding what comes after it."};const panel=$("#resetPanel");panel.textContent=messages[reset.dataset.reset]||"";panel.hidden=false;return}
+ const reminder=e.target.closest("[data-live-calendar]");if(reminder){const item=liveItems.find(x=>x.id===reminder.dataset.liveCalendar);if(item)addLiveReminder(item);return}
+ const shareLiveBtn=e.target.closest("[data-live-share]");if(shareLiveBtn){const item=liveItems.find(x=>x.id===shareLiveBtn.dataset.liveShare);if(item)shareLive(item);return}
+ const watchLive=e.target.closest("[data-live-watch]");if(watchLive){const item=liveItems.find(x=>x.id===watchLive.dataset.liveWatch);if(item){setFrame($("#livePlayer"),item,true);$("#liveTitle").textContent=item.title||"SpeakOut Live";$("#liveDescription").textContent=item.description||"";$("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveMeta").innerHTML=liveMetaMarkup(item);$("#live").scrollIntoView({behavior:"smooth",block:"start"})}return}
  const nav=e.target.closest(".youth-nav a");if(nav){e.preventDefault();showView(nav.dataset.view||"home",{push:true})}
 });
 addEventListener("popstate",()=>showView(location.hash.slice(1)||"home"));
@@ -179,3 +277,6 @@ addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;
 $("#installTv")?.addEventListener("click",async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("#installTv").hidden=true});
 
 load();
+$("#liveShare")?.addEventListener("click",()=>shareLive(currentLive||nextLive));
+$("#liveCalendar")?.addEventListener("click",()=>{const item=currentLive||nextLive;if(item)addLiveReminder(item)});
+$("#nextLiveReminder")?.addEventListener("click",()=>{if(nextLive)addLiveReminder(nextLive)});
