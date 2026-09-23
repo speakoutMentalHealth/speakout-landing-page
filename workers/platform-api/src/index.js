@@ -171,6 +171,27 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("Invalid TV audience."), { status: 400 });
     }
     record.audience = audience;
+    if (status === "published") {
+      if (record.title.trim().length < 8) {
+        throw Object.assign(new Error("Published TV content requires a clear title of at least 8 characters."), { status: 409 });
+      }
+      if (record.description.trim().length < 50) {
+        throw Object.assign(new Error("Published TV content requires a useful description of at least 50 characters."), { status: 409 });
+      }
+      const tagCount = record.tags.split(",").map(value => value.trim()).filter(Boolean).length;
+      if (tagCount < 2) {
+        throw Object.assign(new Error("Published TV content requires at least two discovery tags."), { status: 409 });
+      }
+      try {
+        const artworkUrl = new URL(record.imageUrl);
+        if (!["http:", "https:"].includes(artworkUrl.protocol)) throw new Error();
+      } catch {
+        throw Object.assign(new Error("Published TV content requires a valid artwork URL."), { status: 409 });
+      }
+      if (format === "live" && ["featured", "daily"].includes(homePlacement)) {
+        throw Object.assign(new Error("Live broadcasts use the Live channel and cannot use Main Stage or Today’s Focus placement."), { status: 409 });
+      }
+    }
     if (status === "published" && normalized(record.editorialReview) !== "complete") {
       throw Object.assign(new Error("Published TV content requires completed editorial review."), { status: 409 });
     }
