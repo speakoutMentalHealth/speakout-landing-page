@@ -1,5 +1,4 @@
-import {db} from "../firebase-config.js";
-import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {loadTvEpisodes,loadTvAudio,loadTvShows} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
 
 const $=s=>document.querySelector(s);
@@ -105,16 +104,12 @@ function render(){
 }
 
 async function load(){
- const episodes=[],audio=[],shows=[];
+ let episodes=[],audio=[],shows=[];
  try{
-  const [v,a,s]=await Promise.all([
-   getDocs(query(collection(db,"tvEpisodes"),where("status","in",["active","published"]))),
-   getDocs(query(collection(db,"tvAudio"),where("status","in",["active","published"]))),
-   getDocs(query(collection(db,"tvShows"),where("status","in",["active","published"])))
-  ]);
-  v.forEach(d=>episodes.push({id:d.id,mediaType:"video",...d.data()}));
-  a.forEach(d=>audio.push({id:d.id,mediaType:"audio",...d.data()}));
-  s.forEach(d=>shows.push({id:d.id,mediaType:"series",...d.data()}));
+  const loaded=await Promise.all([loadTvEpisodes(),loadTvAudio(),loadTvShows()]);
+  episodes=loaded[0].map(x=>({mediaType:"video",...x}));
+  audio=loaded[1].map(x=>({mediaType:"audio",...x}));
+  shows=loaded[2].map(x=>({mediaType:"series",...x}));
  }catch{}
 
  const knownVideos=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));
