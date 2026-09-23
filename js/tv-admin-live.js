@@ -1,201 +1,309 @@
-(()=> {
-  const $ = id => document.getElementById(id);
-  const url = $("url");
-  const previewBtn = $("previewBtn");
-  const frame = $("previewFrame");
-  const hint = $("providerHint");
-  const badge = $("providerBadge");
-  const format = $("format");
-  const title = $("title");
-  const description = $("description");
-  const image = $("imageUrl");
-  const tags = $("tags");
-  const status = $("status");
-  const editorialReview = $("editorialReview");
-  const minorInvolved = $("minorInvolved");
-  const consentConfirmed = $("consentConfirmed");
-  const summary = $("publishSummary");
-  const publishHint = $("publishHint");
-  const readinessTitle = $("readinessTitle");
-  const readinessBadge = $("readinessBadge");
-  const readinessNote = $("readinessNote");
-  const form = $("cmsForm");
-  const statusBox = $("statusBox");
-  const publishButton = form?.querySelector('button[type="submit"]');
-  let lastDetection = null;
+import { db } from "../firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-  function parse(raw) {
-    try {
-      const u = new URL(String(raw || "").trim());
-      const h = u.hostname.replace(/^www\./, "").toLowerCase();
-      let id = "";
-      if (h === "youtu.be") id = u.pathname.split("/").filter(Boolean)[0] || "";
-      if (["youtube.com","m.youtube.com","music.youtube.com"].includes(h)) {
-        id = u.searchParams.get("v") || (u.pathname.match(/\/(?:live|embed|shorts)\/([^/?#]+)/) || [])[1] || "";
-      }
-      if (id) {
-        const live = /\/live\//.test(u.pathname);
-        const short = /\/shorts\//.test(u.pathname);
-        return {name: live ? "YouTube Live" : "YouTube", id, live, short, canonical:"https://www.youtube.com/watch?v="+encodeURIComponent(id), src:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0"};
-      }
-      if (h === "player.vimeo.com") return {name:"Vimeo",src:u.href};
-      if (h === "vimeo.com") {
-        const vid = u.pathname.split("/").filter(Boolean)[0];
-        if (vid) return {name:"Vimeo",src:"https://player.vimeo.com/video/"+encodeURIComponent(vid)};
-      }
-      if (h === "twitch.tv") {
-        const channel = u.pathname.split("/").filter(Boolean)[0];
-        if (channel) return {name:"Twitch",live:true,src:"https://player.twitch.tv/?channel="+encodeURIComponent(channel)+"&parent="+encodeURIComponent(location.hostname)};
-      }
-    } catch {}
+const $ = id => document.getElementById(id);
+const form = $("cmsForm");
+const url = $("url");
+const previewBtn = $("previewBtn");
+const frame = $("previewFrame");
+const hint = $("providerHint");
+const badge = $("providerBadge");
+const format = $("format");
+const title = $("title");
+const description = $("description");
+const image = $("imageUrl");
+const tags = $("tags");
+const status = $("status");
+const featured = $("featured");
+const publishDate = $("publishDate");
+const scheduledAt = $("scheduledAt");
+const consentConfirmed = $("consentConfirmed");
+const minorInvolved = $("minorInvolved");
+const editorialReview = $("editorialReview");
+const contentPillar = $("contentPillar");
+const programmingDay = $("programmingDay");
+const summary = $("publishSummary");
+const statusBox = $("statusBox");
+let lastPreview = null;
+let dashboardTimer = null;
+
+const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+}[char]));
+
+function parse(raw) {
+  try {
+    const u = new URL(String(raw || "").trim());
+    const h = u.hostname.replace(/^www\./, "").toLowerCase();
+    let id = "";
+    if (h === "youtu.be") id = u.pathname.split("/").filter(Boolean)[0] || "";
+    if (["youtube.com","m.youtube.com","music.youtube.com"].includes(h)) {
+      id = u.searchParams.get("v") || (u.pathname.match(/\/(?:live|embed|shorts)\/([^/?#]+)/) || [])[1] || "";
+    }
+    if (id) {
+      const live = /\/live\//.test(u.pathname);
+      const short = /\/shorts\//.test(u.pathname);
+      return {
+        name: live ? "YouTube Live" : "YouTube",
+        id, live, short,
+        canonical:"https://www.youtube.com/watch?v="+encodeURIComponent(id),
+        src:"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0"
+      };
+    }
+    if (h === "player.vimeo.com") return {name:"Vimeo",src:u.href};
+    if (h === "vimeo.com") {
+      const vid = u.pathname.split("/").filter(Boolean)[0];
+      if (vid) return {name:"Vimeo",src:"https://player.vimeo.com/video/"+encodeURIComponent(vid)};
+    }
+    if (h === "twitch.tv") {
+      const channel = u.pathname.split("/").filter(Boolean)[0];
+      if (channel) return {
+        name:"Twitch",live:true,
+        src:"https://player.twitch.tv/?channel="+encodeURIComponent(channel)+"&parent="+encodeURIComponent(location.hostname)
+      };
+    }
+  } catch {}
+  return null;
+}
+
+function validHttpUrl(raw) {
+  try {
+    const u = new URL(String(raw || "").trim());
+    return ["http:","https:"].includes(u.protocol);
+  } catch { return false; }
+}
+
+function showDetection(result) {
+  badge.textContent = result ? result.name+" detected" : "Unsupported link";
+  badge.classList.toggle("detected", Boolean(result));
+  hint.textContent = result
+    ? "Preview is ready. Review the editorial checks below before publishing."
+    : "Use a YouTube, YouTube Live, Vimeo or Twitch link.";
+}
+
+function preview(result = parse(url.value)) {
+  lastPreview = result;
+  showDetection(result);
+  if (!result) {
+    frame.innerHTML = '<div class="preview-empty"><strong>Preview unavailable</strong><small>Check the link and try again.</small></div>';
+    renderReadiness();
     return null;
   }
+  frame.innerHTML = '<iframe loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="'+esc(result.src)+'" title="Broadcast preview" allow="accelerometer;autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share" allowfullscreen></iframe>';
+  if (result.live) format.value = "live";
+  else if (result.short) format.value = "short";
+  else format.value = "episode";
+  renderReadiness();
+  return result;
+}
 
-  function setReadiness(name, ok, warning = false) {
-    const el = document.querySelector('[data-readiness="'+name+'"]');
-    if (!el) return;
-    el.classList.toggle("ok", Boolean(ok));
-    el.classList.toggle("warn", !ok && warning);
+async function enrichYouTube(result) {
+  if (!result?.id || !result.name.startsWith("YouTube")) return;
+  if (!image.value) image.value = "https://i.ytimg.com/vi/"+result.id+"/hqdefault.jpg";
+  try {
+    const response = await fetch("https://www.youtube.com/oembed?format=json&url="+encodeURIComponent(result.canonical), {cache:"no-store"});
+    if (!response.ok) return;
+    const data = await response.json();
+    if (!title.value) title.value = data.title || "";
+    if (data.thumbnail_url) image.value = data.thumbnail_url;
+  } catch {}
+  renderReadiness();
+}
+
+async function prepare() {
+  const result = preview();
+  if (result) await enrichYouTube(result);
+}
+
+function currentChecks() {
+  const publishing = status.value === "published";
+  const featuring = featured.value === "true";
+  const minor = minorInvolved.value === "yes";
+  const tagList = tags.value.split(",").map(x => x.trim()).filter(Boolean);
+  const descLength = description.value.trim().length;
+  const media = parse(url.value);
+
+  const checks = [
+    {key:"media", level:media ? "ok" : "block", label:"Supported media link", detail:media ? media.name+" link recognized." : "Add a supported YouTube, Vimeo or Twitch link."},
+    {key:"title", level:title.value.trim().length >= 8 ? "ok" : "block", label:"Clear title", detail:title.value.trim().length >= 8 ? "Title is ready." : "Use a clear title of at least 8 characters."},
+    {key:"description", level:descLength >= 50 ? "ok" : (featuring ? "block" : "warn"), label:"Useful description", detail:descLength >= 50 ? "Description gives viewers enough context." : "Aim for at least 50 characters before promotion."},
+    {key:"artwork", level:validHttpUrl(image.value) ? "ok" : (featuring ? "block" : "warn"), label:"Artwork / thumbnail", detail:validHttpUrl(image.value) ? "Artwork is set." : "Add a thumbnail so the content is easy to discover."},
+    {key:"tags", level:tagList.length >= 2 ? "ok" : (featuring ? "block" : "warn"), label:"Discovery tags", detail:tagList.length >= 2 ? tagList.length+" tags added." : "Add at least two useful discovery tags."},
+    {key:"pillar", level:contentPillar.value ? "ok" : "warn", label:"Content pillar", detail:contentPillar.value ? "Editorial pillar selected." : "Automatic topic matching will use tags instead."},
+    {key:"publishDate", level:publishDate.value ? "ok" : "warn", label:"Publish date", detail:publishDate.value ? "Publish date is set." : "Add a publish date for better recent-content ordering."}
+  ];
+
+  if (format.value === "live") {
+    checks.push({
+      key:"schedule",
+      level:scheduledAt.value ? "ok" : "warn",
+      label:"Live schedule",
+      detail:scheduledAt.value ? "Live date and time are set." : "Leave blank only when the broadcast is already live."
+    });
   }
 
-  function readinessState() {
-    const mediaOk = Boolean(parse(url?.value));
-    const titleOk = Boolean(title?.value.trim());
-    const descriptionOk = Boolean(description?.value.trim());
-    const artworkOk = Boolean(image?.value.trim());
-    const tagsOk = Boolean(tags?.value.trim());
-    const reviewOk = editorialReview?.value === "complete";
-    const consentOk = minorInvolved?.value !== "yes" || consentConfirmed?.value === "yes";
-    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk};
-    return {...checks,ready:Object.values(checks).every(Boolean)};
+  if (featuring) {
+    checks.push({
+      key:"review",
+      level:editorialReview.value === "complete" ? "ok" : "block",
+      label:"Editorial review",
+      detail:editorialReview.value === "complete" ? "Completed before Main Stage promotion." : "Main Stage content should complete editorial review first."
+    });
+  } else {
+    checks.push({
+      key:"review",
+      level:editorialReview.value === "complete" ? "ok" : "warn",
+      label:"Editorial review",
+      detail:editorialReview.value === "complete" ? "Editorial review complete." : "Review is still pending."
+    });
   }
 
-  function updateReadiness() {
-    const state = readinessState();
-    setReadiness("media", state.mediaOk, true);
-    setReadiness("title", state.titleOk, true);
-    setReadiness("description", state.descriptionOk, true);
-    setReadiness("artwork", state.artworkOk, true);
-    setReadiness("tags", state.tagsOk, true);
-    setReadiness("review", state.reviewOk, true);
-    setReadiness("consent", state.consentOk, true);
+  if (minor) {
+    checks.push({
+      key:"consent",
+      level:consentConfirmed.value === "yes" ? "ok" : "block",
+      label:"Minor consent",
+      detail:consentConfirmed.value === "yes" ? "Consent confirmed." : "Publishing content involving a minor requires confirmed consent."
+    });
+    checks.push({
+      key:"minorReview",
+      level:editorialReview.value === "complete" ? "ok" : "block",
+      label:"Minor editorial review",
+      detail:editorialReview.value === "complete" ? "Editorial review complete." : "Complete editorial review before publishing content involving a minor."
+    });
+  }
 
-    const publishing = status?.value === "published";
-    const hidden = status?.value === "hidden";
-    if (publishing && state.ready) {
-      readinessTitle.textContent = "Approved and ready to publish";
-      readinessBadge.textContent = "Ready";
-      readinessBadge.className = "readiness-badge ready";
-      readinessNote.textContent = "The core editorial checks are complete. Publishing will make this item visible on SpeakOut TV.";
-      summary.textContent = "Ready to publish";
-      publishHint.textContent = "Editorial review and publishing checks are complete.";
-      publishButton?.removeAttribute("data-blocked");
-    } else if (publishing) {
-      readinessTitle.textContent = "Complete the highlighted checks";
-      readinessBadge.textContent = "Needs attention";
-      readinessBadge.className = "readiness-badge blocked";
-      readinessNote.textContent = "Published content needs a valid media link, title, description, artwork, tags, completed editorial review and any required consent.";
-      summary.textContent = "Publishing is not ready yet";
-      publishHint.textContent = "Complete the highlighted editorial checks or switch visibility back to Draft.";
-      publishButton?.setAttribute("data-blocked","true");
-    } else if (hidden) {
-      readinessTitle.textContent = "Hidden content can be saved";
-      readinessBadge.textContent = "Hidden";
-      readinessBadge.className = "readiness-badge";
-      readinessNote.textContent = "This item will remain unavailable to viewers until it is reviewed and published.";
-      summary.textContent = "Save hidden content";
-      publishHint.textContent = "Hidden items stay out of the public TV experience.";
-      publishButton?.removeAttribute("data-blocked");
+  if (!publishing) {
+    return checks.map(check => check.level === "block" && !["media","title"].includes(check.key)
+      ? {...check,level:"warn"} : check);
+  }
+  return checks;
+}
+
+function renderReadiness() {
+  if (!$("readinessList")) return;
+  const checks = currentChecks();
+  const blockers = checks.filter(x => x.level === "block");
+  const warnings = checks.filter(x => x.level === "warn");
+  $("readinessList").innerHTML = checks.map(check =>
+    '<div class="readiness-item '+check.level+'"><span class="readiness-icon">'+
+    (check.level === "ok" ? "✓" : check.level === "block" ? "!" : "•")+
+    '</span><div><strong>'+esc(check.label)+'</strong><small>'+esc(check.detail)+'</small></div></div>'
+  ).join("");
+
+  const state = $("readinessState");
+  if (blockers.length) {
+    state.textContent = blockers.length+" blocker"+(blockers.length===1?"":"s");
+    state.className = "readiness-state blocked";
+  } else if (warnings.length) {
+    state.textContent = "Ready with "+warnings.length+" note"+(warnings.length===1?"":"s");
+    state.className = "readiness-state warning";
+  } else {
+    state.textContent = "Ready";
+    state.className = "readiness-state ready";
+  }
+
+  const isDraft = status.value !== "published";
+  summary.textContent = isDraft
+    ? "Save this draft?"
+    : blockers.length
+      ? "Resolve the publishing blockers first."
+      : featured.value === "true"
+        ? "Ready for Main Stage?"
+        : "Ready to publish to SpeakOut TV?";
+  return {checks,blockers,warnings};
+}
+
+function timestampValue(value) {
+  if (!value) return 0;
+  if (typeof value?.toMillis === "function") return value.toMillis();
+  return Date.parse(value) || 0;
+}
+
+function recordIssues(item) {
+  const issues = [];
+  const published = ["published","active"].includes(String(item.status || "").toLowerCase());
+  if (!published) return issues;
+  if (String(item.description || "").trim().length < 50) issues.push("short description");
+  if (!validHttpUrl(item.imageUrl)) issues.push("missing artwork");
+  const itemTags = Array.isArray(item.tags) ? item.tags : String(item.tags || "").split(",");
+  if (itemTags.map(x => String(x).trim()).filter(Boolean).length < 2) issues.push("few tags");
+  if (String(item.featured).toLowerCase() === "true" && String(item.editorialReview).toLowerCase() !== "complete") issues.push("featured review pending");
+  if (String(item.minorInvolved).toLowerCase() === "yes" &&
+      (String(item.consentConfirmed).toLowerCase() !== "yes" || String(item.editorialReview).toLowerCase() !== "complete")) {
+    issues.push("minor consent/review");
+  }
+  return issues;
+}
+
+async function refreshEditorialDashboard() {
+  try {
+    const snap = await getDocs(collection(db,"tvEpisodes"));
+    const items = [];
+    snap.forEach(doc => items.push({id:doc.id,...doc.data()}));
+    const now = Date.now();
+    const published = items.filter(x => ["published","active"].includes(String(x.status || "").toLowerCase()));
+    const drafts = items.filter(x => String(x.status || "").toLowerCase() === "draft");
+    const live = items.filter(x => String(x.format || "").toLowerCase() === "live" && String(x.status || "").toLowerCase() !== "hidden");
+    const featuredItems = published.filter(x => String(x.featured).toLowerCase() === "true");
+    const attention = items.map(item => ({item,issues:recordIssues(item)})).filter(x => x.issues.length);
+    const ready = published.filter(item => recordIssues(item).length === 0);
+    const scheduled = live.filter(x => timestampValue(x.scheduledAt) > now);
+
+    $("publishedCount").textContent = published.length;
+    $("draftCount").textContent = drafts.length;
+    $("liveCount").textContent = live.length;
+    $("featuredCount").textContent = featuredItems.length;
+    $("reviewCount").textContent = attention.length;
+    $("readyEditorialCount").textContent = ready.length;
+    $("attentionEditorialCount").textContent = attention.length;
+    $("scheduledEditorialCount").textContent = scheduled.length;
+
+    const health = $("editorialHealth");
+    health.textContent = attention.length ? attention.length+" need attention" : "Library healthy";
+    health.classList.toggle("attention", Boolean(attention.length));
+
+    const target = $("editorialAttention");
+    if (!attention.length) {
+      target.innerHTML = '<div class="editorial-clear"><span>✓</span><div><strong>No publishing gaps detected</strong><small>Published broadcasts have the core metadata needed for discovery.</small></div></div>';
     } else {
-      readinessTitle.textContent = state.ready ? "Editorial checks complete" : "Draft can be saved now";
-      readinessBadge.textContent = state.ready ? "Draft ready" : "Draft mode";
-      readinessBadge.className = state.ready ? "readiness-badge ready" : "readiness-badge";
-      readinessNote.textContent = state.ready
-        ? "The editorial checks are complete. You can keep this as a draft or switch visibility to Published."
-        : "Drafts can be saved while details are still being prepared. Publishing remains gated until review is complete.";
-      summary.textContent = "Draft-first publishing";
-      publishHint.textContent = "Save as draft while you prepare it. Published content must complete editorial review.";
-      publishButton?.removeAttribute("data-blocked");
+      target.innerHTML = '<div class="attention-list">'+attention.slice(0,8).map(({item,issues}) =>
+        '<article><div><strong>'+esc(item.title || "Untitled")+'</strong><small>'+esc(item.show || "SpeakOut TV")+'</small></div><span>'+esc(issues.join(" · "))+'</span></article>'
+      ).join("")+'</div>'+(attention.length > 8 ? '<p class="admin-muted editorial-more">+'+(attention.length-8)+' more record'+(attention.length-8===1?"":"s")+' need attention.</p>' : "");
     }
-    return state;
+  } catch (error) {
+    console.error(error);
+    $("editorialHealth").textContent = "Check unavailable";
+    $("editorialAttention").innerHTML = '<p class="admin-muted">Could not load editorial checks. Try refreshing the Studio.</p>';
   }
+}
 
-  function showDetection(result) {
-    lastDetection = result;
-    badge.textContent = result ? result.name+" detected" : "Unsupported link";
-    badge.classList.toggle("detected", Boolean(result));
-    hint.textContent = result ? "Preview is ready. Review the details below before publishing." : "Use a YouTube, YouTube Live, Vimeo or Twitch link.";
-    updateReadiness();
-  }
+function scheduleDashboardRefresh() {
+  clearTimeout(dashboardTimer);
+  dashboardTimer = setTimeout(refreshEditorialDashboard, 220);
+}
 
-  function preview(result = parse(url.value)) {
-    showDetection(result);
-    if (!result) {
-      frame.innerHTML = '<div class="preview-empty"><strong>Preview unavailable</strong><small>Check the link and try again.</small></div>';
-      return null;
-    }
-    frame.innerHTML = '<iframe src="'+result.src+'" title="Broadcast preview" allow="accelerometer;autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share" allowfullscreen></iframe>';
-    if (result.live) format.value = "live";
-    else if (result.short) format.value = "short";
-    else format.value = "episode";
-    updateReadiness();
-    return result;
-  }
+previewBtn?.addEventListener("click", prepare);
+url?.addEventListener("paste", () => setTimeout(prepare, 80));
+url?.addEventListener("change", prepare);
+url?.addEventListener("blur", () => { if (url.value.trim()) prepare(); });
 
-  async function enrichYouTube(result) {
-    if (!result?.id || !result.name.startsWith("YouTube")) return;
-    if (!image.value) image.value = "https://i.ytimg.com/vi/"+result.id+"/hqdefault.jpg";
-    try {
-      const response = await fetch("https://www.youtube.com/oembed?format=json&url="+encodeURIComponent(result.canonical), {cache:"no-store"});
-      if (!response.ok) return;
-      const data = await response.json();
-      if (!title.value) title.value = data.title || "";
-      if (data.thumbnail_url) image.value = data.thumbnail_url;
-    } catch {}
-    updateReadiness();
-  }
+form?.addEventListener("input", renderReadiness);
+form?.addEventListener("change", renderReadiness);
 
-  async function prepare() {
-    const result = preview();
-    if (result) await enrichYouTube(result);
-  }
-
-  previewBtn?.addEventListener("click", prepare);
-  url?.addEventListener("paste", () => setTimeout(prepare, 80));
-  url?.addEventListener("change", prepare);
-  url?.addEventListener("blur", () => { if (url.value.trim()) prepare(); });
-
-  form?.addEventListener("input", updateReadiness);
-  form?.addEventListener("change", updateReadiness);
-  form?.addEventListener("reset", () => setTimeout(() => {
-    lastDetection = null;
-    updateReadiness();
-  }, 0));
-
-  form?.addEventListener("submit", event => {
-    if (status?.value !== "published") return;
-    const state = updateReadiness();
-    if (state.ready) return;
+form?.addEventListener("submit", event => {
+  const {blockers} = renderReadiness();
+  if (status.value === "published" && blockers.length) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (statusBox) {
-      statusBox.textContent = "Publishing stopped: complete the highlighted editorial checks or save this item as a draft.";
-      statusBox.className = "notice bad";
-      statusBox.scrollIntoView({behavior:"smooth",block:"center"});
-    }
-  }, true);
-
-  function refreshMetrics() {
-    const rows = [...document.querySelectorAll("#rows tr")];
-    const text = rows.map(row => row.textContent.toLowerCase());
-    const published = text.filter(x => x.includes("published") || x.includes("active")).length;
-    const drafts = text.filter(x => x.includes("draft")).length;
-    document.getElementById("publishedCount").textContent = published;
-    document.getElementById("draftCount").textContent = drafts;
-    document.getElementById("liveCount").textContent = text.filter(x => x.includes("live") || x.includes("scheduled")).length;
+    statusBox.textContent = "Publishing paused: resolve the editorial blockers shown below.";
+    statusBox.className = "notice bad";
+    $("readinessState")?.scrollIntoView({behavior:"smooth",block:"center"});
   }
-  const rows = document.getElementById("rows");
-  if (rows) new MutationObserver(refreshMetrics).observe(rows,{childList:true,subtree:true});
-  refreshMetrics();
-  updateReadiness();
-})();
+}, true);
+
+const rows = $("rows");
+if (rows) new MutationObserver(scheduleDashboardRefresh).observe(rows,{childList:true,subtree:true});
+
+renderReadiness();
+refreshEditorialDashboard();
