@@ -246,7 +246,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
 
   function scheduleState(item, date = new Date()) {
     const days = String(item?.programmingDays || "all").trim().toLowerCase();
-    const priorityValue = Number(item?.placementPriority ?? 100);
+    const priorityValue = Number(String(item?.placementPriority ?? "").trim() || 100);
     const priority = Number.isInteger(priorityValue) && priorityValue >= 0 && priorityValue <= 999 ? priorityValue : 100;
     const start = String(item?.placementStart || "").trim();
     const end = String(item?.placementEnd || "").trim();
