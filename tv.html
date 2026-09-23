@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SpeakOut TV</title>
-<meta name="description" content="Watch live, catch up on SpeakOut videos, and listen to SpeakOut audio.">
+<title>SpeakOut TV — Youth Mental Health, Stories & Conversations</title>
+<meta name="description" content="Discover SpeakOut TV: youth mental health conversations, real stories, podcasts, quick wellbeing resets, campus voices and live programmes.">
 <link rel="icon" href="images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,69 +11,147 @@
 <link rel="canonical" href="https://speakoutmentalhealth.org/tv.html">
 <meta name="theme-color" content="#071226"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 </head>
-<body class="tv-ios">
-<header class="ios-topbar"><div class="tv-container ios-topbar-inner">
-<a class="ios-brand" href="index.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
-<a class="ios-icon-btn" href="tv-search.html" aria-label="Search">⌕</a>
-</div></header>
+<body class="tv-ios youth-tv">
+<header class="ios-topbar youth-topbar">
+  <div class="tv-container ios-topbar-inner">
+    <a class="ios-brand" href="index.html"><img src="images/logo.png" alt="SpeakOut"><span>SpeakOut <b>TV</b></span></a>
+    <div class="youth-top-actions">
+      <span class="youth-now">For young people. By real people.</span>
+      <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV">⌕</a>
+    </div>
+  </div>
+</header>
 
-<main class="ios-shell">
-<section class="tv-container ios-intro streaming-hero" id="streamingHero">
-<div class="streaming-hero-art" id="introBackdrop" aria-hidden="true"></div>
-<div class="streaming-hero-shade" aria-hidden="true"></div>
-<div class="streaming-hero-content">
-<span class="ios-kicker">SPEAKOUT TV · FEATURED</span>
-<h1 id="introTitle">Watch. Listen. Connect.</h1>
-<p id="introDescription">Stories, conversations and original SpeakOut programming in one premium viewing experience.</p>
-<div class="streaming-hero-actions">
-<button class="hero-action hero-action-primary" id="introPlay" type="button">▶ Watch now</button>
-<button class="hero-action hero-action-ghost" id="introSeries" type="button">＋ Explore series</button>
-<button class="ios-pill" id="installTv" type="button" hidden>＋ Install</button>
-</div>
-</div>
+<main class="youth-shell">
+<section class="tv-container youth-welcome" id="home">
+  <div class="youth-welcome-copy">
+    <span class="youth-eyebrow">SPEAKOUT TV</span>
+    <h1>How are you, <em>really?</em></h1>
+    <p>Start where you are. Pick what feels closest right now and we’ll bring useful stories, conversations and ideas forward for this visit.</p>
+  </div>
+  <div class="mood-rail" id="moodRail" aria-label="Choose what you want to explore">
+    <button type="button" class="mood-chip active" data-topic="all">Just browsing</button>
+    <button type="button" class="mood-chip" data-topic="stress">Stressed</button>
+    <button type="button" class="mood-chip" data-topic="overthinking">Overthinking</button>
+    <button type="button" class="mood-chip" data-topic="motivation">Unmotivated</button>
+    <button type="button" class="mood-chip" data-topic="adhd">ADHD</button>
+    <button type="button" class="mood-chip" data-topic="school">School pressure</button>
+    <button type="button" class="mood-chip" data-topic="relationships">Relationships</button>
+    <button type="button" class="mood-chip" data-topic="men">Men’s mental health</button>
+  </div>
 </section>
 
-<section class="tv-container ios-section" id="live">
-<div class="ios-section-head"><div><span class="ios-kicker">LIVE</span><h2>Go Live</h2></div><span class="ios-status" id="liveStatus">Offline</span></div>
-<div class="ios-glass ios-live-card">
-<div class="ios-player" id="livePlayer"><div class="ios-empty"><span>●</span><strong>No live broadcast right now</strong><small>When SpeakOut goes live, it will appear here.</small></div></div>
-<div class="ios-card-copy"><h3 id="liveTitle">SpeakOut Live</h3><p id="liveDescription">Live conversations and special coverage.</p></div>
-</div>
+<section class="tv-container youth-feature" id="featured">
+  <div class="feature-art" id="introBackdrop" aria-hidden="true"></div>
+  <div class="feature-shade" aria-hidden="true"></div>
+  <div class="feature-copy">
+    <span class="feature-badge">FEATURED TODAY</span>
+    <h2 id="introTitle">Real conversations. No pretending.</h2>
+    <p id="introDescription">Watch stories and conversations created to help young people feel informed, understood and connected.</p>
+    <div class="feature-actions">
+      <button class="feature-btn primary" id="introPlay" type="button">▶ Watch now</button>
+      <button class="feature-btn secondary" id="introSeries" type="button">Explore originals</button>
+      <button class="ios-pill" id="installTv" type="button" hidden>＋ Install</button>
+    </div>
+  </div>
 </section>
 
-<section class="tv-container ios-section" id="episodes">
-<div class="ios-section-head"><div><span class="ios-kicker">WATCH</span><h2>Episodes</h2></div><a class="ios-text-link" href="tv-search.html">View all</a></div>
-<div class="ios-glass ios-episode-stage">
-<div class="ios-player" id="episodePlayer"><div class="ios-empty"><strong>Select an episode</strong></div></div>
-<div class="ios-card-copy"><h3 id="episodeTitle">SpeakOut TV</h3><p id="episodeDescription">Choose a video below to start watching.</p></div>
-</div>
-<div class="ios-episode-strip" id="latestRail"></div>
+<section class="tv-container youth-section" id="for-you">
+  <div class="youth-section-head">
+    <div><span>DISCOVER</span><h2>For You</h2><p id="forYouSub">A mix of stories, conversations and ideas worth your time.</p></div>
+    <a href="tv-search.html">Search all</a>
+  </div>
+  <div class="content-rail" id="forYouRail"></div>
 </section>
 
-<section class="tv-container ios-section" id="series">
-<div class="ios-section-head"><div><span class="ios-kicker">SERIES</span><h2>Explore Series</h2></div></div>
-<div class="ios-series-strip" id="seriesRail"></div>
+<section class="tv-container youth-section quick-reset" id="reset">
+  <div class="youth-section-head">
+    <div><span>TAKE A MOMENT</span><h2>Quick Reset</h2><p>Short, practical wellbeing content for a busy day.</p></div>
+  </div>
+  <div class="reset-grid">
+    <article class="reset-card">
+      <div class="reset-icon">◌</div><small>1 MINUTE</small><h3>Pause & breathe</h3>
+      <p>Step away from the noise for one quiet minute.</p>
+      <button type="button" data-reset="breathe">Start</button>
+    </article>
+    <article class="reset-card">
+      <div class="reset-icon">◎</div><small>2 MINUTES</small><h3>Ground yourself</h3>
+      <p>Notice what is around you and reconnect with the moment.</p>
+      <button type="button" data-reset="ground">Start</button>
+    </article>
+    <article class="reset-card">
+      <div class="reset-icon">↗</div><small>QUICK CHECK-IN</small><h3>Reset your focus</h3>
+      <p>Choose one small next step instead of solving everything at once.</p>
+      <button type="button" data-reset="focus">Start</button>
+    </article>
+  </div>
+  <div class="reset-panel" id="resetPanel" hidden aria-live="polite"></div>
 </section>
 
-<section class="tv-container ios-section" id="audio">
-<div class="ios-section-head"><div><span class="ios-kicker">LISTEN</span><h2>Audio</h2></div><a class="ios-text-link" href="radio.html">Open Radio</a></div>
-<div class="ios-glass ios-audio-card">
-<div class="ios-audio-icon">◉</div>
-<div class="ios-audio-copy"><strong>SpeakOut Radio</strong><span>Podcasts, spoken word & audio conversations</span></div>
-<a class="ios-round-action" href="radio.html" aria-label="Open SpeakOut Radio">›</a>
-</div>
-<div class="ios-spotify" id="audioPlayer"><iframe loading="lazy" src="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0" title="SpeakOut podcast" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe></div>
-<div class="ios-audio-strip" id="audioRail"></div>
+<section class="tv-container youth-section" id="series">
+  <div class="youth-section-head">
+    <div><span>SPEAKOUT ORIGINALS</span><h2>Enter a Series</h2><p>Different voices. Different worlds. One place to keep exploring.</p></div>
+  </div>
+  <div class="originals-rail" id="seriesRail"></div>
+</section>
+
+<section class="tv-container youth-section" id="stories">
+  <div class="youth-section-head">
+    <div><span>REAL PEOPLE</span><h2>Stories That Stay With You</h2><p>Perspectives, reflections and lived experiences from the SpeakOut archive.</p></div>
+  </div>
+  <div class="content-rail" id="storiesRail"></div>
+</section>
+
+<section class="tv-container youth-section watch-section" id="episodes">
+  <div class="youth-section-head">
+    <div><span>WATCH</span><h2>Watch Now</h2><p>Choose an episode and stay on SpeakOut TV.</p></div>
+    <a href="tv-search.html">View all</a>
+  </div>
+  <div class="ios-glass ios-episode-stage youth-player-stage">
+    <div class="ios-player" id="episodePlayer"><div class="ios-empty"><strong>Select something to watch</strong></div></div>
+    <div class="ios-card-copy"><span class="player-label">NOW PLAYING</span><h3 id="episodeTitle">SpeakOut TV</h3><p id="episodeDescription">Pick an episode below.</p></div>
+  </div>
+  <div class="ios-episode-strip" id="latestRail"></div>
+</section>
+
+<section class="tv-container youth-section listen-section" id="audio">
+  <div class="youth-section-head">
+    <div><span>LISTEN</span><h2>Audio for Your Headspace</h2><p>Podcasts, spoken word and conversations you can take with you.</p></div>
+    <a href="radio.html">Open Radio</a>
+  </div>
+  <div class="listen-layout">
+    <div class="ios-spotify" id="audioPlayer"><iframe loading="lazy" src="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0" title="SpeakOut podcast" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe></div>
+    <div class="listen-side">
+      <span>LISTEN ANYWHERE</span><h3>SpeakOut Radio</h3><p>Long-form conversations, spoken word and voices worth hearing.</p>
+      <a href="radio.html">Open full radio →</a>
+    </div>
+  </div>
+  <div class="ios-audio-strip" id="audioRail"></div>
+</section>
+
+<section class="tv-container youth-section live-section" id="live">
+  <div class="youth-section-head">
+    <div><span>LIVE & UPCOMING</span><h2>Be Part of the Conversation</h2><p>When SpeakOut goes live, this becomes the front row.</p></div>
+    <span class="ios-status" id="liveStatus">Offline</span>
+  </div>
+  <div class="ios-glass ios-live-card youth-live-card">
+    <div class="ios-player" id="livePlayer"><div class="ios-empty"><span>●</span><strong>No live broadcast right now</strong><small>Published live sessions will appear here.</small></div></div>
+    <div class="ios-card-copy"><span class="player-label">SPEAKOUT LIVE</span><h3 id="liveTitle">Join the next conversation</h3><p id="liveDescription">Live conversations, interviews and special coverage.</p></div>
+  </div>
+</section>
+
+<section class="tv-container youth-closing">
+  <div><span>KEEP EXPLORING</span><h2>You don’t need to have everything figured out to start learning about yourself.</h2></div>
+  <a href="pages/resources.html">Explore support resources →</a>
 </section>
 </main>
 
-<a class="tv-support ios-help" href="pages/resources.html">Support</a>
-<nav class="ios-tabbar" aria-label="SpeakOut TV navigation">
-<a href="tv.html" class="active"><span>⌂</span><small>Home</small></a>
-<a href="#live"><span>●</span><small>Live</small></a>
-<a href="#episodes"><span>▶</span><small>Episodes</small></a>
-<a href="#series"><span>▣</span><small>Series</small></a>
-<a href="#audio"><span>◉</span><small>Audio</small></a>
+<nav class="ios-tabbar youth-nav" aria-label="SpeakOut TV navigation">
+<a href="tv.html" class="active" data-view="home"><span>⌂</span><small>Home</small></a>
+<a href="#for-you" data-view="discover"><span>✦</span><small>Discover</small></a>
+<a href="#episodes" data-view="watch"><span>▶</span><small>Watch</small></a>
+<a href="#audio" data-view="listen"><span>◉</span><small>Listen</small></a>
+<a href="#live" data-view="live"><span>●</span><small>Live</small></a>
 </nav>
 
 <script type="module" src="js/speakout-tv.js"></script>
