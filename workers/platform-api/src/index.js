@@ -206,7 +206,8 @@ function cmsRecord(collectionName, input) {
     const placementDate = (value, label) => {
       const raw = clean(value);
       if (!raw) return "";
-      if (!/^\d{4}-\d{2}-\d{2}$/u.test(raw) || Number.isNaN(Date.parse(raw+"T00:00:00Z"))) {
+      const parsed = /^\d{4}-\d{2}-\d{2}$/u.test(raw) ? new Date(raw+"T00:00:00Z") : null;
+      if (!parsed || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== raw) {
         throw Object.assign(new Error(`Invalid TV ${label} date.`), { status: 400 });
       }
       return raw;
@@ -216,7 +217,8 @@ function cmsRecord(collectionName, input) {
     if (record.placementStart && record.placementEnd && record.placementEnd < record.placementStart) {
       throw Object.assign(new Error("TV placement end date cannot be before the start date."), { status: 400 });
     }
-    if (status === "published") {
+    const publicTvStatus = ["active", "published"].includes(status);
+    if (publicTvStatus) {
       if (record.title.trim().length < 8) {
         throw Object.assign(new Error("Published TV content requires a clear title of at least 8 characters."), { status: 409 });
       }
@@ -237,10 +239,10 @@ function cmsRecord(collectionName, input) {
         throw Object.assign(new Error("Live broadcasts use the Live channel and cannot use Main Stage or Today’s Focus placement."), { status: 409 });
       }
     }
-    if (status === "published" && normalized(record.editorialReview) !== "complete") {
+    if (publicTvStatus && normalized(record.editorialReview) !== "complete") {
       throw Object.assign(new Error("Published TV content requires completed editorial review."), { status: 409 });
     }
-    if (status === "published" && normalized(record.minorInvolved) === "yes" &&
+    if (publicTvStatus && normalized(record.minorInvolved) === "yes" &&
         normalized(record.consentConfirmed) !== "yes") {
       throw Object.assign(new Error("Published content involving a minor requires confirmed consent."), { status: 409 });
     }
@@ -1286,8 +1288,12 @@ async function route(request, env, path, data) {
       const existing = await tx.get(`${collectionName}/${recordId}`);
       if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
       if (collectionName === "tvShows" && ["active", "published"].includes(status)) validatePublicTvShow(existing);
+      const validated = collectionName === "tvEpisodes" && ["active", "published"].includes(status)
+        ? cmsRecord(collectionName, { ...existing, status })
+        : null;
       tx.set(`${collectionName}/${recordId}`, {
         ...existing,
+        ...(validated || {}),
         status,
         updatedAt: new Date().toISOString(),
         updatedBy: user.uid
