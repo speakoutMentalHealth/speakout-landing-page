@@ -886,33 +886,38 @@ test("Platform API exposes only public TV media and restores legacy published Yo
   assert.match(worker,/publicGetPaths = new Set/u);
 });
 
-test("Spotify show sync merges new podcast episodes without duplicating manual audio", () => {
+test("Spotify RSS sync merges podcast episodes without requiring Premium API credentials", () => {
   const worker=read("workers/platform-api/src/index.js");
   const config=read("workers/platform-api/wrangler.production.jsonc");
-  assert.match(worker,/async function spotifyClientToken/u);
   assert.match(worker,/async function spotifyShowEpisodes/u);
-  assert.match(worker,/api\.spotify\.com\/v1\/shows\//u);
-  assert.match(worker,/spotifyEpisodeId/u);
+  assert.match(worker,/SPOTIFY_RSS_URL/u);
+  assert.match(worker,/application\/rss\+xml/u);
+  assert.match(worker,/audioUrl/u);
+  assert.match(worker,/sourceGuid/u);
+  assert.match(worker,/audioIdentityKeys/u);
   assert.match(worker,/spotifyConfigured/u);
+  assert.doesNotMatch(worker,/accounts\.spotify\.com\/api\/token/u);
+  assert.doesNotMatch(worker,/SPOTIFY_CLIENT_SECRET/u);
+  assert.match(config,/"SPOTIFY_RSS_URL": "https:\/\/anchor\.fm\/s\/f8d8cfa4\/podcast\/rss"/u);
   assert.match(config,/"SPOTIFY_SHOW_ID": "4Z8Ua9vAYLT5YJEWYV1gfx"/u);
-  assert.match(config,/"SPOTIFY_MARKET": "US"/u);
-  assert.doesNotMatch(config,/SPOTIFY_CLIENT_SECRET/u);
 });
 
-test("Radio keeps Spotify source attribution and does not brand over Spotify artwork", () => {
+test("Radio keeps Spotify attribution while playing RSS enclosure audio", () => {
   const script=read("js/speakout-radio.js");
   const main=read("js/speakout-tv.js");
   const styles=read("css/tv/media.css");
   assert.match(script,/spotify-attribution/u);
-  assert.match(script,/spotify\?'':artOverlay/u);
-  assert.match(main,/spotify\?'':artOverlay/u);
+  assert.match(script,/x\.sourceUrl\|\|x\.url/u);
+  assert.match(script,/x\.audioUrl\|\|x\.url/u);
+  assert.match(main,/x\.source==="spotify"/u);
+  assert.match(main,/item\.audioUrl\|\|item\.url/u);
   assert.match(styles,/\.listen-card\.is-spotify \.listen-card-art img/u);
 });
 
-
-test("automatic Spotify sync excludes episodes marked explicit", () => {
+test("automatic Spotify RSS sync excludes episodes marked explicit", () => {
   const worker=read("workers/platform-api/src/index.js");
-  assert.match(worker,/if \(!id \|\| episode\?\.explicit === true\) continue;/u);
+  assert.match(worker,/const explicit = podcastExplicit\(rssTag\(block, "itunes:explicit"\)\);/u);
+  assert.match(worker,/if \(explicit\) continue;/u);
 });
 
 
