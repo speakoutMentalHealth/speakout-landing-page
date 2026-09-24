@@ -131,6 +131,7 @@ import { db,auth } from "./firebase-config.js";
 import { collection,getDocs,doc,getDoc,query,where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { courseCoverUrl, isPublicCourse } from "./js/content-visibility.js";
+import { loadPublicCourses } from "./js/public-catalog.js";
 
 let courses=[],progressMap={},externalRecordMap={},currentProfile=null;
 
@@ -335,11 +336,11 @@ async function loadExternalRecords(user){
 
 async function loadCourses(){
   try{
-    const snap=await getDocs(collection(db,"courses"));courses=[];
-    snap.forEach(d=>{const item={id:d.id,...d.data()};if(isPublicCourse(item)&&canSeeCourse(item))courses.push(item)});
-    courses.sort((a,b)=>a.featured&&!b.featured?-1:!a.featured&&b.featured?1:(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    const published=await loadPublicCourses();
+    courses=published.filter(item=>isPublicCourse(item)&&canSeeCourse(item));
+    courses.sort((a,b)=>Number(b.featured===true)-Number(a.featured===true)||String(a.title||"").localeCompare(String(b.title||"")));
     loading.style.display="none";updateStats(courses);buildDynamicFilters();renderFeatured();render();
-  }catch(e){console.error(e);loading.textContent="Failed to load courses. Check Firestore rules and the courses collection.";loading.style.background="var(--goldSoft)";loading.style.color="#704800"}
+  }catch(e){console.error(e);loading.textContent="Courses are temporarily unavailable. Please try again in a moment.";loading.style.background="var(--goldSoft)";loading.style.color="#704800"}
 }
 
 function dashboardFor(p){
