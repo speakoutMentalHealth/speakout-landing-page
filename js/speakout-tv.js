@@ -429,7 +429,7 @@ async function load(){
  renderDailyProgramming();
  renderFresh();
  const featured=pickFeatured();
- const first=homeEpisodes[0]||featured;
+ const first=regularEpisodes[0]||featured;
  if(first){
    currentEpisode=first;renderEpisodePreview($("#episodePlayer"),first);$("#episodeTitle").textContent=first.title||"SpeakOut TV";$("#episodeDescription").textContent=first.description||"";
  }
@@ -439,7 +439,7 @@ async function load(){
    const img=imageFor(featured),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
    $("#introPlay")?.addEventListener("click",()=>playEpisode(featured,true));
  }
- $("#latestRail").innerHTML=homeEpisodes.map(episodeCard).join("")||'<div class="ios-audio-empty">Published TV episodes will appear here.</div>';
+ $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("")||'<div class="ios-audio-empty">Published TV episodes will appear here.</div>';
  renderForYou();
  renderShelf();
  $("#storiesRail").innerHTML=homeEpisodes.filter(x=>normalize(x.show).includes("stories")||x.archive).slice(0,10).map(contentCard).join("")||homeEpisodes.slice(0,5).map(contentCard).join("");
