@@ -272,6 +272,14 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    match /tvCuratorSources/{sourceId} {
+      allow read, write: if false;
+    }
+
+    match /tvCuratorCandidates/{candidateId} {
+      allow read, write: if false;
+    }
+
     match /newsEvents/{eventId} {
       allow read: if true;
       allow write: if isSuperAdmin();
