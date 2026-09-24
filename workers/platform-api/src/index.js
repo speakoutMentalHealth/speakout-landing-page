@@ -1167,6 +1167,7 @@ async function saveCuratorSource(env, user, data = {}) {
       channelDescription: channel.description,
       channelThumbnailUrl: channel.thumbnailUrl,
       uploadsPlaylistId: channel.uploadsPlaylistId,
+      channelMetadataRefreshedAt: now,
       createdAt: existing?.createdAt || now,
       updatedAt: now,
       updatedBy: user.uid
@@ -1235,15 +1236,16 @@ async function syncCuratorSource(env, source, actor = "system") {
         contentPillar: normalized(refreshedSource.contentPillar || "motivation"),
         audience: normalized(refreshedSource.audience || "youth"),
         sourceMode: normalized(refreshedSource.mode || "review"),
-        status: normalized(source.mode) === "draft" ? "drafted" : "pending",
+        status: normalized(refreshedSource.mode) === "draft" ? "drafted" : "pending",
         discoveredAt: now,
+        youtubeMetadataRefreshedAt: now,
         updatedAt: now,
         reviewedAt: "",
         reviewedBy: "",
         draftEpisodeId: ""
       };
-      if (normalized(source.mode) === "draft") {
-        record.draftEpisodeId = await draftCuratorCandidate(env, tx, record, source, actor);
+      if (normalized(refreshedSource.mode) === "draft") {
+        record.draftEpisodeId = await draftCuratorCandidate(env, tx, record, refreshedSource, actor);
         drafted += 1;
       }
       tx.set("tvCuratorCandidates/" + candidateId, record);
@@ -1353,6 +1355,7 @@ async function refreshStoredYouTubeMetadata(env, actor = "system") {
             publishedAt: video.publishedAt,
             thumbnailUrl: video.thumbnailUrl,
             url: video.url,
+            status: op.item.status === "unavailable" ? (op.item.draftEpisodeId ? "drafted" : "pending") : op.item.status,
             youtubeMetadataRefreshedAt: now,
             updatedAt: now,
             updatedBy: actor
@@ -1413,7 +1416,7 @@ async function syncAllCuratorSources(env, actor = "system", sourceId = "") {
         }
         return { ok: true };
       });
-      results.push({ sourceId: source.id, sourceTitle: refreshedSource.label || refreshedSource.channelTitle, error: error.message || "Sync failed." });
+      results.push({ sourceId: source.id, sourceTitle: source.label || source.channelTitle || source.channelRef, error: error.message || "Sync failed." });
     }
   }
   return { configured: true, results };
