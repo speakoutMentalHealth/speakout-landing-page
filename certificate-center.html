@@ -616,8 +616,7 @@ button,input,select{font:inherit}
 <aside class="verification-card">
 <h3>Certificate Verification</h3>
 <p>
-        Search using the unique certificate ID for the fastest result.
-        Recipient details can also be used when available.
+        Use the unique certificate number or verification code shown on the credential.
       </p>
 </aside>
 </div>
@@ -628,14 +627,13 @@ button,input,select{font:inherit}
 <section class="cert-card">
 <h2>Verify a Certificate</h2>
 <p class="helper">
-          Certificate IDs should be entered exactly as shown on the credential.
-          You can also search by recipient details if you do not have the ID.
+          Enter the certificate number or verification code exactly as shown on the credential.
         </p>
 <div class="search-tabs">
 <button class="search-tab active" id="tabId" type="button">
             Certificate ID
           </button>
-<button class="search-tab" id="tabRecipient" type="button">
+<button class="search-tab" id="tabRecipient" type="button" hidden aria-hidden="true" tabindex="-1">
             Recipient Details
           </button>
 </div>
@@ -643,9 +641,9 @@ button,input,select{font:inherit}
 <div id="idSearchFields">
 <div class="field">
 <label for="certificateId">
-                Certificate ID
+                Certificate number or verification code
               </label>
-<input autocomplete="off" id="certificateId" name="certificateId" placeholder="e.g. SH-2026-001245"/>
+<input autocomplete="off" id="certificateId" name="certificateId" placeholder="Enter certificate number or verification code"/>
 <div class="helper">
                 Recommended verification method.
               </div>
@@ -860,6 +858,8 @@ import { db } from "./firebase-config.js";
 
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
   query,
   where,
@@ -1108,6 +1108,7 @@ function renderCertificate(record,docId){
 
   resultTitle.textContent =
     record.certificateTitle ||
+    record.awardTitle ||
     record.courseTitle ||
     record.programmeTitle ||
     record.programTitle ||
@@ -1131,6 +1132,7 @@ function renderCertificate(record,docId){
     "—";
 
   resultCourse.textContent =
+    record.awardTitle ||
     record.courseTitle ||
     record.programmeTitle ||
     record.programTitle ||
@@ -1147,6 +1149,7 @@ function renderCertificate(record,docId){
 
   resultType.textContent =
     formatLabel(
+      record.achievementType ||
       record.credentialType ||
       record.certificateType ||
       record.type ||
@@ -1218,9 +1221,10 @@ function renderCertificate(record,docId){
 
 
   const publicId =
-    record.certificateId ||
+    record.verificationCode ||
+    docId ||
     record.certificateNumber ||
-    docId;
+    record.certificateId;
 
 
   if(
@@ -1229,7 +1233,7 @@ function renderCertificate(record,docId){
   ){
 
     viewCertificateButton.href =
-      `certificate-view.html?id=${encodeURIComponent(publicId)}`;
+      `certificate-view.html?id=${encodeURIComponent(record.verificationCode || docId || publicId)}`;
 
     viewCertificateButton.style.display =
       "inline-flex";
@@ -1251,198 +1255,38 @@ function renderCertificate(record,docId){
 
 async function searchByCertificateId(rawId){
 
-  const id =
-    rawId.trim();
+  const id = rawId.trim();
 
   if(!id){
-    throw new Error(
-      "Enter a certificate ID."
-    );
+    throw new Error("Enter a certificate number or verification code.");
   }
 
+  const publicCollection = collection(db,"publicCertificateVerifications");
 
-  const certificates =
-    collection(db,"certificates");
+  const direct = await getDoc(doc(db,"publicCertificateVerifications",id));
 
-
-  /*
-    The production schema should store a normalized certificateId
-    field on every credential.
-  */
-
-  let snap =
-    await getDocs(
-      query(
-        certificates,
-        where("certificateId","==",id),
-        limit(2)
-      )
-    );
-
-
-  /*
-    Compatibility fallback for older records that may have stored
-    certificateNumber instead of certificateId.
-  */
-
-  if(snap.empty){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where("certificateNumber","==",id),
-          limit(2)
-        )
-      );
-
+  if(direct.exists()){
+    return { docId:direct.id, record:{ verificationCode:direct.id, ...direct.data() } };
   }
 
+  const snap = await getDocs(
+    query(
+      publicCollection,
+      where("certificateNumber","==",id),
+      limit(2)
+    )
+  );
 
-  if(snap.empty){
-    return null;
-  }
+  if(snap.empty) return null;
 
-
-  const first =
-    snap.docs[0];
-
-
-  return {
-    docId:first.id,
-    record:first.data()
-  };
-
-}
-
-
-async function searchByRecipient(name,email){
-
-  const cleanName =
-    name.trim();
-
-  const cleanEmail =
-    email.trim().toLowerCase();
-
-
-  if(!cleanName && !cleanEmail){
-
-    throw new Error(
-      "Enter the recipient name or email."
-    );
-
-  }
-
-
-  const certificates =
-    collection(db,"certificates");
-
-
-  let snap;
-
-
-  /*
-    Prefer recipient email because it is usually more precise.
-    Firestore should store recipientEmailNormalized in lowercase.
-  */
-
-  if(cleanEmail){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "recipientEmailNormalized",
-            "==",
-            cleanEmail
-          ),
-          limit(20)
-        )
-      );
-
-  }else{
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "recipientName",
-            "==",
-            cleanName
-          ),
-          limit(20)
-        )
-      );
-
-  }
-
-
-  if(snap.empty){
-    return null;
-  }
-
-
-  let matches =
-    snap.docs.map(docSnap=>({
-      docId:docSnap.id,
-      record:docSnap.data()
-    }));
-
-
-  if(cleanName){
-
-    matches =
-      matches.filter(item=>
-        normalise(
-          item.record.recipientName ||
-          item.record.learnerName ||
-          item.record.name
-        ) === normalise(cleanName)
-      );
-
-  }
-
-
-  if(cleanEmail){
-
-    matches =
-      matches.filter(item=>
-        normalise(
-          item.record.recipientEmailNormalized ||
-          item.record.recipientEmail ||
-          item.record.learnerEmail
-        ) === cleanEmail
-      );
-
-  }
-
-
-  if(!matches.length){
-    return null;
-  }
-
-
-  /*
-    For privacy, return only one exact match on the public page.
-    A learner can see their full credential history inside the portal.
-  */
-
-  return matches[0];
-
+  const first=snap.docs[0];
+  return { docId:first.id, record:{ verificationCode:first.id, ...first.data() } };
 }
 
 
 tabId.addEventListener(
   "click",
   ()=>setSearchMode("id")
-);
-
-
-tabRecipient.addEventListener(
-  "click",
-  ()=>setSearchMode("recipient")
 );
 
 
@@ -1498,22 +1342,10 @@ form.addEventListener(
       let result;
 
 
-      if(searchMode === "id"){
-
-        result =
-          await searchByCertificateId(
-            certificateIdInput.value
-          );
-
-      }else{
-
-        result =
-          await searchByRecipient(
-            recipientNameInput.value,
-            recipientEmailInput.value
-          );
-
-      }
+      result =
+        await searchByCertificateId(
+          certificateIdInput.value
+        );
 
 
       if(!result){
