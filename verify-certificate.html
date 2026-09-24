@@ -14,5 +14,26 @@ import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-
 const params=new URLSearchParams(location.search);const result=document.getElementById("result");const codeInput=document.getElementById("codeInput");
 if(params.get("code")){codeInput.value=params.get("code");verifyCode(params.get("code"));}
 verifyForm.addEventListener("submit",e=>{e.preventDefault();verifyCode(codeInput.value.trim());});
-async function verifyCode(code){result.innerHTML="<div class='notice'>Checking...</div>";try{const snap=await getDoc(doc(db,"publicCertificateVerifications",code));if(!snap.exists()){result.innerHTML="<div class='notice bad'>Certificate not found or invalid.</div>";return;}const c=snap.data(),card=document.createElement("div");card.className="card";const rows=[["Name",c.recipientName],["Award",c.awardTitle],["Issued",c.issueDate],["Certificate No",c.certificateNumber],["Status",c.status||"active"]];card.innerHTML='<span class="pill valid">Valid Certificate</span>';rows.forEach(([label,value])=>{const p=document.createElement("p"),b=document.createElement("b");b.textContent=`${label}: `;p.append(b,document.createTextNode(value||"—"));card.appendChild(p)});result.replaceChildren(card);}catch(e){console.error(e);result.innerHTML="<div class='notice bad'>Verification failed. Please try again.</div>";}}
+function statusState(value){
+ const status=String(value||"active").trim().toLowerCase();
+ if(["active","issued","approved","verified"].includes(status))return {kind:"valid",label:"Valid Certificate"};
+ if(["pending","pending_review","submitted"].includes(status))return {kind:"pending",label:"Pending Verification"};
+ return {kind:"invalid",label:"Certificate Not Valid"};
+}
+async function verifyCode(code){
+ result.innerHTML="<div class='notice'>Checking...</div>";
+ try{
+  const snap=await getDoc(doc(db,"publicCertificateVerifications",code));
+  if(!snap.exists()){result.innerHTML="<div class='notice bad'>Certificate not found or invalid.</div>";return}
+  const c=snap.data(),state=statusState(c.status),card=document.createElement("div");
+  card.className="card";
+  const badge=document.createElement("span");
+  badge.className="pill "+(state.kind==="valid"?"valid":state.kind==="pending"?"pending":"bad");
+  badge.textContent=state.label;
+  card.appendChild(badge);
+  const rows=[["Name",c.recipientName],["Award",c.awardTitle],["Issuer",c.issuer],["Issued",c.issueDate],["Certificate No",c.certificateNumber],["Status",c.status||"active"]];
+  rows.forEach(([label,value])=>{const p=document.createElement("p"),b=document.createElement("b");b.textContent=`${label}: `;p.append(b,document.createTextNode(value||"—"));card.appendChild(p)});
+  result.replaceChildren(card);
+ }catch(e){console.error(e);result.innerHTML="<div class='notice bad'>Verification failed. Please try again.</div>"}
+}
 </script></body></html>
