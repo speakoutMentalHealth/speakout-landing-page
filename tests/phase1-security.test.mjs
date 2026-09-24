@@ -924,3 +924,64 @@ test("Quick Reset stays a vertical accordion on small screens", () => {
   assert.match(script,/function advanceReset/u);
   assert.match(script,/resetState\.completed/u);
 });
+
+
+test("Quick Reset unfolds inside the selected card and tracks explored activities", () => {
+  const page=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  const styles=read("css/tv/home.css");
+  for(const id of ["breathe","ground","focus"]) {
+    assert.match(page,new RegExp('data-reset-card="'+id+'"',"u"),id);
+    assert.match(page,new RegExp('data-reset-reveal="'+id+'"',"u"),id);
+  }
+  assert.match(page,/id="resetProgressCount"/u);
+  assert.match(script,/const resetFlows=/u);
+  assert.match(script,/function renderResetStep/u);
+  assert.match(script,/function advanceReset/u);
+  assert.match(script,/data-reset-next/u);
+  assert.match(script,/data-reset-close/u);
+  assert.match(styles,/\.reset-reveal/u);
+  assert.match(styles,/@keyframes resetUnfold/u);
+});
+
+test("TV public media loader restores published backend content across viewer surfaces", () => {
+  const data=read("js/tv-data.js");
+  assert.match(data,/export async function loadTvEpisodes/u);
+  assert.match(data,/export async function loadTvShows/u);
+  assert.match(data,/export async function loadTvAudio/u);
+  assert.match(data,/\/v1\/media\/tv/u);
+  assert.match(data,/\/v1\/media\/audio/u);
+  assert.match(data,/where\("status","==","published"\)/u);
+  assert.match(data,/where\("status","==","active"\)/u);
+  for(const file of ["js/speakout-tv.js","js/tv-search.js","js/tv-watch.js","js/tv-show.js"]) {
+    assert.match(read(file),/from "\.\/tv-data\.js"/u,file);
+  }
+  assert.match(read("js/speakout-radio.js"),/loadTvAudio/u);
+});
+
+test("public TV media API returns only public TV and audio fields", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/path === "\/v1\/media\/tv"/u);
+  assert.match(worker,/path === "\/v1\/media\/audio"/u);
+  assert.match(worker,/filter\(publicMediaStatus\)/u);
+  assert.match(worker,/function publicTvEpisode/u);
+  assert.match(worker,/function publicTvAudio/u);
+  assert.doesNotMatch(worker,/publicTvEpisode[\s\S]{0,700}updatedBy/u);
+});
+
+test("Spotify show sync merges newly released episodes without duplicating manually published episode URLs", () => {
+  const worker=read("workers/platform-api/src/index.js");
+  const config=read("workers/platform-api/wrangler.production.jsonc");
+  assert.match(worker,/async function spotifyShowEpisodes/u);
+  assert.match(worker,/SPOTIFY_CLIENT_ID/u);
+  assert.match(worker,/SPOTIFY_CLIENT_SECRET/u);
+  assert.match(worker,/spotifyEpisodeId/u);
+  assert.match(worker,/if \(key && seen\.has\(key\)\) continue/u);
+  assert.match(config,/"SPOTIFY_SHOW_ID": "4Z8Ua9vAYLT5YJEWYV1gfx"/u);
+});
+
+test("TV service worker caches the resilient media data module", () => {
+  const sw=read("tv-sw.js");
+  assert.match(sw,/speakout-tv-v9/u);
+  assert.match(sw,/\.\/js\/tv-data\.js/u);
+});
