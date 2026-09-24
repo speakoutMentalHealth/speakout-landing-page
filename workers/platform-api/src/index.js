@@ -1433,7 +1433,7 @@ async function route(request, env, path, data) {
           const verificationCode = await deterministicVerificationCode(`external:${id}`);
           const certificateRecord = { id, userId: recordUserId, recipientName: record.learnerName || "Learner", courseId: recordCourseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
           tx.set(`certificates/${id}`, certificateRecord);
-          tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
+          tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: certificateRecord.externalProvider, recordedBy: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
           certificate = { id, verificationCode };
         } else certificate = { id, verificationCode: existing.verificationCode };
       }
