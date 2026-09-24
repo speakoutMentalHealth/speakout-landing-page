@@ -171,7 +171,6 @@
     padding:12px 14px 14px;
     border-top:1px solid rgba(255,255,255,.07);
   }
-  .reset-reveal[hidden]{display:none!important}
   .reset-step{
     display:grid;
     grid-template-columns:30px minmax(0,1fr);
