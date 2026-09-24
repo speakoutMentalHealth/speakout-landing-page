@@ -49,3 +49,10 @@ Use the corresponding staging command for staging. The Worker can deploy safely 
 The production Worker runs the curator every six hours. Source mode `review` creates candidate inbox items only. Source mode `draft` may create an unpublished `tvEpisodes` draft automatically, but it never publishes external content. Public release still goes through TV Studio's normal metadata and editorial-review gates. Curated records retain visible YouTube creator attribution and continue to embed the original YouTube video rather than downloading or re-uploading it.
 
 The curator intentionally excludes videos marked made-for-kids and videos that are private or not embeddable. This keeps the automated path narrow; content outside those conditions requires a separate manual/compliance review.
+
+
+## SpeakOut Radio Spotify RSS
+
+SpeakOut Radio reads the public Spotify for Creators RSS feed configured in `SPOTIFY_RSS_URL`. This path does not require Spotify Premium, a Spotify Web API client ID, or a client secret. The Worker reads published RSS items, skips episodes marked explicit, preserves the original podcast source link, and exposes the RSS enclosure URL for on-site audio playback.
+
+The production and staging Wrangler configs keep the public RSS URL as a normal variable. Do not add Spotify client credentials unless a future feature genuinely requires authenticated Spotify Web API access. Manual `tvAudio` entries remain supported and take precedence when an RSS item matches an existing manual record.

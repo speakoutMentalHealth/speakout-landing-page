@@ -29,6 +29,7 @@ const embed=raw=>{try{const u=new URL(raw),host=u.hostname.replace(/^www\./,""),
 const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
+const safeAudio=raw=>{try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
@@ -456,9 +457,9 @@ async function load(){
  let audio=[];
  try{audio=await loadTvAudio()}catch{}
  audio.sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
- const spotifyAudio=audio.filter(x=>spotifyEmbed(x.url||""));
+ const spotifyAudio=audio.filter(x=>x.source==="spotify"||spotifyEmbed(x.url||x.sourceUrl||""));
  $("#audioRail").innerHTML=spotifyAudio.length?spotifyAudio.map(audioCard).join(""):'<div class="ios-audio-empty">Published audio episodes will appear here.</div>';
- $("#audioRail")?.addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId),src=spotifyEmbed(item?.url||"");if(!src)return;$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';});
+ $("#audioRail")?.addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId);if(!item)return;const src=spotifyEmbed(item.url||item.sourceUrl||"");if(src){$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';return}const direct=safeAudio(item.audioUrl||item.url||"");if(direct)$("#audioPlayer").innerHTML='<audio controls autoplay preload="metadata" src="'+esc(direct)+'" aria-label="'+esc(item.title||"SpeakOut audio")+'"></audio>';});
 
  const requested=new URLSearchParams(location.search).get("episode");
  if(requested){const item=regularEpisodes.find(x=>x.id===requested);if(item)playEpisode(item,false)}
