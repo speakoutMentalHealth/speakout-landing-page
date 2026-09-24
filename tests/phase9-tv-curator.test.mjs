@@ -30,7 +30,8 @@ test("YouTube curator is server-side and never exposes the API key to browser co
   const client=read("js/platform-api.js");
   const admin=read("js/tv-curator-admin.js");
   const config=JSON.parse(read("workers/platform-api/wrangler.production.jsonc"));
-  assert.ok(config.secrets.required.includes("YOUTUBE_API_KEY"));
+  assert.ok(!config.secrets.required.includes("YOUTUBE_API_KEY"));
+  assert.match(worker,/configured: Boolean\(clean\(env\.YOUTUBE_API_KEY\)\)/u);
   assert.match(worker,/env\.YOUTUBE_API_KEY/u);
   assert.match(worker,/\/v1\/admin\/tv-curator\/sync/u);
   assert.match(worker,/scheduled\(_controller, env, ctx\)/u);
