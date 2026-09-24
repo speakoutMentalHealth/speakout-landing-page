@@ -9,7 +9,7 @@ test("production frontend targets the deployed production learning API", () => {
   const workerConfig = JSON.parse(read("workers/platform-api/wrangler.production.jsonc"));
   assert.match(config, /speakout-platform-api\.speakout-platform-api\.workers\.dev/u);
   assert.equal(workerConfig.vars.FIREBASE_PROJECT_ID, "speaakout-portal");
-  assert.deepEqual(workerConfig.secrets.required.sort(), ["FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "RESEND_API_KEY", "YOUTUBE_API_KEY"].sort());
+  assert.deepEqual(workerConfig.secrets.required.sort(), ["FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "RESEND_API_KEY"].sort());
   assert.match(workerConfig.vars.ALLOWED_ORIGINS, /https:\/\/speakoutmentalhealth\.org/u);
   assert.equal(workerConfig.observability.enabled, true);
   assert.ok(workerConfig.compatibility_flags.includes("nodejs_compat"));
