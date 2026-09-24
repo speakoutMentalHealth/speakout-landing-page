@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
-import { curatorSourceInput, fetchYouTubeUploads, resolveYouTubeChannel } from "./tv-curator.js";
+import { curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel } from "./tv-curator.js";
 
 const json = (body, status = 200, headers = {}) => new Response(JSON.stringify(body), {
   status,
@@ -1122,6 +1122,11 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
     sourceVideoId: clean(candidate.videoId),
     sourceUrl: clean(candidate.url),
     sourceAttribution: "YouTube · " + clean(candidate.channelTitle || "Original creator"),
+    sourceTitle: clean(candidate.title),
+    sourceDescription: clean(candidate.description),
+    sourceThumbnailUrl: clean(candidate.thumbnailUrl),
+    youtubeMetadataRefreshedAt: new Date().toISOString(),
+    curatorManagedMetadata: true,
     curatedBySpeakOut: true
   };
 }
@@ -1190,7 +1195,20 @@ async function syncCuratorSource(env, source, actor = "system") {
   if (!clean(env.YOUTUBE_API_KEY)) {
     throw Object.assign(new Error("YouTube curator is not configured. Add the YOUTUBE_API_KEY Worker secret."), { status: 503 });
   }
-  const videos = await fetchYouTubeUploads(env.YOUTUBE_API_KEY, source, 25);
+  const channel = await resolveYouTubeChannel(env.YOUTUBE_API_KEY, source.channelId || source.channelRef);
+  if (channel.madeForKids) {
+    throw Object.assign(new Error("Made-for-kids channels are not supported by the SpeakOut curator workflow."), { status: 409 });
+  }
+  const refreshedSource = {
+    ...source,
+    channelId: channel.channelId,
+    channelTitle: channel.title,
+    channelDescription: channel.description,
+    channelThumbnailUrl: channel.thumbnailUrl,
+    uploadsPlaylistId: channel.uploadsPlaylistId,
+    channelMetadataRefreshedAt: new Date().toISOString()
+  };
+  const videos = await fetchYouTubeUploads(env.YOUTUBE_API_KEY, refreshedSource, 25);
   const [candidatePage, episodePage] = await Promise.all([
     listDocuments(env, "tvCuratorCandidates", 1000),
     listDocuments(env, "tvEpisodes", 1000)
@@ -1211,12 +1229,12 @@ async function syncCuratorSource(env, source, actor = "system") {
       const candidateId = safeId("yt-" + video.videoId, "curator candidate identifier");
       const record = {
         ...video,
-        sourceId: clean(source.id),
-        sourceLabel: clean(source.label || source.channelTitle),
-        show: clean(source.show || "SpeakOut Picks"),
-        contentPillar: normalized(source.contentPillar || "motivation"),
-        audience: normalized(source.audience || "youth"),
-        sourceMode: normalized(source.mode || "review"),
+        sourceId: clean(refreshedSource.id),
+        sourceLabel: clean(refreshedSource.label || refreshedSource.channelTitle),
+        show: clean(refreshedSource.show || "SpeakOut Picks"),
+        contentPillar: normalized(refreshedSource.contentPillar || "motivation"),
+        audience: normalized(refreshedSource.audience || "youth"),
+        sourceMode: normalized(refreshedSource.mode || "review"),
         status: normalized(source.mode) === "draft" ? "drafted" : "pending",
         discoveredAt: now,
         updatedAt: now,
@@ -1231,10 +1249,16 @@ async function syncCuratorSource(env, source, actor = "system") {
       tx.set("tvCuratorCandidates/" + candidateId, record);
       created += 1;
     }
-    const existingSource = await tx.get("tvCuratorSources/" + safeId(source.id, "curator source identifier"));
+    const existingSource = await tx.get("tvCuratorSources/" + safeId(refreshedSource.id, "curator source identifier"));
     if (existingSource) {
-      tx.set("tvCuratorSources/" + source.id, {
+      tx.set("tvCuratorSources/" + refreshedSource.id, {
         ...existingSource,
+        channelId: refreshedSource.channelId,
+        channelTitle: refreshedSource.channelTitle,
+        channelDescription: refreshedSource.channelDescription,
+        channelThumbnailUrl: refreshedSource.channelThumbnailUrl,
+        uploadsPlaylistId: refreshedSource.uploadsPlaylistId,
+        channelMetadataRefreshedAt: refreshedSource.channelMetadataRefreshedAt,
         lastSyncedAt: now,
         lastSyncNewCount: created,
         lastSyncError: "",
@@ -1244,7 +1268,123 @@ async function syncCuratorSource(env, source, actor = "system") {
     }
     return { created, drafted, scanned: videos.length };
   });
-  return { sourceId: source.id, sourceTitle: source.label || source.channelTitle, ...result };
+  return { sourceId: source.id, sourceTitle: refreshedSource.label || refreshedSource.channelTitle, ...result };
+}
+
+async function refreshStoredYouTubeMetadata(env, actor = "system") {
+  if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, refreshed: 0, unavailable: 0 };
+  const [candidatePage, episodePage] = await Promise.all([
+    listDocuments(env, "tvCuratorCandidates", 1000),
+    listDocuments(env, "tvEpisodes", 1000)
+  ]);
+  const threshold = Date.now() - 20*24*60*60*1000;
+  const stale = value => {
+    const time = Date.parse(clean(value));
+    return !Number.isFinite(time) || time < threshold;
+  };
+  const candidateRows = candidatePage.documents.filter(item => clean(item.videoId) && stale(item.youtubeMetadataRefreshedAt));
+  const episodeRows = episodePage.documents.filter(item =>
+    item.sourceType === "youtube-curated" && clean(item.sourceVideoId) && stale(item.youtubeMetadataRefreshedAt)
+  );
+  const ids = [...new Set([
+    ...candidateRows.map(item => clean(item.videoId)),
+    ...episodeRows.map(item => clean(item.sourceVideoId))
+  ])].filter(Boolean);
+  if (!ids.length) return { configured: true, refreshed: 0, unavailable: 0 };
+
+  const metadata = await fetchYouTubeVideosByIds(env.YOUTUBE_API_KEY, ids);
+  const now = new Date().toISOString();
+  let refreshed = 0, unavailable = 0;
+
+  const chunks = [];
+  const operations = [
+    ...candidateRows.map(item => ({ kind:"candidate", item, videoId:clean(item.videoId) })),
+    ...episodeRows.map(item => ({ kind:"episode", item, videoId:clean(item.sourceVideoId) }))
+  ];
+  for (let start=0; start<operations.length; start+=150) chunks.push(operations.slice(start,start+150));
+
+  for (const chunk of chunks) {
+    await runTransaction(env, async tx => {
+      for (const op of chunk) {
+        const video = metadata.get(op.videoId);
+        if (!video?.eligible) {
+          unavailable += 1;
+          if (op.kind === "candidate") {
+            tx.set("tvCuratorCandidates/" + op.item.id, {
+              ...op.item,
+              title: "",
+              description: "",
+              channelTitle: "",
+              thumbnailUrl: "",
+              tags: [],
+              status: "unavailable",
+              youtubeMetadataRefreshedAt: now,
+              updatedAt: now,
+              updatedBy: actor
+            });
+          } else {
+            const managed = op.item.curatorManagedMetadata !== false;
+            tx.set("tvEpisodes/" + op.item.id, {
+              ...op.item,
+              ...(managed ? { title:"Unavailable YouTube video", description:"", imageUrl:"" } : {}),
+              status: "hidden",
+              sourceChannelTitle: "",
+              sourceAttribution: "",
+              sourceTitle: "",
+              sourceDescription: "",
+              sourceThumbnailUrl: "",
+              youtubeMetadataRefreshedAt: now,
+              updatedAt: now,
+              updatedBy: actor
+            });
+          }
+          continue;
+        }
+
+        refreshed += 1;
+        if (op.kind === "candidate") {
+          tx.set("tvCuratorCandidates/" + op.item.id, {
+            ...op.item,
+            title: video.title,
+            description: video.description,
+            channelId: video.channelId,
+            channelTitle: video.channelTitle,
+            tags: video.tags,
+            publishedAt: video.publishedAt,
+            thumbnailUrl: video.thumbnailUrl,
+            url: video.url,
+            youtubeMetadataRefreshedAt: now,
+            updatedAt: now,
+            updatedBy: actor
+          });
+        } else {
+          const managed = op.item.curatorManagedMetadata !== false;
+          tx.set("tvEpisodes/" + op.item.id, {
+            ...op.item,
+            ...(managed ? {
+              title: video.title,
+              description: video.description,
+              imageUrl: video.thumbnailUrl,
+              publishDate: video.publishedAt.slice(0,10),
+              url: video.url
+            } : {}),
+            sourceChannelTitle: video.channelTitle,
+            sourceChannelId: video.channelId,
+            sourceUrl: video.url,
+            sourceAttribution: "YouTube · " + video.channelTitle,
+            sourceTitle: video.title,
+            sourceDescription: video.description,
+            sourceThumbnailUrl: video.thumbnailUrl,
+            youtubeMetadataRefreshedAt: now,
+            updatedAt: now,
+            updatedBy: actor
+          });
+        }
+      }
+      return { ok:true };
+    });
+  }
+  return { configured:true, refreshed, unavailable };
 }
 
 async function syncAllCuratorSources(env, actor = "system", sourceId = "") {
@@ -1259,16 +1399,21 @@ async function syncAllCuratorSources(env, actor = "system", sourceId = "") {
       const now = new Date().toISOString();
       await runTransaction(env, async tx => {
         const current = await tx.get("tvCuratorSources/" + source.id);
-        if (current) tx.set("tvCuratorSources/" + source.id, {
-          ...current,
-          lastSyncedAt: now,
-          lastSyncError: clean(error.message).slice(0, 500),
-          updatedAt: now,
-          updatedBy: actor
-        });
+        if (current) {
+          const refreshedAt = Date.parse(clean(current.channelMetadataRefreshedAt));
+          const metadataExpired = !Number.isFinite(refreshedAt) || Date.now()-refreshedAt > 30*24*60*60*1000;
+          tx.set("tvCuratorSources/" + source.id, {
+            ...current,
+            ...(metadataExpired ? { channelTitle:"", channelDescription:"", channelThumbnailUrl:"" } : {}),
+            lastSyncedAt: now,
+            lastSyncError: clean(error.message).slice(0, 500),
+            updatedAt: now,
+            updatedBy: actor
+          });
+        }
         return { ok: true };
       });
-      results.push({ sourceId: source.id, sourceTitle: source.label || source.channelTitle, error: error.message || "Sync failed." });
+      results.push({ sourceId: source.id, sourceTitle: refreshedSource.label || refreshedSource.channelTitle, error: error.message || "Sync failed." });
     }
   }
   return { configured: true, results };
@@ -1702,7 +1847,9 @@ async function route(request, env, path, data) {
   if (path === "/v1/admin/tv-curator/sync") {
     requireAdmin(user);
     const sourceId = clean(data.id) ? safeId(data.id, "curator source identifier") : "";
-    return syncAllCuratorSources(env, user.uid, sourceId);
+    const sync = await syncAllCuratorSources(env, user.uid, sourceId);
+    const refresh = await refreshStoredYouTubeMetadata(env, user.uid);
+    return { ...sync, metadataRefresh: refresh };
   }
 
   if (path === "/v1/admin/tv-curator/review") {
@@ -1725,6 +1872,11 @@ async function route(request, env, path, data) {
         sourceVideoId: existing.sourceVideoId,
         sourceUrl: existing.sourceUrl,
         sourceAttribution: existing.sourceAttribution,
+        sourceTitle: existing.sourceTitle,
+        sourceDescription: existing.sourceDescription,
+        sourceThumbnailUrl: existing.sourceThumbnailUrl,
+        youtubeMetadataRefreshedAt: existing.youtubeMetadataRefreshedAt,
+        curatorManagedMetadata: false,
         curatedBySpeakOut: existing.curatedBySpeakOut === true
       } : {};
       tx.set(`${collectionName}/${recordId}`, {
@@ -1785,7 +1937,10 @@ async function route(request, env, path, data) {
 
 export default {
   async scheduled(_controller, env, ctx) {
-    ctx.waitUntil(syncAllCuratorSources(env, "cloudflare-cron").catch(error => console.error("TV curator scheduled sync:", error)));
+    ctx.waitUntil((async()=>{
+      await syncAllCuratorSources(env, "cloudflare-cron");
+      await refreshStoredYouTubeMetadata(env, "cloudflare-cron");
+    })().catch(error => console.error("TV curator scheduled sync:", error)));
   },
   async fetch(request, env) {
     const headers = corsHeaders(request, env);
