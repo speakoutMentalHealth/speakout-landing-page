@@ -50,10 +50,11 @@ test("curator automation creates drafts only and preserves creator attribution",
 
 test("curator excludes made-for-kids and non-embeddable YouTube videos",()=>{
   const helper=read("workers/platform-api/src/tv-curator.js");
-  assert.match(helper,/status\.privacyStatus!=="public"/u);
-  assert.match(helper,/status\.embeddable===false/u);
-  assert.match(helper,/status\.madeForKids===true/u);
-  assert.match(helper,/Made-for-kids channels are not supported/u);
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(helper,/status\.privacyStatus==="public"/u);
+  assert.match(helper,/status\.embeddable!==false/u);
+  assert.match(helper,/status\.madeForKids!==true/u);
+  assert.match(worker,/Made-for-kids channels are not supported/u);
 });
 
 test("curator admin exposes source registry candidate inbox and draft review actions",()=>{
@@ -77,4 +78,39 @@ test("public TV surfaces visibly identify curated YouTube creators",()=>{
   assert.match(home,/YouTube · /u);
   assert.match(search,/tv-source-attribution/u);
   assert.match(watch,/Curated by SpeakOut/u);
+});
+
+
+test("curator refreshes stored YouTube metadata before the 30-day policy window",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const helper=read("workers/platform-api/src/tv-curator.js");
+  const production=JSON.parse(read("workers/platform-api/wrangler.production.jsonc"));
+  assert.match(helper,/export async function fetchYouTubeVideosByIds/u);
+  assert.match(worker,/Date\.now\(\) - 20\*24\*60\*60\*1000/u);
+  assert.match(worker,/refreshStoredYouTubeMetadata/u);
+  assert.match(worker,/youtubeMetadataRefreshedAt/u);
+  assert.match(worker,/metadataExpired[^\n]+30\*24\*60\*60\*1000/u);
+  assert.match(worker,/status: "unavailable"/u);
+  assert.match(worker,/status: "hidden"/u);
+  assert.deepEqual(production.triggers.crons,["17 */6 * * *"]);
+});
+
+test("curator refresh preserves editor-owned display metadata after TV Studio edits",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/curatorManagedMetadata: false/u);
+  assert.match(worker,/const managed = op\.item\.curatorManagedMetadata !== false/u);
+  assert.match(worker,/sourceTitle: video\.title/u);
+  assert.match(worker,/sourceDescription: video\.description/u);
+  assert.match(worker,/sourceThumbnailUrl: video\.thumbnailUrl/u);
+});
+
+test("SpeakOut TV publishes a YouTube services and privacy disclosure",()=>{
+  const privacy=read("tv-privacy.html");
+  assert.match(privacy,/YouTube API Services/u);
+  assert.match(privacy,/YouTube Terms of Service/u);
+  assert.match(privacy,/Google Privacy Policy/u);
+  assert.match(privacy,/does not download or re-upload/u);
+  for(const page of ["tv.html","radio.html","tv-search.html","watch.html","show.html"]){
+    assert.match(read(page),/href="tv-privacy\.html"/u,page);
+  }
 });
