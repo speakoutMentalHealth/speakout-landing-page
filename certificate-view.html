@@ -6,6 +6,7 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>View Certificate | SpeakOut &amp; SpeakHub Academy</title>
 <meta content="View and verify certificates issued or recorded through SpeakOut Mental Health Outreach and SpeakHub Academy." name="description"/>
+<meta name="robots" content="noindex,follow"/>
 <link href="logo.png" rel="icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;family=Great+Vibes&amp;family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,500;1,600&amp;display=swap" rel="stylesheet"/>
 <style>
@@ -807,18 +808,7 @@ function humanName(source={}){
 }
 
 async function resolveRecipient(record){
-  const storedName = humanName(record);
-  if(storedName) return storedName;
-  const ownerId = record.userId || record.recipientId || record.learnerId;
-  if(ownerId){
-    try{
-      const profile = await getDoc(doc(db,"users",ownerId));
-      if(profile.exists()) return humanName(profile.data()) || "Learner";
-    }catch(error){
-      console.warn("Could not resolve the certificate owner profile.",error);
-    }
-  }
-  return "Learner";
+  return humanName(record) || "Learner";
 }
 
 
@@ -887,7 +877,7 @@ function statusOf(record){
       "verified"
     );
 
-  if(raw === "approved"){
+  if(["active","issued","approved","verified"].includes(raw)){
     return "verified";
   }
 
@@ -902,7 +892,8 @@ function isExternal(record){
     record.courseType === "external" ||
     record.sourceType === "external" ||
     record.externalProvider === true ||
-    record.completionMethod === "certificate-upload"
+    record.completionMethod === "certificate-upload" ||
+    normalise(record.achievementType).includes("external")
   );
 
 }
@@ -910,116 +901,34 @@ function isExternal(record){
 
 async function findCertificate(publicId){
 
-  /*
-    1. Try Firestore document ID.
-    This preserves compatibility with older certificate records.
-  */
-
-  const direct =
-    await getDoc(
-      doc(
-        db,
-        "certificates",
-        publicId
-      )
-    );
-
+  const direct = await getDoc(
+    doc(db,"publicCertificateVerifications",publicId)
+  );
 
   if(direct.exists()){
-
     return {
       docId:direct.id,
-      record:direct.data()
+      record:{ verificationCode:direct.id, ...direct.data() }
     };
-
   }
 
+  const publicRegistry = collection(db,"publicCertificateVerifications");
+  const snap = await getDocs(
+    query(
+      publicRegistry,
+      where("certificateNumber","==",publicId),
+      limit(1)
+    )
+  );
 
-  const certificates =
-    collection(
-      db,
-      "certificates"
-    );
+  if(snap.empty) return null;
 
-
-  /*
-    2. Production/public certificate ID.
-  */
-
-  let snap =
-    await getDocs(
-      query(
-        certificates,
-        where(
-          "certificateId",
-          "==",
-          publicId
-        ),
-        limit(1)
-      )
-    );
-
-
-  /*
-    3. Older certificateNumber field.
-  */
-
-  if(snap.empty){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "certificateNumber",
-            "==",
-            publicId
-          ),
-          limit(1)
-        )
-      );
-
-  }
-
-
-  /*
-    4. Legacy verificationCode field.
-  */
-
-  if(snap.empty){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "verificationCode",
-            "==",
-            publicId
-          ),
-          limit(1)
-        )
-      );
-
-  }
-
-
-  if(snap.empty){
-    return null;
-  }
-
-
-  const first =
-    snap.docs[0];
-
-
+  const first=snap.docs[0];
   return {
     docId:first.id,
-    record:first.data()
+    record:{ verificationCode:first.id, ...first.data() }
   };
-
 }
-
 
 function renderCertificate(record,docId,resolvedRecipient=""){
 
@@ -1044,6 +953,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
 
   const courseTitle =
+    record.awardTitle ||
     record.courseTitle ||
     record.programmeTitle ||
     record.programTitle ||
@@ -1075,6 +985,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
   const credentialType =
     formatLabel(
+      record.achievementType ||
       record.credentialType ||
       record.certificateType ||
       record.type ||
