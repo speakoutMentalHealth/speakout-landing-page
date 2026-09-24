@@ -272,13 +272,19 @@ test("approved admin can review sponsor enquiries while ordinary users cannot", 
 });
 
 
-test("TV curator sources and candidates are Worker-only even for admins", async () => {
+test("TV curator data is restricted to approved administrators", async () => {
   await seed("users/admin-a", profile("admin-a", "admin"));
+  await seed("users/student-a", profile("student-a", "student"));
   await seed("tvCuratorSources/source-a", { channelId: "UCexample", status: "active" });
   await seed("tvCuratorCandidates/candidate-a", { videoId: "video-a", status: "pending" });
-  const db = testEnv.authenticatedContext("admin-a").firestore();
-  await assertFails(getDoc(doc(db, "tvCuratorSources/source-a")));
-  await assertFails(getDoc(doc(db, "tvCuratorCandidates/candidate-a")));
-  await assertFails(setDoc(doc(db, "tvCuratorSources/source-b"), { channelId: "UCother", status: "active" }));
-  await assertFails(updateDoc(doc(db, "tvCuratorCandidates/candidate-a"), { status: "drafted" }));
+
+  const adminDb = testEnv.authenticatedContext("admin-a").firestore();
+  await assertSucceeds(getDoc(doc(adminDb, "tvCuratorSources/source-a")));
+  await assertSucceeds(getDoc(doc(adminDb, "tvCuratorCandidates/candidate-a")));
+
+  const studentDb = testEnv.authenticatedContext("student-a").firestore();
+  await assertFails(getDoc(doc(studentDb, "tvCuratorSources/source-a")));
+  await assertFails(getDoc(doc(studentDb, "tvCuratorCandidates/candidate-a")));
+  await assertFails(setDoc(doc(studentDb, "tvCuratorSources/source-b"), { channelId: "UCother", status: "active" }));
+  await assertFails(updateDoc(doc(studentDb, "tvCuratorCandidates/candidate-a"), { status: "drafted" }));
 });
