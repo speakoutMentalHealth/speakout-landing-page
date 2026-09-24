@@ -9,7 +9,7 @@ const publicStatus=value=>["active","published"].includes(String(value||"").toLo
 
 async function apiGet(path){
  if(!PLATFORM_API_BASE)throw new Error("Public media API unavailable.");
- const response=await fetch(PLATFORM_API_BASE+path,{method:"GET",credentials:"omit",cache:"no-store"});
+ const response=await fetch(PLATFORM_API_BASE+path,{method:"GET",credentials:"omit",cache:"default"});
  if(!response.ok)throw new Error("Public media API request failed.");
  return response.json();
 }
