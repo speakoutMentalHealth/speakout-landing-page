@@ -53,3 +53,19 @@ exclude:
   - DEPLOYMENT.md
   - SPEAKHUB-V5-DEPLOYMENT.txt
   - firestore-rules.txt
+  - '*.bundle'
+  - package.json
+  - package-lock.json
+  - INSTALLATION_GUIDE.txt
+  - INSTALL_GUIDE.txt
+  - PHASE-3-5-QA-REPORT.txt
+  - PORTAL-REVAMP-NOTES.txt
+  - README.txt
+  - SpeakOut_Internship_Letter_Agreement_Friday_Akolo_Dauda.docx
+  - academy-hero.png
+  - certificate-hero.png
+  - contact-hero.png
+  - media-hero.png
+  - research-hero.png
+  - volunteer-hero.png
+  - secure-donation.png
