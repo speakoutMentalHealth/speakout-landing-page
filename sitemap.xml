@@ -16,9 +16,6 @@
     <loc>https://speakoutmentalhealth.org/kiddies.html</loc>
   </url>
   <url>
-    <loc>https://speakoutmentalhealth.org/media-center.html</loc>
-  </url>
-  <url>
     <loc>https://speakoutmentalhealth.org/pages/about.html</loc>
   </url>
   <url>
@@ -32,9 +29,6 @@
   </url>
   <url>
     <loc>https://speakoutmentalhealth.org/pages/impact.html</loc>
-  </url>
-  <url>
-    <loc>https://speakoutmentalhealth.org/pages/media.html</loc>
   </url>
   <url>
     <loc>https://speakoutmentalhealth.org/pages/news.html</loc>
@@ -62,5 +56,11 @@
   </url>
   <url>
     <loc>https://speakoutmentalhealth.org/workshops.html</loc>
+  </url>
+  <url>
+    <loc>https://speakoutmentalhealth.org/tv.html</loc>
+  </url>
+  <url>
+    <loc>https://speakoutmentalhealth.org/radio.html</loc>
   </url>
 </urlset>
