@@ -20,4 +20,7 @@ Disallow: /certificates.html
 Disallow: /my-courses.html
 Disallow: /my-library.html
 Disallow: /external-learning-submit.html
+Disallow: /kiddies.html
+Disallow: /workshops.html
+Disallow: /learning/
 Sitemap: https://speakoutmentalhealth.org/sitemap.xml
