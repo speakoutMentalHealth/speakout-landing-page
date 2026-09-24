@@ -17,7 +17,9 @@
   "vars": {
     "FIREBASE_PROJECT_ID": "speakout-portal-staging",
     "RESEND_FROM_EMAIL": "SpeakOut On The Move <on-the-move@speakoutmentalhealth.org>",
-    "ALLOWED_ORIGINS": "http://127.0.0.1:5000,http://localhost:5000,https://speakout-portal-staging.web.app,https://speakout-portal-staging.firebaseapp.com",\n    "SPOTIFY_SHOW_ID": "4Z8Ua9vAYLT5YJEWYV1gfx",\n    "SPOTIFY_RSS_URL": "https://anchor.fm/s/f8d8cfa4/podcast/rss"
+    "ALLOWED_ORIGINS": "http://127.0.0.1:5000,http://localhost:5000,https://speakout-portal-staging.web.app,https://speakout-portal-staging.firebaseapp.com",
+    "SPOTIFY_SHOW_ID": "4Z8Ua9vAYLT5YJEWYV1gfx",
+    "SPOTIFY_RSS_URL": "https://anchor.fm/s/f8d8cfa4/podcast/rss"
   },
   "triggers": {
     "crons": ["17 */6 * * *"]
