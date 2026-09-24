@@ -315,8 +315,7 @@ function calendarText(item){
  const start=scheduleValue(item);if(!start)return "";
  const end=start+60*60*1000;
  const stamp=ms=>new Date(ms).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
- const clean=s=>String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"
-").replace(/,/g,"\\,").replace(/;/g,"\\;");
+ const clean=s=>String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
  const url=location.origin+location.pathname+"#live";
  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//SpeakOut TV//Live//EN","BEGIN:VEVENT",
   "UID:"+clean((item.id||"live")+"@speakoutmentalhealth.org"),"DTSTAMP:"+stamp(Date.now()),"DTSTART:"+stamp(start),"DTEND:"+stamp(end),
