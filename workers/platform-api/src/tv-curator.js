@@ -82,6 +82,42 @@ export function matchesCuratorSource(video,source={}){
   return include.some(keyword=>hay.includes(lower(keyword)));
 }
 
+function mapYouTubeVideo(item,source={}){
+  const id=clean(item?.id);
+  const status=item?.status||{};
+  const snippet=item?.snippet||{};
+  if(!id)return null;
+  return {
+    videoId:id,
+    channelId:clean(snippet.channelId),
+    channelTitle:clean(snippet.channelTitle)||clean(source.channelTitle)||"YouTube",
+    title:clean(snippet.title)||"Untitled video",
+    description:clean(snippet.description).slice(0,1600),
+    tags:Array.isArray(snippet.tags)?snippet.tags.slice(0,30).map(clean).filter(Boolean):[],
+    publishedAt:clean(snippet.publishedAt),
+    thumbnailUrl:clean(snippet?.thumbnails?.maxres?.url||snippet?.thumbnails?.standard?.url||snippet?.thumbnails?.high?.url||snippet?.thumbnails?.medium?.url||snippet?.thumbnails?.default?.url),
+    url:"https://www.youtube.com/watch?v="+id,
+    privacyStatus:clean(status.privacyStatus),
+    madeForKids:status.madeForKids===true,
+    embeddable:status.embeddable!==false,
+    eligible:status.privacyStatus==="public"&&status.embeddable!==false&&status.madeForKids!==true
+  };
+}
+
+export async function fetchYouTubeVideosByIds(apiKey,ids=[],source={}){
+  const unique=[...new Set((Array.isArray(ids)?ids:[]).map(clean).filter(Boolean))].slice(0,500);
+  const videos=new Map();
+  for(let start=0;start<unique.length;start+=50){
+    const batch=unique.slice(start,start+50);
+    const details=await youtubeGet(apiKey,"videos",{part:"snippet,status",id:batch.join(",")});
+    for(const item of details.items||[]){
+      const video=mapYouTubeVideo(item,source);
+      if(video)videos.set(video.videoId,video);
+    }
+  }
+  return videos;
+}
+
 export async function fetchYouTubeUploads(apiKey,source={},limit=20){
   const max=Math.max(1,Math.min(50,Number(limit)||20));
   const playlistId=clean(source.uploadsPlaylistId);
@@ -93,28 +129,11 @@ export async function fetchYouTubeUploads(apiKey,source={},limit=20){
   });
   const ids=(playlist.items||[]).map(item=>clean(item?.contentDetails?.videoId||item?.snippet?.resourceId?.videoId)).filter(Boolean);
   if(!ids.length)return [];
-  const details=await youtubeGet(apiKey,"videos",{part:"snippet,status",id:ids.join(",")});
-  const byId=new Map((details.items||[]).map(item=>[clean(item.id),item]));
+  const byId=await fetchYouTubeVideosByIds(apiKey,ids,source);
   const output=[];
   for(const id of ids){
-    const item=byId.get(id);
-    if(!item)continue;
-    const status=item.status||{};
-    if(status.privacyStatus!=="public"||status.embeddable===false||status.madeForKids===true)continue;
-    const snippet=item.snippet||{};
-    const video={
-      videoId:id,
-      channelId:clean(snippet.channelId),
-      channelTitle:clean(snippet.channelTitle)||clean(source.channelTitle)||"YouTube",
-      title:clean(snippet.title)||"Untitled video",
-      description:clean(snippet.description).slice(0,1600),
-      tags:Array.isArray(snippet.tags)?snippet.tags.slice(0,30).map(clean).filter(Boolean):[],
-      publishedAt:clean(snippet.publishedAt),
-      thumbnailUrl:clean(snippet?.thumbnails?.maxres?.url||snippet?.thumbnails?.standard?.url||snippet?.thumbnails?.high?.url||snippet?.thumbnails?.medium?.url||snippet?.thumbnails?.default?.url),
-      url:"https://www.youtube.com/watch?v="+id,
-      madeForKids:false,
-      embeddable:true
-    };
+    const video=byId.get(id);
+    if(!video?.eligible)continue;
     if(matchesCuratorSource(video,source))output.push(video);
   }
   return output;
