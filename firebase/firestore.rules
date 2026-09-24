@@ -273,11 +273,11 @@ service cloud.firestore {
     }
 
     match /tvCuratorSources/{sourceId} {
-      allow read, write: if false;
+      allow read, write: if isSuperAdmin();
     }
 
     match /tvCuratorCandidates/{candidateId} {
-      allow read, write: if false;
+      allow read, write: if isSuperAdmin();
     }
 
     match /newsEvents/{eventId} {
