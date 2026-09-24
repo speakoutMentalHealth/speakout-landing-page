@@ -950,9 +950,9 @@ function decodePodcastText(value) {
     return Number.isInteger(point) && point >= 0 && point <= 0x10ffff ? String.fromCodePoint(point) : match;
   };
   const text = String(value ?? "")
-    .replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/gu, "$1")
-    .replace(/<br\\s*\\/?>/giu, " ")
-    .replace(/<\\/(?:p|div|li|h[1-6])>/giu, " ")
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gu, "$1")
+    .replace(/<br\s*\/?>/giu, " ")
+    .replace(/<\/(?:p|div|li|h[1-6])>/giu, " ")
     .replace(/<[^>]+>/gu, " ")
     .replace(/&#x([0-9a-f]+);/giu, (match, raw) => numericEntity(match, raw, 16))
     .replace(/&#([0-9]+);/gu, (match, raw) => numericEntity(match, raw, 10))
@@ -962,23 +962,23 @@ function decodePodcastText(value) {
     .replace(/&gt;/giu, ">")
     .replace(/&quot;/giu, String.fromCharCode(34))
     .replace(/&apos;/giu, "'");
-  return clean(text.replace(/\\s+/gu, " "));
+  return clean(text.replace(/\s+/gu, " "));
 }
 
 function rssTag(block, tag) {
-  const match = String(block || "").match(new RegExp("<" + tag + "(?:\\\\s[^>]*)?>([\\\\s\\\\S]*?)<\\\/" + tag + ">", "iu"));
+  const match = String(block || "").match(new RegExp("<" + tag + "(?:\\s[^>]*)?>([\\s\\S]*?)<\\/" + tag + ">", "iu"));
   return decodePodcastText(match?.[1] || "");
 }
 
 function rssAttribute(block, tag, attribute) {
-  const match = String(block || "").match(new RegExp("<" + tag + "\\\\b[^>]*\\\\b" + attribute + "\\\\s*=\\\\s*([\\\"'])([\\\\s\\\\S]*?)\\\\1[^>]*>", "iu"));
+  const match = String(block || "").match(new RegExp("<" + tag + "\\b[^>]*\\b" + attribute + "\\s*=\\s*([\"'])([\\s\\S]*?)\\1[^>]*>", "iu"));
   return decodePodcastText(match?.[2] || "");
 }
 
 function podcastDurationMs(value) {
   const raw = clean(value);
   if (!raw) return 0;
-  if (/^\\d+(?:\\.\\d+)?$/u.test(raw)) return Math.max(0, Math.round(Number(raw) * 1000));
+  if (/^\d+(?:\.\d+)?$/u.test(raw)) return Math.max(0, Math.round(Number(raw) * 1000));
   const parts = raw.split(":").map(Number);
   if (parts.some(part => !Number.isFinite(part) || part < 0)) return 0;
   if (parts.length === 2) return Math.round((parts[0] * 60 + parts[1]) * 1000);
@@ -1001,7 +1001,7 @@ function audioIdentityKeys(item = {}) {
   if (spotifyId) keys.push("spotify:" + spotifyId);
   if (clean(item.sourceGuid)) keys.push("guid:" + clean(item.sourceGuid));
   if (clean(item.audioUrl)) keys.push("audio:" + clean(item.audioUrl));
-  const title = normalized(item.title).replace(/\\s+/gu, " ");
+  const title = normalized(item.title).replace(/\s+/gu, " ");
   const date = clean(item.publishDate).slice(0, 10);
   if (title && date) keys.push("title-date:" + title + "|" + date);
   return keys;
@@ -1021,12 +1021,12 @@ async function spotifyShowEpisodes(env) {
   if (!response.ok) throw Object.assign(new Error("Spotify RSS episode sync failed."), { status: 502 });
 
   const xml = await response.text();
-  const channelHead = xml.split(/<item\\b/iu)[0] || "";
+  const channelHead = xml.split(/<item\b/iu)[0] || "";
   const channelImage = rssAttribute(channelHead, "itunes:image", "href");
   const spotifyShowUrl = clean(env.SPOTIFY_SHOW_ID)
     ? "https://open.spotify.com/show/" + encodeURIComponent(clean(env.SPOTIFY_SHOW_ID))
     : "";
-  const blocks = [...xml.matchAll(/<item\\b[^>]*>([\\s\\S]*?)<\\/item>/giu)].map(match => match[1]).slice(0, 250);
+  const blocks = [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/giu)].map(match => match[1]).slice(0, 250);
   const items = [];
 
   for (const block of blocks) {
