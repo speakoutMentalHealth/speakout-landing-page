@@ -45,3 +45,30 @@
 .discovery-series-art{isolation:isolate}
 .discovery-series-art>.tv-art-fallback{position:absolute;inset:0}
 .discovery-series-card.no-image .discovery-series-art{background:none}
+
+
+/* Production mobile series polish: one hierarchy, no duplicated fallback copy */
+.discovery-series-card.no-image .tv-art-fallback>span,
+.discovery-series-card.no-image .tv-art-fallback>strong,
+.discovery-series-card.no-image .tv-art-bug{display:none}
+.discovery-series-card.no-image .discovery-series-art{
+  background:
+    radial-gradient(circle at 82% 18%,color-mix(in srgb,var(--art-c,#58a6ff) 32%,transparent),transparent 28%),
+    linear-gradient(145deg,var(--art-a,#173b60),var(--art-b,#081522) 72%);
+}
+.discovery-series-copy{min-width:0}
+.discovery-series-copy strong,
+.discovery-series-copy p{overflow-wrap:anywhere}
+.discovery-series-copy span{
+  display:inline-flex;align-items:center;
+  max-width:100%;padding:5px 8px;border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;background:rgba(3,9,16,.38);
+}
+@media(max-width:520px){
+  .discovery-series-grid{gap:9px}
+  .discovery-series-card{min-height:178px;border-radius:18px}
+  .discovery-series-copy{padding:12px}
+  .discovery-series-copy strong{font-size:.9rem;line-height:1.12}
+  .discovery-series-copy p{-webkit-line-clamp:2;font-size:.6rem}
+  .discovery-series-copy span{margin-top:6px;font-size:.55rem}
+}

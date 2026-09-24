@@ -923,3 +923,21 @@ test("Quick Reset mobile layout keeps the reveal below its selected card", () =>
   assert.match(styles,/\.reset-card-top\{[\s\S]*?grid-template-columns:36px minmax\(0,1fr\) auto/u);
   assert.doesNotMatch(styles,/grid-template-areas:"icon title button"/u);
 });
+
+
+test("mobile Discover series cards keep fallback art decorative and text readable", () => {
+  const styles=read("css/tv/discover.css");
+  assert.match(styles,/\.discovery-series-card\.no-image \.tv-art-fallback>strong/u);
+  assert.match(styles,/\.discovery-series-card\.no-image \.tv-art-bug\{display:none\}/u);
+  assert.match(styles,/@media\(max-width:520px\)[\s\S]*\.discovery-series-card\{min-height:178px/u);
+});
+
+test("mobile Listen avoids oversized recent cards and cramped two-column audio cards", () => {
+  const media=read("css/tv/media.css");
+  const art=read("css/tv/art.css");
+  assert.match(media,/\.listen-card\.compact\{flex:0 0 min\(72vw,240px\)\}/u);
+  assert.match(media,/@media\(max-width:640px\)[\s\S]*\.listen-library-grid\{grid-template-columns:1fr/u);
+  assert.match(media,/\.listen-library-grid \.listen-card-open\{[\s\S]*grid-template-columns:112px minmax\(0,1fr\)/u);
+  assert.match(media,/\.listen-now-copy h2,[\s\S]*overflow-wrap:anywhere/u);
+  assert.match(art,/\.listen-card \.tv-art-fallback>strong\{display:none\}/u);
+});
