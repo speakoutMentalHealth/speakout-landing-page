@@ -270,3 +270,15 @@ test("approved admin can review sponsor enquiries while ordinary users cannot", 
   }));
   await assertFails(getDoc(doc(studentDb, `onTheMoveSponsorEnquiries/${id}`)));
 });
+
+
+test("TV curator sources and candidates are Worker-only even for admins", async () => {
+  await seed("users/admin-a", profile("admin-a", "admin"));
+  await seed("tvCuratorSources/source-a", { channelId: "UCexample", status: "active" });
+  await seed("tvCuratorCandidates/candidate-a", { videoId: "video-a", status: "pending" });
+  const db = testEnv.authenticatedContext("admin-a").firestore();
+  await assertFails(getDoc(doc(db, "tvCuratorSources/source-a")));
+  await assertFails(getDoc(doc(db, "tvCuratorCandidates/candidate-a")));
+  await assertFails(setDoc(doc(db, "tvCuratorSources/source-b"), { channelId: "UCother", status: "active" }));
+  await assertFails(updateDoc(doc(db, "tvCuratorCandidates/candidate-a"), { status: "drafted" }));
+});
