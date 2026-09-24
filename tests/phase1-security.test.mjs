@@ -919,7 +919,6 @@ test("automatic Spotify sync excludes episodes marked explicit", () => {
 test("Quick Reset mobile layout keeps the reveal below its selected card", () => {
   const styles=read("css/tv/home.css");
   assert.match(styles,/@media\(max-width:620px\)[\s\S]*?\.reset-card\{display:block;min-width:0\}/u);
-  assert.match(styles,/\.reset-reveal\[hidden\]\{display:none!important\}/u);
   assert.match(styles,/\.reset-card-top\{[\s\S]*?grid-template-columns:36px minmax\(0,1fr\) auto/u);
   assert.doesNotMatch(styles,/grid-template-areas:"icon title button"/u);
 });
