@@ -118,6 +118,7 @@ import { doc,getDoc,collection,getDocs,query,where } from "https://www.gstatic.c
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { courseCoverUrl, isPublicCourse } from "./js/content-visibility.js";
 import { externalLearningApi } from "./js/platform-api.js";
+import { loadPublicCourse } from "./js/public-catalog.js";
 
 const id=new URLSearchParams(location.search).get("id");
 const $=id=>document.getElementById(id);
@@ -255,15 +256,13 @@ async function renderCourse(){
 }
 
 async function loadCourse(){
-  if(!id){loading.textContent="No course ID provided.";loading.className="notice bad";return}
+  if(!id){loading.textContent="No course was selected.";loading.className="notice bad";return}
   try{
-    const s=await getDoc(doc(db,"courses",id));
-    if(!s.exists()){loading.textContent="Course not found.";loading.className="notice bad";return}
-    currentCourse={id:s.id,...s.data()};
-    if(!isPublicCourse(currentCourse)){loading.textContent="This course is not published yet.";loading.className="notice bad";return}
+    currentCourse=await loadPublicCourse(id);
+    if(!currentCourse||!isPublicCourse(currentCourse)){loading.textContent="This course is not currently available.";loading.className="notice bad";return}
     if(isExternalCourse(currentCourse))await loadExternalRecord();
     await renderCourse();
-  }catch(e){console.error(e);loading.textContent="Failed to load this course. Check Firestore permissions and the course record.";loading.className="notice bad"}
+  }catch(e){console.error(e);loading.textContent="This course is temporarily unavailable. Please try again in a moment.";loading.className="notice bad"}
 }
 
 async function loadProfile(user){
