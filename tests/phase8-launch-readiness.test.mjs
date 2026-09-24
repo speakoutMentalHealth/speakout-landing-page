@@ -110,3 +110,32 @@ test("legacy Media Centre navigation no longer creates redirect hops",()=>{
     assert.doesNotMatch(page,/href="(?:\.\.\/)?pages\/media\.html"|href="media-center\.html"/u,file);
   }
 });
+
+
+test("public Evidence Hub exposes only published reports without implementation jargon",()=>{
+  const page=read("evidence-hub.html");
+  const rules=read("firebase/firestore.rules");
+  assert.match(page,/where\("status","==","active"\)/u);
+  assert.doesNotMatch(page,/orderBy\("order"/u);
+  assert.match(page,/function safeUrl/u);
+  assert.match(page,/rel="noopener noreferrer"/u);
+  assert.doesNotMatch(page,/Create records in|Check Firestore rules|Firebase reports center/u);
+  assert.match(rules,/match \/homepageReports\/\{reportId\}[\s\S]*?resource\.data\.status == "active"[\s\S]*?resource\.data\.status == "published"/u);
+});
+
+test("public SpeakHub catalogue uses the Worker-safe metadata projection",()=>{
+  const helper=read("js/public-catalog.js");
+  const hub=read("speakhub.html");
+  const details=read("course-details.html");
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(helper,/\/v1\/catalog\/courses/u);
+  assert.match(helper,/cache:"default"/u);
+  assert.match(hub,/loadPublicCourses/u);
+  assert.doesNotMatch(hub,/getDocs\(collection\(db,"courses"\)\)/u);
+  assert.match(details,/loadPublicCourse/u);
+  assert.doesNotMatch(details,/getDoc\(doc\(db,"courses",id\)\)/u);
+  for(const field of ["estimatedDuration","authorName","price","currency","keywords"]){
+    assert.match(worker,new RegExp('"'+field+'"',"u"),field);
+  }
+  assert.doesNotMatch(helper,/assessment|answerIndex|correctAnswer/u);
+});
