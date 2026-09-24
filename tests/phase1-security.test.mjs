@@ -476,10 +476,10 @@ test("public TV status changes cannot bypass editorial validation", () => {
   assert.match(script,/\["published","active"\]\.includes\(status\?\.value\)/u);
 });
 
-test("library-only TV records never fall back into homepage discovery rails", () => {
+test("library-only TV records stay out of Home discovery but remain available in Watch", () => {
   const script=read("js/speakout-tv.js");
   assert.match(script,/const homeEpisodes=regularEpisodes\.filter\(discoveryEligible\)/u);
-  assert.match(script,/\$\("#latestRail"\)\.innerHTML=homeEpisodes\.map\(episodeCard\)/u);
+  assert.match(script,/\$\("#latestRail"\)\.innerHTML=regularEpisodes\.map\(episodeCard\)/u);
   assert.match(script,/\$\("#storiesRail"\)\.innerHTML=homeEpisodes\.filter/u);
   assert.match(script,/const pool=dailyFocusItems\.length\?dailyFocusItems:homePool/u);
   assert.doesNotMatch(script,/homePool\.length\?homePool:regularEpisodes/u);
@@ -913,4 +913,13 @@ test("Radio keeps Spotify source attribution and does not brand over Spotify art
 test("automatic Spotify sync excludes episodes marked explicit", () => {
   const worker=read("workers/platform-api/src/index.js");
   assert.match(worker,/if \(!id \|\| episode\?\.explicit === true\) continue;/u);
+});
+
+
+test("Quick Reset mobile layout keeps the reveal below its selected card", () => {
+  const styles=read("css/tv/home.css");
+  assert.match(styles,/@media\(max-width:620px\)[\s\S]*?\.reset-card\{display:block;min-width:0\}/u);
+  assert.match(styles,/\.reset-reveal\[hidden\]\{display:none!important\}/u);
+  assert.match(styles,/\.reset-card-top\{[\s\S]*?grid-template-columns:36px minmax\(0,1fr\) auto/u);
+  assert.doesNotMatch(styles,/grid-template-areas:"icon title button"/u);
 });
