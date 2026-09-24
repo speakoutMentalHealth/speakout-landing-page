@@ -74,8 +74,8 @@ function courseIsCatalogueReady(course = {}) {
 function publicCourseMetadata(course = {}) {
   const fields = [
     "id", "title", "courseType", "provider", "providerLogo", "category", "audience", "difficulty", "duration",
-    "description", "status", "featured", "free", "certificateEligible", "completionMethod", "slug", "instructor",
-    "level", "accessType", "coverUrl", "shortDescription", "fullDescription", "outcomes", "prerequisites", "tags",
+    "estimatedDuration", "description", "status", "featured", "free", "certificateEligible", "completionMethod", "slug", "instructor",
+    "authorName", "level", "accessType", "price", "currency", "coverUrl", "shortDescription", "fullDescription", "outcomes", "prerequisites", "tags", "keywords",
     "lessonCount", "minimumCompletion", "minimumScore", "instructionalStandard", "instructionalStructure", "externalProvider",
     "externalUrl", "courseUrl", "providerCourseUrl", "providerUrl", "url", "enrollmentUrl", "contactUrl"
   ];
