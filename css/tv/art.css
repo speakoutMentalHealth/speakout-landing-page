@@ -83,3 +83,12 @@
   color:#fff;font-size:.47rem;font-weight:900;letter-spacing:.045em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+
+
+/* Cards already render their title below the art. Keep generated artwork decorative. */
+.listen-card .tv-art-fallback>strong{display:none}
+.listen-card .tv-art-fallback>span{
+  position:absolute;left:14px;bottom:14px;
+  max-width:calc(100% - 70px);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
