@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpeakOut TV Curator</title>
+<link rel="icon" href="images/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="css/admin-cms.css" rel="stylesheet">
+<link href="css/tv-admin-premium.css" rel="stylesheet">
+<link href="css/tv-curator-admin.css" rel="stylesheet">
+</head>
+<body class="tv-admin curator-admin">
+<header class="studio-bar">
+<a href="admin-tv.html" class="studio-brand"><img src="images/logo.png" alt=""><span>SPEAKOUT <b>TV</b><small>Curator</small></span></a>
+<div class="studio-bar-actions"><a class="studio-view" href="admin-tv.html">TV Studio</a><a class="studio-view" href="admin-tv-series.html">Series</a><a class="studio-view primary-view" href="tv.html" target="_blank" rel="noopener">View Channel ↗</a></div>
+</header>
+
+<main>
+<section class="studio-hero curator-hero">
+<div><span class="live-chip"><i></i> CURATOR · YOUTUBE DISCOVERY</span><h1>Bring trusted creators into SpeakOut TV.</h1><p>Monitor approved YouTube channels, filter new uploads by topic, then send suitable videos into TV Studio as drafts with creator attribution preserved.</p></div>
+<div class="curator-policy"><strong>Review-first by design</strong><span>Nothing from an external creator is published automatically. Trusted sources may create drafts automatically, but public release still requires editorial review.</span></div>
+</section>
+
+<section class="studio-shell">
+<aside class="studio-side" aria-label="Curator navigation">
+<strong>Curator</strong>
+<a class="active" href="#sources">◎ Sources</a>
+<a href="#inbox">▣ Candidate inbox</a>
+<a href="#howItWorks">⌁ Workflow</a>
+<a href="admin-tv.html">← TV Studio</a>
+</aside>
+
+<div class="studio-main">
+<div class="notice" id="curatorStatus" role="status" aria-live="polite">Checking administrator access…</div>
+
+<section class="studio-card curator-overview">
+<div class="card-title"><div><span class="eyebrow">AUTOMATION STATUS</span><h2>Curator at a glance</h2></div><span class="secure-pill" id="curatorConfigured">Checking…</span></div>
+<div class="studio-metrics">
+<article><strong id="sourceCount">—</strong><span>Sources</span></article>
+<article><strong id="activeSourceCount">—</strong><span>Active</span></article>
+<article><strong id="pendingCount">—</strong><span>Pending review</span></article>
+<article><strong id="draftedCount">—</strong><span>Sent to drafts</span></article>
+<article><strong id="rejectedCount">—</strong><span>Rejected</span></article>
+</div>
+<div class="curator-actions-row"><button class="btn gold" id="syncAll" type="button">Sync all active sources</button><button class="btn soft" id="refreshCurator" type="button">Refresh inbox</button></div>
+</section>
+
+<section class="studio-card" id="sources">
+<div class="card-title"><div><span class="eyebrow">SOURCE REGISTRY</span><h2>Trusted YouTube channels</h2><p class="admin-muted">Add only creators SpeakOut is comfortable curating. Keyword filters affect discovery, not ownership or endorsement.</p></div></div>
+<form id="sourceForm" class="curator-source-form">
+<input id="sourceId" type="hidden">
+<label class="cms-field full"><span>YouTube channel URL, @handle or channel ID</span><input id="channelRef" required placeholder="https://youtube.com/@creator"></label>
+<label class="cms-field"><span>Internal label</span><input id="sourceLabel" placeholder="Motivation partner"></label>
+<label class="cms-field"><span>SpeakOut series label</span><input id="sourceShow" value="SpeakOut Picks"></label>
+<label class="cms-field full"><span>Include keywords</span><input id="includeKeywords" placeholder="motivation, resilience, confidence, purpose"></label>
+<label class="cms-field full"><span>Exclude keywords</span><input id="excludeKeywords" placeholder="giveaway, politics, gambling"></label>
+<label class="cms-field"><span>Workflow</span><select id="sourceMode"><option value="review">Candidate inbox only</option><option value="draft">Automatically create a draft</option></select></label>
+<label class="cms-field"><span>Status</span><select id="sourceStatus"><option value="active">Active</option><option value="paused">Paused</option></select></label>
+<label class="cms-field"><span>Default content pillar</span><select id="sourcePillar"><option value="motivation">Confidence & motivation</option><option value="youth">Youth voices</option><option value="school">School & student life</option><option value="adhd">ADHD & focus</option><option value="relationships">Relationships</option><option value="stories">Real stories</option><option value="community">Community</option><option value="advocacy">Advocacy</option><option value="general">General wellbeing</option></select></label>
+<label class="cms-field"><span>Audience</span><select id="sourceAudience"><option value="youth">Youth</option><option value="students">Students</option><option value="everyone">Everyone</option><option value="parents">Parents</option><option value="educators">Educators</option></select></label>
+<div class="curator-form-actions full"><button class="btn gold" type="submit" id="saveSource">Save source</button><button class="btn soft" type="button" id="cancelSource" hidden>Cancel edit</button></div>
+</form>
+<div id="sourceList" class="curator-source-list"><p class="admin-muted">Loading sources…</p></div>
+</section>
+
+<section class="studio-card" id="inbox">
+<div class="card-title"><div><span class="eyebrow">CANDIDATE INBOX</span><h2>New videos waiting for a decision</h2><p class="admin-muted">Videos remain on YouTube. SpeakOut stores only metadata, attribution and the original link, then embeds the original player when published.</p></div><span class="secure-pill" id="visibleCandidateCount">Loading…</span></div>
+<div class="curator-filters">
+<label>State<select id="candidateState"><option value="pending">Pending</option><option value="all">All</option><option value="drafted">Drafted</option><option value="rejected">Rejected</option></select></label>
+<label>Source<select id="candidateSource"><option value="all">All sources</option></select></label>
+<label class="curator-search">Search<input id="candidateSearch" type="search" placeholder="Title, creator or topic"></label>
+</div>
+<div id="candidateInbox" class="candidate-grid"><p class="admin-muted">Loading candidate videos…</p></div>
+</section>
+
+<section class="studio-card curator-workflow" id="howItWorks">
+<div class="card-title"><div><span class="eyebrow">WORKFLOW</span><h2>How automation stays safe</h2></div></div>
+<div class="curator-flow">
+<article><b>1</b><strong>Discover</strong><span>Cloudflare checks active source channels on schedule.</span></article>
+<article><b>2</b><strong>Filter</strong><span>Include/exclude keywords narrow the channel’s newest public, embeddable uploads.</span></article>
+<article><b>3</b><strong>Review or draft</strong><span>Review mode creates an inbox candidate; trusted mode may create an unpublished draft.</span></article>
+<article><b>4</b><strong>Editorial check</strong><span>TV Studio still requires metadata, artwork and review before anything can go public.</span></article>
+</div>
+</section>
+</div>
+</section>
+</main>
+
+<script type="module" src="js/tv-curator-admin.js"></script>
+</body>
+</html>
