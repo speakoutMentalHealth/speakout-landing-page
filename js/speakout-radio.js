@@ -58,7 +58,7 @@ function card(x,{compact=false}={}){
    (spotify?'':artOverlay(x,"audio"))+'<span class="listen-card-play">▶</span></div>'+
    '<div class="listen-card-copy"><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><p>'+esc(x.description||"")+'</p></div>'+
   '</button>'+
-  (spotify?'<a class="spotify-attribution" href="'+esc(x.url||"https://open.spotify.com")+'" target="_blank" rel="noopener">Spotify ↗</a>':'')+
+  (spotify?'<a class="spotify-attribution" href="'+esc(x.sourceUrl||x.url||"https://open.spotify.com")+'" target="_blank" rel="noopener">Spotify ↗</a>':'')+
   '<button class="listen-card-save'+(saved?' is-saved':'')+'" type="button" data-save-audio="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button>'+
  '</article>';
 }
@@ -95,7 +95,7 @@ function setArtwork(x){
 function openAudio(x,{autoplay=false,scroll=true}={}){
  if(!x)return;
  current=x;
- const spotify=spotifyEmbed(x.url||""),direct=safeAudio(x.url||"");
+ const spotify=spotifyEmbed(x.url||x.sourceUrl||""),direct=safeAudio(x.audioUrl||x.url||"");
  $("#listenType").textContent=(x.audioType||"SPEAKOUT AUDIO").toUpperCase();
  $("#listenTitle").textContent=x.title||"SpeakOut Audio";
  $("#listenDescription").textContent=x.description||"Listen on SpeakOut.";
