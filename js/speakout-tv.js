@@ -29,7 +29,8 @@ const embed=raw=>{try{const u=new URL(raw),host=u.hostname.replace(/^www\./,""),
 const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
-const safeAudio=raw=>{try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};\nconst imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
+const safeAudio=raw=>{try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
+const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const scheduleValue=x=>x?.scheduledAt?.toMillis?.()||Date.parse(x?.scheduledAt||"")||0;
