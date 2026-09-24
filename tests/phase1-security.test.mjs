@@ -476,10 +476,10 @@ test("public TV status changes cannot bypass editorial validation", () => {
   assert.match(script,/\["published","active"\]\.includes\(status\?\.value\)/u);
 });
 
-test("library-only TV records never fall back into homepage discovery rails", () => {
+test("library-only TV records stay out of Home discovery but remain available in Watch", () => {
   const script=read("js/speakout-tv.js");
   assert.match(script,/const homeEpisodes=regularEpisodes\.filter\(discoveryEligible\)/u);
-  assert.match(script,/\$\("#latestRail"\)\.innerHTML=homeEpisodes\.map\(episodeCard\)/u);
+  assert.match(script,/\$\("#latestRail"\)\.innerHTML=regularEpisodes\.map\(episodeCard\)/u);
   assert.match(script,/\$\("#storiesRail"\)\.innerHTML=homeEpisodes\.filter/u);
   assert.match(script,/const pool=dailyFocusItems\.length\?dailyFocusItems:homePool/u);
   assert.doesNotMatch(script,/homePool\.length\?homePool:regularEpisodes/u);
