@@ -908,3 +908,19 @@ test("Radio keeps Spotify source attribution and does not brand over Spotify art
   assert.match(main,/spotify\?'':artOverlay/u);
   assert.match(styles,/\.listen-card\.is-spotify \.listen-card-art img/u);
 });
+
+
+test("Quick Reset stays a vertical accordion on small screens", () => {
+  const page=read("tv.html");
+  const styles=read("css/tv/home.css");
+  const script=read("js/speakout-tv.js");
+  assert.match(page,/data-reset-card="breathe"[\s\S]*?data-reset-reveal="breathe"/u);
+  assert.match(page,/data-reset-card="ground"[\s\S]*?data-reset-reveal="ground"/u);
+  assert.match(page,/data-reset-card="focus"[\s\S]*?data-reset-reveal="focus"/u);
+  assert.match(styles,/@media\(max-width:620px\)[\s\S]*?\.reset-card\{display:block;min-width:0\}/u);
+  assert.match(styles,/\.reset-reveal\[hidden\]\{display:none!important\}/u);
+  assert.doesNotMatch(styles,/grid-template-areas:"icon title button"/u);
+  assert.match(script,/function renderResetStep/u);
+  assert.match(script,/function advanceReset/u);
+  assert.match(script,/resetState\.completed/u);
+});
