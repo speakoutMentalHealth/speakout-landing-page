@@ -1080,11 +1080,15 @@ function clearSearch(){
 
 function certificateStatus(record){
 
-  return normalise(
+  const status=normalise(
     record.verificationStatus ||
     record.status ||
     "verified"
   );
+
+  return ["active","issued","approved","verified"].includes(status)
+    ? "verified"
+    : status;
 
 }
 
@@ -1095,7 +1099,8 @@ function isExternalRecord(record){
     record.courseType === "external" ||
     record.sourceType === "external" ||
     record.externalProvider === true ||
-    record.completionMethod === "certificate-upload"
+    record.completionMethod === "certificate-upload" ||
+    normalise(record.achievementType).includes("external")
   );
 
 }
@@ -1229,7 +1234,7 @@ function renderCertificate(record,docId){
 
   if(
     publicId &&
-    (status === "verified" || status === "approved")
+    status === "verified"
   ){
 
     viewCertificateButton.href =
@@ -1311,6 +1316,16 @@ newSearchButton.addEventListener(
 );
 
 
+const initialCertificateId =
+  new URLSearchParams(location.search).get("id") ||
+  new URLSearchParams(location.search).get("code");
+
+if(initialCertificateId){
+  certificateIdInput.value=initialCertificateId;
+  queueMicrotask(()=>form.requestSubmit());
+}
+
+
 form.addEventListener(
   "submit",
   async event=>{
@@ -1367,8 +1382,7 @@ form.addEventListener(
 
 
       if(
-        status === "verified" ||
-        status === "approved"
+        status === "verified"
       ){
 
         showStatus(
