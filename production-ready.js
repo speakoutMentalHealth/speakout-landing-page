@@ -3,6 +3,42 @@
   const body=document.body;
   if(!body) return;
 
+  // Retire generic legacy Learning Centre shells in favor of the maintained launch routes.
+  if(location.pathname.includes('/learning/')){
+    const file=(location.pathname.split('/').pop()||'').toLowerCase();
+    const legacyLearningRoutes={
+      'index.html':'speakhub.html',
+      'speakhub.html':'speakhub.html',
+      'courses.html':'speakhub.html',
+      'my-courses.html':'my-courses.html',
+      'course-details.html':'course-details.html',
+      'course-player.html':'course-player.html',
+      'course-viewer.html':'course-viewer.html',
+      'lesson.html':'course-player.html',
+      'quiz.html':'course-player.html',
+      'library.html':'e-library.html',
+      'e-library.html':'e-library.html',
+      'my-library.html':'my-library.html',
+      'book-details.html':'book-details.html',
+      'book-reader.html':'book-reader.html',
+      'bookmarks.html':'e-library.html',
+      'categories.html':'e-library.html',
+      'downloads.html':'e-library.html',
+      'search.html':'e-library.html',
+      'kiddies.html':'kiddies.html',
+      'kiddies-reader.html':'kiddies-reader.html',
+      'certificates.html':'certificates.html',
+      'certificate-view.html':'certificate-view.html',
+      'verify-certificate.html':'verify-certificate.html'
+    };
+    const target=legacyLearningRoutes[file];
+    const isDirectLearningShell=/\/learning\/[^/]+\.html$/u.test(location.pathname);
+    if(target&&isDirectLearningShell){
+      location.replace('../'+target+location.search+location.hash);
+      return;
+    }
+  }
+
   // Add On The Move to the public Programs menu without duplicating it.
   const publicProgramsMenu=[...document.querySelectorAll('.drop-menu')].find(menu=>
     [...menu.querySelectorAll('a')].some(a=>(a.textContent||'').trim()==='All Programs')
