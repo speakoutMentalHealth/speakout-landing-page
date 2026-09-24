@@ -929,7 +929,7 @@ function publicTvShow(item = {}) {
 
 function publicTvAudio(item = {}) {
   return pickPublicFields(item, [
-    "id","title","audioType","description","url","imageUrl","publishDate","status","order",
+    "id","title","audioType","description","url","audioUrl","sourceUrl","sourceGuid","imageUrl","publishDate","status","order",
     "source","durationMs","explicit","createdAt","updatedAt"
   ]);
 }
@@ -944,65 +944,124 @@ function spotifyEpisodeId(raw) {
   }
 }
 
-async function spotifyClientToken(env) {
-  const clientId = clean(env.SPOTIFY_CLIENT_ID);
-  const clientSecret = clean(env.SPOTIFY_CLIENT_SECRET);
-  if (!clientId || !clientSecret) return "";
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "authorization": "Basic " + btoa(clientId + ":" + clientSecret),
-      "content-type": "application/x-www-form-urlencoded"
-    },
-    body: "grant_type=client_credentials"
-  });
-  if (!response.ok) throw Object.assign(new Error("Spotify authorization failed."), { status: 502 });
-  const body = await response.json();
-  return clean(body.access_token);
+function decodePodcastText(value) {
+  const numericEntity = (match, raw, radix) => {
+    const point = Number.parseInt(raw, radix);
+    return Number.isInteger(point) && point >= 0 && point <= 0x10ffff ? String.fromCodePoint(point) : match;
+  };
+  const text = String(value ?? "")
+    .replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/gu, "$1")
+    .replace(/<br\\s*\\/?>/giu, " ")
+    .replace(/<\\/(?:p|div|li|h[1-6])>/giu, " ")
+    .replace(/<[^>]+>/gu, " ")
+    .replace(/&#x([0-9a-f]+);/giu, (match, raw) => numericEntity(match, raw, 16))
+    .replace(/&#([0-9]+);/gu, (match, raw) => numericEntity(match, raw, 10))
+    .replace(/&nbsp;/giu, " ")
+    .replace(/&amp;/giu, "&")
+    .replace(/&lt;/giu, "<")
+    .replace(/&gt;/giu, ">")
+    .replace(/&quot;/giu, String.fromCharCode(34))
+    .replace(/&apos;/giu, "'");
+  return clean(text.replace(/\\s+/gu, " "));
+}
+
+function rssTag(block, tag) {
+  const match = String(block || "").match(new RegExp("<" + tag + "(?:\\\\s[^>]*)?>([\\\\s\\\\S]*?)<\\\/" + tag + ">", "iu"));
+  return decodePodcastText(match?.[1] || "");
+}
+
+function rssAttribute(block, tag, attribute) {
+  const match = String(block || "").match(new RegExp("<" + tag + "\\\\b[^>]*\\\\b" + attribute + "\\\\s*=\\\\s*([\\\"'])([\\\\s\\\\S]*?)\\\\1[^>]*>", "iu"));
+  return decodePodcastText(match?.[2] || "");
+}
+
+function podcastDurationMs(value) {
+  const raw = clean(value);
+  if (!raw) return 0;
+  if (/^\\d+(?:\\.\\d+)?$/u.test(raw)) return Math.max(0, Math.round(Number(raw) * 1000));
+  const parts = raw.split(":").map(Number);
+  if (parts.some(part => !Number.isFinite(part) || part < 0)) return 0;
+  if (parts.length === 2) return Math.round((parts[0] * 60 + parts[1]) * 1000);
+  if (parts.length === 3) return Math.round((parts[0] * 3600 + parts[1] * 60 + parts[2]) * 1000);
+  return 0;
+}
+
+function podcastPublishDate(value) {
+  const time = Date.parse(clean(value));
+  return Number.isFinite(time) ? new Date(time).toISOString().slice(0, 10) : "";
+}
+
+function podcastExplicit(value) {
+  return ["yes", "true", "explicit"].includes(normalized(value));
+}
+
+function audioIdentityKeys(item = {}) {
+  const keys = [];
+  const spotifyId = spotifyEpisodeId(item.url) || spotifyEpisodeId(item.sourceUrl);
+  if (spotifyId) keys.push("spotify:" + spotifyId);
+  if (clean(item.sourceGuid)) keys.push("guid:" + clean(item.sourceGuid));
+  if (clean(item.audioUrl)) keys.push("audio:" + clean(item.audioUrl));
+  const title = normalized(item.title).replace(/\\s+/gu, " ");
+  const date = clean(item.publishDate).slice(0, 10);
+  if (title && date) keys.push("title-date:" + title + "|" + date);
+  return keys;
 }
 
 async function spotifyShowEpisodes(env) {
-  const showId = clean(env.SPOTIFY_SHOW_ID);
-  if (!showId) return { configured: false, items: [] };
-  const token = await spotifyClientToken(env);
-  if (!token) return { configured: false, items: [] };
-  const market = clean(env.SPOTIFY_MARKET || "US").toUpperCase();
+  const feedUrl = clean(env.SPOTIFY_RSS_URL);
+  if (!feedUrl || !publicWebUrl(feedUrl)) return { configured: false, items: [] };
+
+  const response = await fetch(feedUrl, {
+    headers: {
+      "accept": "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.1",
+      "user-agent": "SpeakOut-TV-RSS/1.0"
+    },
+    redirect: "follow"
+  });
+  if (!response.ok) throw Object.assign(new Error("Spotify RSS episode sync failed."), { status: 502 });
+
+  const xml = await response.text();
+  const channelHead = xml.split(/<item\\b/iu)[0] || "";
+  const channelImage = rssAttribute(channelHead, "itunes:image", "href");
+  const spotifyShowUrl = clean(env.SPOTIFY_SHOW_ID)
+    ? "https://open.spotify.com/show/" + encodeURIComponent(clean(env.SPOTIFY_SHOW_ID))
+    : "";
+  const blocks = [...xml.matchAll(/<item\\b[^>]*>([\\s\\S]*?)<\\/item>/giu)].map(match => match[1]).slice(0, 250);
   const items = [];
-  let offset = 0;
-  const limit = 50;
-  for (let page = 0; page < 4; page++) {
-    const url = new URL("https://api.spotify.com/v1/shows/" + encodeURIComponent(showId) + "/episodes");
-    url.searchParams.set("limit", String(limit));
-    url.searchParams.set("offset", String(offset));
-    if (/^[A-Z]{2}$/u.test(market)) url.searchParams.set("market", market);
-    const response = await fetch(url.href, {
-      headers: { "authorization": "Bearer " + token, "accept": "application/json" }
+
+  for (const block of blocks) {
+    const title = rssTag(block, "title") || "SpeakOut Podcast";
+    const enclosureUrl = rssAttribute(block, "enclosure", "url");
+    if (!publicWebUrl(enclosureUrl)) continue;
+    const explicit = podcastExplicit(rssTag(block, "itunes:explicit"));
+    if (explicit) continue;
+
+    const guid = rssTag(block, "guid") || enclosureUrl;
+    const digest = await sha1Hex(guid);
+    const sourceUrlCandidate = rssTag(block, "link");
+    const sourceUrl = publicWebUrl(sourceUrlCandidate) ? sourceUrlCandidate : spotifyShowUrl;
+    const imageUrl = rssAttribute(block, "itunes:image", "href") || channelImage;
+    const description = rssTag(block, "content:encoded") || rssTag(block, "description") || rssTag(block, "itunes:summary");
+
+    items.push({
+      id: "spotify-rss-" + digest.slice(0, 20),
+      title,
+      audioType: "Podcast",
+      description,
+      url: sourceUrl || enclosureUrl,
+      audioUrl: enclosureUrl,
+      sourceUrl: sourceUrl || enclosureUrl,
+      sourceGuid: guid,
+      imageUrl: publicWebUrl(imageUrl) ? imageUrl : "",
+      publishDate: podcastPublishDate(rssTag(block, "pubDate") || rssTag(block, "dc:date")),
+      status: "published",
+      order: 0,
+      source: "spotify",
+      durationMs: podcastDurationMs(rssTag(block, "itunes:duration")),
+      explicit: false
     });
-    if (!response.ok) throw Object.assign(new Error("Spotify episode sync failed."), { status: 502 });
-    const body = await response.json();
-    const pageItems = Array.isArray(body.items) ? body.items : [];
-    for (const episode of pageItems) {
-      const id = clean(episode?.id);
-      if (!id || episode?.explicit === true) continue;
-      const image = Array.isArray(episode.images) ? episode.images.find(entry => publicWebUrl(entry?.url))?.url || "" : "";
-      items.push({
-        id: "spotify-" + id,
-        title: clean(episode.name) || "SpeakOut Podcast",
-        audioType: "Podcast",
-        description: clean(episode.description || episode.html_description),
-        url: clean(episode.external_urls?.spotify) || "https://open.spotify.com/episode/" + id,
-        imageUrl: image,
-        publishDate: clean(episode.release_date),
-        status: "published",
-        order: 0,
-        source: "spotify",
-        durationMs: Number(episode.duration_ms || 0),
-        explicit: episode.explicit === true
-      });
-    }
-    if (!body.next || pageItems.length < limit) break;
-    offset += limit;
   }
+
   return { configured: true, items };
 }
 
@@ -1055,14 +1114,13 @@ async function publicAudioBundle(env) {
   const seen = new Set();
   const items = [];
   for (const item of manual) {
-    const key = spotifyEpisodeId(item.url) || clean(item.id);
-    if (key) seen.add(key);
+    for (const key of audioIdentityKeys(item)) seen.add(key);
     items.push(item);
   }
   for (const item of spotify.items) {
-    const key = spotifyEpisodeId(item.url) || clean(item.id);
-    if (key && seen.has(key)) continue;
-    if (key) seen.add(key);
+    const keys = audioIdentityKeys(item);
+    if (keys.some(key => seen.has(key))) continue;
+    for (const key of keys) seen.add(key);
     items.push(item);
   }
   items.sort((a,b) =>
