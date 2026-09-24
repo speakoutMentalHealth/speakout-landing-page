@@ -32,3 +32,20 @@ Evidence retrieval never returns an R2 or Cloudinary delivery URL. An approved a
 
 
 Production deployments are automated from `main` through `.github/workflows/deploy-platform-api.yml` after validation succeeds.
+
+
+## SpeakOut TV YouTube Curator
+
+TV Curator uses the official YouTube Data API to monitor administrator-approved channels. It resolves each channel through `channels.list`, reads the channel's uploads playlist, then fetches recent upload metadata and video status. Only public, embeddable, non-made-for-kids videos are eligible for the curator queue.
+
+Add the encrypted Worker secret before using sync:
+
+```text
+wrangler secret put YOUTUBE_API_KEY --config wrangler.production.jsonc
+```
+
+Use the corresponding staging command for staging. Never put the API key in GitHub, browser JavaScript, Firestore, or a public Wrangler variable.
+
+The production Worker runs the curator every six hours. Source mode `review` creates candidate inbox items only. Source mode `draft` may create an unpublished `tvEpisodes` draft automatically, but it never publishes external content. Public release still goes through TV Studio's normal metadata and editorial-review gates. Curated records retain visible YouTube creator attribution and continue to embed the original YouTube video rather than downloading or re-uploading it.
+
+The curator intentionally excludes videos marked made-for-kids and videos that are private or not embeddable. This keeps the automated path narrow; content outside those conditions requires a separate manual/compliance review.

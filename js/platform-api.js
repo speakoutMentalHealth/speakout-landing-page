@@ -108,5 +108,15 @@ export const adminApi = {
   setContentStatus: (collection, id, status) =>
     platformRequest("/v1/admin/content/status", { collection, id, status }),
   deleteContent: (collection, id) =>
-    platformRequest("/v1/admin/content/delete", { collection, id })
+    platformRequest("/v1/admin/content/delete", { collection, id }),
+  tvCuratorState: () =>
+    platformRequest("/v1/admin/tv-curator/list"),
+  saveTvCuratorSource: (source, id = "") =>
+    platformRequest("/v1/admin/tv-curator/source/save", { source, id }),
+  deleteTvCuratorSource: id =>
+    platformRequest("/v1/admin/tv-curator/source/delete", { id }),
+  syncTvCurator: (id = "") =>
+    platformRequest("/v1/admin/tv-curator/sync", id ? { id } : {}),
+  reviewTvCuratorCandidate: (id, decision) =>
+    platformRequest("/v1/admin/tv-curator/review", { id, decision })
 };

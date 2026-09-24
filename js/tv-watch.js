@@ -142,7 +142,9 @@ function renderCurrent(x,all){
   x.guestRole&&x.guestRole,
   x.duration&&String(x.duration),
   String(x.format||"").toLowerCase()==="short"&&"Short",
-  x.publishDate&&"Published "+formatDate(x.publishDate)
+  x.publishDate&&"Published "+formatDate(x.publishDate),
+  x.sourceType==="youtube-curated"&&x.sourceChannelTitle&&"YouTube · "+x.sourceChannelTitle,
+  x.sourceType==="youtube-curated"&&"Curated by SpeakOut"
  ].filter(Boolean);
  $("#episodeMeta").innerHTML=meta.map(v=>"<span>"+esc(v)+"</span>").join("");
 
