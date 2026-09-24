@@ -114,3 +114,21 @@ test("SpeakOut TV publishes a YouTube services and privacy disclosure",()=>{
     assert.match(read(page),/href="tv-privacy\.html"/u,page);
   }
 });
+
+
+test("mobile Discover series cards render one readable text hierarchy",()=>{
+  const discover=read("css/tv/discover.css");
+  assert.match(discover,/\.discovery-series-card\.no-image \.tv-art-fallback>strong/u);
+  assert.match(discover,/\.discovery-series-card\.no-image \.tv-art-bug\{display:none\}/u);
+  assert.match(discover,/@media\(max-width:520px\)[\s\S]*\.discovery-series-card\{min-height:178px/u);
+});
+
+test("mobile Listen uses compact recent cards and one-column library rows",()=>{
+  const media=read("css/tv/media.css");
+  const art=read("css/tv/art.css");
+  assert.match(media,/\.listen-card\.compact\{flex:0 0 min\(72vw,240px\)\}/u);
+  assert.match(media,/@media\(max-width:640px\)[\s\S]*\.listen-library-grid\{grid-template-columns:1fr/u);
+  assert.match(media,/\.listen-library-grid \.listen-card-open\{[\s\S]*grid-template-columns:112px minmax\(0,1fr\)/u);
+  assert.match(media,/\.listen-now-copy h2,[\s\S]*overflow-wrap:anywhere/u);
+  assert.match(art,/\.listen-card \.tv-art-fallback>strong\{display:none\}/u);
+});
