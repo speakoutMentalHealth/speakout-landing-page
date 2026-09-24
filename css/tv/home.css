@@ -135,13 +135,65 @@
 @media(max-width:620px){
   .programming-head{align-items:flex-start;flex-direction:column}
   .programming-pick{min-height:34px;padding:0 10px}
-  .reset-grid{grid-template-columns:1fr}
-  .reset-card{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"icon title button" "icon text button";gap:2px 10px;align-items:center}
-  .reset-icon{grid-area:icon}
-  .reset-card small{display:none}
-  .reset-card h3{grid-area:title;margin:0}
-  .reset-card p{grid-area:text}
-  .reset-card button{grid-area:button;margin:0}
+
+  .reset-head{align-items:flex-end}
+  .reset-head .youth-section-head>div{min-width:0}
+  .reset-progress{min-width:64px;padding:8px 9px}
+  .reset-grid{grid-template-columns:1fr;gap:10px}
+
+  /* Keep every reset as one vertical accordion card on mobile. */
+  .reset-card{display:block;min-width:0}
+  .reset-card-top{
+    display:grid;
+    grid-template-columns:36px minmax(0,1fr) auto;
+    gap:10px;
+    align-items:start;
+    padding:14px;
+  }
+  .reset-icon{
+    grid-area:auto;
+    width:36px;height:36px;
+    margin-top:1px;
+  }
+  .reset-card-top>div:nth-child(2){min-width:0}
+  .reset-card small{display:block}
+  .reset-card h3{grid-area:auto;margin:2px 0 3px;font-size:.92rem}
+  .reset-card p{grid-area:auto;margin:0}
+  .reset-card-top>button{
+    grid-area:auto;
+    align-self:center;
+    min-width:54px;
+    min-height:34px;
+    margin:0;
+    padding:0 9px;
+    border-radius:9px;
+    background:rgba(255,255,255,.045);
+  }
+
+  .reset-reveal{
+    display:block;
+    width:100%;
+    padding:12px 14px 14px;
+    border-top:1px solid rgba(255,255,255,.07);
+  }
+  .reset-reveal[hidden]{display:none!important}
+  .reset-step{
+    display:grid;
+    grid-template-columns:30px minmax(0,1fr);
+    gap:10px;
+    padding-top:0;
+  }
+  .reset-step-copy strong{font-size:.82rem}
+  .reset-step-copy p{font-size:.71rem;line-height:1.5}
+  .reset-step-actions{
+    margin-top:12px;
+    padding-left:40px;
+  }
+  .reset-step-actions button{
+    min-width:70px;
+    min-height:36px;
+  }
+  .reset-complete{margin-top:0}
 }
 @media(min-width:760px){
   .youth-welcome{padding-top:36px}
