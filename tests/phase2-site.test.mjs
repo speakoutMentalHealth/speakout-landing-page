@@ -422,3 +422,27 @@ test("SpeakHub uses readability-first typography across the academy", async () =
   assert.match(academy, /\.footer a\{font-size:1rem;font-weight:700/u);
   assert.match(academy, /@media\(max-width:760px\)[\s\S]*?\.modal-content\{padding:20px;font-size:1\.05rem\}/u);
 });
+
+
+test("SpeakHub learner journey keeps readable typography across academy pages", async () => {
+  const styles = await readFile(path.join(root, "css/speakhub-readable.css"), "utf8");
+  assert.match(styles, /html\{font-size:17px !important\}/u);
+  assert.match(styles, /font-family:Arial,"Helvetica Neue",Helvetica,sans-serif !important/u);
+  assert.match(styles, /font-weight:600 !important/u);
+  assert.match(styles, /\.btn,\.cert-btn,\.search-tab,\.close-btn\{[\s\S]*?min-height:46px !important/u);
+  assert.match(styles, /input:not\(\[type="radio"\]\):not\(\[type="checkbox"\]\),select,textarea\{[\s\S]*?min-height:48px !important/u);
+
+  for (const file of [
+    "course-details.html",
+    "external-learning-submit.html",
+    "my-courses.html",
+    "certificate-center.html",
+    "student-dashboard.html",
+    "teacher-dashboard.html",
+    "parent-dashboard.html",
+  ]) {
+    const source = await readFile(path.join(root, file), "utf8");
+    assert.match(source, /css\/speakhub-readable\.css/u, file);
+    assert.doesNotMatch(source, /fonts\.googleapis\.com\/css2\?family=Outfit/u, file);
+  }
+});
