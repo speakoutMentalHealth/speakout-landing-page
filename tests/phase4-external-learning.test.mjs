@@ -84,7 +84,7 @@ test("external course starts are authenticated idempotent and server-authoritati
 
 test("learning dashboard returns external pathway state without evidence metadata", () => {
   const worker = read("workers/platform-api/src/index.js");
-  const myCourses = read("my-courses.html");
+  const myCourses = read("js/learner/my-courses.js");
   const student = read("js/learner/student-dashboard.js");
   const teacher = read("js/learner/teacher-dashboard.js");
   const parent = read("js/learner/parent-dashboard.js");
