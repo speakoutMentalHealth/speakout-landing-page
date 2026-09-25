@@ -70,7 +70,7 @@ test("course player supports accessible lazy-loaded lesson illustrations", () =>
   assert.match(player, /alt="\$\{esc\(v\.alt/u);
   assert.match(builder, /const visualManifest = \{/u);
   assert.match(builder, /mental-health-awareness\/module-1-understanding\.svg/u);
-  assert.match(builder, /visuals: \[\{/u);
+  assert.match(builder, /const visuals = \[\];/u);
 });
 
 test("mental health student course maps a unique visual to every lesson", () => {
