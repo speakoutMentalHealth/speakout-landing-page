@@ -36,15 +36,17 @@ test("lesson order, server grading, and atomic certificate issuance remain enfor
   assert.doesNotMatch(read("course-player.html"), /q\.answer|correctAnswer/u);
 });
 
-test("certificate issuance and printing never substitute an email for the learner name", () => {
+test("certificate issuance and public rendering never substitute an email for the learner name", () => {
   const worker = read("workers/platform-api/src/index.js");
   const certificate = read("certificate-view.html");
   assert.match(worker, /function humanName\(profile = \{\}\)/u);
-  assert.match(worker, /recipientName: humanName\(user\.profile\)/u);
+  assert.match(worker, /const recipientName = humanName\(user\.profile\)/u);
+  assert.match(worker, /isPlaceholderLearnerName\(recipientName\)/u);
   assert.doesNotMatch(worker, /recipientName: user\.profile\.fullName \|\| user\.email/u);
   assert.match(certificate, /async function resolveRecipient\(record\)/u);
-  assert.match(certificate, /getDoc\(doc\(db,"users",ownerId\)\)/u);
+  assert.match(certificate, /certificateApi\.verify\(publicId\)/u);
   assert.match(certificate, /!looksLikeEmail\(value\)/u);
+  assert.doesNotMatch(certificate, /recipientEmail|getDoc\(doc\(db,"users"/u);
   assert.match(certificate, /renderCertificate\([\s\S]*resolvedRecipient/u);
 });
 
