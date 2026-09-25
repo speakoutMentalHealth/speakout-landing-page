@@ -60,6 +60,33 @@ a{text-decoration:none;color:inherit}.container{width:min(1320px,95%);margin:aut
  .content{grid-row:2}.btn-row{position:sticky;bottom:0;z-index:30;margin:26px -30px -30px;padding:14px 30px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);backdrop-filter:blur(14px)}
 }
 @media(max-width:620px){.container{width:min(100% - 20px,1320px)}.hero .container{padding:22px 0}.hero h1,.hero p,.hero-pill{overflow-wrap:anywhere}.slide-body{padding:20px}.slide-image{min-height:225px;padding:22px}.profile-confirm{grid-template-columns:minmax(0,1fr)}.lesson-snapshot{grid-template-columns:minmax(0,1fr);text-align:left}.snapshot-icon{width:46px;height:46px}.reflection-card{grid-template-columns:minmax(0,1fr)}.btn-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));margin:24px -20px -20px;padding:12px 20px}.btn-row .btn{width:100%;min-width:0;max-width:100%;border-radius:13px;padding:11px 8px;white-space:normal;overflow-wrap:anywhere;line-height:1.25}.btn-row .primary{grid-column:1/-1}.lesson-content{font-size:1.075rem;line-height:1.75}.lesson-content>p:first-of-type{font-size:1.1rem;line-height:1.75}.quiz-box{padding:14px}.quiz-question{padding:12px}}
+/* Premium learning workspace */
+body{background:#f4f7fb}
+.hero{background:#fff;color:var(--navy);border-bottom:1px solid var(--line)}
+.hero .container{padding:22px 0 18px}.hero h1{font-size:clamp(1.45rem,2.7vw,2.35rem);letter-spacing:-.025em}.hero p{color:#53657a;max-width:760px}
+.hero-pill{background:#eef5ff;border-color:#d9e8f8;color:#17436f}
+.layout{grid-template-columns:300px minmax(0,1fr);gap:0;padding:20px 0 50px;align-items:start}
+.sidebar,.content{border-radius:0;box-shadow:none}
+.sidebar{top:12px;border-radius:18px 0 0 18px;border-right:0;padding:22px 16px;background:#fbfcfe}
+.content{border-radius:0 18px 18px 0;background:#fff}
+.sidebar>h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#607187;margin:18px 8px 10px}
+.progress{height:7px;margin:0 8px}.progress div{background:var(--green)}.progress-text,.progress-detail{margin-left:8px;margin-right:8px}
+.module-group{margin:0 0 9px;padding:10px 8px;border-top:1px solid #edf1f6}.module-title{font-size:.88rem;line-height:1.35}.module-description{display:none}
+.lesson-item{border:0;border-radius:10px;padding:10px 11px 10px 36px;margin:4px 0;font-size:.84rem;background:transparent}
+.lesson-item:before{content:"▶";position:absolute;left:11px;top:10px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:#e8f2ff;color:var(--blue);font-size:.55rem}
+.lesson-item.active{background:#eaf4ff;color:#083b75;font-weight:700}.lesson-item.active:before{background:var(--blue);color:#fff}
+.lesson-item.completed:not(.active),.lesson-item.passed:not(.active){background:#effaf6}.lesson-item.completed:before,.lesson-item.passed:before{content:"✓";background:var(--green);color:#fff}
+.lesson-item.locked:before{content:"";background:#edf0f4}.lesson-item.locked:after{right:9px;top:9px;font-size:.75rem}
+.slide-image{margin:28px 30px 0;min-height:clamp(300px,42vw,500px);border-radius:20px;align-items:flex-end;padding:32px;box-shadow:0 14px 38px rgba(7,21,43,.12)}
+.slide-image::after{background:linear-gradient(to top,rgba(7,21,43,.72),rgba(7,21,43,0) 65%)}
+.slide-image h2{font-size:clamp(1.7rem,3.2vw,2.65rem);text-shadow:0 2px 12px rgba(0,0,0,.3)}
+.slide-body{padding:28px 42px 38px}.lesson-snapshot{max-width:72ch;border:0;border-bottom:1px solid var(--line);border-radius:0;background:#fff;padding:0 0 18px;margin-bottom:28px}
+.lesson-content{max-width:72ch}.lesson-visuals{max-width:72ch}.lesson-visual-card{box-shadow:none;border-radius:16px}
+.reflection-card{max-width:72ch}
+.btn-row{max-width:72ch;margin:32px auto 0}
+.feature-list{font-size:.82rem}.source-note{padding:0 8px}
+@media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr);gap:12px}.content{border-radius:18px}.sidebar{border-radius:26px 26px 0 0}.slide-image{margin:16px 16px 0}.slide-body{padding:24px}.hero .container{padding-bottom:16px}}
+@media(max-width:620px){.hero{display:none}.layout{padding-top:10px}.slide-image{min-height:260px;margin:10px 10px 0;border-radius:16px;padding:20px}.slide-body{padding:20px}.lesson-snapshot{padding-bottom:14px}.content{border-radius:16px}}
 @media(prefers-reduced-motion:reduce){.sidebar{transition:none}html:focus-within{scroll-behavior:auto}}
 </style>
 <link href="css/portal-ui.css" rel="stylesheet"/>
