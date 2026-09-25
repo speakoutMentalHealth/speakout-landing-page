@@ -22,12 +22,19 @@ const normalized = value => clean(value).toLowerCase();
 const looksLikeEmail = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(clean(value));
 function humanName(profile = {}) {
   const candidates = [
-    profile.fullName,
+    profile.certificateName,
     `${clean(profile.firstName)} ${clean(profile.lastName)}`.trim(),
+    profile.fullName,
     profile.displayName,
     profile.name
   ].map(clean);
   return candidates.find(value => value && !looksLikeEmail(value)) || "Learner";
+}
+
+function isPlaceholderLearnerName(value = "") {
+  const name = normalized(value).replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+  return !name || name === "learner" || name === "student" || name === "uat student" ||
+    name === "test student" || name === "demo student" || name === "test user" || name === "demo user";
 }
 
 const publicCourseStatus = course => ["active", "published"].includes(normalized(course?.status));
@@ -1763,8 +1770,10 @@ async function route(request, env, path, data) {
       if (!ownerId) { skipped++; continue; }
       const profile = await getDocument(env, `users/${safeId(ownerId, "learner identifier")}`);
       const name = profile ? humanName(profile) : "Learner";
-      if (!profile || name === "Learner") { skipped++; continue; }
-      if (clean(certificate.recipientName) !== name) {
+      const storedName = clean(certificate.recipientName);
+      if (!profile || name === "Learner" || isPlaceholderLearnerName(name)) { skipped++; continue; }
+      if (storedName && !isPlaceholderLearnerName(storedName) && storedName !== name) { skipped++; continue; }
+      if (storedName !== name) {
         await setDocument(env, `certificates/${certificate.id}`, { ...certificate, recipientName: name, recipientId: ownerId, nameRepairedAt: new Date().toISOString() });
         const code = clean(certificate.verificationCode);
         if (code) {
