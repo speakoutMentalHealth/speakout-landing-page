@@ -41,6 +41,16 @@ export async function platformRequest(path, payload = {}) {
   return parseResponse(response);
 }
 
+export async function publicPlatformRequest(path, payload = {}) {
+  const response = await fetch(endpoint(path), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    credentials: "omit"
+  });
+  return parseResponse(response);
+}
+
 export async function submitExternalLearning(file, fields) {
   if (!(file instanceof File)) throw new Error("Select a file to upload.");
   const form = new FormData();
@@ -96,8 +106,21 @@ export const roleApi = {
     platformRequest("/v1/roles/school/users/status", { userId, status })
 };
 
+export const onboardingApi = {
+  resolveSchool: schoolCode =>
+    publicPlatformRequest("/v1/public/schools/resolve-code", { schoolCode }),
+  registerSchool: payload =>
+    publicPlatformRequest("/v1/public/schools/register", payload),
+  joinSchool: payload =>
+    platformRequest("/v1/onboarding/school-user", payload),
+  activateSchoolAdmin: payload =>
+    platformRequest("/v1/onboarding/school-admin", payload)
+};
+
 export const adminApi = {
   retrieveEvidence,
+  updateSchoolStatus: (schoolId, status) =>
+    platformRequest("/v1/admin/schools/status", { schoolId, status }),
   listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
   repairCertificateNames: () => platformRequest("/v1/admin/certificates/repair-names"),
   publishRichCourse: course => platformRequest("/v1/admin/courses/publish-rich", { course }),
