@@ -116,7 +116,9 @@ test("production workflow deploys Firestore rules when credential authority chan
   const workflow=read(".github/workflows/deploy-firestore-rules.yml");
   assert.match(workflow,/firebase\/firestore\.rules/u);
   assert.match(workflow,/FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL/u);
-  assert.match(workflow,/deploy --only firestore:rules --project speaakout-portal/u);
+  assert.match(workflow,/firebaserules\.googleapis\.com\/v1\/projects\/\$FIREBASE_PROJECT_ID\/rulesets/u);
+  assert.match(workflow,/releases\/cloud\.firestore/u);
+  assert.match(workflow,/updateMask/u);
 });
 
 test("credential unification browser modules remain syntactically valid", () => {
