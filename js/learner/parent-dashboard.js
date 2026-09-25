@@ -1,11 +1,11 @@
 import {
   requireRoles,
   renderRoleNav
-} from "./launch-role-guard.js";
+} from "../../launch-role-guard.js";
 
 import {
   db
-} from "./firebase-config.js";
+} from "../../firebase-config.js";
 
 import {
   doc,
