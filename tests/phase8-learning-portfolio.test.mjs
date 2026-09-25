@@ -26,7 +26,7 @@ test("learning portfolio is private, authenticated and read-only", () => {
 
 test("portfolio CV summary includes only completed or verified learning", () => {
   const page=read("learning-portfolio.html");
-  assert.match(page,/const completedCourseIds=/u);
+  assert.match(page,/function completedCourseIds\(/u);
   assert.match(page,/progress\.filter\(progressComplete\)/u);
   assert.match(page,/external\.filter\(externalVerified\)/u);
   assert.match(page,/const courseNames=completedCourses/u);
