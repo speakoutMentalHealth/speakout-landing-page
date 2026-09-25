@@ -54,7 +54,7 @@ test("course player has mobile module navigation and visual lesson scaffolding",
   assert.match(player, /class="course-menu-backdrop"/u);
   assert.match(player, /function openCourseMenu\(\)/u);
   assert.match(player, /event\.key==="Escape"/u);
-  assert.match(player, /l\.coverUrl\|\|course\.coverUrl/u);
+  assert.match(player, /heroVisual\?\.src\|\|l\.coverUrl\|\|""/u);
   assert.match(player, /id="lessonSnapshot"/u);
   assert.match(player, /id="reflectionCard"/u);
   assert.match(player, /About \$\{readMinutes\} min/u);
