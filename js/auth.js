@@ -50,7 +50,7 @@ function normalizeRole(role) {
 }
 
 function normalizeSchoolCode(value) {
-  return clean(value).toUpperCase().replace(/\s+/g, "");
+  return clean(value).toUpperCase().replace(/\s+/g, "").replace(/[^A-Z0-9_-]/g, "");
 }
 
 function normalizeStudentNumber(value) {
