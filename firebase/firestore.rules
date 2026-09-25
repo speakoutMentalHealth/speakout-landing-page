@@ -105,6 +105,13 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(userId)).data.schoolId == schoolId;
     }
 
+    function onlyEditableSchoolFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        "schoolType", "principalName", "email", "phone", "state", "city",
+        "address", "schoolWebsite", "estimatedStudents", "updatedAt"
+      ]);
+    }
+
     match /users/{userId} {
       allow create: if isSignedIn() && request.auth.uid == userId && validNewUser(userId);
       allow read: if isApproved() &&
@@ -129,7 +136,8 @@ service cloud.firestore {
       allow read: if isApproved() &&
         (isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId) ||
           ((isTeacher() || isParent() || isStudent()) && userSchoolId() == schoolId));
-      allow update: if isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId);
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && userSchoolId() == schoolId && onlyEditableSchoolFieldsChanged());
       allow delete: if isSuperAdmin();
     }
 
