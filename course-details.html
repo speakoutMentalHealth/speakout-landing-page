@@ -13,10 +13,6 @@
 
 <link rel="icon" href="logo.png">
 
-<link
-  href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-  rel="stylesheet"
->
 
 <style>
 :root{
@@ -306,6 +302,7 @@ ul{line-height:1.7}
   .panel{padding:18px}
 }
 </style>
+<link href="css/speakhub-readable.css" rel="stylesheet">
 </head>
 
 <body>
@@ -382,11 +379,8 @@ ul{line-height:1.7}
           id="externalNotice"
           class="notice external-notice"
           style="display:none;margin-top:18px"
-        >
-          This course is delivered by an approved external learning provider.
-          You will leave SpeakHub Academy to complete the training and can
-          return to your learner dashboard afterward.
-        </div>
+        ></div>
+        <div id="externalTrackingStatus" class="notice external-tracking-status" style="display:none"></div>
 
         <h3>Learning Outcomes</h3>
         <ul id="outcomes"></ul>
@@ -428,6 +422,8 @@ ul{line-height:1.7}
 <script type="module">
 import { db, auth } from "./firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
+import { isPublicCourse } from "./js/content-visibility.js";
+import { externalLearningApi } from "./js/platform-api.js";
 
 import {
   doc,
@@ -466,6 +462,7 @@ const providerLogo = document.getElementById("providerLogo");
 const providerPlaceholder = document.getElementById("providerPlaceholder");
 const providerName = document.getElementById("providerName");
 const providerType = document.getElementById("providerType");
+const externalTrackingStatus = document.getElementById("externalTrackingStatus");
 
 function formatLabel(value){
   if(!value) return "";
@@ -494,6 +491,31 @@ function isInstructorLed(course){
   return course.courseType === "instructor-led";
 }
 
+function externalRecordState(record){
+  const status=String(record?.status||record?.verificationStatus||"").toLowerCase();
+  if(["approved","verified"].includes(status)) return {label:"Verified by SpeakHub",className:"notice certificate-notice"};
+  if(["pending","pending_review","submitted"].includes(status)) return {label:"Completion evidence pending review",className:"notice external-notice"};
+  if(["rejected","resubmission_required"].includes(status)) return {label:"Evidence needs attention — you can resubmit",className:"notice external-notice"};
+  if(status==="started") return {label:"Started on the provider platform",className:"notice"};
+  return {label:"Not started in SpeakHub yet",className:"notice"};
+}
+
+async function refreshExternalTracking(courseId){
+  externalTrackingStatus.style.display="block";
+  externalTrackingStatus.className="notice external-tracking-status";
+  externalTrackingStatus.textContent="Checking your SpeakHub pathway status...";
+  try{
+    const result=await externalLearningApi.status(courseId);
+    const state=externalRecordState(result.record);
+    externalTrackingStatus.className=`${state.className} external-tracking-status`;
+    externalTrackingStatus.textContent=state.label;
+  }catch(error){
+    console.warn("External pathway status unavailable",error);
+    externalTrackingStatus.className="notice external-tracking-status";
+    externalTrackingStatus.textContent="You can still open the provider course. SpeakHub tracking will update when the secure learning service is available.";
+  }
+}
+
 async function loadCourse(){
   try{
 
@@ -503,12 +525,14 @@ async function loadCourse(){
       return;
     }
 
-    let course = null;
+    const verifiedCourse = PHASE2_VERIFIED_COURSES.find(item => item.id === id) || null;
+    let course = verifiedCourse ? {...verifiedCourse} : null;
 
     try{
       const snap = await getDoc(doc(db,"courses",id));
       if(snap.exists()){
         course = {
+          ...(verifiedCourse || {}),
           id:snap.id,
           ...snap.data()
         };
@@ -517,13 +541,9 @@ async function loadCourse(){
       console.warn("Firestore course lookup failed; checking verified catalogue.",error);
     }
 
-    if(!course){
-      course = PHASE2_VERIFIED_COURSES.find(item => item.id === id) || null;
-    }
-
-    if(!course){
+    if(!course || !isPublicCourse(course)){
       document.getElementById("loading").textContent =
-        "Course not found.";
+        "This course is not currently available.";
       return;
     }
 
@@ -790,6 +810,19 @@ async function loadCourse(){
 
     if(external){
       externalNotice.style.display = "block";
+      const credentialMessage=(course.certificateEligible||course.certificate?.available)
+        ? "If you complete the provider requirements, keep the genuine provider-issued credential so you can submit it to SpeakHub for verification."
+        : "Complete the learning on the provider's official platform and keep any completion evidence the provider makes available.";
+      externalNotice.innerHTML=`
+        <strong>This is an external-provider pathway.</strong>
+        <p style="margin:8px 0 0">SpeakHub helps you discover and track this learning, but <strong>${escapeHtml(provider)}</strong> delivers the course and remains responsible for its original credential.</p>
+        <div class="external-pathway-steps" aria-label="External course pathway">
+          <div class="external-pathway-step"><strong>1. Start with the provider</strong><span>Open the official course page and complete the provider's own learning requirements.</span></div>
+          <div class="external-pathway-step"><strong>2. Keep your credential</strong><span>${escapeHtml(credentialMessage)}</span></div>
+          <div class="external-pathway-step"><strong>3. Return to SpeakHub</strong><span>Submit genuine evidence for review so the achievement can appear in your SpeakHub learning record.</span></div>
+        </div>
+      `;
+      await refreshExternalTracking(course.id);
     }
 
     const certificate =
@@ -845,7 +878,9 @@ async function loadCourse(){
 
     if(external){
 
-      if(course.externalUrl){
+      const providerUrl = course.externalUrl || course.courseUrl || course.providerCourseUrl || "";
+
+      if(providerUrl){
 
         const externalButton =
           document.createElement("a");
@@ -854,7 +889,7 @@ async function loadCourse(){
           "btn primary";
 
         externalButton.href =
-          course.externalUrl;
+          providerUrl;
 
         externalButton.target =
           "_blank";
@@ -863,7 +898,13 @@ async function loadCourse(){
           "noopener noreferrer";
 
         externalButton.textContent =
-          "Start Course";
+          `Start on ${provider} →`;
+
+        externalButton.addEventListener("click",()=>{
+          externalLearningApi.start(course.id)
+            .then(()=>refreshExternalTracking(course.id))
+            .catch(error=>console.warn("Could not record external course start",error));
+        });
 
         actions.appendChild(
           externalButton
@@ -878,11 +919,19 @@ async function loadCourse(){
           "btn soft";
 
         unavailable.textContent =
-          "Course Link Coming Soon";
+          "Provider Link Coming Soon";
 
         actions.appendChild(
           unavailable
         );
+      }
+
+      if(certificateAvailable || course.completionMethod==="certificate-upload"){
+        const submitButton=document.createElement("a");
+        submitButton.className="btn green";
+        submitButton.href=`external-learning-submit.html?courseId=${encodeURIComponent(course.id)}`;
+        submitButton.textContent="I've completed it — Submit proof";
+        actions.appendChild(submitButton);
       }
 
     }else if(instructorLed){
