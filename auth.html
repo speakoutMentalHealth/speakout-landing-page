@@ -1,129 +1,42 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Auth | SpeakOut Member Access</title>
+<title>SpeakOut Access | Sign In, Join or Register a School</title>
+<meta name="description" content="One secure gateway for SpeakOut members, school-linked learners and partner-school registration."/>
 <link href="images/logo.png" rel="icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="css/speakout-main.css" rel="stylesheet"/>
 <style>
-.message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800;line-height:1.5}
-.message.ok{display:block;background:#e9fbf5;color:#0f8f6f}
-.message.bad{display:block;background:#fee2e2;color:#991b1b}
-.message.warn{display:block;background:#fff4df;color:#704800}
-.notice{background:#fff;border:1px solid #e5edf6;border-radius:22px;padding:22px;box-shadow:0 18px 44px rgba(7,21,43,.08)}
-.help-text{font-size:.88rem;color:#637083;line-height:1.55;margin-top:8px}
-.terms{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
-.terms input{width:auto;min-height:auto;margin-top:4px}
-.role-info{margin-top:18px;display:grid;gap:10px}
-.role-info div{background:#f8fbff;border:1px solid #e5edf6;border-radius:14px;padding:12px}
-.role-info strong{display:block;color:#07152b}
-.forgot-link{display:inline-block;margin-top:12px;font-weight:800;color:#0a5fbf}
+:root{--navy:#07152b;--blue:#0a5fbf;--orange:#f4a21c;--soft:#eef6ff;--line:#dfe8f2;--muted:#667085;--green:#0f8f6f;--red:#991b1b}
+*{box-sizing:border-box}body{margin:0;background:#f7f9fc;color:#111827;font-family:Outfit,Arial,sans-serif}.gateway{padding:34px 0 64px}.gateway-shell{width:min(1120px,92%);margin:auto}.gateway-head{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:stretch;margin-bottom:22px}.gateway-copy,.gateway-card{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 20px 55px rgba(7,21,43,.08)}.gateway-copy{padding:34px;background:linear-gradient(135deg,#07152b,#0a5fbf);color:#fff}.gateway-copy h1{font-size:clamp(2.3rem,6vw,4.8rem);line-height:.98;margin:12px 0 16px}.gateway-copy p{max-width:690px;color:rgba(255,255,255,.86);line-height:1.65}.gateway-card{padding:26px}.access-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.access-tab{border:1px solid var(--line);background:#fff;color:var(--navy);padding:14px;border-radius:16px;font-weight:900;cursor:pointer}.access-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}.access-panel{display:none}.access-panel.active{display:block}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}input,select,textarea{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fbfdff;font:inherit}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(10,95,191,.08)}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border:0;border-radius:14px;padding:12px 18px;font-weight:900;cursor:pointer;text-decoration:none}.primary{background:var(--blue);color:#fff}.gold{background:var(--orange);color:#241300}.softb{background:var(--soft);color:var(--blue)}.message{display:none;margin-top:14px;padding:14px;border-radius:14px;font-weight:800;line-height:1.5}.message.ok{display:block;background:#e9fbf5;color:var(--green)}.message.bad{display:block;background:#fee2e2;color:var(--red)}.message.warn{display:block;background:#fff4df;color:#704800}.help-text{font-size:.9rem;color:var(--muted);line-height:1.55}.terms{display:flex;gap:10px;align-items:flex-start;background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:12px}.terms input{width:auto;min-height:auto;margin-top:4px}.verify-box{display:none;padding:14px;border-radius:16px;background:#f8fbff;border:1px solid var(--line);margin:4px 0 2px}.verify-box.show{display:block}.verify-ok{border-color:#b8ead8;background:#f1fbf7}.verify-title{font-weight:900;color:var(--navy)}.section-note{padding:14px;border-radius:16px;background:var(--soft);color:#174a82;line-height:1.55;font-size:.9rem}.school-activation{display:none;margin-bottom:18px}.school-activation.show{display:block}.small-link{font-weight:800;color:var(--blue);text-decoration:none}.kicker{display:inline-flex;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:.72rem;font-weight:900;text-transform:uppercase}
+@media(max-width:850px){.gateway-head{grid-template-columns:1fr}.access-tabs{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.gateway-copy,.gateway-card{padding:22px;border-radius:22px}}
 </style>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<link href="css/production-ready.css" rel="stylesheet"/><script defer src="production-ready.js"></script><meta content="#123f91" name="theme-color"/>
+</head>
 <body data-auth-page="auth"><a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="nav">
-<div class="container nav-inner">
-<a class="brand" href="index.html">
-<img alt="SpeakOut Logo" decoding="async" fetchpriority="high" height="1254" loading="eager" src="images/logo.png" width="1254"/>
-<div>
-<strong>SpeakOut</strong>
-<small>Member Access</small>
-</div>
-</a>
-<button class="menu" type="button">☰</button>
-<nav class="links">
-<a class="btn softb" href="index.html">Home</a>
-<a class="btn dark" href="#login">Login</a>
-<a class="btn gold" href="#register">Apply</a>
-</nav>
-</div>
-</header>
-<main id="main-content">
-<section class="page-hero">
-<div class="container">
-<span class="kicker">Member Access</span>
-<h1>Login or Apply</h1>
-<p>New users are created as pending until approved by SpeakOut or the school they belong to.</p>
-</div>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><img alt="SpeakOut Logo" src="images/logo.png"/><div><strong>SpeakOut</strong><small>Access Gateway</small></div></a><nav class="links"><a href="index.html">Home</a><a href="speakhub.html">SpeakHub</a><a href="tv.html">SpeakOut TV</a></nav></div></header>
+<main id="main-content" class="gateway"><div class="gateway-shell">
+<div class="gateway-head"><section class="gateway-copy"><span class="kicker">One SpeakOut Gateway</span><h1>Sign in. Join. Bring your school.</h1><p>Use one secure access point for SpeakHub learning, school-linked accounts and institutional partnership onboarding.</p></section><aside class="gateway-card"><strong style="color:var(--navy);font-size:1.15rem">School-linked access is verified.</strong><p class="help-text">A school code identifies the institution. Students also provide their registration or matric number, and the school administrator confirms their status before institutional access is approved.</p><div class="section-note">Scanning a school-specific QR can preselect the institution automatically. The school code is never treated as proof of student status.</div></aside></div>
+<section class="gateway-card">
+<div class="access-tabs" role="tablist" aria-label="SpeakOut access options"><button class="access-tab active" type="button" data-tab-target="loginPanel">Sign In</button><button class="access-tab" type="button" data-tab-target="joinPanel">Join SpeakOut</button><button class="access-tab" type="button" data-tab-target="schoolPanel">Register a School</button></div>
+<div class="access-panel active" id="loginPanel"><h2>Welcome back</h2><p class="help-text">Use the same login for students, teachers, parents, school administrators and SpeakOut team members.</p><form class="form-grid" data-login-form id="loginForm"><input class="full" data-login-email id="loginEmail" placeholder="Email" required type="email"/><input class="full" data-login-password id="loginPassword" placeholder="Password" required type="password"/><button class="btn primary full" type="submit">Sign In</button></form><a class="small-link" href="#" id="forgotPasswordLink">Forgot password?</a><div class="message" data-login-message id="loginMsg"></div></div>
+<div class="access-panel" id="joinPanel"><h2>Create your SpeakOut account</h2><p class="help-text">Join as an individual, or enter your school code to request verified membership under a partner institution.</p><form class="form-grid" data-register-form id="registerForm">
+<input id="firstName" placeholder="First Name" required/><input id="lastName" placeholder="Last Name" required/><input data-register-email id="email" placeholder="Email" required type="email"/><input id="phone" placeholder="Phone / WhatsApp"/>
+<select data-register-role id="role" required><option value="">Select role</option><option value="student">Student</option><option value="parent">Parent / Guardian</option><option value="teacher">Teacher</option><option value="volunteer">Volunteer</option><option value="ambassador">Ambassador</option><option value="contributor">Contributor / Publisher</option></select><input id="location" placeholder="Location / State"/>
+<div class="full section-note"><strong>Joining through a school?</strong> Enter the school code from your institution or school-specific SpeakOut flyer.</div><input id="schoolCode" placeholder="School Code (Optional)" autocomplete="off"/><button class="btn softb" id="verifySchoolBtn" type="button">Verify School Code</button>
+<div class="verify-box full" id="schoolResolvedBox" aria-live="polite"><div class="verify-title" id="schoolResolvedName"></div><div class="help-text" id="schoolResolvedMeta"></div></div><input class="full" id="schoolName" placeholder="School / Organization" readonly/>
+<div class="full" id="studentVerificationFields" style="display:none"><div class="form-grid"><input id="registrationNumber" placeholder="Student Registration / Matric Number"/><input id="department" placeholder="Department / Programme"/><input id="level" placeholder="Level / Year"/><div class="section-note">Your registration number helps your school verify that you are a genuine student. Institutional access stays pending until the school approves you.</div></div></div>
+<select id="contentType"><option value="">Contributor Content Type (Optional)</option><option value="books">Books</option><option value="courses">Courses</option><option value="worksheets">Worksheets</option><option value="videos">Videos</option><option value="research">Research</option></select><input id="reason" placeholder="Why are you joining? (Optional)"/>
+<input data-register-password id="password" placeholder="Password" required type="password"/><input id="confirmPassword" placeholder="Confirm password" required type="password"/>
+<label class="terms full"><input id="terms" required type="checkbox"/><span>I confirm that the information provided is accurate and I agree to use SpeakOut responsibly for learning, support and community wellbeing.</span></label><button class="btn gold full" type="submit">Create Account</button></form><div class="message" data-register-message id="regMsg"></div></div>
+<div class="access-panel" id="schoolPanel">
+<div class="school-activation" id="schoolAdminActivation"><h2>Activate School Administrator Access</h2><p class="help-text">Use the private activation link sent after SpeakOut approves your institution.</p><form class="form-grid" id="schoolAdminActivateForm"><input id="schoolAdminName" placeholder="Full Name" required/><input id="schoolAdminPosition" placeholder="Position / Title" required/><input id="schoolAdminEmail" placeholder="Official Email" required type="email"/><input id="schoolAdminPhone" placeholder="Phone / WhatsApp"/><input id="schoolAdminPassword" placeholder="Create Password" required type="password"/><input id="schoolAdminConfirmPassword" placeholder="Confirm Password" required type="password"/><button class="btn primary full" type="submit">Activate School Portal</button></form><div class="message" id="schoolAdminMsg"></div><hr style="border:0;border-top:1px solid var(--line);margin:24px 0"/></div>
+<h2>Register your school</h2><p class="help-text">Register the institution once. SpeakOut reviews the application, creates the school code, and invites the approved primary administrator into the School Portal.</p>
+<form class="form-grid" id="schoolRegisterForm"><input id="regSchoolName" placeholder="School / Institution Name" required/><select id="regSchoolType" required><option value="">School Type</option><option>Primary School</option><option>Secondary School</option><option>College</option><option>University</option><option>Faith-Based School</option><option>Community School</option><option>Other Institution</option></select><input id="regSchoolAddress" placeholder="Address / Location" required/><input id="regSchoolCity" placeholder="City"/><input id="regSchoolState" placeholder="State / Region" required/><input id="regSchoolCountry" placeholder="Country" value="Nigeria" required/><input id="regSchoolStudents" placeholder="Estimated Student Population" inputmode="numeric"/><input id="regSchoolWebsite" placeholder="School Website (Optional)" type="url"/>
+<div class="full section-note"><strong>Primary school administrator</strong> — this person receives the secure activation route after SpeakOut approves the institution.</div><input id="regAdminName" placeholder="Administrator Full Name" required/><input id="regAdminPosition" placeholder="Position / Title" required/><input id="regAdminEmail" placeholder="Official Email" required type="email"/><input id="regAdminPhone" placeholder="Phone / WhatsApp" required/><select id="regInterestArea" required><option value="">Primary Interest</option><option>SpeakHub Academy</option><option>School Mental Health Club</option><option>Teacher Training</option><option>Parent Workshop</option><option>Full Partnership</option></select><textarea id="regSchoolNeeds" placeholder="Tell us what your school needs"></textarea><input id="schoolWebsiteTrap" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px"/><button class="btn gold full" type="submit">Submit School Registration</button></form><div class="message" id="schoolRegMsg"></div></div>
 </section>
-<section>
-<div class="container grid g2">
-<div class="panel" id="login">
-<span class="label">Login</span>
-<h2>Welcome back</h2>
-<p class="help-text">After login, you will be routed to the right dashboard based on your approved role.</p>
-<form class="form-grid" data-login-form="" id="loginForm">
-<input class="full" data-login-email="" id="loginEmail" placeholder="Email" required="" type="email"/>
-<input class="full" data-login-password="" id="loginPassword" placeholder="Password" required="" type="password"/>
-<button class="btn primary full" type="submit">Login</button>
-</form>
-<a class="forgot-link" href="#" id="forgotPasswordLink">Forgot password?</a>
-<div class="message" data-login-message="" id="loginMsg"></div>
-</div>
-<div class="panel" id="register">
-<span class="label">Apply Access</span>
-<h2>Create account</h2>
-<p class="help-text">If you have a school code, enter it. If not, you can still apply as an individual user.</p>
-<form class="form-grid" data-register-form="" id="registerForm">
-<input id="firstName" placeholder="First Name" required=""/>
-<input id="lastName" placeholder="Last Name" required=""/>
-<input data-register-email="" id="email" placeholder="Email" required="" type="email"/>
-<input id="phone" placeholder="Phone / WhatsApp"/>
-<select data-register-role="" id="role" required="">
-<option value="">Select role</option>
-<option value="student">Student</option>
-<option value="parent">Parent</option>
-<option value="teacher">Teacher</option>
-<option value="school_admin">School Administrator</option>
-<option value="ambassador">Ambassador</option>
-<option value="contributor">Contributor / Publisher</option>
-</select>
-<input id="schoolCode" placeholder="School Code (Optional)"/>
-<input id="schoolName" placeholder="School / Organization (Optional)"/>
-<input id="location" placeholder="Location / State"/>
-<select id="contentType">
-<option value="">Contributor Content Type (Optional)</option>
-<option value="books">Books</option>
-<option value="courses">Courses</option>
-<option value="worksheets">Worksheets</option>
-<option value="videos">Videos</option>
-<option value="research">Research</option>
-</select>
-<input data-register-password="" id="password" placeholder="Password" required="" type="password"/>
-<input id="confirmPassword" placeholder="Confirm password" required="" type="password"/>
-<textarea class="full" id="reason" placeholder="Why do you need access?"></textarea>
-<label class="terms full">
-<input id="terms" required="" type="checkbox"/>
-<span>I confirm that the information provided is accurate and I agree to use SpeakOut responsibly for learning, support and community wellbeing.</span>
-</label>
-<button class="btn gold full" type="submit">Submit Application</button>
-</form>
-<div class="message" data-register-message="" id="regMsg"></div>
-<div class="role-info">
-<div><strong>Students</strong> Access learning resources, courses, certificates and school activities.</div>
-<div><strong>Parents</strong> Link to children, access parent resources and monitor approved child progress.</div>
-<div><strong>Teachers</strong> Access teacher resources, workshops and school wellbeing tools.</div>
-<div><strong>Schools</strong> School administrators manage students, parents, teachers, workshops and reports after approval.</div>
-</div>
-</div>
-</div>
-</section>
-<section id="pending">
-<div class="container">
-<div class="notice">
-<span class="label">Pending Approval</span>
-<h3>If your account is pending</h3>
-<p>Your application has been received successfully, but full access is enabled only after approval.</p>
-<p>School-linked users may be approved by their school administrator. Contributors, ambassadors and school administrators may be approved by SpeakOut admin.</p>
-<p><strong>Urgent?</strong> Contact SpeakOut on WhatsApp.</p>
-</div>
-</div>
-</section>
-</main>
-<script src="js/main.js"></script>
-<script src="js/auth.js" type="module"></script>
-</body>
-</html>
+<section id="pending" style="margin-top:18px" class="gateway-card"><strong>Pending approval</strong><p class="help-text">Individual applications are reviewed by SpeakOut. School-linked students, teachers and parents can be reviewed by their institution. A student is not marked as school-verified until the school administrator approves the registration details.</p></section>
+</div></main>
+<script src="js/main.js"></script><script src="js/auth.js" type="module"></script></body></html>
