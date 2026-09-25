@@ -150,6 +150,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "./launch-role-guard.js";
+import { adminApi } from "./js/platform-api.js";
 
 let ITEMS = [];
 let unsubscribeSchools = null;
@@ -190,13 +191,15 @@ function filteredItems(){
   return ITEMS.filter(item => {
     const text = `
       ${item.schoolName || ""}
-      ${item.email || ""}
+      ${item.adminEmail || item.email || ""}
       ${item.schoolCode || ""}
       ${item.city || ""}
       ${item.state || ""}
       ${item.country || ""}
       ${item.principalName || ""}
       ${item.coordinatorName || ""}
+      ${item.adminName || ""}
+      ${item.adminEmail || ""}
       ${item.phone || ""}
       ${item.status || ""}
       ${item.schoolType || ""}
@@ -217,7 +220,7 @@ function render(){
     return `
       <tr class="row">
         <td>${safe(item.schoolName)}</td>
-        <td>${safe(item.email)}</td>
+        <td>${safe(item.adminEmail || item.email)}</td>
         <td>${safe(item.schoolCode)}</td>
         <td>${safe(locationText)}</td>
         <td>${students}</td>
@@ -266,6 +269,11 @@ function detailHTML(item){
     detail("Phone",item.phone),
     detail("WhatsApp",item.whatsapp),
     detail("Website",item.schoolWebsite),
+    detail("Primary Administrator",item.adminName),
+    detail("Administrator Position",item.adminPosition),
+    detail("Administrator Email",item.adminEmail || item.email),
+    detail("Administrator Phone",item.adminPhone || item.phone),
+    detail("Primary Interest",item.interestArea),
     detail("Principal",item.principalName),
     detail("Coordinator",item.coordinatorName),
     detail("Estimated Students",item.estimatedStudents || item.students),
@@ -278,20 +286,24 @@ function detailHTML(item){
 }
 
 async function updateSchoolStatus(id,status){
-  const school = ITEMS.find(x => x.id === id);
-  const payload = {
-    status,
-    updatedAt:serverTimestamp(),
-    reviewedAt:serverTimestamp()
-  };
-
-  if(status === "approved" || status === "active"){
-    payload.schoolCode = generateSchoolCode(school || {});
-    payload.approvedAt = serverTimestamp();
+  try{
+    show("Updating school status...","");
+    const result = await adminApi.updateSchoolStatus(id,status);
+    if((status === "approved" || status === "active") && result.schoolCode){
+      if(result.emailSent){
+        show(`School approved. Code: ${result.schoolCode}. The primary administrator activation link was emailed successfully.`,"ok");
+      }else if(result.activationUrl){
+        show(`School approved. Code: ${result.schoolCode}. Send this one-time administrator activation link: ${result.activationUrl}`,"warn");
+      }else{
+        show(`School approved. Code: ${result.schoolCode}. Add a valid primary administrator email to issue portal access.`,"warn");
+      }
+      return;
+    }
+    show("School status updated.","ok");
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not update school status.","bad");
   }
-
-  await updateDoc(doc(db,"schools",id),payload);
-  show("School status updated.","ok");
 }
 
 function startRealtime(){
@@ -302,7 +314,12 @@ function startRealtime(){
     snapshot => {
       ITEMS = [];
       snapshot.forEach(d => ITEMS.push({id:d.id,...d.data()}));
-      ITEMS.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      const stamp=value=>{
+        if(value?.seconds) return value.seconds*1000;
+        const parsed=Date.parse(value || "");
+        return Number.isFinite(parsed) ? parsed : 0;
+      };
+      ITEMS.sort((a,b) => stamp(b.createdAt) - stamp(a.createdAt));
       updateStats();
       render();
       show("Admin Schools loaded.","ok");

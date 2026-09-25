@@ -500,18 +500,24 @@ async function runTransaction(env, operation, maxAttempts = 4) {
   throw lastError;
 }
 
-async function authenticatedUser(request, env) {
+async function verifiedIdentity(request, env) {
   const token = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!token) throw Object.assign(new Error("Authentication required."), { status: 401 });
   const issuer = `https://securetoken.google.com/${env.FIREBASE_PROJECT_ID}`;
   const jwks = createRemoteJWKSet(new URL("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"));
   const { payload } = await jwtVerify(token, jwks, { issuer, audience: env.FIREBASE_PROJECT_ID });
   const uid = clean(payload.sub);
-  const profile = await getDocument(env, `users/${uid}`);
+  if (!uid) throw Object.assign(new Error("Invalid authenticated user."), { status: 401 });
+  return { uid, email: normalized(payload.email) };
+}
+
+async function authenticatedUser(request, env) {
+  const identity = await verifiedIdentity(request, env);
+  const profile = await getDocument(env, `users/${identity.uid}`);
   if (!profile || (profile.approved !== true && normalized(profile.status) !== "approved")) {
     throw Object.assign(new Error("Approved account required."), { status: 403 });
   }
-  return { uid, email: clean(payload.email), profile };
+  return { ...identity, profile };
 }
 
 function requireAdmin(user) {
@@ -1714,6 +1720,331 @@ async function reviewCuratorCandidate(env, user, data = {}) {
   });
 }
 
+
+function normalizedRegistrationNumber(value) {
+  return clean(value).toUpperCase().replace(/\s+/g, "");
+}
+
+async function sha256Key(value) {
+  const bytes = new TextEncoder().encode(String(value));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function schoolByCode(env, rawCode) {
+  const code = clean(rawCode).toUpperCase();
+  if (!/^[A-Z0-9-]{3,40}$/.test(code)) {
+    throw Object.assign(new Error("Enter a valid school code."), { status: 400 });
+  }
+  const page = await queryDocumentsByField(env, "schools", "schoolCode", code, 5);
+  const school = page.documents.find(item => ["approved", "active"].includes(normalized(item.status)));
+  if (!school) throw Object.assign(new Error("This school code is not active or could not be verified."), { status: 404 });
+  return school;
+}
+
+function publicSchool(school) {
+  return {
+    id: school.id,
+    schoolName: clean(school.schoolName || school.name),
+    schoolCode: clean(school.schoolCode),
+    schoolType: clean(school.schoolType),
+    city: clean(school.city),
+    state: clean(school.state),
+    country: clean(school.country)
+  };
+}
+
+async function registerSchoolApplication(env, data) {
+  if (clean(data.website)) throw Object.assign(new Error("Registration could not be accepted."), { status: 400 });
+  const schoolName = bounded(data.schoolName, 180, "School name");
+  const schoolType = bounded(data.schoolType, 80, "School type");
+  const address = bounded(data.address, 240, "School address");
+  const state = bounded(data.state, 100, "State or region");
+  const country = bounded(data.country || "Nigeria", 100, "Country");
+  const adminName = bounded(data.adminName, 160, "Administrator name");
+  const adminPosition = bounded(data.adminPosition, 120, "Administrator position");
+  const adminEmail = normalized(data.adminEmail);
+  const adminPhone = bounded(data.adminPhone, 60, "Administrator phone");
+  const interestArea = bounded(data.interestArea, 120, "Interest area");
+  if (!schoolName || !schoolType || !address || !state || !adminName || !adminPosition || !looksLikeEmail(adminEmail) || !adminPhone || !interestArea) {
+    throw Object.assign(new Error("Complete the required school and administrator details."), { status: 400 });
+  }
+  const existingEmail = await queryDocumentsByField(env, "schools", "adminEmail", adminEmail, 10);
+  const duplicate = existingEmail.documents.find(item => !["rejected", "suspended"].includes(normalized(item.status)));
+  if (duplicate) {
+    throw Object.assign(new Error("A school registration already exists for this administrator email."), { status: 409 });
+  }
+  const applicationId = `school-${crypto.randomUUID()}`;
+  const now = new Date().toISOString();
+  const schoolWebsite = optionalHttpsUrl(data.schoolWebsite, "School website");
+  const estimatedStudents = Math.max(0, Math.min(1000000, Number(data.estimatedStudents || 0) || 0));
+  await setDocument(env, `schools/${applicationId}`, {
+    schoolName,
+    schoolType,
+    address,
+    city: bounded(data.city, 100, "City"),
+    state,
+    country,
+    estimatedStudents,
+    schoolWebsite,
+    adminName,
+    adminPosition,
+    adminEmail,
+    adminPhone,
+    email: adminEmail,
+    phone: adminPhone,
+    interestArea,
+    reason: bounded(data.needs, 2000, "School needs"),
+    status: "pending",
+    schoolCode: "",
+    partnershipStatus: "application",
+    registrationSource: "unified-auth-gateway",
+    createdAt: now,
+    updatedAt: now
+  });
+  return { ok: true, applicationId, status: "pending" };
+}
+
+async function onboardSchoolUser(request, env, data) {
+  const identity = await verifiedIdentity(request, env);
+  const existingProfile = await getDocument(env, `users/${identity.uid}`);
+  if (existingProfile) throw Object.assign(new Error("A SpeakOut profile already exists for this account."), { status: 409 });
+
+  const role = normalized(data.role);
+  if (!["student", "teacher", "parent"].includes(role)) {
+    throw Object.assign(new Error("This role cannot use school-linked onboarding."), { status: 400 });
+  }
+  const school = await schoolByCode(env, data.schoolCode);
+  const firstName = bounded(data.firstName, 80, "First name");
+  const lastName = bounded(data.lastName, 80, "Last name");
+  if (!firstName || !lastName || !identity.email) {
+    throw Object.assign(new Error("Complete your name and email before joining the school."), { status: 400 });
+  }
+  const registrationNumber = normalizedRegistrationNumber(data.registrationNumber);
+  if (role === "student" && (!registrationNumber || registrationNumber.length > 80)) {
+    throw Object.assign(new Error("Enter a valid student registration or matric number."), { status: 400 });
+  }
+
+  const now = new Date().toISOString();
+  const studentId = role === "student"
+    ? `STU-${new Date().getUTCFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
+    : "";
+  const lockId = role === "student"
+    ? await sha256Key(`${school.id}:${registrationNumber}`)
+    : "";
+
+  return runTransaction(env, async tx => {
+    if (lockId) {
+      const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+      if (lock && clean(lock.userId) !== identity.uid) {
+        throw Object.assign(new Error("This student registration number is already linked to another account. Contact your school administrator if this is an error."), { status: 409 });
+      }
+    }
+
+    const profile = {
+      uid: identity.uid,
+      firstName,
+      lastName,
+      fullName: `${firstName} ${lastName}`.trim(),
+      email: identity.email,
+      phone: bounded(data.phone, 60, "Phone"),
+      role,
+      schoolId: school.id,
+      schoolCode: clean(school.schoolCode),
+      schoolName: clean(school.schoolName || school.name),
+      location: bounded(data.location, 160, "Location"),
+      reason: bounded(data.reason, 1200, "Reason"),
+      contentType: bounded(data.contentType, 80, "Content type"),
+      registrationNumber,
+      admissionNumber: registrationNumber,
+      department: bounded(data.department, 140, "Department"),
+      classLevel: bounded(data.level, 80, "Level"),
+      level: bounded(data.level, 80, "Level"),
+      studentId,
+      status: "pending_school_approval",
+      approved: false,
+      schoolVerificationStatus: "pending",
+      verificationMethod: role === "student" ? "registration-number-and-school-admin" : "school-admin",
+      accountSource: "school-code-signup",
+      profileCompleted: false,
+      createdAt: now,
+      updatedAt: now
+    };
+    tx.set(`users/${identity.uid}`, profile);
+    if (lockId) {
+      tx.set(`schoolStudentRegistrations/${lockId}`, {
+        userId: identity.uid,
+        schoolId: school.id,
+        schoolCode: clean(school.schoolCode),
+        registrationNumber,
+        status: "pending",
+        createdAt: now,
+        updatedAt: now
+      });
+    }
+    return { ok: true, school: publicSchool(school), status: "pending_school_verification" };
+  });
+}
+
+async function uniqueSchoolCode(env, school) {
+  const letters = clean(school.schoolName || school.name || "SCH").replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 5) || "SCH";
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const suffix = crypto.randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase();
+    const code = `${letters}-${suffix}`;
+    const existing = await queryDocumentsByField(env, "schools", "schoolCode", code, 2);
+    if (!existing.documents.length) return code;
+  }
+  throw Object.assign(new Error("Could not generate a unique school code. Try again."), { status: 503 });
+}
+
+async function sendSchoolAdminInvite(env, school, activationUrl) {
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL || !looksLikeEmail(school.adminEmail)) return false;
+  const subject = `Activate your SpeakOut School Portal — ${clean(school.schoolName || "Partner School")}`;
+  const text = [
+    `Hello ${clean(school.adminName) || "School Administrator"},`,
+    "",
+    `SpeakOut has approved ${clean(school.schoolName || "your institution")}.`,
+    `School code: ${clean(school.schoolCode)}`,
+    "",
+    "Use this private one-time link to activate the primary School Administrator account:",
+    activationUrl,
+    "",
+    "After activation, you can review school-linked students and manage the School Portal."
+  ].join("\n");
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },
+    body: JSON.stringify({ from: env.RESEND_FROM_EMAIL, to: [school.adminEmail], subject, text })
+  });
+  return response.ok;
+}
+
+async function updateSchoolStatus(request, env, user, data) {
+  requireAdmin(user);
+  const schoolId = safeId(data.schoolId, "school identifier");
+  const status = normalized(data.status);
+  if (!["pending", "approved", "active", "rejected", "suspended"].includes(status)) {
+    throw Object.assign(new Error("Invalid school status."), { status: 400 });
+  }
+  const school = await getDocument(env, `schools/${schoolId}`);
+  if (!school) throw Object.assign(new Error("School record not found."), { status: 404 });
+
+  const now = new Date().toISOString();
+  let schoolCode = clean(school.schoolCode);
+  let activationUrl = "";
+  let emailSent = false;
+
+  if (["approved", "active"].includes(status)) {
+    if (!schoolCode) schoolCode = await uniqueSchoolCode(env, school);
+    const inviteEmail = normalized(school.adminEmail || school.email);
+    if (looksLikeEmail(inviteEmail) && !clean(school.adminUid)) {
+      const inviteToken = crypto.randomUUID();
+      const origin = request.headers.get("origin") || "https://speakoutmentalhealth.org";
+      activationUrl = new URL(`/auth.html?schoolInvite=${encodeURIComponent(inviteToken)}`, origin).toString();
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      await setDocument(env, `schoolAdminInvites/${inviteToken}`, {
+        schoolId,
+        schoolCode,
+        schoolName: clean(school.schoolName || school.name),
+        email: inviteEmail,
+        adminName: clean(school.adminName || school.principalName || school.coordinatorName),
+        status: "active",
+        createdBy: user.uid,
+        createdAt: now,
+        expiresAt,
+        usedAt: null
+      });
+      emailSent = await sendSchoolAdminInvite(env, { ...school, adminEmail: inviteEmail, schoolCode }, activationUrl).catch(() => false);
+    }
+  }
+
+  await runTransaction(env, async tx => {
+    const current = await tx.get(`schools/${schoolId}`);
+    if (!current) throw Object.assign(new Error("School record not found."), { status: 404 });
+    tx.set(`schools/${schoolId}`, {
+      ...current,
+      status,
+      schoolCode,
+      approvedAt: ["approved", "active"].includes(status) ? (current.approvedAt || now) : current.approvedAt || null,
+      reviewedAt: now,
+      reviewedBy: user.uid,
+      updatedAt: now
+    });
+  });
+
+  return { ok: true, schoolId, status, schoolCode, activationUrl, emailSent };
+}
+
+async function activateSchoolAdmin(request, env, data) {
+  const identity = await verifiedIdentity(request, env);
+  const inviteToken = safeId(data.inviteToken, "activation token");
+  const invite = await getDocument(env, `schoolAdminInvites/${inviteToken}`);
+  if (!invite || normalized(invite.status) !== "active") {
+    throw Object.assign(new Error("This school administrator activation link is invalid or has already been used."), { status: 404 });
+  }
+  if (invite.expiresAt && new Date(invite.expiresAt).getTime() < Date.now()) {
+    throw Object.assign(new Error("This activation link has expired. Ask SpeakOut to issue a new one."), { status: 410 });
+  }
+  if (normalized(invite.email) !== identity.email) {
+    throw Object.assign(new Error("Use the same official email address that received this school invitation."), { status: 403 });
+  }
+  const school = await getDocument(env, `schools/${safeId(invite.schoolId, "school identifier")}`);
+  if (!school || !["approved", "active"].includes(normalized(school.status))) {
+    throw Object.assign(new Error("This school is not currently approved for portal access."), { status: 403 });
+  }
+  const existing = await getDocument(env, `users/${identity.uid}`);
+  if (existing) throw Object.assign(new Error("A SpeakOut profile already exists for this account."), { status: 409 });
+
+  const now = new Date().toISOString();
+  const fullName = bounded(data.fullName, 160, "Full name");
+  const position = bounded(data.position, 120, "Position");
+  if (!fullName || !position) throw Object.assign(new Error("Complete the administrator name and position."), { status: 400 });
+
+  await runTransaction(env, async tx => {
+    const currentInvite = await tx.get(`schoolAdminInvites/${inviteToken}`);
+    if (!currentInvite || normalized(currentInvite.status) !== "active") {
+      throw Object.assign(new Error("This activation link has already been used."), { status: 409 });
+    }
+    tx.set(`users/${identity.uid}`, {
+      uid: identity.uid,
+      fullName,
+      firstName: fullName.split(/\s+/)[0] || fullName,
+      lastName: fullName.split(/\s+/).slice(1).join(" "),
+      email: identity.email,
+      phone: bounded(data.phone, 60, "Phone"),
+      position,
+      occupation: position,
+      role: "school_admin",
+      status: "approved",
+      approved: true,
+      schoolId: school.id,
+      schoolCode: clean(school.schoolCode),
+      schoolName: clean(school.schoolName || school.name),
+      accountSource: "school-admin-invite",
+      profileCompleted: false,
+      createdAt: now,
+      updatedAt: now,
+      approvedAt: now
+    });
+    tx.set(`schools/${school.id}`, {
+      ...school,
+      adminUid: identity.uid,
+      adminName: fullName,
+      adminEmail: identity.email,
+      adminPhone: bounded(data.phone, 60, "Phone"),
+      activationStatus: "activated",
+      updatedAt: now
+    });
+    tx.set(`schoolAdminInvites/${inviteToken}`, {
+      ...currentInvite,
+      status: "used",
+      usedBy: identity.uid,
+      usedAt: now
+    });
+  });
+  return { ok: true, schoolId: school.id, schoolName: clean(school.schoolName || school.name), schoolCode: clean(school.schoolCode) };
+}
+
 async function route(request, env, path, data) {
   if (path === "/v1/catalog/courses") {
     const page = await listDocuments(env, "courses", 500);
@@ -1736,7 +2067,21 @@ async function route(request, env, path, data) {
       "x-content-type-options": "nosniff"
     });
   }
+  if (path === "/v1/public/schools/resolve-code") {
+    return { school: publicSchool(await schoolByCode(env, data.schoolCode)) };
+  }
+  if (path === "/v1/public/schools/register") {
+    return registerSchoolApplication(env, data);
+  }
+  if (path === "/v1/onboarding/school-user") {
+    return onboardSchoolUser(request, env, data);
+  }
+  if (path === "/v1/onboarding/school-admin") {
+    return activateSchoolAdmin(request, env, data);
+  }
+
   const user = await authenticatedUser(request, env);
+  if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
   if (path === "/v1/admin/on-the-move/send-email") return sendOnTheMoveEmail(env, user, data);
   if (path === "/v1/admin/courses/publish-rich") return publishRichInternalCourse(env, user, data.course);
   const courseSpecificLearningPaths = new Set([
@@ -1871,15 +2216,43 @@ async function route(request, env, path, data) {
         throw Object.assign(new Error("This account role cannot be managed here."), { status: 403 });
       }
       const now = new Date().toISOString();
+      const verificationStatus =
+        status === "approved" ? "verified" :
+        status === "rejected" ? "rejected" :
+        status === "suspended" ? "suspended" : "pending";
       tx.set(`users/${targetUserId}`, {
         ...target,
         status,
         approved: status === "approved",
+        schoolVerificationStatus: verificationStatus,
         updatedAt: now,
         reviewedAt: now,
         reviewedBy: user.uid
       });
-      return { ok: true, userId: targetUserId, status };
+      if (normalized(target.role) === "student") {
+        const registrationNumber = normalizedRegistrationNumber(target.registrationNumber || target.admissionNumber);
+        const schoolId = clean(target.schoolId);
+        if (registrationNumber && schoolId) {
+          const lockId = await sha256Key(`${schoolId}:${registrationNumber}`);
+          const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+          if (status === "rejected") {
+            if (lock) tx.delete(`schoolStudentRegistrations/${lockId}`);
+          } else {
+            tx.set(`schoolStudentRegistrations/${lockId}`, {
+              ...(lock || {}),
+              userId: targetUserId,
+              schoolId,
+              schoolCode: clean(target.schoolCode),
+              registrationNumber,
+              status: verificationStatus,
+              reviewedAt: now,
+              reviewedBy: user.uid,
+              updatedAt: now
+            });
+          }
+        }
+      }
+      return { ok: true, userId: targetUserId, status, schoolVerificationStatus: verificationStatus };
     });
   }
 
