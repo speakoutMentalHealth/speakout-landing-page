@@ -401,6 +401,10 @@ const linksByRole = {
       "certificate-center.html"
     ],
     [
+      "Credentials",
+      "credential-passport.html"
+    ],
+    [
       "Payments",
       "payment-history.html"
     ]
