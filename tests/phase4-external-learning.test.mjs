@@ -6,8 +6,8 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8"
 
 test("external-course catalog launches through the tracked details flow", () => {
   const catalog = read("speakhub.html");
-  const details = read("course-details.html");
-  const myCourses = read("my-courses.html");
+  const details = read("js/learner/course-details.js");
+  const myCourses = read("js/learner/my-courses.js");
 
   assert.match(catalog, /course-details\.html\?id=\$\{id\}/u);
   assert.match(details, /function safeExternalUrl\(value\)/u);
@@ -21,7 +21,7 @@ test("external-course catalog launches through the tracked details flow", () => 
 });
 
 test("proof submission is authenticated, transactional, and never written by the browser", () => {
-  const page = read("external-learning-submit.html");
+  const page = read("external-learning-submit.html") + read("js/learner/external-learning-submit.js");
   const client = read("js/platform-api.js");
   const worker = read("workers/platform-api/src/index.js");
   assert.match(page, /externalLearningApi\.submit\(file/u);
@@ -41,7 +41,7 @@ test("verified external catalogue is trusted server-side for tracking and submis
   const { VERIFIED_EXTERNAL_COURSES, VERIFIED_EXTERNAL_COURSE_BY_ID } =
     await import("../workers/platform-api/src/verified-external-courses.js");
   const worker = read("workers/platform-api/src/index.js");
-  const submission = read("external-learning-submit.html");
+  const submission = read("external-learning-submit.html") + read("js/learner/external-learning-submit.js");
 
   assert.equal(VERIFIED_EXTERNAL_COURSES.length, 39);
   assert.equal(new Set(VERIFIED_EXTERNAL_COURSES.map(course => course.id)).size, 39);
@@ -85,9 +85,9 @@ test("external course starts are authenticated idempotent and server-authoritati
 test("learning dashboard returns external pathway state without evidence metadata", () => {
   const worker = read("workers/platform-api/src/index.js");
   const myCourses = read("my-courses.html");
-  const student = read("student-dashboard.html");
-  const teacher = read("teacher-dashboard.html");
-  const parent = read("parent-dashboard.html");
+  const student = read("js/learner/student-dashboard.js");
+  const teacher = read("js/learner/teacher-dashboard.js");
+  const parent = read("js/learner/parent-dashboard.js");
 
   assert.match(worker, /progressPage, certificatesPage, externalPage, credentialPage\] = await Promise\.all/u);
   assert.match(worker, /externalLearning: externalPage\.documents\.map\(publicExternalLearningRecord\)/u);
