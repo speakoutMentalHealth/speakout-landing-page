@@ -281,6 +281,8 @@ test("public catalogues only render complete published learning content", async 
   const priorityCourseBuilder = await readFile(path.join(root, "firestore-seed/build-priority-courses.mjs"), "utf8");
   assert.match(priorityCourseBuilder, /function publicInternalCourse\(course\)/u);
   assert.match(priorityCourseBuilder, /definitions\.map\(definition => publicInternalCourse\(buildInternal\(definition\)\)\)/u);
+  assert.match(priorityCourseBuilder, /const baseDescription = course\.description \|\| course\.shortDescription \|\| course\.fullDescription \|\| ""/u);
+  assert.doesNotMatch(priorityCourseBuilder, /coverByCategory\[course\.category\] \|\| "images\/learning-covers\/course-digital-skills-v1\.png"/u);
   assert.equal(externalPriorityCourses.length, 24);
   assert.equal(externalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.externalCourseEditorialWords), true);
   const healthCertificateIds = [
