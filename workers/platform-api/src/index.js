@@ -774,7 +774,7 @@ function cloneJson(value) {
 
 function secureQuestion(question, label) {
   const copy = cloneJson(question || {});
-  const options = Array.isArray(copy.options) ? [...copy.options] : [];
+  const options = Array.isArray(copy.options) ? copy.options.map((option, index) => ({ option, correct: index === answerIndex(copy) })) : [];
   const current = answerIndex(copy);
   if (options.length < 2 || !Number.isInteger(current) || current < 0 || current >= options.length) {
     throw Object.assign(new Error(`${label} has an invalid answer key.`), { status: 409 });
@@ -785,10 +785,9 @@ function secureQuestion(question, label) {
     const swap = random[0] % (index + 1);
     [options[index], options[swap]] = [options[swap], options[index]];
   }
-  const correctValue = copy.options[current];
-  const next = options.findIndex(option => JSON.stringify(option) === JSON.stringify(correctValue));
+  const next = options.findIndex(item => item.correct);
   if (next < 0) throw Object.assign(new Error(`${label} could not preserve its answer key.`), { status: 500 });
-  copy.options = options;
+  copy.options = options.map(item => item.option);
   copy.answer = next;
   delete copy.correctAnswer;
   return copy;
@@ -816,7 +815,7 @@ function assessmentMetadata(id, source, fallbackTitle) {
     id,
     title: clean(source?.title) || fallbackTitle,
     passMark: Number(source?.passMark || 70),
-    questionCount: Number(source?.questionCount || 0)
+    questionCount: Array.isArray(source?.questions) ? source.questions.length : Number(source?.questionCount || 0)
   };
 }
 
