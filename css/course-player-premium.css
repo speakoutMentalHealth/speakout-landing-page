@@ -139,6 +139,31 @@ body.course-player-page :focus-visible{outline:3px solid rgba(11,103,194,.30)!im
 .course-module-card.locked{opacity:.62}
 .module-card-art{position:relative;aspect-ratio:4/5;background:#eef4fb;overflow:hidden}
 .module-card-art img{width:100%;height:100%;object-fit:cover;display:block}
+
+.module-card-art-fallback{
+  position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:18px;background:linear-gradient(145deg,#0a274b,#0b67c2);color:#fff;overflow:hidden;
+}
+.module-card-art-fallback::before{
+  content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-45px;top:-35px;
+  background:rgba(255,255,255,.12);
+}
+.module-card-art-fallback::after{
+  content:"";position:absolute;width:92px;height:92px;border-radius:28px;left:-22px;bottom:-26px;
+  background:rgba(255,255,255,.08);transform:rotate(28deg);
+}
+.module-card-symbol{position:relative;z-index:1;font-size:2.8rem;filter:drop-shadow(0 10px 22px rgba(0,0,0,.18))}
+.module-card-number{position:relative;z-index:1;font-size:2.55rem;font-weight:900;letter-spacing:-.06em;color:rgba(255,255,255,.28)}
+.theme-mental{background:linear-gradient(145deg,#132b66,#7d3ab3)}
+.theme-leadership{background:linear-gradient(145deg,#31245d,#b56b21)}
+.theme-digital{background:linear-gradient(145deg,#062c4f,#087c9f)}
+.theme-teacher{background:linear-gradient(145deg,#2d3767,#5278ad)}
+.theme-family{background:linear-gradient(145deg,#6e3454,#c97969)}
+.theme-school{background:linear-gradient(145deg,#173d4f,#2d8a78)}
+.theme-health{background:linear-gradient(145deg,#0a3b4a,#16806f)}
+.theme-public-health{background:linear-gradient(145deg,#193e63,#2d8e83)}
+.theme-research{background:linear-gradient(145deg,#262c59,#6e58a8)}
+.theme-general{background:linear-gradient(145deg,#132b4e,#376b9d)}
 .module-card-state{
   position:absolute;top:10px;right:10px;padding:6px 8px;border-radius:999px;
   background:rgba(7,21,43,.84);color:#fff;font-size:.65rem;font-weight:850;backdrop-filter:blur(8px);
@@ -244,7 +269,19 @@ body.course-player-page .slide-image h2{
   position:relative!important;z-index:2!important;margin:auto 24px 24px!important;padding:10px 13px!important;
   border-radius:10px;background:rgba(7,21,43,.82);color:#fff!important;font-size:1rem!important;text-shadow:none!important;
 }
-.cover-art{position:absolute!important;inset:0!important;z-index:0!important;display:grid!important;place-items:center!important}
+.cover-art{
+  position:absolute!important;inset:0!important;z-index:0!important;display:grid!important;
+  grid-template-columns:auto minmax(0,1fr);align-items:end!important;gap:20px;padding:clamp(24px,5vw,58px)!important;
+  color:#fff;overflow:hidden;
+}
+.cover-art::before{
+  content:"";position:absolute;width:min(42vw,420px);height:min(42vw,420px);border-radius:50%;
+  right:-8%;top:-18%;background:rgba(255,255,255,.10);
+}
+.cover-art-icon{position:relative;z-index:1;font-size:clamp(4rem,10vw,8rem);filter:drop-shadow(0 18px 28px rgba(0,0,0,.22))}
+.cover-art-copy{position:relative;z-index:1;align-self:end;min-width:0}
+.cover-art-copy small{display:block;margin-bottom:5px;color:rgba(255,255,255,.72);font-size:.75rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.cover-art-copy strong{display:block;max-width:520px;color:#fff;font-size:clamp(1.55rem,3vw,2.75rem);line-height:1.05;letter-spacing:-.035em}
 body.course-player-page .slide-body{padding:28px 42px 40px!important}
 body.course-player-page .lesson-snapshot{
   max-width:72ch!important;margin:0 auto 30px!important;padding:0 0 18px!important;border:0!important;border-bottom:1px solid var(--cp-line)!important;
@@ -396,6 +433,9 @@ body.course-player-page .completion-card{max-width:72ch;margin:0 auto}
   .lesson-workspace-header h1{font-size:clamp(1.65rem,8vw,2.25rem)!important}
   .lesson-workspace-meta{gap:7px;font-size:.74rem}
   body.course-player-page .slide-image{min-height:230px!important;margin:15px 10px 0!important;border-radius:14px!important}
+  .cover-art{grid-template-columns:1fr!important;align-content:end!important;gap:10px!important;padding:22px!important}
+  .cover-art-icon{font-size:4.2rem}
+  .cover-art-copy strong{font-size:1.55rem}
   body.course-player-page .slide-body{padding:20px 17px 18px!important}
   body.course-player-page .lesson-content{font-size:1.075rem!important;line-height:1.76!important}
   body.course-player-page .lesson-content>p:first-of-type{font-size:1.075rem!important;line-height:1.76!important}

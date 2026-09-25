@@ -249,14 +249,15 @@ function publicInternalCourse(course) {
 }
 
 function buildExternal(course) {
-  const description = `${course.description} ${externalOrientation}`;
+  const baseDescription = course.description || course.shortDescription || course.fullDescription || "";
+  const description = `${baseDescription} ${externalOrientation}`.trim();
   return {
     ...clone(course),
     slug: course.id,
     shortDescription: course.shortDescription || course.description,
     description,
     fullDescription: description,
-    coverUrl: course.coverUrl || coverByCategory[course.category] || "images/learning-covers/course-digital-skills-v1.png",
+    coverUrl: course.coverUrl || coverByCategory[course.category] || "",
     status: "active",
     editorialReview: "Provider destination and SpeakHub orientation reviewed for publication in September 2026.",
     contentVersion: "2026.09",

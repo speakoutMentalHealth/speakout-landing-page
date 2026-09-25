@@ -242,23 +242,31 @@ test("public catalogues only render complete published learning content", async 
   assert.equal(priorityBooks.every(isPublicBook), true);
   assert.equal(priorityBooks.every(book => book.chapters.length >= 4), true);
   assert.equal(priorityBooks.every(book => book.contentWordCount >= 5000), true);
-  assert.deepEqual(priorityCourses.map(course => course.id).sort(), [
-    "digital-literacy-essentials",
-    "ext-cisco-intro-cybersecurity",
-    "ext-freecodecamp-python-certification",
-    "ext-kaggle-intro-machine-learning",
-    "ext-openlearn-leadership-followership",
-    "hubspot-digital-marketing-certification",
-    "hubspot-sales-management-training",
-    "hubspot-social-media-marketing-certification",
-    "kaggle-intro-to-programming",
+  assert.equal(priorityCourses.length, 30);
+  const priorityIds = new Set(priorityCourses.map(course => course.id));
+  for (const id of [
     "mental-health-awareness-students",
-    "mental-health-club-coordinator-training",
-    "microsoft-introduction-to-ai-concepts",
-    "parent-communication-teen-support",
     "student-leadership-foundations",
+    "digital-literacy-essentials",
     "teacher-mental-health-support-basics",
-  ]);
+    "parent-communication-teen-support",
+    "mental-health-club-coordinator-training",
+    "nextgenu-intro-mental-health-professions",
+    "nextgenu-psychiatric-clerkship-medical-students",
+    "nextgenu-global-mental-health",
+    "nextgenu-mental-health-nursing",
+    "nextgenu-mental-health-literacy",
+    "nextgenu-depression-counseling",
+    "nextgenu-anatomy-physiology",
+    "nextgenu-patient-safety",
+    "nextgenu-emergency-medicine",
+    "nextgenu-epidemiology",
+    "ghlc-mpox-health-professionals",
+    "ghlc-malaria",
+    "ghlc-tuberculosis-basics",
+    "ghlc-emergency-obstetric-newborn-care",
+    "ghlc-nutrition-introduction",
+  ]) assert.equal(priorityIds.has(id), true, id);
   assert.equal(priorityCourses.every(isPublicCourse), true);
   const internalPriorityCourses = priorityCourses.filter(course => course.courseType === "internal");
   const externalPriorityCourses = priorityCourses.filter(course => course.courseType === "external");
@@ -273,8 +281,39 @@ test("public catalogues only render complete published learning content", async 
   const priorityCourseBuilder = await readFile(path.join(root, "firestore-seed/build-priority-courses.mjs"), "utf8");
   assert.match(priorityCourseBuilder, /function publicInternalCourse\(course\)/u);
   assert.match(priorityCourseBuilder, /definitions\.map\(definition => publicInternalCourse\(buildInternal\(definition\)\)\)/u);
-  assert.equal(externalPriorityCourses.length, 9);
+  assert.match(priorityCourseBuilder, /const baseDescription = course\.description \|\| course\.shortDescription \|\| course\.fullDescription \|\| ""/u);
+  assert.doesNotMatch(priorityCourseBuilder, /coverByCategory\[course\.category\] \|\| "images\/learning-covers\/course-digital-skills-v1\.png"/u);
+  assert.equal(externalPriorityCourses.length, 24);
   assert.equal(externalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.externalCourseEditorialWords), true);
+  const healthCertificateIds = [
+    "nextgenu-intro-mental-health-professions",
+    "nextgenu-psychiatric-clerkship-medical-students",
+    "nextgenu-global-mental-health",
+    "nextgenu-mental-health-nursing",
+    "nextgenu-mental-health-literacy",
+    "nextgenu-depression-counseling",
+    "nextgenu-anatomy-physiology",
+    "nextgenu-patient-safety",
+    "nextgenu-emergency-medicine",
+    "nextgenu-epidemiology",
+    "ghlc-mpox-health-professionals",
+    "ghlc-malaria",
+    "ghlc-tuberculosis-basics",
+    "ghlc-emergency-obstetric-newborn-care",
+    "ghlc-nutrition-introduction",
+  ];
+  const healthCertificateCourses = externalPriorityCourses.filter(course => healthCertificateIds.includes(course.id));
+  assert.equal(healthCertificateCourses.length, healthCertificateIds.length);
+  assert.equal(healthCertificateCourses.every(course => course.accessType === "free" && Number(course.price || 0) === 0), true);
+  assert.equal(healthCertificateCourses.every(course => course.certificateEligible === true && course.certificate?.available === true), true);
+  assert.equal(healthCertificateCourses.every(course => /^https:\/\//u.test(course.externalUrl || "")), true);
+  const verifiedCatalogue = await readFile(path.join(root, "phase2-verified-courses.js"), "utf8");
+  for (const id of healthCertificateIds) assert.match(verifiedCatalogue, new RegExp(`id:"${id}"`, "u"), id);
+  const hub = await readFile(path.join(root, "speakhub.html"), "utf8");
+  assert.match(hub, /id="healthCertificateGrid"/u);
+  assert.match(hub, /function isHealthCertificateCourse\(item\)/u);
+  assert.match(hub, /renderHealthCertificates\(\)/u);
+  assert.match(hub, /audiences\.includes\(aud\)/u);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
