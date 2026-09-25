@@ -63,7 +63,7 @@ function courseIsCatalogueReady(course = {}) {
   if (external) {
     const hasDestination = [course.externalUrl, course.courseUrl, course.providerCourseUrl].some(publicWebUrl);
     return Boolean(clean(course.provider) && hasDestination && textWords([
-      course.title, course.shortDescription, course.description, course.outcomes, course.prerequisites, course.tags
+      course.title, course.shortDescription, course.description, course.fullDescription, course.outcomes, course.prerequisites, course.tags
     ]) >= 75);
   }
   if (type === "instructor-led") {
