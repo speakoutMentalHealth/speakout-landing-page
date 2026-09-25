@@ -61,14 +61,35 @@ service cloud.firestore {
       ];
     }
 
+    function hasActiveSchoolDirectory(data) {
+      return data.schoolCode is string &&
+        data.schoolId is string &&
+        exists(/databases/$(database)/documents/schoolDirectory/$(data.schoolCode)) &&
+        get(/databases/$(database)/documents/schoolDirectory/$(data.schoolCode)).data.status == "active" &&
+        get(/databases/$(database)/documents/schoolDirectory/$(data.schoolCode)).data.schoolId == data.schoolId;
+    }
+
+    function validSchoolLinkedApplicant() {
+      return request.resource.data.status == "pending_school_approval" &&
+        request.resource.data.approved == false &&
+        request.resource.data.role in ["student", "teacher", "parent"] &&
+        hasActiveSchoolDirectory(request.resource.data) &&
+        (request.resource.data.role != "student" ||
+          (request.resource.data.studentRegNumber is string &&
+           request.resource.data.studentRegNumber.size() > 0));
+    }
+
     function validNewUser(userId) {
       return request.resource.data.keys().hasAll(["uid", "email", "role", "status", "approved"]) &&
         request.resource.data.uid == userId &&
         request.auth.uid == userId &&
-        request.resource.data.status == "pending" &&
         request.resource.data.approved == false &&
         isPublicRole(request.resource.data.role) &&
-        request.resource.data.email is string;
+        request.resource.data.email is string &&
+        (
+          request.resource.data.status == "pending" ||
+          validSchoolLinkedApplicant()
+        );
     }
 
     function onlyEditableProfileFieldsChanged() {
@@ -96,12 +117,41 @@ service cloud.firestore {
     }
 
     match /schools/{schoolId} {
-      allow create: if isSuperAdmin();
+      allow create: if isSuperAdmin() ||
+        (isSignedIn() &&
+          request.auth.uid == schoolId &&
+          request.resource.data.adminUid == request.auth.uid &&
+          request.resource.data.status == "pending" &&
+          request.resource.data.schoolCode == "" &&
+          request.resource.data.schoolName is string &&
+          request.resource.data.schoolName.size() > 1 &&
+          request.resource.data.adminEmail is string);
       allow read: if isApproved() &&
         (isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId) ||
           ((isTeacher() || isParent() || isStudent()) && userSchoolId() == schoolId));
       allow update: if isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId);
       allow delete: if isSuperAdmin();
+    }
+
+    match /schoolDirectory/{schoolCode} {
+      allow read: if resource.data.status == "active";
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /studentSchoolClaims/{claimId} {
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.schoolId is string &&
+        request.resource.data.schoolCode is string &&
+        request.resource.data.registrationHash is string &&
+        request.resource.data.status == "pending" &&
+        exists(/databases/$(database)/documents/schoolDirectory/$(request.resource.data.schoolCode)) &&
+        get(/databases/$(database)/documents/schoolDirectory/$(request.resource.data.schoolCode)).data.status == "active" &&
+        get(/databases/$(database)/documents/schoolDirectory/$(request.resource.data.schoolCode)).data.schoolId == request.resource.data.schoolId;
+      allow read: if isSuperAdmin() ||
+        (isApproved() && request.auth.uid == resource.data.uid) ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+      allow update, delete: if isSuperAdmin();
     }
 
     match /parentStudentLinks/{linkId} {
