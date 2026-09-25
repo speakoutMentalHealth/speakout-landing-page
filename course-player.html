@@ -394,7 +394,7 @@ async function scoreAssessment(assessment,type,moduleIndex){
  if(passed&&type==="final"){await showCompletion()}
 }
 
-function profileName(){return (currentProfile?.fullName||`${currentProfile?.firstName||""} ${currentProfile?.lastName||""}`.trim()||currentUser?.displayName||"Learner").trim()}
+function profileName(){return (currentProfile?.certificateName||`${currentProfile?.firstName||""} ${currentProfile?.lastName||""}`.trim()||currentProfile?.fullName||currentProfile?.displayName||currentProfile?.name||currentUser?.displayName||"Learner").trim()}
 async function ensureCertificate(){
  if(!certificateId)throw new Error("The secure service has not issued a certificate for this course.");
  return certificateId;
