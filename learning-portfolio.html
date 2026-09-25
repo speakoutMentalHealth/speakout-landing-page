@@ -88,6 +88,27 @@ body{background:var(--portfolio-bg)!important}
 .cv-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .cv-actions .btn{background:#fff!important;color:#0a4f91!important}.cv-actions .btn.gold{background:#ffe7b3!important;color:#6b4300!important}
 .credential-note{font-size:.84rem!important;color:var(--portfolio-muted)!important;margin-top:10px}
+.portfolio-nav-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.portfolio-menu-toggle{display:none!important;flex:0 0 auto}
+.portfolio-nav-tray{min-width:0}
+@media(max-width:1100px){
+  .nav .nav-inner{display:block!important;padding:10px 0!important}
+  .portfolio-nav-head{min-height:52px}
+  .portfolio-menu-toggle{display:inline-flex!important;width:auto!important}
+  .portfolio-nav-tray{display:none;width:100%;padding:8px 0 4px}
+  .nav.portfolio-menu-open .portfolio-nav-tray{display:block}
+  .portfolio-nav-tray .links{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;overflow:visible!important;gap:8px!important;padding:0!important;
+    position:static!important;background:transparent!important;box-shadow:none!important;border:0!important
+  }
+  .portfolio-nav-tray .links a,.portfolio-nav-tray .links button{
+    width:100%!important;justify-content:flex-start!important;white-space:normal!important
+  }
+}
+@media(max-width:560px){
+  .portfolio-nav-tray .links{grid-template-columns:1fr!important}
+}
 .print-header{display:none}
 @media(max-width:980px){
   .portfolio-hero-grid,.portfolio-grid{grid-template-columns:1fr}
@@ -117,13 +138,18 @@ body{background:var(--portfolio-bg)!important}
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="nav">
+<header class="nav" id="portfolioNav">
   <div class="container nav-inner">
-    <a class="brand" href="speakhub.html">
-      <img src="logo.png" alt="SpeakOut">
-      <div><h2>SpeakOut</h2><p>Learning Portfolio</p></div>
-    </a>
-    <nav class="links" id="roleNav"></nav>
+    <div class="portfolio-nav-head">
+      <a class="brand" href="speakhub.html">
+        <img src="logo.png" alt="SpeakOut">
+        <div><h2>SpeakOut</h2><p>Learning Portfolio</p></div>
+      </a>
+      <button class="btn soft portfolio-menu-toggle" id="portfolioMenuToggle" type="button" aria-expanded="false" aria-controls="portfolioNavTray">Menu</button>
+    </div>
+    <div class="portfolio-nav-tray" id="portfolioNavTray">
+      <nav class="links" id="roleNav"></nav>
+    </div>
   </div>
 </header>
 
@@ -168,7 +194,7 @@ body{background:var(--portfolio-bg)!important}
         <section class="portfolio-panel">
           <div class="panel-head">
             <div><span class="label">Credentialed Learning</span><h2>Certificates &amp; verified achievements</h2><p>Credentials issued by SpeakHub and external learning records verified through SpeakHub.</p></div>
-            <a class="btn soft no-print" href="certificate-center.html">Certificate Centre</a>
+            <div class="item-actions no-print"><a class="btn soft" href="certificate-center.html">Certificate Centre</a><a class="btn soft" href="credential-passport.html">Credential Passport</a></div>
           </div>
           <div class="item-list" id="credentialList"></div>
           <p class="credential-note">For external learning, the original provider remains the issuer of its own credential. A SpeakHub verification record confirms only what SpeakHub reviewed.</p>
@@ -257,11 +283,11 @@ function showAction(message,type=""){
 }
 
 function credentialCard(item){
-  const external=normalize(item.type)==="external-completion"||Boolean(item.externalProvider);
+  const external=normalize(item.type)==="external-completion"||normalize(item.type)==="external-credential-verification"||Boolean(item.externalProvider)||Boolean(item._manualExternal);
   const title=item.courseTitle||item.awardTitle||item.programmeTitle||item.title||"Learning credential";
-  const issuer=external?(item.externalProvider||item.provider||"External Provider"):(item.issuer||"SpeakOut / SpeakHub");
+  const issuer=external?(item.externalProvider||item.provider||item.issuer||"External Provider"):(item.issuer||"SpeakOut / SpeakHub");
   const date=item.issueDate||item.issuedAt||item.completionDate||"";
-  const id=item.id||item.certificateId||item.certificateNumber||"";
+  const id=item.certificateId||item.linkedCertificateId||item.id||item.certificateNumber||"";
   return `<article class="learning-item">
     <div class="learning-top">
       <div><h3>${safe(title)}</h3><p>${external?"External learning credential recorded through SpeakHub.":"SpeakHub-issued or managed learning credential."}</p></div>
@@ -301,6 +327,29 @@ function learningCard(item){
   </article>`;
 }
 
+function credentialKey(item={}){
+  const issuer=normalize(item.externalProvider||item.provider||item.issuer);
+  const title=normalize(item.courseTitle||item.awardTitle||item.title);
+  const number=normalize(item.credentialNumber||item.certificateNumber);
+  const date=String(item.issueDate||item.completionDate||"").slice(0,10);
+  return number&&issuer?`number|${issuer}|${number}`:issuer&&title&&date?`title|${issuer}|${title}|${date}`:"";
+}
+
+function unifiedCredentialRecords(certificates=[],manual=[]){
+  const canonical=certificates.filter(certificateActive);
+  const canonicalIds=new Set(canonical.flatMap(item=>[item.id,item.certificateId].filter(Boolean)));
+  const sourceCredentialIds=new Set(canonical.map(item=>item.sourceCredentialId).filter(Boolean));
+  const keys=new Set(canonical.map(credentialKey).filter(Boolean));
+  const legacyVerified=manual.filter(item=>externalVerified(item)).filter(item=>{
+    if(sourceCredentialIds.has(item.id))return false;
+    if(item.certificateId&&canonicalIds.has(item.certificateId))return false;
+    if(item.linkedCertificateId&&canonicalIds.has(item.linkedCertificateId))return false;
+    const key=credentialKey(item);
+    return !key||!keys.has(key);
+  }).map(item=>({...item,_manualExternal:true,type:"external-credential-verification"}));
+  return [...canonical,...legacyVerified];
+}
+
 function providerRows(items){
   const counts=new Map();
   items.forEach(name=>{if(name)counts.set(name,(counts.get(name)||0)+1)});
@@ -316,6 +365,7 @@ function completedCourseIds(progress,external){
 function cvText(name,profile,completedCourses,credentials,providers,focus){
   const role=pretty(profile.role||"learner");
   const courseNames=completedCourses.map(item=>item.title).filter(Boolean).slice(0,8);
+  const credentialNames=credentials.map(item=>item.courseTitle||item.awardTitle||item.title).filter(Boolean).filter((title,index,array)=>array.indexOf(title)===index).slice(0,8);
   const lines=[
     `${name} — SpeakHub Learning Portfolio`,
     `Role: ${role}`,
@@ -327,6 +377,8 @@ function cvText(name,profile,completedCourses,credentials,providers,focus){
     focus.length?`Learning focus areas: ${focus.slice(0,8).map(pretty).join(", ")}`:"",
     courseNames.length?"":"No completed learning is recorded yet.",
     ...courseNames.map(title=>`• ${title}`),
+    credentialNames.length?"Verified credentials:":"",
+    ...credentialNames.map(title=>`• ${title}`),
     "",
     "External provider credentials remain issued by their original providers. SpeakHub records only reviewed learning evidence within its own portfolio."
   ].filter((line,index,array)=>line!==""||array[index-1]!=="");
@@ -357,7 +409,8 @@ async function loadPortfolio(user,profile){
   const external=(dashboard.externalLearning||[]).map(record=>({
     kind:"external",record,course:courseById.get(record.courseId)||{id:record.courseId,title:record.courseTitle||"External Course",provider:record.provider,category:record.courseCategory}
   }));
-  const credentials=(dashboard.certificates||[]).filter(certificateActive);
+  const manualCredentials=dashboard.externalCredentials||[];
+  const credentials=unifiedCredentialRecords(dashboard.certificates||[],manualCredentials);
 
   const allLearning=[...internal,...external];
   const completedIds=completedCourseIds(dashboard.progress||[],dashboard.externalLearning||[]);
@@ -368,7 +421,7 @@ async function loadPortfolio(user,profile){
   ]).filter(Boolean).map(normalize))].slice(0,16);
   const providerNames=[
     ...external.map(item=>item.course.provider||item.record.provider).filter(Boolean),
-    ...credentials.map(item=>item.externalProvider||item.provider).filter(Boolean)
+    ...credentials.map(item=>item.externalProvider||item.provider||item.issuer).filter(Boolean)
   ];
   const providers=providerRows(providerNames);
 
@@ -406,6 +459,21 @@ async function loadPortfolio(user,profile){
     ?"Portfolio ready. Only your signed-in account can view this page."
     :"Portfolio ready. Some course metadata could not be enriched, but your authoritative learning records are shown.";
 }
+
+const portfolioNav=$("portfolioNav");
+const portfolioMenuToggle=$("portfolioMenuToggle");
+portfolioMenuToggle?.addEventListener("click",()=>{
+  const open=portfolioNav.classList.toggle("portfolio-menu-open");
+  portfolioMenuToggle.setAttribute("aria-expanded",String(open));
+  portfolioMenuToggle.textContent=open?"Close Menu":"Menu";
+});
+$("roleNav")?.addEventListener("click",event=>{
+  if(event.target.closest("a,button")){
+    portfolioNav.classList.remove("portfolio-menu-open");
+    portfolioMenuToggle?.setAttribute("aria-expanded","false");
+    if(portfolioMenuToggle)portfolioMenuToggle.textContent="Menu";
+  }
+});
 
 $("copySummary").addEventListener("click",async()=>{
   try{await navigator.clipboard.writeText(portfolioSummary);showAction("CV summary copied.","ok")}
