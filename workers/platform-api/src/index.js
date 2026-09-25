@@ -522,8 +522,7 @@ async function sendOnTheMoveEmail(env, user, data) {
   }
   const subject = clean(data.subject);
   const body = clean(data.body);
-  if (!subject || subject.length > 200 || /[\r
-]/.test(subject) || !body || body.length > 10000) {
+  if (!subject || subject.length > 200 || /[\\r\\n]/.test(subject) || !body || body.length > 10000) {
     throw Object.assign(new Error("Subject or message length is invalid."), { status: 400 });
   }
   const path = `${target.name}/${id}`;
