@@ -134,7 +134,9 @@ service cloud.firestore {
     }
 
     match /schoolDirectory/{schoolCode} {
-      allow read: if resource.data.status == "active";
+      // Intentionally public: this collection contains only minimal partner-school
+      // directory fields used to validate school codes on the sign-up page.
+      allow read: if true;
       allow create, update, delete: if isSuperAdmin();
     }
 
