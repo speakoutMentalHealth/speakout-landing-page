@@ -46,14 +46,14 @@ const publicWebUrl = value => {
     return false;
   }
 };
-const textWords = value => {
-  const text = Array.isArray(value)
-    ? value.map(textWords).join(" ")
-    : value && typeof value === "object"
-      ? Object.values(value).map(textWords).join(" ")
-      : typeof value === "string" ? value.replace(/<[^>]*>/gu, " ") : "";
-  return text.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)?.length || 0;
+const countableText = value => {
+  if (typeof value === "string") return value.replace(/<[^>]*>/gu, " ");
+  if (Array.isArray(value)) return value.map(countableText).join(" ");
+  if (value && typeof value === "object") return Object.values(value).map(countableText).join(" ");
+  return "";
 };
+const textWords = value =>
+  countableText(value).match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)?.length || 0;
 
 function courseIsCatalogueReady(course = {}) {
   if (!publicCourseStatus(course) || !clean(course.title) || !clean(course.category)) return false;
