@@ -517,6 +517,10 @@ const linksByRole = {
       "admin-content-review.html"
     ],
     [
+      "Courses",
+      "admin-courses.html"
+    ],
+    [
       "Payments",
       "admin-payments.html"
     ]
@@ -539,6 +543,10 @@ const linksByRole = {
     [
       "Content",
       "admin-content-review.html"
+    ],
+    [
+      "Courses",
+      "admin-courses.html"
     ],
     [
       "Payments",
