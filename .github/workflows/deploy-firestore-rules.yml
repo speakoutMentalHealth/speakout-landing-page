@@ -1,0 +1,45 @@
+name: Deploy Firestore Rules
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "firebase/firestore.rules"
+      - ".github/workflows/deploy-firestore-rules.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firestore-rules-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Production Firestore Rules
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Configure Firebase service account
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
+            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL."
+            exit 1
+          fi
+          CREDENTIAL_FILE="$RUNNER_TEMP/firebase-service-account.json"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$CREDENTIAL_FILE"
+          chmod 600 "$CREDENTIAL_FILE"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$CREDENTIAL_FILE" >> "$GITHUB_ENV"
+
+      - name: Deploy Firestore rules
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speaakout-portal --non-interactive
