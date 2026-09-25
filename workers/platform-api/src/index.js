@@ -1745,6 +1745,29 @@ async function route(request, env, path, data) {
     });
   }
 
+  if (path === "/v1/admin/certificates/repair-names") {
+    requireRole(user, ["admin", "super_admin"]);
+    const certificatesPage = await listDocuments(env, "certificates");
+    let repaired = 0, skipped = 0;
+    for (const certificate of certificatesPage.documents) {
+      const ownerId = clean(certificate.userId || certificate.recipientId || certificate.learnerId);
+      if (!ownerId) { skipped++; continue; }
+      const profile = await getDocument(env, `users/${safeId(ownerId, "learner identifier")}`);
+      const name = profile ? humanName(profile) : "Learner";
+      if (!profile || name === "Learner") { skipped++; continue; }
+      if (clean(certificate.recipientName) !== name) {
+        await setDocument(env, `certificates/${certificate.id}`, { ...certificate, recipientName: name, recipientId: ownerId, nameRepairedAt: new Date().toISOString() });
+        const code = clean(certificate.verificationCode);
+        if (code) {
+          const projection = await getDocument(env, `publicCertificateVerifications/${code}`);
+          if (projection) await setDocument(env, `publicCertificateVerifications/${code}`, { ...projection, recipientName: name, nameRepairedAt: new Date().toISOString() });
+        }
+        repaired++;
+      }
+    }
+    return { ok: true, scanned: certificatesPage.documents.length, repaired, skipped, truncated: certificatesPage.truncated };
+  }
+
   if (path === "/v1/admin/assessments/migrate") {
     requireAdmin(user);
     if (data.dryRun !== true) throw Object.assign(new Error("Only dry-run migration inventory is enabled."), { status: 409 });

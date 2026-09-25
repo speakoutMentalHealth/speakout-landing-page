@@ -94,7 +94,7 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 <div class="container">
 <span class="kicker">Admin</span>
 <h1>Admin Certificates</h1>
-<p>Review certificates, verify records, approve or revoke certificates and export certificate data.</p>
+<p>Review certificates, verify records, approve or revoke certificates and export certificate data.</p><button class="btn primary" id="repairNamesBtn" type="button">Repair Certificate Names</button>
 </div>
 </section>
 <section>
@@ -180,7 +180,7 @@ import {
   serverTimestamp,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { requireRoles } from "./launch-role-guard.js";
+import { requireRoles } from "./launch-role-guard.js";\nimport { adminApi } from "./js/platform-api.js";
 
 let ITEMS = [];
 let unsubscribeCertificates = null;
@@ -382,7 +382,7 @@ statusFilter.addEventListener("change",render);
 typeFilter.addEventListener("change",render);
 refreshBtn.addEventListener("click",startRealtime);
 exportBtn.addEventListener("click",exportCSV);
-closeModal.addEventListener("click",()=>certificateModal.style.display="none");
+document.getElementById("repairNamesBtn").addEventListener("click",async()=>{const btn=document.getElementById("repairNamesBtn");btn.disabled=true;show("Repairing certificate names from learner profiles...");try{const result=await adminApi.repairCertificateNames();show(`Certificate repair complete: ${result.repaired} corrected from ${result.scanned} records.${result.truncated?" Run again to continue the remaining records.":""}`,"ok")}catch(error){show(error.message||"Certificate repair failed.","bad")}finally{btn.disabled=false}});\ncloseModal.addEventListener("click",()=>certificateModal.style.display="none");
 logoutLink.addEventListener("click",async e => {
   e.preventDefault();
   await signOut(auth);
