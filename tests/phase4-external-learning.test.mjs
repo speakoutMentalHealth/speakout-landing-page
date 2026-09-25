@@ -89,7 +89,7 @@ test("learning dashboard returns external pathway state without evidence metadat
   const teacher = read("teacher-dashboard.html");
   const parent = read("parent-dashboard.html");
 
-  assert.match(worker, /progressPage, certificatesPage, externalPage\] = await Promise\.all/u);
+  assert.match(worker, /progressPage, certificatesPage, externalPage, credentialPage\] = await Promise\.all/u);
   assert.match(worker, /externalLearning: externalPage\.documents\.map\(publicExternalLearningRecord\)/u);
   const sanitizer = worker.match(/function publicExternalLearningRecord[\s\S]*?\n\}/u)?.[0] || "";
   assert.match(sanitizer, /courseId/u);
