@@ -806,20 +806,16 @@ function humanName(source={}){
   return candidates.find(value=>value && !looksLikeEmail(value)) || "";
 }
 
-async function resolveRecipient(record){
-  const storedName = humanName(record);
-  if(storedName) return storedName;
-  const ownerId = record.userId || record.recipientId || record.learnerId;
+async function resolveRecipient(record){\n  const ownerId = record.userId || record.recipientId || record.learnerId;
   if(ownerId){
     try{
       const profile = await getDoc(doc(db,"users",ownerId));
-      if(profile.exists()) return humanName(profile.data()) || "Learner";
+      if(profile.exists()){const liveName=humanName(profile.data());if(liveName)return liveName;}
     }catch(error){
       console.warn("Could not resolve the certificate owner profile.",error);
     }
   }
-  return "Learner";
-}
+  const storedName = humanName(record);\n  return storedName || "Learner";\n}
 
 
 function formatLabel(value){
