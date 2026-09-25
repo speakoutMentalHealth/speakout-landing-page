@@ -61,6 +61,18 @@ test("course player has mobile module navigation and visual lesson scaffolding",
   assert.match(player, /prefers-reduced-motion:reduce/u);
 });
 
+test("course player supports accessible lazy-loaded lesson illustrations", () => {
+  const player = read("course-player.html");
+  const builder = read("firestore-seed/build-priority-courses.mjs");
+  assert.match(player, /Array\.isArray\(l\.visuals\)/u);
+  assert.match(player, /class="lesson-visual-card"/u);
+  assert.match(player, /loading="lazy" decoding="async"/u);
+  assert.match(player, /alt="\$\{esc\(v\.alt/u);
+  assert.match(builder, /const visualManifest = \{/u);
+  assert.match(builder, /mental-health-awareness\/module-1-understanding\.svg/u);
+  assert.match(builder, /visuals: \[\{/u);
+});
+
 test("course player keeps lesson text and controls inside narrow phone viewports", () => {
   const player = read("course-player.html");
   assert.match(player, /\.layout\{[^}]*grid-template-columns:360px minmax\(0,1fr\)/u);
