@@ -189,6 +189,7 @@ async function handleRegister(event){
   }
 
   let credential=null;
+  let profileCreated=false;
   sessionStorage.setItem("speakoutOnboarding","true");
   try{
     showRegister(schoolLinked?"Creating your account and linking your school...":"Creating your account...");
@@ -203,12 +204,14 @@ async function handleRegister(event){
         reason,
         contentType
       });
+      profileCreated=true;
     }else{
       await createIndividualProfile(credential,{
         firstName,lastName,fullName,email,phone,role,
         schoolCode:"",schoolName:"",schoolId:"",
         location:locationValue,reason,...(contentType?{contentType}:{})
       });
+      profileCreated=true;
     }
     sessionStorage.setItem("speakoutManualLogout","true");
     await signOut(auth);
@@ -222,7 +225,7 @@ async function handleRegister(event){
     clearResolvedSchool();
   }catch(error){
     console.error("Registration error:",error);
-    if(credential?.user){
+    if(credential?.user&&!profileCreated){
       try{await deleteUser(credential.user);}catch{}
     }
     const message=error?.code==="auth/email-already-in-use"
