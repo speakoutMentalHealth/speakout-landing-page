@@ -37,7 +37,7 @@ test("teacher roster is functional and uses the secure role API", () => {
 
 test("parent and school dashboards do not query protected learner records directly", () => {
   const child = read("child-progress.html");
-  const parent = read("parent-dashboard.html");
+  const parent = read("parent-dashboard.html") + read("js/learner/parent-dashboard.js");
   const school = read("school-dashboard.html");
 
   assert.match(child, /roleApi\.overview\(targetStudentId\)/u);
