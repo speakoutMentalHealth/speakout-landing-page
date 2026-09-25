@@ -1,4 +1,4 @@
-export const PHASE2_VERIFIED_COURSES = [
+const PHASE2_VERIFIED_COURSE_SOURCE = [
   {
     id:"harvard-cs50-scratch",
     title:"CS50's Introduction to Programming with Scratch",
@@ -1175,3 +1175,16 @@ export const PHASE2_VERIFIED_COURSES = [
   }
 
 ];
+
+const VERIFIED_COURSE_EDITORIAL_NOTE =
+  "SpeakHub lists this verified external pathway for learners seeking structured, portfolio-building education from the named provider. Complete the training on the provider's official platform, follow its assessment and credential requirements, and retain the provider-issued evidence of completion. Availability, curriculum, eligibility and credential rules remain controlled by the provider and can change.";
+
+export const PHASE2_VERIFIED_COURSES = PHASE2_VERIFIED_COURSE_SOURCE.map(course => ({
+  ...course,
+  description: course.description || [
+    course.fullDescription,
+    course.credentialNote,
+    course.targetAudience ? `Intended audience: ${course.targetAudience}.` : "",
+    VERIFIED_COURSE_EDITORIAL_NOTE
+  ].filter(Boolean).join(" ")
+}));
