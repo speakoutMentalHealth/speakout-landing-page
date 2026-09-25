@@ -1901,7 +1901,9 @@ async function route(request, env, path, data) {
           if (!existing) {
             const verificationCode = await deterministicVerificationCode(`course:${id}`);
             const recipientName = humanName(user.profile);
-            if (recipientName === "Learner") throw Object.assign(new Error("Complete your first and last name in your profile before a certificate can be issued."), { status: 409 });
+            if (recipientName === "Learner" || isPlaceholderLearnerName(recipientName)) {
+              throw Object.assign(new Error("Complete your real first and last name in your profile before a certificate can be issued."), { status: 409 });
+            }
             const record = { id, userId: user.uid, recipientId: user.uid, recipientName, recipientEmail: user.email || clean(user.profile.email), recipientEmailNormalized: normalized(user.email || user.profile.email), courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
             tx.set(`certificates/${id}`, record);
             tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: record.recipientName, awardTitle: record.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: record.issueDate, status: record.status, certificateNumber: id });
