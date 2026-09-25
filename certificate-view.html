@@ -1085,7 +1085,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
             <div class="cert-divider"></div>
 
-            <span class="status-pill ${escapeHtml(status)}">
+            <span class="status-pill ${escapeHtml(["verified","active","issued","approved"].includes(status)?"verified":status)}">
               ${escapeHtml(statusText)}
             </span>
 
