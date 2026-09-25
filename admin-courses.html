@@ -58,6 +58,7 @@
 import { auth, db } from "./firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
 import { courseReadiness, hasPublicStatus } from "./js/content-visibility.js";
+import { adminApi } from "./js/platform-api.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection,writeBatch, doc, getDoc, setDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -102,50 +103,29 @@ async function installVerifiedCatalogue(){
   show(statusBox,err.message||"Could not install verified catalogue.","bad");
  }finally{button.disabled=false}
 }
-function rebalanceAssessmentQuestions(questions, seed=0){
- const target=[0,3,2,1];
- return (questions||[]).map((source,index)=>{
-  const q=JSON.parse(JSON.stringify(source)), options=Array.isArray(q.options)?[...q.options]:[];
-  const current=Number.isInteger(q.answer)?q.answer:(Number.isInteger(q.correctAnswer)?q.correctAnswer:null);
-  if(current===null||!options.length||current<0||current>=options.length)return q;
-  const desired=target[(index+seed)%target.length]%options.length;
-  if(desired!==current)[options[current],options[desired]]=[options[desired],options[current]];
-  q.options=options;
-  if(Number.isInteger(q.answer))q.answer=desired;
-  if(Number.isInteger(q.correctAnswer))q.correctAnswer=desired;
-  return q;
- });
-}
-function prepareAssessmentCourse(course){
- const copy=JSON.parse(JSON.stringify(course));
- (copy.modules||[]).forEach((module,mi)=>{if(module.quiz?.questions)module.quiz.questions=rebalanceAssessmentQuestions(module.quiz.questions,mi)});
- if(copy.finalAssessment?.questions)copy.finalAssessment.questions=rebalanceAssessmentQuestions(copy.finalAssessment.questions);
- return copy;
-}
 async function installRichInternalCourses(){
  if(!admin)return;
  const button=document.getElementById("installRichBtn");
  button.disabled=true;
- show(statusBox,"Loading and validating rich internal courses...");
+ show(statusBox,"Loading, validating and securely publishing rich internal courses...");
  try{
   const response=await fetch("./firestore-seed/priority-courses.json",{cache:"no-store"});
   if(!response.ok)throw new Error("Could not load the rich course pack.");
   const pack=await response.json();
-  const internal=pack.filter(course=>normalize(course.courseType)==="internal").map(prepareAssessmentCourse);
+  const internal=pack.filter(course=>normalize(course.courseType)==="internal");
   const invalid=internal.map(course=>({course,check:courseReadiness(course)})).filter(x=>!x.check.ready);
   if(invalid.length)throw new Error("Publication blocked: "+invalid.map(x=>x.course.title+" — "+x.check.reasons.join(", ")).join(" | "));
-  let installed=0;
-  for(let i=0;i<internal.length;i+=400){
-   const batch=writeBatch(db);
-   internal.slice(i,i+400).forEach(course=>{
-    batch.set(doc(db,"courses",course.id),{...course,releaseState:"quality-checked",releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
-    installed++;
-   });
-   await batch.commit();
+  let installed=0,rotated=0;
+  for(const course of internal){
+   const result=await adminApi.publishRichCourse(course);
+   installed++;
+   rotated+=Number(result.assessmentsRotated||0);
   }
-  show(statusBox,installed+" rich internal courses validated and published successfully.","ok");
- }catch(err){console.error(err);show(statusBox,err.message||"Could not publish rich internal courses.","bad")}
- finally{button.disabled=false}
+  show(statusBox,installed+" rich internal courses published securely. "+rotated+" protected assessments rotated.","ok");
+ }catch(err){
+  console.error(err);
+  show(statusBox,err.message||"Could not securely publish rich internal courses.","bad");
+ }finally{button.disabled=false}
 }
 function startRealtime(){if(unsubscribeCourses)unsubscribeCourses();if(unsubscribeLessons)unsubscribeLessons();unsubscribeCourses=onSnapshot(collection(db,"courses"),snap=>{COURSES=[];snap.forEach(d=>COURSES.push({id:d.id,...d.data()}));COURSES.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));updateStats();renderCourses()});unsubscribeLessons=onSnapshot(collection(db,"courseLessons"),snap=>{LESSONS=[];snap.forEach(d=>LESSONS.push({id:d.id,...d.data()}));updateStats();renderCourses()})}
 courseForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const id=slug(val("courseId")||val("title"));const isExternal=val("courseType")==="external";const credentialEligible=val("certificateEligible")==="true";const item={title:val("title"),slug:id,instructor:val("instructor")||"SpeakOut Mental Health Outreach",courseType:val("courseType")||"internal",provider:val("provider")||(isExternal?"External Provider":"SpeakHub Academy"),providerLogo:val("providerLogo"),category:val("category"),audience:val("audience"),accessType:val("accessType"),price:Number(val("price")||0),currency:val("currency")||"₦",duration:val("duration"),level:val("level"),difficulty:val("level"),certificateEligible:credentialEligible,featured:val("featured")==="true",status:val("status"),minimumCompletion:Number(val("minimumCompletion")||100),minimumScore:Number(val("minimumScore")||70),coverUrl:val("coverUrl"),videoIntroUrl:val("videoIntroUrl"),externalUrl:isExternal?val("externalUrl"):"",enrollmentUrl:isExternal?val("externalUrl"):"",completionMethod:isExternal?(val("completionMethod")||"certificate-upload"):"internal",certificateIssuer:val("certificateIssuer")||val("provider"),certificateType:val("certificateType"),certificate:{available:credentialEligible,issuer:val("certificateIssuer")||val("provider"),type:val("certificateType"),uploadRequired:val("certificateUploadRequired")==="true",verificationRequired:isExternal},shortDescription:val("shortDescription"),description:val("shortDescription"),fullDescription:val("fullDescription"),outcomes:listFromLines(val("outcomes")),prerequisites:listFromLines(val("prerequisites")),tags:listFromComma(val("tags")),updatedAt:serverTimestamp()};if(!COURSES.find(x=>x.id===id))item.createdAt=serverTimestamp();await setDoc(doc(db,"courses",id),item,{merge:true});show(statusBox,"Course saved successfully.","ok");lessonCourseId.value=id;quizCourseId.value=id};
