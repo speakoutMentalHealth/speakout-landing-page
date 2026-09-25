@@ -178,7 +178,7 @@ function recordStatus(record){
   if(["approved","verified"].includes(s))return"approved";
   if(["rejected","revoked"].includes(s))return"rejected";
   if(["pending","pending_review","submitted"].includes(s))return"pending";
-  if(s==="started")return"started";
+  if(["started","not_submitted"].includes(s))return"started";
   return"none";
 }
 function formatDate(v){
