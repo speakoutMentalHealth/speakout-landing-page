@@ -1836,7 +1836,9 @@ async function route(request, env, path, data) {
           evidenceFormat: uploaded.format, evidenceResourceType: uploaded.resourceType, evidenceStorage: uploaded.storage,
           status: "pending_review", verificationStatus: "pending", submittedBy: user.uid, submittedAt: now,
           createdAt: existing?.createdAt || now, updatedAt: now,
-          resubmissionCount: existing ? Number(existing.resubmissionCount || 0) + 1 : 0,
+          resubmissionCount: ["rejected", "resubmission_required"].includes(normalized(existing?.status))
+            ? Number(existing?.resubmissionCount || 0) + 1
+            : Number(existing?.resubmissionCount || 0),
           reviewerFeedback: "", reviewedBy: "", reviewedAt: null
         };
         tx.set(`externalLearningRecords/${recordId}`, record);
@@ -2135,12 +2137,22 @@ async function route(request, env, path, data) {
       if (!["pending_review", "pending", "submitted"].includes(normalized(record.status))) throw Object.assign(new Error("This submission is not awaiting review."), { status: 409 });
       if (decision === "approved") evidenceDescriptor(record);
       const now = new Date().toISOString();
-      tx.set(`externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
+      const recordCourseId = safeId(record.courseId, "course identifier");
+      const recordUserId = safeId(record.userId, "user identifier");
+      const externalCertificateId = decision === "approved" ? `external_${recordUserId}_${recordCourseId}` : clean(record.certificateId);
+      tx.set(`externalLearningRecords/${recordId}`, {
+        ...record,
+        status: decision,
+        verificationStatus: decision === "approved" ? "verified" : decision,
+        certificateId: externalCertificateId,
+        reviewerFeedback: clean(data.note),
+        reviewedBy: user.uid,
+        reviewedAt: now,
+        updatedAt: now
+      });
       let certificate = null;
       if (decision === "approved") {
-        const recordCourseId = safeId(record.courseId, "course identifier");
-        const recordUserId = safeId(record.userId, "user identifier");
-        const id = `external_${recordUserId}_${recordCourseId}`;
+        const id = externalCertificateId;
         const existing = await tx.get(`certificates/${id}`);
         if (!existing) {
           const verificationCode = await deterministicVerificationCode(`external:${id}`);
