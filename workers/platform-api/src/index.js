@@ -1051,6 +1051,73 @@ function publicExternalLearningRecord(record = {}) {
   return Object.fromEntries(allowed.filter(key => record[key] !== undefined).map(key => [key, record[key]]));
 }
 
+
+const EXTERNAL_CREDENTIAL_TYPES = new Set([
+  "completion-certificate",
+  "digital-badge",
+  "award-of-completion",
+  "professional-certification",
+  "other"
+]);
+
+function publicExternalCredentialRecord(record = {}, admin = false) {
+  const allowed = [
+    "id","title","issuer","credentialType","verifiedCredentialType","credentialNumber","issueDate",
+    "verificationUrl","status","reviewNote","reviewedAt","createdAt","updatedAt",
+    "certificateId","linkedCertificateId","duplicateOf","duplicateSource","resubmissionCount"
+  ];
+  if (admin) allowed.push("userId","recipientName","recipientEmail","evidenceUrl","notes","attested","reviewedBy");
+  return Object.fromEntries(allowed.filter(key => record[key] !== undefined).map(key => [key, record[key]]));
+}
+
+function externalCredentialStatus(record = {}) {
+  const value = normalized(record.status || "pending");
+  if (value === "approved") return "verified";
+  return value;
+}
+
+function credentialMatchKey(record = {}) {
+  const issuer = normalized(record.issuer || record.externalProvider || record.provider);
+  const title = normalized(record.title || record.courseTitle || record.awardTitle);
+  const number = normalized(record.credentialNumber || record.certificateNumber);
+  const verificationUrl = clean(record.verificationUrl);
+  const issueDate = clean(record.issueDate || record.completionDate);
+  return { issuer, title, number, verificationUrl, issueDate };
+}
+
+function sameCredentialEvidence(a = {}, b = {}) {
+  const left = credentialMatchKey(a);
+  const right = credentialMatchKey(b);
+  if (!left.issuer || !right.issuer || left.issuer !== right.issuer) return false;
+  if (left.number && right.number) return left.number === right.number;
+  if (left.verificationUrl && right.verificationUrl) return left.verificationUrl === right.verificationUrl;
+  return Boolean(left.title && right.title && left.title === right.title && left.issueDate && left.issueDate === right.issueDate);
+}
+
+async function credentialFingerprint(userId, record = {}) {
+  const key = credentialMatchKey(record);
+  const evidenceKey = key.number || key.verificationUrl || key.issueDate || "no-evidence-key";
+  return sha256Key([userId, key.issuer, key.title, evidenceKey].join("|"));
+}
+
+function publicCertificateProjection(record = {}, docId = "") {
+  if (!record) return null;
+  return {
+    id: clean(docId || record.certificateNumber),
+    recipientName: clean(record.recipientName),
+    awardTitle: clean(record.awardTitle || record.courseTitle || record.title),
+    issuer: clean(record.issuer || record.externalProvider || record.provider || "SpeakOut Mental Health Outreach"),
+    provider: clean(record.provider || record.externalProvider || record.issuer),
+    issueDate: clean(record.issueDate || record.completionDate),
+    status: clean(record.status || "active"),
+    certificateNumber: clean(record.certificateNumber || docId),
+    credentialType: clean(record.credentialType || record.certificateType || record.type),
+    achievementType: clean(record.achievementType),
+    verifiedBy: clean(record.verifiedBy),
+    externalProvider: record.externalProvider === true || Boolean(clean(record.provider || record.externalProvider))
+  };
+}
+
 function evidenceDescriptor(record) {
   const publicId = clean(record.evidencePublicId);
   const ownerId = safeId(record.userId, "evidence owner identifier");
@@ -2079,6 +2146,21 @@ async function route(request, env, path, data) {
   if (path === "/v1/onboarding/school-admin") {
     return activateSchoolAdmin(request, env, data);
   }
+  if (path === "/v1/public/certificates/verify") {
+    const supplied = bounded(data.code || data.certificateId, 180, "Certificate identifier");
+    if (!supplied) throw Object.assign(new Error("Enter a certificate identifier."), { status: 400 });
+    let record = null;
+    try {
+      record = await getDocument(env, `publicCertificateVerifications/${safeId(supplied, "certificate identifier")}`);
+    } catch (error) {
+      if (error.status !== 400) throw error;
+    }
+    if (!record) {
+      const page = await queryDocumentsByField(env, "publicCertificateVerifications", "certificateNumber", supplied, 5);
+      record = page.documents[0] || null;
+    }
+    return { record: record ? publicCertificateProjection(record, record.id || supplied) : null };
+  }
 
   const user = await authenticatedUser(request, env);
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
@@ -2256,17 +2338,218 @@ async function route(request, env, path, data) {
     });
   }
 
+  if (path === "/v1/credentials/list") {
+    const page = await queryDocumentsByField(env, "externalCredentials", "userId", user.uid);
+    const records = page.documents
+      .map(record => publicExternalCredentialRecord(record))
+      .sort((a, b) => String(b.updatedAt || b.createdAt || "").localeCompare(String(a.updatedAt || a.createdAt || "")));
+    return { records, truncated: page.truncated };
+  }
+
+  if (path === "/v1/credentials/submit") {
+    if (data.attested !== true) throw Object.assign(new Error("Confirm that the credential belongs to you and the information is accurate."), { status: 400 });
+    const title = bounded(data.title, 240, "Credential title");
+    const issuer = bounded(data.issuer, 180, "Issuer");
+    const credentialType = normalized(data.credentialType || "completion-certificate");
+    if (!title || !issuer || !EXTERNAL_CREDENTIAL_TYPES.has(credentialType)) {
+      throw Object.assign(new Error("Enter a valid credential title, issuer and credential type."), { status: 400 });
+    }
+    const credentialNumber = bounded(data.credentialNumber, 120, "Credential number");
+    const issueDate = bounded(data.issueDate, 10, "Issue date");
+    if (issueDate && (!/^\d{4}-\d{2}-\d{2}$/.test(issueDate) || issueDate > new Date().toISOString().slice(0, 10))) {
+      throw Object.assign(new Error("Enter a valid issue date that is not in the future."), { status: 400 });
+    }
+    const verificationUrl = optionalHttpsUrl(data.verificationUrl, "Verification URL");
+    const evidenceUrl = optionalHttpsUrl(data.evidenceUrl, "Evidence URL");
+    const notes = bounded(data.notes, 1200, "Reviewer note");
+    if (!credentialNumber && !verificationUrl && !evidenceUrl) {
+      throw Object.assign(new Error("Add a credential number, public provider verification URL or provider-hosted evidence URL."), { status: 400 });
+    }
+    const recipientName = humanName(user.profile);
+    if (recipientName === "Learner" || isPlaceholderLearnerName(recipientName)) {
+      throw Object.assign(new Error("Complete your real first and last name in your profile before submitting a credential."), { status: 409 });
+    }
+    const draft = { title, issuer, credentialType, credentialNumber, issueDate, verificationUrl, evidenceUrl };
+    const fingerprint = await credentialFingerprint(user.uid, draft);
+    const recordId = safeId(`${user.uid}_${fingerprint.slice(0, 24)}`, "credential identifier");
+    const externalLearning = await queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid);
+    const trackedDuplicate = externalLearning.documents.find(item =>
+      ["approved","verified","pending_review","pending","submitted"].includes(normalized(item.status || item.verificationStatus)) &&
+      sameCredentialEvidence(draft, {
+        issuer: item.certificateIssuer || item.provider,
+        title: item.courseTitle,
+        credentialNumber: item.certificateNumber,
+        verificationUrl: item.verificationUrl,
+        issueDate: item.completionDate
+      })
+    );
+    if (trackedDuplicate) {
+      throw Object.assign(new Error("This credential already matches a tracked external learning record. Use that pathway instead of submitting it again."), { status: 409 });
+    }
+    return runTransaction(env, async tx => {
+      const existing = await tx.get(`externalCredentials/${recordId}`);
+      if (existing && ["verified","pending","pending_review","submitted"].includes(externalCredentialStatus(existing))) {
+        return { ok: true, created: false, record: publicExternalCredentialRecord({ id: recordId, ...existing }) };
+      }
+      const now = new Date().toISOString();
+      const record = {
+        ...(existing || {}),
+        userId: user.uid,
+        recipientName,
+        recipientEmail: user.email || clean(user.profile.email),
+        title,
+        issuer,
+        credentialType,
+        credentialNumber,
+        issueDate,
+        verificationUrl,
+        evidenceUrl,
+        notes,
+        attested: true,
+        status: "pending_review",
+        verifiedCredentialType: "",
+        certificateId: "",
+        linkedCertificateId: "",
+        reviewNote: "",
+        reviewedBy: "",
+        reviewedAt: null,
+        createdAt: existing?.createdAt || now,
+        updatedAt: now,
+        resubmissionCount: ["rejected","resubmission_required"].includes(normalized(existing?.status))
+          ? Number(existing?.resubmissionCount || 0) + 1
+          : Number(existing?.resubmissionCount || 0)
+      };
+      tx.set(`externalCredentials/${recordId}`, record);
+      return { ok: true, created: !existing, record: publicExternalCredentialRecord({ id: recordId, ...record }) };
+    });
+  }
+
+  if (path === "/v1/admin/credentials/list") {
+    requireAdmin(user);
+    const page = await queryAllDocuments(env, "externalCredentials");
+    const records = page.documents
+      .map(record => publicExternalCredentialRecord(record, true))
+      .sort((a, b) => String(b.updatedAt || b.createdAt || "").localeCompare(String(a.updatedAt || a.createdAt || "")));
+    return { records, truncated: page.truncated };
+  }
+
+  if (path === "/v1/admin/credentials/review") {
+    requireAdmin(user);
+    const recordId = safeId(data.recordId, "credential identifier");
+    const decision = normalized(data.decision);
+    if (!["verified","rejected","resubmission_required"].includes(decision)) {
+      throw Object.assign(new Error("Invalid credential review decision."), { status: 400 });
+    }
+    const existingRecord = await getDocument(env, `externalCredentials/${recordId}`);
+    if (!existingRecord) throw Object.assign(new Error("Credential submission not found."), { status: 404 });
+    if (!["pending","pending_review","submitted"].includes(normalized(existingRecord.status))) {
+      throw Object.assign(new Error("This credential is not awaiting review."), { status: 409 });
+    }
+
+    let duplicateCertificate = null;
+    if (decision === "verified") {
+      const certificatePage = await queryDocumentsByField(env, "certificates", "userId", safeId(existingRecord.userId, "learner identifier"));
+      duplicateCertificate = certificatePage.documents.find(item => sameCredentialEvidence(existingRecord, {
+        issuer: item.externalProvider || item.provider || item.issuer,
+        title: item.courseTitle || item.title,
+        credentialNumber: item.credentialNumber || item.certificateNumber,
+        verificationUrl: item.verificationUrl,
+        issueDate: item.issueDate || item.completionDate
+      })) || null;
+    }
+
+    return runTransaction(env, async tx => {
+      const record = await tx.get(`externalCredentials/${recordId}`);
+      if (!record) throw Object.assign(new Error("Credential submission not found."), { status: 404 });
+      if (!["pending","pending_review","submitted"].includes(normalized(record.status))) {
+        throw Object.assign(new Error("This credential is not awaiting review."), { status: 409 });
+      }
+      const now = new Date().toISOString();
+      let certificateId = clean(record.certificateId || record.linkedCertificateId);
+      let certificate = null;
+      if (decision === "verified") {
+        if (duplicateCertificate) {
+          certificateId = duplicateCertificate.id;
+          certificate = { id: duplicateCertificate.id, verificationCode: duplicateCertificate.verificationCode || "" };
+        } else {
+          certificateId = `credential_${recordId}`;
+          const currentCertificate = await tx.get(`certificates/${certificateId}`);
+          if (!currentCertificate) {
+            const verificationCode = await deterministicVerificationCode(`credential:${certificateId}`);
+            const provider = clean(record.issuer || "External Provider");
+            const certificateRecord = {
+              id: certificateId,
+              userId: safeId(record.userId, "learner identifier"),
+              recipientId: safeId(record.userId, "learner identifier"),
+              recipientName: clean(record.recipientName) || "Learner",
+              recipientEmail: clean(record.recipientEmail),
+              courseTitle: clean(record.title) || "External credential",
+              title: clean(record.title) || "External credential",
+              externalProvider: provider,
+              provider,
+              issuer: provider,
+              sourceCredentialId: recordId,
+              credentialType: clean(record.credentialType || "credential"),
+              type: "external-credential-verification",
+              status: "active",
+              credentialNumber: clean(record.credentialNumber),
+              verificationUrl: clean(record.verificationUrl),
+              verificationCode,
+              issueDate: clean(record.issueDate) || now.slice(0, 10),
+              verifiedBy: "SpeakOut Mental Health Outreach",
+              achievementType: "external credential verified by SpeakOut",
+              createdAt: now
+            };
+            tx.set(`certificates/${certificateId}`, certificateRecord);
+            tx.set(`publicCertificateVerifications/${verificationCode}`, {
+              recipientName: certificateRecord.recipientName,
+              awardTitle: certificateRecord.courseTitle,
+              issuer: provider,
+              provider,
+              issueDate: certificateRecord.issueDate,
+              status: certificateRecord.status,
+              certificateNumber: certificateId,
+              credentialType: certificateRecord.credentialType,
+              achievementType: certificateRecord.achievementType,
+              verifiedBy: certificateRecord.verifiedBy,
+              externalProvider: true
+            });
+            certificate = { id: certificateId, verificationCode };
+          } else {
+            certificate = { id: certificateId, verificationCode: currentCertificate.verificationCode || "" };
+          }
+        }
+      }
+      tx.set(`externalCredentials/${recordId}`, {
+        ...record,
+        status: decision,
+        verifiedCredentialType: decision === "verified" ? clean(record.credentialType) : "",
+        certificateId: decision === "verified" ? certificateId : clean(record.certificateId),
+        linkedCertificateId: decision === "verified" && duplicateCertificate ? duplicateCertificate.id : clean(record.linkedCertificateId),
+        duplicateOf: decision === "verified" && duplicateCertificate ? duplicateCertificate.id : "",
+        duplicateSource: decision === "verified" && duplicateCertificate ? "certificate" : "",
+        reviewNote: bounded(data.note, 1200, "Review note"),
+        reviewedBy: user.uid,
+        reviewedAt: now,
+        updatedAt: now
+      });
+      return { ok: true, decision, certificate };
+    });
+  }
+
   if (path === "/v1/learning/dashboard") {
-    const [progressPage, certificatesPage, externalPage] = await Promise.all([
+    const [progressPage, certificatesPage, externalPage, credentialPage] = await Promise.all([
       queryDocumentsByField(env, "userProgress", "userId", user.uid),
       queryDocumentsByField(env, "certificates", "userId", user.uid),
-      queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid)
+      queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid),
+      queryDocumentsByField(env, "externalCredentials", "userId", user.uid)
     ]);
     return {
       progress: progressPage.documents,
       certificates: certificatesPage.documents,
       externalLearning: externalPage.documents.map(publicExternalLearningRecord),
-      truncated: progressPage.truncated || certificatesPage.truncated || externalPage.truncated
+      externalCredentials: credentialPage.documents.map(record => publicExternalCredentialRecord(record)),
+      truncated: progressPage.truncated || certificatesPage.truncated || externalPage.truncated || credentialPage.truncated
     };
   }
 
@@ -2529,9 +2812,10 @@ async function route(request, env, path, data) {
         const existing = await tx.get(`certificates/${id}`);
         if (!existing) {
           const verificationCode = await deterministicVerificationCode(`external:${id}`);
-          const certificateRecord = { id, userId: recordUserId, recipientName: record.learnerName || "Learner", courseId: recordCourseId, courseTitle: record.courseTitle || "External course", externalProvider: record.provider || "External Provider", sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+          const provider = record.provider || "External Provider";
+          const certificateRecord = { id, userId: recordUserId, recipientName: record.learnerName || "Learner", courseId: recordCourseId, courseTitle: record.courseTitle || "External course", externalProvider: provider, provider, issuer: provider, sourceRecordId: recordId, type: "external-completion", status: "active", verificationCode, issueDate: now.slice(0, 10), verifiedBy: "SpeakOut Mental Health Outreach", achievementType: "externally-completed course verified by SpeakOut", createdAt: now };
           tx.set(`certificates/${id}`, certificateRecord);
-          tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: "externally-completed course verified by SpeakOut" });
+          tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: certificateRecord.recipientName, awardTitle: certificateRecord.courseTitle, issuer: provider, provider, issueDate: certificateRecord.issueDate, status: certificateRecord.status, certificateNumber: id, achievementType: certificateRecord.achievementType, verifiedBy: certificateRecord.verifiedBy, externalProvider: true });
           certificate = { id, verificationCode };
         } else certificate = { id, verificationCode: existing.verificationCode };
       }
