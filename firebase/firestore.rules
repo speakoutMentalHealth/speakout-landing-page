@@ -230,6 +230,29 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    match /externalCredentials/{credentialId} {
+      allow read: if isSuperAdmin() ||
+        (isApproved() && resource.data.userId == request.auth.uid);
+      allow create: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == "pending" &&
+        request.resource.data.attested == true;
+      allow update: if isSuperAdmin() ||
+        (isApproved() &&
+          resource.data.userId == request.auth.uid &&
+          request.resource.data.userId == request.auth.uid &&
+          resource.data.status != "verified" &&
+          request.resource.data.status == "pending" &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "title", "issuer", "credentialType", "credentialNumber", "issueDate",
+            "verificationUrl", "evidenceUrl", "notes", "attested", "updatedAt"
+          ]));
+      allow delete: if isSuperAdmin() ||
+        (isApproved() &&
+          resource.data.userId == request.auth.uid &&
+          resource.data.status != "verified");
+    }
+
     match /externalLearningRecords/{recordId} {
       allow read: if isApproved() &&
         (resource.data.userId == request.auth.uid || isSuperAdmin());
