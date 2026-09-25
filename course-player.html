@@ -243,7 +243,20 @@ const mentalHealthModuleVisuals=[
 function moduleVisual(module,index){
  if(module?.coverUrl)return module.coverUrl;
  if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index])return mentalHealthModuleVisuals[index].src;
- return module?.lessons?.[0]?.visuals?.[0]?.src||course?.coverUrl||course?.image||course?.thumbnail||"";
+ return module?.lessons?.find(l=>Array.isArray(l.visuals)&&l.visuals.some(v=>v?.src))?.visuals?.find(v=>v?.src)?.src||"";
+}
+function courseTheme(){
+ const value=norm(course?.category);
+ if(/mental/.test(value))return "mental";
+ if(/leader/.test(value))return "leadership";
+ if(/digital|coding|program|cyber|ai|data|ict/.test(value))return "digital";
+ if(/teacher/.test(value))return "teacher";
+ if(/parent|family/.test(value))return "family";
+ if(/school|club/.test(value))return "school";
+ if(/clinical|research/.test(value))return "research";
+ if(/healthcare|medical|nursing|medicine/.test(value))return "health";
+ if(/public-health|public health/.test(value))return "public-health";
+ return "general";
 }
 function moduleVisualAlt(module,index){
  if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index]?.alt)return mentalHealthModuleVisuals[index].alt;
@@ -376,8 +389,9 @@ function renderCourseModuleCards(){
    const visualAlt=moduleVisualAlt(m,mi);
    const card=document.createElement("article");
    card.className="course-module-card"+(complete?" complete":"")+(!unlocked?" locked":"");
+   const fallback=`<div class="module-card-art-fallback theme-${courseTheme()}" aria-hidden="true"><span class="module-card-symbol">${lessonIcon(`${course?.title||""} ${m.title}`)}</span><span class="module-card-number">${String(mi+1).padStart(2,"0")}</span></div>`;
    card.innerHTML=`
-     <div class="module-card-art">${visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" loading="lazy" decoding="async">`:""}
+     <div class="module-card-art">${visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" loading="lazy" decoding="async">`:fallback}
        <span class="module-card-state">${complete?"Completed":unlocked?(pct?"In progress":"Available"):"Locked"}</span>
      </div>
      <div class="module-card-body">
@@ -500,10 +514,10 @@ function renderLesson(){
  lessonTitle.textContent=l.title;
  lessonEyebrow.textContent=`Lesson ${l.moduleIndex+1}.${l.lessonIndex+1}`;
  lessonMeta.innerHTML=`<span>${esc(l.duration||"Self-paced")}</span><span>Reading + activity</span>${lessonVisuals.length?"<span>Visual guide</span>":""}`;
- const visual=heroVisual?.src||l.coverUrl||course.coverUrl||course.image||course.thumbnail||"";
+ const visual=heroVisual?.src||l.coverUrl||"";
  const visualAlt=heroVisual?.alt||`Illustration for ${l.title}`;
  const icon=lessonIcon(`${course.title} ${m.title} ${l.title}`);
- lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" decoding="async">`:`<div class="cover-art" aria-hidden="true"><span>${icon}</span></div>`;
+ lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" decoding="async">`:`<div class="cover-art theme-${courseTheme()}" aria-hidden="true"><span class="cover-art-icon">${icon}</span><div class="cover-art-copy"><small>Module ${l.moduleIndex+1}</small><strong>${esc(m.title)}</strong></div></div>`;
  lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
  assessmentArea.className="";
  const supportingVisuals=heroVisual?lessonVisuals.filter(v=>v!==heroVisual):lessonVisuals;
@@ -714,6 +728,7 @@ async function loadCourse(){
  if(!modules.length||!lessons.length){loading.innerHTML=`<strong>No embedded lesson content is available.</strong><br>V4 does not mix legacy lesson collections into this course. Re-seed the current courses-seed.json so the course document contains its modules and lessons.`;return}
 
  courseTitle.textContent=course.title||"SpeakHub Course";courseSummary.textContent=course.shortDescription||course.description||"Guided SpeakHub learning.";
+ document.body.dataset.courseCategory=courseTheme();
  sidebarCourseTitle.textContent=course.title||"SpeakHub Course";
  providerPill.textContent=`Provider: ${course.provider||"SpeakHub Academy"}`;levelPill.textContent=`Level: ${pretty(course.difficulty||course.level||"beginner")}`;
  durationPill.textContent=`Duration: ${course.duration||"Self-paced"}`;courseProvider.style.display="flex";detailsButton.href=`course-details.html?id=${encodeURIComponent(courseId)}`;
