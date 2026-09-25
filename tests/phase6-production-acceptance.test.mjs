@@ -38,10 +38,16 @@ test("primary role destinations use the centralized gate", () => {
     "school-dashboard.html": "school_admin",
   };
 
+  const extracted = new Map([
+    ["student-dashboard.html","js/learner/student-dashboard.js"],
+    ["teacher-dashboard.html","js/learner/teacher-dashboard.js"],
+    ["parent-dashboard.html","js/learner/parent-dashboard.js"],
+  ]);
   for (const [file, role] of Object.entries(expected)) {
     const page = read(file);
-    assert.match(page, /launch-role-guard\.js/u, file);
-    assert.match(page, new RegExp(`requireRoles\\(\\s*\\["${role}"\\]`, "u"), file);
+    const runtime = extracted.has(file) ? page + read(extracted.get(file)) : page;
+    assert.match(runtime, /launch-role-guard\.js/u, file);
+    assert.match(runtime, new RegExp(`requireRoles\\(\\s*\\["${role}"\\]`, "u"), file);
   }
 });
 
