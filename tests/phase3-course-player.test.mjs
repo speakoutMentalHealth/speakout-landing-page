@@ -172,3 +172,22 @@ test("course player QA keeps module artwork meaningful and assessment transition
   assert.match(player, /assessmentArea\.className="";/u);
   assert.match(player, /metadata\?\.title\|\|"Assessment preview"/u);
 });
+
+
+test("premium course player provides themed visual treatment for every internal course", () => {
+  const player = read("course-player.html");
+  const premium = read("css/course-player-premium.css");
+  const pack = JSON.parse(read("firestore-seed/priority-courses.json"));
+  const internal = pack.filter(course => course.courseType === "internal");
+
+  assert.equal(internal.length, 6);
+  assert.equal(internal.every(course => course.modules.length === 6 && course.lessonCount === 18), true);
+  assert.match(player, /function courseTheme\(\)/u);
+  assert.match(player, /module-card-art-fallback theme-\$\{courseTheme\(\)\}/u);
+  assert.match(player, /cover-art theme-\$\{courseTheme\(\)\}/u);
+  assert.match(player, /document\.body\.dataset\.courseCategory=courseTheme\(\)/u);
+  assert.doesNotMatch(player, /l\.coverUrl\|\|course\.coverUrl\|\|course\.image\|\|course\.thumbnail/u);
+  for (const theme of ["mental","leadership","digital","teacher","family","school"]) {
+    assert.match(premium, new RegExp(`\\.theme-${theme}\\{`, "u"), theme);
+  }
+});
