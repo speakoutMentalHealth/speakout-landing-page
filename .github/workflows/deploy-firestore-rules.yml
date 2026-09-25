@@ -23,23 +23,87 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Authenticate to Google Cloud
+        id: google-auth
+        uses: google-github-actions/auth@v2
         with:
-          node-version: "22"
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
 
-      - name: Configure Firebase service account
+      - name: Create and release Firestore ruleset
         shell: bash
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+          ACCESS_TOKEN: ${{ steps.google-auth.outputs.access_token }}
+          FIREBASE_PROJECT_ID: speaakout-portal
         run: |
-          if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
-            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL."
+          set -euo pipefail
+
+          if [[ -z "$ACCESS_TOKEN" ]]; then
+            echo "::error::Google access token was not created."
             exit 1
           fi
-          CREDENTIAL_FILE="$RUNNER_TEMP/firebase-service-account.json"
-          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$CREDENTIAL_FILE"
-          chmod 600 "$CREDENTIAL_FILE"
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$CREDENTIAL_FILE" >> "$GITHUB_ENV"
 
-      - name: Deploy Firestore rules
-        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speaakout-portal --non-interactive
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = Path("firebase/firestore.rules").read_text(encoding="utf-8")
+          payload = {
+              "source": {
+                  "files": [
+                      {
+                          "name": "firestore.rules",
+                          "content": source
+                      }
+                  ]
+              }
+          }
+          Path("/tmp/firestore-ruleset.json").write_text(
+              json.dumps(payload),
+              encoding="utf-8"
+          )
+          PY
+
+          RULESET_RESPONSE="$(
+            curl --fail-with-body --silent --show-error               --request POST               --header "Authorization: Bearer $ACCESS_TOKEN"               --header "Content-Type: application/json"               --data-binary @/tmp/firestore-ruleset.json               "https://firebaserules.googleapis.com/v1/projects/$FIREBASE_PROJECT_ID/rulesets"
+          )"
+
+          RULESET_NAME="$(
+            printf '%s' "$RULESET_RESPONSE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["name"])'
+          )"
+
+          if [[ -z "$RULESET_NAME" ]]; then
+            echo "::error::Firebase Rules API did not return a ruleset name."
+            exit 1
+          fi
+
+          python3 - "$FIREBASE_PROJECT_ID" "$RULESET_NAME" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          project_id = sys.argv[1]
+          ruleset_name = sys.argv[2]
+          payload = {
+              "name": f"projects/{project_id}/releases/cloud.firestore",
+              "rulesetName": ruleset_name
+          }
+          Path("/tmp/firestore-release.json").write_text(
+              json.dumps(payload),
+              encoding="utf-8"
+          )
+          PY
+
+          curl --fail-with-body --silent --show-error             --request PATCH             --header "Authorization: Bearer $ACCESS_TOKEN"             --header "Content-Type: application/json"             --data-binary @/tmp/firestore-release.json             "https://firebaserules.googleapis.com/v1/projects/$FIREBASE_PROJECT_ID/releases/cloud.firestore?updateMask=rulesetName"             > /tmp/firestore-release-response.json
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          response = json.loads(
+              Path("/tmp/firestore-release-response.json").read_text(encoding="utf-8")
+          )
+          print("Firestore rules release:", response.get("name", "cloud.firestore"))
+          print("Ruleset:", response.get("rulesetName", "unknown"))
+          PY
