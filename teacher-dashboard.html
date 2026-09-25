@@ -683,6 +683,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { learningApi } from "./js/platform-api.js";
 
 
 let currentUser = null;
@@ -1161,8 +1162,9 @@ function isExternalProgress(item){
 
 function isCompletedProgress(item){
 
+  const status=normalize(item.status||item.verificationStatus);
   return (
-    normalize(item.status) === "completed" ||
+    ["completed","approved","verified"].includes(status) ||
     item.completed === true ||
     progressPercent(item) >= 100
   );
@@ -1183,7 +1185,6 @@ function progressActionUrl(item){
 
   if(isExternalProgress(item)){
     return (
-      item.externalUrl ||
       `course-details.html?id=${encodeURIComponent(id)}`
     );
   }
@@ -1209,11 +1210,7 @@ function progressCard(item){
   const url =
     progressActionUrl(item);
 
-  const target =
-    external &&
-    item.externalUrl
-      ? `target="_blank" rel="noopener noreferrer"`
-      : "";
+  const target = "";
 
 
   return `
@@ -1285,8 +1282,10 @@ function progressCard(item){
           <p class="progress-label">
             ${
               completed
-                ? "External learning recorded as completed."
-                : "External learning is in progress."
+                ? "External learning verified and recorded."
+                : normalize(item.status)==="pending_review"
+                  ? "Completion evidence is awaiting SpeakHub review."
+                  : "External learning is in progress. Open the pathway to continue or submit completion evidence."
             }
           </p>
         `
@@ -1306,9 +1305,9 @@ function progressCard(item){
         >
           ${
             completed
-              ? "View Course"
+              ? (external ? "View Pathway" : "View Course")
               : external
-                ? "Continue with Provider"
+                ? "View Pathway"
                 : "Continue Course"
           }
         </a>
@@ -1565,121 +1564,44 @@ async function loadProgress(){
 
   try{
 
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "userProgress"
-          ),
-          where(
-            "userId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
+    const dashboard=await learningApi.dashboard();
 
+    const internalProgress=(dashboard.progress||[])
+      .filter(isCourseProgress)
+      .filter(item=>!isExternalProgress(item));
 
-    const allProgress =
-      snap.docs.map(
-        document=>({
-          id:document.id,
-          ...document.data()
-        })
-      );
+    const externalProgress=(dashboard.externalLearning||[]).map(record=>({
+      ...record,
+      type:"external-course",
+      courseType:"external",
+      completionMethod:"certificate-upload",
+      title:record.courseTitle,
+      category:record.courseCategory,
+      externalUrl:record.providerCourseUrl
+    }));
 
+    const courseProgress=[...internalProgress,...externalProgress];
+    const completed=courseProgress.filter(isCompletedProgress);
+    const activeLearning=courseProgress.filter(item=>!isCompletedProgress(item));
 
-    const courseProgress =
-      allProgress.filter(
-        isCourseProgress
-      );
+    courseStartedCount.textContent=courseProgress.length;
+    courseCompletedCount.textContent=completed.length;
+    externalCourseCount.textContent=externalProgress.length;
 
+    progressList.innerHTML=activeLearning.length
+      ? activeLearning.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No active teacher course progress yet.</div>`;
 
-    const externalProgress =
-      courseProgress.filter(
-        isExternalProgress
-      );
-
-
-    const internalProgress =
-      courseProgress.filter(
-        item=>
-          !isExternalProgress(item)
-      );
-
-
-    const completed =
-      courseProgress.filter(
-        isCompletedProgress
-      );
-
-
-    const activeInternal =
-      internalProgress.filter(
-        item=>
-          !isCompletedProgress(item)
-      );
-
-
-    courseStartedCount.textContent =
-      courseProgress.length;
-
-
-    courseCompletedCount.textContent =
-      completed.length;
-
-
-    externalCourseCount.textContent =
-      externalProgress.length;
-
-
-    progressList.innerHTML =
-      activeInternal.length
-        ? activeInternal
-            .slice(0,8)
-            .map(progressCard)
-            .join("")
-        : `
-          <div class="notice warn">
-            No active teacher course progress yet.
-          </div>
-        `;
-
-
-    completedList.innerHTML =
-      completed.length
-        ? completed
-            .slice(0,8)
-            .map(progressCard)
-            .join("")
-        : `
-          <div class="notice warn">
-            No completed learning yet.
-          </div>
-        `;
-
+    completedList.innerHTML=completed.length
+      ? completed.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No completed learning yet.</div>`;
 
   }catch(error){
 
-    console.error(
-      "Progress load failed:",
-      error
-    );
+    console.error("Progress load failed:",error);
 
-
-    progressList.innerHTML = `
-      <div class="notice bad">
-        Could not load course progress.
-      </div>
-    `;
-
-
-    completedList.innerHTML = `
-      <div class="notice bad">
-        Could not load completed learning.
-      </div>
-    `;
+    progressList.innerHTML=`<div class="notice bad">Could not load course progress.</div>`;
+    completedList.innerHTML=`<div class="notice bad">Could not load completed learning.</div>`;
 
   }
 
