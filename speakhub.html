@@ -323,6 +323,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/f
 let courses = [];
 let progressMap = {};
 let currentProfile = null;
+let healthOnly = false;
 
 const grid = document.getElementById("courseGrid");
 const featuredGrid = document.getElementById("featuredGrid");
@@ -448,9 +449,11 @@ function renderHealthCertificates(){
     `<div class="notice">Free health certificate pathways will appear here when available.</div>`;
 }
 function showAllHealthCourses(){
+  healthOnly=true;
   categoryFilter.value="all";
   accessFilter.value="free";
-  searchInput.value="health";
+  levelFilter.value="all";
+  searchInput.value="";
   render();
   document.getElementById("filters")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -480,11 +483,13 @@ function render(){
     const access = normalize(item.accessType || "free");
     const okS = !s || searchable.includes(s);
     const okC = cat === "all" || item.category === cat;
-    const okA = aud === "all" || item.audience === aud || item.audience === aud + "s";
+    const audiences=Array.isArray(item.audience)?item.audience:[item.audience].filter(Boolean);
+    const okA = aud === "all" || audiences.includes(aud) || audiences.includes(aud + "s");
     const okAcc = acc === "all" || access === acc || (acc === "paid" && access === "premium");
-    const okL = level === "all" || item.level === level;
+    const okL = level === "all" || item.level === level || item.difficulty === level;
+    const okHealth = !healthOnly || isHealthCertificateCourse(item);
 
-    return okS && okC && okA && okAcc && okL;
+    return okS && okC && okA && okAcc && okL && okHealth;
   });
 
   if(sort === "featured") filtered.sort((a,b)=>(b.featured===true)-(a.featured===true)||(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
@@ -619,8 +624,9 @@ document.addEventListener("keydown", e => {
   if(e.key === "Escape") closeCoursePreview();
 });
 [searchInput,categoryFilter,audienceFilter,accessFilter,levelFilter,sortFilter].forEach(el=>{
-  el.addEventListener("input",render);
-  el.addEventListener("change",render);
+  const update=()=>{healthOnly=false;render()};
+  el.addEventListener("input",update);
+  el.addEventListener("change",update);
 });
 
 onAuthStateChanged(auth, async user => {
