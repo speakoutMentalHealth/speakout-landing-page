@@ -318,7 +318,9 @@ function encodeFields(data) {
 async function firebaseAccessToken(env) {
   const cached = await env.TOKEN_CACHE?.get("firebase-access-token", "json");
   if (cached?.token) return cached.token;
-  const key = await importPKCS8(String(env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, "\n"), "RS256");
+  const key = await importPKCS8(String(env.FIREBASE_PRIVATE_KEY).replace(/\
+/g, "
+"), "RS256");
   const now = Math.floor(Date.now() / 1000);
   const assertion = await new SignJWT({ scope: "https://www.googleapis.com/auth/datastore" })
     .setProtectedHeader({ alg: "RS256", typ: "JWT" })
@@ -522,7 +524,8 @@ async function sendOnTheMoveEmail(env, user, data) {
   }
   const subject = clean(data.subject);
   const body = clean(data.body);
-  if (!subject || subject.length > 200 || /[\r\n]/.test(subject) || !body || body.length > 10000) {
+  if (!subject || subject.length > 200 || /[\r
+]/.test(subject) || !body || body.length > 10000) {
     throw Object.assign(new Error("Subject or message length is invalid."), { status: 400 });
   }
   const path = `${target.name}/${id}`;
@@ -1731,7 +1734,9 @@ async function route(request, env, path, data) {
           const existing = await tx.get(`certificates/${id}`);
           if (!existing) {
             const verificationCode = await deterministicVerificationCode(`course:${id}`);
-            const recipientName = humanName(user.profile);\n            if (recipientName === "Learner") throw Object.assign(new Error("Complete your first and last name in your profile before a certificate can be issued."), { status: 409 });\n            const record = { id, userId: user.uid, recipientId: user.uid, recipientName, recipientEmail: user.email || clean(user.profile.email), recipientEmailNormalized: normalized(user.email || user.profile.email), courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
+            const recipientName = humanName(user.profile);
+            if (recipientName === "Learner") throw Object.assign(new Error("Complete your first and last name in your profile before a certificate can be issued."), { status: 409 });
+            const record = { id, userId: user.uid, recipientId: user.uid, recipientName, recipientEmail: user.email || clean(user.profile.email), recipientEmailNormalized: normalized(user.email || user.profile.email), courseId, courseTitle: ctx.course.title || "Course", type: "course", status: "active", finalScore: score, verificationCode, issueDate: now.slice(0, 10), createdAt: now };
             tx.set(`certificates/${id}`, record);
             tx.set(`publicCertificateVerifications/${verificationCode}`, { recipientName: record.recipientName, awardTitle: record.courseTitle, issuer: "SpeakOut Mental Health Outreach", issueDate: record.issueDate, status: record.status, certificateNumber: id });
             certificate = { id, verificationCode };
