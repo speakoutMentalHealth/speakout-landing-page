@@ -1805,10 +1805,18 @@ async function route(request, env, path, data) {
         ...target,
         status,
         approved: status === "approved",
+        schoolVerificationStatus: status,
         updatedAt: now,
         reviewedAt: now,
         reviewedBy: user.uid
       });
+      if (clean(target.studentClaimId)) {
+        tx.set(`studentSchoolClaims/${safeId(target.studentClaimId, "student claim")}`, {
+          status,
+          reviewedAt: now,
+          reviewedBy: user.uid
+        });
+      }
       return { ok: true, userId: targetUserId, status };
     });
   }
