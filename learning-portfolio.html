@@ -88,9 +88,11 @@ body{background:var(--portfolio-bg)!important}
 .cv-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .cv-actions .btn{background:#fff!important;color:#0a4f91!important}.cv-actions .btn.gold{background:#ffe7b3!important;color:#6b4300!important}
 .credential-note{font-size:.84rem!important;color:var(--portfolio-muted)!important;margin-top:10px}
-.portfolio-nav-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.nav .nav-inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
+.portfolio-nav-head{width:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex:0 0 auto}
 .portfolio-menu-toggle{display:none!important;flex:0 0 auto}
-.portfolio-nav-tray{min-width:0}
+.portfolio-nav-tray{min-width:0;flex:1}
+.portfolio-nav-tray .links{justify-content:flex-end!important}
 @media(max-width:1100px){
   .nav .nav-inner{display:block!important;padding:10px 0!important}
   .portfolio-nav-head{min-height:52px}
