@@ -768,6 +768,161 @@ const lessonsOf = module => Array.isArray(module?.lessons) ? module.lessons : []
 const lessonId = (courseId, mi, lesson, li) => lesson?.id || `${courseId}-m${mi + 1}-l${li + 1}`;
 const assessmentId = (courseId, type, mi) => type === "final" ? `${courseId}__final` : `${courseId}__module__${mi}`;
 
+function cloneJson(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function secureQuestion(question, label) {
+  const copy = cloneJson(question || {});
+  const options = Array.isArray(copy.options) ? [...copy.options] : [];
+  const current = answerIndex(copy);
+  if (options.length < 2 || !Number.isInteger(current) || current < 0 || current >= options.length) {
+    throw Object.assign(new Error(`${label} has an invalid answer key.`), { status: 409 });
+  }
+  for (let index = options.length - 1; index > 0; index--) {
+    const random = new Uint32Array(1);
+    crypto.getRandomValues(random);
+    const swap = random[0] % (index + 1);
+    [options[index], options[swap]] = [options[swap], options[index]];
+  }
+  const correctValue = copy.options[current];
+  const next = options.findIndex(option => JSON.stringify(option) === JSON.stringify(correctValue));
+  if (next < 0) throw Object.assign(new Error(`${label} could not preserve its answer key.`), { status: 500 });
+  copy.options = options;
+  copy.answer = next;
+  delete copy.correctAnswer;
+  return copy;
+}
+
+function secureAssessmentRecord(source, expected = {}) {
+  const questions = Array.isArray(source?.questions) ? source.questions : [];
+  if (!questions.length) throw Object.assign(new Error(`${expected.title || "Assessment"} has no secure questions.`), { status: 409 });
+  const rotated = questions.map((question, index) => secureQuestion(question, `${expected.title || "Assessment"} question ${index + 1}`));
+  return {
+    ...source,
+    id: expected.id,
+    courseId: expected.courseId,
+    type: expected.type,
+    ...(expected.type === "module" ? { moduleIndex: expected.moduleIndex } : {}),
+    title: clean(source.title) || expected.title,
+    passMark: Number(source.passMark || expected.passMark || 70),
+    questions: rotated,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function assessmentMetadata(id, source, fallbackTitle) {
+  return {
+    id,
+    title: clean(source?.title) || fallbackTitle,
+    passMark: Number(source?.passMark || 70),
+    questionCount: Number(source?.questionCount || 0)
+  };
+}
+
+function assertNoEmbeddedAssessmentKeys(course) {
+  modulesOf(course).forEach((module, moduleIndex) => {
+    if (Array.isArray(module?.quiz?.questions) && module.quiz.questions.length) {
+      throw Object.assign(new Error(`Module ${moduleIndex + 1} contains embedded assessment questions. Publish only sanitized course metadata.`), { status: 409 });
+    }
+  });
+  for (const source of [course?.finalAssessment, course?.finalQuiz]) {
+    if (Array.isArray(source?.questions) && source.questions.length) {
+      throw Object.assign(new Error("Final assessment questions must stay in the secure assessment store."), { status: 409 });
+    }
+  }
+}
+
+async function publishRichInternalCourse(env, user, input) {
+  requireAdmin(user);
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw Object.assign(new Error("A course record is required."), { status: 400 });
+  }
+  const course = cloneJson(input);
+  const courseId = safeId(course.id || course.slug, "course identifier");
+  course.id = courseId;
+  course.slug = clean(course.slug) || courseId;
+  if (externalCourse(course) || normalized(course.courseType || "internal") !== "internal") {
+    throw Object.assign(new Error("This endpoint only publishes internal SpeakHub courses."), { status: 409 });
+  }
+  if (!["active", "published"].includes(normalized(course.status))) {
+    throw Object.assign(new Error("Rich internal courses must be active or published before release."), { status: 409 });
+  }
+  assertNoEmbeddedAssessmentKeys(course);
+  if (!courseIsCatalogueReady(course)) {
+    throw Object.assign(new Error("The course does not meet the production curriculum readiness standard."), { status: 409 });
+  }
+  const modules = modulesOf(course);
+  if (!modules.length) throw Object.assign(new Error("The course has no modules."), { status: 409 });
+  if (!course.finalAssessment?.id) {
+    throw Object.assign(new Error("A secure final assessment reference is required."), { status: 409 });
+  }
+
+  return runTransaction(env, async tx => {
+    const existing = await tx.get(`courses/${courseId}`);
+    const secureAssessments = [];
+    const safeModules = [];
+    for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
+      const module = cloneJson(modules[moduleIndex]);
+      if (module.quiz) {
+        const id = assessmentId(courseId, "module", moduleIndex);
+        const stored = await tx.get(`courseAssessments/${id}`);
+        if (!stored) throw Object.assign(new Error(`Secure assessment missing for module ${moduleIndex + 1}.`), { status: 409 });
+        const secured = secureAssessmentRecord(stored, {
+          id,
+          courseId,
+          type: "module",
+          moduleIndex,
+          title: clean(module.quiz.title) || `Module ${moduleIndex + 1} Quiz`,
+          passMark: Number(module.quiz.passMark || 70)
+        });
+        secureAssessments.push({ path: `courseAssessments/${id}`, record: { ...secured, updatedBy: user.uid } });
+        module.quiz = assessmentMetadata(id, secured, `Module ${moduleIndex + 1} Quiz`);
+      }
+      safeModules.push(module);
+    }
+
+    const finalId = assessmentId(courseId, "final", 0);
+    if (clean(course.finalAssessment.id) !== finalId) {
+      throw Object.assign(new Error("Final assessment reference does not match this course."), { status: 409 });
+    }
+    const storedFinal = await tx.get(`courseAssessments/${finalId}`);
+    if (!storedFinal) throw Object.assign(new Error("Secure final assessment is missing."), { status: 409 });
+    const securedFinal = secureAssessmentRecord(storedFinal, {
+      id: finalId,
+      courseId,
+      type: "final",
+      title: clean(course.finalAssessment.title) || "Final Assessment",
+      passMark: Number(course.finalAssessment.passMark || 70)
+    });
+    secureAssessments.push({ path: `courseAssessments/${finalId}`, record: { ...securedFinal, updatedBy: user.uid } });
+
+    const now = new Date().toISOString();
+    const published = {
+      ...(existing || {}),
+      ...course,
+      modules: safeModules,
+      finalAssessment: assessmentMetadata(finalId, securedFinal, "Final Assessment"),
+      assessmentSecurityVersion: 2,
+      releaseState: "quality-checked",
+      releasedAt: existing?.releasedAt || now,
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    delete published.finalQuiz;
+
+    secureAssessments.forEach(item => tx.set(item.path, item.record));
+    tx.set(`courses/${courseId}`, published);
+    return {
+      ok: true,
+      courseId,
+      modules: safeModules.length,
+      assessmentsRotated: secureAssessments.length,
+      assessmentSecurityVersion: 2
+    };
+  });
+}
+
 function emptyProgress(uid, courseId, course) {
   return { userId: uid, courseId, courseTitle: course.title || "", completedLessons: [], passedModuleQuizzes: {}, moduleQuizScores: {}, finalAssessmentPassed: false, finalAssessmentScore: 0, percent: 0, progress: 0, status: "in_progress" };
 }
@@ -1551,6 +1706,7 @@ async function route(request, env, path, data) {
   }
   const user = await authenticatedUser(request, env);
   if (path === "/v1/admin/on-the-move/send-email") return sendOnTheMoveEmail(env, user, data);
+  if (path === "/v1/admin/courses/publish-rich") return publishRichInternalCourse(env, user, data.course);
   const courseSpecificLearningPaths = new Set([
     "/v1/learning/enroll",
     "/v1/learning/state",
