@@ -1,1 +1,54 @@
-  .container{width:calc(100% - 28px)}.menu{display:inline-flex;align-items:center;justify-content:center}.nav-links{display:none;position:absolute;top:calc(100% + 10px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 22px 55px rgba(7,21,43,.16);flex-direction:column;align-items:stretch;z-index:2500;max-height:calc(100vh - 110px);overflow-y:auto}.nav-links a,.nav-links button{width:100%;border-radius:14px}body.menu-open .nav-links{display:flex}.g5,.g4,.g3,.g2,.controls,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.hero{padding:36px 0}.card,.panel,.notice{padding:15px;border-radius:18px}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}
+/* Legacy portal responsive navigation helpers.
+   Desktop keeps the normal horizontal Portal UI navigation.
+   The dropdown behavior is intentionally limited to phones. */
+
+.menu{display:none!important}
+
+@media(max-width:760px){
+  .container{width:calc(100% - 28px)}
+
+  .nav .menu{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:auto!important;
+    flex:0 0 auto!important;
+  }
+
+  body .nav .nav-links{
+    display:none!important;
+    position:absolute!important;
+    top:calc(100% + 10px)!important;
+    left:14px!important;
+    right:14px!important;
+    width:auto!important;
+    max-height:calc(100vh - 110px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:12px!important;
+    background:#fff!important;
+    border:1px solid var(--line,#e4e9f2)!important;
+    border-radius:18px!important;
+    box-shadow:0 22px 55px rgba(7,21,43,.16)!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    flex-wrap:nowrap!important;
+    z-index:2500!important;
+  }
+
+  body.menu-open .nav .nav-links{display:flex!important}
+
+  body .nav .nav-links a,
+  body .nav .nav-links button{
+    width:100%!important;
+    flex:0 0 auto!important;
+    border-radius:14px!important;
+    white-space:normal!important;
+  }
+
+  .g5,.g4,.g3,.g2,.controls,.form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .hero{padding:36px 0}
+  .card,.panel,.notice{padding:15px;border-radius:18px}
+  .actions{flex-direction:column}
+}
