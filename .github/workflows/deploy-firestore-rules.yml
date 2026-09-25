@@ -28,17 +28,18 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/cloud-platform
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Create and release Firestore ruleset
         shell: bash
         env:
-          ACCESS_TOKEN: ${{ steps.google-auth.outputs.access_token }}
           FIREBASE_PROJECT_ID: speaakout-portal
         run: |
           set -euo pipefail
 
+          ACCESS_TOKEN="$(gcloud auth print-access-token)"
           if [[ -z "$ACCESS_TOKEN" ]]; then
             echo "::error::Google access token was not created."
             exit 1
