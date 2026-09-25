@@ -64,6 +64,51 @@ section{padding:58px 0}
 .stat strong{display:block;color:var(--blue);font-size:clamp(1.7rem,3vw,2.6rem);line-height:1}
 .stat span{display:block;margin-top:6px;color:var(--muted);font-weight:800;font-size:.88rem}
 
+.pathways-section{background:#07152b;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+.pathways-section .title h2{color:#fff}
+.pathways-section .title p{color:rgba(255,255,255,.72)}
+.pathways-section .label{background:rgba(255,255,255,.10);color:#cfe5ff;border:1px solid rgba(255,255,255,.12)}
+.pathway-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pathway-card{
+  appearance:none;width:100%;min-height:220px;padding:20px;text-align:left;color:#fff;cursor:pointer;
+  border:1px solid rgba(255,255,255,.12);border-radius:22px;background:rgba(255,255,255,.055);
+  display:flex;flex-direction:column;gap:12px;transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.pathway-card:hover,.pathway-card[aria-pressed="true"]{transform:translateY(-3px);border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.095)}
+.pathway-card:focus-visible{outline:3px solid rgba(244,162,28,.8);outline-offset:3px}
+.pathway-icon{
+  width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.12)
+}
+.pathway-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pathway-card small{font-size:.68rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.58)}
+.pathway-card h3{font-size:1.18rem;letter-spacing:-.02em;margin:0;color:#fff}
+.pathway-card p{font-size:.86rem;line-height:1.5;color:rgba(255,255,255,.68);margin:0;flex:1}
+.pathway-card-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.76rem;font-weight:900;color:#d7e8fb}
+.pathway-count{display:inline-flex;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.09)}
+.pathway-arrow{font-size:1rem}
+.pathway-card[data-pathway="mental-health"] .pathway-icon{color:#d5bbff}
+.pathway-card[data-pathway="medical-health"] .pathway-icon{color:#89e0c7}
+.pathway-card[data-pathway="public-health"] .pathway-icon{color:#9ed8ff}
+.pathway-card[data-pathway="clinical-research"] .pathway-icon{color:#d6c2ff}
+.pathway-card[data-pathway="technology-digital"] .pathway-icon{color:#7ed9f4}
+.pathway-card[data-pathway="leadership-career"] .pathway-icon{color:#ffd187}
+.pathway-toolbar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.pathway-status{color:rgba(255,255,255,.7);font-size:.84rem;font-weight:750}
+.catalog-jump{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.catalog-jump a{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:.78rem;font-weight:850}
+.catalog-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.catalog-toolbar strong{color:var(--navy);font-size:.9rem}
+.catalog-toolbar .btn{min-height:38px}
+.catalog-grid{min-width:0}
+.cover.pathway-mental-health{background:radial-gradient(circle at 18% 18%,rgba(173,117,255,.35),transparent 34%),linear-gradient(135deg,#172650,#693b91)}
+.cover.pathway-medical-health{background:radial-gradient(circle at 18% 18%,rgba(76,209,171,.32),transparent 34%),linear-gradient(135deg,#073847,#0d7767)}
+.cover.pathway-public-health{background:radial-gradient(circle at 18% 18%,rgba(90,177,236,.30),transparent 34%),linear-gradient(135deg,#15365b,#2a7791)}
+.cover.pathway-clinical-research{background:radial-gradient(circle at 18% 18%,rgba(161,126,236,.30),transparent 34%),linear-gradient(135deg,#252a57,#6e55a2)}
+.cover.pathway-technology-digital{background:radial-gradient(circle at 18% 18%,rgba(62,188,226,.30),transparent 34%),linear-gradient(135deg,#06294b,#086f92)}
+.cover.pathway-leadership-career{background:radial-gradient(circle at 18% 18%,rgba(244,162,28,.34),transparent 34%),linear-gradient(135deg,#35244d,#9b5e1e)}
+.cover.pathway-general{background:radial-gradient(circle at 18% 18%,rgba(90,143,206,.25),transparent 34%),linear-gradient(135deg,var(--navy),var(--blue))}
+
 .controls{background:#fff;border-bottom:1px solid var(--line)}
 .controls-grid{display:grid;grid-template-columns:1.2fr .7fr .7fr .6fr;gap:10px;margin-top:14px}
 .input,.select{width:100%;min-height:42px;border-radius:14px;border:1px solid var(--line);background:#fbfdff;color:var(--ink);padding:11px 13px;outline:none;font-size:.92rem}
@@ -107,6 +152,7 @@ section{padding:58px 0}
 
 @media(max-width:1000px){
   .g4,.g3,.footer-grid{grid-template-columns:repeat(2,1fr)}
+  .pathway-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .controls-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:760px){
@@ -117,7 +163,12 @@ section{padding:58px 0}
   .nav-links a{width:100%;padding:10px 12px;border-radius:13px;background:#f8fbff;text-align:center}
   section{padding:48px 0}
   .hero .container{padding:52px 0}
-  .g4,.g3,.g2,.footer-grid,.controls-grid{grid-template-columns:1fr}
+  .g4,.g3,.g2,.footer-grid,.controls-grid,.pathway-grid{grid-template-columns:1fr}
+  .pathway-card{min-height:190px}
+  .pathway-toolbar{align-items:stretch}
+  .pathway-toolbar .btn{width:100%}
+  .catalog-toolbar{align-items:stretch}
+  .catalog-toolbar .btn{width:100%}
   .actions{flex-direction:column}
   .btn{width:100%;border-radius:14px}
   .card,.panel{padding:16px;border-radius:19px}
@@ -185,6 +236,77 @@ section{padding:58px 0}
   </div>
 </section>
 
+<section class="pathways-section" id="pathways">
+  <div class="container">
+    <div class="title">
+      <span class="label">Explore by pathway</span>
+      <h2>Choose the direction you want to grow</h2>
+      <p>SpeakHub now groups learning into clear pathways so you can move directly toward the skills, credentials and knowledge that fit your goals.</p>
+    </div>
+
+    <div class="pathway-grid" id="pathwayGrid">
+      <button class="pathway-card" type="button" data-pathway="mental-health" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.5 4.5a3 3 0 0 0-4.5 2.6c0 .5.1.9.3 1.3A3.5 3.5 0 0 0 6.5 15H8v4.5M14.5 4.5A3 3 0 0 1 19 7.1c0 .5-.1.9-.3 1.3A3.5 3.5 0 0 1 17.5 15H16v4.5M9.5 4.5c.7.6 1 1.3 1 2.1M14.5 4.5c-.7.6-1 1.3-1 2.1M8 15h8"/></svg></span>
+        <small>Pathway 01</small>
+        <h3>Mental Health</h3>
+        <p>Psychology, mental-health literacy, nursing, counselling and wellbeing learning for students and professionals.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="mental-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+
+      <button class="pathway-card" type="button" data-pathway="medical-health" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5z"/></svg></span>
+        <small>Pathway 02</small>
+        <h3>Medical &amp; Health Sciences</h3>
+        <p>Clinical foundations, patient safety, anatomy, emergency medicine, maternal care and health-science learning.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="medical-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+
+      <button class="pathway-card" type="button" data-pathway="public-health" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4a13 13 0 0 1 0 16M12 4a13 13 0 0 0 0 16"/></svg></span>
+        <small>Pathway 03</small>
+        <h3>Public Health</h3>
+        <p>Epidemiology, population health, nutrition, disease prevention and global-health perspectives.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="public-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+
+      <button class="pathway-card" type="button" data-pathway="clinical-research" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3M8 15h8"/></svg></span>
+        <small>Pathway 04</small>
+        <h3>Clinical Research</h3>
+        <p>Good clinical practice, consent, ethics, research questions, protocols and evidence-based research skills.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="clinical-research">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+
+      <button class="pathway-card" type="button" data-pathway="technology-digital" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></span>
+        <small>Pathway 05</small>
+        <h3>Technology &amp; Digital Skills</h3>
+        <p>Programming, cybersecurity, AI, data and practical digital skills from beginner through advanced learning.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="technology-digital">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+
+      <button class="pathway-card" type="button" data-pathway="leadership-career" aria-pressed="false">
+        <span class="pathway-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 20V5m0 0c4-2 7 2 12 0v9c-5 2-8-2-12 0"/></svg></span>
+        <small>Pathway 06</small>
+        <h3>Leadership &amp; Career Development</h3>
+        <p>Leadership, career growth, communication, community impact and professional-development learning.</p>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="leadership-career">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+      </button>
+    </div>
+
+    <div class="pathway-toolbar">
+      <button class="btn light" id="clearPathwayButton" type="button" hidden>View all pathways</button>
+      <span class="pathway-status" id="activePathwayStatus" aria-live="polite">Showing the full SpeakHub catalogue.</span>
+    </div>
+
+    <nav class="catalog-jump" aria-label="Course catalogue shortcuts">
+      <a href="#health-certificates">Free health certificates</a>
+      <a href="#filters">Search &amp; filter</a>
+      <a href="#courses">All courses</a>
+    </nav>
+  </div>
+</section>
+
 <section class="featured-section">
   <div class="container">
     <div class="title">
@@ -205,7 +327,7 @@ section{padding:58px 0}
     </div>
     <div id="healthCertificateGrid" class="grid g3"></div>
     <div class="actions" style="margin-top:16px">
-      <button class="btn soft" id="showAllHealthBtn" type="button">Show all health courses</button>
+      <button class="btn softBtn" id="showAllHealthBtn" type="button">Show all health courses</button>
     </div>
   </div>
 </section>
@@ -264,12 +386,16 @@ section{padding:58px 0}
   <div class="container">
     <div class="title">
       <span class="label">Course Catalog</span>
-      <h2>Available SpeakHub courses</h2>
-      <p>Only published, quality-checked courses that meet SpeakHub readiness standards appear here.</p>
+      <h2 id="catalogTitle">Available SpeakHub courses</h2>
+      <p id="catalogDescription">Only published, quality-checked courses that meet SpeakHub readiness standards appear here.</p>
     </div>
 
+    <div class="catalog-toolbar">
+      <strong id="resultCount" aria-live="polite">Loading courses...</strong>
+      <button class="btn ghost" id="resetFilters" type="button">Reset catalogue</button>
+    </div>
     <div id="loading" class="loading">Loading courses...</div>
-    <div class="grid g3" id="courseGrid"></div>
+    <div class="grid g3 catalog-grid" id="courseGrid"></div>
   </div>
 </section>
 </main>
@@ -324,6 +450,16 @@ let courses = [];
 let progressMap = {};
 let currentProfile = null;
 let healthOnly = false;
+let activePathway = "all";
+
+const PATHWAYS = Object.freeze({
+  "mental-health":{label:"Mental Health",categories:["mental-health"]},
+  "medical-health":{label:"Medical & Health Sciences",categories:["healthcare-medical"]},
+  "public-health":{label:"Public Health",categories:["public-health"]},
+  "clinical-research":{label:"Clinical Research",categories:["clinical-research"]},
+  "technology-digital":{label:"Technology & Digital Skills",categories:["coding","ai-data","cybersecurity","digital-skills","creative-skills"]},
+  "leadership-career":{label:"Leadership & Career Development",categories:["leadership","career","ngo","teacher-training","parenting","ambassador-training","school-club"]}
+});
 
 const grid = document.getElementById("courseGrid");
 const featuredGrid = document.getElementById("featuredGrid");
@@ -337,6 +473,13 @@ const accessFilter = document.getElementById("accessFilter");
 const levelFilter = document.getElementById("levelFilter");
 const sortFilter = document.getElementById("sortFilter");
 const emptyState = document.getElementById("emptyState");
+const pathwayGrid = document.getElementById("pathwayGrid");
+const clearPathwayButton = document.getElementById("clearPathwayButton");
+const activePathwayStatus = document.getElementById("activePathwayStatus");
+const resultCount = document.getElementById("resultCount");
+const resetFilters = document.getElementById("resetFilters");
+const catalogTitle = document.getElementById("catalogTitle");
+const catalogDescription = document.getElementById("catalogDescription");
 
 function safe(value){return value || "—";}
 function pretty(value){return (value || "—").toString().replaceAll("-", " ");}
@@ -378,11 +521,70 @@ function updateStats(items){
   stat("certCount", items.filter(i => i.certificateEligible === true).length);
   stat("catCount", new Set(items.map(i => i.category).filter(Boolean)).size);
 }
+function coursePathway(item){
+  const category=normalize(item?.category);
+  return Object.entries(PATHWAYS).find(([,pathway])=>pathway.categories.includes(category))?.[0]||"general";
+}
+function courseMatchesPathway(item,key=activePathway){
+  return key==="all" || coursePathway(item)===key;
+}
+function renderPathwayState(){
+  Object.keys(PATHWAYS).forEach(key=>{
+    const count=courses.filter(item=>courseMatchesPathway(item,key)).length;
+    document.querySelectorAll(`[data-pathway-count="${key}"]`).forEach(el=>{
+      el.textContent=`${count} course${count===1?"":"s"}`;
+    });
+    document.querySelectorAll(`[data-pathway="${key}"]`).forEach(card=>{
+      card.setAttribute("aria-pressed",String(activePathway===key));
+      card.disabled=count===0;
+    });
+  });
+  const selected=PATHWAYS[activePathway];
+  clearPathwayButton.hidden=!selected;
+  activePathwayStatus.textContent=selected?`Selected pathway: ${selected.label}.`:"Showing the full SpeakHub catalogue.";
+  catalogTitle.textContent=selected?selected.label:"Available SpeakHub courses";
+  catalogDescription.textContent=selected
+    ? `Courses currently available in the ${selected.label} pathway. Use the filters below to narrow the list further.`
+    : "Only published, quality-checked courses that meet SpeakHub readiness standards appear here.";
+}
+function selectPathway(key){
+  if(!PATHWAYS[key])return;
+  activePathway=key;
+  healthOnly=false;
+  categoryFilter.value="all";
+  audienceFilter.value="all";
+  accessFilter.value="all";
+  levelFilter.value="all";
+  searchInput.value="";
+  renderPathwayState();
+  render();
+  document.getElementById("courses")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function resetCatalogue({scroll=false}={}){
+  activePathway="all";
+  healthOnly=false;
+  searchInput.value="";
+  categoryFilter.value="all";
+  audienceFilter.value="all";
+  accessFilter.value="all";
+  levelFilter.value="all";
+  sortFilter.value="featured";
+  renderPathwayState();
+  render();
+  if(scroll)document.getElementById("courses")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+pathwayGrid?.addEventListener("click",event=>{
+  const card=event.target.closest("[data-pathway]");
+  if(card&&!card.disabled)selectPathway(card.dataset.pathway);
+});
+clearPathwayButton?.addEventListener("click",()=>resetCatalogue({scroll:true}));
+resetFilters?.addEventListener("click",()=>resetCatalogue());
 function progressPercent(item){
   const p = progressMap[item.id] || {};
   return Number(p.percent || p.progress || 0);
 }
 function courseCard(item, featured=false){
+  const pathwayKey=coursePathway(item);
   const cover = item.coverUrl ? `<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title)}">` : "";
   const percent = Math.max(0, Math.min(100, progressPercent(item)));
   const id = encodeURIComponent(item.id);
@@ -390,7 +592,7 @@ function courseCard(item, featured=false){
   const premiumPreview = access !== "free" ? `<a class="btn gold" href="course-player.html?id=${id}&preview=1">Preview</a>` : "";
   return `
     <article class="card">
-      <div class="cover">
+      <div class="cover pathway-${pathwayKey}">
         ${cover}
         <strong>${safe(item.title || "Untitled Course")}</strong>
       </div>
@@ -451,12 +653,14 @@ function renderHealthCertificates(){
 }
 function showAllHealthCourses(){
   healthOnly=true;
+  activePathway="all";
   categoryFilter.value="all";
   accessFilter.value="free";
   levelFilter.value="all";
   searchInput.value="";
+  renderPathwayState();
   render();
-  document.getElementById("filters")?.scrollIntoView({behavior:"smooth",block:"start"});
+  document.getElementById("courses")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 showAllHealthBtn?.addEventListener("click",showAllHealthCourses);
 function render(){
@@ -489,8 +693,9 @@ function render(){
     const okAcc = acc === "all" || access === acc || (acc === "paid" && access === "premium");
     const okL = level === "all" || item.level === level || item.difficulty === level;
     const okHealth = !healthOnly || isHealthCertificateCourse(item);
+    const okPathway = courseMatchesPathway(item);
 
-    return okS && okC && okA && okAcc && okL && okHealth;
+    return okS && okC && okA && okAcc && okL && okHealth && okPathway;
   });
 
   if(sort === "featured") filtered.sort((a,b)=>(b.featured===true)-(a.featured===true)||(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
@@ -499,6 +704,7 @@ function render(){
   if(sort === "certificate") filtered.sort((a,b)=>(b.certificateEligible===true)-(a.certificateEligible===true));
 
   grid.innerHTML = filtered.map(i => courseCard(i)).join("");
+  resultCount.textContent=`${filtered.length} course${filtered.length===1?"":"s"} shown`;
   emptyState.style.display = filtered.length ? "none" : "block";
 }
 async function loadProgress(user){
@@ -540,6 +746,7 @@ async function loadCourses(){
     updateStats(courses);
     renderFeatured();
     renderHealthCertificates();
+    renderPathwayState();
     render();
   }catch(error){
     console.error(error);
@@ -551,6 +758,7 @@ async function loadCourses(){
     updateStats(courses);
     renderFeatured();
     renderHealthCertificates();
+    renderPathwayState();
     render();
 
     if(!courses.length){
@@ -624,11 +832,12 @@ courseModal.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if(e.key === "Escape") closeCoursePreview();
 });
-[searchInput,categoryFilter,audienceFilter,accessFilter,levelFilter,sortFilter].forEach(el=>{
-  const update=()=>{healthOnly=false;render()};
+[searchInput,categoryFilter,audienceFilter,accessFilter,levelFilter].forEach(el=>{
+  const update=()=>{healthOnly=false;activePathway="all";renderPathwayState();render()};
   el.addEventListener("input",update);
   el.addEventListener("change",update);
 });
+sortFilter.addEventListener("change",render);
 
 onAuthStateChanged(auth, async user => {
   currentProfile = await loadProfile(user);
@@ -639,6 +848,8 @@ onAuthStateChanged(auth, async user => {
     loading.textContent = "Create an account or sign in to unlock the SpeakHub course catalogue.";
     featuredGrid.innerHTML = '<div class="notice">Featured learning pathways are available after login.</div>';
     healthCertificateGrid.innerHTML = '<div class="notice">Sign in to browse free health and mental-health certificate pathways.</div>';
+    resultCount.textContent="Sign in to browse courses";
+    renderPathwayState();
     grid.innerHTML = '<div class="notice">SpeakHub courses are protected for registered learners. Sign in to browse, start courses and track progress.</div>';
     emptyState.style.display = "none";
     updateStats([]);
@@ -652,6 +863,8 @@ onAuthStateChanged(auth, async user => {
     loading.textContent = "Your account is awaiting approval. Course access will unlock after approval.";
     featuredGrid.innerHTML = '<div class="notice">Learning access is pending account approval.</div>';
     healthCertificateGrid.innerHTML = '<div class="notice">Health certificate pathways will unlock after account approval.</div>';
+    resultCount.textContent="Catalogue access pending approval";
+    renderPathwayState();
     grid.innerHTML = '<div class="notice">Your course catalogue will appear here once your account is approved.</div>';
     emptyState.style.display = "none";
     updateStats([]);
