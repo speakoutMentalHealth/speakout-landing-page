@@ -1107,7 +1107,7 @@ function publicCertificateProjection(record = {}, docId = "") {
     recipientName: clean(record.recipientName),
     awardTitle: clean(record.awardTitle || record.courseTitle || record.title),
     issuer: clean(record.issuer || record.externalProvider || record.provider || "SpeakOut Mental Health Outreach"),
-    provider: clean(record.provider || record.externalProvider || record.issuer),
+    provider: clean(record.provider || record.externalProviderName),
     issueDate: clean(record.issueDate || record.completionDate),
     status: clean(record.status || "active"),
     certificateNumber: clean(record.certificateNumber || docId),
