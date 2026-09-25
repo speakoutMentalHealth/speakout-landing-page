@@ -114,16 +114,29 @@ function clearResolvedSchool(){
   if(byId("schoolResolvedName")) byId("schoolResolvedName").textContent="";
   if(byId("schoolResolvedMeta")) byId("schoolResolvedMeta").textContent="";
   if(byId("schoolName")) byId("schoolName").value="";
-  syncStudentFields();
+  syncSchoolRoleFields();
 }
 
-function syncStudentFields(){
+function syncSchoolRoleFields(){
   const role=normalize(value("role"));
-  const show=role==="student"&&Boolean(resolvedSchool);
-  const wrap=byId("studentVerificationFields");
-  if(wrap) wrap.style.display=show?"block":"none";
-  const reg=byId("registrationNumber");
-  if(reg) reg.required=show;
+  const schoolLinked=Boolean(resolvedSchool);
+  const student=role==="student"&&schoolLinked;
+  const teacher=role==="teacher"&&schoolLinked;
+  const parent=role==="parent"&&schoolLinked;
+
+  const studentWrap=byId("studentVerificationFields");
+  const teacherWrap=byId("teacherVerificationFields");
+  const parentWrap=byId("parentVerificationFields");
+  if(studentWrap) studentWrap.style.display=student?"block":"none";
+  if(teacherWrap) teacherWrap.style.display=teacher?"block":"none";
+  if(parentWrap) parentWrap.style.display=parent?"block":"none";
+
+  const registrationNumber=byId("registrationNumber");
+  const staffId=byId("staffId");
+  const parentRelationship=byId("parentRelationship");
+  if(registrationNumber) registrationNumber.required=student;
+  if(staffId) staffId.required=teacher;
+  if(parentRelationship) parentRelationship.required=parent;
 }
 
 async function resolveSchoolCode(){
@@ -138,7 +151,7 @@ async function resolveSchoolCode(){
     byId("schoolResolvedName").textContent=`✓ ${result.school.schoolName}`;
     byId("schoolResolvedMeta").textContent=[result.school.schoolType,result.school.city,result.school.state].filter(Boolean).join(" • ");
     byId("schoolResolvedBox").classList.add("show","verify-ok");
-    syncStudentFields();
+    syncSchoolRoleFields();
     return resolvedSchool;
   }catch(error){
     clearResolvedSchool();
@@ -155,7 +168,7 @@ byId("verifySchoolBtn")?.addEventListener("click",async()=>{
 byId("schoolCode")?.addEventListener("input",()=>{
   if(clean(byId("schoolCode").value).toUpperCase()!==resolvedCode) clearResolvedSchool();
 });
-byId("role")?.addEventListener("change",syncStudentFields);
+byId("role")?.addEventListener("change",syncSchoolRoleFields);
 
 async function createIndividualProfile(credential,data){
   await setDoc(doc(db,"users",credential.user.uid),{
@@ -184,8 +197,19 @@ async function handleRegister(event){
   }
   const schoolLinked=Boolean(resolvedSchool);
   const registrationNumber=value("registrationNumber");
+  const staffId=value("staffId");
+  const parentRelationship=value("parentRelationship");
+  if(schoolLinked&&!["student","teacher","parent"].includes(role)){
+    showRegister("School-linked registration is available for students, teachers and parents/guardians. Choose the role that applies to you.","error");return;
+  }
   if(schoolLinked&&role==="student"&&!registrationNumber){
     showRegister("Enter your student registration or matric number so your school can verify you.","error");return;
+  }
+  if(schoolLinked&&role==="teacher"&&!staffId){
+    showRegister("Enter your Staff ID or Employee Number so your school can verify you.","error");return;
+  }
+  if(schoolLinked&&role==="parent"&&!parentRelationship){
+    showRegister("Enter your relationship to the student so the school can verify your parent/guardian account.","error");return;
   }
 
   let credential=null;
@@ -198,8 +222,11 @@ async function handleRegister(event){
       await onboardingApi.joinSchool({
         firstName,lastName,fullName,phone,role,schoolCode,
         registrationNumber,
-        department:value("department"),
-        level:value("level"),
+        staffId,
+        department:role==="teacher"?value("staffDepartment"):value("department"),
+        level:role==="student"?value("level"):"",
+        position:role==="teacher"?value("staffPosition"):"",
+        relationship:role==="parent"?parentRelationship:"",
         location:locationValue,
         reason,
         contentType
