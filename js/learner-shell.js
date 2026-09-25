@@ -32,7 +32,7 @@
     var nav=active.closest(".links,.nav-links");
     if(!nav) return;
     requestAnimationFrame(function(){
-      try{active.scrollIntoView({block:"nearest",inline:"center",behavior:"instant"});}
+      try{active.scrollIntoView({block:"nearest",inline:"center",behavior:"auto"});}
       catch(_){active.scrollIntoView(false);}
     });
   }
