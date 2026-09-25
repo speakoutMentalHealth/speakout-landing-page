@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Install Verified Course Catalogue | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--green:#0f8f6f;--greenSoft:#e9fbf5;--red:#991b1b;--redSoft:#fee2e2;--line:#e5edf6;--bg:#f7f9fc;--muted:#637083}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,Arial,sans-serif;background:var(--bg);color:#111827}.wrap{width:min(900px,92%);margin:60px auto}.panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:0 18px 44px rgba(7,21,43,.10)}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.02;color:var(--navy);margin:0 0 16px}p{color:var(--muted);line-height:1.65}.notice{padding:14px;border-radius:16px;background:var(--soft);color:var(--blue);font-weight:800;margin:14px 0}.ok{background:var(--greenSoft);color:var(--green)}.bad{background:var(--redSoft);color:var(--red)}button,a{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 18px;font:inherit;font-weight:900;text-decoration:none;cursor:pointer}.primary{background:var(--blue);color:#fff}.soft{background:var(--soft);color:var(--blue)}button:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.stat{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:14px}.stat strong{display:block;font-size:1.7rem;color:var(--blue)}@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.actions{flex-direction:column}button,a{width:100%;border-radius:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <h1>Phase 2 Verified Catalogue</h1>
+    <p>This installs the first curated set of external learning pathways into the SpeakHub <strong>courses</strong> collection. Existing course documents are preserved; matching Phase 2 IDs are updated in place.</p>
+    <div class="grid">
+      <div class="stat"><strong>24</strong><span>Courses / pathways</span></div>
+      <div class="stat"><strong>5</strong><span>Global providers</span></div>
+      <div class="stat"><strong>7</strong><span>Core categories</span></div>
+      <div class="stat"><strong>Free</strong><span>Learning access</span></div>
+    </div>
+    <div id="seedStatus" class="notice">Checking administrator access...</div>
+    <div id="seedResult" class="notice" style="display:none"></div>
+    <div class="actions">
+      <button id="seedButton" class="primary" disabled>Install Verified Catalogue</button>
+      <a class="soft" href="admin-courses.html">Back to Courses</a>
+      <a class="soft" href="speakhub.html">Open SpeakHub</a>
+    </div>
+    <p><strong>Credential rule:</strong> SpeakHub displays the original provider as issuer. These records do not convert a provider completion credential into a SpeakOut professional certification or academic qualification.</p>
+  </div>
+</div>
+<script type="module" src="seed-phase2-courses.js"></script>
+<script type="module">
+const button=document.getElementById("seedButton");
+const result=document.getElementById("seedResult");
+button.addEventListener("click",async()=>{
+  button.disabled=true;
+  result.style.display="block";
+  result.className="notice";
+  result.textContent="Installing verified courses...";
+  try{
+    const out=await window.installPhase2VerifiedCatalogue();
+    result.className="notice ok";
+    result.textContent="Catalogue installed successfully: "+out.installed+" of "+out.total+" course records written to Firestore.";
+  }catch(error){
+    result.className="notice bad";
+    result.textContent=error?.message||"Catalogue installation failed.";
+    button.disabled=false;
+  }
+});
+</script>
+</body>
+</html>
