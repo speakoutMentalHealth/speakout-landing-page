@@ -3,25 +3,28 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const read = path => readFileSync(new URL("../"+path, import.meta.url), "utf8");
+const combined = (page,module) => read(page) + "\n" + read(module);
+const stripImports = source => source.replace(/^\s*import[\s\S]*?;\s*$/gmu,"");
 
-function moduleBodies(source){
-  return [...source.matchAll(/<script type="module">([\s\S]*?)<\/script>/gu)].map(match =>
-    match[1]
-      .replace(/^import[\s\S]*?from\s+["'][^"']+["'];?\s*$/gmu,"")
-      .replace(/^import\s+["'][^"']+["'];?\s*$/gmu,"")
-  );
+function moduleSources(file){
+  const page=read(file);
+  const sources=[...page.matchAll(/<script type="module">([\s\S]*?)<\/script>/gu)].map(match=>match[1]);
+  for(const match of page.matchAll(/<script type="module" src="([^"]+)"><\/script>/gu)){
+    sources.push(read(match[1]));
+  }
+  return sources;
 }
 
 test("Credential Passport uses authenticated server APIs instead of browser Firestore writes", () => {
-  const page=read("credential-passport.html");
+  const source=combined("credential-passport.html","js/learner/credential-passport.js");
   const client=read("js/platform-api.js");
   const worker=read("workers/platform-api/src/index.js");
 
-  assert.match(page,/credentialApi\.list\(\)/u);
-  assert.match(page,/credentialApi\.submit\(payload\)/u);
-  assert.doesNotMatch(page,/firebase-firestore|addDoc\(|setDoc\(|updateDoc\(|deleteDoc\(/u);
-  assert.match(page,/Professional Certification \(provider-reported\)/u);
-  assert.match(page,/does not grant professional licensure/u);
+  assert.match(source,/credentialApi\.list\(\)/u);
+  assert.match(source,/credentialApi\.submit\(payload\)/u);
+  assert.doesNotMatch(source,/firebase-firestore|addDoc\(|setDoc\(|updateDoc\(|deleteDoc\(/u);
+  assert.match(source,/Professional Certification \(provider-reported\)/u);
+  assert.match(source,/does not grant professional licensure/u);
   assert.match(client,/\/v1\/credentials\/list/u);
   assert.match(client,/\/v1\/credentials\/submit/u);
   assert.match(worker,/if \(path === "\/v1\/credentials\/list"\)/u);
@@ -58,7 +61,7 @@ test("manual credentials are denied to learner Firestore clients", () => {
 
 test("public certificate verification exposes only the minimal projection", () => {
   const worker=read("workers/platform-api/src/index.js");
-  const center=read("certificate-center.html");
+  const center=combined("certificate-center.html","js/learner/certificate-center.js");
   const view=read("certificate-view.html");
   const projection=worker.match(/function publicCertificateProjection[\s\S]*?\n\}/u)?.[0]||"";
 
@@ -93,23 +96,23 @@ test("portfolio navigation uses the same shared role-nav header as the dashboard
 });
 
 test("portfolio unifies verified manual credentials without duplicating canonical certificates", () => {
-  const page=read("learning-portfolio.html");
+  const source=combined("learning-portfolio.html","js/learner/learning-portfolio.js");
   const worker=read("workers/platform-api/src/index.js");
-  assert.match(page,/function unifiedCredentialRecords\(certificates=\[\],manual=\[\]\)/u);
-  assert.match(page,/sourceCredentialIds/u);
-  assert.match(page,/dashboard\.externalCredentials/u);
-  assert.match(page,/const credentialNames=credentials/u);
-  assert.match(page,/Credential Passport/u);
+  assert.match(source,/function unifiedCredentialRecords\(certificates=\[\],manual=\[\]\)/u);
+  assert.match(source,/sourceCredentialIds/u);
+  assert.match(source,/dashboard\.externalCredentials/u);
+  assert.match(source,/const credentialNames=credentials/u);
+  assert.match(source,/Credential Passport/u);
   assert.match(worker,/externalCredentials: credentialPage\.documents\.map/u);
 });
 
 test("certificate list uses the same canonical plus verified Passport view", () => {
-  const page=read("certificates.html");
-  assert.match(page,/function unifiedCredentials\(dashboard=\{\}\)/u);
-  assert.match(page,/dashboard\.externalCredentials/u);
-  assert.match(page,/sourceIds/u);
-  assert.match(page,/linkedCertificateId/u);
-  assert.match(page,/credential-passport\.html/u);
+  const source=combined("certificates.html","js/learner/certificates.js");
+  assert.match(source,/function unifiedCredentials\(dashboard=\{\}\)/u);
+  assert.match(source,/dashboard\.externalCredentials/u);
+  assert.match(source,/sourceIds/u);
+  assert.match(source,/linkedCertificateId/u);
+  assert.match(source,/credential-passport\.html/u);
 });
 
 test("production workflow deploys Firestore rules when credential authority changes", () => {
@@ -130,25 +133,23 @@ test("credential unification browser modules remain syntactically valid", () => 
     "certificate-view.html",
     "certificates.html"
   ]){
-    const bodies=moduleBodies(read(file));
-    assert.ok(bodies.length>0,file+": module script missing");
-    for(const body of bodies){
-      assert.doesNotThrow(()=>new Function(body),file);
+    const sources=moduleSources(file);
+    assert.ok(sources.length>0,file+": module script missing");
+    for(const source of sources){
+      assert.doesNotThrow(()=>new Function(stripImports(source)),file);
     }
   }
 });
 
 test("Portfolio laptop navigation cannot inherit the legacy mobile dropdown", () => {
   const page=read("learning-portfolio.html");
-  const shared=read("dashboard-shared.css");
+  const styles=read("css/learner-portal.css");
+  const shell=read("js/learner-shell.js");
 
   assert.doesNotMatch(page,/dashboard-shared\.css/u);
-  assert.match(page,/@media\(min-width:761px\)[\s\S]*?\.nav #roleNav\{/u);
-  assert.match(page,/position:static!important/u);
-  assert.match(page,/\.nav #roleNav \.btn,\.nav #roleNav a,\.nav #roleNav button\{[\s\S]*?width:auto!important/u);
-
-  assert.match(shared,/^\.menu\{display:none!important\}/mu);
-  assert.match(shared,/@media\(max-width:760px\)\{/u);
-  assert.doesNotMatch(shared,/^\s*\.btn\{width:100%/mu);
-  assert.doesNotMatch(shared,/^\s*\.nav-links\{display:none;position:absolute/mu);
+  assert.match(page,/css\/learner-portal\.css/u);
+  assert.match(styles,/\.links,\.nav-links\{[\s\S]*?overflow-x:auto/u);
+  assert.match(styles,/@media\(max-width:1100px\)[\s\S]*?overflow-x:auto/u);
+  assert.match(styles,/@media\(max-width:760px\)[\s\S]*?position:static!important/u);
+  assert.match(shell,/document\.body\.classList\.remove\("menu-open"\)/u);
 });
