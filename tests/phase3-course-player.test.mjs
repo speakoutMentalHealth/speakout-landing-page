@@ -104,7 +104,7 @@ test("learner dashboards use the authenticated API instead of incompatible Fires
     assert.match(module, /learningApi\.dashboard\(\)/u, base);
     assert.doesNotMatch(module, /SO\.getMine\("(?:userProgress|certificates)"/u, base);
   }
-  assert.match(read("js/learner/my-courses.js"), /No active learning found/u);
+  assert.match(read("js/learner/my-courses.js"), /No enrolled courses found/u);
 });
 
 test("rich internal course publishing keeps answer keys behind the secure Worker", () => {
