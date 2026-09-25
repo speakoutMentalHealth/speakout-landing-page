@@ -1760,7 +1760,7 @@ async function route(request, env, path, data) {
     const requestedCourseId = safeId(data.courseId, "course identifier");
     const page = await queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid);
     const records = page.documents.filter(item => item.courseId === requestedCourseId)
-      .sort((a, b) => String(b.updatedAt || b.submittedAt || item.startedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || a.startedAt || "")));
+      .sort((a, b) => String(b.updatedAt || b.submittedAt || b.startedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || a.startedAt || "")));
     return { record: records[0] ? publicExternalLearningRecord(records[0]) : null };
   }
 
