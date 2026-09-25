@@ -401,6 +401,10 @@ const linksByRole = {
       "certificate-center.html"
     ],
     [
+      "Portfolio",
+      "learning-portfolio.html"
+    ],
+    [
       "Credentials",
       "credential-passport.html"
     ],
@@ -433,6 +437,10 @@ const linksByRole = {
       "certificate-center.html"
     ],
     [
+      "Portfolio",
+      "learning-portfolio.html"
+    ],
+    [
       "Payments",
       "payment-history.html"
     ]
@@ -459,6 +467,10 @@ const linksByRole = {
     [
       "Certificates",
       "certificate-center.html"
+    ],
+    [
+      "Portfolio",
+      "learning-portfolio.html"
     ],
     [
       "Courses",
@@ -567,6 +579,10 @@ const linksByRole = {
     [
       "Certificates",
       "certificate-center.html"
+    ],
+    [
+      "Portfolio",
+      "learning-portfolio.html"
     ]
   ],
 
@@ -583,6 +599,10 @@ const linksByRole = {
     [
       "Certificates",
       "certificate-center.html"
+    ],
+    [
+      "Portfolio",
+      "learning-portfolio.html"
     ]
   ]
 
