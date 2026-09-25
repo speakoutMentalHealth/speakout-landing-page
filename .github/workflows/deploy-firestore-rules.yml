@@ -87,8 +87,11 @@ jobs:
           project_id = sys.argv[1]
           ruleset_name = sys.argv[2]
           payload = {
-              "name": f"projects/{project_id}/releases/cloud.firestore",
-              "rulesetName": ruleset_name
+              "release": {
+                  "name": f"projects/{project_id}/releases/cloud.firestore",
+                  "rulesetName": ruleset_name
+              },
+              "updateMask": "rulesetName"
           }
           Path("/tmp/firestore-release.json").write_text(
               json.dumps(payload),
