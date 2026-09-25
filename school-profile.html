@@ -27,7 +27,16 @@
 <input id="state" placeholder="State"/>
 <input id="city" placeholder="City"/>
 <input disabled="" id="schoolCode" placeholder="School Code"/>
-</div><textarea id="address" placeholder="School Address"></textarea><button class="btn primary" type="submit">Update Profile</button></form></div></div></section></main><footer class="footer"><div class="container">SpeakOut School Portal</div></footer>
+</div><textarea id="address" placeholder="School Address"></textarea><button class="btn primary" type="submit">Update Profile</button></form></div>
+<div class="panel" style="margin-top:16px">
+<span class="label">Student Enrollment</span>
+<h2>Share your verified SpeakHub join link</h2>
+<p style="color:var(--muted);line-height:1.6">Use this link or turn it into a QR code on your school website, noticeboard or student flyer. The school code is prefilled; students still provide their registration/matric number and await school approval.</p>
+<div class="form-grid">
+<input disabled id="studentJoinLink" placeholder="Student join link"/>
+<button class="btn gold" id="copyStudentJoinLink" type="button">Copy Student Join Link</button>
+</div>
+</div></div></section></main><footer class="footer"><div class="container">SpeakOut School Portal</div></footer>
 <script src="school-portal-guard.js" type="module"></script>
 <script type="module">
 import { db } from "./firebase-config.js";
@@ -35,8 +44,27 @@ import { doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebas
 import { requireSchoolAdmin } from "./school-portal-guard.js";
 let school=null; const statusBox=document.getElementById("statusBox");
 function show(msg,type="info"){statusBox.textContent=msg;statusBox.className="notice "+(type==="error"?"bad":type==="success"?"ok":"");}
-function fill(s){schoolTitle.textContent=s.schoolName||"School Profile";schoolName.value=s.schoolName||"";schoolType.value=s.schoolType||"";principalName.value=s.principalName||"";email.value=s.email||"";phone.value=s.phone||"";state.value=s.state||"";city.value=s.city||"";schoolCode.value=s.schoolCode||"";address.value=s.address||"";}
-profileForm.addEventListener("submit",async e=>{e.preventDefault();await updateDoc(doc(db,"schools",school.id),{schoolName:schoolName.value,schoolType:schoolType.value,principalName:principalName.value,email:email.value,phone:phone.value,state:state.value,city:city.value,address:address.value,updatedAt:serverTimestamp()});show("School profile updated.","success");});
+function fill(s){
+  schoolTitle.textContent=s.schoolName||"School Profile";
+  schoolName.value=s.schoolName||"";
+  schoolName.disabled=true;
+  schoolType.value=s.schoolType||"";
+  principalName.value=s.principalName||s.adminName||"";
+  email.value=s.email||s.adminEmail||"";
+  phone.value=s.phone||s.adminPhone||"";
+  state.value=s.state||"";
+  city.value=s.city||"";
+  schoolCode.value=s.schoolCode||"";
+  address.value=s.address||"";
+  const link=new URL("auth.html",location.href);
+  link.searchParams.set("mode","join");
+  link.searchParams.set("join","student");
+  if(s.schoolCode) link.searchParams.set("school",s.schoolCode);
+  link.hash="access";
+  studentJoinLink.value=s.schoolCode?link.href:"School code will appear after approval.";
+}
+profileForm.addEventListener("submit",async e=>{e.preventDefault();await updateDoc(doc(db,"schools",school.id),{schoolType:schoolType.value,principalName:principalName.value,email:email.value,phone:phone.value,state:state.value,city:city.value,address:address.value,updatedAt:serverTimestamp()});show("School profile updated.","success");});
+copyStudentJoinLink.addEventListener("click",async()=>{if(!school?.schoolCode)return;await navigator.clipboard.writeText(studentJoinLink.value);show("Student join link copied.","success");});
 requireSchoolAdmin(async (user,profile,s)=>{school=s;if(!school){show("No school profile found.","error");return;}fill(school);show("School profile loaded.","success");});
 </script><script defer="" src="portal-ui.js"></script>
 </body></html>

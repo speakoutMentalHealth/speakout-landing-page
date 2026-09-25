@@ -146,6 +146,8 @@ import {
   doc,
   getDoc,
   updateDoc,
+  setDoc,
+  writeBatch,
   serverTimestamp,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -164,14 +166,57 @@ function normalize(value){return (value || "").toString().toLowerCase().trim();}
 function pill(value){return `<span class="pill ${normalize(value)}">${safe(value)}</span>`;}
 
 function generateSchoolCode(school){
-  if(school.schoolCode) return school.schoolCode;
   const base = (school.schoolName || "SCH").replace(/[^a-zA-Z]/g,"").substring(0,3).toUpperCase() || "SCH";
   const rand = Math.random().toString(36).substring(2,6).toUpperCase();
   return `${base}-${rand}`;
 }
 
+async function uniqueSchoolCode(school){
+  if(school.schoolCode){
+    const existing = await getDoc(doc(db,"schoolDirectory",school.schoolCode));
+    if(!existing.exists() || existing.data().schoolId === school.id) return school.schoolCode;
+  }
+
+  for(let attempt=0;attempt<8;attempt++){
+    const candidate = generateSchoolCode(school);
+    const existing = await getDoc(doc(db,"schoolDirectory",candidate));
+    if(!existing.exists()) return candidate;
+  }
+
+  throw new Error("Could not generate a unique school code. Please try again.");
+}
+
 async function requireAdmin(callback){
   return requireRoles(["admin","super_admin"],callback);
+}
+
+async function backfillSchoolDirectory(items){
+  const eligible = items.filter(item =>
+    item.schoolCode &&
+    ["approved","active"].includes(normalize(item.status))
+  );
+
+  for(const school of eligible){
+    try{
+      await setDoc(
+        doc(db,"schoolDirectory",school.schoolCode),
+        {
+          schoolId:school.id,
+          schoolCode:school.schoolCode,
+          schoolName:school.schoolName || school.name || "Partner School",
+          schoolType:school.schoolType || "",
+          city:school.city || "",
+          state:school.state || "",
+          country:school.country || "",
+          status:"active",
+          updatedAt:serverTimestamp()
+        },
+        {merge:true}
+      );
+    }catch(error){
+      console.warn("School directory backfill skipped:",school.id,error);
+    }
+  }
 }
 
 function updateStats(){
@@ -190,7 +235,7 @@ function filteredItems(){
   return ITEMS.filter(item => {
     const text = `
       ${item.schoolName || ""}
-      ${item.email || ""}
+      ${item.email || item.adminEmail || ""}
       ${item.schoolCode || ""}
       ${item.city || ""}
       ${item.state || ""}
@@ -217,7 +262,7 @@ function render(){
     return `
       <tr class="row">
         <td>${safe(item.schoolName)}</td>
-        <td>${safe(item.email)}</td>
+        <td>${safe(item.email || item.adminEmail)}</td>
         <td>${safe(item.schoolCode)}</td>
         <td>${safe(locationText)}</td>
         <td>${students}</td>
@@ -262,8 +307,10 @@ function detailHTML(item){
     detail("School Type",item.schoolType),
     detail("Ownership",item.ownership),
     detail("School Size",item.schoolSize),
-    detail("Email",item.email),
-    detail("Phone",item.phone),
+    detail("Primary Admin",item.adminName),
+    detail("Admin Position",item.adminPosition),
+    detail("Email",item.email || item.adminEmail),
+    detail("Phone",item.phone || item.adminPhone),
     detail("WhatsApp",item.whatsapp),
     detail("Website",item.schoolWebsite),
     detail("Principal",item.principalName),
@@ -279,19 +326,103 @@ function detailHTML(item){
 
 async function updateSchoolStatus(id,status){
   const school = ITEMS.find(x => x.id === id);
-  const payload = {
-    status,
-    updatedAt:serverTimestamp(),
-    reviewedAt:serverTimestamp()
-  };
+  if(!school) throw new Error("School record not found.");
 
-  if(status === "approved" || status === "active"){
-    payload.schoolCode = generateSchoolCode(school || {});
-    payload.approvedAt = serverTimestamp();
+  try{
+    show("Updating school and administrator access...","warn");
+
+    const batch = writeBatch(db);
+    const schoolRef = doc(db,"schools",id);
+    const adminUid = school.adminUid || id;
+    const adminRef = doc(db,"users",adminUid);
+    const reviewer = auth.currentUser?.uid || "";
+
+    const schoolPayload = {
+      status,
+      updatedAt:serverTimestamp(),
+      reviewedAt:serverTimestamp(),
+      reviewedBy:reviewer
+    };
+
+    if(status === "approved" || status === "active"){
+      const schoolCode = await uniqueSchoolCode(school);
+      schoolPayload.status = "approved";
+      schoolPayload.activationStatus = "activated";
+      schoolPayload.schoolCode = schoolCode;
+      schoolPayload.approvedAt = serverTimestamp();
+
+      batch.set(
+        doc(db,"schoolDirectory",schoolCode),
+        {
+          schoolId:id,
+          schoolCode,
+          schoolName:school.schoolName || school.name || "Partner School",
+          schoolType:school.schoolType || "",
+          city:school.city || "",
+          state:school.state || "",
+          country:school.country || "",
+          status:"active",
+          updatedAt:serverTimestamp()
+        },
+        {merge:true}
+      );
+
+      batch.set(
+        adminRef,
+        {
+          role:"school_admin",
+          status:"approved",
+          approved:true,
+          schoolId:id,
+          schoolCode,
+          schoolName:school.schoolName || school.name || "",
+          schoolVerificationStatus:"approved",
+          approvedAt:serverTimestamp(),
+          approvedBy:reviewer,
+          updatedAt:serverTimestamp()
+        },
+        {merge:true}
+      );
+    }else{
+      batch.set(
+        adminRef,
+        {
+          status,
+          approved:false,
+          schoolVerificationStatus:status,
+          updatedAt:serverTimestamp()
+        },
+        {merge:true}
+      );
+
+      if(school.schoolCode){
+        batch.set(
+          doc(db,"schoolDirectory",school.schoolCode),
+          {
+            schoolId:id,
+            schoolCode:school.schoolCode,
+            schoolName:school.schoolName || school.name || "Partner School",
+            status:"inactive",
+            updatedAt:serverTimestamp()
+          },
+          {merge:true}
+        );
+      }
+    }
+
+    batch.update(schoolRef,schoolPayload);
+    await batch.commit();
+
+    show(
+      status === "approved" || status === "active"
+        ? "School approved. School code created and primary administrator activated."
+        : `School status updated to ${status}.`,
+      "ok"
+    );
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not update school status.","bad");
   }
-
-  await updateDoc(doc(db,"schools",id),payload);
-  show("School status updated.","ok");
 }
 
 function startRealtime(){
@@ -305,6 +436,7 @@ function startRealtime(){
       ITEMS.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       updateStats();
       render();
+      backfillSchoolDirectory(ITEMS);
       show("Admin Schools loaded.","ok");
     },
     error => {
@@ -322,7 +454,7 @@ function exportCSV(){
   data.forEach(item => {
     const row = [
       item.schoolName || "",
-      item.email || "",
+      item.email || item.adminEmail || "",
       item.schoolCode || "",
       item.schoolType || "",
       item.city || "",
@@ -331,7 +463,7 @@ function exportCSV(){
       item.estimatedStudents || item.students || "",
       item.status || "",
       item.principalName || "",
-      item.phone || ""
+      item.phone || item.adminPhone || ""
     ].map(v => `"${String(v).replaceAll('"','""')}"`);
     lines.push(row.join(","));
   });

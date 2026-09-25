@@ -425,7 +425,7 @@ input:focus,textarea:focus,select:focus{
 <input id="email" placeholder="Email, if available" type="email"/>
 <input id="phone" placeholder="Phone, if available"/>
 <input id="classLevel" placeholder="Class / Level"/>
-<input id="admissionNumber" placeholder="School Admission Number"/>
+<input id="admissionNumber" placeholder="Registration / Matric Number"/>
 </div>
 <textarea id="bio" placeholder="Optional notes"></textarea>
 <button class="btn primary" id="addButton" type="submit">
@@ -441,7 +441,7 @@ input:focus,textarea:focus,select:focus{
           Find students
         </h2>
 <div class="form-grid">
-<input id="searchInput" placeholder="Search name, email, Student ID, class..."/>
+<input id="searchInput" placeholder="Search name, email, Student ID, reg/matric number, class..."/>
 <select id="statusFilter">
 <option value="all">
               All Statuses
@@ -704,6 +704,7 @@ function render(){
         user.studentId,
         user.classLevel,
         user.occupation,
+        user.studentRegNumber,
         user.admissionNumber
       ]
       .filter(Boolean)
@@ -751,8 +752,8 @@ function render(){
                 </span>
 
                 ${
-                  user.admissionNumber
-                    ? `<span class="student-sub">Admission: ${escapeHtml(user.admissionNumber)}</span>`
+                  (user.studentRegNumber || user.admissionNumber)
+                    ? `<span class="student-sub">Reg / Matric No: ${escapeHtml(user.studentRegNumber || user.admissionNumber)}</span>`
                     : ""
                 }
               </td>
@@ -1279,6 +1280,9 @@ addForm.addEventListener(
           "",
 
         studentId,
+
+        studentRegNumber:
+          admissionNumber.value.trim(),
 
         admissionNumber:
           admissionNumber.value.trim(),
