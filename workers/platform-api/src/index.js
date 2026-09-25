@@ -1940,7 +1940,7 @@ async function updateSchoolStatus(request, env, user, data) {
     if (looksLikeEmail(inviteEmail) && !clean(school.adminUid)) {
       const inviteToken = crypto.randomUUID();
       const origin = request.headers.get("origin") || "https://speakoutmentalhealth.org";
-      activationUrl = new URL(`/auth/?schoolInvite=${encodeURIComponent(inviteToken)}`, origin).toString();
+      activationUrl = new URL(`/auth.html?schoolInvite=${encodeURIComponent(inviteToken)}`, origin).toString();
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
       await setDocument(env, `schoolAdminInvites/${inviteToken}`, {
         schoolId,
