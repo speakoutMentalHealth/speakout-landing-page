@@ -106,6 +106,9 @@ small{font-size:.84rem;line-height:1.5}
   justify-content:flex-end;
   gap:6px;
   flex-wrap:nowrap;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
 }
 .links::-webkit-scrollbar,.nav-links::-webkit-scrollbar{display:none}
 .menu{display:none!important}
@@ -121,6 +124,7 @@ small{font-size:.84rem;line-height:1.5}
 
 /* Buttons */
 .btn,.cert-btn,.search-tab,.close-btn{
+  width:auto;
   min-height:42px;
   display:inline-flex;
   align-items:center;
