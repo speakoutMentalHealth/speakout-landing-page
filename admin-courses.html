@@ -102,6 +102,26 @@ async function installVerifiedCatalogue(){
   show(statusBox,err.message||"Could not install verified catalogue.","bad");
  }finally{button.disabled=false}
 }
+function rebalanceAssessmentQuestions(questions, seed=0){
+ const target=[0,3,2,1];
+ return (questions||[]).map((source,index)=>{
+  const q=JSON.parse(JSON.stringify(source)), options=Array.isArray(q.options)?[...q.options]:[];
+  const current=Number.isInteger(q.answer)?q.answer:(Number.isInteger(q.correctAnswer)?q.correctAnswer:null);
+  if(current===null||!options.length||current<0||current>=options.length)return q;
+  const desired=target[(index+seed)%target.length]%options.length;
+  if(desired!==current)[options[current],options[desired]]=[options[desired],options[current]];
+  q.options=options;
+  if(Number.isInteger(q.answer))q.answer=desired;
+  if(Number.isInteger(q.correctAnswer))q.correctAnswer=desired;
+  return q;
+ });
+}
+function prepareAssessmentCourse(course){
+ const copy=JSON.parse(JSON.stringify(course));
+ (copy.modules||[]).forEach((module,mi)=>{if(module.quiz?.questions)module.quiz.questions=rebalanceAssessmentQuestions(module.quiz.questions,mi)});
+ if(copy.finalAssessment?.questions)copy.finalAssessment.questions=rebalanceAssessmentQuestions(copy.finalAssessment.questions);
+ return copy;
+}
 async function installRichInternalCourses(){
  if(!admin)return;
  const button=document.getElementById("installRichBtn");
@@ -111,7 +131,7 @@ async function installRichInternalCourses(){
   const response=await fetch("./firestore-seed/priority-courses.json",{cache:"no-store"});
   if(!response.ok)throw new Error("Could not load the rich course pack.");
   const pack=await response.json();
-  const internal=pack.filter(course=>normalize(course.courseType)==="internal");
+  const internal=pack.filter(course=>normalize(course.courseType)==="internal").map(prepareAssessmentCourse);
   const invalid=internal.map(course=>({course,check:courseReadiness(course)})).filter(x=>!x.check.ready);
   if(invalid.length)throw new Error("Publication blocked: "+invalid.map(x=>x.course.title+" — "+x.check.reasons.join(", ")).join(" | "));
   let installed=0;
