@@ -357,6 +357,7 @@ function accessClass(item){
 }
 function canSeeCourse(item){
   const role = normalize(currentProfile?.role || "");
+  if(role === "admin" || role === "super_admin") return true;
   const raw = item.audience ?? "all";
   const audiences = (Array.isArray(raw)?raw:[raw]).map(normalize);
   if(!audiences.length || audiences.includes("all") || audiences.includes("general")) return true;
