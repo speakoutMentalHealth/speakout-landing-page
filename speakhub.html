@@ -196,6 +196,20 @@ section{padding:58px 0}
   </div>
 </section>
 
+<section class="featured-section" id="health-certificates">
+  <div class="container">
+    <div class="title">
+      <span class="label">Health &amp; Mental Health</span>
+      <h2>Free courses with provider certificates</h2>
+      <p>Build your portfolio with selected mental-health, medical, public-health and clinical-research courses from external providers. These are learning credentials, not medical licences; always review the provider's current completion requirements before enrolling.</p>
+    </div>
+    <div id="healthCertificateGrid" class="grid g3"></div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn soft" id="showAllHealthBtn" type="button">Show all health courses</button>
+    </div>
+  </div>
+</section>
+
 <section class="controls" id="filters">
   <div class="container">
     <div class="panel">
@@ -312,6 +326,8 @@ let currentProfile = null;
 
 const grid = document.getElementById("courseGrid");
 const featuredGrid = document.getElementById("featuredGrid");
+const healthCertificateGrid = document.getElementById("healthCertificateGrid");
+const showAllHealthBtn = document.getElementById("showAllHealthBtn");
 const loading = document.getElementById("loading");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
@@ -416,6 +432,29 @@ function renderFeatured(){
     featured.map(i => courseCard(i,true)).join("") ||
     `<div class="notice">No featured courses yet.</div>`;
 }
+function isHealthCertificateCourse(item){
+  return isExternalCourse(item) &&
+    normalize(item.accessType||"free")==="free" &&
+    item.certificateEligible===true &&
+    ["mental-health","healthcare-medical","public-health","clinical-research"].includes(normalize(item.category));
+}
+function renderHealthCertificates(){
+  const health = courses
+    .filter(isHealthCertificateCourse)
+    .sort((a,b)=>(b.featured===true)-(a.featured===true)||(a.title||"").localeCompare(b.title||""))
+    .slice(0,6);
+  healthCertificateGrid.innerHTML =
+    health.map(i=>courseCard(i,i.featured===true)).join("") ||
+    `<div class="notice">Free health certificate pathways will appear here when available.</div>`;
+}
+function showAllHealthCourses(){
+  categoryFilter.value="all";
+  accessFilter.value="free";
+  searchInput.value="health";
+  render();
+  document.getElementById("filters")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+showAllHealthBtn?.addEventListener("click",showAllHealthCourses);
 function render(){
   const s = normalize(searchInput.value);
   const cat = categoryFilter.value;
@@ -494,6 +533,7 @@ async function loadCourses(){
     loading.style.display = "none";
     updateStats(courses);
     renderFeatured();
+    renderHealthCertificates();
     render();
   }catch(error){
     console.error(error);
@@ -504,6 +544,7 @@ async function loadCourses(){
     loading.style.display = "none";
     updateStats(courses);
     renderFeatured();
+    renderHealthCertificates();
     render();
 
     if(!courses.length){
@@ -590,6 +631,7 @@ onAuthStateChanged(auth, async user => {
     loading.style.display = "block";
     loading.textContent = "Create an account or sign in to unlock the SpeakHub course catalogue.";
     featuredGrid.innerHTML = '<div class="notice">Featured learning pathways are available after login.</div>';
+    healthCertificateGrid.innerHTML = '<div class="notice">Sign in to browse free health and mental-health certificate pathways.</div>';
     grid.innerHTML = '<div class="notice">SpeakHub courses are protected for registered learners. Sign in to browse, start courses and track progress.</div>';
     emptyState.style.display = "none";
     updateStats([]);
@@ -602,6 +644,7 @@ onAuthStateChanged(auth, async user => {
     loading.style.display = "block";
     loading.textContent = "Your account is awaiting approval. Course access will unlock after approval.";
     featuredGrid.innerHTML = '<div class="notice">Learning access is pending account approval.</div>';
+    healthCertificateGrid.innerHTML = '<div class="notice">Health certificate pathways will unlock after account approval.</div>';
     grid.innerHTML = '<div class="notice">Your course catalogue will appear here once your account is approved.</div>';
     emptyState.style.display = "none";
     updateStats([]);
