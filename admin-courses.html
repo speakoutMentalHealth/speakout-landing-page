@@ -12,7 +12,7 @@
 </style>
 </head>
 <body>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>Admin Courses</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn dark" href="admin-courses.html">Courses</a><a class="btn soft" href="admin-content-review.html">Content</a><button class="btn gold" id="installVerifiedBtn" type="button">Install Verified Catalogue</button><a class="btn soft" href="speakhub.html">SpeakHub</a><a class="btn danger" href="auth.html" id="logoutLink">Logout</a></nav></div></header>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>Admin Courses</p></div></a><nav class="links"><a class="btn soft" href="admin-dashboard.html">Dashboard</a><a class="btn dark" href="admin-courses.html">Courses</a><a class="btn soft" href="admin-content-review.html">Content</a><button class="btn gold" id="installVerifiedBtn" type="button">Install Verified Catalogue</button><button class="btn primary" id="installRichBtn" type="button">Publish Rich Internal Courses</button><a class="btn soft" href="speakhub.html">SpeakHub</a><a class="btn danger" href="auth.html" id="logoutLink">Logout</a></nav></div></header>
 <main>
 <section class="hero"><div class="container"><span class="kicker">SpeakHub LMS Builder</span><h1>Manage SpeakHub Courses</h1><p>Create courses, modules, lessons, quizzes, certificate rules and publishing workflows.</p></div></section>
 <section><div class="container">
@@ -102,12 +102,37 @@ async function installVerifiedCatalogue(){
   show(statusBox,err.message||"Could not install verified catalogue.","bad");
  }finally{button.disabled=false}
 }
+async function installRichInternalCourses(){
+ if(!admin)return;
+ const button=document.getElementById("installRichBtn");
+ button.disabled=true;
+ show(statusBox,"Loading and validating rich internal courses...");
+ try{
+  const response=await fetch("./firestore-seed/priority-courses.json",{cache:"no-store"});
+  if(!response.ok)throw new Error("Could not load the rich course pack.");
+  const pack=await response.json();
+  const internal=pack.filter(course=>normalize(course.courseType)==="internal");
+  const invalid=internal.map(course=>({course,check:courseReadiness(course)})).filter(x=>!x.check.ready);
+  if(invalid.length)throw new Error("Publication blocked: "+invalid.map(x=>x.course.title+" — "+x.check.reasons.join(", ")).join(" | "));
+  let installed=0;
+  for(let i=0;i<internal.length;i+=400){
+   const batch=writeBatch(db);
+   internal.slice(i,i+400).forEach(course=>{
+    batch.set(doc(db,"courses",course.id),{...course,releaseState:"quality-checked",releasedAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+    installed++;
+   });
+   await batch.commit();
+  }
+  show(statusBox,installed+" rich internal courses validated and published successfully.","ok");
+ }catch(err){console.error(err);show(statusBox,err.message||"Could not publish rich internal courses.","bad")}
+ finally{button.disabled=false}
+}
 function startRealtime(){if(unsubscribeCourses)unsubscribeCourses();if(unsubscribeLessons)unsubscribeLessons();unsubscribeCourses=onSnapshot(collection(db,"courses"),snap=>{COURSES=[];snap.forEach(d=>COURSES.push({id:d.id,...d.data()}));COURSES.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));updateStats();renderCourses()});unsubscribeLessons=onSnapshot(collection(db,"courseLessons"),snap=>{LESSONS=[];snap.forEach(d=>LESSONS.push({id:d.id,...d.data()}));updateStats();renderCourses()})}
 courseForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const id=slug(val("courseId")||val("title"));const isExternal=val("courseType")==="external";const credentialEligible=val("certificateEligible")==="true";const item={title:val("title"),slug:id,instructor:val("instructor")||"SpeakOut Mental Health Outreach",courseType:val("courseType")||"internal",provider:val("provider")||(isExternal?"External Provider":"SpeakHub Academy"),providerLogo:val("providerLogo"),category:val("category"),audience:val("audience"),accessType:val("accessType"),price:Number(val("price")||0),currency:val("currency")||"₦",duration:val("duration"),level:val("level"),difficulty:val("level"),certificateEligible:credentialEligible,featured:val("featured")==="true",status:val("status"),minimumCompletion:Number(val("minimumCompletion")||100),minimumScore:Number(val("minimumScore")||70),coverUrl:val("coverUrl"),videoIntroUrl:val("videoIntroUrl"),externalUrl:isExternal?val("externalUrl"):"",enrollmentUrl:isExternal?val("externalUrl"):"",completionMethod:isExternal?(val("completionMethod")||"certificate-upload"):"internal",certificateIssuer:val("certificateIssuer")||val("provider"),certificateType:val("certificateType"),certificate:{available:credentialEligible,issuer:val("certificateIssuer")||val("provider"),type:val("certificateType"),uploadRequired:val("certificateUploadRequired")==="true",verificationRequired:isExternal},shortDescription:val("shortDescription"),description:val("shortDescription"),fullDescription:val("fullDescription"),outcomes:listFromLines(val("outcomes")),prerequisites:listFromLines(val("prerequisites")),tags:listFromComma(val("tags")),updatedAt:serverTimestamp()};if(!COURSES.find(x=>x.id===id))item.createdAt=serverTimestamp();await setDoc(doc(db,"courses",id),item,{merge:true});show(statusBox,"Course saved successfully.","ok");lessonCourseId.value=id;quizCourseId.value=id};
 lessonForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const cid=slug(val("lessonCourseId"));const moduleOrderNum=Number(val("moduleOrder")||1),lessonOrderNum=Number(val("lessonOrder")||1);const mid=`${cid}-module-${moduleOrderNum}`,lid=`${cid}-lesson-${lessonOrderNum}`;try{await setDoc(doc(db,"courseModules",mid),{courseId:cid,title:val("moduleTitle")||`Module ${moduleOrderNum}`,order:moduleOrderNum,updatedAt:serverTimestamp()},{merge:true});await setDoc(doc(db,"courseLessons",lid),{courseId:cid,moduleId:mid,title:val("lessonTitle"),order:lessonOrderNum,lessonType:val("lessonType"),imageUrl:val("lessonImageUrl"),videoUrl:val("lessonVideoUrl"),pdfUrl:val("lessonPdfUrl"),contentHtml:val("lessonContentHtml"),activity:val("activity"),quizPrompt:val("quizPrompt"),updatedAt:serverTimestamp()},{merge:true});show(lessonStatusBox,"Module and lesson saved.","ok")}catch(err){show(lessonStatusBox,err.message||"Failed to save lesson.","bad")}};
 quizForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const cid=slug(val("quizCourseId"));const order=Number(val("quizOrder")||1);const qid=`${cid}-quiz-${order}`;try{await setDoc(doc(db,"courseQuizzes",qid),{courseId:cid,lessonId:val("quizLessonId"),question:val("question"),options:{A:val("optionA"),B:val("optionB"),C:val("optionC"),D:val("optionD")},correctAnswer:val("correctAnswer"),explanation:val("explanation"),order,updatedAt:serverTimestamp()},{merge:true});show(quizStatusBox,"Quiz question saved.","ok")}catch(err){show(quizStatusBox,err.message||"Failed to save quiz.","bad")}};
 function exportCSV(){const rows=[["Course ID","Title","Category","Audience","Access","Price","Status","Certificate"]];filteredCourses().forEach(c=>rows.push([c.id,c.title||"",c.category||"",c.audience||"",c.accessType||"",c.price||"",c.status||"",c.certificateEligible?"Yes":"No"]));const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="speakout-courses.csv";a.click();URL.revokeObjectURL(url)}
-searchInput.addEventListener("input",renderCourses);statusFilter.addEventListener("change",renderCourses);categoryFilter.addEventListener("change",renderCourses);refreshBtn.addEventListener("click",startRealtime);document.getElementById("installVerifiedBtn").addEventListener("click",installVerifiedCatalogue);exportBtn.addEventListener("click",exportCSV);closeModal.addEventListener("click",()=>courseModal.style.display="none");logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html"});
+searchInput.addEventListener("input",renderCourses);statusFilter.addEventListener("change",renderCourses);categoryFilter.addEventListener("change",renderCourses);refreshBtn.addEventListener("click",startRealtime);document.getElementById("installVerifiedBtn").addEventListener("click",installVerifiedCatalogue);document.getElementById("installRichBtn").addEventListener("click",installRichInternalCourses);exportBtn.addEventListener("click",exportCSV);closeModal.addEventListener("click",()=>courseModal.style.display="none");logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html"});
 requireAdmin().then(ok=>{if(ok)startRealtime()});
 </script>
 </body>
