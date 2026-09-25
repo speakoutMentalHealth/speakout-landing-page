@@ -1821,23 +1821,40 @@ async function onboardSchoolUser(request, env, data) {
     throw Object.assign(new Error("Complete your name and email before joining the school."), { status: 400 });
   }
   const registrationNumber = normalizedRegistrationNumber(data.registrationNumber);
+  const staffId = normalizedRegistrationNumber(data.staffId);
+  const relationship = bounded(data.relationship, 80, "Relationship");
   if (role === "student" && (!registrationNumber || registrationNumber.length > 80)) {
     throw Object.assign(new Error("Enter a valid student registration or matric number."), { status: 400 });
+  }
+  if (role === "teacher" && (!staffId || staffId.length > 80)) {
+    throw Object.assign(new Error("Enter a valid Staff ID or Employee Number."), { status: 400 });
+  }
+  if (role === "parent" && !relationship) {
+    throw Object.assign(new Error("Enter your relationship to the student."), { status: 400 });
   }
 
   const now = new Date().toISOString();
   const studentId = role === "student"
     ? `STU-${new Date().getUTCFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
     : "";
-  const lockId = role === "student"
+  const studentLockId = role === "student"
     ? await sha256Key(`${school.id}:${registrationNumber}`)
+    : "";
+  const staffLockId = role === "teacher"
+    ? await sha256Key(`${school.id}:${staffId}`)
     : "";
 
   return runTransaction(env, async tx => {
-    if (lockId) {
-      const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+    if (studentLockId) {
+      const lock = await tx.get(`schoolStudentRegistrations/${studentLockId}`);
       if (lock && clean(lock.userId) !== identity.uid) {
         throw Object.assign(new Error("This student registration number is already linked to another account. Contact your school administrator if this is an error."), { status: 409 });
+      }
+    }
+    if (staffLockId) {
+      const lock = await tx.get(`schoolStaffRegistrations/${staffLockId}`);
+      if (lock && clean(lock.userId) !== identity.uid) {
+        throw Object.assign(new Error("This Staff ID is already linked to another account. Contact your school administrator if this is an error."), { status: 409 });
       }
     }
 
@@ -1855,28 +1872,47 @@ async function onboardSchoolUser(request, env, data) {
       location: bounded(data.location, 160, "Location"),
       reason: bounded(data.reason, 1200, "Reason"),
       contentType: bounded(data.contentType, 80, "Content type"),
-      registrationNumber,
-      admissionNumber: registrationNumber,
+      registrationNumber: role === "student" ? registrationNumber : "",
+      admissionNumber: role === "student" ? registrationNumber : "",
+      staffId: role === "teacher" ? staffId : "",
       department: bounded(data.department, 140, "Department"),
-      classLevel: bounded(data.level, 80, "Level"),
-      level: bounded(data.level, 80, "Level"),
+      classLevel: role === "student" ? bounded(data.level, 80, "Level") : "",
+      level: role === "student" ? bounded(data.level, 80, "Level") : "",
+      position: role === "teacher" ? bounded(data.position, 120, "Position") : "",
+      occupation: role === "teacher" ? bounded(data.position, 120, "Position") : "",
+      relationship: role === "parent" ? relationship : "",
+      parentRole: role === "parent" ? relationship : "",
       studentId,
       status: "pending_school_approval",
       approved: false,
       schoolVerificationStatus: "pending",
-      verificationMethod: role === "student" ? "registration-number-and-school-admin" : "school-admin",
+      verificationMethod:
+        role === "student" ? "registration-number-and-school-admin" :
+        role === "teacher" ? "staff-id-and-school-admin" :
+        "school-admin-and-parent-child-link",
       accountSource: "school-code-signup",
       profileCompleted: false,
       createdAt: now,
       updatedAt: now
     };
     tx.set(`users/${identity.uid}`, profile);
-    if (lockId) {
-      tx.set(`schoolStudentRegistrations/${lockId}`, {
+    if (studentLockId) {
+      tx.set(`schoolStudentRegistrations/${studentLockId}`, {
         userId: identity.uid,
         schoolId: school.id,
         schoolCode: clean(school.schoolCode),
         registrationNumber,
+        status: "pending",
+        createdAt: now,
+        updatedAt: now
+      });
+    }
+    if (staffLockId) {
+      tx.set(`schoolStaffRegistrations/${staffLockId}`, {
+        userId: identity.uid,
+        schoolId: school.id,
+        schoolCode: clean(school.schoolCode),
+        staffId,
         status: "pending",
         createdAt: now,
         updatedAt: now
@@ -2244,6 +2280,29 @@ async function route(request, env, path, data) {
               schoolId,
               schoolCode: clean(target.schoolCode),
               registrationNumber,
+              status: verificationStatus,
+              reviewedAt: now,
+              reviewedBy: user.uid,
+              updatedAt: now
+            });
+          }
+        }
+      }
+      if (normalized(target.role) === "teacher") {
+        const staffId = normalizedRegistrationNumber(target.staffId);
+        const schoolId = clean(target.schoolId);
+        if (staffId && schoolId) {
+          const lockId = await sha256Key(`${schoolId}:${staffId}`);
+          const lock = await tx.get(`schoolStaffRegistrations/${lockId}`);
+          if (status === "rejected") {
+            if (lock) tx.delete(`schoolStaffRegistrations/${lockId}`);
+          } else {
+            tx.set(`schoolStaffRegistrations/${lockId}`, {
+              ...(lock || {}),
+              userId: targetUserId,
+              schoolId,
+              schoolCode: clean(target.schoolCode),
+              staffId,
               status: verificationStatus,
               reviewedAt: now,
               reviewedBy: user.uid,
