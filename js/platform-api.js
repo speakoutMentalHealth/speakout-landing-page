@@ -98,7 +98,7 @@ export const roleApi = {
 
 export const adminApi = {
   retrieveEvidence,
-  listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
+  listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),\n  repairCertificateNames: () => platformRequest("/v1/admin/certificates/repair-names"),
   reviewBook: (submissionId, decision, note) =>
     platformRequest("/v1/admin/book-submissions/review", { submissionId, decision, note }),
   reviewExternalCertificate: (recordId, decision, note) =>
