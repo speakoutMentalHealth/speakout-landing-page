@@ -405,3 +405,20 @@ test("SpeakHub groups courses into six interactive learning pathways", async () 
   assert.match(academy, /\.pathway-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/u);
   assert.match(academy, /@media\(max-width:760px\)[\s\S]*?\.pathway-grid\{grid-template-columns:1fr\}/u);
 });
+
+
+test("SpeakHub uses readability-first typography across the academy", async () => {
+  const academy = await readFile(path.join(root, "speakhub.html"), "utf8");
+
+  assert.doesNotMatch(academy, /fonts\.googleapis\.com\/css2\?family=Outfit/u);
+  assert.match(academy, /html\{font-size:17px\}/u);
+  assert.match(academy, /font-family:Arial,"Helvetica Neue",Helvetica,sans-serif/u);
+  assert.match(academy, /body\{[\s\S]*?font-weight:600;[\s\S]*?line-height:1\.62/u);
+  assert.match(academy, /\.btn\{min-height:46px;[\s\S]*?font-size:\.95rem;[\s\S]*?font-weight:800/u);
+  assert.match(academy, /\.card p\{font-size:1rem;line-height:1\.68;font-weight:600/u);
+  assert.match(academy, /\.pathway-card p\{font-size:\.97rem;line-height:1\.65;font-weight:600/u);
+  assert.match(academy, /\.input,\.select\{[\s\S]*?min-height:48px;[\s\S]*?font-size:1rem;[\s\S]*?font-weight:650/u);
+  assert.match(academy, /\.course-meta\{font-size:\.91rem;font-weight:700/u);
+  assert.match(academy, /\.footer a\{font-size:1rem;font-weight:700/u);
+  assert.match(academy, /@media\(max-width:760px\)[\s\S]*?\.modal-content\{padding:20px;font-size:1\.05rem\}/u);
+});
