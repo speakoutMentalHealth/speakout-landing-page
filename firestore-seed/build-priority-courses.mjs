@@ -34,6 +34,38 @@ const visualManifest = {
       { coverUrl: "images/course-visuals/mental-health-awareness/module-4-habits.svg", alt: "Everyday wellbeing habits including sleep, movement, hydration and planning." },
       { coverUrl: "images/course-visuals/mental-health-awareness/module-5-support.svg", alt: "Students having a supportive conversation and connecting with trusted help." },
       { coverUrl: "images/course-visuals/mental-health-awareness/module-6-plan.svg", alt: "Student creating a practical personal wellbeing plan." }
+    ],
+    lessons: [
+      [
+        { file: "lesson-01-mental-health-spectrum.svg", alt: "A wellbeing spectrum showing that mental health can change over time.", caption: "Mental health can move along a spectrum; everyone has mental health." },
+        { file: "lesson-02-myths-stigma.svg", alt: "Myth and fact cards illustrating respectful ways to challenge mental-health stigma.", caption: "Question stereotypes and replace them with accurate, respectful information." },
+        { file: "lesson-03-protective-factors.svg", alt: "A support shield surrounded by sleep, trusted people, routines and healthy coping.", caption: "Protective factors can strengthen wellbeing and make early support easier to reach." }
+      ],
+      [
+        { file: "lesson-04-emotions-information.svg", alt: "Different emotions shown as useful signals rather than problems to eliminate.", caption: "Emotions carry information; noticing them can guide a thoughtful response." },
+        { file: "lesson-05-self-awareness.svg", alt: "A notice-name-choose pathway for practising self-awareness.", caption: "Self-awareness grows through a repeatable cycle: notice, name and choose." },
+        { file: "lesson-06-regulation.svg", alt: "A regulation toolkit with breathing, movement, writing and connection options.", caption: "Healthy regulation means choosing safe strategies that fit the situation." }
+      ],
+      [
+        { file: "lesson-07-stress-anxiety.svg", alt: "A simple stress response pathway from trigger to body response to coping choice.", caption: "Understanding the stress response makes it easier to choose a helpful next step." },
+        { file: "lesson-08-grounding.svg", alt: "A five-senses grounding guide using sight, touch, sound, smell and taste.", caption: "Grounding redirects attention to the present environment when feelings become intense." },
+        { file: "lesson-09-seek-support.svg", alt: "A support ladder moving from self-care to trusted adults and professional support.", caption: "Seeking more support is appropriate when difficulties persist, worsen or affect daily life." }
+      ],
+      [
+        { file: "lesson-10-sadness-depression.svg", alt: "A comparison of ordinary sadness and persistent patterns that deserve additional support.", caption: "Low mood can have many causes; persistent changes deserve attention without self-diagnosis." },
+        { file: "lesson-11-notice-changes.svg", alt: "A pattern tracker showing changes in energy, interest, sleep, concentration and connection.", caption: "Look for meaningful patterns and changes rather than trying to label or diagnose someone." },
+        { file: "lesson-12-support-safely.svg", alt: "Two students talking with a pathway toward a trusted adult.", caption: "Listen, take concerns seriously and involve appropriate trusted support when needed." }
+      ],
+      [
+        { file: "lesson-13-body-mind.svg", alt: "A body and mind loop connecting sleep, movement, nourishment and emotional wellbeing.", caption: "Physical routines and emotional wellbeing influence each other." },
+        { file: "lesson-14-social-connection.svg", alt: "A healthy connection network including friends, family, school and community.", caption: "Strong support networks can include different people for different kinds of help." },
+        { file: "lesson-15-routine.svg", alt: "A flexible weekly routine balancing responsibilities, rest, connection and enjoyable activities.", caption: "A sustainable routine leaves room for responsibilities, recovery and flexibility." }
+      ],
+      [
+        { file: "lesson-16-everyday-advocacy.svg", alt: "Students using everyday actions to make school conversations about mental health more respectful.", caption: "Advocacy can be small, consistent actions that improve understanding and access to support." },
+        { file: "lesson-17-safe-communication.svg", alt: "A communication checklist emphasizing facts, privacy, respectful language and support resources.", caption: "Responsible advocacy protects privacy, avoids diagnosis and points people toward credible support." },
+        { file: "lesson-18-community-action.svg", alt: "Students planning a school wellbeing activity with goals, roles, safeguards and reflection.", caption: "Good community action combines a clear goal, adult oversight, safe boundaries and evaluation." }
+      ]
     ]
   }
 };
@@ -104,13 +136,21 @@ function buildModules(targetId, selections) {
       ...lesson,
       id: `${targetId}-module-${moduleOrder}-lesson-${lessonIndex + 1}`,
       order: lessonIndex + 1,
-      ...(moduleVisual && lessonIndex === 0 ? {
-        visuals: [{
+      ...(() => {
+        const lessonVisual = visualManifest[targetId]?.lessons?.[index]?.[lessonIndex];
+        const visuals = [];
+        if (moduleVisual && lessonIndex === 0) visuals.push({
           src: moduleVisual.coverUrl,
           alt: moduleVisual.alt,
           caption: `Module ${moduleOrder} visual guide — ${module.title}`
-        }]
-      } : {})
+        });
+        if (lessonVisual) visuals.push({
+          src: `images/course-visuals/mental-health-awareness/${lessonVisual.file}`,
+          alt: lessonVisual.alt,
+          caption: lessonVisual.caption
+        });
+        return visuals.length ? { visuals } : {};
+      })()
     }));
     return module;
   });

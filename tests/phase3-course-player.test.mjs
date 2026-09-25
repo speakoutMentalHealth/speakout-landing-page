@@ -70,7 +70,17 @@ test("course player supports accessible lazy-loaded lesson illustrations", () =>
   assert.match(player, /alt="\$\{esc\(v\.alt/u);
   assert.match(builder, /const visualManifest = \{/u);
   assert.match(builder, /mental-health-awareness\/module-1-understanding\.svg/u);
-  assert.match(builder, /visuals: \[\{/u);
+  assert.match(builder, /const visuals = \[\];/u);
+});
+
+test("mental health student course maps a unique visual to every lesson", () => {
+  const builder = read("firestore-seed/build-priority-courses.mjs");
+  const lessonFiles = [...builder.matchAll(/file: "lesson-[^"]+\.svg"/gu)].map(match => match[0]);
+  assert.equal(lessonFiles.length, 18);
+  assert.equal(new Set(lessonFiles).size, 18);
+  assert.match(builder, /visualManifest\[targetId\]\?\.lessons\?\.\[index\]\?\.\[lessonIndex\]/u);
+  assert.match(builder, /lessonVisual\.alt/u);
+  assert.match(builder, /lessonVisual\.caption/u);
 });
 
 test("course player keeps lesson text and controls inside narrow phone viewports", () => {
