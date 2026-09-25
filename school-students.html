@@ -483,8 +483,8 @@ input:focus,textarea:focus,select:focus{
 <tr>
 <th>Name</th>
 <th>Contact</th>
-<th>Student ID</th>
-<th>Class</th>
+<th>Registration / Student ID</th>
+<th>Department / Level</th>
 <th>Status</th>
 <th>Learning</th>
 <th>Actions</th>
@@ -702,9 +702,12 @@ function render(){
         user.email,
         user.phone,
         user.studentId,
+        user.registrationNumber,
+        user.admissionNumber,
+        user.department,
+        user.level,
         user.classLevel,
-        user.occupation,
-        user.admissionNumber
+        user.occupation
       ]
       .filter(Boolean)
       .join(" ")
@@ -751,8 +754,8 @@ function render(){
                 </span>
 
                 ${
-                  user.admissionNumber
-                    ? `<span class="student-sub">Admission: ${escapeHtml(user.admissionNumber)}</span>`
+                  (user.registrationNumber || user.admissionNumber)
+                    ? `<span class="student-sub">Reg / Matric: ${escapeHtml(user.registrationNumber || user.admissionNumber)}</span>`
                     : ""
                 }
               </td>
@@ -762,11 +765,17 @@ function render(){
               </td>
 
               <td>
-                ${escapeHtml(user.studentId || "—")}
+                ${escapeHtml(user.registrationNumber || user.admissionNumber || user.studentId || "—")}
+                ${
+                  user.studentId && (user.registrationNumber || user.admissionNumber)
+                    ? `<span class="student-sub">SpeakOut ID: ${escapeHtml(user.studentId)}</span>`
+                    : ""
+                }
               </td>
 
               <td>
-                ${escapeHtml(user.classLevel || user.occupation || "—")}
+                ${escapeHtml(user.department || "—")}
+                <span class="student-sub">${escapeHtml(user.level || user.classLevel || user.occupation || "—")}</span>
               </td>
 
               <td>
