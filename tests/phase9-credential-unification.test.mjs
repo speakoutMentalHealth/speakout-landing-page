@@ -137,3 +137,18 @@ test("credential unification browser modules remain syntactically valid", () => 
     }
   }
 });
+
+test("Portfolio laptop navigation cannot inherit the legacy mobile dropdown", () => {
+  const page=read("learning-portfolio.html");
+  const shared=read("dashboard-shared.css");
+
+  assert.doesNotMatch(page,/dashboard-shared\.css/u);
+  assert.match(page,/@media\(min-width:761px\)[\s\S]*?\.nav #roleNav\{/u);
+  assert.match(page,/position:static!important/u);
+  assert.match(page,/\.nav #roleNav \.btn,\.nav #roleNav a,\.nav #roleNav button\{[\s\S]*?width:auto!important/u);
+
+  assert.match(shared,/^\.menu\{display:none!important\}/mu);
+  assert.match(shared,/@media\(max-width:760px\)\{/u);
+  assert.doesNotMatch(shared,/^\s*\.btn\{width:100%/mu);
+  assert.doesNotMatch(shared,/^\s*\.nav-links\{display:none;position:absolute/mu);
+});
