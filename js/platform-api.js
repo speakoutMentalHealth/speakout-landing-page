@@ -71,6 +71,15 @@ export const externalLearningApi = {
   submit: submitExternalLearning
 };
 
+export const credentialApi = {
+  list: () => platformRequest("/v1/credentials/list"),
+  submit: payload => platformRequest("/v1/credentials/submit", payload)
+};
+
+export const certificateApi = {
+  verify: certificateId => publicPlatformRequest("/v1/public/certificates/verify", { certificateId })
+};
+
 export async function retrieveEvidence(recordId) {
   const response = await fetch(endpoint("/v1/admin/media/evidence"), {
     method: "POST",
@@ -123,6 +132,9 @@ export const adminApi = {
   updateSchoolStatus: (schoolId, status) =>
     platformRequest("/v1/admin/schools/status", { schoolId, status }),
   listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
+  listCredentials: () => platformRequest("/v1/admin/credentials/list"),
+  reviewCredential: (recordId, decision, note) =>
+    platformRequest("/v1/admin/credentials/review", { recordId, decision, note }),
   repairCertificateNames: () => platformRequest("/v1/admin/certificates/repair-names"),
   publishRichCourse: course => platformRequest("/v1/admin/courses/publish-rich", { course }),
   reviewBook: (submissionId, decision, note) =>
