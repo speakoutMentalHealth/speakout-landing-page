@@ -190,6 +190,35 @@ async function requireAdmin(callback){
   return requireRoles(["admin","super_admin"],callback);
 }
 
+async function backfillSchoolDirectory(items){
+  const eligible = items.filter(item =>
+    item.schoolCode &&
+    ["approved","active"].includes(normalize(item.status))
+  );
+
+  for(const school of eligible){
+    try{
+      await setDoc(
+        doc(db,"schoolDirectory",school.schoolCode),
+        {
+          schoolId:school.id,
+          schoolCode:school.schoolCode,
+          schoolName:school.schoolName || school.name || "Partner School",
+          schoolType:school.schoolType || "",
+          city:school.city || "",
+          state:school.state || "",
+          country:school.country || "",
+          status:"active",
+          updatedAt:serverTimestamp()
+        },
+        {merge:true}
+      );
+    }catch(error){
+      console.warn("School directory backfill skipped:",school.id,error);
+    }
+  }
+}
+
 function updateStats(){
   totalCount.textContent = ITEMS.length;
   approvedCount.textContent = ITEMS.filter(x => ["approved","active"].includes(normalize(x.status))).length;
@@ -407,6 +436,7 @@ function startRealtime(){
       ITEMS.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       updateStats();
       render();
+      backfillSchoolDirectory(ITEMS);
       show("Admin Schools loaded.","ok");
     },
     error => {
@@ -424,7 +454,7 @@ function exportCSV(){
   data.forEach(item => {
     const row = [
       item.schoolName || "",
-      item.email || "",
+      item.email || item.adminEmail || "",
       item.schoolCode || "",
       item.schoolType || "",
       item.city || "",
@@ -433,7 +463,7 @@ function exportCSV(){
       item.estimatedStudents || item.students || "",
       item.status || "",
       item.principalName || "",
-      item.phone || ""
+      item.phone || item.adminPhone || ""
     ].map(v => `"${String(v).replaceAll('"','""')}"`);
     lines.push(row.join(","));
   });
