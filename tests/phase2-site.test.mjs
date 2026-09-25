@@ -425,12 +425,12 @@ test("SpeakHub uses readability-first typography across the academy", async () =
 
 
 test("SpeakHub learner journey keeps readable typography across academy pages", async () => {
-  const styles = await readFile(path.join(root, "css/speakhub-readable.css"), "utf8");
-  assert.match(styles, /html\{font-size:17px !important\}/u);
-  assert.match(styles, /font-family:Arial,"Helvetica Neue",Helvetica,sans-serif !important/u);
-  assert.match(styles, /font-weight:600 !important/u);
-  assert.match(styles, /\.btn,\.cert-btn,\.search-tab,\.close-btn\{[\s\S]*?min-height:46px !important/u);
-  assert.match(styles, /input:not\(\[type="radio"\]\):not\(\[type="checkbox"\]\),select,textarea\{[\s\S]*?min-height:48px !important/u);
+  const styles = await readFile(path.join(root, "css/learner-portal.css"), "utf8");
+  assert.match(styles, /html\{font-size:17px/u);
+  assert.match(styles, /font-family:Arial,"Helvetica Neue",Helvetica,sans-serif/u);
+  assert.match(styles, /font-weight:600/u);
+  assert.match(styles, /\.btn,\.cert-btn,\.search-tab,\.close-btn\{[\s\S]*?min-height:42px/u);
+  assert.match(styles, /input:not\(\[type="radio"\]\):not\(\[type="checkbox"\]\),select,textarea\{[\s\S]*?min-height:48px/u);
 
   for (const file of [
     "course-details.html",
@@ -442,7 +442,7 @@ test("SpeakHub learner journey keeps readable typography across academy pages", 
     "parent-dashboard.html",
   ]) {
     const source = await readFile(path.join(root, file), "utf8");
-    assert.match(source, /css\/speakhub-readable\.css/u, file);
+    assert.match(source, /css\/learner-portal\.css/u, file);
     assert.doesNotMatch(source, /fonts\.googleapis\.com\/css2\?family=Outfit/u, file);
   }
 });

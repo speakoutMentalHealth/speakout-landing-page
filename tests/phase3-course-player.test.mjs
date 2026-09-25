@@ -99,12 +99,12 @@ test("course player keeps lesson text and controls inside narrow phone viewports
 test("learner dashboards use the authenticated API instead of incompatible Firestore queries", () => {
   const worker = read("workers/platform-api/src/index.js");
   assert.match(worker, /\/v1\/learning\/dashboard/u);
-  for (const file of ["my-courses.html", "progress.html", "certificates.html"]) {
-    const page = read(file);
-    assert.match(page, /learningApi\.dashboard\(\)/u, file);
-    assert.doesNotMatch(page, /SO\.getMine\("(?:userProgress|certificates)"/u, file);
+  for (const base of ["my-courses", "progress", "certificates"]) {
+    const module = read(`js/learner/${base}.js`);
+    assert.match(module, /learningApi\.dashboard\(\)/u, base);
+    assert.doesNotMatch(module, /SO\.getMine\("(?:userProgress|certificates)"/u, base);
   }
-  assert.match(read("my-courses.html"), /No enrolled courses found/u);
+  assert.match(read("js/learner/my-courses.js"), /No enrolled courses found/u);
 });
 
 test("rich internal course publishing keeps answer keys behind the secure Worker", () => {

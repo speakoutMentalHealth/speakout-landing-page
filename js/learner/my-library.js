@@ -1,0 +1,8 @@
+import { SO } from "../../dashboard-shared.js";
+import { isPublicBook } from "../content-visibility.js";
+
+const httpUrl=value=>/^https?:\/\//i.test(String(value||""))?value:"";
+const bookHref=b=>[b.purchaseUrl,b.downloadUrl,b.bookUrl,b.fileUrl,b.readUrl].map(httpUrl).find(Boolean)||`book-reader.html?id=${encodeURIComponent(b.id)}`;
+let books=[];async function load(){books=(await SO.getAll("books")).filter(isPublicBook);total.textContent=SO.num(books.length);mental.textContent=SO.num(books.filter(b=>b.category==="Mental Health").length);guides.textContent=SO.num(books.filter(b=>String(b.category||"").includes("Guide")).length);[...new Set(books.map(b=>b.category).filter(Boolean))].forEach(c=>category.innerHTML+=`<option>${SO.safe(c)}</option>`);render()}
+function render(){let q=search.value.toLowerCase();let out=books.filter(b=>(category.value==="all"||b.category===category.value)&&`${b.title} ${b.author} ${b.category}`.toLowerCase().includes(q));cards.innerHTML=out.length?out.map(b=>`<article class="card"><div class="icon">📚</div><span class="label">${SO.safe(b.category)}</span><h2>${SO.safe(b.title)}</h2><p>${SO.safe(b.description||b.shortDescription)}</p><p><strong>${SO.safe(b.author||b.authorName)}</strong></p><a class="btn primary" href="${SO.safe(bookHref(b))}">Open Book</a></article>`).join(""):`<div class="notice"><h3>No published books found.</h3><p>Try another filter or check back when new resources are ready.</p></div>`}
+search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};load();
