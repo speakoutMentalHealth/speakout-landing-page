@@ -71,7 +71,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-1-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-01-mental-health-spectrum.svg",
+                "alt": "Mental health can change over time.",
+                "caption": "Mental health can change over time."
+              }
+            ]
           },
           {
             "title": "Common Myths and Where Stigma Comes From",
@@ -89,7 +96,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-1-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-02-myths-stigma.svg",
+                "alt": "Respectful ways to challenge mental-health stigma.",
+                "caption": "Respectful ways to challenge mental-health stigma."
+              }
+            ]
           },
           {
             "title": "Protective Factors and Early Support",
@@ -107,7 +121,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-1-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-03-protective-factors.svg",
+                "alt": "Protective factors that strengthen wellbeing.",
+                "caption": "Protective factors that strengthen wellbeing."
+              }
+            ]
           }
         ],
         "quiz": {
@@ -140,7 +161,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-2-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-04-emotions-information.svg",
+                "alt": "Emotions can provide useful information.",
+                "caption": "Emotions can provide useful information."
+              }
+            ]
           },
           {
             "title": "Self-Awareness as a Practicable Skill",
@@ -158,7 +186,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-2-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-05-self-awareness.svg",
+                "alt": "A notice, name and choose self-awareness pathway.",
+                "caption": "A notice, name and choose self-awareness pathway."
+              }
+            ]
           },
           {
             "title": "Healthy Regulation Strategies",
@@ -176,7 +211,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-2-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-06-regulation.svg",
+                "alt": "A toolkit of healthy regulation strategies.",
+                "caption": "A toolkit of healthy regulation strategies."
+              }
+            ]
           }
         ],
         "quiz": {
@@ -209,7 +251,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-3-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-07-stress-anxiety.svg",
+                "alt": "A stress response pathway and coping choice.",
+                "caption": "A stress response pathway and coping choice."
+              }
+            ]
           },
           {
             "title": "Grounding and In-the-Moment Techniques",
@@ -227,7 +276,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-3-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-08-grounding.svg",
+                "alt": "A present-moment grounding guide.",
+                "caption": "A present-moment grounding guide."
+              }
+            ]
           },
           {
             "title": "When to Seek Additional Support",
@@ -245,7 +301,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-3-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-09-seek-support.svg",
+                "alt": "A ladder of trusted and professional support.",
+                "caption": "A ladder of trusted and professional support."
+              }
+            ]
           }
         ],
         "quiz": {
@@ -278,7 +341,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-4-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-10-sadness-depression.svg",
+                "alt": "Persistent changes deserve attention and support.",
+                "caption": "Persistent changes deserve attention and support."
+              }
+            ]
           },
           {
             "title": "Recognizing Warning Signs",
@@ -296,7 +366,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-4-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-11-notice-changes.svg",
+                "alt": "Notice meaningful changes without diagnosing.",
+                "caption": "Notice meaningful changes without diagnosing."
+              }
+            ]
           },
           {
             "title": "Supporting Someone Safely",
@@ -314,7 +391,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-4-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-12-support-safely.svg",
+                "alt": "Listen and connect someone with trusted support.",
+                "caption": "Listen and connect someone with trusted support."
+              }
+            ]
           }
         ],
         "quiz": {
@@ -347,7 +431,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-5-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-13-body-mind.svg",
+                "alt": "Physical routines and emotional wellbeing connect.",
+                "caption": "Physical routines and emotional wellbeing connect."
+              }
+            ]
           },
           {
             "title": "Relationships and Social Connection",
@@ -365,7 +456,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-5-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-14-social-connection.svg",
+                "alt": "A healthy network of supportive relationships.",
+                "caption": "A healthy network of supportive relationships."
+              }
+            ]
           },
           {
             "title": "Building a Sustainable Routine",
@@ -383,7 +481,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-5-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-15-routine.svg",
+                "alt": "A balanced and flexible wellbeing routine.",
+                "caption": "A balanced and flexible wellbeing routine."
+              }
+            ]
           }
         ],
         "quiz": {
@@ -416,7 +521,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-6-lesson-1",
-            "order": 1
+            "order": 1,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-16-everyday-advocacy.svg",
+                "alt": "Everyday actions can support mental-health advocacy.",
+                "caption": "Everyday actions can support mental-health advocacy."
+              }
+            ]
           },
           {
             "title": "Communicating Safely and Responsibly",
@@ -434,7 +546,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-6-lesson-2",
-            "order": 2
+            "order": 2,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-17-safe-communication.svg",
+                "alt": "Safe communication protects privacy and uses facts.",
+                "caption": "Safe communication protects privacy and uses facts."
+              }
+            ]
           },
           {
             "title": "Taking Action in Your Community",
@@ -452,7 +571,14 @@
             "contentVersion": "4.0-real-content",
             "instructionalStandard": "full-lesson",
             "id": "mental-health-awareness-students-module-6-lesson-3",
-            "order": 3
+            "order": 3,
+            "visuals": [
+              {
+                "src": "images/course-visuals/mental-health-awareness/lesson-18-community-action.svg",
+                "alt": "Community action uses goals, roles and safeguards.",
+                "caption": "Community action uses goals, roles and safeguards."
+              }
+            ]
           }
         ],
         "quiz": {
