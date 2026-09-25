@@ -158,3 +158,17 @@ test("premium course player adds course landing, visual module cards and readabl
   assert.match(player, /learningApi\.submitAssessment/u);
   assert.doesNotMatch(player, /q\.answer|correctAnswer/u);
 });
+
+
+test("course player QA keeps module artwork meaningful and assessment transitions clean", () => {
+  const player = read("course-player.html");
+
+  assert.match(player, /mentalHealthModuleVisuals=\[[\s\S]*Student learning how thoughts, feelings, behaviours and relationships connect\./u);
+  assert.match(player, /function moduleVisualAlt\(module,index\)/u);
+  assert.match(player, /alt="\$\{esc\(visualAlt\)\}"/u);
+  assert.match(player, /action\.setAttribute\("aria-label"/u);
+  assert.match(player, /item\.setAttribute\("aria-current","step"\)/u);
+  assert.match(player, /continueLearningButton\.textContent=finalAssessmentPassed\?"View Completion/u);
+  assert.match(player, /assessmentArea\.className="";/u);
+  assert.match(player, /metadata\?\.title\|\|"Assessment preview"/u);
+});

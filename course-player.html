@@ -233,17 +233,21 @@ function lessonIcon(value=""){
 }
 
 const mentalHealthModuleVisuals=[
- "images/course-visuals/mental-health-awareness/module-1-understanding.svg",
- "images/course-visuals/mental-health-awareness/module-2-emotions.svg",
- "images/course-visuals/mental-health-awareness/module-3-stress.svg",
- "images/course-visuals/mental-health-awareness/module-4-habits.svg",
- "images/course-visuals/mental-health-awareness/module-5-support.svg",
- "images/course-visuals/mental-health-awareness/module-6-plan.svg"
+ {src:"images/course-visuals/mental-health-awareness/module-1-understanding.svg",alt:"Student learning how thoughts, feelings, behaviours and relationships connect."},
+ {src:"images/course-visuals/mental-health-awareness/module-2-emotions.svg",alt:"Student identifying and naming different emotions."},
+ {src:"images/course-visuals/mental-health-awareness/module-3-stress.svg",alt:"Student using healthy strategies to respond to stress."},
+ {src:"images/course-visuals/mental-health-awareness/module-4-habits.svg",alt:"Everyday wellbeing habits including sleep, movement, hydration and planning."},
+ {src:"images/course-visuals/mental-health-awareness/module-5-support.svg",alt:"Students having a supportive conversation and connecting with trusted help."},
+ {src:"images/course-visuals/mental-health-awareness/module-6-plan.svg",alt:"Student creating a practical personal wellbeing plan."}
 ];
 function moduleVisual(module,index){
  if(module?.coverUrl)return module.coverUrl;
- if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index])return mentalHealthModuleVisuals[index];
+ if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index])return mentalHealthModuleVisuals[index].src;
  return module?.lessons?.[0]?.visuals?.[0]?.src||course?.coverUrl||course?.image||course?.thumbnail||"";
+}
+function moduleVisualAlt(module,index){
+ if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index]?.alt)return mentalHealthModuleVisuals[index].alt;
+ return module?.coverAlt||module?.alt||`Visual guide for ${module?.title||`Module ${index+1}`}`;
 }
 function modulePercent(mi){
  const module=modules[mi];if(!module)return 0;
@@ -369,10 +373,11 @@ function renderCourseModuleCards(){
    const unlocked=previousModulesPassed(mi);
    const complete=modulePassed(mi);
    const visual=moduleVisual(m,mi);
+   const visualAlt=moduleVisualAlt(m,mi);
    const card=document.createElement("article");
    card.className="course-module-card"+(complete?" complete":"")+(!unlocked?" locked":"");
    card.innerHTML=`
-     <div class="module-card-art">${visual?`<img src="${esc(visual)}" alt="Visual guide for ${esc(m.title)}" loading="lazy" decoding="async">`:""}
+     <div class="module-card-art">${visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" loading="lazy" decoding="async">`:""}
        <span class="module-card-state">${complete?"Completed":unlocked?(pct?"In progress":"Available"):"Locked"}</span>
      </div>
      <div class="module-card-body">
@@ -382,6 +387,7 @@ function renderCourseModuleCards(){
        <button class="module-card-action" type="button" ${unlocked?"":"disabled"}>${complete?"Review module":pct?"Continue module":unlocked?"Start module":"Complete previous module"}</button>
      </div>`;
    const action=card.querySelector(".module-card-action");
+   action.setAttribute("aria-label",`${complete?"Review":pct?"Continue":"Open"} Module ${mi+1}: ${m.title}`);
    if(unlocked)action.onclick=()=>openModule(mi);
    moduleCardGrid.appendChild(card);
  });
@@ -397,6 +403,8 @@ function renderCourseOverview(){
  overviewProgressBar.style.width=`${pct}%`;
  overviewProgressText.textContent=pct===100?(finalAssessmentPassed?"Course complete — certificate ready.":"Coursework complete — final assessment unlocked."):
    counts.done?`${counts.doneLessons} of ${counts.totalLessons} lessons complete.`:"Start with Module 1 and continue in sequence.";
+ continueLearningButton.textContent=finalAssessmentPassed?"View Completion →":counts.done?"Continue Learning →":"Start Learning →";
+ continueLearningButton.setAttribute("aria-label",finalAssessmentPassed?`View completion for ${course?.title||"this course"}`:counts.done?`Continue ${course?.title||"this course"}`:`Start ${course?.title||"this course"}`);
  const artwork=course?.coverUrl||course?.image||course?.thumbnail||moduleVisual(modules[0],0);
  courseArtwork.innerHTML=artwork?`<img src="${esc(artwork)}" alt="Artwork for ${esc(course?.title||"this course")}">`:
    `<div class="course-hero-art-fallback" aria-hidden="true">${lessonIcon(course?.title)}</div>`;
@@ -442,8 +450,10 @@ function renderSidebar(){
    m.lessons.forEach(l=>{
      const unlocked=lessonUnlocked(l), idx=lessonGlobalIndex(l.id);
      const item=document.createElement("button");item.type="button";
-     item.className="lesson-item"+(completedLessons.has(l.id)?" completed":"")+(!unlocked?" locked":"")+(currentView.type==="lesson"&&currentView.lessonIndex===idx?" active":"");
+     const active=currentView.type==="lesson"&&currentView.lessonIndex===idx;
+     item.className="lesson-item"+(completedLessons.has(l.id)?" completed":"")+(!unlocked?" locked":"")+(active?" active":"");
      item.disabled=!unlocked;
+     if(active)item.setAttribute("aria-current","step");
      item.innerHTML=`${esc(l.title)}${l.duration?`<span class="lesson-meta">${esc(l.duration)} • Lesson ${l.lessonIndex+1}</span>`:""}`;
      if(unlocked)item.onclick=()=>{currentView={type:"lesson",lessonIndex:idx};closeCourseMenu();renderCurrentView();focusLesson()};
      lessonWrap.appendChild(item);
@@ -451,8 +461,10 @@ function renderSidebar(){
    if(m.quiz){
      const unlocked=quizUnlocked(mi), passed=passedModuleQuizzes[mi]===true;
      const item=document.createElement("button");item.type="button";
-     item.className="lesson-item assessment-item"+(passed?" passed":"")+(!unlocked?" locked":"")+(currentView.type==="moduleQuiz"&&currentView.moduleIndex===mi?" active":"");
+     const active=currentView.type==="moduleQuiz"&&currentView.moduleIndex===mi;
+     item.className="lesson-item assessment-item"+(passed?" passed":"")+(!unlocked?" locked":"")+(active?" active":"");
      item.disabled=!unlocked;
+     if(active)item.setAttribute("aria-current","step");
      item.innerHTML=`${esc(m.quiz.title||`${m.title} Quiz`)}<span class="lesson-meta">${passed?`Passed ${moduleQuizScores[mi]||0}%`:`Module quiz • Pass mark ${Number(m.quiz.passMark||70)}%`}</span>`;
      if(unlocked)item.onclick=()=>{currentView={type:"moduleQuiz",moduleIndex:mi};closeCourseMenu();renderCurrentView();focusLesson()};
      lessonWrap.appendChild(item);
@@ -493,6 +505,7 @@ function renderLesson(){
  const icon=lessonIcon(`${course.title} ${m.title} ${l.title}`);
  lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" decoding="async">`:`<div class="cover-art" aria-hidden="true"><span>${icon}</span></div>`;
  lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
+ assessmentArea.className="";
  const supportingVisuals=heroVisual?lessonVisuals.filter(v=>v!==heroVisual):lessonVisuals;
  if(supportingVisuals.length){
    const gallery=document.createElement("div");
@@ -527,9 +540,11 @@ function renderLesson(){
 
 async function renderAssessment(metadata,type,moduleIndex=null){
  lessonSnapshot.style.display="none";reflectionCard.style.display="none";
+ assessmentArea.className="";
  if(previewMode){
    lessonTitle.textContent=metadata?.title||"Assessment";
    lessonEyebrow.textContent="Assessment";lessonMeta.innerHTML="<span>Secure assessment</span>";
+   lessonCover.innerHTML=`<h2>${esc(metadata?.title||"Assessment preview")}</h2>`;
    lessonContent.innerHTML="";
    navigationRow.style.display="none";
    assessmentArea.innerHTML='<div class="notice warning">Assessments are not exposed in preview mode.</div>';
@@ -618,6 +633,7 @@ async function showCompletion(){
  lessonCover.innerHTML="<h2>Congratulations — Course Completed</h2>";
  lessonContent.innerHTML="";
  lessonSnapshot.style.display="none";reflectionCard.style.display="none";
+ assessmentArea.className="";
  assessmentArea.innerHTML=`<div class="completion-card">
  <div class="completion-badge" style="width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;margin:0 auto 14px;font-size:1.8rem">🎓</div>
  <h2>Congratulations, ${esc(profileName())}</h2>
