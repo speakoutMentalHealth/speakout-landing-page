@@ -289,7 +289,7 @@ function credentialCard(item){
   const title=item.courseTitle||item.awardTitle||item.programmeTitle||item.title||"Learning credential";
   const issuer=external?(item.externalProvider||item.provider||item.issuer||"External Provider"):(item.issuer||"SpeakOut / SpeakHub");
   const date=item.issueDate||item.issuedAt||item.completionDate||"";
-  const id=item.certificateId||item.linkedCertificateId||item.id||item.certificateNumber||"";
+  const id=item.certificateId||item.linkedCertificateId||(item._manualExternal?"":item.id||item.certificateNumber)||"";
   return `<article class="learning-item">
     <div class="learning-top">
       <div><h3>${safe(title)}</h3><p>${external?"External learning credential recorded through SpeakHub.":"SpeakHub-issued or managed learning credential."}</p></div>
