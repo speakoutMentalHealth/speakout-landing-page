@@ -129,6 +129,31 @@ test("answer keys and authoritative credential writes are denied to learners", a
   await assertSucceeds(getDoc(doc(db, "publicCertificateVerifications/ABC123")));
 });
 
+test("manual external credentials cannot be read or written directly by learners", async () => {
+  await seed("users/student-a", profile("student-a", "student"));
+  await seed("externalCredentials/student-a-provider-cert", {
+    userId: "student-a",
+    title: "Provider Course",
+    issuer: "Example Provider",
+    credentialType: "completion-certificate",
+    status: "pending_review",
+    attested: true
+  });
+  const db = testEnv.authenticatedContext("student-a").firestore();
+  await assertFails(getDoc(doc(db, "externalCredentials/student-a-provider-cert")));
+  await assertFails(setDoc(doc(db, "externalCredentials/forged"), {
+    userId: "student-a",
+    title: "Forged Credential",
+    issuer: "Example Provider",
+    credentialType: "professional-certification",
+    status: "verified",
+    attested: true
+  }));
+  await assertFails(updateDoc(doc(db, "externalCredentials/student-a-provider-cert"), {
+    status: "verified"
+  }));
+});
+
 test("reading position is self-writable but cannot masquerade as course progress", async () => {
   await seed("users/student-a", profile("student-a", "student"));
   await seed("users/student-b", profile("student-b", "student"));

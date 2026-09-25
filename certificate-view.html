@@ -701,7 +701,8 @@ section{padding:36px 0}
 }
 </style>
 <link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<link href="css/production-ready.css" rel="stylesheet"/>
+<link href="css/speakhub-readable.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
@@ -747,17 +748,7 @@ section{padding:36px 0}
 </footer>
 <script type="module">
 
-import { db } from "./firebase-config.js";
-
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-  limit
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { certificateApi } from "./js/platform-api.js";
 
 
 const params =
@@ -813,20 +804,7 @@ function isPlaceholderLearnerName(value=""){
 }
 
 async function resolveRecipient(record){
-  const storedName = humanName(record);
-  const ownerId = record.userId || record.recipientId || record.learnerId;
-  if(ownerId){
-    try{
-      const profile = await getDoc(doc(db,"users",ownerId));
-      if(profile.exists()){
-        const liveName=humanName(profile.data());
-        if(liveName && !isPlaceholderLearnerName(liveName)) return liveName;
-      }
-    }catch(error){
-      console.warn("Could not resolve the certificate owner profile.",error);
-    }
-  }
-  return storedName || "Learner";
+  return humanName(record) || "Learner";
 }
 
 
@@ -910,6 +888,8 @@ function isExternal(record){
     record.courseType === "external" ||
     record.sourceType === "external" ||
     record.externalProvider === true ||
+    Boolean(record.provider) ||
+    normalise(record.achievementType).includes("external") ||
     record.completionMethod === "certificate-upload"
   );
 
@@ -917,115 +897,12 @@ function isExternal(record){
 
 
 async function findCertificate(publicId){
-
-  /*
-    1. Try Firestore document ID.
-    This preserves compatibility with older certificate records.
-  */
-
-  const direct =
-    await getDoc(
-      doc(
-        db,
-        "certificates",
-        publicId
-      )
-    );
-
-
-  if(direct.exists()){
-
-    return {
-      docId:direct.id,
-      record:direct.data()
-    };
-
-  }
-
-
-  const certificates =
-    collection(
-      db,
-      "certificates"
-    );
-
-
-  /*
-    2. Production/public certificate ID.
-  */
-
-  let snap =
-    await getDocs(
-      query(
-        certificates,
-        where(
-          "certificateId",
-          "==",
-          publicId
-        ),
-        limit(1)
-      )
-    );
-
-
-  /*
-    3. Older certificateNumber field.
-  */
-
-  if(snap.empty){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "certificateNumber",
-            "==",
-            publicId
-          ),
-          limit(1)
-        )
-      );
-
-  }
-
-
-  /*
-    4. Legacy verificationCode field.
-  */
-
-  if(snap.empty){
-
-    snap =
-      await getDocs(
-        query(
-          certificates,
-          where(
-            "verificationCode",
-            "==",
-            publicId
-          ),
-          limit(1)
-        )
-      );
-
-  }
-
-
-  if(snap.empty){
-    return null;
-  }
-
-
-  const first =
-    snap.docs[0];
-
-
+  const result=await certificateApi.verify(publicId);
+  if(!result.record)return null;
   return {
-    docId:first.id,
-    record:first.data()
+    docId:result.record.certificateNumber||result.record.id||publicId,
+    record:result.record
   };
-
 }
 
 
@@ -1053,6 +930,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
   const courseTitle =
     record.courseTitle ||
+    record.awardTitle ||
     record.programmeTitle ||
     record.programTitle ||
     record.trainingTitle ||
@@ -1061,9 +939,10 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
 
   const issuer =
+    record.provider ||
+    record.externalProviderName ||
     record.issuer ||
     record.certificateIssuer ||
-    record.provider ||
     "SpeakOut Mental Health Outreach";
 
 
@@ -1094,7 +973,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
     formatLabel(status);
 
 
-  if(status === "verified"){
+  if(["verified","active","issued","approved"].includes(status)){
     statusText = "Verified";
   }
 
@@ -1105,7 +984,9 @@ function renderCertificate(record,docId,resolvedRecipient=""){
   if(external){
 
     completionSentence =
-      `has completed learning with ${escapeHtml(provider)} and the credential record has been submitted or recorded through SpeakHub Academy.`;
+      normalise(record.achievementType).includes("credential")
+        ? `holds a provider-issued credential from ${escapeHtml(provider)} that has been recorded as verified through SpeakHub Academy.`
+        : `has completed learning with ${escapeHtml(provider)} and the credential record has been verified through SpeakHub Academy.`;
 
   }else{
 
@@ -1204,7 +1085,7 @@ function renderCertificate(record,docId,resolvedRecipient=""){
 
             <div class="cert-divider"></div>
 
-            <span class="status-pill ${escapeHtml(status)}">
+            <span class="status-pill ${escapeHtml(["verified","active","issued","approved"].includes(status)?"verified":status)}">
               ${escapeHtml(statusText)}
             </span>
 
@@ -1313,14 +1194,14 @@ function renderCertificate(record,docId,resolvedRecipient=""){
   );
 
 
-  if(status === "verified"){
+  if(["verified","active","issued","approved"].includes(status)){
 
     show(
-      "Certificate record loaded and verified.",
+      "Credential record loaded and verified.",
       "ok"
     );
 
-  }else if(status === "pending"){
+  }else if(["pending","pending_review","submitted"].includes(status)){
 
     show(
       "This credential exists but is still pending verification.",
