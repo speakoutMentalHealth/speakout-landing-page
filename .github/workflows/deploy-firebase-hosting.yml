@@ -1,0 +1,49 @@
+name: Deploy Firebase Hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "**"
+      - "!workers/platform-api/**"
+      - "!.github/workflows/deploy-platform-api.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy Production Hosting
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Firebase deployment credential
+        id: preflight
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          if [[ -n "$FIREBASE_SERVICE_ACCOUNT" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Firebase deployment credential detected."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Firebase Hosting deployment is not configured yet. Add FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL to the production environment or repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Deploy Firebase Hosting
+        if: steps.preflight.outputs.ready == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+          projectId: speaakout-portal
+          channelId: live
