@@ -25,6 +25,19 @@ const coverByCategory = {
   "ict-cybersecurity": "images/learning-covers/course-digital-skills-v1.png",
 };
 
+const visualManifest = {
+  "mental-health-awareness-students": {
+    modules: [
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-1-understanding.svg", alt: "Student learning how thoughts, feelings, behaviours and relationships connect." },
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-2-emotions.svg", alt: "Student identifying and naming different emotions." },
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-3-stress.svg", alt: "Student using healthy strategies to respond to stress." },
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-4-habits.svg", alt: "Everyday wellbeing habits including sleep, movement, hydration and planning." },
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-5-support.svg", alt: "Students having a supportive conversation and connecting with trusted help." },
+      { coverUrl: "images/course-visuals/mental-health-awareness/module-6-plan.svg", alt: "Student creating a practical personal wellbeing plan." }
+    ]
+  }
+};
+
 const definitions = [
   {
     id: "mental-health-awareness-students",
@@ -85,10 +98,19 @@ function buildModules(targetId, selections) {
     module.id = `${targetId}-module-${moduleOrder}`;
     module.order = moduleOrder;
     module.sourceCourseId = sourceId;
+    const moduleVisual = visualManifest[targetId]?.modules?.[index];
+    if (moduleVisual) module.coverUrl = moduleVisual.coverUrl;
     if (module.quiz?.questions) module.quiz.questions = rebalanceAnswers(module.quiz.questions, index);\n    module.lessons = module.lessons.map((lesson, lessonIndex) => ({
       ...lesson,
       id: `${targetId}-module-${moduleOrder}-lesson-${lessonIndex + 1}`,
       order: lessonIndex + 1,
+      ...(moduleVisual && lessonIndex === 0 ? {
+        visuals: [{
+          src: moduleVisual.coverUrl,
+          alt: moduleVisual.alt,
+          caption: `Module ${moduleOrder} visual guide — ${module.title}`
+        }]
+      } : {})
     }));
     return module;
   });
