@@ -90,15 +90,57 @@ body{background:#f4f7fb}
 @media(prefers-reduced-motion:reduce){.sidebar{transition:none}html:focus-within{scroll-behavior:auto}}
 </style>
 <link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9014764551074349" crossorigin="anonymous"></script></head>
-<body><a class="skip-link" href="#main-content">Skip to main content</a>
-<section class="hero"><div class="container">
+<link href="css/production-ready.css" rel="stylesheet"/>
+<link href="css/course-player-premium.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9014764551074349" crossorigin="anonymous"></script></head>
+<body class="course-player-page"><a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="course-topbar" aria-label="SpeakHub course navigation">
+<a class="course-topbar-brand" href="speakhub.html">
+<img src="logo.png" alt="" aria-hidden="true"/>
+<span>SpeakHub Academy<small>Guided learning</small></span>
+</a>
+<a class="course-topbar-link" href="speakhub.html">← Back to Academy</a>
+</header>
+<section class="course-overview" id="courseOverview" hidden>
+<div class="course-overview-shell">
+<article class="course-hero-card" aria-labelledby="courseTitle">
+<div class="course-hero-copy">
+<span class="course-kicker">SpeakHub Course</span>
 <h1 id="courseTitle">Loading Course...</h1>
 <p id="courseSummary">Preparing your guided SpeakHub learning experience.</p>
 <div class="course-provider" id="courseProvider" style="display:none">
-<span class="hero-pill" id="providerPill"></span><span class="hero-pill" id="levelPill"></span><span class="hero-pill" id="durationPill"></span><span class="hero-pill">Guided Learning</span>
-</div></div></section>
-<div class="container">
+<span class="hero-pill" id="providerPill"></span><span class="hero-pill" id="levelPill"></span><span class="hero-pill" id="durationPill"></span>
+</div>
+<div class="course-stats" aria-label="Course overview">
+<div class="course-stat"><strong id="landingModuleCount">—</strong><span>Modules</span></div>
+<div class="course-stat"><strong id="landingLessonCount">—</strong><span>Lessons</span></div>
+<div class="course-stat"><strong id="landingQuizCount">—</strong><span>Module quizzes</span></div>
+<div class="course-stat"><strong id="landingCertificate">—</strong><span>Certificate</span></div>
+</div>
+<div class="course-hero-actions">
+<button class="btn primary" id="continueLearningButton" type="button">Continue Learning →</button>
+<button class="btn soft" id="saveCourseButton" type="button" aria-pressed="false">Save Course</button>
+<span class="course-save-status" id="saveCourseStatus" aria-live="polite"></span>
+</div>
+</div>
+<div class="course-hero-art" id="courseArtwork" aria-label="Course artwork"></div>
+</article>
+<div class="course-overview-progress">
+<div class="overview-progress-badge" id="overviewProgressBadge">0%</div>
+<div class="overview-progress-copy">
+<strong id="overviewProgressTitle">Your course progress</strong>
+<span id="overviewProgressText">Ready to begin.</span>
+<div class="overview-progress-track" aria-hidden="true"><div id="overviewProgressBar"></div></div>
+</div>
+</div>
+<section class="course-modules-section" aria-labelledby="modulesHeading">
+<div class="course-section-heading">
+<div><h2 id="modulesHeading">Course modules</h2><p>Work through each module in sequence. Your progress is saved automatically.</p></div>
+</div>
+<div class="course-module-grid" id="moduleCardGrid"></div>
+</section>
+</div>
+</section>
+<div class="learning-shell">
 <div class="loading" id="loading">Loading course content...</div>
 <div class="layout" id="playerArea" style="display:none">
 <div class="mobile-course-tools" aria-label="Mobile course navigation">
@@ -108,6 +150,8 @@ body{background:#f4f7fb}
 <div class="course-menu-backdrop" id="courseMenuBackdrop"></div>
 <aside class="sidebar" id="courseSidebar" aria-label="Course modules">
 <button class="sidebar-close" id="sidebarClose" type="button"><span>Course contents</span><span aria-hidden="true">×</span></button>
+<button class="back-to-course" id="backToCourseButton" type="button">← Back to Course</button>
+<h2 class="sidebar-course-title" id="sidebarCourseTitle">Course</h2>
 <h3>Course Progress</h3>
 <div class="progress"><div id="progressBar"></div></div>
 <p class="progress-text" id="progressText">0% Complete</p>
@@ -120,7 +164,12 @@ body{background:#f4f7fb}
 <div class="source-note" id="sourceNote"></div>
 </aside>
 <main class="content" id="main-content">
-<div class="slide-image" id="lessonCover"><h2 id="lessonTitle">Lesson</h2></div>
+<header class="lesson-workspace-header">
+<span class="lesson-eyebrow" id="lessonEyebrow">Lesson</span>
+<h1 id="lessonTitle">Lesson</h1>
+<div class="lesson-workspace-meta" id="lessonMeta"></div>
+</header>
+<div class="slide-image" id="lessonCover" aria-label="Lesson visual"></div>
 <div class="slide-body">
 <div class="notice" id="courseNotice" style="display:none"></div>
 <div class="lesson-snapshot" id="lessonSnapshot" style="display:none"></div>
@@ -157,7 +206,12 @@ previousButton=$("previousButton"),nextButton=$("nextButton"),completeButton=$("
 courseNotice=$("courseNotice"),lessonCover=$("lessonCover"),sourceNote=$("sourceNote"),navigationRow=$("navigationRow"),
 courseSidebar=$("courseSidebar"),courseMenuBackdrop=$("courseMenuBackdrop"),mobileModuleButton=$("mobileModuleButton"),
 sidebarClose=$("sidebarClose"),mobileLessonPosition=$("mobileLessonPosition"),mobileLessonTitle=$("mobileLessonTitle"),
-lessonSnapshot=$("lessonSnapshot"),reflectionCard=$("reflectionCard");
+lessonSnapshot=$("lessonSnapshot"),reflectionCard=$("reflectionCard"),courseOverview=$("courseOverview"),
+continueLearningButton=$("continueLearningButton"),saveCourseButton=$("saveCourseButton"),saveCourseStatus=$("saveCourseStatus"),
+moduleCardGrid=$("moduleCardGrid"),courseArtwork=$("courseArtwork"),landingModuleCount=$("landingModuleCount"),
+landingLessonCount=$("landingLessonCount"),landingQuizCount=$("landingQuizCount"),landingCertificate=$("landingCertificate"),
+overviewProgressBadge=$("overviewProgressBadge"),overviewProgressText=$("overviewProgressText"),overviewProgressBar=$("overviewProgressBar"),
+backToCourseButton=$("backToCourseButton"),sidebarCourseTitle=$("sidebarCourseTitle"),lessonEyebrow=$("lessonEyebrow"),lessonMeta=$("lessonMeta");
 
 let course=null,modules=[],lessons=[],currentUser=null,currentProfile=null,currentView={type:"lesson",lessonIndex:0};
 let completedLessons=new Set(),passedModuleQuizzes={},moduleQuizScores={},finalAssessmentPassed=false,finalAssessmentScore=0,certificateId="";
@@ -177,6 +231,44 @@ function lessonIcon(value=""){
  if(/teacher|class|school|student/.test(text))return "🎓";
  return "💡";
 }
+
+const mentalHealthModuleVisuals=[
+ "images/course-visuals/mental-health-awareness/module-1-understanding.svg",
+ "images/course-visuals/mental-health-awareness/module-2-emotions.svg",
+ "images/course-visuals/mental-health-awareness/module-3-stress.svg",
+ "images/course-visuals/mental-health-awareness/module-4-habits.svg",
+ "images/course-visuals/mental-health-awareness/module-5-support.svg",
+ "images/course-visuals/mental-health-awareness/module-6-plan.svg"
+];
+function moduleVisual(module,index){
+ if(module?.coverUrl)return module.coverUrl;
+ if(courseId==="mental-health-awareness-students"&&mentalHealthModuleVisuals[index])return mentalHealthModuleVisuals[index];
+ return module?.lessons?.[0]?.visuals?.[0]?.src||course?.coverUrl||course?.image||course?.thumbnail||"";
+}
+function modulePercent(mi){
+ const module=modules[mi];if(!module)return 0;
+ const total=(module.lessons?.length||0)+(module.quiz?1:0);
+ const done=(module.lessons||[]).filter(l=>completedLessons.has(l.id)).length+(module.quiz&&passedModuleQuizzes[mi]?1:0);
+ return total?Math.round(done/total*100):0;
+}
+function savedCourseKey(){return `speakhub-saved-course-${courseId}`}
+function courseIsSaved(){try{return localStorage.getItem(savedCourseKey())==="1"}catch{return false}}
+function updateSaveButton(){
+ const saved=courseIsSaved();
+ saveCourseButton.setAttribute("aria-pressed",String(saved));
+ saveCourseButton.textContent=saved?"Saved ✓":"Save Course";
+}
+function toggleCourseSaved(){
+ try{
+   const next=!courseIsSaved();
+   localStorage.setItem(savedCourseKey(),next?"1":"0");
+   updateSaveButton();
+   saveCourseStatus.textContent=next?"Saved on this device.":"Removed from saved courses.";
+ }catch{
+   saveCourseStatus.textContent="Saving is unavailable in this browser.";
+ }
+}
+
 function closeCourseMenu({restoreFocus=false}={}){
  courseSidebar.classList.remove("open");courseMenuBackdrop.classList.remove("open");document.body.classList.remove("course-menu-open");
  mobileModuleButton.setAttribute("aria-expanded","false");
@@ -270,34 +362,109 @@ function setNotice(message,type=""){
  courseNotice.innerHTML=message||"";
 }
 
+function renderCourseModuleCards(){
+ moduleCardGrid.innerHTML="";
+ modules.forEach((m,mi)=>{
+   const pct=modulePercent(mi);
+   const unlocked=previousModulesPassed(mi);
+   const complete=modulePassed(mi);
+   const visual=moduleVisual(m,mi);
+   const card=document.createElement("article");
+   card.className="course-module-card"+(complete?" complete":"")+(!unlocked?" locked":"");
+   card.innerHTML=`
+     <div class="module-card-art">${visual?`<img src="${esc(visual)}" alt="Visual guide for ${esc(m.title)}" loading="lazy" decoding="async">`:""}
+       <span class="module-card-state">${complete?"Completed":unlocked?(pct?"In progress":"Available"):"Locked"}</span>
+     </div>
+     <div class="module-card-body">
+       <small>Module ${mi+1}</small>
+       <h3>${esc(m.title)}</h3>
+       <div class="module-card-progress" aria-label="${pct}% complete"><div style="width:${pct}%"></div></div>
+       <button class="module-card-action" type="button" ${unlocked?"":"disabled"}>${complete?"Review module":pct?"Continue module":unlocked?"Start module":"Complete previous module"}</button>
+     </div>`;
+   const action=card.querySelector(".module-card-action");
+   if(unlocked)action.onclick=()=>openModule(mi);
+   moduleCardGrid.appendChild(card);
+ });
+}
+function renderCourseOverview(){
+ const counts=courseRequirementCounts();
+ const pct=coursePercent();
+ landingModuleCount.textContent=modules.length;
+ landingLessonCount.textContent=lessons.length;
+ landingQuizCount.textContent=modules.filter(m=>m.quiz).length;
+ landingCertificate.textContent=(course?.certificate?.available===true||course?.finalAssessment)?"Eligible":"—";
+ overviewProgressBadge.textContent=`${pct}%`;
+ overviewProgressBar.style.width=`${pct}%`;
+ overviewProgressText.textContent=pct===100?(finalAssessmentPassed?"Course complete — certificate ready.":"Coursework complete — final assessment unlocked."):
+   counts.done?`${counts.doneLessons} of ${counts.totalLessons} lessons complete.`:"Start with Module 1 and continue in sequence.";
+ const artwork=course?.coverUrl||course?.image||course?.thumbnail||moduleVisual(modules[0],0);
+ courseArtwork.innerHTML=artwork?`<img src="${esc(artwork)}" alt="Artwork for ${esc(course?.title||"this course")}">`:
+   `<div class="course-hero-art-fallback" aria-hidden="true">${lessonIcon(course?.title)}</div>`;
+ updateSaveButton();
+ renderCourseModuleCards();
+}
+function showCourseOverview(){
+ closeCourseMenu();
+ renderCourseOverview();
+ playerArea.style.display="none";
+ courseOverview.hidden=false;
+ window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+function enterLearningWorkspace(){
+ courseOverview.hidden=true;
+ playerArea.style.display="grid";
+ renderCurrentView();
+ requestAnimationFrame(()=>document.querySelector(".learning-shell")?.scrollIntoView({block:"start"}));
+}
+function openModule(mi){
+ if(!previousModulesPassed(mi))return;
+ const module=modules[mi];
+ const firstIncomplete=module.lessons.find(l=>!completedLessons.has(l.id)&&lessonUnlocked(l));
+ if(firstIncomplete){
+   currentView={type:"lesson",lessonIndex:lessonGlobalIndex(firstIncomplete.id)};
+ }else if(module.quiz&&!passedModuleQuizzes[mi]&&quizUnlocked(mi)){
+   currentView={type:"moduleQuiz",moduleIndex:mi};
+ }else{
+   currentView={type:"lesson",lessonIndex:lessonGlobalIndex(module.lessons[0].id)};
+ }
+ enterLearningWorkspace();
+}
 function renderSidebar(){
  moduleMenu.innerHTML="";
  modules.forEach((m,mi)=>{
-   const wrap=document.createElement("div");wrap.className="module-group";
-   wrap.innerHTML=`<div class="module-title">${esc(`Module ${mi+1}: ${m.title}`)}</div>${m.description?`<div class="module-description">${esc(m.description)}</div>`:""}`;
+   const wrap=document.createElement("details");wrap.className="module-group";
+   const isCurrent=(currentView.type==="lesson"&&lessons[currentView.lessonIndex]?.moduleIndex===mi)||(currentView.type==="moduleQuiz"&&currentView.moduleIndex===mi);
+   wrap.open=isCurrent||mi===0;
+   const summary=document.createElement("summary");
+   summary.innerHTML=`<span class="module-index">Module ${mi+1}</span><span class="module-title">${esc(m.title)}</span><span class="module-summary-state">${modulePassed(mi)?"Completed":previousModulesPassed(mi)?`${modulePercent(mi)}% complete`:"Locked"}</span>`;
+   wrap.appendChild(summary);
+   const lessonWrap=document.createElement("div");lessonWrap.className="module-lessons";
    m.lessons.forEach(l=>{
      const unlocked=lessonUnlocked(l), idx=lessonGlobalIndex(l.id);
-     const item=document.createElement("div");
+     const item=document.createElement("button");item.type="button";
      item.className="lesson-item"+(completedLessons.has(l.id)?" completed":"")+(!unlocked?" locked":"")+(currentView.type==="lesson"&&currentView.lessonIndex===idx?" active":"");
-     item.innerHTML=`${completedLessons.has(l.id)?"✓ ":""}${esc(l.title)}${l.duration?`<span class="lesson-meta">${esc(l.duration)}</span>`:""}`;
+     item.disabled=!unlocked;
+     item.innerHTML=`${esc(l.title)}${l.duration?`<span class="lesson-meta">${esc(l.duration)} • Lesson ${l.lessonIndex+1}</span>`:""}`;
      if(unlocked)item.onclick=()=>{currentView={type:"lesson",lessonIndex:idx};closeCourseMenu();renderCurrentView();focusLesson()};
-     wrap.appendChild(item);
+     lessonWrap.appendChild(item);
    });
    if(m.quiz){
      const unlocked=quizUnlocked(mi), passed=passedModuleQuizzes[mi]===true;
-     const item=document.createElement("div");
+     const item=document.createElement("button");item.type="button";
      item.className="lesson-item assessment-item"+(passed?" passed":"")+(!unlocked?" locked":"")+(currentView.type==="moduleQuiz"&&currentView.moduleIndex===mi?" active":"");
-     item.innerHTML=`${passed?"✓ ":""}${esc(m.quiz.title||`${m.title} Quiz`)}<span class="lesson-meta">${passed?`Passed ${moduleQuizScores[mi]||0}%`:`Pass mark ${Number(m.quiz.passMark||70)}%`}</span>`;
+     item.disabled=!unlocked;
+     item.innerHTML=`${esc(m.quiz.title||`${m.title} Quiz`)}<span class="lesson-meta">${passed?`Passed ${moduleQuizScores[mi]||0}%`:`Module quiz • Pass mark ${Number(m.quiz.passMark||70)}%`}</span>`;
      if(unlocked)item.onclick=()=>{currentView={type:"moduleQuiz",moduleIndex:mi};closeCourseMenu();renderCurrentView();focusLesson()};
-     wrap.appendChild(item);
+     lessonWrap.appendChild(item);
    }
+   wrap.appendChild(lessonWrap);
    moduleMenu.appendChild(wrap);
  });
  const fa=course.finalAssessment;
  if(fa){
    const unlocked=finalUnlocked(), passed=finalAssessmentPassed;
-   finalMenu.innerHTML=`<h3>Final Assessment</h3><div id="finalAssessmentMenuItem" class="lesson-item final-item ${passed?"passed":""} ${!unlocked?"locked":""} ${currentView.type==="final"?"active":""}">
-     ${passed?"✓ ":""}${esc(fa.title||"Final Assessment")}<span class="lesson-meta">${passed?`Passed ${finalAssessmentScore}%`:`Unlocks at 100% • Pass mark ${Number(fa.passMark||70)}%`}</span></div>`;
+   finalMenu.innerHTML=`<h3>Final Assessment</h3><button type="button" id="finalAssessmentMenuItem" class="lesson-item final-item ${passed?"passed":""} ${!unlocked?"locked":""} ${currentView.type==="final"?"active":""}" ${unlocked?"":"disabled"}>
+     ${esc(fa.title||"Final Assessment")}<span class="lesson-meta">${passed?`Passed ${finalAssessmentScore}%`:`Unlocks at 100% • Pass mark ${Number(fa.passMark||70)}%`}</span></button>`;
    const el=$("finalAssessmentMenuItem");
    if(unlocked)el.onclick=()=>{currentView={type:"final"};closeCourseMenu();renderCurrentView();focusLesson()};
  }else finalMenu.innerHTML="";
@@ -315,35 +482,40 @@ function renderSidebar(){
 function renderLesson(){
  const l=lessons[currentView.lessonIndex];
  if(!l){return}
- lessonTitle.textContent=l.title;
- const visual=l.coverUrl||course.coverUrl||course.image||course.thumbnail||"";
- const icon=lessonIcon(`${course.title} ${modules[l.moduleIndex].title} ${l.title}`);
- lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="Illustration for ${esc(l.title)}"><h2>${esc(l.title)}</h2>`:`<div class="cover-art" aria-hidden="true"><span>${icon}</span></div><h2>${esc(l.title)}</h2>`;
- lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
+ const m=modules[l.moduleIndex];
  const lessonVisuals=Array.isArray(l.visuals)?l.visuals.filter(v=>v&&v.src):[];
- if(lessonVisuals.length){
+ const heroVisual=lessonVisuals.at(-1)||null;
+ lessonTitle.textContent=l.title;
+ lessonEyebrow.textContent=`Lesson ${l.moduleIndex+1}.${l.lessonIndex+1}`;
+ lessonMeta.innerHTML=`<span>${esc(l.duration||"Self-paced")}</span><span>Reading + activity</span>${lessonVisuals.length?"<span>Visual guide</span>":""}`;
+ const visual=heroVisual?.src||l.coverUrl||course.coverUrl||course.image||course.thumbnail||"";
+ const visualAlt=heroVisual?.alt||`Illustration for ${l.title}`;
+ const icon=lessonIcon(`${course.title} ${m.title} ${l.title}`);
+ lessonCover.innerHTML=visual?`<img src="${esc(visual)}" alt="${esc(visualAlt)}" decoding="async">`:`<div class="cover-art" aria-hidden="true"><span>${icon}</span></div>`;
+ lessonContent.innerHTML=sanitizeRichHtml(l.content||"<p>No lesson content yet.</p>");
+ const supportingVisuals=heroVisual?lessonVisuals.filter(v=>v!==heroVisual):lessonVisuals;
+ if(supportingVisuals.length){
    const gallery=document.createElement("div");
    gallery.className="lesson-visuals";
    gallery.setAttribute("aria-label","Lesson illustrations");
-   gallery.innerHTML=lessonVisuals.map(v=>`<figure class="lesson-visual-card"><img src="${esc(v.src)}" alt="${esc(v.alt||`Illustration for ${l.title}`)}" loading="lazy" decoding="async"><figcaption>${esc(v.caption||"")}</figcaption></figure>`).join("");
+   gallery.innerHTML=supportingVisuals.map(v=>`<figure class="lesson-visual-card"><img src="${esc(v.src)}" alt="${esc(v.alt||`Illustration for ${l.title}`)}" loading="lazy" decoding="async"><figcaption>${esc(v.caption||"")}</figcaption></figure>`).join("");
    lessonContent.appendChild(gallery);
  }
  const wordCount=(lessonContent.textContent.trim().match(/\S+/g)||[]).length;
  const readMinutes=Math.max(1,Math.ceil(wordCount/190));
  lessonSnapshot.style.display="grid";
- lessonSnapshot.innerHTML=`<div class="snapshot-icon" aria-hidden="true">${icon}</div><div><span class="snapshot-label">Your focus for this lesson</span><span class="snapshot-title">${esc(modules[l.moduleIndex].title)}</span><span class="snapshot-meta">Lesson ${l.lessonIndex+1} of ${modules[l.moduleIndex].lessons.length} • About ${readMinutes} min • Read one section at a time</span></div>`;
+ lessonSnapshot.innerHTML=`<div class="snapshot-icon" aria-hidden="true">${icon}</div><div><span class="snapshot-label">Lesson focus</span><span class="snapshot-title">${esc(m.title)}</span><span class="snapshot-meta">Lesson ${l.lessonIndex+1} of ${m.lessons.length} • About ${readMinutes} min reading time • Progress saves automatically</span></div>`;
  reflectionCard.style.display="grid";
- reflectionCard.innerHTML=`<div class="reflection-icon" aria-hidden="true">✍️</div><div><strong>Pause and make it practical</strong><p>Before moving on, name one idea from “${esc(l.title)}” that you can use in a real situation this week.</p></div>`;
+ reflectionCard.innerHTML=`<div class="reflection-icon" aria-hidden="true">✍️</div><div><strong>Reflection & activity</strong><p>${esc(l.activity||`Name one idea from “${l.title}” that you can apply in a real situation this week.`)}</p></div>`;
  assessmentArea.innerHTML="";
  navigationRow.style.display="flex";
  previousButton.disabled=currentView.lessonIndex===0;
  completeButton.disabled=previewMode||completedLessons.has(l.id);
  completeButton.textContent=completedLessons.has(l.id)?"Completed ✓":previewMode?"Preview Mode":"Mark Complete";
- // Next is strictly locked until this lesson is complete, and additionally respects the next requirement.
- const isLastInModule=l.lessonIndex===modules[l.moduleIndex].lessons.length-1;
+ const isLastInModule=l.lessonIndex===m.lessons.length-1;
  if(!completedLessons.has(l.id)){
    nextButton.disabled=true;nextButton.textContent="Complete Lesson First";
- }else if(isLastInModule&&modules[l.moduleIndex].quiz&&!passedModuleQuizzes[l.moduleIndex]){
+ }else if(isLastInModule&&m.quiz&&!passedModuleQuizzes[l.moduleIndex]){
    nextButton.disabled=false;nextButton.textContent="Take Module Quiz";
  }else{
    const nextIdx=currentView.lessonIndex+1;
@@ -357,6 +529,7 @@ async function renderAssessment(metadata,type,moduleIndex=null){
  lessonSnapshot.style.display="none";reflectionCard.style.display="none";
  if(previewMode){
    lessonTitle.textContent=metadata?.title||"Assessment";
+   lessonEyebrow.textContent="Assessment";lessonMeta.innerHTML="<span>Secure assessment</span>";
    lessonContent.innerHTML="";
    navigationRow.style.display="none";
    assessmentArea.innerHTML='<div class="notice warning">Assessments are not exposed in preview mode.</div>';
@@ -372,12 +545,14 @@ async function renderAssessment(metadata,type,moduleIndex=null){
    assessmentArea.className="notice error";
    return;
  }
+ const questions=Array.isArray(assessment.questions)?assessment.questions:[];
+ const passMark=Number(assessment.passMark||70);
  lessonTitle.textContent=assessment.title||(type==="final"?"Final Assessment":"Module Quiz");
+ lessonEyebrow.textContent=type==="final"?"Final assessment":`Module ${Number(moduleIndex)+1} quiz`;
+ lessonMeta.innerHTML=`<span>${questions.length} questions</span><span>Pass mark ${passMark}%</span><span>Secure scoring</span>`;
  lessonCover.innerHTML=`<h2>${esc(assessment.title||(type==="final"?"Final Assessment":"Module Quiz"))}</h2>`;
  lessonContent.innerHTML="";
  navigationRow.style.display="none";
- const questions=Array.isArray(assessment.questions)?assessment.questions:[];
- const passMark=Number(assessment.passMark||70);
  if(!questions.length){
    assessmentArea.innerHTML=`<div class="notice error">This assessment is not available. Contact SpeakOut support.</div>`;
    return;
@@ -439,6 +614,7 @@ async function ensureCertificate(){
 async function showCompletion(){
  const cid=await ensureCertificate();
  lessonTitle.textContent="Course Completed";
+ lessonEyebrow.textContent="Completion";lessonMeta.innerHTML="<span>Final assessment passed</span><span>Certificate eligible</span>";
  lessonCover.innerHTML="<h2>Congratulations — Course Completed</h2>";
  lessonContent.innerHTML="";
  lessonSnapshot.style.display="none";reflectionCard.style.display="none";
@@ -470,6 +646,9 @@ previousButton.onclick=()=>{
  currentView={type:"lesson",lessonIndex:currentView.lessonIndex-1};renderCurrentView();focusLesson();
 };
 
+continueLearningButton.onclick=()=>enterLearningWorkspace();
+saveCourseButton.onclick=()=>toggleCourseSaved();
+backToCourseButton.onclick=()=>showCourseOverview();
 mobileModuleButton.onclick=()=>courseSidebar.classList.contains("open")?closeCourseMenu({restoreFocus:true}):openCourseMenu();
 sidebarClose.onclick=()=>closeCourseMenu({restoreFocus:true});
 courseMenuBackdrop.onclick=()=>closeCourseMenu({restoreFocus:true});
@@ -519,6 +698,7 @@ async function loadCourse(){
  if(!modules.length||!lessons.length){loading.innerHTML=`<strong>No embedded lesson content is available.</strong><br>V4 does not mix legacy lesson collections into this course. Re-seed the current courses-seed.json so the course document contains its modules and lessons.`;return}
 
  courseTitle.textContent=course.title||"SpeakHub Course";courseSummary.textContent=course.shortDescription||course.description||"Guided SpeakHub learning.";
+ sidebarCourseTitle.textContent=course.title||"SpeakHub Course";
  providerPill.textContent=`Provider: ${course.provider||"SpeakHub Academy"}`;levelPill.textContent=`Level: ${pretty(course.difficulty||course.level||"beginner")}`;
  durationPill.textContent=`Duration: ${course.duration||"Self-paced"}`;courseProvider.style.display="flex";detailsButton.href=`course-details.html?id=${encodeURIComponent(courseId)}`;
  sourceNote.textContent="Content source: embedded course.modules only (V4 guided engine)";
@@ -529,8 +709,8 @@ async function loadCourse(){
  if(first<0)first=0;
  currentView={type:"lesson",lessonIndex:first};
  if(coursePercent()===100&&!finalAssessmentPassed)currentView={type:"final"};
- if(finalAssessmentPassed){await showCompletion()}else renderCurrentView();
- loading.style.display="none";playerArea.style.display="grid";
+ if(finalAssessmentPassed)currentView={type:"final"};
+ loading.style.display="none";renderCourseOverview();showCourseOverview();
 }
 
 onAuthStateChanged(auth,async user=>{

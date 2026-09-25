@@ -131,3 +131,30 @@ test("secure assessment migration is never deployed as a browser utility", () =>
   assert.ok(firebase.hosting.ignore.includes("firestore-seed/*.mjs"));
   assert.match(githubPages, /firestore-seed\/migrate-course-assessments\.mjs/u);
 });
+
+
+test("premium course player adds course landing, visual module cards and readable lesson workspace", () => {
+  const player = read("course-player.html");
+  const premium = read("css/course-player-premium.css");
+
+  assert.match(player, /id="courseOverview"/u);
+  assert.match(player, /id="continueLearningButton"/u);
+  assert.match(player, /id="saveCourseButton"/u);
+  assert.match(player, /id="moduleCardGrid"/u);
+  assert.match(player, /id="backToCourseButton"/u);
+  assert.match(player, /id="lessonEyebrow"/u);
+  assert.match(player, /id="lessonMeta"/u);
+  assert.match(player, /function renderCourseModuleCards\(\)/u);
+  assert.match(player, /mental-health-awareness\/module-1-understanding\.svg/u);
+  assert.match(player, /mental-health-awareness\/module-6-plan\.svg/u);
+  assert.match(player, /Reflection & activity/u);
+  assert.match(player, /heroVisual=lessonVisuals\.at\(-1\)/u);
+
+  assert.match(premium, /\.course-module-grid\{display:grid;grid-template-columns:repeat\(6,minmax\(0,1fr\)\)/u);
+  assert.match(premium, /\.lesson-content\{[\s\S]*?font-size:1\.125rem!important;line-height:1\.78!important/u);
+  assert.match(premium, /@media\(max-width:680px\)[\s\S]*?\.course-module-grid\{grid-template-columns:1fr\}/u);
+  assert.match(premium, /\.mobile-course-tools\{[\s\S]*?display:flex!important/u);
+
+  assert.match(player, /learningApi\.submitAssessment/u);
+  assert.doesNotMatch(player, /q\.answer|correctAnswer/u);
+});
