@@ -85,12 +85,30 @@ function buildModules(targetId, selections) {
     module.id = `${targetId}-module-${moduleOrder}`;
     module.order = moduleOrder;
     module.sourceCourseId = sourceId;
-    module.lessons = module.lessons.map((lesson, lessonIndex) => ({
+    if (module.quiz?.questions) module.quiz.questions = rebalanceAnswers(module.quiz.questions, index);\n    module.lessons = module.lessons.map((lesson, lessonIndex) => ({
       ...lesson,
       id: `${targetId}-module-${moduleOrder}-lesson-${lessonIndex + 1}`,
       order: lessonIndex + 1,
     }));
     return module;
+  });
+}
+
+function rebalanceAnswers(questions, seed = 0) {
+  const target = [0, 3, 2, 1];
+  return questions.map((question, index) => {
+    const q = clone(question);
+    const options = Array.isArray(q.options) ? [...q.options] : [];
+    const current = Number.isInteger(q.answer) ? q.answer : (Number.isInteger(q.correctAnswer) ? q.correctAnswer : null);
+    if (current === null || !options.length || current < 0 || current >= options.length) return q;
+    const desired = target[(index + seed) % target.length] % options.length;
+    if (desired !== current) {
+      [options[current], options[desired]] = [options[desired], options[current]];
+    }
+    q.options = options;
+    if (Number.isInteger(q.answer)) q.answer = desired;
+    if (Number.isInteger(q.correctAnswer)) q.correctAnswer = desired;
+    return q;
   });
 }
 
@@ -103,7 +121,7 @@ function buildAssessment(title, sourceIds) {
       questions.push(clone(question));
     }
   }
-  return { title: `${title} Final Assessment`, passMark: 70, questions };
+  return { title: `${title} Final Assessment`, passMark: 70, questions: rebalanceAnswers(questions) };
 }
 
 function buildInternal(definition) {
