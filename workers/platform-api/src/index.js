@@ -1861,7 +1861,7 @@ async function onboardSchoolUser(request, env, data) {
       classLevel: bounded(data.level, 80, "Level"),
       level: bounded(data.level, 80, "Level"),
       studentId,
-      status: "pending",
+      status: "pending_school_approval",
       approved: false,
       schoolVerificationStatus: "pending",
       verificationMethod: role === "student" ? "registration-number-and-school-admin" : "school-admin",
@@ -1936,7 +1936,8 @@ async function updateSchoolStatus(request, env, user, data) {
 
   if (["approved", "active"].includes(status)) {
     if (!schoolCode) schoolCode = await uniqueSchoolCode(env, school);
-    if (looksLikeEmail(school.adminEmail) && !clean(school.adminUid)) {
+    const inviteEmail = normalized(school.adminEmail || school.email);
+    if (looksLikeEmail(inviteEmail) && !clean(school.adminUid)) {
       const inviteToken = crypto.randomUUID();
       const origin = request.headers.get("origin") || "https://speakoutmentalhealth.org";
       activationUrl = new URL(`/auth/?schoolInvite=${encodeURIComponent(inviteToken)}`, origin).toString();
@@ -1945,15 +1946,15 @@ async function updateSchoolStatus(request, env, user, data) {
         schoolId,
         schoolCode,
         schoolName: clean(school.schoolName || school.name),
-        email: normalized(school.adminEmail),
-        adminName: clean(school.adminName),
+        email: inviteEmail,
+        adminName: clean(school.adminName || school.principalName || school.coordinatorName),
         status: "active",
         createdBy: user.uid,
         createdAt: now,
         expiresAt,
         usedAt: null
       });
-      emailSent = await sendSchoolAdminInvite(env, { ...school, schoolCode }, activationUrl).catch(() => false);
+      emailSent = await sendSchoolAdminInvite(env, { ...school, adminEmail: inviteEmail, schoolCode }, activationUrl).catch(() => false);
     }
   }
 
@@ -2234,9 +2235,15 @@ async function route(request, env, path, data) {
         if (registrationNumber && schoolId) {
           const lockId = await sha256Key(`${schoolId}:${registrationNumber}`);
           const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
-          if (lock) {
+          if (status === "rejected") {
+            if (lock) tx.delete(`schoolStudentRegistrations/${lockId}`);
+          } else {
             tx.set(`schoolStudentRegistrations/${lockId}`, {
-              ...lock,
+              ...(lock || {}),
+              userId: targetUserId,
+              schoolId,
+              schoolCode: clean(target.schoolCode),
+              registrationNumber,
               status: verificationStatus,
               reviewedAt: now,
               reviewedBy: user.uid,
