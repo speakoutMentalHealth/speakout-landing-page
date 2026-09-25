@@ -1,1135 +1,360 @@
-// js/auth.js
-
 import { auth, db } from "./firebase-config.js";
-
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { onboardingApi } from "./platform-api.js";
 
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
-
-/* =========================================================
-   PROJECT ROUTES
-========================================================= */
-
-/*
-  auth.js lives inside /js/.
-
-  Using import.meta.url lets us resolve pages from the project root
-  correctly even when the site is hosted on GitHub Pages inside a
-  repository path.
-*/
-
-function projectUrl(path) {
-  return new URL(
-    `../${String(path || "").replace(/^\/+/, "")}`,
-    import.meta.url
-  ).href;
+function projectUrl(path){
+  return new URL(`../${String(path||"").replace(/^\/+/, "")}`, import.meta.url).href;
 }
 
-
-const ROLE_DASHBOARDS = {
-  student: "student-dashboard.html",
-  parent: "parent-dashboard.html",
-  teacher: "teacher-dashboard.html",
-
-  school: "school-dashboard.html",
-  school_admin: "school-dashboard.html",
-
-  admin: "admin-dashboard.html",
-  super_admin: "admin-dashboard.html",
-
-  ambassador: "ambassador-dashboard.html",
-  contributor: "contributor.html",
-
-  volunteer: "student-dashboard.html"
+const ROLE_DASHBOARDS={
+  student:"student-dashboard.html",
+  parent:"parent-dashboard.html",
+  teacher:"teacher-dashboard.html",
+  school:"school-dashboard.html",
+  school_admin:"school-dashboard.html",
+  admin:"admin-dashboard.html",
+  super_admin:"admin-dashboard.html",
+  ambassador:"ambassador-dashboard.html",
+  contributor:"contributor.html",
+  volunteer:"student-dashboard.html"
 };
 
+const clean=value=>String(value||"").trim();
+const normalize=value=>clean(value).toLowerCase().replace(/\s+/g,"_");
+const byId=id=>document.getElementById(id);
+const value=id=>clean(byId(id)?.value);
 
-/* =========================================================
-   BASIC HELPERS
-========================================================= */
-
-function clean(value) {
-  return String(value || "").trim();
+function dashboardForRole(role){
+  const route=ROLE_DASHBOARDS[normalize(role)];
+  return projectUrl(route||"auth.html");
 }
 
+function setMessage(target,message,type="info"){
+  if(!target) return;
+  target.textContent=message;
+  target.className=`message ${type==="success"?"ok":type==="warning"?"warn":type==="error"?"bad":""}`;
+  target.style.display="block";
+}
+const showLogin=(m,t="info")=>setMessage(byId("loginMsg"),m,t);
+const showRegister=(m,t="info")=>setMessage(byId("regMsg"),m,t);
+const showSchool=(m,t="info")=>setMessage(byId("schoolRegMsg"),m,t);
+const showSchoolAdmin=(m,t="info")=>setMessage(byId("schoolAdminMsg"),m,t);
 
-function normalizeRole(role) {
-  return clean(role)
-    .toLowerCase()
-    .replace(/\s+/g, "_");
+function selectPanel(panelId){
+  document.querySelectorAll(".access-panel").forEach(panel=>panel.classList.toggle("active",panel.id===panelId));
+  document.querySelectorAll("[data-tab-target]").forEach(button=>button.classList.toggle("active",button.dataset.tabTarget===panelId));
 }
 
+document.querySelectorAll("[data-tab-target]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    selectPanel(button.dataset.tabTarget);
+    const hash=button.dataset.tabTarget==="loginPanel"?"login":button.dataset.tabTarget==="joinPanel"?"join":"school";
+    history.replaceState(null,"",`${location.pathname}${location.search}#${hash}`);
+  });
+});
 
-function dashboardForRole(role) {
-  const route =
-    ROLE_DASHBOARDS[
-      normalizeRole(role)
-    ];
-
-  return route
-    ? projectUrl(route)
-    : projectUrl("auth.html");
+async function getUserProfile(uid){
+  const snap=await getDoc(doc(db,"users",uid));
+  return snap.exists()?{uid,...snap.data()}:null;
 }
 
-
-function authPageUrl(query = "") {
-  const url =
-    projectUrl("auth.html");
-
-  return query
-    ? `${url}${query}`
-    : url;
-}
-
-
-function getInput(...selectors) {
-  for(const selector of selectors) {
-    const element =
-      document.querySelector(selector);
-
-    if(element) {
-      return element;
-    }
-  }
-
-  return null;
-}
-
-
-function getValue(...selectors) {
-  return clean(
-    getInput(...selectors)?.value
-  );
-}
-
-
-function showAuthMessage(
-  message,
-  type = "info"
-) {
-  const target =
-    document.querySelector("[data-auth-message]") ||
-    document.querySelector("#authMessage") ||
-    document.querySelector("#loginMsg") ||
-    document.querySelector("#regMsg") ||
-    document.querySelector(".auth-message");
-
-  if(target) {
-    target.textContent =
-      message;
-
-    target.dataset.type =
-      type;
-
-    target.className =
-      `message ${
-        type === "success"
-          ? "ok"
-          : type === "warning"
-            ? "warn"
-            : type === "error"
-              ? "bad"
-              : ""
-      }`;
-
-    target.style.display =
-      "block";
-
-    return;
-  }
-
-  console.log(
-    `[SpeakOut Auth] ${message}`
-  );
-}
-
-
-function showLoginMessage(
-  message,
-  type = "info"
-) {
-  const target =
-    document.querySelector(
-      "[data-login-message]"
-    ) ||
-    document.getElementById(
-      "loginMsg"
-    );
-
-  if(!target) {
-    showAuthMessage(
-      message,
-      type
-    );
-
-    return;
-  }
-
-  target.textContent =
-    message;
-
-  target.className =
-    `message ${
-      type === "success"
-        ? "ok"
-        : type === "warning"
-          ? "warn"
-          : type === "error"
-            ? "bad"
-            : ""
-    }`;
-}
-
-
-function showRegisterMessage(
-  message,
-  type = "info"
-) {
-  const target =
-    document.querySelector(
-      "[data-register-message]"
-    ) ||
-    document.getElementById(
-      "regMsg"
-    );
-
-  if(!target) {
-    showAuthMessage(
-      message,
-      type
-    );
-
-    return;
-  }
-
-  target.textContent =
-    message;
-
-  target.className =
-    `message ${
-      type === "success"
-        ? "ok"
-        : type === "warning"
-          ? "warn"
-          : type === "error"
-            ? "bad"
-            : ""
-    }`;
-}
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-async function getUserProfile(uid) {
-  const snap =
-    await getDoc(
-      doc(
-        db,
-        "users",
-        uid
-      )
-    );
-
-  if(!snap.exists()) {
-    return null;
-  }
-
-  return {
-    uid,
-    ...snap.data()
-  };
-}
-
-
-/* =========================================================
-   ROLE REDIRECTION
-========================================================= */
-
-async function redirectByUserRole(user) {
-
-  const profile =
-    await getUserProfile(
-      user.uid
-    );
-
-
-  if(!profile) {
-
-    showLoginMessage(
-      "Your account exists, but your SpeakOut profile was not found. Please contact SpeakOut admin.",
-      "error"
-    );
-
+async function redirectByUserRole(user){
+  const profile=await getUserProfile(user.uid);
+  if(!profile){
+    showLogin("Your account exists, but your SpeakOut profile was not found. Please contact SpeakOut admin.","error");
     await signOut(auth);
-
     return;
   }
-
-
-  const role =
-    normalizeRole(
-      profile.role
-    );
-
-
-  const status =
-    normalizeRole(
-      profile.status
-    );
-
-
-  const approved =
-    profile.approved === true ||
-    status === "approved";
-
-
-  if(!approved) {
-
-    showLoginMessage(
-      "Your account is pending approval. Please contact SpeakOut admin if this is urgent.",
+  const approved=profile.approved===true||normalize(profile.status)==="approved";
+  if(!approved){
+    showLogin(
+      normalize(profile.schoolVerificationStatus)==="pending"
+        ?"Your account is waiting for verification by your school administrator."
+        :"Your account is pending approval.",
       "warning"
     );
-
-
-    /*
-      Pending users should not retain an authenticated portal session.
-    */
-
-    sessionStorage.setItem(
-      "speakoutManualLogout",
-      "true"
-    );
-
-
+    sessionStorage.setItem("speakoutManualLogout","true");
     await signOut(auth);
-
     return;
   }
-
-
-  const destination =
-    dashboardForRole(
-      role
-    );
-
-
-  window.location.replace(
-    destination
-  );
+  window.location.replace(dashboardForRole(profile.role));
 }
 
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-async function handleLogin(event) {
-
-  event?.preventDefault();
-
-
-  const email =
-    getValue(
-      "[data-login-email]",
-      "#loginEmail",
-      "input[name='loginEmail']"
-    );
-
-
-  const password =
-    getValue(
-      "[data-login-password]",
-      "#loginPassword",
-      "input[name='loginPassword']"
-    );
-
-
-  if(
-    !email ||
-    !password
-  ) {
-
-    showLoginMessage(
-      "Enter your email and password.",
-      "error"
-    );
-
-    return;
+async function handleLogin(event){
+  event.preventDefault();
+  const email=value("loginEmail"), password=value("loginPassword");
+  if(!email||!password){showLogin("Enter your email and password.","error");return;}
+  try{
+    sessionStorage.removeItem("speakoutManualLogout");
+    showLogin("Signing you in...");
+    const credential=await signInWithEmailAndPassword(auth,email,password);
+    await redirectByUserRole(credential.user);
+  }catch(error){
+    console.error("Login error:",error);
+    showLogin(error?.code==="auth/invalid-credential"?"Incorrect email or password.":"Login failed. Please check your details and try again.","error");
   }
-
-
-  try {
-
-    /*
-      A new manual login overrides any previous logout marker.
-    */
-
-    sessionStorage.removeItem(
-      "speakoutManualLogout"
-    );
-
-
-    showLoginMessage(
-      "Signing you in...",
-      "info"
-    );
-
-
-    const credential =
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-
-    await redirectByUserRole(
-      credential.user
-    );
-
-
-  } catch(error) {
-
-    console.error(
-      "Login error:",
-      error
-    );
-
-
-    let message =
-      "Login failed. Please check your email and password.";
-
-
-    if(
-      error?.code ===
-      "auth/invalid-credential"
-    ) {
-      message =
-        "Incorrect email or password.";
-    }
-
-
-    if(
-      error?.code ===
-      "auth/too-many-requests"
-    ) {
-      message =
-        "Too many login attempts. Please wait and try again.";
-    }
-
-
-    showLoginMessage(
-      message,
-      "error"
-    );
-
-  }
-
 }
 
+let resolvedSchool=null;
+let resolvedCode="";
 
-/* =========================================================
-   REGISTRATION
-========================================================= */
+function clearResolvedSchool(){
+  resolvedSchool=null;
+  resolvedCode="";
+  const box=byId("schoolResolvedBox");
+  box?.classList.remove("show","verify-ok");
+  if(byId("schoolResolvedName")) byId("schoolResolvedName").textContent="";
+  if(byId("schoolResolvedMeta")) byId("schoolResolvedMeta").textContent="";
+  if(byId("schoolName")) byId("schoolName").value="";
+  syncStudentFields();
+}
 
-async function handleRegister(event) {
+function syncStudentFields(){
+  const role=normalize(value("role"));
+  const show=role==="student"&&Boolean(resolvedSchool);
+  const wrap=byId("studentVerificationFields");
+  if(wrap) wrap.style.display=show?"block":"none";
+  const reg=byId("registrationNumber");
+  if(reg) reg.required=show;
+}
 
-  event?.preventDefault();
+async function resolveSchoolCode(){
+  const code=value("schoolCode").toUpperCase();
+  if(!code){clearResolvedSchool();return null;}
+  try{
+    const result=await onboardingApi.resolveSchool(code);
+    resolvedSchool=result.school;
+    resolvedCode=code;
+    byId("schoolCode").value=result.school.schoolCode||code;
+    byId("schoolName").value=result.school.schoolName||"";
+    byId("schoolResolvedName").textContent=`✓ ${result.school.schoolName}`;
+    byId("schoolResolvedMeta").textContent=[result.school.schoolType,result.school.city,result.school.state].filter(Boolean).join(" • ");
+    byId("schoolResolvedBox").classList.add("show","verify-ok");
+    syncStudentFields();
+    return resolvedSchool;
+  }catch(error){
+    clearResolvedSchool();
+    byId("schoolResolvedBox")?.classList.add("show");
+    if(byId("schoolResolvedName")) byId("schoolResolvedName").textContent="School code not verified";
+    if(byId("schoolResolvedMeta")) byId("schoolResolvedMeta").textContent=error.message||"Check the code and try again.";
+    throw error;
+  }
+}
 
+byId("verifySchoolBtn")?.addEventListener("click",async()=>{
+  try{await resolveSchoolCode();}catch{}
+});
+byId("schoolCode")?.addEventListener("input",()=>{
+  if(clean(byId("schoolCode").value).toUpperCase()!==resolvedCode) clearResolvedSchool();
+});
+byId("role")?.addEventListener("change",syncStudentFields);
 
-  const firstName =
-    getValue(
-      "#firstName",
-      "[name='firstName']"
-    );
+async function createIndividualProfile(credential,data){
+  await setDoc(doc(db,"users",credential.user.uid),{
+    uid:credential.user.uid,
+    ...data,
+    status:"pending",
+    approved:false,
+    profileCompleted:false,
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp()
+  },{merge:true});
+}
 
-
-  const lastName =
-    getValue(
-      "#lastName",
-      "[name='lastName']"
-    );
-
-
-  const fullName =
-    `${firstName} ${lastName}`
-      .trim();
-
-
-  const email =
-    getValue(
-      "[data-register-email]",
-      "#registerEmail",
-      "#email",
-      "input[name='registerEmail']"
-    );
-
-
-  const phone =
-    getValue(
-      "#phone",
-      "input[name='phone']"
-    );
-
-
-  const password =
-    getValue(
-      "[data-register-password]",
-      "#registerPassword",
-      "#password"
-    );
-
-
-  const confirmPassword =
-    getValue(
-      "#confirmPassword"
-    );
-
-
-  const role =
-    normalizeRole(
-      getValue(
-        "[data-register-role]",
-        "#role",
-        "select[name='role']"
-      ) || "student"
-    );
-
-
-  const schoolCode =
-    getValue(
-      "#schoolCode",
-      "input[name='schoolCode']"
-    );
-
-
-  const schoolName =
-    getValue(
-      "#schoolName",
-      "input[name='schoolName']"
-    );
-
-
-  const location =
-    getValue(
-      "#location",
-      "input[name='location']"
-    );
-
-
-  const contentType =
-    getValue(
-      "#contentType"
-    );
-
-
-  const reason =
-    getValue(
-      "#reason",
-      "textarea[name='reason']"
-    );
-
-
-  const terms =
-    document.getElementById(
-      "terms"
-    );
-
-
-  if(
-    !firstName ||
-    !lastName ||
-    !email ||
-    !password
-  ) {
-
-    showRegisterMessage(
-      "Enter your first name, last name, email and password.",
-      "error"
-    );
-
-    return;
+async function handleRegister(event){
+  event.preventDefault();
+  const firstName=value("firstName"), lastName=value("lastName"), fullName=`${firstName} ${lastName}`.trim();
+  const email=value("email"), phone=value("phone"), password=value("password"), confirmPassword=value("confirmPassword");
+  const role=normalize(value("role")||"student"), schoolCode=value("schoolCode").toUpperCase();
+  const locationValue=value("location"), reason=value("reason"), contentType=value("contentType");
+  if(!firstName||!lastName||!email||!password){showRegister("Enter your first name, last name, email and password.","error");return;}
+  if(password.length<6){showRegister("Your password must contain at least 6 characters.","error");return;}
+  if(password!==confirmPassword){showRegister("Your passwords do not match.","error");return;}
+  if(!byId("terms")?.checked){showRegister("Please confirm the terms before submitting.","error");return;}
+  if(schoolCode&&(!resolvedSchool||resolvedCode!==schoolCode)){
+    try{await resolveSchoolCode();}catch{showRegister("Verify your school code before creating the account.","error");return;}
+  }
+  const schoolLinked=Boolean(resolvedSchool);
+  const registrationNumber=value("registrationNumber");
+  if(schoolLinked&&role==="student"&&!registrationNumber){
+    showRegister("Enter your student registration or matric number so your school can verify you.","error");return;
   }
 
-
-  if(password.length < 6) {
-
-    showRegisterMessage(
-      "Your password must contain at least 6 characters.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if(
-    confirmPassword &&
-    password !== confirmPassword
-  ) {
-
-    showRegisterMessage(
-      "Your passwords do not match.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if(
-    terms &&
-    !terms.checked
-  ) {
-
-    showRegisterMessage(
-      "Please confirm the terms before submitting your application.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  try {
-
-    showRegisterMessage(
-      "Creating your account...",
-      "info"
-    );
-
-
-    const credential =
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-
-    const userId =
-      credential.user.uid;
-
-
-    const profileData = {
-      uid:
-        userId,
-
-      firstName,
-      lastName,
-      fullName,
-
-      email,
-
-      phone,
-
-      role,
-
-      schoolCode,
-      schoolName,
-
-      location,
-
-      reason,
-
-      status:
-        "pending",
-
-      approved:
-        false,
-
-      profileCompleted:
-        false,
-
-      createdAt:
-        serverTimestamp(),
-
-      updatedAt:
-        serverTimestamp()
-    };
-
-
-    /*
-      Contributor-specific field remains optional.
-    */
-
-    if(contentType) {
-      profileData.contentType =
-        contentType;
+  let credential=null;
+  sessionStorage.setItem("speakoutOnboarding","true");
+  try{
+    showRegister(schoolLinked?"Creating your account and linking your school...":"Creating your account...");
+    credential=await createUserWithEmailAndPassword(auth,email,password);
+    if(schoolLinked){
+      await onboardingApi.joinSchool({
+        firstName,lastName,fullName,phone,role,schoolCode,
+        registrationNumber,
+        department:value("department"),
+        level:value("level"),
+        location:locationValue,
+        reason,
+        contentType
+      });
+    }else{
+      await createIndividualProfile(credential,{
+        firstName,lastName,fullName,email,phone,role,
+        schoolCode:"",schoolName:"",schoolId:"",
+        location:locationValue,reason,...(contentType?{contentType}:{})
+      });
     }
-
-
-    await setDoc(
-      doc(
-        db,
-        "users",
-        userId
-      ),
-      profileData,
-      {
-        merge: true
-      }
-    );
-
-
-    /*
-      Creating a Firebase account automatically logs that new user in.
-
-      Since SpeakOut requires approval first, sign them back out
-      immediately and mark this as an intentional logout.
-    */
-
-    sessionStorage.setItem(
-      "speakoutManualLogout",
-      "true"
-    );
-
-
+    sessionStorage.setItem("speakoutManualLogout","true");
     await signOut(auth);
-
-
-    showRegisterMessage(
-      "Account created successfully. Your application is now pending approval.",
+    showRegister(
+      schoolLinked
+        ?"Account created. Your school must verify your details before institutional access is approved."
+        :"Account created successfully. Your application is now pending approval.",
       "success"
     );
-
-
-    const registerForm =
-      document.getElementById(
-        "registerForm"
-      );
-
-
-    registerForm?.reset();
-
-
-  } catch(error) {
-
-    console.error(
-      "Registration error:",
-      error
-    );
-
-
-    let message =
-      error.message ||
-      "Registration failed.";
-
-
-    if(
-      error?.code ===
-      "auth/email-already-in-use"
-    ) {
-
-      message =
-        "An account already exists with this email address.";
-
+    byId("registerForm")?.reset();
+    clearResolvedSchool();
+  }catch(error){
+    console.error("Registration error:",error);
+    if(credential?.user){
+      try{await deleteUser(credential.user);}catch{}
     }
-
-
-    if(
-      error?.code ===
-      "auth/invalid-email"
-    ) {
-
-      message =
-        "Enter a valid email address.";
-
-    }
-
-
-    if(
-      error?.code ===
-      "auth/weak-password"
-    ) {
-
-      message =
-        "Please choose a stronger password.";
-
-    }
-
-
-    showRegisterMessage(
-      message,
-      "error"
-    );
-
+    const message=error?.code==="auth/email-already-in-use"
+      ?"An account already exists with this email address."
+      :error?.message||"Registration failed.";
+    showRegister(message,"error");
+  }finally{
+    sessionStorage.removeItem("speakoutOnboarding");
   }
-
 }
 
+async function handleSchoolRegistration(event){
+  event.preventDefault();
+  const submit=event.submitter;
+  if(submit) submit.disabled=true;
+  try{
+    showSchool("Submitting your institution for review...");
+    const result=await onboardingApi.registerSchool({
+      schoolName:value("regSchoolName"),
+      schoolType:value("regSchoolType"),
+      address:value("regSchoolAddress"),
+      city:value("regSchoolCity"),
+      state:value("regSchoolState"),
+      country:value("regSchoolCountry"),
+      estimatedStudents:value("regSchoolStudents"),
+      schoolWebsite:value("regSchoolWebsite"),
+      adminName:value("regAdminName"),
+      adminPosition:value("regAdminPosition"),
+      adminEmail:value("regAdminEmail"),
+      adminPhone:value("regAdminPhone"),
+      interestArea:value("regInterestArea"),
+      needs:value("regSchoolNeeds"),
+      website:value("schoolWebsiteTrap")
+    });
+    showSchool(`Registration received. Reference: ${result.applicationId}. SpeakOut will review the institution before a school code and administrator access are issued.`,"success");
+    byId("schoolRegisterForm")?.reset();
+    if(byId("regSchoolCountry")) byId("regSchoolCountry").value="Nigeria";
+  }catch(error){
+    console.error("School registration error:",error);
+    showSchool(error.message||"School registration could not be submitted.","error");
+  }finally{if(submit) submit.disabled=false;}
+}
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+async function handleSchoolAdminActivation(event){
+  event.preventDefault();
+  const params=new URLSearchParams(location.search);
+  const inviteToken=clean(params.get("schoolInvite"));
+  if(!inviteToken){showSchoolAdmin("This activation link is incomplete.","error");return;}
+  const fullName=value("schoolAdminName"), position=value("schoolAdminPosition"), email=value("schoolAdminEmail"), phone=value("schoolAdminPhone");
+  const password=value("schoolAdminPassword"), confirm=value("schoolAdminConfirmPassword");
+  if(!fullName||!position||!email||!password){showSchoolAdmin("Complete the administrator details.","error");return;}
+  if(password.length<6){showSchoolAdmin("Password must contain at least 6 characters.","error");return;}
+  if(password!==confirm){showSchoolAdmin("Your passwords do not match.","error");return;}
+  let credential=null;
+  sessionStorage.setItem("speakoutOnboarding","true");
+  try{
+    showSchoolAdmin("Activating your school administrator account...");
+    credential=await createUserWithEmailAndPassword(auth,email,password);
+    const result=await onboardingApi.activateSchoolAdmin({inviteToken,fullName,position,phone});
+    sessionStorage.removeItem("speakoutOnboarding");
+    showSchoolAdmin(`School access activated for ${result.schoolName}. Redirecting...`,"success");
+    window.location.replace(projectUrl("school-dashboard.html"));
+  }catch(error){
+    console.error("School admin activation error:",error);
+    if(credential?.user){try{await deleteUser(credential.user);}catch{}}
+    showSchoolAdmin(error?.code==="auth/email-already-in-use"?"An account already exists with this email address.":error.message||"Activation failed.","error");
+  }finally{sessionStorage.removeItem("speakoutOnboarding");}
+}
 
-async function handleLogout(event) {
-
+async function handleLogout(event){
   event?.preventDefault();
+  sessionStorage.setItem("speakoutManualLogout","true");
+  ["speakoutRole","speakoutUser","speakoutSchoolCode","speakoutSchoolName"].forEach(key=>localStorage.removeItem(key));
+  await signOut(auth);
+  window.location.replace(projectUrl("auth.html?loggedOut=1"));
+}
 
-
-  try {
-
-    /*
-      This flag is important.
-
-      When auth.html loads immediately after logout,
-      onAuthStateChanged must NOT send the user back
-      to a dashboard.
-    */
-
-    sessionStorage.setItem(
-      "speakoutManualLogout",
-      "true"
-    );
-
-
-    /*
-      Remove legacy/local portal values.
-    */
-
-    localStorage.removeItem(
-      "speakoutRole"
-    );
-
-    localStorage.removeItem(
-      "speakoutUser"
-    );
-
-    localStorage.removeItem(
-      "speakoutSchoolCode"
-    );
-
-    localStorage.removeItem(
-      "speakoutSchoolName"
-    );
-
-
-    /*
-      End the Firebase authentication session.
-    */
-
-    await signOut(auth);
-
-
-    /*
-      Redirect to the ROOT auth.html.
-
-      ?loggedOut=1 prevents automatic routing if the
-      auth listener fires while navigation is completing.
-    */
-
-    window.location.replace(
-      authPageUrl(
-        "?loggedOut=1"
-      )
-    );
-
-
-  } catch(error) {
-
-    console.error(
-      "Logout error:",
-      error
-    );
-
-
-    showAuthMessage(
-      "Logout failed. Please try again.",
-      "error"
-    );
-
+byId("forgotPasswordLink")?.addEventListener("click",async event=>{
+  event.preventDefault();
+  const email=value("loginEmail");
+  if(!email){showLogin("Enter your email address above, then select Forgot password again.","warning");return;}
+  try{
+    showLogin("Sending password reset instructions...");
+    await sendPasswordResetEmail(auth,email);
+    showLogin("If an account exists for that email, password reset instructions have been sent.","success");
+  }catch(error){
+    console.error("Password reset error:",error);
+    showLogin("Password reset could not be started. Please check your email and try again.","error");
   }
+});
 
+byId("loginForm")?.addEventListener("submit",handleLogin);
+byId("registerForm")?.addEventListener("submit",handleRegister);
+byId("schoolRegisterForm")?.addEventListener("submit",handleSchoolRegistration);
+byId("schoolAdminActivateForm")?.addEventListener("submit",handleSchoolAdminActivation);
+document.querySelectorAll("[data-logout],#logoutButton,#logoutBtn,.logout").forEach(button=>button.addEventListener("click",handleLogout));
+
+const params=new URLSearchParams(location.search);
+const invited=clean(params.get("schoolInvite"));
+const querySchool=clean(params.get("school")).toUpperCase();
+const queryRole=normalize(params.get("join"));
+
+if(invited){
+  selectPanel("schoolPanel");
+  byId("schoolAdminActivation")?.classList.add("show");
+}else if(querySchool||location.hash==="#join"){
+  selectPanel("joinPanel");
+}else if(location.hash==="#school"){
+  selectPanel("schoolPanel");
 }
 
+if(queryRole&&byId("role")&&[...byId("role").options].some(option=>option.value===queryRole)){
+  byId("role").value=queryRole;
+}
+if(querySchool&&byId("schoolCode")){
+  byId("schoolCode").value=querySchool;
+  resolveSchoolCode().catch(()=>{});
+}
 
-/* =========================================================
-   PASSWORD RESET
-========================================================= */
-
-const forgotPasswordLink =
-  document.getElementById(
-    "forgotPasswordLink"
-  );
-
-
-if(forgotPasswordLink) {
-
-  forgotPasswordLink.addEventListener(
-    "click",
-    async event => {
-
-      event.preventDefault();
-
-      const email = getValue(
-        "[data-login-email]",
-        "#loginEmail",
-        "input[name='loginEmail']"
-      );
-
-      if(!email) {
-        showLoginMessage(
-          "Enter your email address above, then select Forgot password again.",
-          "warning"
-        );
-        getInput("[data-login-email]", "#loginEmail")?.focus();
-        return;
-      }
-
-      forgotPasswordLink.setAttribute("aria-busy", "true");
-      showLoginMessage("Sending password reset instructions...", "info");
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-
-        /*
-          Keep the response generic so the page does not reveal whether
-          a particular address has a SpeakOut account.
-        */
-        showLoginMessage(
-          "If an account exists for that email, password reset instructions have been sent.",
-          "success"
-        );
-      } catch(error) {
-        console.error("Password reset error:", error);
-        const message = error?.code === "auth/invalid-email"
-          ? "Enter a valid email address and try again."
-          : "Password reset could not be started. Please check your connection and try again.";
-        showLoginMessage(message, "error");
-      } finally {
-        forgotPasswordLink.removeAttribute("aria-busy");
-      }
-
-
+if(document.body?.dataset?.authPage==="auth"){
+  onAuthStateChanged(auth,async user=>{
+    const urlLoggedOut=params.get("loggedOut")==="1";
+    const manualLogout=sessionStorage.getItem("speakoutManualLogout")==="true";
+    const onboarding=sessionStorage.getItem("speakoutOnboarding")==="true";
+    if(onboarding) return;
+    if(urlLoggedOut||manualLogout){
+      sessionStorage.removeItem("speakoutManualLogout");
+      if(urlLoggedOut) showLogin("You have been logged out successfully.","success");
+      return;
     }
-  );
-
+    if(user) await redirectByUserRole(user);
+  });
 }
 
-
-/* =========================================================
-   FORM LISTENERS
-========================================================= */
-
-document
-  .querySelectorAll(
-    "[data-login-form], #loginForm, form.login-form"
-  )
-  .forEach(form => {
-
-    form.addEventListener(
-      "submit",
-      handleLogin
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-login-button], #loginButton"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      handleLogin
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-register-form], #registerForm, form.register-form"
-  )
-  .forEach(form => {
-
-    form.addEventListener(
-      "submit",
-      handleRegister
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-register-button], #registerButton"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      handleRegister
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-logout], #logoutButton, #logoutBtn, .logout"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      handleLogout
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-demo-login]"
-  )
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      handleLogin
-    );
-
-  });
-
-
-document
-  .querySelectorAll(
-    "[data-role]"
-  )
-  .forEach(card => {
-
-    card.addEventListener(
-      "click",
-      () => {
-
-        localStorage.setItem(
-          "speakoutRole",
-          card.dataset.role
-        );
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   AUTH PAGE SESSION HANDLING
-========================================================= */
-
-const pageType =
-  document.body?.dataset?.authPage ||
-  "";
-
-
-if(
-  pageType === "login" ||
-  pageType === "auth"
-) {
-
-  onAuthStateChanged(
-    auth,
-    async user => {
-
-      const params =
-        new URLSearchParams(
-          window.location.search
-        );
-
-
-      const urlLoggedOut =
-        params.get(
-          "loggedOut"
-        ) === "1";
-
-
-      const manualLogout =
-        sessionStorage.getItem(
-          "speakoutManualLogout"
-        ) === "true";
-
-
-      /*
-        If the user intentionally logged out,
-        remain on the login page.
-      */
-
-      if(
-        urlLoggedOut ||
-        manualLogout
-      ) {
-
-        sessionStorage.removeItem(
-          "speakoutManualLogout"
-        );
-
-
-        if(urlLoggedOut) {
-
-          showLoginMessage(
-            "You have been logged out successfully.",
-            "success"
-          );
-
-        }
-
-
-        return;
-      }
-
-
-      /*
-        If someone visits auth.html while still genuinely
-        logged in, route them to their approved dashboard.
-      */
-
-      if(user) {
-
-        await redirectByUserRole(
-          user
-        );
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   PUBLIC LOGOUT FUNCTION
-========================================================= */
-
-/*
-  Other scripts can optionally call:
-
-      window.speakoutLogout();
-
-  This gives the project one consistent logout method.
-*/
-
-window.speakoutLogout =
-  async function() {
-
-    await handleLogout();
-
-  };
+window.speakoutLogout=async()=>handleLogout();
