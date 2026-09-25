@@ -2159,7 +2159,31 @@ async function route(request, env, path, data) {
       const page = await queryDocumentsByField(env, "publicCertificateVerifications", "certificateNumber", supplied, 5);
       record = page.documents[0] || null;
     }
-    return { record: record ? publicCertificateProjection(record, record.id || supplied) : null };
+    if (!record) return { record: null };
+    let projection = publicCertificateProjection(record, record.id || supplied);
+    const certificateNumber = clean(record.certificateNumber);
+    if (certificateNumber && /^[A-Za-z0-9_-]{1,180}$/.test(certificateNumber)) {
+      const canonical = await getDocument(env, `certificates/${certificateNumber}`);
+      const provider = clean(canonical?.externalProvider || canonical?.provider || canonical?.issuer);
+      const external = canonical && (
+        Boolean(provider) ||
+        normalized(canonical.type).startsWith("external") ||
+        normalized(canonical.achievementType).includes("external")
+      );
+      if (external && provider) {
+        projection = {
+          ...projection,
+          awardTitle: clean(canonical.courseTitle || canonical.title || projection.awardTitle),
+          issuer: provider,
+          provider,
+          credentialType: clean(canonical.credentialType || canonical.certificateType || projection.credentialType),
+          achievementType: clean(canonical.achievementType || projection.achievementType || "external credential verified by SpeakOut"),
+          verifiedBy: clean(canonical.verifiedBy || "SpeakOut Mental Health Outreach"),
+          externalProvider: true
+        };
+      }
+    }
+    return { record: projection };
   }
 
   const user = await authenticatedUser(request, env);
