@@ -156,6 +156,36 @@ function buildInternal(definition) {
 
 const externalOrientation = "SpeakHub recommends reviewing the provider page before enrollment because availability, account requirements and credential rules can change. Use the listed outcomes as a preparation checklist, complete all activities on the official platform, keep your own notes and practise the skill in a small project. Provider-owned lessons remain on the provider website and are not reproduced here. If certificate evidence is enabled, submit only a genuine credential issued to you and remove unrelated personal information before upload.";
 
+function publicInternalCourse(course) {
+  const safe = clone(course);
+  safe.modules = (safe.modules || []).map((module, moduleIndex) => {
+    if (!module.quiz) return module;
+    const id = `${safe.id}__module__${moduleIndex}`;
+    const questions = Array.isArray(module.quiz.questions) ? module.quiz.questions : [];
+    return {
+      ...module,
+      quiz: {
+        id,
+        title: module.quiz.title || `Module ${moduleIndex + 1} Quiz`,
+        passMark: Number(module.quiz.passMark || 70),
+        questionCount: questions.length
+      }
+    };
+  });
+  if (safe.finalAssessment || safe.finalQuiz) {
+    const source = safe.finalAssessment || safe.finalQuiz;
+    const questions = Array.isArray(source.questions) ? source.questions : [];
+    safe.finalAssessment = {
+      id: `${safe.id}__final`,
+      title: source.title || "Final Assessment",
+      passMark: Number(source.passMark || 70),
+      questionCount: questions.length
+    };
+  }
+  delete safe.finalQuiz;
+  return safe;
+}
+
 function buildExternal(course) {
   const description = `${course.description} ${externalOrientation}`;
   return {
@@ -180,7 +210,7 @@ const incompleteCatalogueExternals = catalogue.filter(course => course.courseTyp
 ].includes(course.id));
 
 const courses = [
-  ...definitions.map(buildInternal),
+  ...definitions.map(definition => publicInternalCourse(buildInternal(definition))),
   ...incompleteCatalogueExternals.map(buildExternal),
   ...externalCatalogue.map(buildExternal),
 ];
