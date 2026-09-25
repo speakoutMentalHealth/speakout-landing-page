@@ -51,8 +51,15 @@ test("verified external catalogue is trusted server-side for tracking and submis
     /^https:\/\//u.test(course.externalUrl || "")
   ), true);
   assert.equal(VERIFIED_EXTERNAL_COURSE_BY_ID.size, 39);
+  const { PHASE2_VERIFIED_COURSES } = await import("../phase2-verified-courses.js");
+  const sourceIds = PHASE2_VERIFIED_COURSES
+    .filter(course => String(course.courseType || "").toLowerCase() === "external")
+    .map(course => course.id)
+    .sort();
+  assert.deepEqual(VERIFIED_EXTERNAL_COURSES.map(course => course.id).sort(), sourceIds);
 
   assert.match(worker, /VERIFIED_EXTERNAL_COURSE_BY_ID/u);
+  assert.match(worker, /course\.fullDescription/u);
   assert.match(worker, /async function externalCourseForTracking\(/u);
   assert.match(worker, /const course = await externalCourseForTracking\(env, requestedCourseId\)/u);
   assert.match(submission, /PHASE2_VERIFIED_COURSES\.find\(item=>item\.id===courseId\)/u);
