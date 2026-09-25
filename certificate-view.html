@@ -796,8 +796,9 @@ function looksLikeEmail(value){
 
 function humanName(source={}){
   const candidates = [
-    source.fullName,
+    source.certificateName,
     `${source.firstName || ""} ${source.lastName || ""}`.trim(),
+    source.fullName,
     source.displayName,
     source.recipientName,
     source.learnerName,
@@ -806,17 +807,25 @@ function humanName(source={}){
   return candidates.find(value=>value && !looksLikeEmail(value)) || "";
 }
 
+function isPlaceholderLearnerName(value=""){
+  const name=String(value||"").toLowerCase().replace(/[_-]+/g," ").replace(/\s+/g," ").trim();
+  return !name || ["learner","student","uat student","test student","demo student","test user","demo user"].includes(name);
+}
+
 async function resolveRecipient(record){
+  const storedName = humanName(record);
   const ownerId = record.userId || record.recipientId || record.learnerId;
   if(ownerId){
     try{
       const profile = await getDoc(doc(db,"users",ownerId));
-      if(profile.exists()){const liveName=humanName(profile.data());if(liveName)return liveName;}
+      if(profile.exists()){
+        const liveName=humanName(profile.data());
+        if(liveName && !isPlaceholderLearnerName(liveName)) return liveName;
+      }
     }catch(error){
       console.warn("Could not resolve the certificate owner profile.",error);
     }
   }
-  const storedName = humanName(record);
   return storedName || "Learner";
 }
 
