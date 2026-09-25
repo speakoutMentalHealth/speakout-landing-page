@@ -376,3 +376,32 @@ test("shared dashboard HTML interpolation escapes untrusted values", async () =>
   assert.match(source, /replaceAll\("<",\s*"&lt;"\)/);
   assert.match(source, /this\.safe\(raw\)/);
 });
+
+
+test("SpeakHub groups courses into six interactive learning pathways", async () => {
+  const academy = await readFile(path.join(root, "speakhub.html"), "utf8");
+
+  for (const key of [
+    "mental-health",
+    "medical-health",
+    "public-health",
+    "clinical-research",
+    "technology-digital",
+    "leadership-career",
+  ]) {
+    assert.match(academy, new RegExp(`data-pathway="${key}"`, "u"), key);
+    assert.match(academy, new RegExp(`data-pathway-count="${key}"`, "u"), key);
+  }
+
+  assert.match(academy, /const PATHWAYS = Object\.freeze\(/u);
+  assert.match(academy, /function coursePathway\(item\)/u);
+  assert.match(academy, /function selectPathway\(key\)/u);
+  assert.match(academy, /function resetCatalogue\(/u);
+  assert.match(academy, /const okPathway = courseMatchesPathway\(item\)/u);
+  assert.match(academy, /renderPathwayState\(\)/u);
+  assert.match(academy, /id="catalogTitle"/u);
+  assert.match(academy, /id="activePathwayStatus" aria-live="polite"/u);
+  assert.match(academy, /pathway-\$\{pathwayKey\}/u);
+  assert.match(academy, /\.pathway-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/u);
+  assert.match(academy, /@media\(max-width:760px\)[\s\S]*?\.pathway-grid\{grid-template-columns:1fr\}/u);
+});
