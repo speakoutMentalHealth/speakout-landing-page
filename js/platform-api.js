@@ -57,6 +57,7 @@ export async function submitExternalLearning(file, fields) {
 
 export const externalLearningApi = {
   status: courseId => platformRequest("/v1/external-learning/status", { courseId }),
+  start: courseId => platformRequest("/v1/external-learning/start", { courseId }),
   submit: submitExternalLearning
 };
 

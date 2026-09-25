@@ -43,7 +43,7 @@ test("parent and school dashboards do not query protected learner records direct
   assert.match(child, /roleApi\.overview\(targetStudentId\)/u);
   assert.doesNotMatch(child, /collection\(\s*db,\s*"(?:userProgress|certificates)"/u);
   assert.match(parent, /const overview = await roleApi\.overview\(\)/u);
-  assert.equal((parent.match(/collection\(db,"userProgress"\)/gu) || []).length, 1);
+  assert.doesNotMatch(parent, /collection\(db,"userProgress"\)/u);
   assert.match(parent, /const dashboard = await learningApi\.dashboard\(\)/u);
   assert.doesNotMatch(parent, /collection\(db,"certificates"\)/u);
   assert.ok((school.match(/const overview = await roleApi\.overview\(\)/gu) || []).length >= 2);

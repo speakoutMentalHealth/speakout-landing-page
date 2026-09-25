@@ -1,5 +1,6 @@
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
 import { curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel } from "./tv-curator.js";
+import { VERIFIED_EXTERNAL_COURSE_BY_ID } from "./verified-external-courses.js";
 
 const json = (body, status = 200, headers = {}) => new Response(JSON.stringify(body), {
   status,
@@ -62,7 +63,7 @@ function courseIsCatalogueReady(course = {}) {
   if (external) {
     const hasDestination = [course.externalUrl, course.courseUrl, course.providerCourseUrl].some(publicWebUrl);
     return Boolean(clean(course.provider) && hasDestination && textWords([
-      course.title, course.shortDescription, course.description, course.outcomes, course.prerequisites, course.tags
+      course.title, course.shortDescription, course.description, course.fullDescription, course.outcomes, course.prerequisites, course.tags
     ]) >= 75);
   }
   if (type === "instructor-led") {
@@ -1012,6 +1013,38 @@ async function assessmentContext(env, user, courseId, type, mi, reader = path =>
   return { ...ctx, assessment };
 }
 
+function trustedExternalCourse(courseId, firestoreCourse = null) {
+  const stored = firestoreCourse && externalCourse(firestoreCourse) ? firestoreCourse : null;
+  if (stored && ["active", "published"].includes(normalized(stored.status || "active"))) return stored;
+  const verified = VERIFIED_EXTERNAL_COURSE_BY_ID.get(courseId);
+  if (!verified || !["active", "published"].includes(normalized(verified.status || "active"))) return null;
+  return {
+    ...verified,
+    courseType: "external",
+    completionMethod: "certificate-upload",
+    certificate: {
+      available: verified.certificateEligible === true,
+      issuer: verified.certificateIssuer || verified.provider || "External Provider",
+      type: verified.certificateType || "completion-certificate"
+    }
+  };
+}
+
+async function externalCourseForTracking(env, courseId, reader = path => getDocument(env, path)) {
+  const stored = await reader(`courses/${courseId}`);
+  return trustedExternalCourse(courseId, stored);
+}
+
+function publicExternalLearningRecord(record = {}) {
+  const allowed = [
+    "id","courseId","courseTitle","courseCategory","courseType","provider","providerCourseUrl",
+    "certificateIssuer","completionDate","certificateNumber","verificationUrl","learnerNote","status",
+    "verificationStatus","submittedAt","createdAt","updatedAt","reviewerFeedback","reviewedAt",
+    "resubmissionCount","certificateId","startedAt"
+  ];
+  return Object.fromEntries(allowed.filter(key => record[key] !== undefined).map(key => [key, record[key]]));
+}
+
 function evidenceDescriptor(record) {
   const publicId = clean(record.evidencePublicId);
   const ownerId = safeId(record.userId, "evidence owner identifier");
@@ -1727,14 +1760,49 @@ async function route(request, env, path, data) {
     const requestedCourseId = safeId(data.courseId, "course identifier");
     const page = await queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid);
     const records = page.documents.filter(item => item.courseId === requestedCourseId)
-      .sort((a, b) => String(b.updatedAt || b.submittedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || "")));
-    return { record: records[0] || null };
+      .sort((a, b) => String(b.updatedAt || b.submittedAt || b.startedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || a.startedAt || "")));
+    return { record: records[0] ? publicExternalLearningRecord(records[0]) : null };
+  }
+
+  if (path === "/v1/external-learning/start") {
+    const requestedCourseId = safeId(data.courseId, "course identifier");
+    const course = await externalCourseForTracking(env, requestedCourseId);
+    if (!course) throw Object.assign(new Error("This external course is not available for tracking."), { status: 409 });
+    const recordId = safeId(`${user.uid}_${requestedCourseId}`, "record identifier");
+    return runTransaction(env, async tx => {
+      const existing = await tx.get(`externalLearningRecords/${recordId}`);
+      if (existing) return { ok: true, created: false, record: publicExternalLearningRecord({ id: recordId, ...existing }) };
+      const now = new Date().toISOString();
+      const provider = bounded(course.provider || "External Provider", 160, "Provider");
+      const record = {
+        userId: user.uid,
+        userEmail: user.email || clean(user.profile.email),
+        learnerName: humanName(user.profile),
+        learnerRole: clean(user.profile.role) || "user",
+        schoolId: clean(user.profile.schoolId),
+        schoolCode: clean(user.profile.schoolCode),
+        courseId: requestedCourseId,
+        courseTitle: bounded(course.title || "External course", 240, "Course title"),
+        courseCategory: bounded(course.category, 120, "Course category"),
+        courseType: "external",
+        provider,
+        providerCourseUrl: optionalHttpsUrl(course.externalUrl || course.courseUrl || course.providerCourseUrl || course.providerUrl || course.url, "Provider course URL"),
+        certificateIssuer: bounded(course.certificate?.issuer || course.certificateIssuer || provider, 160, "Certificate issuer"),
+        status: "started",
+        verificationStatus: "not_submitted",
+        startedAt: now,
+        createdAt: now,
+        updatedAt: now
+      };
+      tx.set(`externalLearningRecords/${recordId}`, record);
+      return { ok: true, created: true, record: publicExternalLearningRecord({ id: recordId, ...record }) };
+    });
   }
 
   if (path === "/v1/external-learning/submit") {
     const requestedCourseId = safeId(data.courseId, "course identifier");
-    const course = await getDocument(env, `courses/${requestedCourseId}`);
-    if (!course || !externalCourse(course) || !["active", "published"].includes(normalized(course.status || "active"))) {
+    const course = await externalCourseForTracking(env, requestedCourseId);
+    if (!course) {
       throw Object.assign(new Error("This external course is not available for submission."), { status: 409 });
     }
     const completionDate = bounded(data.completionDate, 10, "Completion date");
@@ -1749,7 +1817,7 @@ async function route(request, env, path, data) {
     try {
       return await runTransaction(env, async tx => {
         const existing = await tx.get(`externalLearningRecords/${recordId}`);
-        if (existing && !["rejected", "resubmission_required"].includes(normalized(existing.status))) {
+        if (existing && !["started", "rejected", "resubmission_required"].includes(normalized(existing.status))) {
           throw Object.assign(new Error("This submission is already awaiting review or has been approved."), { status: 409 });
         }
         const now = new Date().toISOString();
@@ -1768,7 +1836,9 @@ async function route(request, env, path, data) {
           evidenceFormat: uploaded.format, evidenceResourceType: uploaded.resourceType, evidenceStorage: uploaded.storage,
           status: "pending_review", verificationStatus: "pending", submittedBy: user.uid, submittedAt: now,
           createdAt: existing?.createdAt || now, updatedAt: now,
-          resubmissionCount: existing ? Number(existing.resubmissionCount || 0) + 1 : 0,
+          resubmissionCount: ["rejected", "resubmission_required"].includes(normalized(existing?.status))
+            ? Number(existing?.resubmissionCount || 0) + 1
+            : Number(existing?.resubmissionCount || 0),
           reviewerFeedback: "", reviewedBy: "", reviewedAt: null
         };
         tx.set(`externalLearningRecords/${recordId}`, record);
@@ -1814,14 +1884,16 @@ async function route(request, env, path, data) {
   }
 
   if (path === "/v1/learning/dashboard") {
-    const [progressPage, certificatesPage] = await Promise.all([
+    const [progressPage, certificatesPage, externalPage] = await Promise.all([
       queryDocumentsByField(env, "userProgress", "userId", user.uid),
-      queryDocumentsByField(env, "certificates", "userId", user.uid)
+      queryDocumentsByField(env, "certificates", "userId", user.uid),
+      queryDocumentsByField(env, "externalLearningRecords", "userId", user.uid)
     ]);
     return {
       progress: progressPage.documents,
       certificates: certificatesPage.documents,
-      truncated: progressPage.truncated || certificatesPage.truncated
+      externalLearning: externalPage.documents.map(publicExternalLearningRecord),
+      truncated: progressPage.truncated || certificatesPage.truncated || externalPage.truncated
     };
   }
 
@@ -2047,7 +2119,9 @@ async function route(request, env, path, data) {
   if (path === "/v1/admin/external-learning/list") {
     requireAdmin(user);
     const page = await queryAllDocuments(env, "externalLearningRecords");
-    const records = page.documents.map(({ proofData, proofUrl, evidenceUrl, secureUrl, ...record }) => record)
+    const records = page.documents
+      .filter(record => normalized(record.status) !== "started")
+      .map(({ proofData, proofUrl, evidenceUrl, secureUrl, ...record }) => record)
       .sort((a, b) => String(b.updatedAt || b.submittedAt || "").localeCompare(String(a.updatedAt || a.submittedAt || "")));
     return { records, truncated: page.truncated };
   }
@@ -2063,12 +2137,22 @@ async function route(request, env, path, data) {
       if (!["pending_review", "pending", "submitted"].includes(normalized(record.status))) throw Object.assign(new Error("This submission is not awaiting review."), { status: 409 });
       if (decision === "approved") evidenceDescriptor(record);
       const now = new Date().toISOString();
-      tx.set(`externalLearningRecords/${recordId}`, { ...record, status: decision, verificationStatus: decision === "approved" ? "verified" : decision, reviewerFeedback: clean(data.note), reviewedBy: user.uid, reviewedAt: now, updatedAt: now });
+      const recordCourseId = safeId(record.courseId, "course identifier");
+      const recordUserId = safeId(record.userId, "user identifier");
+      const externalCertificateId = decision === "approved" ? `external_${recordUserId}_${recordCourseId}` : clean(record.certificateId);
+      tx.set(`externalLearningRecords/${recordId}`, {
+        ...record,
+        status: decision,
+        verificationStatus: decision === "approved" ? "verified" : decision,
+        certificateId: externalCertificateId,
+        reviewerFeedback: clean(data.note),
+        reviewedBy: user.uid,
+        reviewedAt: now,
+        updatedAt: now
+      });
       let certificate = null;
       if (decision === "approved") {
-        const recordCourseId = safeId(record.courseId, "course identifier");
-        const recordUserId = safeId(record.userId, "user identifier");
-        const id = `external_${recordUserId}_${recordCourseId}`;
+        const id = externalCertificateId;
         const existing = await tx.get(`certificates/${id}`);
         if (!existing) {
           const verificationCode = await deterministicVerificationCode(`external:${id}`);

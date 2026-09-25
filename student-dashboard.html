@@ -7,7 +7,6 @@
 <title>Student Dashboard | SpeakOut</title>
 <meta content="SpeakOut student dashboard for profile management, SpeakHub learning progress, external learning, certificates, parent requests and student resources." name="description"/>
 <link href="logo.png" rel="icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;
@@ -443,7 +442,8 @@ textarea{
 }
 </style>
 <link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<link href="css/production-ready.css" rel="stylesheet"/>
+<link href="css/speakhub-readable.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
@@ -719,6 +719,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { learningApi } from "./js/platform-api.js";
 
 
 let currentUser = null;
@@ -1274,8 +1275,9 @@ function isExternalProgress(item){
 
 function isCompletedProgress(item){
 
+  const status=normalize(item.status||item.verificationStatus);
   return (
-    normalize(item.status) === "completed" ||
+    ["completed","approved","verified"].includes(status) ||
     item.completed === true ||
     progressPercent(item) >= 100
   );
@@ -1305,11 +1307,6 @@ function progressActionUrl(item){
 
 
   if(isExternalProgress(item)){
-
-    if(item.externalUrl){
-      return item.externalUrl;
-    }
-
     return (
       `course-details.html?id=${encodeURIComponent(id)}`
     );
@@ -1323,10 +1320,9 @@ function progressActionUrl(item){
 }
 
 
-/* External-learning submissions are reviewed by an admin via the
-   reviewExternalCertificate Cloud Function, which writes status/
-   verificationStatus/certificateId/reviewerFeedback back onto this
-   same userProgress item (see functions/index.js). */
+/* External learning is tracked through the authenticated Platform API.
+   Provider credentials remain external; SpeakHub stores only pathway
+   status and verification metadata needed for the learner record. */
 function externalReviewStatus(item){
 
   const value =
@@ -1348,6 +1344,10 @@ function externalReviewStatus(item){
     return "resubmission_required";
   }
 
+  if(value === "started" || value === "not_submitted"){
+    return "started";
+  }
+
   return "pending";
 
 }
@@ -1367,11 +1367,7 @@ function progressCard(item){
   const url =
     progressActionUrl(item);
 
-  const target =
-    external &&
-    item.externalUrl
-    ? `target="_blank" rel="noopener noreferrer"`
-    : "";
+  const target = "";
 
   const reviewStatus =
     external
@@ -1453,7 +1449,9 @@ function progressCard(item){
               ? "SpeakOut has verified this external achievement."
               : reviewStatus === "pending"
                 ? "Certificate submitted. Awaiting SpeakOut verification."
-                : `This submission needs another look.${
+                : reviewStatus === "started"
+                  ? "Started on the provider platform. Return here when you are ready to submit completion evidence."
+                  : `This submission needs another look.${
                     item.reviewerFeedback
                     ? ` Reviewer note: ${escapeHtml(item.reviewerFeedback)}`
                     : ""
@@ -1484,12 +1482,15 @@ function progressCard(item){
               </a>
             `
             : reviewStatus === "pending"
-              ? `<span class="btn soft" aria-disabled="true">Verification Pending</span>`
-              : `
-                <a class="btn primary" href="external-learning-submit.html?courseId=${courseIdForResubmit}">
-                  Resubmit Certificate
-                </a>
-              `
+              ? `<a class="btn soft" href="${escapeHtml(url)}">View Pathway</a><span class="btn soft" aria-disabled="true">Verification Pending</span>`
+              : reviewStatus === "started"
+                ? `<a class="btn soft" href="${escapeHtml(url)}">View Pathway</a><a class="btn primary" href="external-learning-submit.html?courseId=${courseIdForResubmit}">Submit Completion</a>`
+                : `
+                  <a class="btn soft" href="${escapeHtml(url)}">View Pathway</a>
+                  <a class="btn primary" href="external-learning-submit.html?courseId=${courseIdForResubmit}">
+                    Resubmit Certificate
+                  </a>
+                `
         }
 
       </div>
@@ -1692,147 +1693,51 @@ async function loadProgress(){
 
   try{
 
-    const progressSnap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "userProgress"
-          ),
-          where(
-            "userId",
-            "==",
-            currentUser.uid
-          )
-        )
-      );
+    const dashboard=await learningApi.dashboard();
 
+    const internalProgress=(dashboard.progress||[])
+      .filter(isCourseProgress)
+      .filter(item=>!isExternalProgress(item));
 
-    const allProgress =
-      progressSnap.docs.map(
-        document=>({
-          id:document.id,
-          ...document.data()
-        })
-      );
+    const externalProgress=(dashboard.externalLearning||[]).map(record=>({
+      ...record,
+      type:"external-course",
+      courseType:"external",
+      completionMethod:"certificate-upload",
+      title:record.courseTitle,
+      category:record.courseCategory,
+      externalUrl:record.providerCourseUrl
+    }));
 
+    const courseProgress=[...internalProgress,...externalProgress];
 
-    /*
-      Important:
-      userProgress also stores book activity.
-      Do not count books as courses.
-    */
+    const completed=courseProgress.filter(isCompletedProgress);
 
-    const courseProgress =
-      allProgress.filter(
-        isCourseProgress
-      );
+    const activeInternal=internalProgress.filter(item=>!isCompletedProgress(item));
 
+    courseStartedCount.textContent=courseProgress.length;
+    courseCompletedCount.textContent=completed.length;
+    externalCourseCount.textContent=externalProgress.length;
 
-    const externalProgress =
-      courseProgress.filter(
-        isExternalProgress
-      );
+    progressList.innerHTML=activeInternal.length
+      ? activeInternal.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No active SpeakHub course progress yet.</div>`;
 
+    completedList.innerHTML=completed.length
+      ? completed.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No completed courses yet.</div>`;
 
-    const internalProgress =
-      courseProgress.filter(
-        item=>
-          !isExternalProgress(item)
-      );
-
-
-    const completed =
-      courseProgress.filter(
-        isCompletedProgress
-      );
-
-
-    const activeInternal =
-      internalProgress.filter(
-        item=>
-          !isCompletedProgress(item)
-      );
-
-
-    courseStartedCount.textContent =
-      courseProgress.length;
-
-
-    courseCompletedCount.textContent =
-      completed.length;
-
-
-    externalCourseCount.textContent =
-      externalProgress.length;
-
-
-    progressList.innerHTML =
-      activeInternal.length
-      ? activeInternal
-          .slice(0,8)
-          .map(progressCard)
-          .join("")
-      : `
-        <div class="notice warn">
-          No active SpeakHub course progress yet.
-        </div>
-      `;
-
-
-    completedList.innerHTML =
-      completed.length
-      ? completed
-          .slice(0,8)
-          .map(progressCard)
-          .join("")
-      : `
-        <div class="notice warn">
-          No completed courses yet.
-        </div>
-      `;
-
-
-    externalList.innerHTML =
-      externalProgress.length
-      ? externalProgress
-          .slice(0,8)
-          .map(progressCard)
-          .join("")
-      : `
-        <div class="notice warn">
-          No external learning records yet.
-        </div>
-      `;
-
+    externalList.innerHTML=externalProgress.length
+      ? externalProgress.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No external learning records yet.</div>`;
 
   }catch(error){
 
-    console.error(
-      "Progress load failed:",
-      error
-    );
+    console.error("Progress load failed:",error);
 
-
-    progressList.innerHTML = `
-      <div class="notice bad">
-        Could not load progress.
-      </div>
-    `;
-
-
-    completedList.innerHTML = `
-      <div class="notice bad">
-        Could not load completed learning.
-      </div>
-    `;
-
-
-    externalList.innerHTML = `
-      <div class="notice bad">
-        Could not load external learning.
-      </div>
-    `;
+    progressList.innerHTML=`<div class="notice bad">Could not load progress.</div>`;
+    completedList.innerHTML=`<div class="notice bad">Could not load completed learning.</div>`;
+    externalList.innerHTML=`<div class="notice bad">Could not load external learning.</div>`;
 
   }
 

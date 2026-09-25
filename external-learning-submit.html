@@ -7,7 +7,6 @@
 <title>Submit External Learning | SpeakHub</title>
 <meta content="Submit a certificate or proof of completion for an approved external SpeakHub learning pathway." name="description"/>
 <link href="logo.png" rel="icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --navy:#07152b;--blue:#0a5fbf;--soft:#eaf3ff;--gold:#f4a21c;--goldSoft:#fff4df;
@@ -48,7 +47,8 @@ textarea{min-height:110px;resize:vertical}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.links{display:none}.btn{width:100%;border-radius:14px}.actions{flex-direction:column}}
 </style>
 <link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
+<link href="css/production-ready.css" rel="stylesheet"/>
+<link href="css/speakhub-readable.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
@@ -104,7 +104,7 @@ textarea{min-height:110px;resize:vertical}
 <label for="proofFile">Upload certificate/proof image</label>
 <input accept="image/jpeg,image/png,image/webp" id="proofFile" type="file"/>
 <small style="color:var(--muted)">
-        JPG, PNG or WebP. The image is compressed before being stored in Firestore.
+        JPG, PNG or WebP, up to 8 MB. Evidence is sent through the secure SpeakHub API and stored in protected evidence storage.
         A new image is required for a first submission or rejected resubmission.
       </small>
 <img alt="Certificate preview" class="preview" decoding="async" id="proofPreview" loading="lazy"/>
@@ -150,6 +150,8 @@ import { auth,db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc,getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { externalLearningApi } from "./js/platform-api.js";
+import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
+import { isPublicCourse } from "./js/content-visibility.js";
 
 const courseId=new URLSearchParams(location.search).get("courseId");
 const $=id=>document.getElementById(id);
@@ -176,6 +178,7 @@ function recordStatus(record){
   if(["approved","verified"].includes(s))return"approved";
   if(["rejected","revoked"].includes(s))return"rejected";
   if(["pending","pending_review","submitted"].includes(s))return"pending";
+  if(["started","not_submitted"].includes(s))return"started";
   return"none";
 }
 function formatDate(v){
@@ -248,8 +251,11 @@ function renderExisting(){
     submitButton.textContent="Awaiting Review";
   }else if(status==="rejected"){
     existingSubmission.className="notice bad";
-    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill rejected">Rejected</span><br>You may correct the evidence and resubmit.`;
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill rejected">Needs attention</span><br>You may correct the evidence and resubmit.`;
     submitButton.textContent="Resubmit for Review";
+  }else if(status==="started"){
+    existingSubmission.className="notice";
+    existingSubmission.innerHTML=`<strong>Status:</strong> <span class="status-pill">Started</span><br>This pathway is already in your SpeakHub learning record. Submit genuine provider evidence after you complete the course.`;
   }
 
   completionDate.value=existingRecord.completionDate||"";
@@ -332,11 +338,17 @@ onAuthStateChanged(auth,async user=>{
       show("Your account must be approved before submitting external learning evidence.","warn");return;
     }
 
-    const courseSnap=await getDoc(doc(db,"courses",courseId));
-    if(!courseSnap.exists()){show("External course not found.","bad");return;}
-    course={id:courseSnap.id,...courseSnap.data()};
+    const verifiedCourse=PHASE2_VERIFIED_COURSES.find(item=>item.id===courseId)||null;
+    let firestoreCourse=null;
+    try{
+      const courseSnap=await getDoc(doc(db,"courses",courseId));
+      if(courseSnap.exists())firestoreCourse={id:courseSnap.id,...courseSnap.data()};
+    }catch(error){
+      console.warn("Firestore course lookup failed; using verified catalogue fallback.",error);
+    }
+    course=firestoreCourse?{...(verifiedCourse||{}),...firestoreCourse}:(verifiedCourse?{...verifiedCourse}:null);
 
-    if(!isExternal(course)){show("This course is not configured as an external learning pathway.","bad");return;}
+    if(!course||!isPublicCourse(course)||!isExternal(course)){show("This external course is not currently available for evidence submission.","bad");return;}
 
     const url=externalUrl(course);
     const provider=course.provider||"External Provider";
