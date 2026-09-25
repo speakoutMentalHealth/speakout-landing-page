@@ -83,14 +83,13 @@ test("external providers remain the original credential issuer while SpeakOut is
   assert.doesNotMatch(worker,/provider: clean\(record\.provider \|\| record\.externalProvider \|\| record\.issuer\)/u);
 });
 
-test("portfolio navigation expands in document flow instead of covering portfolio content", () => {
+test("portfolio navigation uses the same shared role-nav header as the dashboards", () => {
   const page=read("learning-portfolio.html");
-  assert.match(page,/id="portfolioMenuToggle"[^>]+aria-controls="portfolioNavTray"/u);
-  assert.match(page,/id="portfolioNavTray"/u);
-  assert.match(page,/\.nav\.portfolio-menu-open \.portfolio-nav-tray\{display:block\}/u);
-  assert.match(page,/\.portfolio-nav-tray \.links\{[\s\S]*?position:static!important/u);
-  assert.match(page,/portfolioNav\.classList\.toggle\("portfolio-menu-open"\)/u);
-  assert.doesNotMatch(page,/\.portfolio-nav-tray\{[^}]*position:absolute/u);
+  const student=read("student-dashboard.html");
+  assert.match(page,/<header class="nav">[\s\S]*?<nav class="links" id="roleNav"><\/nav>/u);
+  assert.match(student,/<header class="nav">[\s\S]*?<nav class="links" id="roleNav"><\/nav>/u);
+  assert.doesNotMatch(page,/portfolioMenuToggle|portfolioNavTray|portfolio-menu-open/u);
+  assert.doesNotMatch(page,/portfolio-nav-head|portfolio-nav-tray|portfolio-menu-toggle/u);
 });
 
 test("portfolio unifies verified manual credentials without duplicating canonical certificates", () => {
@@ -117,7 +116,9 @@ test("production workflow deploys Firestore rules when credential authority chan
   const workflow=read(".github/workflows/deploy-firestore-rules.yml");
   assert.match(workflow,/firebase\/firestore\.rules/u);
   assert.match(workflow,/FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL/u);
-  assert.match(workflow,/deploy --only firestore:rules --project speaakout-portal/u);
+  assert.match(workflow,/firebaserules\.googleapis\.com\/v1\/projects\/\$FIREBASE_PROJECT_ID\/rulesets/u);
+  assert.match(workflow,/releases\/cloud\.firestore/u);
+  assert.match(workflow,/updateMask/u);
 });
 
 test("credential unification browser modules remain syntactically valid", () => {
