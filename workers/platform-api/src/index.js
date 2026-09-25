@@ -318,9 +318,7 @@ function encodeFields(data) {
 async function firebaseAccessToken(env) {
   const cached = await env.TOKEN_CACHE?.get("firebase-access-token", "json");
   if (cached?.token) return cached.token;
-  const key = await importPKCS8(String(env.FIREBASE_PRIVATE_KEY).replace(/\
-/g, "
-"), "RS256");
+  const key = await importPKCS8(String(env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, "\n"), "RS256");
   const now = Math.floor(Date.now() / 1000);
   const assertion = await new SignJWT({ scope: "https://www.googleapis.com/auth/datastore" })
     .setProtectedHeader({ alg: "RS256", typ: "JWT" })
