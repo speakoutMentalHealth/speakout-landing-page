@@ -180,7 +180,8 @@ import {
   serverTimestamp,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { requireRoles } from "./launch-role-guard.js";\nimport { adminApi } from "./js/platform-api.js";
+import { requireRoles } from "./launch-role-guard.js";
+import { adminApi } from "./js/platform-api.js";
 
 let ITEMS = [];
 let unsubscribeCertificates = null;
@@ -382,7 +383,8 @@ statusFilter.addEventListener("change",render);
 typeFilter.addEventListener("change",render);
 refreshBtn.addEventListener("click",startRealtime);
 exportBtn.addEventListener("click",exportCSV);
-document.getElementById("repairNamesBtn").addEventListener("click",async()=>{const btn=document.getElementById("repairNamesBtn");btn.disabled=true;show("Repairing certificate names from learner profiles...");try{const result=await adminApi.repairCertificateNames();show(`Certificate repair complete: ${result.repaired} corrected from ${result.scanned} records.${result.truncated?" Run again to continue the remaining records.":""}`,"ok")}catch(error){show(error.message||"Certificate repair failed.","bad")}finally{btn.disabled=false}});\ncloseModal.addEventListener("click",()=>certificateModal.style.display="none");
+document.getElementById("repairNamesBtn").addEventListener("click",async()=>{const btn=document.getElementById("repairNamesBtn");btn.disabled=true;show("Repairing certificate names from learner profiles...");try{const result=await adminApi.repairCertificateNames();show(`Certificate repair complete: ${result.repaired} corrected from ${result.scanned} records.${result.truncated?" Run again to continue the remaining records.":""}`,"ok")}catch(error){show(error.message||"Certificate repair failed.","bad")}finally{btn.disabled=false}});
+closeModal.addEventListener("click",()=>certificateModal.style.display="none");
 logoutLink.addEventListener("click",async e => {
   e.preventDefault();
   await signOut(auth);
