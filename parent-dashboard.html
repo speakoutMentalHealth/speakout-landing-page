@@ -994,8 +994,9 @@ function isCourseProgress(item){
 
 
 function isCompletedProgress(item){
+  const status=normalize(item.status||item.verificationStatus);
   return (
-    normalize(item.status) === "completed" ||
+    ["completed","approved","verified"].includes(status) ||
     item.completed === true ||
     progressPercent(item) >= 100
   );
@@ -1023,20 +1024,14 @@ function progressCard(item){
     "";
 
   const url = external
-    ? (
-        item.externalUrl ||
-        `course-details.html?id=${encodeURIComponent(courseId)}`
-      )
+    ? `course-details.html?id=${encodeURIComponent(courseId)}`
     : (
         courseId
           ? `course-player.html?id=${encodeURIComponent(courseId)}`
           : "speakhub.html"
       );
 
-  const target =
-    external && item.externalUrl
-      ? `target="_blank" rel="noopener noreferrer"`
-      : "";
+  const target = "";
 
   return `
     <div class="mini-item">
@@ -1103,8 +1098,10 @@ function progressCard(item){
             <p class="progress-label">
               ${
                 completed
-                  ? "External learning recorded as completed."
-                  : "External learning is in progress."
+                  ? "External learning verified and recorded."
+                  : normalize(item.status)==="pending_review"
+                    ? "Completion evidence is awaiting SpeakHub review."
+                    : "External learning is in progress. Open the pathway to continue or submit completion evidence."
               }
             </p>
           `
@@ -1120,9 +1117,9 @@ function progressCard(item){
         >
           ${
             completed
-              ? "View Course"
+              ? (external ? "View Pathway" : "View Course")
               : external
-                ? "Continue with Provider"
+                ? "View Pathway"
                 : "Continue Course"
           }
         </a>
@@ -1486,46 +1483,36 @@ async function loadParentProgress(){
 
   try{
 
-    const snap = await getDocs(
-      query(
-        collection(db,"userProgress"),
-        where("userId","==",currentUser.uid)
-      )
-    );
+    const dashboard=await learningApi.dashboard();
 
-    const all = snap.docs.map(
-      document=>({
-        id:document.id,
-        ...document.data()
-      })
-    );
+    const internal=(dashboard.progress||[])
+      .filter(isCourseProgress)
+      .filter(item=>!isExternalProgress(item));
 
-    const courses = all.filter(isCourseProgress);
+    const external=(dashboard.externalLearning||[]).map(record=>({
+      ...record,
+      type:"external-course",
+      courseType:"external",
+      completionMethod:"certificate-upload",
+      title:record.courseTitle,
+      category:record.courseCategory,
+      externalUrl:record.providerCourseUrl
+    }));
 
-    parentCourseStartedBox.textContent =
-      courses.length;
+    const courses=[...internal,...external];
 
-    parentCourseCompletedBox.textContent =
-      courses.filter(isCompletedProgress).length;
+    parentCourseStartedBox.textContent=courses.length;
+    parentCourseCompletedBox.textContent=courses.filter(isCompletedProgress).length;
 
-    parentProgressList.innerHTML =
-      courses.length
-        ? courses
-            .slice(0,8)
-            .map(progressCard)
-            .join("")
-        : `
-          <div class="notice warn">
-            No parent course progress yet.
-          </div>
-        `;
-
+    parentProgressList.innerHTML=courses.length
+      ? courses.slice(0,8).map(progressCard).join("")
+      : `<div class="notice warn">No parent course progress yet.</div>`;
 
   }catch(error){
 
     console.error("Parent progress load failed:",error);
 
-    parentProgressList.innerHTML = `
+    parentProgressList.innerHTML=`
       <div class="notice bad">
         Could not load parent learning progress.
       </div>
