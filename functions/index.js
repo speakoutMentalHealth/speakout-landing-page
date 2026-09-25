@@ -584,17 +584,13 @@ exports.submitAssessment = onCall(async request => {
           certificate = { id: certId, ...existingCert.data() };
           updated.certificateId = certId;
         } else {
-          const recipientName =
-            profile.fullName ||
-            `${profile.firstName || ""} ${profile.lastName || ""}`.trim() ||
-            request.auth?.token?.name ||
-            "Learner";
+          const nameCandidates = [\n            profile.fullName,\n            `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),\n            request.auth?.token?.name\n          ].map(value => String(value || "").trim());\n          const recipientName = nameCandidates.find(value => value && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value));\n          if (!recipientName) {\n            throw new HttpsError("failed-precondition", "Complete your first and last name in your profile before a certificate can be issued.");\n          }
 
           certificate = {
             id: certId,
             recipientId: uid,
             recipientName,
-            recipientEmail: profile.email || request.auth?.token?.email || "",
+            recipientEmail: profile.email || request.auth?.token?.email || "",\n            recipientEmailNormalized: String(profile.email || request.auth?.token?.email || "").trim().toLowerCase(),
             courseId,
             courseTitle: course.title || "",
             issuer: course.certificate?.issuer || course.provider || "SpeakHub Academy",
