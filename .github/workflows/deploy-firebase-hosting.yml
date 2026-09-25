@@ -39,6 +39,16 @@ jobs:
             exit 1
           fi
 
+      - name: Deploy Firestore security rules
+        if: steps.preflight.outputs.ready == 'true'
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase-service-account.json"
+          npx --yes firebase-tools@latest deploy --only firestore:rules --project speaakout-portal --non-interactive
+
       - name: Deploy Firebase Hosting
         if: steps.preflight.outputs.ready == 'true'
         uses: FirebaseExtended/action-hosting-deploy@v0
