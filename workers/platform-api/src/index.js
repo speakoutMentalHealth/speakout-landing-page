@@ -448,6 +448,13 @@ function documentDelete(env, path) {
   return { delete: `${databaseName(env)}/documents/${path}` };
 }
 
+async function setDocument(env, path, data) {
+  return firestoreRequest(env, `${databaseUrl(env)}/documents:commit`, {
+    method: "POST",
+    body: JSON.stringify({ writes: [documentWrite(env, path, data)] })
+  });
+}
+
 async function rollbackTransaction(env, transaction) {
   await firestoreRequest(env, `${databaseUrl(env)}/documents:rollback`, {
     method: "POST",
