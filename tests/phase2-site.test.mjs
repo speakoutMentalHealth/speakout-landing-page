@@ -266,6 +266,13 @@ test("public catalogues only render complete published learning content", async 
   assert.equal(internalPriorityCourses.every(course => course.modules.length === 6), true);
   assert.equal(internalPriorityCourses.every(course => course.lessonCount === 18), true);
   assert.equal(internalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.internalCourseWords), true);
+  assert.equal(internalPriorityCourses.every(course => course.modules.every(module => !module.quiz || !Array.isArray(module.quiz.questions))), true);
+  assert.equal(internalPriorityCourses.every(course => !Array.isArray(course.finalAssessment?.questions)), true);
+  assert.equal(JSON.stringify(internalPriorityCourses).includes('"correctAnswer"'), false);
+  assert.equal(JSON.stringify(internalPriorityCourses).includes('"answer"'), false);
+  const priorityCourseBuilder = await readFile(path.join(root, "firestore-seed/build-priority-courses.mjs"), "utf8");
+  assert.match(priorityCourseBuilder, /function publicInternalCourse\(course\)/u);
+  assert.match(priorityCourseBuilder, /definitions\.map\(definition => publicInternalCourse\(buildInternal\(definition\)\)\)/u);
   assert.equal(externalPriorityCourses.length, 9);
   assert.equal(externalPriorityCourses.every(course => courseReadiness(course).wordCount >= CONTENT_THRESHOLDS.externalCourseEditorialWords), true);
 
