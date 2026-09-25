@@ -249,7 +249,8 @@ function publicInternalCourse(course) {
 }
 
 function buildExternal(course) {
-  const description = `${course.description} ${externalOrientation}`;
+  const baseDescription = course.description || course.shortDescription || course.fullDescription || "";
+  const description = `${baseDescription} ${externalOrientation}`.trim();
   return {
     ...clone(course),
     slug: course.id,
