@@ -82,7 +82,7 @@ function render(){
         : `<div class="progress-track" aria-label="${pct}% complete"><div class="progress-fill" style="width:${pct}%"></div></div><p><strong>${pct}% complete</strong></p>`}
       <a class="btn primary" href="${SO.safe(courseHref(c))}">${action}</a>
     </article>`;
-  }).join(""):`<div class="notice"><h3>No active learning found.</h3><p><a href="speakhub.html">Browse the catalogue</a> and start a course or external learning pathway.</p></div>`;
+  }).join(""):`<div class="notice"><h3>No enrolled courses found.</h3><p><a href="speakhub.html">Browse the catalogue</a> and start a SpeakHub course or external learning pathway.</p></div>`;
 }
 search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};SO.onAuthStateChanged(SO.auth,user=>{if(user)load().catch(error=>{cards.innerHTML=`<div class="notice bad">${SO.safe(error.message||"Could not load your enrolled courses.")}</div>`})});
 
