@@ -806,7 +806,8 @@ function humanName(source={}){
   return candidates.find(value=>value && !looksLikeEmail(value)) || "";
 }
 
-async function resolveRecipient(record){\n  const ownerId = record.userId || record.recipientId || record.learnerId;
+async function resolveRecipient(record){
+  const ownerId = record.userId || record.recipientId || record.learnerId;
   if(ownerId){
     try{
       const profile = await getDoc(doc(db,"users",ownerId));
@@ -815,7 +816,9 @@ async function resolveRecipient(record){\n  const ownerId = record.userId || rec
       console.warn("Could not resolve the certificate owner profile.",error);
     }
   }
-  const storedName = humanName(record);\n  return storedName || "Learner";\n}
+  const storedName = humanName(record);
+  return storedName || "Learner";
+}
 
 
 function formatLabel(value){
