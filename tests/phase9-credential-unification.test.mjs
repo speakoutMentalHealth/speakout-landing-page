@@ -79,6 +79,8 @@ test("external providers remain the original credential issuer while SpeakOut is
   assert.match(worker,/verifiedBy: "SpeakOut Mental Health Outreach"/u);
   assert.match(worker,/achievementType: "external credential verified by SpeakOut"/u);
   assert.match(worker,/achievementType: "externally-completed course verified by SpeakOut"/u);
+  assert.match(worker,/provider: clean\(record\.provider \|\| record\.externalProviderName\)/u);
+  assert.doesNotMatch(worker,/provider: clean\(record\.provider \|\| record\.externalProvider \|\| record\.issuer\)/u);
 });
 
 test("portfolio navigation expands in document flow instead of covering portfolio content", () => {
@@ -102,6 +104,15 @@ test("portfolio unifies verified manual credentials without duplicating canonica
   assert.match(worker,/externalCredentials: credentialPage\.documents\.map/u);
 });
 
+test("certificate list uses the same canonical plus verified Passport view", () => {
+  const page=read("certificates.html");
+  assert.match(page,/function unifiedCredentials\(dashboard=\{\}\)/u);
+  assert.match(page,/dashboard\.externalCredentials/u);
+  assert.match(page,/sourceIds/u);
+  assert.match(page,/linkedCertificateId/u);
+  assert.match(page,/credential-passport\.html/u);
+});
+
 test("production workflow deploys Firestore rules when credential authority changes", () => {
   const workflow=read(".github/workflows/deploy-firestore-rules.yml");
   assert.match(workflow,/firebase\/firestore\.rules/u);
@@ -115,7 +126,8 @@ test("credential unification browser modules remain syntactically valid", () => 
     "credential-passport.html",
     "admin-credentials.html",
     "certificate-center.html",
-    "certificate-view.html"
+    "certificate-view.html",
+    "certificates.html"
   ]){
     const bodies=moduleBodies(read(file));
     assert.ok(bodies.length>0,file+": module script missing");
