@@ -83,14 +83,13 @@ test("external providers remain the original credential issuer while SpeakOut is
   assert.doesNotMatch(worker,/provider: clean\(record\.provider \|\| record\.externalProvider \|\| record\.issuer\)/u);
 });
 
-test("portfolio navigation expands in document flow instead of covering portfolio content", () => {
+test("portfolio navigation uses the same shared role-nav header as the dashboards", () => {
   const page=read("learning-portfolio.html");
-  assert.match(page,/id="portfolioMenuToggle"[^>]+aria-controls="portfolioNavTray"/u);
-  assert.match(page,/id="portfolioNavTray"/u);
-  assert.match(page,/\.nav\.portfolio-menu-open \.portfolio-nav-tray\{display:block\}/u);
-  assert.match(page,/\.portfolio-nav-tray \.links\{[\s\S]*?position:static!important/u);
-  assert.match(page,/portfolioNav\.classList\.toggle\("portfolio-menu-open"\)/u);
-  assert.doesNotMatch(page,/\.portfolio-nav-tray\{[^}]*position:absolute/u);
+  const student=read("student-dashboard.html");
+  assert.match(page,/<header class="nav">[\s\S]*?<nav class="links" id="roleNav"><\/nav>/u);
+  assert.match(student,/<header class="nav">[\s\S]*?<nav class="links" id="roleNav"><\/nav>/u);
+  assert.doesNotMatch(page,/portfolioMenuToggle|portfolioNavTray|portfolio-menu-open/u);
+  assert.doesNotMatch(page,/portfolio-nav-head|portfolio-nav-tray|portfolio-menu-toggle/u);
 });
 
 test("portfolio unifies verified manual credentials without duplicating canonical certificates", () => {
