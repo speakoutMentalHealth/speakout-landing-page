@@ -100,6 +100,7 @@ export const adminApi = {
   retrieveEvidence,
   listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
   repairCertificateNames: () => platformRequest("/v1/admin/certificates/repair-names"),
+  publishRichCourse: course => platformRequest("/v1/admin/courses/publish-rich", { course }),
   reviewBook: (submissionId, decision, note) =>
     platformRequest("/v1/admin/book-submissions/review", { submissionId, decision, note }),
   reviewExternalCertificate: (recordId, decision, note) =>

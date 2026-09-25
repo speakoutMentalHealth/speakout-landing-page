@@ -83,6 +83,26 @@ test("learner dashboards use the authenticated API instead of incompatible Fires
   assert.match(read("my-courses.html"), /No enrolled courses found/u);
 });
 
+test("rich internal course publishing keeps answer keys behind the secure Worker", () => {
+  const admin = read("admin-courses.html");
+  const client = read("js/platform-api.js");
+  const worker = read("workers/platform-api/src/index.js");
+  const start = admin.indexOf("async function installRichInternalCourses");
+  const end = admin.indexOf("function startRealtime", start);
+  const installer = admin.slice(start, end);
+
+  assert.match(admin, /import \{ adminApi \} from "\.\/js\/platform-api\.js"/u);
+  assert.match(installer, /adminApi\.publishRichCourse\(course\)/u);
+  assert.doesNotMatch(installer, /writeBatch\(|setDoc\(/u);
+  assert.match(client, /publishRichCourse: course => platformRequest\("\/v1\/admin\/courses\/publish-rich"/u);
+  assert.match(worker, /if \(path === "\/v1\/admin\/courses\/publish-rich"\)/u);
+  assert.match(worker, /assertNoEmbeddedAssessmentKeys\(course\)/u);
+  assert.match(worker, /Secure assessment missing for module/u);
+  assert.match(worker, /Secure final assessment is missing/u);
+  assert.match(worker, /assessmentSecurityVersion: 2/u);
+  assert.match(worker, /crypto\.getRandomValues/u);
+});
+
 test("secure assessment migration is never deployed as a browser utility", () => {
   const firebase = JSON.parse(read("firebase.json"));
   const githubPages = read("_config.yml");
