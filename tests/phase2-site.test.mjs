@@ -314,6 +314,14 @@ test("public catalogues only render complete published learning content", async 
   assert.match(hub, /function isHealthCertificateCourse\(item\)/u);
   assert.match(hub, /renderHealthCertificates\(\)/u);
   assert.match(hub, /audiences\.includes\(aud\)/u);
+  assert.match(hub, /role === "admin" \|\| role === "super_admin"\) return true/u);
+  const contentVisibility = await readFile(path.join(root, "js/content-visibility.js"), "utf8");
+  assert.match(contentVisibility, /item\.fullDescription/u);
+  assert.equal(healthCertificateCourses.every(course => courseReadiness(course).ready), true);
+  const { PHASE2_VERIFIED_COURSES } = await import("../phase2-verified-courses.js");
+  assert.equal(PHASE2_VERIFIED_COURSES.length >= 39, true);
+  assert.equal(PHASE2_VERIFIED_COURSES.every(course => isPublicCourse(course)), true);
+  assert.equal(PHASE2_VERIFIED_COURSES.filter(course => /^nextgenu-|^ghlc-/u.test(course.id)).length, 15);
 
   for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
     assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);

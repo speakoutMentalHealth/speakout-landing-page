@@ -61,7 +61,7 @@ export function courseReadiness(item = {}) {
 
   const type = normalize(item.courseType || item.type || "internal");
   if (type === "external" || normalize(item.completionMethod) === "certificate-upload" || item.externalProvider === true) {
-    const editorial = [item.title, item.shortDescription, item.description, item.outcomes, item.prerequisites, item.tags];
+    const editorial = [item.title, item.shortDescription, item.description, item.fullDescription, item.outcomes, item.prerequisites, item.tags];
     const wordCount = countWords(editorial);
     if (!hasText(item.provider)) reasons.push("Name the external provider");
     if (![item.externalUrl, item.courseUrl, item.providerCourseUrl].some(hasValidWebUrl)) reasons.push("Add a valid provider URL");
