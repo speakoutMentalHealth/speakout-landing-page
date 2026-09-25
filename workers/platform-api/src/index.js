@@ -2145,15 +2145,37 @@ async function route(request, env, path, data) {
         throw Object.assign(new Error("This account role cannot be managed here."), { status: 403 });
       }
       const now = new Date().toISOString();
+      const verificationStatus =
+        status === "approved" ? "verified" :
+        status === "rejected" ? "rejected" :
+        status === "suspended" ? "suspended" : "pending";
       tx.set(`users/${targetUserId}`, {
         ...target,
         status,
         approved: status === "approved",
+        schoolVerificationStatus: verificationStatus,
         updatedAt: now,
         reviewedAt: now,
         reviewedBy: user.uid
       });
-      return { ok: true, userId: targetUserId, status };
+      if (normalized(target.role) === "student") {
+        const registrationNumber = normalizedRegistrationNumber(target.registrationNumber || target.admissionNumber);
+        const schoolId = clean(target.schoolId);
+        if (registrationNumber && schoolId) {
+          const lockId = await sha256Key(`${schoolId}:${registrationNumber}`);
+          const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+          if (lock) {
+            tx.set(`schoolStudentRegistrations/${lockId}`, {
+              ...lock,
+              status: verificationStatus,
+              reviewedAt: now,
+              reviewedBy: user.uid,
+              updatedAt: now
+            });
+          }
+        }
+      }
+      return { ok: true, userId: targetUserId, status, schoolVerificationStatus: verificationStatus };
     });
   }
 
