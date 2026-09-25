@@ -251,7 +251,7 @@ section{padding:58px 0}
     <div class="title">
       <span class="label">Course Catalog</span>
       <h2>Available SpeakHub courses</h2>
-      <p>Only courses marked active appear here. Premium access can be connected through payment history and admin approval.</p>
+      <p>Only published, quality-checked courses that meet SpeakHub readiness standards appear here.</p>
     </div>
 
     <div id="loading" class="loading">Loading courses...</div>
@@ -302,6 +302,7 @@ section{padding:58px 0}
 <script type="module">
 import { db, auth } from "./firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
+import { isPublicCourse } from "./js/content-visibility.js";
 import { collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
@@ -474,12 +475,12 @@ async function loadCourses(){
     const byId = new Map();
 
     PHASE2_VERIFIED_COURSES.forEach(item => {
-      if(isActiveCourse(item) && canSeeCourse(item)) byId.set(item.id,{...item});
+      if(isActiveCourse(item) && isPublicCourse(item) && canSeeCourse(item)) byId.set(item.id,{...item});
     });
 
     snap.forEach(d => {
       const item = { id:d.id, ...d.data() };
-      if(isActiveCourse(item) && canSeeCourse(item)) byId.set(item.id,item);
+      if(isActiveCourse(item) && isPublicCourse(item) && canSeeCourse(item)) byId.set(item.id,item);
     });
 
     courses = Array.from(byId.values());
@@ -498,7 +499,7 @@ async function loadCourses(){
     console.error(error);
 
     courses = PHASE2_VERIFIED_COURSES
-      .filter(item => isActiveCourse(item) && canSeeCourse(item));
+      .filter(item => isActiveCourse(item) && isPublicCourse(item) && canSeeCourse(item));
 
     loading.style.display = "none";
     updateStats(courses);
