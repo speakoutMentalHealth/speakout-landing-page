@@ -732,6 +732,7 @@ function identifierFor(user){
   if(userRole === "student"){
     return (
       user.studentId ||
+      user.studentRegNumber ||
       user.admissionNumber ||
       "—"
     );
