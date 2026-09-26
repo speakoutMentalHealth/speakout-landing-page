@@ -1,8 +1,8 @@
-const CACHE="speakout-tv-v9";
+const CACHE="speakout-tv-v10";
 const STATIC=[
  "./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html",
  "./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",
- "./js/speakout-tv.js","./js/speakout-radio.js","./js/tv-search.js","./js/tv-show.js","./js/tv-watch.js","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"
+ "./js/speakout-tv.js","./js/speakout-radio.js","./js/tv-search.js","./js/tv-show.js","./js/tv-watch.js","./js/tv-art.js","./js/tv-data.js","./js/tv-rail-controls.js","./js/platform-config.js"
 ];
 
 self.addEventListener("install",event=>{

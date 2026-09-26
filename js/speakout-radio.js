@@ -1,5 +1,6 @@
 import {loadTvAudio} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
+import {installOverflowRailControls} from "./tv-rail-controls.js";
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];

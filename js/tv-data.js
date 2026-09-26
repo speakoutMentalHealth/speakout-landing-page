@@ -6,20 +6,37 @@ let tvPromise=null;
 let audioPromise=null;
 
 const publicStatus=value=>["active","published"].includes(String(value||"").toLowerCase());
+const MEDIA_REQUEST_TIMEOUT_MS=7000;
+function withTimeout(promise,ms=MEDIA_REQUEST_TIMEOUT_MS,message="Media request timed out."){
+ return Promise.race([
+  promise,
+  new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))
+ ]);
+}
+
 
 async function apiGet(path){
  if(!PLATFORM_API_BASE)throw new Error("Public media API unavailable.");
- const response=await fetch(PLATFORM_API_BASE+path,{method:"GET",credentials:"omit",cache:"no-store"});
- if(!response.ok)throw new Error("Public media API request failed.");
- return response.json();
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),MEDIA_REQUEST_TIMEOUT_MS);
+ try{
+  const response=await fetch(PLATFORM_API_BASE+path,{method:"GET",credentials:"omit",cache:"no-store",signal:controller.signal});
+  if(!response.ok)throw new Error("Public media API request failed.");
+  return response.json();
+ }catch(error){
+  if(error?.name==="AbortError")throw new Error("Public media API timed out.");
+  throw error;
+ }finally{
+  clearTimeout(timer);
+ }
 }
 
 async function firestorePublic(collectionName){
  const rows=[];
  const seen=new Set();
  const results=await Promise.allSettled([
-  getDocs(query(collection(db,collectionName),where("status","==","published"))),
-  getDocs(query(collection(db,collectionName),where("status","==","active")))
+  withTimeout(getDocs(query(collection(db,collectionName),where("status","==","published")))),
+  withTimeout(getDocs(query(collection(db,collectionName),where("status","==","active"))))
  ]);
  for(const result of results){
   if(result.status!=="fulfilled")continue;

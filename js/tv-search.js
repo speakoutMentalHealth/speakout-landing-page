@@ -14,7 +14,7 @@ const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thum
 
 const discoveryRailSelector=".discovery-series-grid,.discovery-media-grid";
 function updateDiscoveryRailControls(){
-  $(discoveryRailSelector).forEach(rail=>{
+  $$(discoveryRailSelector).forEach(rail=>{
     const group=rail.closest(".discovery-group");
     const nav=group?.querySelector(".discovery-rail-nav");
     if(!group||!nav)return;
@@ -28,7 +28,7 @@ function updateDiscoveryRailControls(){
   });
 }
 function installDiscoveryRailControls(){
-  $(".discovery-group").forEach(group=>{
+  $$(".discovery-group").forEach(group=>{
     if(group.querySelector(".discovery-rail-nav"))return;
     const rail=group.querySelector(discoveryRailSelector);
     const title=group.querySelector(".discovery-group-title");
@@ -151,13 +151,22 @@ function render(){
 }
 
 async function load(){
- let episodes=[],audio=[],shows=[];
- try{
-  const loaded=await Promise.all([loadTvEpisodes(),loadTvAudio(),loadTvShows()]);
-  episodes=loaded[0].map(x=>({mediaType:"video",...x}));
-  audio=loaded[1].map(x=>({mediaType:"audio",...x}));
-  shows=loaded[2].map(x=>({mediaType:"series",...x}));
- }catch{}
+ const initial=new URLSearchParams(location.search).get("q")||"";
+ if(initial)$("#tvSearch").value=initial;
+ $$("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
+ installDiscoveryRailControls();
+
+ let episodes=starterEpisodes.map(x=>({...x,mediaType:"video"}));
+ let audio=[];
+ let shows=defaultSeries.map(x=>({...x,mediaType:"series"}));
+ items=[...shows,...episodes];
+ render();
+ $("#tvSearch").focus({preventScroll:true});
+
+ const loaded=await Promise.allSettled([loadTvEpisodes(),loadTvAudio(),loadTvShows()]);
+ if(loaded[0].status==="fulfilled")episodes=loaded[0].value.map(x=>({mediaType:"video",...x}));
+ if(loaded[1].status==="fulfilled")audio=loaded[1].value.map(x=>({mediaType:"audio",...x}));
+ if(loaded[2].status==="fulfilled")shows=loaded[2].value.map(x=>({mediaType:"series",...x}));
 
  const knownVideos=new Set(episodes.map(x=>ytId(x.url||x.videoUrl)).filter(Boolean));
  starterEpisodes.forEach(x=>{const y=ytId(x.url);if(!knownVideos.has(y))episodes.push({...x,mediaType:"video"})});
@@ -169,13 +178,11 @@ async function load(){
  audio.sort((a,b)=>dateValue(b)-dateValue(a));
  shows.sort((a,b)=>orderValue(a)-orderValue(b)||String(a.title||"").localeCompare(String(b.title||"")));
  items=[...shows,...episodes,...audio];
-
- const initial=new URLSearchParams(location.search).get("q")||"";
- if(initial)$("#tvSearch").value=initial;
- $$("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
- installDiscoveryRailControls();
  render();
- $("#tvSearch").focus({preventScroll:true});
+
+ if(loaded.every(result=>result.status==="rejected")){
+  $("#resultEyebrow").textContent="AVAILABLE NOW";
+ }
 }
 
 $("#tvSearch").addEventListener("input",()=>{$$("#topicRail button").forEach(b=>b.classList.remove("active"));render()});
