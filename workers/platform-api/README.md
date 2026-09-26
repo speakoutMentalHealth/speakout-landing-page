@@ -56,3 +56,18 @@ The curator intentionally excludes videos marked made-for-kids and videos that a
 SpeakOut Radio reads the public Spotify for Creators RSS feed configured in `SPOTIFY_RSS_URL`. This path does not require Spotify Premium, a Spotify Web API client ID, or a client secret. The Worker reads published RSS items, skips episodes marked explicit, preserves the original podcast source link, and exposes the RSS enclosure URL for on-site audio playback.
 
 The production and staging Wrangler configs keep the public RSS URL as a normal variable. Do not add Spotify client credentials unless a future feature genuinely requires authenticated Spotify Web API access. Manual `tvAudio` entries remain supported and take precedence when an RSS item matches an existing manual record.
+
+
+## Global YouTube discovery
+
+In addition to approved-channel monitoring, TV Curator supports review-only keyword discovery across YouTube. Administrators can create up to eight active discovery rules. Each scheduled rule searches recent videos with YouTube `search.list`, requests only embeddable/syndicated video results with strict SafeSearch, validates the returned video IDs with `videos.list`, applies the rule's include/exclude keywords, and deduplicates against existing candidates and TV episodes.
+
+Global discovery never auto-publishes or auto-drafts. New matches always enter `tvCuratorCandidates` with `status: pending` and must be explicitly sent to an unpublished TV Studio draft by an administrator. Creator/channel attribution and the original YouTube URL are preserved.
+
+The existing six-hour Worker cron runs trusted-channel synchronization first, then up to eight active discovery rules, then refreshes stored YouTube metadata.
+
+## TikTok LIVE simulcast
+
+SpeakOut TV does not treat TikTok LIVE as the primary embedded player. TV Studio keeps a supported YouTube Live, Twitch or Vimeo URL as the in-site player and optionally stores a public `tiktokUrl` companion link for the same simulcast. During a live window, the public Live experience can show a **Watch on TikTok** action while the embedded player remains on SpeakOut TV.
+
+Never store a TikTok stream key, RTMP credential, or account credential in TV Studio or Firestore. Stream distribution to TikTok should remain in the broadcaster's approved streaming setup; SpeakOut stores only the public TikTok LIVE/profile URL.
