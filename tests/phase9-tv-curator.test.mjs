@@ -169,6 +169,6 @@ test("TikTok Live is a companion link while SpeakOut keeps an embeddable primary
   assert.match(studio,/Never paste a TikTok stream key/u);
   assert.match(home,/id="liveTikTok"/u);
   assert.match(script,/tiktokLiveUrl/u);
-  assert.match(script,/Watch on TikTok/u);
+  assert.match(script,/liveTikTok/u);
   assert.doesNotMatch(worker,/player\/v1\/.*tiktok/u);
 });
