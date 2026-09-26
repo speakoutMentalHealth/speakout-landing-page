@@ -241,7 +241,7 @@ test("TV overflow arrows cover home, Listen and Watch content rails",()=>{
   assert.match(home,/installOverflowRailControls/u);
   assert.match(radio,/installOverflowRailControls/u);
   assert.match(watch,/installOverflowRailControls/u);
-  assert.match(styles,/\.tv-global-rail-shell\.has-overflow \.tv-global-rail-nav/u);
+  assert.match(styles,/\.tv-global-rail-shell\.has-navigation \.tv-global-rail-nav/u);
   assert.match(styles,/@media\(min-width:700px\)/u);
 });
 
@@ -254,6 +254,18 @@ test("Discover renders starter content immediately and media loading is bounded"
   assert.match(data,/withTimeout\(getDocs/u);
   assert.match(search,/items=\[\.\.\.shows,\.\.\.episodes\];\s*render\(\);/u);
   assert.match(search,/Promise\.allSettled\(\[loadTvEpisodes\(\),loadTvAudio\(\),loadTvShows\(\)\]\)/u);
-  assert.match(workerCache,/speakout-tv-v10/u);
+  assert.match(workerCache,/speakout-tv-v11/u);
   assert.match(workerCache,/tv-rail-controls\.js/u);
+});
+
+
+test("multi-item desktop rails keep navigation visible on Home and initialize Watch after rendering",()=>{
+  const helper=read("js/tv-rail-controls.js");
+  const home=read("js/speakout-tv.js");
+  const watch=read("js/tv-watch.js");
+  assert.match(helper,/const navigable=overflow\|\|rail\.children\.length>1/u);
+  assert.match(helper,/has-navigation/u);
+  assert.match(home,/installOverflowRailControls\(\);\s*updateOverflowRailControls\(\);/u);
+  assert.doesNotMatch(home,/installDesktopRailControls\(\);\s*installOverflowRailControls/u);
+  assert.match(watch,/relatedRail"\)\.innerHTML=related\.map\(relatedCard\)\.join\(""\);[\s\S]*?installOverflowRailControls\(\);[\s\S]*?updateOverflowRailControls/u);
 });

@@ -13,7 +13,9 @@ function updateShell(shell){
  if(!rail)return;
  const max=Math.max(0,rail.scrollWidth-rail.clientWidth);
  const overflow=max>8;
+ const navigable=overflow||rail.children.length>1;
  shell.classList.toggle("has-overflow",overflow);
+ shell.classList.toggle("has-navigation",navigable);
  const prev=shell.querySelector('[data-global-rail-arrow="prev"]');
  const next=shell.querySelector('[data-global-rail-arrow="next"]');
  if(prev)prev.disabled=!overflow||rail.scrollLeft<=8;
