@@ -1,22 +1,88 @@
 {
+  "id": "tv.html",
   "name": "SpeakOut TV",
   "short_name": "SpeakOut TV",
-  "description": "Real People. Real Conversations. Real Impact.",
+  "description": "Youth mental health conversations, real stories, podcasts, live programmes and practical wellbeing content.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "tv.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#061126",
-  "theme_color": "#061126",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#05101d",
+  "theme_color": "#05101d",
+  "categories": [
+    "education",
+    "entertainment",
+    "health"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "images/logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "images/logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Discover",
+      "short_name": "Discover",
+      "url": "tv-search.html",
+      "icons": [
+        {
+          "src": "images/logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Watch",
+      "short_name": "Watch",
+      "url": "tv.html#watch",
+      "icons": [
+        {
+          "src": "images/logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Listen",
+      "short_name": "Listen",
+      "url": "radio.html",
+      "icons": [
+        {
+          "src": "images/logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Live",
+      "short_name": "Live",
+      "url": "tv.html#live",
+      "icons": [
+        {
+          "src": "images/logo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
