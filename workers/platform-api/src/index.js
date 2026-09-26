@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
-import { curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel } from "./tv-curator.js";
+import { curatorDiscoveryInput, curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel, searchYouTubeVideos } from "./tv-curator.js";
 import { VERIFIED_EXTERNAL_COURSE_BY_ID } from "./verified-external-courses.js";
 
 const json = (body, status = 200, headers = {}) => new Response(JSON.stringify(body), {
@@ -120,7 +120,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -183,6 +183,15 @@ function cmsRecord(collectionName, input) {
       if (!["http:", "https:"].includes(mediaUrl.protocol) || !allowed) throw new Error();
     } catch {
       throw Object.assign(new Error("Use a supported YouTube, Vimeo or Twitch URL."), { status: 400 });
+    }
+    if (record.tiktokUrl) {
+      try {
+        const tiktok = new URL(record.tiktokUrl);
+        const host = tiktok.hostname.replace(/^www\./u, "").toLowerCase();
+        if (!["http:", "https:"].includes(tiktok.protocol) || !["tiktok.com","m.tiktok.com"].includes(host)) throw new Error();
+      } catch {
+        throw Object.assign(new Error("Use a valid TikTok LIVE profile or live URL."), { status: 400 });
+      }
     }
     const homePlacement = normalized(record.homePlacement || "auto");
     if (!["auto", "featured", "daily", "library_only"].includes(homePlacement)) {
@@ -1187,7 +1196,7 @@ function pickPublicFields(item, fields) {
 
 function publicTvEpisode(item = {}) {
   return pickPublicFields(item, [
-    "id","title","show","description","presenter","guest","guestRole","tags","url","imageUrl",
+    "id","title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl",
     "format","featured","homePlacement","programmingDays","placementPriority","placementStart",
     "placementEnd","contentPillar","audience","publishDate","scheduledAt","sponsor","status","order",
     "createdAt","updatedAt","sourceType","sourceChannelTitle","sourceChannelId","sourceVideoId",
@@ -1430,6 +1439,7 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
     guestRole: "",
     tags: keywords.join(", "),
     url: clean(candidate.url),
+    tiktokUrl: "",
     imageUrl: clean(candidate.thumbnailUrl),
     format: "episode",
     status: "draft",
