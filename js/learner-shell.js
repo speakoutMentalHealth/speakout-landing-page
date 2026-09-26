@@ -10,9 +10,13 @@
 
   function markCurrentNavigation(){
     var current=normalizePath(window.location.href);
+    document.querySelectorAll(".links,.nav-links").forEach(function(nav){
+      if(nav.tagName==="NAV"&&!nav.getAttribute("aria-label")) nav.setAttribute("aria-label","Learner navigation");
+    });
     document.querySelectorAll(".links a[href], .nav-links a[href]").forEach(function(link){
       var target=normalizePath(link.getAttribute("href"));
-      if(target===current) link.setAttribute("aria-current","page");
+      var logicalActive=link.dataset.roleActive==="true";
+      if(logicalActive||target===current) link.setAttribute("aria-current","page");
       else link.removeAttribute("aria-current");
     });
   }
@@ -37,14 +41,45 @@
     });
   }
 
+  function labelTableRows(table,headers){
+    table.querySelectorAll("tbody tr").forEach(function(row){
+      var cells=Array.from(row.children).filter(function(cell){return cell.tagName==="TD";});
+      if(cells.length===headers.length){
+        cells.forEach(function(cell,index){
+          if(!cell.hasAttribute("data-label")) cell.setAttribute("data-label",headers[index]||"");
+        });
+      }
+    });
+  }
+
   function enhanceTables(){
     document.querySelectorAll("table").forEach(function(table){
       if(!table.getAttribute("role")) table.setAttribute("role","table");
-      if(!table.closest(".table-wrap")){
-        var wrapper=document.createElement("div");
+      var wrapper=table.closest(".table-wrap");
+      if(!wrapper){
+        wrapper=document.createElement("div");
         wrapper.className="table-wrap";
         table.parentNode.insertBefore(wrapper,table);
         wrapper.appendChild(table);
+      }
+
+      var headers=Array.from(table.querySelectorAll("thead th")).map(function(cell){
+        return cell.textContent.trim();
+      });
+      if(headers.length){
+        table.classList.add("learner-card-table");
+        wrapper.classList.add("learner-card-table-wrap");
+        labelTableRows(table,headers);
+
+        if(table.dataset.learnerTableObserved!=="true"){
+          var body=table.querySelector("tbody");
+          if(body){
+            new MutationObserver(function(){
+              labelTableRows(table,headers);
+            }).observe(body,{childList:true,subtree:true});
+            table.dataset.learnerTableObserved="true";
+          }
+        }
       }
     });
   }
@@ -59,17 +94,20 @@
     document.documentElement.dataset.learnerShell="ready";
   }
 
-  document.addEventListener("DOMContentLoaded",function(){
-    normalizeLegacyNavigation();
+  function refreshNavigation(){
     markCurrentNavigation();
     keepActiveNavVisible();
+  }
+
+  document.addEventListener("DOMContentLoaded",function(){
+    normalizeLegacyNavigation();
+    refreshNavigation();
     enhanceTables();
     enhanceImages();
     setShellReady();
   });
 
-  window.addEventListener("popstate",function(){
-    markCurrentNavigation();
-    keepActiveNavVisible();
-  });
+  document.addEventListener("speakout:nav-updated",refreshNavigation);
+
+  window.addEventListener("popstate",refreshNavigation);
 })();

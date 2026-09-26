@@ -2,9 +2,11 @@ import { SO } from "../../dashboard-shared.js";
 import { learningApi } from "../platform-api.js";
 import { isVerifiedStatus } from "./ui-utils.js";
 import { unifiedCredentialRecords } from "./credential-utils.js";
+import { renderLearnerNav } from "./role-nav.js";
 SO.onAuthStateChanged(SO.auth, async user=>{
   if(!user)return;
   try{
+    await renderLearnerNav(user,"Certificates");
     const dashboard=await learningApi.dashboard();
     const data=unifiedCredentialRecords(dashboard.certificates||[],dashboard.externalCredentials||[]);
     total.textContent=SO.num(data.length);

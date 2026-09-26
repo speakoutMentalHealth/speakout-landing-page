@@ -40,13 +40,17 @@ test("portfolio offers deliberate copy share and print actions without a public 
   assert.doesNotMatch(source,/publicPortfolio|portfolioSlug|shareToken|publishPortfolio/u);
 });
 
-test("portfolio is linked from learner navigation and dashboards", () => {
+test("portfolio is linked from centralized learner navigation and dashboards", () => {
   const nav=read("launch-role-guard.js");
   const portfolioLinks=(nav.match(/"Portfolio",\s*"learning-portfolio\.html"/gu)||[]).length;
   assert.ok(portfolioLinks>=5,`expected portfolio navigation for learner roles, found ${portfolioLinks}`);
 
-  for(const file of ["student-dashboard.html","teacher-dashboard.html","parent-dashboard.html","my-courses.html","progress.html","certificates.html"]){
+  for(const file of ["student-dashboard.html","teacher-dashboard.html","parent-dashboard.html"]){
     assert.match(read(file),/learning-portfolio\.html/u,file);
+  }
+
+  for(const file of ["my-courses.html","progress.html","certificates.html"]){
+    assert.match(read(file),/<nav class="links" id="roleNav"><\/nav>/u,file);
   }
 });
 

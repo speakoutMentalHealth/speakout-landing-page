@@ -669,6 +669,7 @@ export function renderRoleNav(
             <a
               class="${cssClass}"
               href="${href}"
+              data-role-active="${isActive ? "true" : "false"}"
             >
               ${label}
             </a>
