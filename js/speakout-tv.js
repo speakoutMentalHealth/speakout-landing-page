@@ -1,6 +1,6 @@
 import {loadTvEpisodes,loadTvShows,loadTvAudio} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
-import {installOverflowRailControls} from "./tv-rail-controls.js";
+import {installOverflowRailControls,updateOverflowRailControls} from "./tv-rail-controls.js";
 
 const starterEpisodes=[
 {id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,order:901,tags:["motivation","youth"]},
@@ -84,7 +84,7 @@ function installDesktopRailControls(){
     if("MutationObserver" in window)new MutationObserver(()=>requestAnimationFrame(updateDesktopRailControls)).observe(rail,{childList:true});
     rail.dataset.railControlIndex=String(index);
   });
-  requestAnimationFrame(updateDesktopRailControls);
+  requestAnimationFrame(()=>{updateDesktopRailControls();updateOverflowRailControls()});
 }
 
 function setFrame(target,item,autoplay=false){
@@ -513,9 +513,8 @@ async function load(){
  $("#audioRail").innerHTML=spotifyAudio.length?spotifyAudio.map(audioCard).join(""):'<div class="ios-audio-empty">Published audio episodes will appear here.</div>';
  $("#audioRail")?.addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId);if(!item)return;const src=spotifyEmbed(item.url||item.sourceUrl||"");if(src){$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';return}const direct=safeAudio(item.audioUrl||item.url||"");if(direct)$("#audioPlayer").innerHTML='<audio controls autoplay preload="metadata" src="'+esc(direct)+'" aria-label="'+esc(item.title||"SpeakOut audio")+'"></audio>';});
 
- installDesktopRailControls();
  installOverflowRailControls();
- updateDesktopRailControls();
+ updateOverflowRailControls();
  const requested=new URLSearchParams(location.search).get("episode");
  if(requested){const item=regularEpisodes.find(x=>x.id===requested);if(item)playEpisode(item,false)}
 }
