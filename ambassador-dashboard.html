@@ -1,45 +1,68 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ambassador Dashboard | SpeakOut Portal</title>
-<meta name="description" content="Private SpeakOut ambassador dashboard.">
+<meta name="description" content="SpeakOut Ambassador dashboard for training, resources, service activity and certificates.">
 <meta name="robots" content="noindex,nofollow">
-<link href="logo.png" rel="icon" type="image/png"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="dashboard-shared.css" rel="stylesheet"/>
-<link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
-<body><a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="student-dashboard.html"><img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/><div>SpeakOut<small>Portal Dashboard</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="student-dashboard.html">Student</a>
-<a class="btn soft" href="school-dashboard.html">School</a>
-<a class="btn soft" href="my-library.html">Library</a>
-<a class="btn soft" href="my-courses.html">Courses</a>
-<a class="btn soft" href="progress.html">Progress</a>
-<a class="btn soft" href="certificates.html">Certificates</a>
-<a class="btn soft" href="profile.html">Profile</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
-<main id="main-content">
-<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>Ambassador Dashboard</h1><p>Access ambassador training, monthly tasks, certificates and leadership resources.</p></div></section>
-<section><div class="container grid g4"><div class="card metric"><strong>Bronze</strong><span>Current Level</span></div><div class="card metric"><strong>0</strong><span>Points</span></div><div class="card metric"><strong>0</strong><span>Tasks Done</span></div><div class="card metric"><strong>0</strong><span>Certificates</span></div></div></section>
-<section><div class="container grid g3">
-<a class="card" href="my-courses.html"><div class="icon">👑</div><h2>Ambassador Training</h2><p>Take leadership and mental health advocacy training.</p><span class="btn primary">Start</span></a>
-<a class="card" href="school-resources.html"><div class="icon">📣</div><h2>Monthly Tasks</h2><p>Use activity templates and reporting tools.</p><span class="btn soft">View</span></a>
-<a class="card" href="certificates.html"><div class="icon">🏆</div><h2>Certificates</h2><p>View ambassador certificates and verification codes.</p><span class="btn soft">Open</span></a>
-</div></section>
-<section><div class="container"><div class="notice"><span class="label">Ambassador Rule</span><h3>No activity, no credibility.</h3><p>Ambassadors are not title collectors. You need completed tasks, reports, service hours and visible impact.</p></div></div></section>
-</main>
-<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
-<script src="auth-guard.js" type="module"></script>
-<script type="module">
-import { SO } from "./dashboard-shared.js";
+<link href="logo.png" rel="icon" type="image/png">
+<link href="css/production-ready.css" rel="stylesheet">
+<link href="css/learner-portal.css" rel="stylesheet">
+<script defer src="production-ready.js"></script>
+<meta name="theme-color" content="#123f91">
+</head>
+<body data-nav-label="Dashboard">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="ambassador-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>Ambassador Dashboard</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
 
-</script>
-<script defer="" src="portal-ui.js"></script>
-</body></html>
+<main id="main-content">
+<section class="hero">
+  <div class="container">
+    <span class="kicker">SpeakOut Ambassador</span>
+    <h1>Lead with learning and service.</h1>
+    <p>Continue ambassador training, access approved resources and build a record of completed learning and service.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="statusBox" class="notice ok">Your ambassador workspace is ready.</div>
+    <div class="grid g4 mt-16">
+      <div class="card stat"><strong>Bronze</strong><span>Current level</span></div>
+      <div class="card stat"><strong>0</strong><span>Points</span></div>
+      <div class="card stat"><strong>0</strong><span>Tasks completed</span></div>
+      <div class="card stat"><strong>0</strong><span>Certificates</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div><span class="label">Ambassador Tools</span><h2>Continue your programme</h2><p>Training, resources and verified learning are organized below.</p></div>
+    </div>
+    <div class="grid g3">
+      <a class="card quick-card" href="my-courses.html"><div class="icon">👑</div><h2>Ambassador Training</h2><p>Continue leadership and mental health advocacy learning.</p><span class="btn primary">Open Courses</span></a>
+      <a class="card quick-card" href="school-resources.html"><div class="icon">📣</div><h2>Activity Resources</h2><p>Access approved templates and reporting resources for school activities.</p><span class="btn soft">Open Resources</span></a>
+      <a class="card quick-card" href="learning-portfolio.html"><div class="icon">🏆</div><h2>Learning Portfolio</h2><p>Bring verified courses and credentials together in one professional record.</p><span class="btn soft">Open Portfolio</span></a>
+    </div>
+    <div class="notice warn mt-18"><strong>Ambassador standard:</strong> recognition should be supported by completed training, approved activities, reporting and visible service—not a title alone.</div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
+<script type="module" src="auth-guard.js"></script>
+<script type="module" src="js/learner/simple-portal-page.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>
