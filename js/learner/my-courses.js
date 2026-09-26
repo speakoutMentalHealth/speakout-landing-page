@@ -2,17 +2,10 @@ import { SO } from "../../dashboard-shared.js";
 import { isPublicCourse } from "../content-visibility.js";
 import { learningApi } from "../platform-api.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
-
-const normalize=value=>String(value||"").trim().toLowerCase();
+import { normalize, statusLabel } from "./ui-utils.js";
 const isExternalCourse=c=>normalize(c.courseType)==="external"||normalize(c.completionMethod)==="certificate-upload";
 const courseHref=c=>isExternalCourse(c)?`course-details.html?id=${encodeURIComponent(c.id)}`:`course-player.html?id=${encodeURIComponent(c.id)}`;
-const externalStatus=record=>{
-  const status=normalize(record?.status||record?.verificationStatus);
-  if(["approved","verified"].includes(status))return"Verified";
-  if(["pending","pending_review","submitted"].includes(status))return"Pending Review";
-  if(["rejected","resubmission_required"].includes(status))return"Needs Attention";
-  return"Started";
-};
+const externalStatus=record=>statusLabel(record?.status||record?.verificationStatus);
 let courses=[];
 async function load(){
   const [firestoreCatalog,dashboard]=await Promise.all([SO.getAll("courses"),learningApi.dashboard()]);

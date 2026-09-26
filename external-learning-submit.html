@@ -8,8 +8,9 @@
 <meta content="Submit a certificate or proof of completion for an approved external SpeakHub learning pathway." name="description"/>
 <link href="logo.png" rel="icon"/>
 <link href="css/production-ready.css" rel="stylesheet"/>
-<script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/><link href="css/pages/external-learning-submit.css" rel="stylesheet">
 <link href="css/learner-portal.css" rel="stylesheet">
+<link href="css/pages/external-learning-submit.css" rel="stylesheet">
+<script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/>
 </head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
@@ -35,7 +36,7 @@
 <section>
 <div class="container">
 <div class="notice" id="statusBox">Checking your account and course...</div>
-<div class="grid" id="contentArea" style="display:none">
+<div class="external-learning-layout initially-hidden" id="contentArea">
 <main class="panel" id="main-content">
 <span class="label">Completion Submission</span>
 <h2 id="pageCourseTitle">External Course</h2>
@@ -65,7 +66,7 @@
 <div class="field">
 <label for="proofFile">Upload certificate/proof image</label>
 <input accept="image/jpeg,image/png,image/webp" id="proofFile" type="file"/>
-<small style="color:var(--muted)">
+<small class="text-muted">
         JPG, PNG or WebP, up to 8 MB. Evidence is sent through the secure SpeakHub API and stored in protected evidence storage.
         A new image is required for a first submission or rejected resubmission.
       </small>
@@ -80,7 +81,7 @@
     </div>
 <button class="btn gold" id="submitButton" type="submit">Submit for Review</button>
 </form>
-<div class="notice" id="resultBox" style="display:none;margin-top:16px"></div>
+<div class="notice initially-hidden mt-16" id="resultBox"></div>
 </main>
 <aside class="panel">
 <span class="label">Review Process</span>
@@ -91,7 +92,7 @@
 <li>Approved learning is added to your external learning record.</li>
 <li>The original provider remains the certificate issuer.</li>
 </ul>
-<div class="notice" id="existingSubmission" style="display:none"></div>
+<div class="notice initially-hidden" id="existingSubmission"></div>
 <div class="review-box" id="reviewBox">
 <h3>Reviewer Feedback</h3>
 <p id="reviewFeedback">—</p>

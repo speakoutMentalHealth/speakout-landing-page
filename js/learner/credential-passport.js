@@ -1,5 +1,6 @@
 import { requireRoles, renderRoleNav } from "../../launch-role-guard.js";
 import { credentialApi } from "../platform-api.js";
+import { isPendingStatus, normalize, pretty, safeHttpsUrl, statusLabel as sharedStatusLabel } from "./ui-utils.js";
 
 let credentials=[];
 const allowedRoles=["student","parent","teacher","ambassador","contributor","volunteer","school_admin","school"];
@@ -8,32 +9,21 @@ const statusBox=$("statusBox"),credentialGrid=$("credentialGrid"),credentialForm
   totalBox=$("totalBox"),verifiedBox=$("verifiedBox"),pendingBox=$("pendingBox"),issuerBox=$("issuerBox");
 
 const safe=value=>String(value??"—").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
-const normalize=value=>String(value||"").trim().toLowerCase();
-const pretty=value=>String(value||"credential").replaceAll("-"," ").replace(/\b\w/g,letter=>letter.toUpperCase());
-const safeHref=value=>{
-  try{const url=new URL(String(value||""));return url.protocol==="https:"?url.toString():""}catch{return""}
-};
-
 function show(message,type=""){statusBox.textContent=message;statusBox.className=`notice ${type}`}
 function statusLabel(record){
-  const status=normalize(record.status);
-  if(status==="verified")return"Verified";
-  if(["pending","pending_review","submitted"].includes(status))return"Under Review";
-  if(status==="resubmission_required")return"Needs Correction";
-  if(status==="rejected")return"Rejected";
-  return pretty(status||"pending");
+  return sharedStatusLabel(record.status,{fallback:"Under Review"});
 }
 function updateStats(){
   totalBox.textContent=credentials.length;
   verifiedBox.textContent=credentials.filter(item=>normalize(item.status)==="verified").length;
-  pendingBox.textContent=credentials.filter(item=>["pending","pending_review","submitted"].includes(normalize(item.status))).length;
+  pendingBox.textContent=credentials.filter(item=>isPendingStatus(item.status)).length;
   issuerBox.textContent=new Set(credentials.map(item=>item.issuer).filter(Boolean)).size;
 }
 function render(){
   credentialGrid.innerHTML=credentials.length?credentials.map(item=>{
     const status=normalize(item.status);
     const verified=status==="verified";
-    const verify=safeHref(item.verificationUrl);
+    const verify=safeHttpsUrl(item.verificationUrl);
     const certificateId=item.certificateId||item.linkedCertificateId||"";
     const typeLabel=verified
       ? `Verified type: ${pretty(item.verifiedCredentialType||item.credentialType)}`

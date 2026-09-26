@@ -2,6 +2,8 @@ import { requireRoles, renderRoleNav } from "../../launch-role-guard.js";
 import { learningApi } from "../platform-api.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
 import { SO } from "../../dashboard-shared.js";
+import { clampPercent, credentialStatus, isPendingStatus, learnerName, normalize, pretty } from "./ui-utils.js";
+import { unifiedCredentialRecords } from "./credential-utils.js";
 
 const allowedRoles=["student","teacher","parent","ambassador","contributor","volunteer","school_admin","school"];
 const $=id=>document.getElementById(id);
@@ -10,23 +12,11 @@ const statusBox=$("statusBox"),credentialList=$("credentialList"),learningList=$
 
 let portfolioSummary="";
 
-const normalize=value=>String(value||"").trim().toLowerCase();
 const safe=value=>SO.safe(value);
-const pretty=value=>String(value||"").replaceAll("-"," ").replace(/\b\w/g,letter=>letter.toUpperCase());
-const clampPercent=value=>Math.max(0,Math.min(100,Number(value||0)));
-const humanName=profile=>{
-  const values=[
-    profile?.certificateName,
-    `${profile?.firstName||""} ${profile?.lastName||""}`.trim(),
-    profile?.fullName,profile?.displayName,profile?.name
-  ].map(value=>String(value||"").trim());
-  return values.find(value=>value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(value))||"Learner";
-};
-const recordStatus=record=>normalize(record?.status||record?.verificationStatus);
+const recordStatus=record=>credentialStatus(record);
 const externalVerified=record=>["approved","verified"].includes(recordStatus(record));
-const externalPending=record=>["pending","pending_review","submitted"].includes(recordStatus(record));
+const externalPending=record=>isPendingStatus(recordStatus(record));
 const progressComplete=record=>normalize(record?.status)==="completed"||clampPercent(record?.percent)>=100;
-const certificateActive=record=>!["revoked","rejected","invalid"].includes(normalize(record?.status));
 const courseLink=(courseId,external=false)=>external
   ? `course-details.html?id=${encodeURIComponent(courseId)}`
   : `course-player.html?id=${encodeURIComponent(courseId)}`;
@@ -82,29 +72,6 @@ function learningCard(item){
   </article>`;
 }
 
-function credentialKey(item={}){
-  const issuer=normalize(item.externalProvider||item.provider||item.issuer);
-  const title=normalize(item.courseTitle||item.awardTitle||item.title);
-  const number=normalize(item.credentialNumber||item.certificateNumber);
-  const date=String(item.issueDate||item.completionDate||"").slice(0,10);
-  return number&&issuer?`number|${issuer}|${number}`:issuer&&title&&date?`title|${issuer}|${title}|${date}`:"";
-}
-
-function unifiedCredentialRecords(certificates=[],manual=[]){
-  const canonical=certificates.filter(certificateActive);
-  const canonicalIds=new Set(canonical.flatMap(item=>[item.id,item.certificateId].filter(Boolean)));
-  const sourceCredentialIds=new Set(canonical.map(item=>item.sourceCredentialId).filter(Boolean));
-  const keys=new Set(canonical.map(credentialKey).filter(Boolean));
-  const legacyVerified=manual.filter(item=>externalVerified(item)).filter(item=>{
-    if(sourceCredentialIds.has(item.id))return false;
-    if(item.certificateId&&canonicalIds.has(item.certificateId))return false;
-    if(item.linkedCertificateId&&canonicalIds.has(item.linkedCertificateId))return false;
-    const key=credentialKey(item);
-    return !key||!keys.has(key);
-  }).map(item=>({...item,_manualExternal:true,type:"external-credential-verification"}));
-  return [...canonical,...legacyVerified];
-}
-
 function providerRows(items){
   const counts=new Map();
   items.forEach(name=>{if(name)counts.set(name,(counts.get(name)||0)+1)});
@@ -142,7 +109,7 @@ function cvText(name,profile,completedCourses,credentials,providers,focus){
 
 async function loadPortfolio(user,profile){
   renderRoleNav(profile,"Portfolio");
-  const name=humanName(profile);
+  const name=learnerName(profile);
   $("identityName").textContent=name;
   $("identityAvatar").textContent=name.split(/\s+/u).slice(0,2).map(part=>part[0]||"").join("").toUpperCase()||"L";
   const school=profile.schoolName||profile.school||profile.institution||"";

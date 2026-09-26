@@ -290,8 +290,69 @@ tbody tr:hover td{background:#fbfdff}
 .security-box{border-left:4px solid var(--lp-blue)}
 .empty-state{padding:18px;border:1px dashed #c9d7e6;border-radius:16px;color:var(--lp-muted);background:#fbfdff}
 .hidden{display:none!important}
+.initially-hidden{display:none}
+.mt-12{margin-top:12px!important}
+.mt-14{margin-top:14px!important}
+.mt-16{margin-top:16px!important}
+.mt-18{margin-top:18px!important}
+.mt-20{margin-top:20px!important}
+.mb-18{margin-bottom:18px!important}
+.text-muted{color:var(--lp-muted)!important}
+.inline-check{width:auto!important;min-height:auto!important}
 .footer{background:#061126;color:rgba(255,255,255,.76);padding:28px 0;margin-top:28px;font-size:.95rem;line-height:1.65}
 .footer a{font-weight:750}
+
+/* Premium shared page controls */
+main{min-height:calc(100vh - 172px)}
+.controls{
+  display:grid;
+  grid-template-columns:minmax(220px,1.5fr) minmax(170px,.8fr) auto;
+  gap:10px;
+  align-items:center;
+}
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin-bottom:12px;
+  border:1px solid #d8e9fb;
+  border-radius:15px;
+  background:linear-gradient(145deg,#f8fbff,#eaf3ff);
+  color:var(--lp-blue);
+  font-size:1.4rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+.card:focus-within,
+.panel:focus-within{
+  border-color:#bdd5ef;
+}
+.course-card{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.course-card .btn{align-self:flex-start}
+.nav .links,.nav .nav-links{overscroll-behavior-inline:contain}
+@media(min-width:1101px){
+  .nav .links,.nav .nav-links{
+    width:auto;
+    flex-wrap:wrap;
+    overflow:visible;
+  }
+}
+@media(max-width:760px){
+  .controls{grid-template-columns:1fr}
+  .toolbar{align-items:stretch}
+  .toolbar>.btn{flex:1 1 150px}
+  .course-card .btn{align-self:stretch}
+}
 
 /* Compact desktop / tablet: keep nav in one scrollable row, never overlay content. */
 @media(max-width:1100px){

@@ -12,8 +12,8 @@
 >
 
 <link rel="icon" href="logo.png">
-<link href="css/pages/course-details.css" rel="stylesheet">
 <link href="css/learner-portal.css" rel="stylesheet">
+<link href="css/pages/course-details.css" rel="stylesheet">
 </head>
 
 <body>
@@ -44,7 +44,7 @@
 <section>
   <div class="container">
 
-    <div class="stats" id="statsRow" style="display:none">
+    <div class="stats initially-hidden" id="statsRow">
       <div class="stat">
         <strong id="moduleCount">0</strong>
         <span id="moduleLabel">Modules</span>
@@ -70,7 +70,7 @@
 
     <div id="loading" class="notice loading">Loading course...</div>
 
-    <div id="courseArea" class="course-layout" style="display:none">
+    <div id="courseArea" class="course-layout initially-hidden">
 
       <div>
         <div class="cover" id="courseCover">
@@ -87,8 +87,8 @@
 
           <img
             id="providerLogo"
-            class="provider-logo"
-            style="display:none"
+            class="provider-logo initially-hidden"
+           
             alt="Course provider logo"
           >
 
@@ -104,10 +104,10 @@
 
         <div
           id="externalNotice"
-          class="notice external-notice"
-          style="display:none;margin-top:18px"
+          class="notice external-notice initially-hidden mt-18"
+         
         ></div>
-        <div id="externalTrackingStatus" class="notice external-tracking-status" style="display:none"></div>
+        <div id="externalTrackingStatus" class="notice external-tracking-status initially-hidden"></div>
 
         <h3>Learning Outcomes</h3>
         <ul id="outcomes"></ul>
@@ -125,16 +125,16 @@
 
         <div
           id="certificateBox"
-          class="notice certificate-notice"
-          style="display:none;margin-top:20px"
+          class="notice certificate-notice initially-hidden mt-20"
+         
         ></div>
 
         <div class="actions" id="actions"></div>
 
         <div
           id="premiumNote"
-          class="notice"
-          style="display:none;margin-top:12px"
+          class="notice initially-hidden mt-12"
+         
         >
           Payment integration can later be connected through Paystack, Stripe
           or another approved payment provider.

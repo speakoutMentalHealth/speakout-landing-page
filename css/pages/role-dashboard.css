@@ -1,0 +1,60 @@
+/* Role dashboard refinements.
+   The shared learner portal owns typography, navigation, grids, cards, forms and breakpoints.
+   Keep only role-dashboard-specific components here. */
+
+.quick-card{
+  position:relative;
+  overflow:hidden;
+}
+.quick-card::after{
+  content:"→";
+  position:absolute;
+  right:16px;
+  top:16px;
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--lp-sky);
+  color:var(--lp-blue);
+  font-weight:900;
+  transition:transform .18s ease,background .18s ease;
+}
+.quick-card:hover::after{
+  transform:translateX(2px);
+  background:#dceeff;
+}
+
+.profile-row{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+
+.child-card .avatar{
+  width:76px;
+  height:76px;
+}
+
+.mini-item strong{
+  color:var(--lp-navy);
+}
+
+.dashboard-summary{
+  display:grid;
+  gap:12px;
+}
+
+@media(max-width:760px){
+  .quick-card::after{
+    width:28px;
+    height:28px;
+    right:14px;
+    top:14px;
+  }
+  .profile-row{
+    gap:10px;
+  }
+}

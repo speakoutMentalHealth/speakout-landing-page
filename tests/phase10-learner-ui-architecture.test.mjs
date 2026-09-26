@@ -28,9 +28,12 @@ test("learner pages use one responsive shell instead of scattered inline UI code
   }
 });
 
-test("complex learner pages keep page-specific CSS in the pages folder",()=>{
+test("learner pages use shared role-dashboard CSS and lean page-specific styles",()=>{
+  for(const base of ["student-dashboard","teacher-dashboard","parent-dashboard"]){
+    assert.ok(read(`${base}.html`).includes("css/pages/role-dashboard.css"),base);
+  }
+
   const complex=[
-    "student-dashboard","teacher-dashboard","parent-dashboard",
     "learning-portfolio","credential-passport","certificate-center",
     "course-details","external-learning-submit"
   ];
@@ -60,12 +63,20 @@ test("learner shell centralizes active navigation tables images and legacy menu 
   assert.match(shell,/enhanceImages/u);
 });
 
-test("extracted learner modules use valid nested import paths and parse after import removal",()=>{
+test("extracted learner modules use valid imports and parse after import removal",()=>{
   for(const page of pages){
     const base=page.replace(/\.html$/u,"");
     const source=read(`js/learner/${base}.js`);
-    assert.doesNotMatch(source,/from\s+["']\.\//u,base);
     const stripped=source.replace(/^\s*import[\s\S]*?;\s*$/gmu,"");
     assert.doesNotThrow(()=>new Function(stripped),base);
+  }
+
+  for(const helper of ["js/learner/ui-utils.js","js/learner/credential-utils.js"]){
+    assert.equal(existsSync(new URL(helper,root)),true,helper);
+    const source=read(helper);
+    const stripped=source
+      .replace(/^\s*import[\s\S]*?;\s*$/gmu,"")
+      .replace(/\bexport\s+/g,"");
+    assert.doesNotThrow(()=>new Function(stripped),helper);
   }
 });

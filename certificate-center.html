@@ -10,8 +10,9 @@
 <link href="css/speakout-main.css" rel="stylesheet"/>
 <link href="css/forms-pages-extra.css" rel="stylesheet"/>
 <link href="css/production-ready.css" rel="stylesheet"/>
-<script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/><link href="css/pages/certificate-center.css" rel="stylesheet">
 <link href="css/learner-portal.css" rel="stylesheet">
+<link href="css/pages/certificate-center.css" rel="stylesheet">
+<script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/>
 </head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="top">
@@ -172,13 +173,13 @@
                 SpeakOut-issued credential
               </span>
 </div>
-<div class="external-note" id="externalCredentialNote" style="display:none">
+<div class="external-note initially-hidden" id="externalCredentialNote">
               This record relates to learning completed with an external
               provider and subsequently submitted or verified through SpeakHub.
               The external provider remains the original issuer of its credential.
             </div>
-<div class="cert-actions" style="margin-top:18px">
-<a class="cert-btn primary" href="#" id="viewCertificateButton" style="display:none">
+<div class="cert-actions mt-18">
+<a class="cert-btn primary initially-hidden" href="#" id="viewCertificateButton">
                 View Certificate
               </a>
 <button class="cert-btn soft" id="newSearchButton" type="button">
@@ -295,7 +296,7 @@
 <a href="pages/contact.html">Contact Form</a>
 </div>
 </div>
-<p style="margin-top:30px;color:rgba(255,255,255,.55)">
+<p class="certificate-footer-note">
       © 2026 SpeakOut Mental Health Outreach. Educational support only;
       not a replacement for professional medical care or emergency services.
     </p>
