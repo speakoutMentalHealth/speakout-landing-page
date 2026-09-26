@@ -1,5 +1,6 @@
 import { SO } from "../../dashboard-shared.js";
 import { learningApi } from "../platform-api.js";
+import { statusLabel } from "./ui-utils.js";
 
 SO.onAuthStateChanged(SO.auth, async user=>{
   if(!user)return;
@@ -26,8 +27,8 @@ SO.onAuthStateChanged(SO.auth, async user=>{
       </tr>`;
     });
     const externalRows=external.map(r=>{
-      const raw=String(r.status||r.verificationStatus||"started").toLowerCase();
-      const label=["approved","verified"].includes(raw)?"Verified":["pending","pending_review","submitted"].includes(raw)?"Pending Review":["rejected","resubmission_required"].includes(raw)?"Needs Attention":"Started";
+      const raw=String(r.status||r.verificationStatus||"started");
+      const label=statusLabel(raw);
       return `<tr>
         <td>${SO.safe(r.courseTitle||"External Course")}</td>
         <td>External • ${SO.safe(r.provider||"Provider")}</td>
