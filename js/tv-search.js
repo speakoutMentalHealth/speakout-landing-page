@@ -105,7 +105,7 @@ function mediaCard(x){
  const kind=kindOf(x),img=imageFor(x);
  const badge=kind==="audio"?(x.audioType||"AUDIO"):kind==="live"?"LIVE":(x.show||"SPEAKOUT TV");
  return '<a class="discovery-media-card" href="'+hrefFor(x)+'">'+
-  '<div class="discovery-media-art '+artClass(x,kind)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x,kind))+
+  '<div class="discovery-media-art '+artClass(x,kind)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x,kind))+
   artOverlay(x,kind)+(x.sourceType==="youtube-curated"&&x.sourceChannelTitle?'<span class="tv-source-attribution">YouTube · '+esc(x.sourceChannelTitle)+'</span>':"")+'<span class="discovery-media-play">'+(kind==="audio"?"◉":"▶")+'</span></div>'+
   '<div class="discovery-media-copy"><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
 }
