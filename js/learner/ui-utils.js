@@ -20,6 +20,40 @@ export function safeHttpsUrl(value){
   }
 }
 
+export function escapeHtml(value){
+  return String(value??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+export function prettyLabel(value,fallback="—"){
+  return pretty(value)||fallback;
+}
+
+export function statusPill(value){
+  const className=normalize(value).replace(/[^a-z0-9_-]/g,"-");
+  return `<span class="pill ${className}">${escapeHtml(prettyLabel(value))}</span>`;
+}
+
+export function setFieldValue(id,value){
+  const element=document.getElementById(id);
+  if(element)element.value=value||"";
+}
+
+export function formatDisplayDate(value){
+  if(!value)return"—";
+  try{
+    const date=value?.toDate?value.toDate():new Date(value);
+    if(Number.isNaN(date.getTime()))return String(value);
+    return date.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+  }catch{
+    return String(value);
+  }
+}
+
 export function learnerName(profile={}){
   const candidates=[
     profile.certificateName,
