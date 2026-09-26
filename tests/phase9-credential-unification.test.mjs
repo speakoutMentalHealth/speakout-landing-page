@@ -97,9 +97,11 @@ test("portfolio navigation uses the same shared role-nav header as the dashboard
 
 test("portfolio unifies verified manual credentials without duplicating canonical certificates", () => {
   const source=combined("learning-portfolio.html","js/learner/learning-portfolio.js");
+  const credentialUtils=read("js/learner/credential-utils.js");
   const worker=read("workers/platform-api/src/index.js");
-  assert.match(source,/function unifiedCredentialRecords\(certificates=\[\],manual=\[\]\)/u);
-  assert.match(source,/sourceCredentialIds/u);
+  assert.match(source,/unifiedCredentialRecords\(dashboard\.certificates\|\|\[\],manualCredentials\)/u);
+  assert.match(credentialUtils,/function unifiedCredentialRecords\(certificates=\[\],manual=\[\]\)/u);
+  assert.match(credentialUtils,/sourceCredentialIds/u);
   assert.match(source,/dashboard\.externalCredentials/u);
   assert.match(source,/const credentialNames=credentials/u);
   assert.match(source,/Credential Passport/u);
@@ -108,10 +110,11 @@ test("portfolio unifies verified manual credentials without duplicating canonica
 
 test("certificate list uses the same canonical plus verified Passport view", () => {
   const source=combined("certificates.html","js/learner/certificates.js");
-  assert.match(source,/function unifiedCredentials\(dashboard=\{\}\)/u);
+  const credentialUtils=read("js/learner/credential-utils.js");
+  assert.match(source,/unifiedCredentialRecords\(dashboard\.certificates\|\|\[\],dashboard\.externalCredentials\|\|\[\]\)/u);
   assert.match(source,/dashboard\.externalCredentials/u);
-  assert.match(source,/sourceIds/u);
-  assert.match(source,/linkedCertificateId/u);
+  assert.match(credentialUtils,/linkedCertificateId/u);
+  assert.match(credentialUtils,/sourceCredentialIds/u);
   assert.match(source,/credential-passport\.html/u);
 });
 
