@@ -139,6 +139,58 @@ export async function fetchYouTubeUploads(apiKey,source={},limit=20){
   return output;
 }
 
+
+export function curatorDiscoveryInput(input={}){
+  const status=["active","paused"].includes(lower(input.status))?lower(input.status):"active";
+  const pillar=lower(input.contentPillar||"motivation").replace(/[^a-z0-9_-]/gu,"");
+  const audience=lower(input.audience||"youth").replace(/[^a-z0-9_-]/gu,"");
+  const rawLookback=Number(input.lookbackDays||14);
+  const rawMax=Number(input.maxResults||15);
+  return {
+    query:clean(input.query).replace(/\s+/gu," ").slice(0,160),
+    label:clean(input.label).slice(0,120),
+    includeKeywords:normalizeKeywordList(input.includeKeywords),
+    excludeKeywords:normalizeKeywordList(input.excludeKeywords),
+    status,
+    show:clean(input.show||"SpeakOut Picks").slice(0,120),
+    contentPillar:pillar||"motivation",
+    audience:audience||"youth",
+    lookbackDays:Number.isFinite(rawLookback)?Math.max(1,Math.min(30,Math.round(rawLookback))):14,
+    maxResults:Number.isFinite(rawMax)?Math.max(5,Math.min(25,Math.round(rawMax))):15,
+    relevanceLanguage:clean(input.relevanceLanguage||"en").slice(0,12)
+  };
+}
+
+export async function searchYouTubeVideos(apiKey,rule={},limit=0){
+  const query=clean(rule.query);
+  if(!query)throw Object.assign(new Error("Enter a YouTube discovery search query."),{status:400});
+  const lookbackDays=Math.max(1,Math.min(30,Number(rule.lookbackDays)||14));
+  const max=Math.max(5,Math.min(25,Number(limit)||Number(rule.maxResults)||15));
+  const publishedAfter=new Date(Date.now()-lookbackDays*24*60*60*1000).toISOString();
+  const search=await youtubeGet(apiKey,"search",{
+    part:"snippet",
+    type:"video",
+    q:query,
+    order:"date",
+    maxResults:max,
+    publishedAfter,
+    safeSearch:"strict",
+    videoEmbeddable:"true",
+    videoSyndicated:"true",
+    relevanceLanguage:clean(rule.relevanceLanguage||"en")
+  });
+  const ids=(search.items||[]).map(item=>clean(item?.id?.videoId)).filter(Boolean);
+  if(!ids.length)return [];
+  const byId=await fetchYouTubeVideosByIds(apiKey,ids,rule);
+  const output=[];
+  for(const id of ids){
+    const video=byId.get(id);
+    if(!video?.eligible)continue;
+    if(matchesCuratorSource(video,rule))output.push(video);
+  }
+  return output;
+}
+
 export function curatorSourceInput(input={}){
   const mode=["review","draft"].includes(lower(input.mode))?lower(input.mode):"review";
   const status=["active","paused"].includes(lower(input.status))?lower(input.status):"active";

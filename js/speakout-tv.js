@@ -29,6 +29,7 @@ const embed=raw=>{try{const u=new URL(raw),host=u.hostname.replace(/^www\./,""),
 const dateValue=x=>x.publishedAt?.toMillis?.()||Date.parse(x.publishedAt||x.publishDate||x.date||0)||0;
 const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
+const tiktokLiveUrl=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"").toLowerCase();return ["tiktok.com","m.tiktok.com"].includes(h)&&["https:","http:"].includes(u.protocol)?u.href:""}catch{return ""}};
 const safeAudio=raw=>{try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
@@ -361,7 +362,7 @@ function renderLiveExperience(allEpisodes){
  if(requestedLive&&(!requestedTime||(requestedTime<=now&&(now-requestedTime)<=6*60*60*1000)))currentLive=requestedLive;
  const requestedReplay=requestedLive&&requestedTime&&requestedTime<now-6*60*60*1000?requestedLive:null;
 
- const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar");
+ const status=$("#liveStatus"),stageTime=$("#liveStageTime"),meta=$("#liveMeta"),share=$("#liveShare"),calendar=$("#liveCalendar"),tiktok=$("#liveTikTok");
  if(currentLive){
   status.textContent="Scheduled now";status.classList.add("is-live");
   stageTime.textContent="Scheduled · "+formatSchedule(scheduleValue(currentLive));
@@ -370,19 +371,20 @@ function renderLiveExperience(allEpisodes){
   $("#liveDescription").textContent=currentLive.description||"Join the conversation live on SpeakOut TV.";
   meta.innerHTML=liveMetaMarkup(currentLive);setFrame($("#livePlayer"),currentLive,false);
   share.hidden=false;calendar.hidden=!scheduleValue(currentLive);
+  const tik=tiktokLiveUrl(currentLive.tiktokUrl);tiktok.hidden=!tik;if(tik)tiktok.href=tik;
  }else{
   status.textContent=nextLive?"Upcoming":"Standby";status.classList.remove("is-live");
   stageTime.textContent=nextLive?"Next · "+formatSchedule(scheduleValue(nextLive)):"Waiting for the next session";
   $("#liveEyebrow").textContent="LIVE CHANNEL";
   $("#liveTitle").textContent="The next conversation starts here.";
   $("#liveDescription").textContent=nextLive?"A SpeakOut Live session is scheduled. The countdown and reminder are ready below.":"Interviews, youth conversations and special SpeakOut sessions will appear here when scheduled.";
-  meta.innerHTML="";share.hidden=true;calendar.hidden=true;
+  meta.innerHTML="";share.hidden=true;calendar.hidden=true;tiktok.hidden=true;tiktok.removeAttribute("href");
  }
  if(requestedReplay){
   status.textContent="Replay";status.classList.remove("is-live");stageTime.textContent="Previously live · "+formatSchedule(scheduleValue(requestedReplay));
   $("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveTitle").textContent=requestedReplay.title||"SpeakOut Live";
   $("#liveDescription").textContent=requestedReplay.description||"Watch this previous SpeakOut live conversation.";
-  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;
+  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;tiktok.hidden=true;tiktok.removeAttribute("href");
  }
 
  const nextPanel=$("#nextLivePanel");

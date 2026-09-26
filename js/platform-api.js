@@ -155,6 +155,12 @@ export const adminApi = {
     platformRequest("/v1/admin/tv-curator/source/delete", { id }),
   syncTvCurator: (id = "") =>
     platformRequest("/v1/admin/tv-curator/sync", id ? { id } : {}),
+  saveTvCuratorDiscovery: (discovery, id = "") =>
+    platformRequest("/v1/admin/tv-curator/discovery/save", { discovery, id }),
+  deleteTvCuratorDiscovery: id =>
+    platformRequest("/v1/admin/tv-curator/discovery/delete", { id }),
+  syncTvCuratorDiscovery: (id = "") =>
+    platformRequest("/v1/admin/tv-curator/discovery/sync", id ? { id } : {}),
   reviewTvCuratorCandidate: (id, decision) =>
     platformRequest("/v1/admin/tv-curator/review", { id, decision })
 };

@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
-import { curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel } from "./tv-curator.js";
+import { curatorDiscoveryInput, curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel, searchYouTubeVideos } from "./tv-curator.js";
 import { VERIFIED_EXTERNAL_COURSE_BY_ID } from "./verified-external-courses.js";
 
 const json = (body, status = 200, headers = {}) => new Response(JSON.stringify(body), {
@@ -120,7 +120,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -183,6 +183,15 @@ function cmsRecord(collectionName, input) {
       if (!["http:", "https:"].includes(mediaUrl.protocol) || !allowed) throw new Error();
     } catch {
       throw Object.assign(new Error("Use a supported YouTube, Vimeo or Twitch URL."), { status: 400 });
+    }
+    if (record.tiktokUrl) {
+      try {
+        const tiktok = new URL(record.tiktokUrl);
+        const host = tiktok.hostname.replace(/^www\./u, "").toLowerCase();
+        if (!["http:", "https:"].includes(tiktok.protocol) || !["tiktok.com","m.tiktok.com"].includes(host)) throw new Error();
+      } catch {
+        throw Object.assign(new Error("Use a valid TikTok LIVE profile or live URL."), { status: 400 });
+      }
     }
     const homePlacement = normalized(record.homePlacement || "auto");
     if (!["auto", "featured", "daily", "library_only"].includes(homePlacement)) {
@@ -1187,7 +1196,7 @@ function pickPublicFields(item, fields) {
 
 function publicTvEpisode(item = {}) {
   return pickPublicFields(item, [
-    "id","title","show","description","presenter","guest","guestRole","tags","url","imageUrl",
+    "id","title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl",
     "format","featured","homePlacement","programmingDays","placementPriority","placementStart",
     "placementEnd","contentPillar","audience","publishDate","scheduledAt","sponsor","status","order",
     "createdAt","updatedAt","sourceType","sourceChannelTitle","sourceChannelId","sourceVideoId",
@@ -1430,6 +1439,7 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
     guestRole: "",
     tags: keywords.join(", "),
     url: clean(candidate.url),
+    tiktokUrl: "",
     imageUrl: clean(candidate.thumbnailUrl),
     format: "episode",
     status: "draft",
@@ -1464,19 +1474,22 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
 }
 
 async function curatorState(env) {
-  const [sourcesPage, candidatesPage] = await Promise.all([
+  const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
+    listDocuments(env, "tvCuratorDiscoveries", 50),
     listDocuments(env, "tvCuratorCandidates", 500)
   ]);
   const sources = sourcesPage.documents.sort((a,b) => clean(a.label || a.channelTitle).localeCompare(clean(b.label || b.channelTitle)));
+  const discoveries = discoveryPage.documents.sort((a,b) => clean(a.label || a.query).localeCompare(clean(b.label || b.query)));
   const candidates = candidatesPage.documents.sort((a,b) =>
     String(b.discoveredAt || b.publishedAt || "").localeCompare(String(a.discoveredAt || a.publishedAt || ""))
   );
   return {
     configured: Boolean(clean(env.YOUTUBE_API_KEY)),
     sources,
+    discoveries,
     candidates,
-    truncated: sourcesPage.truncated || candidatesPage.truncated
+    truncated: sourcesPage.truncated || discoveryPage.truncated || candidatesPage.truncated
   };
 }
 
@@ -1506,6 +1519,34 @@ async function saveCuratorSource(env, user, data = {}) {
     };
     tx.set("tvCuratorSources/" + id, record);
     return { ok: true, source: { id, ...record } };
+  });
+}
+
+
+async function saveCuratorDiscovery(env, user, data = {}) {
+  const input = curatorDiscoveryInput(data.discovery || data);
+  if (!input.query) throw Object.assign(new Error("YouTube discovery search query is required."), { status: 400 });
+  const id = data.id ? safeId(data.id, "discovery rule identifier") : safeId("discover-" + crypto.randomUUID(), "discovery rule identifier");
+  if (input.status === "active") {
+    const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
+    const active = page.documents.filter(item => item.id !== id && normalized(item.status || "active") === "active");
+    if (active.length >= 8) {
+      throw Object.assign(new Error("Pause another YouTube discovery rule before activating more than eight scheduled searches."), { status: 409 });
+    }
+  }
+  const now = new Date().toISOString();
+  return runTransaction(env, async tx => {
+    const existing = await tx.get("tvCuratorDiscoveries/" + id);
+    const record = {
+      ...(existing || {}),
+      ...input,
+      mode: "review",
+      createdAt: existing?.createdAt || now,
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    tx.set("tvCuratorDiscoveries/" + id, record);
+    return { ok: true, discovery: { id, ...record } };
   });
 }
 
@@ -1603,6 +1644,99 @@ async function syncCuratorSource(env, source, actor = "system") {
     return { created, drafted, scanned: videos.length };
   });
   return { sourceId: source.id, sourceTitle: refreshedSource.label || refreshedSource.channelTitle, ...result };
+}
+
+
+async function syncCuratorDiscovery(env, discovery, actor = "system") {
+  if (!clean(env.YOUTUBE_API_KEY)) {
+    throw Object.assign(new Error("YouTube curator is not configured. Add the YOUTUBE_API_KEY Worker secret."), { status: 503 });
+  }
+  const rule = { ...discovery, ...curatorDiscoveryInput(discovery) };
+  const videos = await searchYouTubeVideos(env.YOUTUBE_API_KEY, rule, rule.maxResults);
+  const [candidatePage, episodePage] = await Promise.all([
+    listDocuments(env, "tvCuratorCandidates", 1000),
+    listDocuments(env, "tvEpisodes", 1000)
+  ]);
+  const knownVideos = new Set();
+  candidatePage.documents.forEach(item => {
+    if (clean(item.videoId)) knownVideos.add(clean(item.videoId));
+  });
+  episodePage.documents.forEach(item => {
+    const id = clean(item.sourceVideoId) || youtubeVideoIdFromUrl(item.url);
+    if (id) knownVideos.add(id);
+  });
+  const fresh = videos.filter(video => !knownVideos.has(video.videoId));
+  const now = new Date().toISOString();
+  const result = await runTransaction(env, async tx => {
+    let created = 0;
+    for (const video of fresh) {
+      const candidateId = safeId("yt-" + video.videoId, "curator candidate identifier");
+      tx.set("tvCuratorCandidates/" + candidateId, {
+        ...video,
+        sourceId: clean(rule.id),
+        sourceKind: "discovery",
+        sourceLabel: clean(rule.label || rule.query || "YouTube Discovery"),
+        discoveryQuery: clean(rule.query),
+        show: clean(rule.show || "SpeakOut Picks"),
+        contentPillar: normalized(rule.contentPillar || "motivation"),
+        audience: normalized(rule.audience || "youth"),
+        sourceMode: "review",
+        status: "pending",
+        discoveredAt: now,
+        youtubeMetadataRefreshedAt: now,
+        updatedAt: now,
+        reviewedAt: "",
+        reviewedBy: "",
+        draftEpisodeId: ""
+      });
+      created += 1;
+    }
+    const existing = await tx.get("tvCuratorDiscoveries/" + safeId(rule.id, "discovery rule identifier"));
+    if (existing) {
+      tx.set("tvCuratorDiscoveries/" + rule.id, {
+        ...existing,
+        lastSyncedAt: now,
+        lastSyncNewCount: created,
+        lastSyncScannedCount: videos.length,
+        lastSyncError: "",
+        updatedAt: now,
+        updatedBy: actor
+      });
+    }
+    return { created, scanned: videos.length };
+  });
+  return { sourceId: rule.id, sourceTitle: rule.label || rule.query, sourceKind: "discovery", ...result };
+}
+
+async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = "") {
+  if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
+  const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
+  const discoveries = page.documents
+    .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))
+    .slice(0, 8);
+  const results = [];
+  for (const discovery of discoveries) {
+    try {
+      results.push(await syncCuratorDiscovery(env, discovery, actor));
+    } catch (error) {
+      const now = new Date().toISOString();
+      await runTransaction(env, async tx => {
+        const current = await tx.get("tvCuratorDiscoveries/" + discovery.id);
+        if (current) {
+          tx.set("tvCuratorDiscoveries/" + discovery.id, {
+            ...current,
+            lastSyncedAt: now,
+            lastSyncError: clean(error.message).slice(0, 500),
+            updatedAt: now,
+            updatedBy: actor
+          });
+        }
+        return { ok: true };
+      });
+      results.push({ sourceId: discovery.id, sourceTitle: discovery.label || discovery.query, sourceKind: "discovery", error: error.message || "Discovery sync failed." });
+    }
+  }
+  return { configured: true, results };
 }
 
 async function refreshStoredYouTubeMetadata(env, actor = "system") {
@@ -1772,7 +1906,9 @@ async function reviewCuratorCandidate(env, user, data = {}) {
       tx.set("tvCuratorCandidates/" + candidateId, updated);
       return { ok: true, candidate: { id: candidateId, ...updated } };
     }
-    const source = candidate.sourceId ? await tx.get("tvCuratorSources/" + safeId(candidate.sourceId, "curator source identifier")) : {};
+    const source = candidate.sourceId
+      ? await tx.get((candidate.sourceKind === "discovery" ? "tvCuratorDiscoveries/" : "tvCuratorSources/") + safeId(candidate.sourceId, "curator source identifier"))
+      : {};
     const draftEpisodeId = candidate.draftEpisodeId || await draftCuratorCandidate(env, tx, candidate, source || {}, user.uid);
     const updated = {
       ...candidate,
@@ -2927,6 +3063,28 @@ async function route(request, env, path, data) {
     });
   }
 
+  if (path === "/v1/admin/tv-curator/discovery/save") {
+    requireAdmin(user);
+    return saveCuratorDiscovery(env, user, data);
+  }
+
+  if (path === "/v1/admin/tv-curator/discovery/delete") {
+    requireAdmin(user);
+    const discoveryId = safeId(data.id, "discovery rule identifier");
+    return runTransaction(env, async tx => {
+      const existing = await tx.get("tvCuratorDiscoveries/" + discoveryId);
+      if (!existing) throw Object.assign(new Error("YouTube discovery rule not found."), { status: 404 });
+      tx.delete("tvCuratorDiscoveries/" + discoveryId);
+      return { ok: true, id: discoveryId };
+    });
+  }
+
+  if (path === "/v1/admin/tv-curator/discovery/sync") {
+    requireAdmin(user);
+    const discoveryId = clean(data.id) ? safeId(data.id, "discovery rule identifier") : "";
+    return syncAllCuratorDiscoveries(env, user.uid, discoveryId);
+  }
+
   if (path === "/v1/admin/tv-curator/sync") {
     requireAdmin(user);
     const sourceId = clean(data.id) ? safeId(data.id, "curator source identifier") : "";
@@ -3022,6 +3180,7 @@ export default {
   async scheduled(_controller, env, ctx) {
     ctx.waitUntil((async()=>{
       await syncAllCuratorSources(env, "cloudflare-cron");
+      await syncAllCuratorDiscoveries(env, "cloudflare-cron");
       await refreshStoredYouTubeMetadata(env, "cloudflare-cron");
     })().catch(error => console.error("TV curator scheduled sync:", error)));
   },
