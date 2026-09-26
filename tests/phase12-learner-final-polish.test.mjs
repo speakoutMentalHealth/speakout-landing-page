@@ -48,6 +48,8 @@ test("learner tables become labelled mobile cards while remaining tables on desk
 
   assert.match(shell,/table\.classList\.add\("learner-card-table"\)/u);
   assert.match(shell,/cell\.setAttribute\("data-label",headers\[index\]/u);
+  assert.match(shell,/new MutationObserver/u);
+  assert.match(shell,/learnerTableObserved/u);
   assert.match(css,/@media\(max-width:760px\)[\s\S]*?table\.learner-card-table tbody/u);
   assert.match(css,/content:attr\(data-label\)/u);
   assert.match(css,/grid-template-columns:minmax\(105px,.7fr\) minmax\(0,1fr\)/u);
@@ -71,4 +73,50 @@ test("library waits for authenticated user before reading protected content",()=
   assert.match(source,/if\(!user\)return/u);
   assert.match(source,/await renderLearnerNav\(user,"Library"\)/u);
   assert.match(source,/await load\(\)/u);
+});
+
+
+test("role dashboards reuse shared formatting helpers instead of maintaining three copies",()=>{
+  const shared=read("js/learner/ui-utils.js");
+  for(const name of ["escapeHtml","formatDisplayDate","prettyLabel","setFieldValue","statusPill"]){
+    assert.match(shared,new RegExp(`export function ${name}`),name);
+  }
+
+  for(const file of [
+    "js/learner/student-dashboard.js",
+    "js/learner/teacher-dashboard.js",
+    "js/learner/parent-dashboard.js"
+  ]){
+    const source=read(file);
+    assert.match(source,/from "\.\/ui-utils\.js"/u,file);
+    assert.doesNotMatch(source,/function escapeHtml\(/u,file);
+    assert.doesNotMatch(source,/function formatDate\(/u,file);
+    assert.doesNotMatch(source,/function pill\(/u,file);
+  }
+});
+
+test("Certificate Centre no longer loads overlapping legacy page frameworks",()=>{
+  const page=read("certificate-center.html");
+  const css=read("css/pages/certificate-center.css");
+
+  assert.doesNotMatch(page,/css\/speakout-main\.css/u);
+  assert.doesNotMatch(page,/css\/forms-pages-extra\.css/u);
+  assert.match(page,/css\/learner-portal\.css/u);
+  assert.match(page,/css\/pages\/certificate-center\.css/u);
+  assert.match(page,/<nav class="links" aria-label="Public navigation">/u);
+  assert.doesNotMatch(page,/class="drop"|class="drop-toggle"|class="drop-menu"/u);
+
+  assert.match(css,/\.top\{/u);
+  assert.match(css,/\.footer-grid\{/u);
+  assert.match(css,/\.float\{/u);
+  assert.doesNotMatch(css,/font-family:Outfit/u);
+});
+
+test("logical role navigation state survives async rendering",()=>{
+  const roleGuard=read("launch-role-guard.js");
+  const shell=read("js/learner-shell.js");
+
+  assert.match(roleGuard,/data-role-active="\$\{isActive \? "true" : "false"\}"/u);
+  assert.match(shell,/link\.dataset\.roleActive==="true"/u);
+  assert.match(shell,/aria-label","Learner navigation"/u);
 });
