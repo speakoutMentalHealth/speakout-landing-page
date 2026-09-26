@@ -30,7 +30,7 @@ const dashboardRoutes = {
 
   student: "student-dashboard.html",
 
-  ambassador: "ambassador.html",
+  ambassador: "ambassador-dashboard.html",
 
   contributor: "contributor-dashboard.html",
 
@@ -570,7 +570,7 @@ const linksByRole = {
   ambassador: [
     [
       "Dashboard",
-      "ambassador.html"
+      "ambassador-dashboard.html"
     ],
     [
       "Courses",

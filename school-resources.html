@@ -1,45 +1,55 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>School Resources | SpeakOut Portal</title>
-<link href="logo.png" rel="icon" type="image/png"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
-<link href="dashboard-shared.css" rel="stylesheet"/>
-<link href="css/portal-ui.css" rel="stylesheet"/>
-<link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><meta content="#123f91" name="theme-color"/></head>
-<body><a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="nav"><div class="container nav-inner">
-<a class="brand" href="student-dashboard.html"><img alt="SpeakOut" decoding="async" fetchpriority="high" height="1254" loading="eager" src="logo.png" width="1254"/><div>SpeakOut<small>Portal Dashboard</small></div></a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-<nav class="nav-links">
-<a class="btn soft" href="student-dashboard.html">Student</a>
-<a class="btn soft" href="school-dashboard.html">School</a>
-<a class="btn soft" href="my-library.html">Library</a>
-<a class="btn soft" href="my-courses.html">Courses</a>
-<a class="btn soft" href="progress.html">Progress</a>
-<a class="btn soft" href="certificates.html">Certificates</a>
-<a class="btn soft" href="profile.html">Profile</a>
-<button class="btn dark" id="logoutBtn">Logout</button>
-</nav></div></header>
-<main id="main-content">
-<section class="hero"><div class="container"><span class="kicker">Approved Portal Access</span><h1>School Resources</h1><p>Download implementation templates for schools, teachers, parents and ambassadors.</p></div></section>
-<section><div class="container grid g3">
-<article class="card"><div class="icon">🏫</div><h2>Club Setup Guide</h2><p>Guide for launching and organizing the Mental Health Club.</p><a class="btn primary" href="#">Download</a></article>
-<article class="card"><div class="icon">👩‍🏫</div><h2>Teacher Coordinator Guide</h2><p>Clear responsibilities and reporting expectations for teachers.</p><a class="btn primary" href="#">Download</a></article>
-<article class="card"><div class="icon">👑</div><h2>Ambassador Handbook</h2><p>Student ambassador duties, tasks and recognition path.</p><a class="btn primary" href="#">Download</a></article>
-<article class="card"><div class="icon">👨‍👩‍👧</div><h2>Parent Invitation Letter</h2><p>Letter template for inviting parents to wellness programs.</p><a class="btn soft" href="#">Download</a></article>
-<article class="card"><div class="icon">📝</div><h2>Termly Report Template</h2><p>Structure for documenting activities, reach and evidence.</p><a class="btn soft" href="#">Download</a></article>
-<article class="card"><div class="icon">📣</div><h2>Caption Pack</h2><p>Social media captions for school visibility and reporting.</p><a class="btn soft" href="#">Download</a></article>
-</div></section>
-<section><div class="container"><div class="notice"><span class="label">Next Content Step</span><h3>Replace placeholders with real Google Drive links.</h3><p>These cards are ready. Next, we create the actual documents and paste their Drive links here.</p></div></div></section>
-</main>
-<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
-<script src="auth-guard.js" type="module"></script>
-<script type="module">
-import { SO } from "./dashboard-shared.js";
+<meta name="description" content="SpeakOut implementation guides, templates and school wellness resources.">
+<link href="logo.png" rel="icon" type="image/png">
+<link href="css/production-ready.css" rel="stylesheet">
+<link href="css/learner-portal.css" rel="stylesheet">
+<script defer src="production-ready.js"></script>
+<meta name="theme-color" content="#123f91">
+</head>
+<body data-nav-label="">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="student-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>School Resources</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
 
-</script>
-<script defer="" src="portal-ui.js"></script>
-</body></html>
+<main id="main-content">
+<section class="hero">
+  <div class="container">
+    <span class="kicker">School Implementation</span>
+    <h1>School Resources</h1>
+    <p>Guides and templates for school wellness clubs, coordinators, parents, ambassadors and programme reporting.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div id="statusBox" class="notice">Resource files will appear here as each approved template is published.</div>
+    <div class="grid g3 mt-16">
+      <article class="card"><div class="icon">🏫</div><span class="label">Club Setup</span><h2>Club Setup Guide</h2><p>Framework for launching and organizing a school Mental Health Club.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+      <article class="card"><div class="icon">👩‍🏫</div><span class="label">Coordinator</span><h2>Teacher Coordinator Guide</h2><p>Responsibilities, reporting expectations and practical coordination guidance.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+      <article class="card"><div class="icon">👑</div><span class="label">Leadership</span><h2>Ambassador Handbook</h2><p>Student ambassador responsibilities, activity structure and recognition pathway.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+      <article class="card"><div class="icon">👨‍👩‍👧</div><span class="label">Parents</span><h2>Parent Invitation Letter</h2><p>Template for inviting parents and guardians to approved wellness activities.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+      <article class="card"><div class="icon">📝</div><span class="label">Reporting</span><h2>Termly Report Template</h2><p>Structure for documenting activities, participation, outcomes and supporting evidence.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+      <article class="card"><div class="icon">📣</div><span class="label">Visibility</span><h2>Caption Pack</h2><p>Ready-to-adapt messaging for approved school wellness activities and reporting.</p><span class="btn soft" aria-disabled="true">In Preparation</span></article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Portal • <a href="index.html">Back Home</a></div></footer>
+<script type="module" src="auth-guard.js"></script>
+<script type="module" src="js/learner/simple-portal-page.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>
