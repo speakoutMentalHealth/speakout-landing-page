@@ -18,6 +18,7 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { learningApi, roleApi } from "../platform-api.js";
+import { escapeHtml, formatDisplayDate as formatDate, normalize, prettyLabel as pretty, setFieldValue as setVal, statusPill as pill } from "./ui-utils.js";
 
 
 let currentUser = null;
@@ -56,47 +57,6 @@ function show(message,type=""){
 }
 
 
-function normalize(value){
-  return String(value || "").trim().toLowerCase();
-}
-
-
-function escapeHtml(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-
-function pretty(value){
-  if(!value) return "—";
-
-  return String(value)
-    .replaceAll("-"," ")
-    .replace(/\b\w/g,letter=>letter.toUpperCase());
-}
-
-
-function pill(value){
-  const className = normalize(value).replace(/[^a-z0-9_-]/g,"-");
-
-  return `
-    <span class="pill ${className}">
-      ${escapeHtml(pretty(value))}
-    </span>
-  `;
-}
-
-
-function setVal(id,value){
-  const el = document.getElementById(id);
-  if(el) el.value = value || "";
-}
-
-
 function fullName(data,user){
   return (
     (
@@ -111,31 +71,6 @@ function fullName(data,user){
       ""
     )
   ).trim();
-}
-
-
-function formatDate(value){
-  if(!value) return "—";
-
-  try{
-    const date = value?.toDate ? value.toDate() : new Date(value);
-
-    if(Number.isNaN(date.getTime())){
-      return String(value);
-    }
-
-    return date.toLocaleDateString(
-      undefined,
-      {
-        year:"numeric",
-        month:"short",
-        day:"numeric"
-      }
-    );
-
-  }catch{
-    return String(value);
-  }
 }
 
 
