@@ -290,6 +290,15 @@ tbody tr:hover td{background:#fbfdff}
 .security-box{border-left:4px solid var(--lp-blue)}
 .empty-state{padding:18px;border:1px dashed #c9d7e6;border-radius:16px;color:var(--lp-muted);background:#fbfdff}
 .hidden{display:none!important}
+.initially-hidden{display:none}
+.mt-12{margin-top:12px!important}
+.mt-14{margin-top:14px!important}
+.mt-16{margin-top:16px!important}
+.mt-18{margin-top:18px!important}
+.mt-20{margin-top:20px!important}
+.mb-18{margin-bottom:18px!important}
+.text-muted{color:var(--lp-muted)!important}
+.inline-check{width:auto!important;min-height:auto!important}
 .footer{background:#061126;color:rgba(255,255,255,.76);padding:28px 0;margin-top:28px;font-size:.95rem;line-height:1.65}
 .footer a{font-weight:750}
 
