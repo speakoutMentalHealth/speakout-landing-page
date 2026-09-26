@@ -1474,6 +1474,7 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
 }
 
 async function curatorState(env) {
+  await ensureDefaultCuratorDiscoveries(env, "curator-state-bootstrap");
   const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
     listDocuments(env, "tvCuratorDiscoveries", 50),
@@ -1522,6 +1523,117 @@ async function saveCuratorSource(env, user, data = {}) {
   });
 }
 
+
+const DEFAULT_CURATOR_DISCOVERIES = Object.freeze([
+  {
+    id: "discover-default-youth-mental-health",
+    label: "Youth Mental Health",
+    query: "youth mental health",
+    includeKeywords: ["mental health","wellbeing","well-being","anxiety","depression","resilience","self-esteem"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "youth",
+    audience: "youth"
+  },
+  {
+    id: "discover-default-adhd-student-focus",
+    label: "ADHD & Student Focus",
+    query: "ADHD students focus",
+    includeKeywords: ["ADHD","focus","attention","study","student","school"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "adhd",
+    audience: "students"
+  },
+  {
+    id: "discover-default-school-stress",
+    label: "School Stress & Academic Pressure",
+    query: "school stress students anxiety",
+    includeKeywords: ["stress","anxiety","school","student","exam","academic"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school",
+    audience: "students"
+  },
+  {
+    id: "discover-default-confidence-resilience",
+    label: "Confidence & Resilience",
+    query: "confidence resilience young people",
+    includeKeywords: ["confidence","resilience","self-esteem","motivation","young people","youth"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "motivation",
+    audience: "youth"
+  },
+  {
+    id: "discover-default-healthy-relationships",
+    label: "Healthy Relationships & Boundaries",
+    query: "healthy relationships boundaries youth",
+    includeKeywords: ["relationships","boundaries","communication","respect","friendship","dating"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "relationships",
+    audience: "youth"
+  },
+  {
+    id: "discover-default-mental-health-awareness",
+    label: "Mental Health Awareness",
+    query: "mental health awareness young people",
+    includeKeywords: ["mental health","awareness","wellbeing","stigma","support","youth"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "advocacy",
+    audience: "youth"
+  }
+]);
+
+async function ensureDefaultCuratorDiscoveries(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/defaultDiscoveryBootstrap";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { seeded: false, reason: "already-bootstrapped" };
+
+  const existing = await listDocuments(env, "tvCuratorDiscoveries", 50);
+  const now = new Date().toISOString();
+  if (existing.documents.length) {
+    await runTransaction(env, async tx => {
+      const current = await tx.get(markerPath);
+      if (!current) tx.set(markerPath, {
+        completedAt: now,
+        seededCount: 0,
+        existingRuleCount: existing.documents.length,
+        updatedBy: actor
+      });
+      return { ok: true };
+    });
+    return { seeded: false, reason: "existing-rules", existingRuleCount: existing.documents.length };
+  }
+
+  await runTransaction(env, async tx => {
+    const current = await tx.get(markerPath);
+    if (current?.completedAt) return { ok: true };
+    for (const rule of DEFAULT_CURATOR_DISCOVERIES) {
+      const input = curatorDiscoveryInput({
+        ...rule,
+        status: "active",
+        show: "SpeakOut Picks",
+        lookbackDays: 14,
+        maxResults: 15,
+        relevanceLanguage: "en"
+      });
+      tx.set("tvCuratorDiscoveries/" + rule.id, {
+        ...input,
+        mode: "review",
+        createdAt: now,
+        updatedAt: now,
+        updatedBy: actor,
+        bootstrapDefault: true
+      });
+    }
+    tx.set(markerPath, {
+      completedAt: now,
+      seededCount: DEFAULT_CURATOR_DISCOVERIES.length,
+      existingRuleCount: 0,
+      updatedBy: actor
+    });
+    return { ok: true };
+  });
+
+  return { seeded: true, count: DEFAULT_CURATOR_DISCOVERIES.length };
+}
 
 async function saveCuratorDiscovery(env, user, data = {}) {
   const input = curatorDiscoveryInput(data.discovery || data);
@@ -1710,6 +1822,7 @@ async function syncCuratorDiscovery(env, discovery, actor = "system") {
 
 async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = "") {
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
+  await ensureDefaultCuratorDiscoveries(env, actor);
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
   const discoveries = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))

@@ -30,7 +30,7 @@ test("YouTube curator is server-side and never exposes the API key to browser co
   const client=read("js/platform-api.js");
   const admin=read("js/tv-curator-admin.js");
   const config=JSON.parse(read("workers/platform-api/wrangler.production.jsonc"));
-  assert.ok(!config.secrets.required.includes("YOUTUBE_API_KEY"));
+  assert.ok(!Array.isArray(config.secrets?.required) || !config.secrets.required.includes("YOUTUBE_API_KEY"));
   assert.match(worker,/configured: Boolean\(clean\(env\.YOUTUBE_API_KEY\)\)/u);
   assert.match(worker,/env\.YOUTUBE_API_KEY/u);
   assert.match(worker,/\/v1\/admin\/tv-curator\/sync/u);
@@ -171,4 +171,25 @@ test("TikTok Live is a companion link while SpeakOut keeps an embeddable primary
   assert.match(script,/tiktokLiveUrl/u);
   assert.match(script,/liveTikTok/u);
   assert.doesNotMatch(worker,/player\/v1\/.*tiktok/u);
+});
+
+
+test("default discovery bootstrap creates six safe review-only topic rules once",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  assert.match(worker,/const DEFAULT_CURATOR_DISCOVERIES = Object\.freeze\(\[/u);
+  for(const label of [
+    "Youth Mental Health",
+    "ADHD & Student Focus",
+    "School Stress & Academic Pressure",
+    "Confidence & Resilience",
+    "Healthy Relationships & Boundaries",
+    "Mental Health Awareness"
+  ]) assert.ok(worker.includes(label),label);
+  assert.match(worker,/tvCuratorSettings\/defaultDiscoveryBootstrap/u);
+  assert.match(worker,/bootstrapDefault: true/u);
+  assert.match(worker,/mode: "review"/u);
+  assert.match(worker,/lookbackDays: 14/u);
+  assert.match(worker,/maxResults: 15/u);
+  assert.match(worker,/await ensureDefaultCuratorDiscoveries\(env, actor\)/u);
+  assert.match(worker,/existing\.documents\.length/u);
 });
