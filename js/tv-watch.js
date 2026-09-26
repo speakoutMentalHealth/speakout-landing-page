@@ -1,5 +1,6 @@
 import {loadTvEpisodes} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
+import {installOverflowRailControls} from "./tv-rail-controls.js";
 
 const id=new URLSearchParams(location.search).get("id")||"";
 const $=s=>document.querySelector(s);
