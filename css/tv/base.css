@@ -88,6 +88,26 @@ h1,h2,h3,strong{font-family:"Space Grotesk",Manrope,sans-serif}
   display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 1px 10px;
 }
 .content-rail::-webkit-scrollbar,.originals-rail::-webkit-scrollbar,.ios-episode-strip::-webkit-scrollbar,.ios-audio-strip::-webkit-scrollbar,.listen-rail::-webkit-scrollbar,.live-previous-rail::-webkit-scrollbar{display:none}
+.tv-rail-shell{position:relative;min-width:0}
+.tv-rail-arrow{display:none}
+@media(min-width:900px){
+  .tv-rail-shell.has-overflow .tv-rail-arrow{
+    position:absolute;z-index:8;top:50%;display:grid;place-items:center;
+    width:46px;height:46px;margin-top:-28px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(5,14,25,.88);color:#fff;
+    box-shadow:0 14px 36px rgba(0,0,0,.42);
+    backdrop-filter:blur(14px) saturate(135%);
+    cursor:pointer;
+    transition:transform .16s ease,background .16s ease,opacity .16s ease,border-color .16s ease;
+  }
+  .tv-rail-arrow.prev{left:-18px}
+  .tv-rail-arrow.next{right:-18px}
+  .tv-rail-arrow span{display:block;font-size:2rem;line-height:.75;transform:translateY(-1px)}
+  .tv-rail-arrow:hover:not(:disabled){transform:scale(1.06);background:rgba(13,34,56,.96);border-color:rgba(255,255,255,.28)}
+  .tv-rail-arrow:focus-visible{outline:3px solid rgba(244,162,28,.5);outline-offset:3px}
+  .tv-rail-arrow:disabled{opacity:.22;cursor:default;box-shadow:none}
+}
 .youth-content-card,.ios-episode-card,.original-card,.ios-audio-episode,.listen-card,.show-episode-card,.watch-related-card,.discovery-media-card{
   position:relative;flex:0 0 min(78vw,286px);scroll-snap-align:start;
   overflow:hidden;border-radius:var(--tv-radius-md);
