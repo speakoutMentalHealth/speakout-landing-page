@@ -280,6 +280,9 @@ th{background:#f8fafc;color:#475467;font-size:.78rem;text-transform:uppercase;le
 th,td{padding:12px 13px;border-bottom:1px solid #edf0f5;text-align:left;vertical-align:top}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:#fbfdff}
+.learner-card-table-wrap{scrollbar-width:thin;scrollbar-color:#c3d6ea transparent}
+.learner-card-table-wrap::-webkit-scrollbar{height:8px}
+.learner-card-table-wrap::-webkit-scrollbar-thumb{background:#c3d6ea;border-radius:999px}
 
 /* Specialized shared learner components */
 .course-card,.provider-box,.external-pathway-step,.identity-card{
@@ -418,6 +421,55 @@ main{min-height:calc(100vh - 172px)}
   .actions .btn,.item-actions .btn,.cv-actions .btn{flex:1 1 145px}
   .photo-row{align-items:flex-start}
   table{min-width:620px}
+  .learner-card-table-wrap{
+    overflow:visible;
+    border:0;
+    background:transparent;
+  }
+  table.learner-card-table{
+    min-width:0;
+    display:block;
+  }
+  table.learner-card-table thead{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  }
+  table.learner-card-table tbody{
+    display:grid;
+    gap:12px;
+  }
+  table.learner-card-table tr{
+    display:grid;
+    overflow:hidden;
+    border:1px solid var(--lp-line);
+    border-radius:16px;
+    background:#fff;
+    box-shadow:var(--lp-shadow);
+  }
+  table.learner-card-table td{
+    display:grid;
+    grid-template-columns:minmax(105px,.7fr) minmax(0,1fr);
+    gap:12px;
+    padding:11px 13px;
+    border-bottom:1px solid #edf0f5;
+    background:#fff!important;
+    overflow-wrap:anywhere;
+  }
+  table.learner-card-table td:last-child{border-bottom:0}
+  table.learner-card-table td::before{
+    content:attr(data-label);
+    color:#5f6f82;
+    font-size:.76rem;
+    font-weight:900;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+  }
+  table.learner-card-table td[colspan]{display:block}
+  table.learner-card-table td[colspan]::before{content:none}
   .footer{margin-top:18px;padding:22px 0}
 }
 
