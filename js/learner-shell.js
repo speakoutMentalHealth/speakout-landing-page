@@ -10,9 +10,13 @@
 
   function markCurrentNavigation(){
     var current=normalizePath(window.location.href);
+    document.querySelectorAll(".links,.nav-links").forEach(function(nav){
+      if(nav.tagName==="NAV"&&!nav.getAttribute("aria-label")) nav.setAttribute("aria-label","Learner navigation");
+    });
     document.querySelectorAll(".links a[href], .nav-links a[href]").forEach(function(link){
       var target=normalizePath(link.getAttribute("href"));
-      if(target===current) link.setAttribute("aria-current","page");
+      var logicalActive=link.dataset.roleActive==="true";
+      if(logicalActive||target===current) link.setAttribute("aria-current","page");
       else link.removeAttribute("aria-current");
     });
   }
