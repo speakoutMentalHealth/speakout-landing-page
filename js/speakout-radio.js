@@ -55,7 +55,7 @@ function card(x,{compact=false}={}){
  const art=artFor(x),saved=isSaved(x.id),spotify=Boolean(spotifyEmbed(x.url||"")||x.source==="spotify");
  return '<article class="listen-card'+(compact?' compact':'')+(spotify?' is-spotify':'')+'" data-audio-id="'+esc(x.id)+'">'+
   '<button class="listen-card-open" type="button" data-audio-open="'+esc(x.id)+'" aria-label="Open '+esc(x.title||"SpeakOut audio")+'">'+
-   '<div class="listen-card-art '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy">':artFallback(x,"audio"))+
+   '<div class="listen-card-art '+artClass(x,"audio")+'">'+(art?'<img src="'+esc(art)+'" alt="" loading="lazy" decoding="async">':artFallback(x,"audio"))+
    (spotify?'':artOverlay(x,"audio"))+'<span class="listen-card-play">▶</span></div>'+
    '<div class="listen-card-copy"><strong>'+esc(x.title||"SpeakOut Audio")+'</strong><p>'+esc(x.description||"")+'</p></div>'+
   '</button>'+
@@ -123,7 +123,7 @@ function openAudio(x,{autoplay=false,scroll=true}={}){
  if(scroll)$("#nowPlaying").scrollIntoView({behavior:preferredScrollBehavior(),block:"start"});
 }
 function playDirect(x){
- const direct=safeAudio(x?.url||"");
+ const direct=safeAudio(x?.audioUrl||x?.url||"");
  if(!direct)return;
  const player=$("#persistentAudio");
  if(player.src!==direct)player.src=direct;

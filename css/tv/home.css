@@ -55,7 +55,7 @@
   border:1px solid var(--tv-line);background:var(--tv-surface);
   display:flex;flex-direction:column;justify-content:flex-end;
 }
-.topic-journey-card span{color:var(--tv-muted-2);font-size:.58rem;font-weight:800}
+.topic-journey-card span{color:var(--tv-muted-2);font-size:.62rem;font-weight:800}
 .topic-journey-card strong{margin-top:auto;font-size:.95rem;line-height:1.15}
 .topic-journey-card small{margin-top:5px;color:var(--tv-muted);font-size:.65rem;line-height:1.38}
 .topic-journey-card:nth-child(2n){background:var(--tv-surface-2)}
@@ -67,7 +67,7 @@
   border-radius:12px;background:var(--tv-surface);text-align:center
 }
 .reset-progress strong{display:block;color:var(--tv-orange);font-size:.85rem;line-height:1}
-.reset-progress small{display:block;margin-top:3px;color:var(--tv-muted-2);font-size:.52rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.reset-progress small{display:block;margin-top:3px;color:var(--tv-muted-2);font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .reset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .reset-card{
   position:relative;overflow:hidden;border:1px solid var(--tv-line);border-radius:var(--tv-radius-md);
@@ -80,7 +80,7 @@
   width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
   color:var(--tv-blue);background:rgba(88,166,255,.08);font-size:1rem
 }
-.reset-card-top small{display:block;color:var(--tv-muted-2);font-size:.53rem;font-weight:800;letter-spacing:.08em}
+.reset-card-top small{display:block;color:var(--tv-muted-2);font-size:.6rem;font-weight:800;letter-spacing:.08em}
 .reset-card-top h3{margin:3px 0 3px;font-size:.9rem}
 .reset-card-top p{margin:0;color:var(--tv-muted);font-size:.64rem;line-height:1.38}
 .reset-card-top>button{
@@ -121,7 +121,7 @@
 /* Originals */
 .original-card{flex-basis:min(68vw,250px)}
 .original-art{aspect-ratio:4/3}
-.original-copy small{display:block;padding:12px 13px 0;color:var(--tv-orange);font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.original-copy small{display:block;padding:12px 13px 0;color:var(--tv-orange);font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 .original-copy strong{padding-top:5px}
 
 /* shelf */

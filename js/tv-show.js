@@ -35,7 +35,7 @@ const setMeta=(name,value,property=false)=>{if(!value)return;document.querySelec
 function episodeCard(x,index){
  const img=imageFor(x);
  return '<a class="show-episode-card" href="'+watchHref(x)+'">'+
-   '<div class="show-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+
+   '<div class="show-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+
    '<span class="show-episode-number">'+String(index+1).padStart(2,"0")+'</span><span class="show-play">▶</span></div>'+
    '<div class="show-episode-copy"><small>'+esc(x.presenter?"HOST · "+x.presenter:x.show||"EPISODE")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"")+'</p></div></a>';
 }
@@ -58,8 +58,8 @@ $("#showTitle").textContent=meta[0];
 $("#showLabel").textContent=(meta[1]||"SpeakOut Original").toUpperCase()+" · SPEAKOUT ORIGINAL";
 $("#showDescription").textContent=meta[2];
 document.title=meta[0]+" | SpeakOut TV";
-setMeta("description",meta[2]);setMeta("og:title",meta[0]+" | SpeakOut TV",true);setMeta("og:description",meta[2],true);
-const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
+setMeta("description",meta[2]);setMeta("og:title",meta[0]+" | SpeakOut TV",true);setMeta("og:description",meta[2],true);setMeta("twitter:title",meta[0]+" | SpeakOut TV");setMeta("twitter:description",meta[2]);
+setMeta("og:url",location.href,true);const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
 
 let episodes=[];
 try{
@@ -84,10 +84,10 @@ artClass(showArtItem,"series").split(" ").forEach(cls=>artwork.classList.add(cls
 if(first){
  $("#startWatching").addEventListener("click",()=>location.href=watchHref(first));
  const heroImg=showImage||imageFor(first);
- if(heroImg){artwork.style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",heroImg,true)}
+ if(heroImg){artwork.style.backgroundImage='url("'+heroImg.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",heroImg,true);setMeta("twitter:image",heroImg)}
  else artwork.innerHTML=artFallback(showArtItem,"series");
 }else{
  $("#startWatching").hidden=true;
- if(showImage){artwork.style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",showImage,true)}
+ if(showImage){artwork.style.backgroundImage='url("'+showImage.replace(/"/g,"%22")+'")';artwork.classList.add("has-image");artwork.innerHTML=artOverlay(showArtItem,"series");setMeta("og:image",showImage,true);setMeta("twitter:image",showImage)}
  else artwork.innerHTML=artFallback(showArtItem,"series");
 }
