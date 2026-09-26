@@ -30,7 +30,7 @@ const dashboardRoutes = {
 
   student: "student-dashboard.html",
 
-  ambassador: "ambassador.html",
+  ambassador: "ambassador-dashboard.html",
 
   contributor: "contributor-dashboard.html",
 
