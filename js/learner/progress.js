@@ -1,10 +1,12 @@
 import { SO } from "../../dashboard-shared.js";
 import { learningApi } from "../platform-api.js";
 import { statusLabel } from "./ui-utils.js";
+import { renderLearnerNav } from "./role-nav.js";
 
 SO.onAuthStateChanged(SO.auth, async user=>{
   if(!user)return;
   try{
+    await renderLearnerNav(user,"Progress");
     const dashboard=await learningApi.dashboard();
     const internal=dashboard.progress||[];
     const external=dashboard.externalLearning||[];
