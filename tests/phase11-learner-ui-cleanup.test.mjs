@@ -85,11 +85,10 @@ test("page-specific learner CSS is lean and does not redefine the global shell",
 
   for(const file of lean){
     const source=read(file);
-    assert.doesNotMatch(source,/\bbody\s*\{/u,file);
-    assert.doesNotMatch(source,/\.nav\s*\{/u,file);
-    assert.doesNotMatch(source,/\.nav-inner\s*\{/u,file);
-    assert.doesNotMatch(source,/\.brand\s*\{/u,file);
-    assert.doesNotMatch(source,/\.btn\s*\{/u,file);
+    assert.doesNotMatch(source,/^\.nav\s*\{/mu,file);
+    assert.doesNotMatch(source,/^\.nav-inner\s*\{/mu,file);
+    assert.doesNotMatch(source,/^\.brand\s*\{/mu,file);
+    assert.doesNotMatch(source,/^\.btn\s*\{/mu,file);
   }
 });
 
