@@ -73,7 +73,11 @@ function installDesktopRailControls(){
       });
       return el;
     };
-    shell.append(button("prev","‹"),button("next","›"));
+    const nav=document.createElement("div");
+    nav.className="tv-rail-nav";
+    nav.setAttribute("aria-label",label+" navigation");
+    nav.append(button("prev","‹"),button("next","›"));
+    shell.prepend(nav);
     rail.addEventListener("scroll",()=>requestAnimationFrame(updateDesktopRailControls),{passive:true});
     if("ResizeObserver" in window)new ResizeObserver(()=>updateDesktopRailControls()).observe(rail);
     if("MutationObserver" in window)new MutationObserver(()=>requestAnimationFrame(updateDesktopRailControls)).observe(rail,{childList:true});
