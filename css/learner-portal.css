@@ -492,3 +492,7 @@ button,input,select,textarea{font:inherit}
 :focus-visible{outline:3px solid rgba(18,63,145,.28);outline-offset:3px}
 @media(max-width:760px){input,select,textarea{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Final learner legibility overrides */
+.brand p,.brand small{font-size:max(.62rem,10px)}
+@media(max-width:760px){.brand p,.brand small{font-size:max(.6rem,10px)}}
