@@ -38,6 +38,50 @@ const scheduleValue=x=>x?.scheduledAt?.toMillis?.()||Date.parse(x?.scheduledAt||
 const formatSchedule=(ms,opts={})=>ms?new Intl.DateTimeFormat(undefined,{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",...opts}).format(new Date(ms)):"";
 const livePeople=x=>[x?.presenter?"Host · "+x.presenter:"",x?.guest?"Guest · "+x.guest:"",x?.guestRole||"",x?.sponsor?"Supported by "+x.sponsor:""].filter(Boolean);
 
+const desktopRailSelector=".content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.live-previous-rail";
+function updateDesktopRailControls(){
+  $(".tv-rail-shell").forEach(shell=>{
+    const rail=shell.querySelector(desktopRailSelector);
+    if(!rail)return;
+    const max=Math.max(0,rail.scrollWidth-rail.clientWidth);
+    const overflow=max>8;
+    shell.classList.toggle("has-overflow",overflow);
+    const prev=shell.querySelector('[data-rail-arrow="prev"]');
+    const next=shell.querySelector('[data-rail-arrow="next"]');
+    if(prev)prev.disabled=!overflow||rail.scrollLeft<=8;
+    if(next)next.disabled=!overflow||rail.scrollLeft>=max-8;
+  });
+}
+function installDesktopRailControls(){
+  $(desktopRailSelector).forEach((rail,index)=>{
+    if(rail.closest(".tv-rail-shell"))return;
+    const shell=document.createElement("div");
+    shell.className="tv-rail-shell";
+    rail.parentNode.insertBefore(shell,rail);
+    shell.appendChild(rail);
+    const label=rail.getAttribute("aria-label")||rail.closest(".youth-section")?.querySelector("h2")?.textContent?.trim()||"media";
+    const button=(direction,symbol)=>{
+      const el=document.createElement("button");
+      el.type="button";
+      el.className="tv-rail-arrow "+direction;
+      el.dataset.railArrow=direction;
+      el.setAttribute("aria-label",(direction==="prev"?"Previous ":"Next ")+label);
+      el.innerHTML='<span aria-hidden="true">'+symbol+"</span>";
+      el.addEventListener("click",()=>{
+        const amount=Math.max(320,Math.round(rail.clientWidth*.82));
+        rail.scrollBy({left:(direction==="prev"?-1:1)*amount,behavior:preferredScrollBehavior()});
+      });
+      return el;
+    };
+    shell.append(button("prev","‹"),button("next","›"));
+    rail.addEventListener("scroll",()=>requestAnimationFrame(updateDesktopRailControls),{passive:true});
+    if("ResizeObserver" in window)new ResizeObserver(()=>updateDesktopRailControls()).observe(rail);
+    if("MutationObserver" in window)new MutationObserver(()=>requestAnimationFrame(updateDesktopRailControls)).observe(rail,{childList:true});
+    rail.dataset.railControlIndex=String(index);
+  });
+  requestAnimationFrame(updateDesktopRailControls);
+}
+
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
  target.innerHTML='<iframe loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="'+esc(src+(autoplay?"&autoplay=1":""))+'" title="'+esc(item.title||"SpeakOut TV")+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
@@ -418,6 +462,7 @@ function showView(view,{push=false}={}){
    history.pushState({tvView:chosen},"",next);
  }
  window.scrollTo({top:0,behavior:preferredScrollBehavior()});
+ requestAnimationFrame(updateDesktopRailControls);
 }
 
 async function load(){
@@ -463,6 +508,8 @@ async function load(){
  $("#audioRail").innerHTML=spotifyAudio.length?spotifyAudio.map(audioCard).join(""):'<div class="ios-audio-empty">Published audio episodes will appear here.</div>';
  $("#audioRail")?.addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId);if(!item)return;const src=spotifyEmbed(item.url||item.sourceUrl||"");if(src){$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';return}const direct=safeAudio(item.audioUrl||item.url||"");if(direct)$("#audioPlayer").innerHTML='<audio controls autoplay preload="metadata" src="'+esc(direct)+'" aria-label="'+esc(item.title||"SpeakOut audio")+'"></audio>';});
 
+ installDesktopRailControls();
+ updateDesktopRailControls();
  const requested=new URLSearchParams(location.search).get("episode");
  if(requested){const item=regularEpisodes.find(x=>x.id===requested);if(item)playEpisode(item,false)}
 }
