@@ -210,3 +210,19 @@ test("desktop SpeakOut TV rails expose accessible left and right navigation arro
   assert.match(styles,/\.tv-rail-shell\.has-overflow \.tv-rail-arrow/u);
   assert.match(styles,/\.tv-rail-arrow:disabled/u);
 });
+
+
+test("desktop Discover page exposes visible left and right arrows for horizontal result rails",()=>{
+  const script=read("js/tv-search.js");
+  const styles=read("css/tv/discover.css");
+  assert.match(script,/discoveryRailSelector/u);
+  assert.match(script,/installDiscoveryRailControls/u);
+  assert.match(script,/data-discovery-arrow/u);
+  assert.match(script,/rail\.scrollBy/u);
+  assert.match(styles,/\.discovery-rail-nav/u);
+  assert.match(styles,/\.discovery-rail-arrow/u);
+  assert.match(styles,/@media\(min-width:700px\)/u);
+  assert.match(styles,/\.discovery-series-grid,.discovery-media-grid/u);
+  assert.match(styles,/overflow-x:auto/u);
+  assert.match(styles,/scroll-snap-type:x mandatory/u);
+});
