@@ -933,3 +933,19 @@ textarea{
     border-radius:14px;
   }
 }
+/* Sitewide launch typography and interaction refinement */
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-synthesis:none}
+h1,h2,h3,h4{text-wrap:balance}
+p,li{text-wrap:pretty}
+.brand small{font-size:max(.56rem,9px)}
+.top{font-size:max(.78rem,12px)}
+.links>a,.drop-toggle{font-size:max(.82rem,13px)}
+.btn,.portal-btn,.donate-btn{min-height:44px}
+@media(max-width:780px){
+  input,select,textarea{font-size:16px}
+  .hero p,.page-hero p{font-size:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}

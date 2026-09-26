@@ -323,11 +323,28 @@ test("public catalogues only render complete published learning content", async 
   assert.equal(PHASE2_VERIFIED_COURSES.every(course => isPublicCourse(course)), true);
   assert.equal(PHASE2_VERIFIED_COURSES.filter(course => /^nextgenu-|^ghlc-/u.test(course.id)).length, 15);
 
-  for (const file of ["speakhub.html", "my-courses.html", "course-details.html", "course-player.html"]) {
-    assert.match(await readFile(path.join(root, file), "utf8"), /isPublicCourse/u, file);
+  const courseRuntimes = new Map([
+    ["speakhub.html", ["speakhub.html"]],
+    ["my-courses.html", ["my-courses.html", "js/learner/my-courses.js"]],
+    ["course-details.html", ["course-details.html", "js/learner/course-details.js"]],
+    ["course-player.html", ["course-player.html"]],
+  ]);
+  for (const [file, sources] of courseRuntimes) {
+    const runtime = (await Promise.all(sources.map(source => readFile(path.join(root, source), "utf8")))).join("\n");
+    assert.match(runtime, /isPublicCourse/u, file);
   }
-  for (const file of ["e-library.html", "my-library.html", "book-details.html", "book-reader.html", "teacher-library.html", "student-library.html", "parent-library.html"]) {
-    assert.match(await readFile(path.join(root, file), "utf8"), /isPublicBook/u, file);
+  const bookRuntimes = new Map([
+    ["e-library.html", ["e-library.html"]],
+    ["my-library.html", ["my-library.html", "js/learner/my-library.js"]],
+    ["book-details.html", ["book-details.html"]],
+    ["book-reader.html", ["book-reader.html"]],
+    ["teacher-library.html", ["teacher-library.html"]],
+    ["student-library.html", ["student-library.html"]],
+    ["parent-library.html", ["parent-library.html"]],
+  ]);
+  for (const [file, sources] of bookRuntimes) {
+    const runtime = (await Promise.all(sources.map(source => readFile(path.join(root, source), "utf8")))).join("\n");
+    assert.match(runtime, /isPublicBook/u, file);
   }
   const courseAdmin = await readFile(path.join(root, "admin-courses.html"), "utf8");
   const bookAdmin = await readFile(path.join(root, "admin-books.html"), "utf8");

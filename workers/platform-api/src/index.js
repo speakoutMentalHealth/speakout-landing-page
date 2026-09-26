@@ -465,13 +465,6 @@ function documentDelete(env, path) {
   return { delete: `${databaseName(env)}/documents/${path}` };
 }
 
-async function setDocument(env, path, data) {
-  return firestoreRequest(env, `${databaseUrl(env)}/documents:commit`, {
-    method: "POST",
-    body: JSON.stringify({ writes: [documentWrite(env, path, data)] })
-  });
-}
-
 async function rollbackTransaction(env, transaction) {
   await firestoreRequest(env, `${databaseUrl(env)}/documents:rollback`, {
     method: "POST",
@@ -507,6 +500,13 @@ async function runTransaction(env, operation, maxAttempts = 4) {
     }
   }
   throw lastError;
+}
+
+async function transactionalSet(env, path, data) {
+  return runTransaction(env, async tx => {
+    tx.set(path, data);
+    return { ok: true };
+  });
 }
 
 async function verifiedIdentity(request, env) {
@@ -2094,7 +2094,7 @@ async function registerSchoolApplication(env, data) {
   const now = new Date().toISOString();
   const schoolWebsite = optionalHttpsUrl(data.schoolWebsite, "School website");
   const estimatedStudents = Math.max(0, Math.min(1000000, Number(data.estimatedStudents || 0) || 0));
-  await setDocument(env, `schools/${applicationId}`, {
+  await transactionalSet(env, `schools/${applicationId}`, {
     schoolName,
     schoolType,
     address,
@@ -2294,7 +2294,7 @@ async function updateSchoolStatus(request, env, user, data) {
       const origin = request.headers.get("origin") || "https://speakoutmentalhealth.org";
       activationUrl = new URL(`/auth.html?schoolInvite=${encodeURIComponent(inviteToken)}`, origin).toString();
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      await setDocument(env, `schoolAdminInvites/${inviteToken}`, {
+      await transactionalSet(env, `schoolAdminInvites/${inviteToken}`, {
         schoolId,
         schoolCode,
         schoolName: clean(school.schoolName || school.name),
@@ -2991,11 +2991,11 @@ async function route(request, env, path, data) {
       if (!profile || name === "Learner" || isPlaceholderLearnerName(name)) { skipped++; continue; }
       if (storedName && !isPlaceholderLearnerName(storedName) && storedName !== name) { skipped++; continue; }
       if (storedName !== name) {
-        await setDocument(env, `certificates/${certificate.id}`, { ...certificate, recipientName: name, recipientId: ownerId, nameRepairedAt: new Date().toISOString() });
+        await transactionalSet(env, `certificates/${certificate.id}`, { ...certificate, recipientName: name, recipientId: ownerId, nameRepairedAt: new Date().toISOString() });
         const code = clean(certificate.verificationCode);
         if (code) {
           const projection = await getDocument(env, `publicCertificateVerifications/${code}`);
-          if (projection) await setDocument(env, `publicCertificateVerifications/${code}`, { ...projection, recipientName: name, nameRepairedAt: new Date().toISOString() });
+          if (projection) await transactionalSet(env, `publicCertificateVerifications/${code}`, { ...projection, recipientName: name, nameRepairedAt: new Date().toISOString() });
         }
         repaired++;
       }
