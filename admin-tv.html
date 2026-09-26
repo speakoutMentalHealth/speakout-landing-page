@@ -121,7 +121,7 @@
 </section>
 
 <section class="studio-card publish-card" id="publish">
-<div class="card-title"><div><span class="eyebrow">NEW CONTENT</span><h2>Add to SpeakOut TV</h2><p class="admin-muted">YouTube, YouTube Live, Vimeo and Twitch are supported.</p></div><span class="secure-pill">Admin only</span></div>
+<div class="card-title"><div><span class="eyebrow">NEW CONTENT</span><h2>Add to SpeakOut TV</h2><p class="admin-muted">YouTube, YouTube Live, Vimeo and Twitch can power the in-site player. TikTok LIVE can be added as a simulcast companion link.</p></div><span class="secure-pill">Admin only</span></div>
 
 <form id="cmsForm">
 <div class="url-zone">
@@ -193,6 +193,7 @@
 <label>Main Stage legacy flag<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
 <label>Publish date<input id="publishDate" type="date"></label>
 <label>Schedule live date & time<input id="scheduledAt" type="datetime-local"></label>
+<label class="wide">TikTok LIVE companion URL<input id="tiktokUrl" type="url" placeholder="https://www.tiktok.com/@youraccount/live"><small>Optional. Use the YouTube Live URL above for the embedded SpeakOut player, then add TikTok here when the same broadcast is simulcast there. Never paste a TikTok stream key.</small></label>
 <label>Presenter / host<input id="presenter" placeholder="Optional"></label>
 <label>Guest<input id="guest" placeholder="Optional"></label>
 <label>Guest role / organization<input id="guestRole" placeholder="Optional"></label>
@@ -247,6 +248,6 @@
 </section>
 </main>
 
-<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"],libraryFields:["format","homePlacement"],thumbnailField:"imageUrl"});</script>
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"],libraryFields:["format","homePlacement"],thumbnailField:"imageUrl"});</script>
 <script type="module" src="js/tv-admin-live.js"></script>
 </body></html>
