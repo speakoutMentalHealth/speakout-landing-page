@@ -37,6 +37,17 @@
     });
   }
 
+  function labelTableRows(table,headers){
+    table.querySelectorAll("tbody tr").forEach(function(row){
+      var cells=Array.from(row.children).filter(function(cell){return cell.tagName==="TD";});
+      if(cells.length===headers.length){
+        cells.forEach(function(cell,index){
+          if(!cell.hasAttribute("data-label")) cell.setAttribute("data-label",headers[index]||"");
+        });
+      }
+    });
+  }
+
   function enhanceTables(){
     document.querySelectorAll("table").forEach(function(table){
       if(!table.getAttribute("role")) table.setAttribute("role","table");
@@ -54,14 +65,17 @@
       if(headers.length){
         table.classList.add("learner-card-table");
         wrapper.classList.add("learner-card-table-wrap");
-        table.querySelectorAll("tbody tr").forEach(function(row){
-          var cells=Array.from(row.children).filter(function(cell){return cell.tagName==="TD";});
-          if(cells.length===headers.length){
-            cells.forEach(function(cell,index){
-              if(!cell.hasAttribute("data-label")) cell.setAttribute("data-label",headers[index]||"");
-            });
+        labelTableRows(table,headers);
+
+        if(table.dataset.learnerTableObserved!=="true"){
+          var body=table.querySelector("tbody");
+          if(body){
+            new MutationObserver(function(){
+              labelTableRows(table,headers);
+            }).observe(body,{childList:true,subtree:true});
+            table.dataset.learnerTableObserved="true";
           }
-        });
+        }
       }
     });
   }
