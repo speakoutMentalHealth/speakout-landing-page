@@ -184,7 +184,7 @@ test("default discovery bootstrap creates six safe review-only topic rules once"
     "Confidence & Resilience",
     "Healthy Relationships & Boundaries",
     "Mental Health Awareness"
-  ]) assert.match(worker,new RegExp(label.replace(/[&]/gu,"\\\\&"),"u"));
+  ]) assert.ok(worker.includes(label),label);
   assert.match(worker,/tvCuratorSettings\/defaultDiscoveryBootstrap/u);
   assert.match(worker,/bootstrapDefault: true/u);
   assert.match(worker,/mode: "review"/u);
