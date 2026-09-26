@@ -1,5 +1,6 @@
 import {loadTvEpisodes,loadTvShows,loadTvAudio} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
+import {installOverflowRailControls} from "./tv-rail-controls.js";
 
 const starterEpisodes=[
 {id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,order:901,tags:["motivation","youth"]},
@@ -513,6 +514,7 @@ async function load(){
  $("#audioRail")?.addEventListener("click",e=>{const b=e.target.closest(".ios-audio-episode");if(!b)return;const item=spotifyAudio.find(x=>x.id===b.dataset.audioId);if(!item)return;const src=spotifyEmbed(item.url||item.sourceUrl||"");if(src){$("#audioPlayer").innerHTML='<iframe loading="lazy" src="'+esc(src)+'" title="'+esc(item.title||"SpeakOut audio")+'" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture"></iframe>';return}const direct=safeAudio(item.audioUrl||item.url||"");if(direct)$("#audioPlayer").innerHTML='<audio controls autoplay preload="metadata" src="'+esc(direct)+'" aria-label="'+esc(item.title||"SpeakOut audio")+'"></audio>';});
 
  installDesktopRailControls();
+ installOverflowRailControls();
  updateDesktopRailControls();
  const requested=new URLSearchParams(location.search).get("episode");
  if(requested){const item=regularEpisodes.find(x=>x.id===requested);if(item)playEpisode(item,false)}
