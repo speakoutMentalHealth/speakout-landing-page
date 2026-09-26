@@ -193,3 +193,20 @@ test("default discovery bootstrap creates six safe review-only topic rules once"
   assert.match(worker,/await ensureDefaultCuratorDiscoveries\(env, actor\)/u);
   assert.match(worker,/existing\.documents\.length/u);
 });
+
+
+test("desktop SpeakOut TV rails expose accessible left and right navigation arrows",()=>{
+  const script=read("js/speakout-tv.js");
+  const styles=read("css/tv/base.css");
+  assert.match(script,/desktopRailSelector/u);
+  assert.match(script,/\.content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.live-previous-rail/u);
+  assert.match(script,/data-rail-arrow/u);
+  assert.match(script,/Previous /u);
+  assert.match(script,/Next /u);
+  assert.match(script,/rail\.scrollBy/u);
+  assert.match(script,/installDesktopRailControls\(\)/u);
+  assert.match(styles,/\.tv-rail-arrow/u);
+  assert.match(styles,/@media\(min-width:900px\)/u);
+  assert.match(styles,/\.tv-rail-shell\.has-overflow \.tv-rail-arrow/u);
+  assert.match(styles,/\.tv-rail-arrow:disabled/u);
+});
