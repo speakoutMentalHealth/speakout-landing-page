@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { curatorSourceInput, matchesCuratorSource, normalizeKeywordList } from "../workers/platform-api/src/tv-curator.js";
+import { curatorDiscoveryInput, curatorSourceInput, matchesCuratorSource, normalizeKeywordList } from "../workers/platform-api/src/tv-curator.js";
 
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 
@@ -114,4 +114,61 @@ test("SpeakOut TV publishes a YouTube services and privacy disclosure",()=>{
   for(const page of ["tv.html","radio.html","tv-search.html","watch.html","show.html"]){
     assert.match(read(page),/href="tv-privacy\.html"/u,page);
   }
+});
+
+
+test("global YouTube discovery is bounded, recent, embeddable and review-only",()=>{
+  const helper=read("workers/platform-api/src/tv-curator.js");
+  const worker=read("workers/platform-api/src/index.js");
+  const rule=curatorDiscoveryInput({
+    query:" youth mental health ",
+    includeKeywords:"wellbeing, resilience",
+    lookbackDays:99,
+    maxResults:99
+  });
+  assert.equal(rule.query,"youth mental health");
+  assert.equal(rule.lookbackDays,30);
+  assert.equal(rule.maxResults,25);
+  assert.equal(rule.status,"active");
+  assert.match(helper,/youtubeGet\(apiKey,"search"/u);
+  assert.match(helper,/safeSearch:"strict"/u);
+  assert.match(helper,/videoEmbeddable:"true"/u);
+  assert.match(helper,/videoSyndicated:"true"/u);
+  assert.match(helper,/publishedAfter/u);
+  assert.match(worker,/tvCuratorDiscoveries/u);
+  assert.match(worker,/sourceKind: "discovery"/u);
+  assert.match(worker,/sourceMode: "review"/u);
+  assert.match(worker,/status: "pending"/u);
+  assert.match(worker,/slice\(0, 8\)/u);
+  assert.match(worker,/syncAllCuratorDiscoveries\(env, "cloudflare-cron"\)/u);
+});
+
+test("curator admin manages whole-YouTube discovery rules",()=>{
+  const page=read("admin-tv-curator.html");
+  const script=read("js/tv-curator-admin.js");
+  const client=read("js/platform-api.js");
+  assert.match(page,/id="discoveryForm"/u);
+  assert.match(page,/id="discoveryQuery"/u);
+  assert.match(page,/id="syncDiscoveryAll"/u);
+  assert.match(page,/Global discovery is always review-first/u);
+  assert.match(script,/saveTvCuratorDiscovery/u);
+  assert.match(script,/syncTvCuratorDiscovery/u);
+  assert.match(script,/deleteTvCuratorDiscovery/u);
+  assert.match(client,/\/v1\/admin\/tv-curator\/discovery\/save/u);
+  assert.match(client,/\/v1\/admin\/tv-curator\/discovery\/sync/u);
+});
+
+test("TikTok Live is a companion link while SpeakOut keeps an embeddable primary player",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const studio=read("admin-tv.html");
+  const home=read("tv.html");
+  const script=read("js/speakout-tv.js");
+  assert.match(worker,/tiktokUrl/u);
+  assert.match(worker,/Use a valid TikTok LIVE profile or live URL/u);
+  assert.match(studio,/id="tiktokUrl"/u);
+  assert.match(studio,/Never paste a TikTok stream key/u);
+  assert.match(home,/id="liveTikTok"/u);
+  assert.match(script,/tiktokLiveUrl/u);
+  assert.match(script,/Watch on TikTok/u);
+  assert.doesNotMatch(worker,/player\/v1\/.*tiktok/u);
 });
