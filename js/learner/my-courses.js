@@ -3,6 +3,7 @@ import { isPublicCourse } from "../content-visibility.js";
 import { learningApi } from "../platform-api.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
 import { normalize, statusLabel } from "./ui-utils.js";
+import { renderLearnerNav } from "./role-nav.js";
 const isExternalCourse=c=>normalize(c.courseType)==="external"||normalize(c.completionMethod)==="certificate-upload";
 const courseHref=c=>isExternalCourse(c)?`course-details.html?id=${encodeURIComponent(c.id)}`:`course-player.html?id=${encodeURIComponent(c.id)}`;
 const externalStatus=record=>statusLabel(record?.status||record?.verificationStatus);
@@ -44,4 +45,4 @@ function render(){
     </article>`;
   }).join(""):`<div class="notice"><h3>No enrolled courses found.</h3><p><a href="speakhub.html">Browse the catalogue</a> and start a SpeakHub course or external learning pathway.</p></div>`;
 }
-search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};SO.onAuthStateChanged(SO.auth,user=>{if(user)load().catch(error=>{cards.innerHTML=`<div class="notice bad">${SO.safe(error.message||"Could not load your enrolled courses.")}</div>`})});
+search.oninput=render;category.onchange=render;reset.onclick=()=>{search.value="";category.value="all";render()};SO.onAuthStateChanged(SO.auth,async user=>{if(!user)return;try{await renderLearnerNav(user,"Courses");await load()}catch(error){cards.innerHTML=`<div class="notice bad">${SO.safe(error.message||"Could not load your enrolled courses.")}</div>`}});
