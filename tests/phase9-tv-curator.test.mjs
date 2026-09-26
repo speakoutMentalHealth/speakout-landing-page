@@ -226,3 +226,34 @@ test("desktop Discover page exposes visible left and right arrows for horizontal
   assert.match(styles,/overflow-x:auto/u);
   assert.match(styles,/scroll-snap-type:x mandatory/u);
 });
+
+
+test("TV overflow arrows cover home, Listen and Watch content rails",()=>{
+  const helper=read("js/tv-rail-controls.js");
+  const home=read("js/speakout-tv.js");
+  const radio=read("js/speakout-radio.js");
+  const watch=read("js/tv-watch.js");
+  const styles=read("css/tv/base.css");
+  assert.match(helper,/\.content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.listen-rail,.live-previous-rail,.topic-journey-grid/u);
+  assert.match(helper,/installOverflowRailControls/u);
+  assert.match(helper,/data-global-rail-arrow/u);
+  assert.match(helper,/rail\.scrollBy/u);
+  assert.match(home,/installOverflowRailControls/u);
+  assert.match(radio,/installOverflowRailControls/u);
+  assert.match(watch,/installOverflowRailControls/u);
+  assert.match(styles,/\.tv-global-rail-shell\.has-overflow \.tv-global-rail-nav/u);
+  assert.match(styles,/@media\(min-width:700px\)/u);
+});
+
+test("Discover renders starter content immediately and media loading is bounded",()=>{
+  const data=read("js/tv-data.js");
+  const search=read("js/tv-search.js");
+  const workerCache=read("tv-sw.js");
+  assert.match(data,/MEDIA_REQUEST_TIMEOUT_MS=7000/u);
+  assert.match(data,/controller\.abort\(\)/u);
+  assert.match(data,/withTimeout\(getDocs/u);
+  assert.match(search,/items=\[\.\.\.shows,\.\.\.episodes\];\s*render\(\);/u);
+  assert.match(search,/Promise\.allSettled\(\[loadTvEpisodes\(\),loadTvAudio\(\),loadTvShows\(\)\]\)/u);
+  assert.match(workerCache,/speakout-tv-v10/u);
+  assert.match(workerCache,/tv-rail-controls\.js/u);
+});
