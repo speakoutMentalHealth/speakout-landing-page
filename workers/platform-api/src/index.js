@@ -3063,6 +3063,28 @@ async function route(request, env, path, data) {
     });
   }
 
+  if (path === "/v1/admin/tv-curator/discovery/save") {
+    requireAdmin(user);
+    return saveCuratorDiscovery(env, user, data);
+  }
+
+  if (path === "/v1/admin/tv-curator/discovery/delete") {
+    requireAdmin(user);
+    const discoveryId = safeId(data.id, "discovery rule identifier");
+    return runTransaction(env, async tx => {
+      const existing = await tx.get("tvCuratorDiscoveries/" + discoveryId);
+      if (!existing) throw Object.assign(new Error("YouTube discovery rule not found."), { status: 404 });
+      tx.delete("tvCuratorDiscoveries/" + discoveryId);
+      return { ok: true, id: discoveryId };
+    });
+  }
+
+  if (path === "/v1/admin/tv-curator/discovery/sync") {
+    requireAdmin(user);
+    const discoveryId = clean(data.id) ? safeId(data.id, "discovery rule identifier") : "";
+    return syncAllCuratorDiscoveries(env, user.uid, discoveryId);
+  }
+
   if (path === "/v1/admin/tv-curator/sync") {
     requireAdmin(user);
     const sourceId = clean(data.id) ? safeId(data.id, "curator source identifier") : "";
@@ -3158,6 +3180,7 @@ export default {
   async scheduled(_controller, env, ctx) {
     ctx.waitUntil((async()=>{
       await syncAllCuratorSources(env, "cloudflare-cron");
+      await syncAllCuratorDiscoveries(env, "cloudflare-cron");
       await refreshStoredYouTubeMetadata(env, "cloudflare-cron");
     })().catch(error => console.error("TV curator scheduled sync:", error)));
   },
