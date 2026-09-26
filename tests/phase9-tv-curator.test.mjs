@@ -195,20 +195,20 @@ test("default discovery bootstrap creates six safe review-only topic rules once"
 });
 
 
-test("desktop SpeakOut TV rails expose accessible left and right navigation arrows",()=>{
+test("desktop SpeakOut TV rails use the shared accessible navigation controller",()=>{
   const script=read("js/speakout-tv.js");
+  const helper=read("js/tv-rail-controls.js");
   const styles=read("css/tv/base.css");
-  assert.match(script,/desktopRailSelector/u);
-  assert.match(script,/\.content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.live-previous-rail/u);
-  assert.match(script,/data-rail-arrow/u);
-  assert.match(script,/Previous /u);
-  assert.match(script,/Next /u);
-  assert.match(script,/rail\.scrollBy/u);
-  assert.match(script,/installDesktopRailControls\(\)/u);
-  assert.match(styles,/\.tv-rail-arrow/u);
+  assert.match(script,/installOverflowRailControls/u);
+  assert.match(script,/updateOverflowRailControls/u);
+  assert.doesNotMatch(script,/desktopRailSelector/u);
+  assert.doesNotMatch(script,/installDesktopRailControls/u);
+  assert.match(helper,/data-global-rail-arrow/u);
+  assert.match(helper,/Previous /u);
+  assert.match(helper,/Next /u);
+  assert.match(helper,/rail\.scrollBy/u);
+  assert.match(styles,/\.tv-global-rail-arrow/u);
   assert.match(styles,/@media\(min-width:700px\)/u);
-  assert.match(styles,/\.tv-rail-shell\.has-overflow \.tv-rail-arrow/u);
-  assert.match(styles,/\.tv-rail-arrow:disabled/u);
 });
 
 
@@ -254,7 +254,7 @@ test("Discover renders starter content immediately and media loading is bounded"
   assert.match(data,/withTimeout\(getDocs/u);
   assert.match(search,/items=\[\.\.\.shows,\.\.\.episodes\];\s*render\(\);/u);
   assert.match(search,/Promise\.allSettled\(\[loadTvEpisodes\(\),loadTvAudio\(\),loadTvShows\(\)\]\)/u);
-  assert.match(workerCache,/speakout-tv-v11/u);
+  assert.match(workerCache,/speakout-tv-v12/u);
   assert.match(workerCache,/tv-rail-controls\.js/u);
 });
 
@@ -268,4 +268,30 @@ test("multi-item desktop rails keep navigation visible on Home and initialize Wa
   assert.match(home,/installOverflowRailControls\(\);\s*updateOverflowRailControls\(\);/u);
   assert.doesNotMatch(home,/installDesktopRailControls\(\);\s*installOverflowRailControls/u);
   assert.match(watch,/relatedRail"\)\.innerHTML=related\.map\(relatedCard\)\.join\(""\);[\s\S]*?installOverflowRailControls\(\);[\s\S]*?updateOverflowRailControls/u);
+});
+
+
+test("final TV release polish covers accessibility SEO typography and RSS playback",()=>{
+  const pages=["tv.html","tv-search.html","watch.html","show.html","radio.html","tv-privacy.html"];
+  for(const page of pages){
+    const html=read(page);
+    assert.match(html,/class="tv-skip-link"/u,page);
+    assert.match(html,/<main[^>]*id="mainContent"/u,page);
+    assert.match(html,/name="robots" content="index,follow,max-image-preview:large"/u,page);
+    assert.match(html,/property="og:title"/u,page);
+    assert.match(html,/name="twitter:title"/u,page);
+  }
+  const base=read("css/tv/base.css");
+  const radio=read("js/speakout-radio.js");
+  const home=read("js/speakout-tv.js");
+  const manifest=JSON.parse(read("tv.webmanifest"));
+  assert.match(base,/font-synthesis:none/u);
+  assert.match(base,/prefers-reduced-motion:reduce/u);
+  assert.match(base,/prefers-contrast:more/u);
+  assert.match(base,/\.tv-skip-link/u);
+  assert.match(radio,/safeAudio\(x\?\.audioUrl\|\|x\?\.url\|\|""\)/u);
+  assert.doesNotMatch(home,/desktopRailSelector/u);
+  assert.equal(manifest.id,"tv.html");
+  assert.ok(Array.isArray(manifest.shortcuts)&&manifest.shortcuts.length>=4);
+  assert.ok(Array.isArray(manifest.categories)&&manifest.categories.includes("health"));
 });
