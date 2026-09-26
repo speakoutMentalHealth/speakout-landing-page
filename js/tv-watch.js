@@ -62,7 +62,7 @@ function formatDate(raw){
 function relatedCard(x){
  const img=imageFor(x);
  return '<a class="watch-related-card" href="watch.html?id='+encodeURIComponent(x.id)+'">'+
-  '<div class="watch-related-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy">':artFallback(x))+artOverlay(x)+'<span>▶</span></div>'+
+  '<div class="watch-related-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+'<span>▶</span></div>'+
   '<small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"Watch on SpeakOut TV")+'</strong></a>';
 }
 
@@ -103,8 +103,8 @@ function applySeo(x,playerUrl){
  const title=(x.title||"Watch")+" | SpeakOut TV",description=x.description||"Watch on SpeakOut TV",image=imageFor(x);
  document.title=title;
  setMeta("description",description);
- setMeta("og:title",x.title||"SpeakOut TV",true);setMeta("og:description",description,true);
- if(image)setMeta("og:image",image,true);
+ setMeta("og:title",x.title||"SpeakOut TV",true);setMeta("og:description",description,true);setMeta("twitter:title",title);setMeta("twitter:description",description);
+ if(image){setMeta("og:image",image,true);setMeta("twitter:image",image)}
  setMeta("og:url",location.href,true);
  const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
  const schema={"@context":"https://schema.org","@type":"VideoObject",name:x.title||"SpeakOut TV",description,embedUrl:playerUrl};
