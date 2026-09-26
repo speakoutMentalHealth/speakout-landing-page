@@ -271,3 +271,13 @@ progress::-webkit-progress-value{background:linear-gradient(90deg,var(--sp-blue)
   .actions .btn{flex:1 1 100% !important;width:100% !important}
   .card .btn,.panel .btn{max-width:100% !important}
 }
+
+/* Final portal UI polish */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-synthesis:none}
+h1,h2,h3,h4{text-wrap:balance}
+p,li{text-wrap:pretty}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:3px solid rgba(10,104,216,.28);outline-offset:3px}
+@media(max-width:760px){input,select,textarea{font-size:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
