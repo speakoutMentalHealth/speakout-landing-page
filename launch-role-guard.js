@@ -570,7 +570,7 @@ const linksByRole = {
   ambassador: [
     [
       "Dashboard",
-      "ambassador.html"
+      "ambassador-dashboard.html"
     ],
     [
       "Courses",
