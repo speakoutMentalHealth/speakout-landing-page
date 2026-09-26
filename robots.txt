@@ -1,4 +1,27 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /auth
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /pending.html
+Disallow: /profile.html
+Disallow: /settings.html
+Disallow: /payment-
+Disallow: /portal/
+Disallow: /student-
+Disallow: /teacher-
+Disallow: /parent-
+Disallow: /school-dashboard.html
+Disallow: /school-users.html
+Disallow: /school-students.html
+Disallow: /school-teachers.html
+Disallow: /school-parents.html
+Disallow: /school-approvals.html
+Disallow: /school-resources.html
+Disallow: /school-resource-center.html
+Disallow: /school-workshops.html
+Disallow: /credential-passport.html
+Disallow: /learning-portfolio.html
+
 Sitemap: https://speakoutmentalhealth.org/sitemap.xml

@@ -747,3 +747,13 @@ p{color:var(--muted);line-height:1.75}
   .footer-bottom{margin-top:24px;padding-top:16px}
   .footer-bottom p{font-size:.7rem;line-height:1.45}
 }
+
+/* Final homepage release polish */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-synthesis:none}
+h1,h2,h3,h4{text-wrap:balance}
+p,li{text-wrap:pretty}
+.brand small{font-size:max(.56rem,9px)}
+button,input,select,textarea{font:inherit}
+@media(max-width:760px){input,select,textarea{font-size:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

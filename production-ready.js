@@ -2,6 +2,24 @@
   'use strict';
   const body=document.body;
   if(!body) return;
+  const main=document.querySelector('main');
+  if(main && !main.id) main.id='main-content';
+  if(main && !document.querySelector('.skip-link')){
+    const skip=document.createElement('a');
+    skip.className='skip-link';
+    skip.href='#'+main.id;
+    skip.textContent='Skip to main content';
+    body.prepend(skip);
+  }
+
+  // Improve image decoding and defer below-the-fold media without touching
+  // logos, top navigation or hero imagery that should remain eager.
+  document.querySelectorAll('img').forEach(img=>{
+    if(!img.hasAttribute('decoding')) img.setAttribute('decoding','async');
+    const priority=img.getAttribute('fetchpriority')==='high' || img.getAttribute('loading')==='eager';
+    const critical=Boolean(img.closest('header,.hero,.page-hero,.brand,.portal-brand,.school-brand,.teacher-brand,.parent-brand'));
+    if(!priority && !critical && !img.hasAttribute('loading')) img.setAttribute('loading','lazy');
+  });
 
   // Add On The Move to the public Programs menu without duplicating it.
   const publicProgramsMenu=[...document.querySelectorAll('.drop-menu')].find(menu=>
