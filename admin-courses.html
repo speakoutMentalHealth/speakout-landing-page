@@ -63,8 +63,9 @@ import { auth, db } from "./firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
 import { courseReadiness, hasPublicStatus } from "./js/content-visibility.js";
 import { adminApi } from "./js/platform-api.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection,writeBatch, doc, getDoc, setDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { requireRoles } from "./launch-role-guard.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection,writeBatch, doc, setDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 let COURSES=[],LESSONS=[],unsubscribeCourses=null,unsubscribeLessons=null,admin=false;
 const val=id=>document.getElementById(id).value.trim(), normalize=v=>(v||"").toString().toLowerCase().trim(), safe=v=>v||"—";
@@ -77,7 +78,12 @@ function switchTab(id){document.querySelectorAll(".tab").forEach(b=>b.classList.
 document.querySelectorAll(".tab").forEach(btn=>btn.onclick=()=>switchTab(btn.dataset.tab));
 function disableForms(){document.querySelectorAll("input,select,textarea,button").forEach(el=>{if(!el.closest(".nav"))el.disabled=true})}
 function updateStats(){totalCourses.textContent=COURSES.length;activeCourses.textContent=COURSES.filter(x=>normalize(x.status||"active")==="active").length;draftCourses.textContent=COURSES.filter(x=>normalize(x.status)==="draft").length;totalLessons.textContent=LESSONS.length;certificateCourses.textContent=COURSES.filter(x=>x.certificateEligible===true).length}
-async function requireAdmin(){return new Promise(resolve=>{onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return}const snap=await getDoc(doc(db,"users",user.uid));if(!snap.exists()){location.href="auth.html#pending";return}const profile={uid:user.uid,...snap.data()};const role=normalize(profile.role),status=normalize(profile.status);if(status!=="approved"){location.href="auth.html#pending";return}if(role!=="admin"&&role!=="super_admin"){disableForms();statusBox.textContent="Access denied. Admin role required.";statusBox.className="notice bad";resolve(false);return}admin=true;statusBox.textContent="Admin verified. You can manage courses.";statusBox.className="notice ok";resolve(true)})})}
+function activateAdminCourses(){
+ admin=true;
+ statusBox.textContent="Admin verified. You can manage courses.";
+ statusBox.className="notice ok";
+ startRealtime();
+}
 function filteredCourses(){const s=normalize(searchInput.value),sf=statusFilter.value,cf=categoryFilter.value;return COURSES.filter(c=>{const text=`${c.title||""} ${c.category||""} ${c.instructor||""} ${c.audience||""} ${c.status||""}`.toLowerCase();return(!s||text.includes(s))&&(sf==="all"||normalize(c.status||"active")===sf)&&(cf==="all"||c.category===cf)})}
 function renderCourses(){const data=filteredCourses();loading.style.display="none";adminList.innerHTML=data.map(c=>{const lessonCount=LESSONS.filter(l=>l.courseId===c.id).length;return `<div class="admin-item"><div><strong>${safe(c.title||c.id)}</strong><br><small>${safe(c.category)} • ${safe(c.accessType||"free")} • ${safe(c.status||"active")} • ${lessonCount} lessons</small><br>${pill(c.status||"active")} ${pill(c.level||"beginner")} ${c.certificateEligible?pill("certificate"):""} ${readinessLabel(c)}</div><div class="actions"><button class="btn gold" data-view="${c.id}" type="button">View</button><button class="btn soft" data-edit="${c.id}" type="button">Edit</button><button class="btn success" data-id="${c.id}" data-status="active" type="button">Publish</button><button class="btn danger" data-id="${c.id}" data-status="archived" type="button">Archive</button></div></div>`}).join("")||"<div class='notice warn'>No courses found.</div>";
 adminList.querySelectorAll("button[data-edit]").forEach(btn=>btn.onclick=()=>{const c=COURSES.find(x=>x.id===btn.dataset.edit);if(c)fillCourse(c)});
@@ -137,7 +143,7 @@ lessonForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const cid=slug
 quizForm.onsubmit=async e=>{e.preventDefault();if(!admin)return;const cid=slug(val("quizCourseId"));const order=Number(val("quizOrder")||1);const qid=`${cid}-quiz-${order}`;try{await setDoc(doc(db,"courseQuizzes",qid),{courseId:cid,lessonId:val("quizLessonId"),question:val("question"),options:{A:val("optionA"),B:val("optionB"),C:val("optionC"),D:val("optionD")},correctAnswer:val("correctAnswer"),explanation:val("explanation"),order,updatedAt:serverTimestamp()},{merge:true});show(quizStatusBox,"Quiz question saved.","ok")}catch(err){show(quizStatusBox,err.message||"Failed to save quiz.","bad")}};
 function exportCSV(){const rows=[["Course ID","Title","Category","Audience","Access","Price","Status","Certificate"]];filteredCourses().forEach(c=>rows.push([c.id,c.title||"",c.category||"",c.audience||"",c.accessType||"",c.price||"",c.status||"",c.certificateEligible?"Yes":"No"]));const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="speakout-courses.csv";a.click();URL.revokeObjectURL(url)}
 searchInput.addEventListener("input",renderCourses);statusFilter.addEventListener("change",renderCourses);categoryFilter.addEventListener("change",renderCourses);refreshBtn.addEventListener("click",startRealtime);document.getElementById("installVerifiedBtn").addEventListener("click",installVerifiedCatalogue);document.getElementById("installRichBtn").addEventListener("click",installRichInternalCourses);document.getElementById("installVerifiedBtnMobile").addEventListener("click",installVerifiedCatalogue);document.getElementById("installRichBtnMobile").addEventListener("click",installRichInternalCourses);exportBtn.addEventListener("click",exportCSV);closeModal.addEventListener("click",()=>courseModal.style.display="none");logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html"});
-requireAdmin().then(ok=>{if(ok)startRealtime()});
+requireRoles(["admin","super_admin"],activateAdminCourses);
 </script>
 </body>
 </html>
