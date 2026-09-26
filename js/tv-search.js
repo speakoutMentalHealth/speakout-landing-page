@@ -12,6 +12,52 @@ const dateValue=x=>x?.publishedAt?.toMillis?.()||Date.parse(x?.publishedAt||x?.p
 const orderValue=x=>Number.isFinite(Number(x?.order))?Number(x.order):999;
 const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
 
+const discoveryRailSelector=".discovery-series-grid,.discovery-media-grid";
+function updateDiscoveryRailControls(){
+  $(discoveryRailSelector).forEach(rail=>{
+    const group=rail.closest(".discovery-group");
+    const nav=group?.querySelector(".discovery-rail-nav");
+    if(!group||!nav)return;
+    const max=Math.max(0,rail.scrollWidth-rail.clientWidth);
+    const overflow=max>8;
+    nav.hidden=!overflow;
+    const prev=nav.querySelector('[data-discovery-arrow="prev"]');
+    const next=nav.querySelector('[data-discovery-arrow="next"]');
+    if(prev)prev.disabled=!overflow||rail.scrollLeft<=8;
+    if(next)next.disabled=!overflow||rail.scrollLeft>=max-8;
+  });
+}
+function installDiscoveryRailControls(){
+  $(".discovery-group").forEach(group=>{
+    if(group.querySelector(".discovery-rail-nav"))return;
+    const rail=group.querySelector(discoveryRailSelector);
+    const title=group.querySelector(".discovery-group-title");
+    if(!rail||!title)return;
+    const nav=document.createElement("div");
+    nav.className="discovery-rail-nav";
+    nav.hidden=true;
+    nav.setAttribute("aria-label",(title.querySelector("h3")?.textContent?.trim()||"Discovery")+" navigation");
+    for(const [direction,symbol] of [["prev","‹"],["next","›"]]){
+      const button=document.createElement("button");
+      button.type="button";
+      button.className="discovery-rail-arrow "+direction;
+      button.dataset.discoveryArrow=direction;
+      button.setAttribute("aria-label",(direction==="prev"?"Previous ":"Next ")+(title.querySelector("h3")?.textContent?.trim()||"items"));
+      button.innerHTML='<span aria-hidden="true">'+symbol+"</span>";
+      button.addEventListener("click",()=>{
+        const amount=Math.max(300,Math.round(rail.clientWidth*.82));
+        rail.scrollBy({left:(direction==="prev"?-1:1)*amount,behavior:preferredScrollBehavior()});
+      });
+      nav.appendChild(button);
+    }
+    title.appendChild(nav);
+    rail.addEventListener("scroll",()=>requestAnimationFrame(updateDiscoveryRailControls),{passive:true});
+    if("ResizeObserver" in window)new ResizeObserver(()=>updateDiscoveryRailControls()).observe(rail);
+    if("MutationObserver" in window)new MutationObserver(()=>requestAnimationFrame(updateDiscoveryRailControls)).observe(rail,{childList:true});
+  });
+  requestAnimationFrame(updateDiscoveryRailControls);
+}
+
 const starterEpisodes=[
 {id:"archive-speakout-anthem",title:"SpeakOut Anthem | Together We Rise for Mental Health",show:"SpeakOut Special",description:"SpeakOut anthem and movement video.",url:"https://www.youtube.com/watch?v=tAoGJvkvNRg",format:"episode",status:"published",archive:true,tags:["motivation","youth"]},
 {id:"archive-adhd-men",title:"Dear Men With ADHD: This Is For You | Spoken Word",show:"SpeakOut Stories",description:"A spoken-word conversation from SpeakOut.",url:"https://www.youtube.com/watch?v=ixDjSGFBA5Q",format:"episode",status:"published",archive:true,tags:["adhd","men","motivation"]},
@@ -101,6 +147,7 @@ function render(){
  const url=new URL(location.href);
  if(q)url.searchParams.set("q",q);else url.searchParams.delete("q");
  history.replaceState(null,"",url.pathname+url.search);
+ requestAnimationFrame(updateDiscoveryRailControls);
 }
 
 async function load(){
@@ -126,6 +173,7 @@ async function load(){
  const initial=new URLSearchParams(location.search).get("q")||"";
  if(initial)$("#tvSearch").value=initial;
  $$("[data-filter]").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.filter==="all")));
+ installDiscoveryRailControls();
  render();
  $("#tvSearch").focus({preventScroll:true});
 }
