@@ -206,7 +206,7 @@ test("desktop SpeakOut TV rails expose accessible left and right navigation arro
   assert.match(script,/rail\.scrollBy/u);
   assert.match(script,/installDesktopRailControls\(\)/u);
   assert.match(styles,/\.tv-rail-arrow/u);
-  assert.match(styles,/@media\(min-width:900px\)/u);
+  assert.match(styles,/@media\(min-width:700px\)/u);
   assert.match(styles,/\.tv-rail-shell\.has-overflow \.tv-rail-arrow/u);
   assert.match(styles,/\.tv-rail-arrow:disabled/u);
 });
