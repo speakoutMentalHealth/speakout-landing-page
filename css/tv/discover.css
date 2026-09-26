@@ -27,10 +27,10 @@
 .discovery-series-art{position:absolute;inset:0;background:linear-gradient(145deg,#173b60,#081522);background-size:cover;background-position:center}
 .discovery-series-art::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,11,20,.97),rgba(4,11,20,.2) 75%)}
 .discovery-series-copy{position:absolute;z-index:2;inset:auto 0 0;padding:13px}
-.discovery-series-copy small{color:var(--tv-blue);font-size:.52rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.discovery-series-copy small{color:var(--tv-blue);font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .discovery-series-copy strong{display:block;margin-top:4px;font-size:.95rem}
 .discovery-series-copy p{margin:4px 0 0;color:var(--tv-muted);font-size:.62rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.discovery-series-copy span{display:block;margin-top:7px;color:var(--tv-orange);font-size:.6rem;font-weight:800}
+.discovery-series-copy span{display:block;margin-top:7px;color:var(--tv-orange);font-size:.64rem;font-weight:800}
 .discovery-media-card{display:block;min-width:0;flex-basis:auto}
 .discovery-media-copy strong{padding-top:10px}
 .discovery-empty{padding:50px 20px;text-align:center}
