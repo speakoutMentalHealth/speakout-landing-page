@@ -1,6 +1,6 @@
 import {loadTvEpisodes} from "./tv-data.js";
 import {artClass,artFallback,artOverlay} from "./tv-art.js";
-import {installOverflowRailControls} from "./tv-rail-controls.js";
+import {installOverflowRailControls,updateOverflowRailControls} from "./tv-rail-controls.js";
 
 const id=new URLSearchParams(location.search).get("id")||"";
 const $=s=>document.querySelector(s);
@@ -171,6 +171,8 @@ function renderCurrent(x,all){
  if(related.length){
   $("#relatedSection").hidden=false;
   $("#relatedRail").innerHTML=related.map(relatedCard).join("");
+  installOverflowRailControls();
+  requestAnimationFrame(updateOverflowRailControls);
  }
 }
 
