@@ -99,14 +99,19 @@ function setMeta(name,value,property=false){
  const selector=property?'meta[property="'+name+'"]':'meta[name="'+name+'"]';
  document.querySelector(selector)?.setAttribute("content",value);
 }
+function canonicalEpisodeUrl(){
+ const url=new URL(location.pathname,location.origin);
+ if(id)url.searchParams.set("id",id);
+ return url.href;
+}
 function applySeo(x,playerUrl){
- const title=(x.title||"Watch")+" | SpeakOut TV",description=x.description||"Watch on SpeakOut TV",image=imageFor(x);
+ const title=(x.title||"Watch")+" | SpeakOut TV",description=x.description||"Watch on SpeakOut TV",image=imageFor(x),canonicalUrl=canonicalEpisodeUrl();
  document.title=title;
  setMeta("description",description);
  setMeta("og:title",x.title||"SpeakOut TV",true);setMeta("og:description",description,true);setMeta("twitter:title",title);setMeta("twitter:description",description);
  if(image){setMeta("og:image",image,true);setMeta("twitter:image",image)}
- setMeta("og:url",location.href,true);
- const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
+ setMeta("og:url",canonicalUrl,true);
+ const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=canonicalUrl;
  const schema={"@context":"https://schema.org","@type":"VideoObject",name:x.title||"SpeakOut TV",description,embedUrl:playerUrl};
  if(image)schema.thumbnailUrl=[image];
  const uploadDate=x.publishDate||x.publishedAt;

@@ -59,7 +59,7 @@ $("#showLabel").textContent=(meta[1]||"SpeakOut Original").toUpperCase()+" · SP
 $("#showDescription").textContent=meta[2];
 document.title=meta[0]+" | SpeakOut TV";
 setMeta("description",meta[2]);setMeta("og:title",meta[0]+" | SpeakOut TV",true);setMeta("og:description",meta[2],true);setMeta("twitter:title",meta[0]+" | SpeakOut TV");setMeta("twitter:description",meta[2]);
-setMeta("og:url",location.href,true);const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.href;
+const canonicalUrl=new URL(location.pathname,location.origin);if(slug)canonicalUrl.searchParams.set("show",slug);setMeta("og:url",canonicalUrl.href,true);const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=canonicalUrl.href;
 
 let episodes=[];
 try{
