@@ -267,16 +267,29 @@ const categoryFilter = document.getElementById("categoryFilter");
 const audienceFilter = document.getElementById("audienceFilter");
 const emptyState = document.getElementById("emptyState");
 
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+}
+
 function safe(value){
-  return value || "—";
+  return escapeHtml(value || "—");
 }
 
 function pretty(value){
-  return (value || "—").toString().replaceAll("-", " ");
+  return escapeHtml((value || "—").toString().replaceAll("-", " "));
 }
 
 function escapeAttr(value){
-  return String(value || "").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+  return escapeHtml(value);
+}
+
+function safeExternalUrl(value){
+  try{
+    const url = new URL(String(value || ""), location.origin);
+    return ["https:","http:"].includes(url.protocol) ? url.href : "";
+  }catch{
+    return "";
+  }
 }
 
 function stat(id, value){
@@ -292,7 +305,8 @@ function updateStats(items){
 }
 
 function card(item){
-  const cover = item.coverUrl ? `<img src="${escapeAttr(item.coverUrl)}" alt="${escapeAttr(item.title)}">` : "";
+  const coverUrl = safeExternalUrl(item.coverUrl);
+  const cover = coverUrl ? `<img src="${escapeAttr(coverUrl)}" alt="${escapeAttr(item.title)}">` : "";
 
   return `
     <article class="card">
@@ -357,7 +371,7 @@ async function loadItems(){
   }catch(error){
     console.error("Kiddies resources load failed:", error);
 
-    loading.textContent = "Failed to load resources. Check Firestore rules, collection name, and admin approval.";
+    loading.textContent = "Resources are temporarily unavailable. Please try again later.";
     loading.style.background = "var(--goldSoft)";
     loading.style.color = "#704800";
   }
@@ -411,8 +425,8 @@ window.openKiddiesResource = function(id){
   const sourceBtn = document.getElementById("resourceSourceBtn");
   const downloadBtn = document.getElementById("resourceDownloadBtn");
 
-  const sourceUrl = item.sourceUrl || item.resourceUrl || item.url || "";
-  const downloadUrl = item.downloadUrl || item.fileUrl || item.resourceUrl || "";
+  const sourceUrl = safeExternalUrl(item.sourceUrl || item.resourceUrl || item.url);
+  const downloadUrl = safeExternalUrl(item.downloadUrl || item.fileUrl || item.resourceUrl);
 
   if(sourceUrl){
     sourceBtn.href = sourceUrl;
