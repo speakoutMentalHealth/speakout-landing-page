@@ -12,7 +12,8 @@ if (menuBtn) {
   });
 }
 
-document.querySelectorAll(".drop-toggle").forEach((btn) => {\n  if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
+document.querySelectorAll(".drop-toggle").forEach((btn) => {
+  if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
   btn.addEventListener("click", (event) => {
     event.preventDefault();
 
