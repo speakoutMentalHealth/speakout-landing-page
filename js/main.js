@@ -190,3 +190,17 @@ if (counters.length) {
     counters.forEach((counter) => counterObserver.observe(counter));
   }
 }
+
+
+/* Load the shared, first-party marketing event layer. It performs no external analytics requests. */
+(() => {
+  if (window.__speakoutMarketingLoader) return;
+  window.__speakoutMarketingLoader = true;
+  const current = document.currentScript;
+  if (!current?.src) return;
+  const script = document.createElement("script");
+  script.src = new URL("marketing-foundation.js", current.src).href;
+  script.defer = true;
+  script.dataset.speakoutMarketing = "foundation";
+  document.head.appendChild(script);
+})();
