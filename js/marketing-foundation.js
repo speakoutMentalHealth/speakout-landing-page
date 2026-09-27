@@ -32,6 +32,48 @@
     return data;
   };
 
+  const campaignParams = () => {
+    const current = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams();
+    for (const key of CAMPAIGN_KEYS) {
+      const value = cleanText(current.get(key), 100);
+      if (value) params.set(key, value);
+    }
+    return params;
+  };
+
+  const carryCampaignToLink = (link, classification) => {
+    if (!classification) return;
+    const rawHref = link.getAttribute("href") || "";
+    let url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) return;
+
+    const allowedDestinations = new Set([
+      "school_registration",
+      "donation_page",
+      "volunteer",
+      "contact",
+      "academy",
+      "portal"
+    ]);
+    if (!allowedDestinations.has(classification.destination_type)) return;
+
+    const campaign = campaignParams();
+    if (![...campaign.keys()].length) return;
+
+    for (const [key, value] of campaign) {
+      if (!url.searchParams.has(key)) url.searchParams.set(key, value);
+    }
+
+    link.href = url.href;
+  };
+
   const safeDetails = (details = {}) => {
     const result = {};
     for (const [key, rawValue] of Object.entries(details)) {
@@ -120,6 +162,7 @@
       const classification = classifyLink(link);
       if (!classification) return;
 
+      carryCampaignToLink(link, classification);
       const rawHref = link.getAttribute("href") || "";
       let destinationPath = "";
       try {
@@ -162,7 +205,7 @@
   );
 
   window.speakoutMarketing = Object.freeze({
-    version: "1.0.0",
+    version: "1.1.0",
     track
   });
 

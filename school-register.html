@@ -6,12 +6,38 @@
 <title>Register a School | SpeakOut</title>
 <meta name="description" content="Continue to the unified SpeakOut school registration gateway.">
 <meta name="robots" content="noindex,follow">
-<meta http-equiv="refresh" content="0; url=auth.html#school"/>
-<link rel="canonical" href="https://speakoutmentalhealth.org/auth.html#school"/>
-<script>window.location.replace("auth.html#school");</script>
+<link rel="canonical" href="https://speakoutmentalhealth.org/auth.html"/>
+<script>
+(() => {
+  const allowed = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
+  const incoming = new URLSearchParams(location.search);
+  const target = new URL("auth.html", location.href);
+  for (const key of allowed) {
+    const value = String(incoming.get(key) || "").trim().slice(0, 100);
+    if (value) target.searchParams.set(key, value);
+  }
+  target.hash = "school";
+  window.location.replace(target.href);
+})();
+</script>
 </head>
 <body>
 <h1>Register a School with SpeakOut</h1>
-<p>School registration has moved to the unified SpeakOut Access Gateway. <a href="auth.html#school">Continue to Register a School</a>.</p>
+<p>School registration has moved to the unified SpeakOut Access Gateway. <a id="schoolGatewayLink" href="auth.html#school">Continue to Register a School</a>.</p>
+<script>
+(() => {
+  const link = document.getElementById("schoolGatewayLink");
+  if (!link) return;
+  const allowed = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
+  const incoming = new URLSearchParams(location.search);
+  const target = new URL("auth.html", location.href);
+  for (const key of allowed) {
+    const value = String(incoming.get(key) || "").trim().slice(0, 100);
+    if (value) target.searchParams.set(key, value);
+  }
+  target.hash = "school";
+  link.href = target.href;
+})();
+</script>
 </body>
 </html>
