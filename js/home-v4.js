@@ -12,7 +12,8 @@ if (menuBtn) {
   });
 }
 
-document.querySelectorAll(".drop > button").forEach((btn) => {\n  if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
+document.querySelectorAll(".drop > button").forEach((btn) => {
+  if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
   btn.addEventListener("click", () => {
     const parent = btn.parentElement;
     parent.classList.toggle("open");
