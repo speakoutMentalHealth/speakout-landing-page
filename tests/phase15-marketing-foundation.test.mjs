@@ -46,3 +46,16 @@ test("AdSense publisher declaration and privacy notice match the hardened config
   assert.match(privacy,/does not remove consent requirements/u);
   assert.match(privacy,/Last updated:<\/strong> 27 September 2026/u);
 });
+
+
+test("public SpeakOut TV surfaces load the marketing foundation",()=>{
+  for(const path of ["tv.html","tv-search.html","watch.html","show.html","radio.html"]){
+    assert.match(read(path),/src="js\/marketing-foundation\.js"/u,path);
+  }
+});
+
+test("school registration redirect remains noindex and routes into the unified gateway",()=>{
+  const source=read("school-register.html");
+  assert.match(source,/name="robots" content="noindex,follow"/u);
+  assert.match(source,/auth\.html#school/u);
+});
