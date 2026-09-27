@@ -68,3 +68,13 @@ test("public Evidence Hub hides backend implementation details and sanitizes rep
   assert.match(source,/rel="noopener noreferrer"/u);
   assert.match(source,/Published reports are temporarily unavailable/u);
 });
+
+
+test("Kiddies Corner hides implementation errors and restricts outbound resource URLs",()=>{
+  const source=read("kiddies.html");
+  assert.doesNotMatch(source,/Check Firestore rules|collection name, and admin approval/u);
+  assert.match(source,/function escapeHtml/u);
+  assert.match(source,/function safeExternalUrl/u);
+  assert.match(source,/\["https:","http:"\]\.includes\(url\.protocol\)/u);
+  assert.match(source,/Resources are temporarily unavailable\. Please try again later\./u);
+});
