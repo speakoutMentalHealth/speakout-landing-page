@@ -12,7 +12,7 @@ if (menuBtn) {
   });
 }
 
-document.querySelectorAll(".drop-toggle").forEach((btn) => {
+document.querySelectorAll(".drop-toggle").forEach((btn) => {\n  if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
   btn.addEventListener("click", (event) => {
     event.preventDefault();
 
@@ -119,58 +119,73 @@ document.querySelectorAll("[data-filter]").forEach((btn) => {
   });
 });
 
-/* Reveal Animation */
+/* Reveal Animation & resilient counters */
+const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
 const revealItems = document.querySelectorAll(".reveal");
-
 if (revealItems.length) {
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("show");
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-
-  revealItems.forEach((item) => revealObserver.observe(item));
+  if (!("IntersectionObserver" in window) || reducedMotion) {
+    revealItems.forEach((item) => item.classList.add("show"));
+  } else {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    revealItems.forEach((item) => revealObserver.observe(item));
+  }
 }
 
-/* Animated Counters */
 const counters = document.querySelectorAll("[data-count]");
+const finalCounterText = (counter) => {
+  const target = Number(counter.dataset.count || "0");
+  const suffix = counter.dataset.suffix ?? "+";
+  return target.toLocaleString() + suffix;
+};
 
 if (counters.length) {
-  const counterObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting || entry.target.dataset.done) return;
+  if (!("IntersectionObserver" in window) || reducedMotion) {
+    counters.forEach((counter) => {
+      counter.textContent = finalCounterText(counter);
+      counter.dataset.done = "true";
+    });
+  } else {
+    const counterObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || entry.target.dataset.done) return;
+          entry.target.dataset.done = "true";
 
-        entry.target.dataset.done = "true";
+          const target = Number(entry.target.dataset.count || "0");
+          const suffix = entry.target.dataset.suffix ?? "+";
+          const duration = 1200;
+          const start = performance.now();
 
-        const target = Number(entry.target.dataset.count || "0");
-        const duration = 1200;
-        const start = performance.now();
+          function tick(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const value = Math.floor(target * eased);
+            entry.target.textContent = value.toLocaleString() + suffix;
 
-        function tick(now) {
-          const progress = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const value = Math.floor(target * eased);
-
-          entry.target.textContent = value.toLocaleString() + "+";
-
-          if (progress < 1) {
-            requestAnimationFrame(tick);
-          } else {
-            entry.target.textContent = target.toLocaleString() + "+";
+            if (progress < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              entry.target.textContent = finalCounterText(entry.target);
+              counterObserver.unobserve(entry.target);
+            }
           }
-        }
 
-        requestAnimationFrame(tick);
-      });
-    },
-    { threshold: 0.6 }
-  );
-
-  counters.forEach((counter) => counterObserver.observe(counter));
+          requestAnimationFrame(tick);
+        });
+      },
+      { threshold: 0.6 }
+    );
+    counters.forEach((counter) => counterObserver.observe(counter));
+  }
 }
