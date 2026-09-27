@@ -55,3 +55,16 @@ test("legacy media URL remains a noindex canonical redirect",()=>{
   assert.match(source,/rel="canonical" href="https:\/\/speakoutmentalhealth\.org\/tv\.html"/u);
   assert.match(source,/location\.replace\("\.\.\/tv\.html#library"\)/u);
 });
+
+
+test("public Evidence Hub hides backend implementation details and sanitizes report links",()=>{
+  const source=read("evidence-hub.html");
+  assert.doesNotMatch(source,/pages\/media\.html|media-center\.html/u);
+  assert.doesNotMatch(source,/Create records in|Check Firestore rules/u);
+  assert.doesNotMatch(source,/<strong data-count="\d+">0<\/strong>/u);
+  assert.match(source,/href="tv\.html">SpeakOut TV<\/a>/u);
+  assert.match(source,/function safeUrl/u);
+  assert.match(source,/\["https:","http:"\]\.includes\(u\.protocol\)/u);
+  assert.match(source,/rel="noopener noreferrer"/u);
+  assert.match(source,/Published reports are temporarily unavailable/u);
+});
