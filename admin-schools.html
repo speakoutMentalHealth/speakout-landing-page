@@ -131,6 +131,8 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 <h2>School Details</h2>
 <div class="detail-grid" id="modalContent"></div>
 <div class="actions" style="margin-top:18px">
+<button class="btn primary" id="openSchoolPortalBtn" type="button" style="display:none">Open School Portal</button>
+<button class="btn soft" id="resetSchoolAdminPasswordBtn" type="button" style="display:none">Send Password Reset</button>
 <button class="btn dark" id="closeModal">Close</button>
 </div>
 </div>
@@ -140,11 +142,14 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 </footer>
 <script type="module">
 import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  query,
+  where,
   updateDoc,
   serverTimestamp,
   onSnapshot
@@ -154,6 +159,9 @@ import { adminApi } from "./js/platform-api.js";
 
 let ITEMS = [];
 let unsubscribeSchools = null;
+let CURRENT_ADMIN_PROFILE = null;
+let CURRENT_VIEW_SCHOOL = null;
+let CURRENT_VIEW_ADMIN = null;
 
 function show(message,type=""){
   statusBox.textContent = message;
@@ -173,6 +181,10 @@ function generateSchoolCode(school){
 
 async function requireAdmin(callback){
   return requireRoles(["admin","super_admin"],callback);
+}
+
+function isSuperAdmin(){
+  return normalize(CURRENT_ADMIN_PROFILE?.role) === "super_admin";
 }
 
 function updateStats(){
@@ -228,6 +240,7 @@ function render(){
         <td>
           <div class="actions">
             <button class="btn gold" data-view="${item.id}">View</button>
+            ${isSuperAdmin() ? `<button class="btn primary" data-support="${item.id}">Open Portal</button>` : ""}
             <button class="btn success" data-id="${item.id}" data-status="approved">Approve</button>
             <button class="btn danger" data-id="${item.id}" data-status="rejected">Reject</button>
             <button class="btn soft" data-id="${item.id}" data-status="pending">Pending</button>
@@ -260,11 +273,18 @@ function render(){
   });
 
   rows.querySelectorAll("[data-view]").forEach(btn => {
-    btn.onclick = () => {
+    btn.onclick = async () => {
       const item = ITEMS.find(x => x.id === btn.dataset.view);
       if(!item) return;
-      modalContent.innerHTML = detailHTML(item);
-      schoolModal.style.display = "block";
+      await openSchoolDetails(item);
+    };
+  });
+
+  rows.querySelectorAll("[data-support]").forEach(btn => {
+    btn.onclick = async () => {
+      const item = ITEMS.find(x => x.id === btn.dataset.support);
+      if(!item) return;
+      await startSchoolSupport(item);
     };
   });
 }
@@ -273,7 +293,7 @@ function detail(label,value){
   return `<div class="detail"><b>${label}</b><span>${safe(value)}</span></div>`;
 }
 
-function detailHTML(item){
+function detailHTML(item,adminAccount=null){
   return [
     detail("School Name",item.schoolName),
     detail("School Code",item.schoolCode),
@@ -296,8 +316,112 @@ function detailHTML(item){
     detail("Address",item.address),
     detail("Existing Programs",item.existingPrograms),
     detail("Reason",item.reason),
-    detail("Status",item.status)
+    detail("Status",item.status),
+    detail("Login Email",adminAccount?.email || item.adminEmail || item.email),
+    detail("School Admin User ID",adminAccount?.id || "Not linked yet"),
+    detail("Account Role",adminAccount?.role || "school_admin"),
+    detail("Account Access Status",adminAccount?.status || "Not activated"),
+    detail("School Verification",adminAccount?.schoolVerificationStatus || "—"),
+    detail("Account Created",adminAccount?.createdAt || "—"),
+    detail("Last Account Activity",adminAccount?.lastLoginAt || adminAccount?.lastSignInAt || adminAccount?.updatedAt || "—"),
+    detail("Password","Protected by Firebase Authentication — passwords are never viewable")
   ].join("");
+}
+
+async function loadSchoolAdminAccount(item){
+  if(!isSuperAdmin()) return null;
+
+  let docs = [];
+
+  if(item.id){
+    try{
+      const snap = await getDocs(
+        query(
+          collection(db,"users"),
+          where("schoolId","==",item.id)
+        )
+      );
+      docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    }catch(error){
+      console.warn("Could not query school admin by schoolId:",error);
+    }
+  }
+
+  if(!docs.length && item.schoolCode){
+    try{
+      const snap = await getDocs(
+        query(
+          collection(db,"users"),
+          where("schoolCode","==",item.schoolCode)
+        )
+      );
+      docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    }catch(error){
+      console.warn("Could not query school admin by schoolCode:",error);
+    }
+  }
+
+  return docs.find(user=>normalize(user.role)==="school_admin") || null;
+}
+
+async function openSchoolDetails(item){
+  CURRENT_VIEW_SCHOOL = item;
+  CURRENT_VIEW_ADMIN = await loadSchoolAdminAccount(item);
+
+  modalContent.innerHTML = detailHTML(item,CURRENT_VIEW_ADMIN);
+
+  openSchoolPortalBtn.style.display = isSuperAdmin() ? "inline-flex" : "none";
+
+  const loginEmail =
+    CURRENT_VIEW_ADMIN?.email ||
+    item.adminEmail ||
+    item.email ||
+    "";
+
+  resetSchoolAdminPasswordBtn.style.display =
+    isSuperAdmin() && loginEmail
+      ? "inline-flex"
+      : "none";
+
+  schoolModal.style.display = "block";
+}
+
+async function startSchoolSupport(item){
+  if(!isSuperAdmin()) return;
+
+  try{
+    show("Opening Super Admin Support Mode...","warn");
+
+    const result =
+      await adminApi.startSchoolSupport(
+        item.id
+      );
+
+    const supportedSchool =
+      result.school || {};
+
+    localStorage.setItem(
+      "speakoutSupportSchoolId",
+      supportedSchool.id || item.id
+    );
+
+    localStorage.setItem(
+      "speakoutSupportSchoolCode",
+      supportedSchool.schoolCode || item.schoolCode || ""
+    );
+
+    localStorage.setItem(
+      "speakoutSupportSchoolName",
+      supportedSchool.schoolName || item.schoolName || "School"
+    );
+
+    window.location.href =
+      "school-dashboard.html";
+
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not open the school portal in Support Mode.","bad");
+  }
 }
 
 async function updateSchoolStatus(id,status){
@@ -397,13 +521,49 @@ typeFilter.addEventListener("change",render);
 refreshBtn.addEventListener("click",startRealtime);
 exportBtn.addEventListener("click",exportCSV);
 closeModal.addEventListener("click",()=>schoolModal.style.display="none");
+
+openSchoolPortalBtn.addEventListener("click",async ()=>{
+  if(CURRENT_VIEW_SCHOOL){
+    await startSchoolSupport(CURRENT_VIEW_SCHOOL);
+  }
+});
+
+resetSchoolAdminPasswordBtn.addEventListener("click",async ()=>{
+  if(!isSuperAdmin() || !CURRENT_VIEW_SCHOOL) return;
+
+  const email =
+    CURRENT_VIEW_ADMIN?.email ||
+    CURRENT_VIEW_SCHOOL.adminEmail ||
+    CURRENT_VIEW_SCHOOL.email ||
+    "";
+
+  if(!email){
+    show("No school administrator login email is available.","bad");
+    return;
+  }
+
+  try{
+    resetSchoolAdminPasswordBtn.disabled = true;
+    await sendPasswordResetEmail(auth,email);
+    show(`Password reset email sent to ${email}. Existing passwords remain private and cannot be viewed.`,"ok");
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not send the password reset email.","bad");
+  }finally{
+    resetSchoolAdminPasswordBtn.disabled = false;
+  }
+});
+
 logoutLink.addEventListener("click",async e => {
   e.preventDefault();
   await signOut(auth);
   location.href = "auth.html";
 });
 
-requireAdmin(startRealtime);
+requireAdmin((user,profile)=>{
+  CURRENT_ADMIN_PROFILE = profile;
+  startRealtime();
+});
 </script>
 <script defer="" src="portal-ui.js"></script>
 </body>

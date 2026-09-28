@@ -28,6 +28,25 @@ async function parseResponse(response) {
   return body;
 }
 
+function withSupportContext(payload = {}) {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return payload;
+  }
+
+  const supportSchoolId = String(localStorage.getItem("speakoutSupportSchoolId") || "").trim();
+  const supportSchoolCode = String(localStorage.getItem("speakoutSupportSchoolCode") || "").trim();
+
+  if (!supportSchoolId && !supportSchoolCode) {
+    return payload;
+  }
+
+  return {
+    ...payload,
+    __supportSchoolId: supportSchoolId,
+    __supportSchoolCode: supportSchoolCode
+  };
+}
+
 export async function platformRequest(path, payload = {}) {
   const response = await fetch(endpoint(path), {
     method: "POST",
@@ -35,7 +54,7 @@ export async function platformRequest(path, payload = {}) {
       Authorization: await authorizationHeader(),
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(withSupportContext(payload)),
     credentials: "omit"
   });
   return parseResponse(response);
@@ -139,6 +158,10 @@ export const onboardingApi = {
 
 export const adminApi = {
   retrieveEvidence,
+  startSchoolSupport: schoolId =>
+    platformRequest("/v1/admin/support/school/start", { schoolId }),
+  endSchoolSupport: schoolId =>
+    platformRequest("/v1/admin/support/school/end", { schoolId }),
   updateSchoolStatus: (schoolId, status) =>
     platformRequest("/v1/admin/schools/status", { schoolId, status }),
   deleteSchool: schoolId =>

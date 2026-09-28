@@ -529,6 +529,48 @@ async function authenticatedUser(request, env) {
   return { ...identity, profile };
 }
 
+function isSuperAdminUser(user) {
+  return normalized(user?.profile?.actualRole || user?.profile?.role) === "super_admin";
+}
+
+async function applySuperAdminSchoolContext(env, user, data) {
+  if (!isSuperAdminUser(user)) return user;
+
+  const requestedSchoolId = clean(data?.__supportSchoolId);
+  const requestedSchoolCode = clean(data?.__supportSchoolCode);
+
+  if (!requestedSchoolId && !requestedSchoolCode) return user;
+
+  let school = null;
+
+  if (requestedSchoolId) {
+    school = await getDocument(env, "schools/" + safeId(requestedSchoolId, "school identifier"));
+  }
+
+  if (!school && requestedSchoolCode) {
+    school = await schoolByCode(env, requestedSchoolCode);
+  }
+
+  if (!school) {
+    throw Object.assign(new Error("The selected support school is unavailable."), { status: 404 });
+  }
+
+  return {
+    ...user,
+    supportMode: true,
+    supportRole: "school_admin",
+    supportSchool: publicSchool(school),
+    profile: {
+      ...user.profile,
+      actualRole: "super_admin",
+      supportMode: true,
+      schoolId: school.id,
+      schoolCode: clean(school.schoolCode),
+      schoolName: clean(school.schoolName || school.name)
+    }
+  };
+}
+
 function requireAdmin(user) {
   if (!["admin", "super_admin"].includes(normalized(user.profile.role))) {
     throw Object.assign(new Error("Administrator access required."), { status: 403 });
@@ -590,6 +632,7 @@ async function sendOnTheMoveEmail(env, user, data) {
 }
 
 function requireRole(user, roles) {
+  if (isSuperAdminUser(user)) return;
   if (!roles.includes(normalized(user.profile.role))) {
     throw Object.assign(new Error("This account cannot access the requested role data."), { status: 403 });
   }
@@ -763,7 +806,7 @@ async function parentProgrammeOverview(env, subjectIds) {
 }
 
 async function roleOverview(env, user, requestedSubjectId = "") {
-  const role = normalized(user.profile.role);
+  const role = clean(user.supportRole) || normalized(user.profile.role);
   let subjects = [];
 
   if (["admin", "super_admin"].includes(role)) {
@@ -2881,7 +2924,52 @@ async function route(request, env, path, data) {
     return { record: projection };
   }
 
-  const user = await authenticatedUser(request, env);
+  let user = await authenticatedUser(request, env);
+  user = await applySuperAdminSchoolContext(env, user, data);
+
+  if (path === "/v1/admin/support/school/start") {
+    if (!isSuperAdminUser(user)) {
+      throw Object.assign(new Error("Super Admin access required."), { status: 403 });
+    }
+    const schoolId = safeId(data.schoolId, "school identifier");
+    const school = await getDocument(env, "schools/" + schoolId);
+    if (!school) throw Object.assign(new Error("School not found."), { status: 404 });
+    const now = new Date().toISOString();
+    const auditId = safeId("support_" + crypto.randomUUID(), "support audit identifier");
+    await transactionalSet(env, "adminAuditLogs/" + auditId, {
+      action: "school_support_started",
+      actorUid: user.uid,
+      actorEmail: clean(user.email || user.profile.email),
+      actorRole: "super_admin",
+      schoolId: school.id,
+      schoolCode: clean(school.schoolCode),
+      schoolName: clean(school.schoolName || school.name),
+      createdAt: now
+    });
+    return { ok: true, school: publicSchool(school), auditId };
+  }
+
+  if (path === "/v1/admin/support/school/end") {
+    if (!isSuperAdminUser(user)) {
+      throw Object.assign(new Error("Super Admin access required."), { status: 403 });
+    }
+    const schoolId = safeId(data.schoolId || data.__supportSchoolId, "school identifier");
+    const school = await getDocument(env, "schools/" + schoolId);
+    const now = new Date().toISOString();
+    const auditId = safeId("support_" + crypto.randomUUID(), "support audit identifier");
+    await transactionalSet(env, "adminAuditLogs/" + auditId, {
+      action: "school_support_ended",
+      actorUid: user.uid,
+      actorEmail: clean(user.email || user.profile.email),
+      actorRole: "super_admin",
+      schoolId,
+      schoolCode: clean(school?.schoolCode),
+      schoolName: clean(school?.schoolName || school?.name),
+      createdAt: now
+    });
+    return { ok: true, schoolId, auditId };
+  }
+
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
   if (path === "/v1/admin/schools/delete") return deleteSchoolPermanently(env, user, data);
   if (path === "/v1/admin/on-the-move/send-email") return sendOnTheMoveEmail(env, user, data);
