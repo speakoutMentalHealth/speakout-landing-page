@@ -117,7 +117,9 @@ export const roleApi = {
   schoolRoster: () =>
     platformRequest("/v1/roles/school/roster/list"),
   importSchoolRoster: students =>
-    platformRequest("/v1/roles/school/roster/import", { students })
+    platformRequest("/v1/roles/school/roster/import", { students }),
+  updateParentStudentLink: (linkId, status) =>
+    platformRequest("/v1/roles/parent-links/status", { linkId, status })
 };
 
 export const onboardingApi = {
