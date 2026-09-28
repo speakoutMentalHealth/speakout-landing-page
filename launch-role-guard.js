@@ -14,6 +14,10 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+import {
+  adminApi
+} from "./js/platform-api.js";
+
 
 /* =========================================================
    DASHBOARD ROUTES
@@ -50,6 +54,166 @@ function normalize(value){
     .trim()
     .replace(/\s+/g, "_");
 }
+
+
+const SUPPORT_KEYS = [
+  "speakoutSupportSchoolId",
+  "speakoutSupportSchoolCode",
+  "speakoutSupportSchoolName"
+];
+
+
+function clearSupportContext(){
+  SUPPORT_KEYS.forEach(
+    key=>localStorage.removeItem(key)
+  );
+}
+
+
+function applySupportProfile(profile){
+
+  if(
+    normalize(profile?.role) !== "super_admin"
+  ){
+    return profile;
+  }
+
+
+  const schoolId =
+    String(
+      localStorage.getItem(
+        "speakoutSupportSchoolId"
+      ) || ""
+    ).trim();
+
+
+  if(!schoolId){
+    return profile;
+  }
+
+
+  return {
+    ...profile,
+    actualRole:"super_admin",
+    supportMode:true,
+    schoolId,
+    schoolCode:
+      String(
+        localStorage.getItem(
+          "speakoutSupportSchoolCode"
+        ) || ""
+      ).trim(),
+    schoolName:
+      String(
+        localStorage.getItem(
+          "speakoutSupportSchoolName"
+        ) || ""
+      ).trim()
+  };
+}
+
+
+function renderSupportBanner(profile){
+
+  if(
+    !profile?.supportMode ||
+    normalize(profile?.actualRole || profile?.role) !== "super_admin"
+  ){
+    return;
+  }
+
+
+  let banner =
+    document.getElementById(
+      "speakoutSupportBanner"
+    );
+
+
+  if(!banner){
+
+    banner =
+      document.createElement(
+        "div"
+      );
+
+    banner.id =
+      "speakoutSupportBanner";
+
+    banner.style.cssText =
+      "position:sticky;top:0;z-index:99999;background:#fff4df;color:#5d3b00;border-bottom:1px solid #f2cc77;padding:10px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;font:700 14px/1.35 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+
+    document.body.prepend(
+      banner
+    );
+
+  }
+
+
+  banner.innerHTML =
+    `
+      <span>
+        Super Admin Support Mode — ${String(profile.schoolName || profile.schoolCode || "Selected School")}
+      </span>
+      <button
+        id="speakoutExitSupportBtn"
+        type="button"
+        style="border:0;border-radius:999px;padding:8px 12px;background:#07152b;color:#fff;font:inherit;cursor:pointer"
+      >
+        Exit Support Mode
+      </button>
+    `;
+
+
+  document.getElementById(
+    "speakoutExitSupportBtn"
+  )?.addEventListener(
+    "click",
+    async ()=>{
+      await exitSchoolSupportMode();
+    }
+  );
+
+}
+
+
+export async function exitSchoolSupportMode(){
+
+  const schoolId =
+    String(
+      localStorage.getItem(
+        "speakoutSupportSchoolId"
+      ) || ""
+    ).trim();
+
+
+  if(schoolId){
+
+    try{
+      await adminApi.endSchoolSupport(
+        schoolId
+      );
+    }catch(error){
+      console.warn(
+        "Could not record support-mode exit:",
+        error
+      );
+    }
+
+  }
+
+
+  clearSupportContext();
+
+
+  window.location.replace(
+    "admin-schools.html"
+  );
+
+}
+
+
+window.speakoutExitSupportMode =
+  exitSchoolSupportMode;
 
 
 export function routeForRole(role){
@@ -219,6 +383,8 @@ export async function logoutUser(){
     localStorage.removeItem(
       "speakoutDeviceMode"
     );
+
+    clearSupportContext();
 
     sessionStorage.removeItem(
       "speakoutDeviceMode"
@@ -444,9 +610,20 @@ export function requireRoles(
         typeof callback === "function"
       ){
 
+        const effectiveProfile =
+          applySupportProfile(
+            profile
+          );
+
+
+        renderSupportBanner(
+          effectiveProfile
+        );
+
+
         await callback(
           user,
-          profile
+          effectiveProfile
         );
 
       }
@@ -733,20 +910,44 @@ export function renderRoleNav(
   }
 
 
-  const role =
+  const actualRole =
     normalize(
+      profile?.actualRole ||
       profile?.role
     );
 
 
+  const supportMode =
+    profile?.supportMode === true &&
+    actualRole === "super_admin";
+
+
+  const role =
+    supportMode
+      ? "school_admin"
+      : normalize(
+          profile?.role
+        );
+
+
   const links =
-    linksByRole[role] ||
-    [
-      [
-        "Dashboard",
-        routeForRole(role)
-      ]
-    ];
+    supportMode
+      ? [
+          [
+            "Admin Home",
+            "admin-dashboard.html"
+          ],
+          ...linksByRole.school_admin
+        ]
+      : (
+          linksByRole[role] ||
+          [
+            [
+              "Dashboard",
+              routeForRole(role)
+            ]
+          ]
+        );
 
 
   const activeNormalized =
@@ -783,6 +984,20 @@ export function renderRoleNav(
       )
       .join("") +
 
+    (
+      supportMode
+        ? `
+            <button
+              class="btn gold"
+              id="exitSupportNavBtn"
+              type="button"
+            >
+              Exit Support
+            </button>
+          `
+        : ""
+    ) +
+
     `
       <button
         class="btn dark"
@@ -792,6 +1007,28 @@ export function renderRoleNav(
         Logout
       </button>
     `;
+
+
+  const exitSupportNavBtn =
+    document.getElementById(
+      "exitSupportNavBtn"
+    );
+
+
+  if(exitSupportNavBtn){
+
+    exitSupportNavBtn.addEventListener(
+      "click",
+      async event=>{
+
+        event.preventDefault();
+
+        await exitSchoolSupportMode();
+
+      }
+    );
+
+  }
 
 
   const logoutBtn =
