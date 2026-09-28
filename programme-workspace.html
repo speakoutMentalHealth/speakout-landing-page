@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programme Workspace | SpeakOut</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="programmes.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>Programme Workspace</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
+<main id="main-content">
+  <section class="program-hero">
+    <div class="container">
+      <span class="kicker" id="programmeTypeLabel">Programme</span>
+      <h1 id="programmeTitle">Loading programme...</h1>
+      <p id="programmeDescription">Please wait.</p>
+      <div id="programmePills"></div>
+    </div>
+  </section>
+
+  <section class="program-shell">
+    <div class="container">
+      <div class="program-note" id="statusBox">Loading workspace...</div>
+
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="memberCount">0</strong><span>Members</span></div>
+        <div class="program-card program-stat"><strong id="sessionCount">0</strong><span>Sessions</span></div>
+        <div class="program-card program-stat"><strong id="assignmentCount">0</strong><span>Assignments</span></div>
+        <div class="program-card program-stat"><strong id="completedCount">0</strong><span>Completed submissions</span></div>
+      </div>
+
+      <section class="program-panel" id="overviewPanel">
+        <h2>Programme overview</h2>
+        <div class="program-grid two">
+          <div>
+            <p><b>Objectives</b></p>
+            <p id="objectivesText">—</p>
+            <p><b>Expected outcomes</b></p>
+            <p id="outcomesText">—</p>
+          </div>
+          <div>
+            <p><b>Schedule</b></p>
+            <div class="program-meta" id="scheduleMeta"></div>
+            <p><b>Membership</b></p>
+            <div class="program-meta" id="membershipMeta"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="program-grid two" style="margin-top:18px">
+        <section class="program-panel hidden" id="facilitatorPanel">
+          <h2>Facilitators</h2>
+          <p>School administrators can add approved teachers or facilitators to this programme.</p>
+          <form class="program-form" id="facilitatorForm">
+            <select class="full" id="facilitatorSelect" required></select>
+            <button class="program-btn primary full" type="submit">Add facilitator</button>
+          </form>
+          <div class="program-list" id="facilitatorList" style="margin-top:12px"></div>
+        </section>
+
+        <section class="program-panel hidden" id="memberPanel">
+          <h2>Programme members</h2>
+          <p>Add school-linked students. Students in open or voluntary programmes can also join themselves.</p>
+          <form class="program-form" id="memberForm">
+            <select class="full" id="studentSelect" required></select>
+            <button class="program-btn primary full" type="submit">Add student</button>
+          </form>
+          <div class="program-list" id="memberList" style="margin-top:12px"></div>
+        </section>
+      </div>
+
+      <div class="program-grid two" style="margin-top:18px">
+        <section class="program-panel hidden" id="sessionCreatePanel">
+          <h2>Record a session</h2>
+          <p>Every facilitator-led session should leave a short operational record for the school.</p>
+          <form class="program-form" id="sessionForm">
+            <input id="sessionDate" type="date" required>
+            <input id="sessionTopic" placeholder="Topic / activity" required>
+            <textarea class="full" id="learningObjective" placeholder="Learning objective"></textarea>
+            <textarea class="full" id="activitySummary" placeholder="What was completed?" required></textarea>
+            <textarea id="sessionChallenges" placeholder="Challenges / blockers"></textarea>
+            <textarea id="sessionNextSteps" placeholder="Next steps"></textarea>
+            <div class="full" id="attendancePicker"></div>
+            <button class="program-btn primary full" type="submit">Save session report</button>
+          </form>
+        </section>
+
+        <section class="program-panel">
+          <h2>Session history</h2>
+          <div class="program-list" id="sessionList"></div>
+        </section>
+      </div>
+
+      <div class="program-grid two" style="margin-top:18px">
+        <section class="program-panel hidden" id="assignmentCreatePanel">
+          <h2>Create assignment / project</h2>
+          <form class="program-form" id="assignmentForm">
+            <input id="assignmentTitle" placeholder="Assignment title" required>
+            <input id="assignmentDueDate" type="date">
+            <textarea class="full" id="assignmentInstructions" placeholder="Instructions" required></textarea>
+            <div class="full">
+              <p><b>Allowed submission methods</b></p>
+              <label><input type="checkbox" name="submissionMethod" value="digital_text" checked> Digital text</label>
+              <label><input type="checkbox" name="submissionMethod" value="evidence_link" checked> Evidence link</label>
+              <label><input type="checkbox" name="submissionMethod" value="paper"> Paper</label>
+              <label><input type="checkbox" name="submissionMethod" value="practical"> Practical demonstration</label>
+              <label><input type="checkbox" name="submissionMethod" value="oral"> Oral / presentation</label>
+            </div>
+            <button class="program-btn primary full" type="submit">Publish assignment</button>
+          </form>
+        </section>
+
+        <section class="program-panel">
+          <h2>Assignments and projects</h2>
+          <div class="program-list" id="assignmentList"></div>
+        </section>
+      </div>
+
+      <section class="program-panel hidden" id="onBehalfPanel" style="margin-top:18px">
+        <h2>Record work on behalf of a student</h2>
+        <p>Use this when work was completed on paper, orally, in a practical session, or when the student does not have reliable internet access.</p>
+        <form class="program-form" id="onBehalfForm">
+          <select id="onBehalfAssignment" required></select>
+          <select id="onBehalfStudent" required></select>
+          <select id="onBehalfMethod" required>
+            <option value="paper">Paper</option>
+            <option value="practical">Practical demonstration</option>
+            <option value="oral">Oral / presentation</option>
+            <option value="digital_text">Digital text</option>
+            <option value="evidence_link">Evidence link</option>
+          </select>
+          <input id="onBehalfEvidence" placeholder="Evidence URL (optional)">
+          <textarea class="full" id="onBehalfResponse" placeholder="Short record of the work completed"></textarea>
+          <button class="program-btn primary full" type="submit">Record submission</button>
+        </form>
+      </section>
+
+      <section class="program-panel" style="margin-top:18px">
+        <h2>Submissions and review</h2>
+        <div class="program-list" id="submissionList"></div>
+      </section>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • Programme Workspace</div></footer>
+<script type="module" src="js/programmes/programme-workspace.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>
