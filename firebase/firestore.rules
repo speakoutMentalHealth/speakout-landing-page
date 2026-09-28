@@ -359,10 +359,11 @@ service cloud.firestore {
       allow create: if isApproved() &&
         canManageProgramme(request.resource.data.programmeId) &&
         request.resource.data.schoolId == userSchoolId();
-      allow update, delete: if isApproved() &&
+      allow update: if isApproved() &&
         canManageProgramme(resource.data.programmeId) &&
         request.resource.data.programmeId == resource.data.programmeId &&
         request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
     }
 
     match /programmeAttendance/{attendanceId} {
@@ -377,11 +378,12 @@ service cloud.firestore {
         request.resource.data.schoolId == userSchoolId() &&
         sessionBelongsToProgramme(request.resource.data.sessionId, request.resource.data.programmeId) &&
         studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId);
-      allow update, delete: if isApproved() &&
+      allow update: if isApproved() &&
         canManageProgramme(resource.data.programmeId) &&
         request.resource.data.programmeId == resource.data.programmeId &&
         request.resource.data.schoolId == resource.data.schoolId &&
         request.resource.data.studentId == resource.data.studentId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
     }
 
     match /programmeAssignments/{assignmentId} {
@@ -393,10 +395,11 @@ service cloud.firestore {
       allow create: if isApproved() &&
         canManageProgramme(request.resource.data.programmeId) &&
         request.resource.data.schoolId == userSchoolId();
-      allow update, delete: if isApproved() &&
+      allow update: if isApproved() &&
         canManageProgramme(resource.data.programmeId) &&
         request.resource.data.programmeId == resource.data.programmeId &&
         request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
     }
 
     match /programmeSubmissions/{submissionId} {
