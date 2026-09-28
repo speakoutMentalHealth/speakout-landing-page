@@ -720,7 +720,7 @@ async function schoolForRosterManager(env, user) {
   const schoolId = clean(user.profile.schoolId);
   if (schoolId) {
     const school = await getDocument(env, "schools/" + safeId(schoolId, "school identifier"));
-    if (school && sameSchool(user.profile, school)) return school;
+    if (school) return school;
   }
   const schoolCode = clean(user.profile.schoolCode);
   if (schoolCode) return schoolByCode(env, schoolCode);
