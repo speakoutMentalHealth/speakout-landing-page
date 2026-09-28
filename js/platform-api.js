@@ -113,7 +113,11 @@ export const learningApi = {
 export const roleApi = {
   overview: subjectId => platformRequest("/v1/roles/overview", subjectId ? { subjectId } : {}),
   updateSchoolUserStatus: (userId, status) =>
-    platformRequest("/v1/roles/school/users/status", { userId, status })
+    platformRequest("/v1/roles/school/users/status", { userId, status }),
+  schoolRoster: () =>
+    platformRequest("/v1/roles/school/roster/list"),
+  importSchoolRoster: students =>
+    platformRequest("/v1/roles/school/roster/import", { students })
 };
 
 export const onboardingApi = {
