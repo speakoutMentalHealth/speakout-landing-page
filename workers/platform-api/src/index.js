@@ -2905,8 +2905,21 @@ async function route(request, env, path, data) {
         if (registrationNumber && schoolId) {
           const lockId = await sha256Key(`${schoolId}:${registrationNumber}`);
           const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+          const rosterStudent = await tx.get(`schoolStudentRoster/${lockId}`);
           if (status === "rejected") {
             if (lock) tx.delete(`schoolStudentRegistrations/${lockId}`);
+            if (rosterStudent) {
+              tx.set(`schoolStudentRoster/${lockId}`, {
+                ...rosterStudent,
+                linkedUserId: "",
+                linkedUserStatus: "",
+                status: "pre_enrolled",
+                lastRejectedClaimUserId: targetUserId,
+                reviewedAt: now,
+                reviewedBy: user.uid,
+                updatedAt: now
+              });
+            }
           } else {
             tx.set(`schoolStudentRegistrations/${lockId}`, {
               ...(lock || {}),
@@ -2919,6 +2932,20 @@ async function route(request, env, path, data) {
               reviewedBy: user.uid,
               updatedAt: now
             });
+            if (rosterStudent) {
+              tx.set(`schoolStudentRoster/${lockId}`, {
+                ...rosterStudent,
+                linkedUserId: targetUserId,
+                linkedUserStatus: status,
+                status:
+                  status === "approved" ? "active" :
+                  status === "suspended" ? "suspended" :
+                  "claim_pending",
+                reviewedAt: now,
+                reviewedBy: user.uid,
+                updatedAt: now
+              });
+            }
           }
         }
       }
