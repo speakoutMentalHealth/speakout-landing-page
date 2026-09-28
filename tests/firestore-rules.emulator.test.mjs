@@ -313,3 +313,156 @@ test("TV curator data is restricted to approved administrators", async () => {
   await assertFails(setDoc(doc(studentDb, "tvCuratorSources/source-b"), { channelId: "UCother", status: "active" }));
   await assertFails(updateDoc(doc(studentDb, "tvCuratorCandidates/candidate-a"), { status: "drafted" }));
 });
+
+
+test("teacher can propose a school programme but school admin controls activation", async () => {
+  await seed("users/teacher-a", profile("teacher-a", "teacher", "school-a"));
+  await seed("users/teacher-b", profile("teacher-b", "teacher", "school-b"));
+  await seed("users/school-admin-a", profile("school-admin-a", "school_admin", "school-a"));
+  await seed("users/student-a", profile("student-a", "student", "school-a"));
+
+  const teacherDb = testEnv.authenticatedContext("teacher-a").firestore();
+  const otherTeacherDb = testEnv.authenticatedContext("teacher-b").firestore();
+  const schoolDb = testEnv.authenticatedContext("school-admin-a").firestore();
+  const studentDb = testEnv.authenticatedContext("student-a").firestore();
+
+  await assertSucceeds(setDoc(doc(teacherDb, "programmes/program-a"), {
+    name: "Flexible Programme",
+    type: "club",
+    category: "STEM",
+    schoolId: "school-a",
+    schoolCode: "SCHA",
+    createdBy: "teacher-a",
+    status: "pending_approval",
+    facilitatorIds: ["teacher-a"],
+    membershipMode: "voluntary"
+  }));
+
+  await assertFails(setDoc(doc(teacherDb, "programmes/program-active-forged"), {
+    name: "Forged Active Programme",
+    type: "club",
+    category: "STEM",
+    schoolId: "school-a",
+    createdBy: "teacher-a",
+    status: "active",
+    facilitatorIds: ["teacher-a"],
+    membershipMode: "voluntary"
+  }));
+
+  await assertFails(getDoc(doc(studentDb, "programmes/program-a")));
+  await assertFails(updateDoc(doc(otherTeacherDb, "programmes/program-a"), { description: "Cross-school edit" }));
+  await assertSucceeds(updateDoc(doc(schoolDb, "programmes/program-a"), {
+    status: "active",
+    approvedBy: "school-admin-a"
+  }));
+  await assertSucceeds(getDoc(doc(studentDb, "programmes/program-a")));
+});
+
+test("programme membership and submissions preserve school tenancy and ownership", async () => {
+  await seed("users/teacher-a", profile("teacher-a", "teacher", "school-a"));
+  await seed("users/teacher-c", profile("teacher-c", "teacher", "school-a"));
+  await seed("users/student-a", profile("student-a", "student", "school-a"));
+  await seed("users/student-b", profile("student-b", "student", "school-a"));
+  await seed("users/student-x", profile("student-x", "student", "school-b"));
+  await seed("programmes/program-a", {
+    name: "Flexible Programme",
+    type: "club",
+    schoolId: "school-a",
+    status: "active",
+    createdBy: "teacher-a",
+    facilitatorIds: ["teacher-a"],
+    membershipMode: "voluntary"
+  });
+
+  const teacherDb = testEnv.authenticatedContext("teacher-a").firestore();
+  const unassignedTeacherDb = testEnv.authenticatedContext("teacher-c").firestore();
+  const studentDb = testEnv.authenticatedContext("student-a").firestore();
+  const crossSchoolDb = testEnv.authenticatedContext("student-x").firestore();
+
+  await assertSucceeds(setDoc(doc(studentDb, "programmeMemberships/program-a__student-a"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    userId: "student-a",
+    status: "active"
+  }));
+
+  await assertFails(setDoc(doc(studentDb, "programmeMemberships/random-id"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    userId: "student-a",
+    status: "active"
+  }));
+
+  await assertFails(setDoc(doc(crossSchoolDb, "programmeMemberships/program-a__student-x"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    userId: "student-x",
+    status: "active"
+  }));
+
+  await assertSucceeds(setDoc(doc(teacherDb, "programmeMemberships/program-a__student-b"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    userId: "student-b",
+    status: "active"
+  }));
+
+  await assertSucceeds(setDoc(doc(teacherDb, "programmeAssignments/assignment-a"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    title: "Project",
+    status: "active"
+  }));
+
+  await assertFails(setDoc(doc(unassignedTeacherDb, "programmeAssignments/assignment-forged"), {
+    programmeId: "program-a",
+    schoolId: "school-a",
+    title: "Unauthorized Project",
+    status: "active"
+  }));
+
+  await assertSucceeds(setDoc(doc(studentDb, "programmeSubmissions/assignment-a__student-a"), {
+    assignmentId: "assignment-a",
+    programmeId: "program-a",
+    schoolId: "school-a",
+    studentId: "student-a",
+    submittedBy: "student-a",
+    submittedOnBehalf: false,
+    submissionMethod: "digital_text",
+    responseText: "Completed work",
+    evidenceUrl: "",
+    status: "submitted",
+    feedback: "",
+    reviewedBy: ""
+  }));
+
+  await assertFails(setDoc(doc(studentDb, "programmeSubmissions/assignment-a__student-b"), {
+    assignmentId: "assignment-a",
+    programmeId: "program-a",
+    schoolId: "school-a",
+    studentId: "student-b",
+    submittedBy: "student-a",
+    submittedOnBehalf: false,
+    submissionMethod: "digital_text",
+    responseText: "Impersonated work",
+    evidenceUrl: "",
+    status: "submitted",
+    feedback: "",
+    reviewedBy: ""
+  }));
+
+  await assertSucceeds(setDoc(doc(teacherDb, "programmeSubmissions/assignment-a__student-b"), {
+    assignmentId: "assignment-a",
+    programmeId: "program-a",
+    schoolId: "school-a",
+    studentId: "student-b",
+    submittedBy: "teacher-a",
+    submittedOnBehalf: true,
+    submissionMethod: "paper",
+    responseText: "Paper work received in class",
+    evidenceUrl: "",
+    status: "submitted",
+    feedback: "",
+    reviewedBy: ""
+  }));
+});

@@ -5,7 +5,10 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserSessionPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onboardingApi } from "./platform-api.js";
@@ -94,7 +97,19 @@ async function handleLogin(event){
   if(!email||!password){showLogin("Enter your email and password.","error");return;}
   try{
     sessionStorage.removeItem("speakoutManualLogout");
-    showLogin("Signing you in...");
+    const privateDevice=Boolean(byId("privateDevice")?.checked);
+    await setPersistence(
+      auth,
+      privateDevice ? browserLocalPersistence : browserSessionPersistence
+    );
+    if(privateDevice){
+      localStorage.setItem("speakoutDeviceMode","private");
+      sessionStorage.setItem("speakoutDeviceMode","private");
+    }else{
+      localStorage.removeItem("speakoutDeviceMode");
+      sessionStorage.setItem("speakoutDeviceMode","shared");
+    }
+    showLogin(privateDevice ? "Signing you in on this private device..." : "Signing you in securely for this session...");
     const credential=await signInWithEmailAndPassword(auth,email,password);
     await redirectByUserRole(credential.user);
   }catch(error){
@@ -309,6 +324,9 @@ async function handleSchoolAdminActivation(event){
   let credential=null;
   sessionStorage.setItem("speakoutOnboarding","true");
   try{
+    localStorage.removeItem("speakoutDeviceMode");
+    sessionStorage.setItem("speakoutDeviceMode","shared");
+    await setPersistence(auth,browserSessionPersistence);
     showSchoolAdmin("Activating your school administrator account...");
     credential=await createUserWithEmailAndPassword(auth,email,password);
     const result=await onboardingApi.activateSchoolAdmin({inviteToken,fullName,position,phone});
@@ -325,7 +343,8 @@ async function handleSchoolAdminActivation(event){
 async function handleLogout(event){
   event?.preventDefault();
   sessionStorage.setItem("speakoutManualLogout","true");
-  ["speakoutRole","speakoutUser","speakoutSchoolCode","speakoutSchoolName"].forEach(key=>localStorage.removeItem(key));
+  sessionStorage.removeItem("speakoutDeviceMode");
+  ["speakoutRole","speakoutUser","speakoutSchoolCode","speakoutSchoolName","speakoutDeviceMode"].forEach(key=>localStorage.removeItem(key));
   await signOut(auth);
   window.location.replace(projectUrl("auth.html?loggedOut=1"));
 }
@@ -375,12 +394,17 @@ if(querySchool&&byId("schoolCode")){
 if(document.body?.dataset?.authPage==="auth"){
   onAuthStateChanged(auth,async user=>{
     const urlLoggedOut=params.get("loggedOut")==="1";
+    const sessionExpired=params.get("sessionExpired")==="1";
     const manualLogout=sessionStorage.getItem("speakoutManualLogout")==="true";
     const onboarding=sessionStorage.getItem("speakoutOnboarding")==="true";
     if(onboarding) return;
-    if(urlLoggedOut||manualLogout){
+    if(urlLoggedOut||sessionExpired||manualLogout){
       sessionStorage.removeItem("speakoutManualLogout");
-      if(urlLoggedOut) showLogin("You have been logged out successfully.","success");
+      if(sessionExpired){
+        showLogin("For shared-device safety, you were signed out after a period of inactivity. Sign in again to continue.","warning");
+      }else if(urlLoggedOut){
+        showLogin("You have been logged out successfully.","success");
+      }
       return;
     }
     if(user) await redirectByUserRole(user);

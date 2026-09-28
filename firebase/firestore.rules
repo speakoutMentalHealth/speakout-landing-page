@@ -177,6 +177,294 @@ service cloud.firestore {
         (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
 
+
+    function programmeData(programmeId) {
+      return get(/databases/$(database)/documents/programmes/$(programmeId)).data;
+    }
+
+    function programmeExists(programmeId) {
+      return exists(/databases/$(database)/documents/programmes/$(programmeId));
+    }
+
+    function sameProgrammeSchool(programmeId) {
+      return programmeExists(programmeId) &&
+        programmeData(programmeId).schoolId == userSchoolId();
+    }
+
+    function isProgrammeFacilitator(programmeId) {
+      return isTeacher() &&
+        sameProgrammeSchool(programmeId) &&
+        (
+          programmeData(programmeId).createdBy == request.auth.uid ||
+          (
+            programmeData(programmeId).keys().hasAny(["facilitatorIds"]) &&
+            request.auth.uid in programmeData(programmeId).facilitatorIds
+          )
+        );
+    }
+
+    function isProgrammeMember(programmeId) {
+      return isStudent() &&
+        exists(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + request.auth.uid)) &&
+        get(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + request.auth.uid)).data.status == "active";
+    }
+
+    function canManageProgramme(programmeId) {
+      return isSuperAdmin() ||
+        (isSchoolAdmin() && sameProgrammeSchool(programmeId)) ||
+        isProgrammeFacilitator(programmeId);
+    }
+
+    function studentBelongsToProgrammeSchool(programmeId, studentId) {
+      return sameProgrammeSchool(programmeId) &&
+        isUserInSchool(studentId, userSchoolId()) &&
+        get(/databases/$(database)/documents/users/$(studentId)).data.role == "student";
+    }
+
+    function programmeMembershipExists(programmeId, studentId) {
+      return exists(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + studentId)) &&
+        get(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + studentId)).data.status == "active";
+    }
+
+    function sessionBelongsToProgramme(sessionId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeSessions/$(sessionId)) &&
+        get(/databases/$(database)/documents/programmeSessions/$(sessionId)).data.programmeId == programmeId;
+    }
+
+    function assignmentBelongsToProgramme(assignmentId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeAssignments/$(assignmentId)) &&
+        get(/databases/$(database)/documents/programmeAssignments/$(assignmentId)).data.programmeId == programmeId;
+    }
+
+    match /programmes/{programmeId} {
+      allow create: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          request.resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isTeacher() &&
+          request.resource.data.schoolId == userSchoolId() &&
+          request.resource.data.createdBy == request.auth.uid &&
+          request.resource.data.status == "pending_approval" &&
+          request.resource.data.facilitatorIds is list &&
+          request.auth.uid in request.resource.data.facilitatorIds
+        );
+
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (
+            resource.data.schoolId == userSchoolId() &&
+            (
+              isSchoolAdmin() ||
+              isTeacher() ||
+              (isStudent() && resource.data.status == "active")
+            )
+          )
+        );
+
+      allow update: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isProgrammeFacilitator(programmeId) &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.createdBy == resource.data.createdBy &&
+          request.resource.data.status == resource.data.status &&
+          request.resource.data.facilitatorIds == resource.data.facilitatorIds &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "name", "type", "category", "source", "description", "objectives",
+            "expectedOutcomes", "scheduleDay", "scheduleTime", "frequency",
+            "venue", "membershipMode", "updatedAt"
+          ])
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isTeacher() &&
+          resource.data.schoolId == userSchoolId() &&
+          resource.data.createdBy == request.auth.uid &&
+          resource.data.status in ["draft", "pending_approval"]
+        );
+    }
+
+    match /programmeMemberships/{membershipId} {
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
+          isProgrammeFacilitator(resource.data.programmeId) ||
+          (isStudent() && resource.data.userId == request.auth.uid)
+        );
+
+      allow create: if
+        membershipId == request.resource.data.programmeId + "__" + request.resource.data.userId &&
+        (
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isProgrammeFacilitator(request.resource.data.programmeId) &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isStudent() &&
+            request.resource.data.userId == request.auth.uid &&
+            request.resource.data.schoolId == userSchoolId() &&
+            sameProgrammeSchool(request.resource.data.programmeId) &&
+            programmeData(request.resource.data.programmeId).status == "active" &&
+            programmeData(request.resource.data.programmeId).membershipMode in ["open", "voluntary"] &&
+            request.resource.data.status == "active"
+          )
+        );
+
+      allow update: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.programmeId == resource.data.programmeId
+        ) ||
+        (
+          isProgrammeFacilitator(resource.data.programmeId) &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.programmeId == resource.data.programmeId
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
+        isProgrammeFacilitator(resource.data.programmeId);
+    }
+
+    match /programmeSessions/{sessionId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          isProgrammeMember(resource.data.programmeId)
+        );
+      allow create: if isApproved() &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId();
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeAttendance/{attendanceId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          (isStudent() && resource.data.studentId == request.auth.uid)
+        );
+      allow create: if isApproved() &&
+        attendanceId == request.resource.data.sessionId + "__" + request.resource.data.studentId &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId() &&
+        sessionBelongsToProgramme(request.resource.data.sessionId, request.resource.data.programmeId) &&
+        studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId);
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId &&
+        request.resource.data.studentId == resource.data.studentId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeAssignments/{assignmentId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          isProgrammeMember(resource.data.programmeId)
+        );
+      allow create: if isApproved() &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId();
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeSubmissions/{submissionId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          (isStudent() && resource.data.studentId == request.auth.uid)
+        );
+
+      allow create: if isApproved() &&
+        submissionId == request.resource.data.assignmentId + "__" + request.resource.data.studentId &&
+        assignmentBelongsToProgramme(request.resource.data.assignmentId, request.resource.data.programmeId) &&
+        (
+          (
+            isStudent() &&
+            request.resource.data.studentId == request.auth.uid &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            request.resource.data.submittedOnBehalf == false &&
+            isProgrammeMember(request.resource.data.programmeId) &&
+            request.resource.data.status == "submitted" &&
+            request.resource.data.feedback == "" &&
+            request.resource.data.reviewedBy == ""
+          ) ||
+          (
+            canManageProgramme(request.resource.data.programmeId) &&
+            request.resource.data.schoolId == userSchoolId() &&
+            request.resource.data.submittedOnBehalf == true &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId) &&
+            programmeMembershipExists(request.resource.data.programmeId, request.resource.data.studentId)
+          )
+        );
+
+      allow update: if isApproved() &&
+        (
+          (
+            canManageProgramme(resource.data.programmeId) &&
+            request.resource.data.programmeId == resource.data.programmeId &&
+            request.resource.data.assignmentId == resource.data.assignmentId &&
+            request.resource.data.studentId == resource.data.studentId &&
+            request.resource.data.schoolId == resource.data.schoolId
+          ) ||
+          (
+            isStudent() &&
+            resource.data.studentId == request.auth.uid &&
+            request.resource.data.studentId == request.auth.uid &&
+            request.resource.data.programmeId == resource.data.programmeId &&
+            request.resource.data.assignmentId == resource.data.assignmentId &&
+            request.resource.data.schoolId == resource.data.schoolId &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            request.resource.data.submittedOnBehalf == false &&
+            request.resource.data.status == "submitted" &&
+            request.resource.data.feedback == "" &&
+            request.resource.data.reviewedBy == "" &&
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              "submissionMethod", "responseText", "evidenceUrl", "status",
+              "feedback", "reviewedBy", "reviewedAt", "submittedAt", "updatedAt"
+            ])
+          )
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+    }
+
     match /courses/{courseId} {
       allow read: if isApproved();
       allow write: if isSuperAdmin();

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Programmes | SpeakOut</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="portal.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>School Programmes</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
+<main id="main-content">
+  <section class="program-hero">
+    <div class="container">
+      <span class="kicker">School Programme Engine</span>
+      <h1>Programmes that fit each school</h1>
+      <p>Create and manage clubs, courses, workshops, cohorts, campaigns and competitions without forcing schools into a fixed club structure.</p>
+      <div id="schoolPills"></div>
+    </div>
+  </section>
+  <section class="program-shell">
+    <div class="container">
+      <div class="program-note" id="statusBox">Loading programmes...</div>
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="activeCount">0</strong><span>Active</span></div>
+        <div class="program-card program-stat"><strong id="pendingCount">0</strong><span>Pending approval</span></div>
+        <div class="program-card program-stat"><strong id="myCount">0</strong><span>My programmes</span></div>
+        <div class="program-card program-stat"><strong id="membershipCount">0</strong><span>My memberships</span></div>
+      </div>
+      <div class="program-grid two">
+        <section class="program-panel hidden" id="createPanel">
+          <h2>Create a programme</h2>
+          <p>Teachers and facilitators can propose any school programme. School administrators approve it before it becomes active.</p>
+          <form class="program-form" id="programmeForm">
+            <input id="programmeName" placeholder="Programme / club name" required>
+            <select id="programmeType" required>
+              <option value="">Programme type</option>
+              <option value="club">Club</option>
+              <option value="course">Course</option>
+              <option value="workshop">Workshop</option>
+              <option value="cohort">Cohort</option>
+              <option value="campaign">Campaign</option>
+              <option value="competition">Competition</option>
+              <option value="other">Other</option>
+            </select>
+            <input id="category" placeholder="Category e.g. STEM, Wellbeing, Arts" required>
+            <select id="programmeSource" required>
+              <option value="existing_school">Existing school programme</option>
+              <option value="new_school">New school programme</option>
+              <option value="speakout_supported">SpeakOut-supported programme</option>
+            </select>
+            <textarea class="full" id="description" placeholder="What is this programme for?" required></textarea>
+            <textarea id="objectives" placeholder="Objectives"></textarea>
+            <textarea id="expectedOutcomes" placeholder="Expected outcomes"></textarea>
+            <input id="scheduleDay" placeholder="Meeting day">
+            <input id="scheduleTime" placeholder="Meeting time">
+            <input id="frequency" placeholder="Frequency e.g. Weekly">
+            <input id="venue" placeholder="Venue / room">
+            <select id="membershipMode">
+              <option value="voluntary">Voluntary / interest-based</option>
+              <option value="open">Open membership</option>
+              <option value="approval">Application requires approval</option>
+              <option value="teacher_add">Teacher adds students</option>
+              <option value="school_assign">School assignment</option>
+            </select>
+            <button class="program-btn primary full" id="createButton" type="submit">Create programme</button>
+          </form>
+        </section>
+        <section class="program-panel">
+          <div class="program-toolbar">
+            <div><h2 style="margin:0">School programmes</h2><p style="margin:5px 0 0">Flexible, school-owned and role-controlled.</p></div>
+            <div>
+              <input id="searchInput" placeholder="Search programmes">
+              <select id="statusFilter">
+                <option value="all">All statuses</option>
+                <option value="active">Active</option>
+                <option value="pending_approval">Pending approval</option>
+                <option value="suspended">Suspended</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <div class="program-list" id="programmeList"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • School Programme Management</div></footer>
+<script type="module" src="js/programmes/programmes.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>

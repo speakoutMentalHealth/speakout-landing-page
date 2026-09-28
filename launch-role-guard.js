@@ -4,7 +4,9 @@ import { auth, db } from "./firebase-config.js";
 
 import {
   onAuthStateChanged,
-  signOut
+  signOut,
+  setPersistence,
+  browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
@@ -115,6 +117,68 @@ export async function getCurrentProfile(user){
    CENTRAL LOGOUT
 ========================================================= */
 
+
+const SHARED_DEVICE_IDLE_MS = 30 * 60 * 1000;
+let sharedDeviceIdleStarted = false;
+let sharedDeviceIdleTimer = null;
+
+function privateDeviceEnabled(){
+  return localStorage.getItem("speakoutDeviceMode") === "private";
+}
+
+async function enforceSafeDevicePersistence(){
+  if(privateDeviceEnabled()){
+    sessionStorage.setItem("speakoutDeviceMode","private");
+    return "private";
+  }
+
+  sessionStorage.setItem("speakoutDeviceMode","shared");
+
+  try{
+    await setPersistence(auth,browserSessionPersistence);
+  }catch(error){
+    console.warn("Could not enforce session-only persistence:",error);
+  }
+
+  return "shared";
+}
+
+function startSharedDeviceIdleGuard(){
+  if(sharedDeviceIdleStarted || privateDeviceEnabled()){
+    return;
+  }
+
+  sharedDeviceIdleStarted = true;
+
+  const reset = () => {
+    clearTimeout(sharedDeviceIdleTimer);
+    sharedDeviceIdleTimer = setTimeout(async () => {
+      try{
+        window.__speakoutSharedDeviceExpiring = true;
+        sessionStorage.setItem("speakoutManualLogout","true");
+        sessionStorage.removeItem("speakoutDeviceMode");
+        localStorage.removeItem("speakoutDeviceMode");
+        await signOut(auth);
+      }catch(error){
+        console.warn("Shared-device timeout sign out failed:",error);
+      }finally{
+        window.location.replace("auth.html?sessionExpired=1");
+      }
+    },SHARED_DEVICE_IDLE_MS);
+  };
+
+  ["click","keydown","touchstart","scroll"].forEach(eventName=>{
+    window.addEventListener(eventName,reset,{passive:true});
+  });
+
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden) reset();
+  });
+
+  reset();
+}
+
+
 export async function logoutUser(){
 
   try{
@@ -150,6 +214,14 @@ export async function logoutUser(){
 
     localStorage.removeItem(
       "speakoutSchoolName"
+    );
+
+    localStorage.removeItem(
+      "speakoutDeviceMode"
+    );
+
+    sessionStorage.removeItem(
+      "speakoutDeviceMode"
     );
 
 
@@ -222,6 +294,10 @@ export function requireRoles(
       */
 
       if(!user){
+
+        if(window.__speakoutSharedDeviceExpiring){
+          return;
+        }
 
         window.location.replace(
           "auth.html"
@@ -312,6 +388,14 @@ export function requireRoles(
         adds additional restrictions.
       */
 
+      const deviceMode =
+        await enforceSafeDevicePersistence();
+
+      if(deviceMode === "shared"){
+        startSharedDeviceIdleGuard();
+      }
+
+
       const privileged =
         role === "admin" ||
         role === "super_admin";
@@ -385,6 +469,10 @@ const linksByRole = {
       "student-dashboard.html"
     ],
     [
+      "Programs",
+      "programmes.html"
+    ],
+    [
       "Courses",
       "speakhub.html?audience=student"
     ],
@@ -453,6 +541,10 @@ const linksByRole = {
       "teacher-dashboard.html"
     ],
     [
+      "Programs",
+      "programmes.html"
+    ],
+    [
       "Teacher Library",
       "teacher-library.html"
     ],
@@ -485,6 +577,10 @@ const linksByRole = {
       "school-dashboard.html"
     ],
     [
+      "Programs",
+      "programmes.html"
+    ],
+    [
       "Students",
       "school-students.html"
     ],
@@ -503,6 +599,10 @@ const linksByRole = {
     [
       "Workshops",
       "school-workshops.html"
+    ],
+    [
+      "Reports",
+      "school-programme-report.html"
     ],
     [
       "Resources",

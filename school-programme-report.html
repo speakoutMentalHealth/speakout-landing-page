@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Programme Reports | SpeakOut</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="school-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>School Programme Reports</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
+<main id="main-content">
+  <section class="program-hero">
+    <div class="container">
+      <span class="kicker">School Oversight</span>
+      <h1 id="reportTitle">Programme reports</h1>
+      <p>See programme delivery, participation, assignments and completion without exposing private wellbeing notes.</p>
+      <div id="schoolPills"></div>
+    </div>
+  </section>
+  <section class="program-shell">
+    <div class="container">
+      <div class="program-note" id="statusBox">Loading programme report...</div>
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="programmeCount">0</strong><span>Programmes</span></div>
+        <div class="program-card program-stat"><strong id="sessionCount">0</strong><span>Sessions delivered</span></div>
+        <div class="program-card program-stat"><strong id="attendanceCount">0</strong><span>Total attendance</span></div>
+        <div class="program-card program-stat"><strong id="completionRate">0%</strong><span>Submission completion</span></div>
+      </div>
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="memberCount">0</strong><span>Programme memberships</span></div>
+        <div class="program-card program-stat"><strong id="assignmentCount">0</strong><span>Assignments / projects</span></div>
+        <div class="program-card program-stat"><strong id="submissionCount">0</strong><span>Submissions</span></div>
+        <div class="program-card program-stat"><strong id="offlineCount">0</strong><span>Facilitator-recorded work</span></div>
+      </div>
+      <div class="program-grid two">
+        <section class="program-panel">
+          <div class="program-toolbar">
+            <div><h2 style="margin:0">Programme performance</h2><p style="margin:5px 0 0">Operational reporting across every school programme.</p></div>
+            <div><input id="searchInput" placeholder="Search programme"><select id="statusFilter"><option value="all">All statuses</option><option value="active">Active</option><option value="pending_approval">Pending approval</option><option value="suspended">Suspended</option><option value="archived">Archived</option></select></div>
+          </div>
+          <div class="table-wrap">
+            <table id="reportTable">
+              <thead><tr><th>Programme</th><th>Status</th><th>Members</th><th>Sessions</th><th>Attendance</th><th>Assignments</th><th>Submissions</th><th>Completed</th><th>Completion</th></tr></thead>
+              <tbody id="reportRows"></tbody>
+            </table>
+          </div>
+          <div class="program-actions"><button class="program-btn primary" id="exportButton" type="button">Export CSV</button><a class="program-btn soft" href="programmes.html">Manage Programs</a></div>
+        </section>
+        <section class="program-panel"><h2>Needs attention</h2><div class="program-list" id="attentionList"></div></section>
+      </div>
+      <section class="program-panel" style="margin-top:18px"><h2>Recent delivery activity</h2><p>Latest facilitator-recorded programme sessions.</p><div class="program-list" id="recentSessions"></div></section>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • School Programme Reporting</div></footer>
+<script type="module" src="js/programmes/school-programme-report.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>
