@@ -465,8 +465,7 @@ section{padding:36px 0}
 <script type="module">
 
 import {
-  auth,
-  db
+  auth
 } from "./firebase-config.js";
 
 import {
@@ -474,14 +473,6 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { roleApi } from "./js/platform-api.js";
 import { requireRoles } from "./launch-role-guard.js";
 
