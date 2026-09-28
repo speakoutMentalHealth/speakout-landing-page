@@ -830,6 +830,40 @@ async function loadChildActivity(){
           ).length;
 
 
+        const programmeData =
+          overview.parentProgrammes || {};
+
+        const memberships =
+          (programmeData.memberships || [])
+            .filter(item=>item.userId===studentId)
+            .filter(item=>normalize(item.status || "active")!=="inactive");
+
+        const programmeIds =
+          new Set(
+            memberships
+              .map(item=>item.programmeId)
+              .filter(Boolean)
+          );
+
+        const programmeCount =
+          (programmeData.programmes || [])
+            .filter(item=>programmeIds.has(item.id))
+            .length;
+
+        const programmeAssignments =
+          (programmeData.assignments || [])
+            .filter(item=>programmeIds.has(item.programmeId));
+
+        const programmeSubmissions =
+          (programmeData.submissions || [])
+            .filter(item=>item.studentId===studentId);
+
+        const completedAssignments =
+          programmeSubmissions.filter(
+            item=>normalize(item.status)==="completed"
+          ).length;
+
+
         cards.push(`
           <div class="mini-item">
 
@@ -843,7 +877,10 @@ async function loadChildActivity(){
 
                 <div class="item-meta">
                   <span>${started} courses started</span>
-                  <span>${completed} completed</span>
+                  <span>${completed} courses completed</span>
+                  <span>${programmeCount} school programme${programmeCount===1?"":"s"}</span>
+                  <span>${programmeAssignments.length} programme task${programmeAssignments.length===1?"":"s"}</span>
+                  <span>${completedAssignments} tasks completed</span>
                 </div>
 
               </div>

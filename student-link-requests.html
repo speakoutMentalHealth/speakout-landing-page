@@ -14,7 +14,8 @@
 <script type="module">
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, getDocs, query, where, doc, getDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { roleApi } from "./js/platform-api.js";
 
 function show(m,t=""){
   const el=document.getElementById("statusBox");
@@ -48,9 +49,17 @@ async function loadRequests(){
  }
  requestGrid.innerHTML=html||"<div class='notice ok'>No parent link requests.</div>";
  requestGrid.querySelectorAll("button[data-id]").forEach(btn=>btn.onclick=async()=>{
-   await updateDoc(doc(db,"parentStudentLinks",btn.dataset.id),{status:btn.dataset.status,updatedAt:serverTimestamp()});
-   show("Request updated.","ok");
-   await loadRequests();
+   try{
+     btn.disabled=true;
+     await roleApi.updateParentStudentLink(btn.dataset.id,btn.dataset.status);
+     show("Parent link request updated securely.","ok");
+     await loadRequests();
+   }catch(error){
+     console.error(error);
+     show(error.message||"Could not update the parent link request.","bad");
+   }finally{
+     btn.disabled=false;
+   }
  });
 }
 

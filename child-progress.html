@@ -397,7 +397,39 @@ section{padding:36px 0}
 <span>Certificates</span>
 </div>
 </div>
+<div class="grid g4" id="programmeStats" style="display:none;margin-bottom:18px">
+<div class="card stat">
+<strong id="programmeCount">0</strong>
+<span>School Programmes</span>
+</div>
+<div class="card stat">
+<strong id="programmeSessionsCount">0</strong>
+<span>Sessions Recorded</span>
+</div>
+<div class="card stat">
+<strong id="programmeAttendanceCount">0</strong>
+<span>Sessions Present</span>
+</div>
+<div class="card stat">
+<strong id="programmeAssignmentsCount">0</strong>
+<span>Assignments / Projects</span>
+</div>
+</div>
 <div id="profileBox"></div>
+<div class="grid g2" style="margin-top:18px">
+<div class="panel">
+<span class="label">School Programmes</span>
+<h2>Clubs, Programmes &amp; Activities</h2>
+<p class="small-note">This is a read-only family view. Private student responses, evidence files and sensitive wellbeing disclosures are not shown here.</p>
+<div id="programmeBox"><div class="notice">Loading school programmes...</div></div>
+</div>
+<div class="panel">
+<span class="label">Assignments &amp; Feedback</span>
+<h2>Programme Work</h2>
+<p class="small-note">Shows task status and only the feedback a programme is configured to share with parents.</p>
+<div id="programmeAssignmentBox"><div class="notice">Loading assignments...</div></div>
+</div>
+</div>
 <div class="grid g2" style="margin-top:18px">
 <div class="panel">
 <span class="label">
@@ -433,8 +465,7 @@ section{padding:36px 0}
 <script type="module">
 
 import {
-  auth,
-  db
+  auth
 } from "./firebase-config.js";
 
 import {
@@ -442,14 +473,6 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { roleApi } from "./js/platform-api.js";
 import { requireRoles } from "./launch-role-guard.js";
 
@@ -487,6 +510,27 @@ const booksCount =
 
 const certificateCount =
   document.getElementById("certificateCount");
+
+const programmeStats =
+  document.getElementById("programmeStats");
+
+const programmeCount =
+  document.getElementById("programmeCount");
+
+const programmeSessionsCount =
+  document.getElementById("programmeSessionsCount");
+
+const programmeAttendanceCount =
+  document.getElementById("programmeAttendanceCount");
+
+const programmeAssignmentsCount =
+  document.getElementById("programmeAssignmentsCount");
+
+const programmeBox =
+  document.getElementById("programmeBox");
+
+const programmeAssignmentBox =
+  document.getElementById("programmeAssignmentBox");
 
 const logoutLink =
   document.getElementById("logoutLink");
@@ -944,6 +988,258 @@ async function loadProgress(){
 }
 
 
+function childProgrammeData(){
+
+  const data =
+    secureOverview?.parentProgrammes || {};
+
+  const memberships =
+    (data.memberships || [])
+      .filter(item=>item.userId===targetStudentId)
+      .filter(item=>normalize(item.status || "active")!=="inactive");
+
+  const programmeIds =
+    new Set(
+      memberships
+        .map(item=>item.programmeId)
+        .filter(Boolean)
+    );
+
+  const programmes =
+    (data.programmes || [])
+      .filter(item=>programmeIds.has(item.id));
+
+  const sessions =
+    (data.sessions || [])
+      .filter(item=>programmeIds.has(item.programmeId));
+
+  const attendance =
+    (data.attendance || [])
+      .filter(item=>item.studentId===targetStudentId)
+      .filter(item=>programmeIds.has(item.programmeId));
+
+  const assignments =
+    (data.assignments || [])
+      .filter(item=>programmeIds.has(item.programmeId));
+
+  const submissions =
+    (data.submissions || [])
+      .filter(item=>item.studentId===targetStudentId)
+      .filter(item=>programmeIds.has(item.programmeId));
+
+  return {
+    programmes,
+    sessions,
+    attendance,
+    assignments,
+    submissions
+  };
+
+}
+
+
+function programmeSchedule(item){
+
+  return [
+    item.scheduleDay,
+    item.scheduleTime,
+    item.frequency,
+    item.venue
+  ]
+  .filter(Boolean)
+  .join(" • ");
+
+}
+
+
+async function loadProgrammeProgress(){
+
+  try{
+
+    const data =
+      childProgrammeData();
+
+    programmeCount.textContent =
+      data.programmes.length;
+
+    programmeSessionsCount.textContent =
+      data.sessions.length;
+
+    programmeAttendanceCount.textContent =
+      data.attendance.filter(
+        item=>normalize(item.status)==="present"
+      ).length;
+
+    programmeAssignmentsCount.textContent =
+      data.assignments.length;
+
+
+    programmeBox.innerHTML =
+      data.programmes.length
+        ? data.programmes.map(programme=>{
+
+            const sessions =
+              data.sessions.filter(
+                item=>item.programmeId===programme.id
+              );
+
+            const attendance =
+              data.attendance.filter(
+                item=>
+                  item.programmeId===programme.id &&
+                  normalize(item.status)==="present"
+              );
+
+            const assignments =
+              data.assignments.filter(
+                item=>item.programmeId===programme.id
+              );
+
+            return `
+              <div class="card item-card">
+
+                <h3>
+                  ${escapeHtml(programme.name || "Programme")}
+                </h3>
+
+                <div>
+                  ${pill(programme.type || "programme")}
+                  ${pill(programme.category || "general")}
+                  ${pill(programme.status || "active")}
+                </div>
+
+                ${programmeSchedule(programme)
+                  ? `<p><b>Schedule:</b> ${escapeHtml(programmeSchedule(programme))}</p>`
+                  : ""
+                }
+
+                <p>
+                  <b>Recorded activity:</b>
+                  ${sessions.length} session${sessions.length===1?"":"s"} •
+                  ${attendance.length} present •
+                  ${assignments.length} assignment${assignments.length===1?"":"s"}
+                </p>
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="notice warn">
+            No parent-visible school programme activity has been recorded yet.
+          </div>
+        `;
+
+
+    const programmeMap =
+      new Map(
+        data.programmes.map(
+          item=>[item.id,item]
+        )
+      );
+
+    const submissionMap =
+      new Map(
+        data.submissions.map(
+          item=>[item.assignmentId,item]
+        )
+      );
+
+
+    programmeAssignmentBox.innerHTML =
+      data.assignments.length
+        ? data.assignments.map(assignment=>{
+
+            const programme =
+              programmeMap.get(
+                assignment.programmeId
+              );
+
+            const submission =
+              submissionMap.get(
+                assignment.id
+              );
+
+            const status =
+              submission?.status ||
+              "not_started";
+
+            return `
+              <div class="card item-card">
+
+                <h3>
+                  ${escapeHtml(assignment.title || "Assignment")}
+                </h3>
+
+                <p>
+                  <b>Programme:</b>
+                  ${escapeHtml(programme?.name || "School Programme")}
+                </p>
+
+                ${assignment.dueDate
+                  ? `<p><b>Due:</b> ${escapeHtml(formatDate(assignment.dueDate))}</p>`
+                  : ""
+                }
+
+                <div>
+                  ${pill(status)}
+                  ${submission?.submittedOnBehalf
+                    ? pill("facilitator-recorded")
+                    : ""
+                  }
+                </div>
+
+                ${submission?.feedback
+                  ? `
+                    <p>
+                      <b>Facilitator feedback:</b>
+                      ${escapeHtml(submission.feedback)}
+                    </p>
+                  `
+                  : ""
+                }
+
+              </div>
+            `;
+
+          }).join("")
+        : `
+          <div class="notice warn">
+            No parent-visible programme assignments have been recorded yet.
+          </div>
+        `;
+
+
+    programmeStats.style.display =
+      "grid";
+
+
+  }catch(error){
+
+    console.error(
+      "Programme progress load error:",
+      error
+    );
+
+    programmeBox.innerHTML =
+      `
+        <div class="notice bad">
+          Could not load school programme activity.
+        </div>
+      `;
+
+    programmeAssignmentBox.innerHTML =
+      `
+        <div class="notice bad">
+          Could not load programme assignments.
+        </div>
+      `;
+
+  }
+
+}
+
+
 async function initialise(user,profile){
 
   currentUser =
@@ -984,7 +1280,8 @@ async function initialise(user,profile){
 
   await Promise.all([
     loadCertificates(),
-    loadProgress()
+    loadProgress(),
+    loadProgrammeProgress()
   ]);
 
 

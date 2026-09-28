@@ -279,7 +279,7 @@ service cloud.firestore {
           request.resource.data.diff(resource.data).affectedKeys().hasOnly([
             "name", "type", "category", "source", "description", "objectives",
             "expectedOutcomes", "scheduleDay", "scheduleTime", "frequency",
-            "venue", "membershipMode", "updatedAt"
+            "venue", "membershipMode", "parentVisibility", "updatedAt"
           ])
         );
 
