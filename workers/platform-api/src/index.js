@@ -3005,6 +3005,84 @@ async function route(request, env, path, data) {
     return importSchoolRoster(env, user, data);
   }
 
+  if (path === "/v1/roles/parent-links/find-student") {
+    requireRole(user, ["parent"]);
+    const term = clean(data.search);
+    if (!term || term.length > 180) {
+      throw Object.assign(new Error("Enter the student's exact Student ID or email address."), { status: 400 });
+    }
+
+    let matches = [];
+    const byStudentId = await queryDocumentsByField(env, "users", "studentId", term, 10);
+    matches = byStudentId.documents.filter(item => normalized(item.role) === "student");
+
+    if (!matches.length && looksLikeEmail(term)) {
+      const byEmail = await queryDocumentsByField(env, "users", "email", normalized(term), 10);
+      matches = byEmail.documents.filter(item => normalized(item.role) === "student");
+    }
+
+    const student = matches.find(item =>
+      normalized(item.status) === "approved" &&
+      sameSchool(user.profile, item)
+    );
+
+    if (!student) {
+      throw Object.assign(new Error("No approved student in your verified school matched that Student ID or email."), { status: 404 });
+    }
+
+    return { student: publicSubject(student) };
+  }
+
+  if (path === "/v1/roles/parent-links/request") {
+    requireRole(user, ["parent"]);
+    const studentId = safeId(data.studentId, "student identifier");
+    const relationship = bounded(data.relationship || "Guardian", 80, "Relationship");
+    const note = bounded(data.note, 500, "Request note");
+    const student = await getDocument(env, "users/" + studentId);
+
+    if (!student || normalized(student.role) !== "student" || normalized(student.status) !== "approved") {
+      throw Object.assign(new Error("This student account is not available for parent linking."), { status: 404 });
+    }
+    if (!sameSchool(user.profile, student)) {
+      throw Object.assign(new Error("The parent and student must belong to the same verified school."), { status: 403 });
+    }
+
+    const linkId = await sha256Key(user.uid + ":" + studentId);
+    const now = new Date().toISOString();
+
+    return runTransaction(env, async tx => {
+      const existing = await tx.get("parentStudentLinks/" + linkId);
+      if (existing && !["rejected", "cancelled"].includes(normalized(existing.status))) {
+        throw Object.assign(new Error("A parent-link request already exists for this student."), { status: 409 });
+      }
+
+      const record = {
+        ...(existing || {}),
+        parentId: user.uid,
+        parentName: humanName(user.profile),
+        parentEmail: clean(user.email || user.profile.email),
+        studentId,
+        studentName: humanName(student),
+        studentCode: clean(student.studentId),
+        relationship,
+        note,
+        schoolId: clean(student.schoolId),
+        schoolCode: clean(student.schoolCode),
+        status: "pending",
+        approvalRequired: true,
+        approvedAt: null,
+        reviewedAt: null,
+        reviewedBy: "",
+        reviewSource: "",
+        createdAt: existing?.createdAt || now,
+        updatedAt: now
+      };
+
+      tx.set("parentStudentLinks/" + linkId, record);
+      return { ok: true, link: { id: linkId, ...record } };
+    });
+  }
+
   if (path === "/v1/roles/parent-links/status") {
     const linkId = safeId(data.linkId, "parent link identifier");
     const nextStatus = normalized(data.status);
