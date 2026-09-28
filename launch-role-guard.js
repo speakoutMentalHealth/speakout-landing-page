@@ -581,6 +581,10 @@ const linksByRole = {
       "programmes.html"
     ],
     [
+      "Launch",
+      "school-launch-center.html"
+    ],
+    [
       "Students",
       "school-students.html"
     ],

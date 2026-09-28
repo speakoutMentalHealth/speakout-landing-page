@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Launch Center | SpeakOut</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="school-dashboard.html">
+      <img src="logo.png" alt="SpeakOut">
+      <div><h2>SpeakOut</h2><p>School Launch Center</p></div>
+    </a>
+    <nav class="links" id="roleNav"></nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="program-hero">
+    <div class="container">
+      <span class="kicker">Implementation</span>
+      <h1 id="pageTitle">School launch center</h1>
+      <p>Move from onboarding to live delivery: roster, facilitators, programmes, family access and a controlled pilot test.</p>
+      <div id="schoolPills"></div>
+    </div>
+  </section>
+
+  <section class="program-shell">
+    <div class="container">
+      <div class="program-note" id="statusBox">Loading school launch readiness...</div>
+
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="rosterCount">0</strong><span>Roster students</span></div>
+        <div class="program-card program-stat"><strong id="approvedStudentCount">0</strong><span>Approved students</span></div>
+        <div class="program-card program-stat"><strong id="teacherCount">0</strong><span>Approved facilitators</span></div>
+        <div class="program-card program-stat"><strong id="activeProgrammeCount">0</strong><span>Active programmes</span></div>
+      </div>
+
+      <div class="program-grid stats">
+        <div class="program-card program-stat"><strong id="parentCount">0</strong><span>Approved parents</span></div>
+        <div class="program-card program-stat"><strong id="parentLinkCount">0</strong><span>Approved parent links</span></div>
+        <div class="program-card program-stat"><strong id="pendingUserCount">0</strong><span>Pending school users</span></div>
+        <div class="program-card program-stat"><strong id="pilotState">Not ready</strong><span>3-account pilot</span></div>
+      </div>
+
+      <div class="program-grid two">
+        <section class="program-panel">
+          <h2>Launch sequence</h2>
+          <p>This checklist uses live school data. Complete the operational steps in order, but computer repairs do not have to delay programme preparation.</p>
+          <div class="program-list" id="launchChecklist"></div>
+        </section>
+
+        <section class="program-panel">
+          <h2>Quick actions</h2>
+          <div class="program-list">
+            <a class="program-item" href="school-students.html"><strong>1. Student roster</strong><p>Import the school roster and approve student activations.</p></a>
+            <a class="program-item" href="school-teachers.html"><strong>2. Teacher / facilitator accounts</strong><p>Approve facilitators before assigning them to programmes.</p></a>
+            <a class="program-item" href="programmes.html"><strong>3. Programme management</strong><p>Create, edit and assign flexible school programmes.</p></a>
+            <a class="program-item" href="school-parents.html"><strong>4. Parent access</strong><p>Approve parents and verify parent-child links.</p></a>
+            <a class="program-item" href="school-programme-report.html"><strong>5. Reports</strong><p>Confirm sessions, attendance, assignments and submissions appear correctly.</p></a>
+          </div>
+        </section>
+      </div>
+
+      <section class="program-panel" style="margin-top:18px">
+        <div class="program-toolbar">
+          <div>
+            <h2 style="margin:0">Pilot starter programmes</h2>
+            <p style="margin:5px 0 0">These are editable launch templates, not fixed clubs. Keep, rename, remove or replace any item to match the school.</p>
+          </div>
+          <div class="program-actions" style="margin-top:0">
+            <button class="program-btn soft" id="resetTemplatesButton" type="button">Reset templates</button>
+            <button class="program-btn primary" id="createSelectedButton" type="button">Create selected programmes</button>
+          </div>
+        </div>
+        <div class="program-note">
+          Existing school programmes should be strengthened, not replaced. The Mental Health &amp; Wellness template is intentionally privacy-safe for parent access. Private wellbeing disclosures are never shown to parents through programme progress.
+        </div>
+        <div class="program-list" id="templateList"></div>
+      </section>
+
+      <section class="program-panel" style="margin-top:18px">
+        <h2>3-account pilot test</h2>
+        <p>Before opening the system to the full school, use one approved school admin, one approved facilitator and one approved student.</p>
+        <div class="program-grid two">
+          <div class="program-item">
+            <strong>Online pathway</strong>
+            <p>Admin assigns facilitator → student joins/is assigned → session recorded → attendance marked → assignment issued → student submits → facilitator reviews → school report updates.</p>
+          </div>
+          <div class="program-item">
+            <strong>Offline / paper pathway</strong>
+            <p>Student completes work offline → facilitator records the submission on the student’s behalf → school and approved parent see the appropriate progress status.</p>
+          </div>
+        </div>
+        <div class="program-actions">
+          <a class="program-btn dark" href="programmes.html">Open Programs</a>
+          <a class="program-btn soft" href="school-students.html">Open Students</a>
+          <a class="program-btn soft" href="school-teachers.html">Open Facilitators</a>
+          <a class="program-btn soft" href="school-programme-report.html">Open Reports</a>
+        </div>
+      </section>
+
+      <section class="program-panel" style="margin-top:18px">
+        <h2>On-site ICT check</h2>
+        <p>The portal work can continue before the hardware visit. On site, verify the number of functional systems, internet access, browser login/logout, session-only authentication, projector/power availability and which machines need repair or replacement.</p>
+        <div class="program-note">Shared school computers should keep “Private device only” OFF. Students should log out after each session; inactive shared sessions are automatically protected by the portal timeout.</div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • School Launch Center</div></footer>
+<script type="module" src="js/programmes/school-launch-center.js"></script>
+<script defer src="js/learner-shell.js"></script>
+</body>
+</html>
