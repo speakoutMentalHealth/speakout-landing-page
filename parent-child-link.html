@@ -679,46 +679,7 @@ function isActiveLink(link){
 }
 
 
-async function resolveStudent(link){
-
-  try{
-
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "users",
-          link.studentId
-        )
-      );
-
-    if(snap.exists()){
-
-      return {
-        id:snap.id,
-        ...snap.data()
-      };
-
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Could not load linked student:",
-      error
-    );
-
-  }
-
-  return null;
-
-}
-
-
 async function studentCard(link){
-
-  const student =
-    await resolveStudent(link);
 
   const status =
     normalize(
@@ -727,26 +688,18 @@ async function studentCard(link){
     );
 
   const studentName =
-    student
-      ? `${student.firstName || student.fullName || "Student"} ${student.lastName || ""}`.trim()
-      : (
-          link.studentName ||
-          "Student"
-        );
+    link.studentName ||
+    "Student";
 
   const photo =
-    student?.photoData ||
-    student?.photoURL ||
     "logo.png";
 
   const studentCode =
     link.studentCode ||
-    student?.studentId ||
     "—";
 
   const school =
-    student?.schoolName ||
-    student?.schoolCode ||
+    link.studentSchoolName ||
     link.schoolCode ||
     "—";
 
