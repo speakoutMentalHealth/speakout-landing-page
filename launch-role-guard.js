@@ -601,6 +601,10 @@ const linksByRole = {
       "school-workshops.html"
     ],
     [
+      "Reports",
+      "school-programme-report.html"
+    ],
+    [
       "Resources",
       "school-resource-center.html"
     ]
