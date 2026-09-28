@@ -118,6 +118,10 @@ export const roleApi = {
     platformRequest("/v1/roles/school/roster/list"),
   importSchoolRoster: students =>
     platformRequest("/v1/roles/school/roster/import", { students }),
+  findStudentForParentLink: search =>
+    platformRequest("/v1/roles/parent-links/find-student", { search }),
+  requestParentStudentLink: (studentId, relationship, note) =>
+    platformRequest("/v1/roles/parent-links/request", { studentId, relationship, note }),
   updateParentStudentLink: (linkId, status) =>
     platformRequest("/v1/roles/parent-links/status", { linkId, status })
 };
