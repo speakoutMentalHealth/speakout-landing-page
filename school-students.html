@@ -426,7 +426,6 @@ input:focus,textarea:focus,select:focus{
 <input id="classLevel" placeholder="Class / Level"/>
 <input id="admissionNumber" placeholder="School Admission Number"/>
 </div>
-<textarea id="bio" placeholder="Optional notes"></textarea>
 <button class="btn primary" id="addButton" type="submit">
             Add Student
           </button>
@@ -557,8 +556,6 @@ import {
   query,
   where,
   doc,
-  updateDoc,
-  serverTimestamp,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { roleApi } from "./js/platform-api.js";
@@ -589,7 +586,6 @@ const email = document.getElementById("email");
 const phone = document.getElementById("phone");
 const classLevel = document.getElementById("classLevel");
 const admissionNumber = document.getElementById("admissionNumber");
-const bio = document.getElementById("bio");
 
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
@@ -639,20 +635,6 @@ function pill(value){
       ${escapeHtml(pretty(value))}
     </span>
   `;
-}
-
-
-function generateStudentId(){
-
-  const year = new Date().getFullYear();
-
-  const random =
-    Math.random()
-      .toString(36)
-      .slice(2,7)
-      .toUpperCase();
-
-  return `STU-${year}-${random}`;
 }
 
 
