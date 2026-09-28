@@ -265,10 +265,7 @@ $("programmeForm").addEventListener("submit",async event => {
     if(!payload.name || !payload.type || !payload.category || !payload.description){
       throw new Error("Name, type, category and description are required.");
     }
-    const created = await addDoc(collection(db,"programmes"),payload);
-    if(!teacherCreated){
-      await updateDoc(doc(db,"programmes",created.id),{ facilitatorIds:[currentUser.uid] });
-    }
+    await addDoc(collection(db,"programmes"),payload);
     event.target.reset();
     show(teacherCreated ? "Programme submitted for school approval." : "Programme created and activated.","ok");
     await loadProgrammes();
