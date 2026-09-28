@@ -695,6 +695,165 @@ async function roleOverview(env, user, requestedSubjectId = "") {
   };
 }
 
+
+const publicSchoolRosterStudent = item => ({
+  id: clean(item.id),
+  firstName: clean(item.firstName),
+  lastName: clean(item.lastName),
+  fullName: clean(item.fullName) || [clean(item.firstName), clean(item.lastName)].filter(Boolean).join(" "),
+  admissionNumber: clean(item.admissionNumber || item.registrationNumber),
+  registrationNumber: clean(item.registrationNumber || item.admissionNumber),
+  studentId: clean(item.studentId),
+  classLevel: clean(item.classLevel || item.level),
+  email: clean(item.email),
+  phone: clean(item.phone),
+  status: clean(item.status || "pre_enrolled"),
+  linkedUserId: clean(item.linkedUserId),
+  linkedUserStatus: clean(item.linkedUserStatus),
+  source: clean(item.source || "school_roster"),
+  createdAt: item.createdAt || null,
+  updatedAt: item.updatedAt || null
+});
+
+async function schoolForRosterManager(env, user) {
+  requireRole(user, ["school_admin", "school"]);
+  const schoolId = clean(user.profile.schoolId);
+  if (schoolId) {
+    const school = await getDocument(env, "schools/" + safeId(schoolId, "school identifier"));
+    if (school) return school;
+  }
+  const schoolCode = clean(user.profile.schoolCode);
+  if (schoolCode) return schoolByCode(env, schoolCode);
+  throw Object.assign(new Error("No school is linked to this administrator account."), { status: 409 });
+}
+
+function normalizedRosterStudent(raw) {
+  const firstName = bounded(raw?.firstName, 80, "First name");
+  const lastName = bounded(raw?.lastName, 80, "Last name");
+  const registrationNumber = normalizedRegistrationNumber(raw?.admissionNumber || raw?.registrationNumber);
+  const classLevel = bounded(raw?.classLevel || raw?.level, 80, "Class / Level");
+  const email = normalized(raw?.email);
+  const phone = bounded(raw?.phone, 60, "Phone");
+  if (!firstName || !lastName) {
+    throw Object.assign(new Error("Every roster row requires a first name and last name."), { status: 400 });
+  }
+  if (!registrationNumber || registrationNumber.length > 80) {
+    throw Object.assign(new Error("Enter a valid admission number for " + firstName + " " + lastName + "."), { status: 400 });
+  }
+  if (email && (!looksLikeEmail(email) || email.length > 160)) {
+    throw Object.assign(new Error("Enter a valid email for " + firstName + " " + lastName + "."), { status: 400 });
+  }
+  return { firstName, lastName, registrationNumber, admissionNumber: registrationNumber, classLevel, email, phone };
+}
+
+async function schoolRosterList(env, user) {
+  const school = await schoolForRosterManager(env, user);
+  const page = await queryDocumentsByField(env, "schoolStudentRoster", "schoolId", school.id, 500);
+  const students = page.documents
+    .map(publicSchoolRosterStudent)
+    .sort((a, b) => a.fullName.localeCompare(b.fullName));
+  return {
+    school: publicSchool(school),
+    students,
+    count: students.length,
+    truncated: page.truncated
+  };
+}
+
+async function importSchoolRoster(env, user, data) {
+  const school = await schoolForRosterManager(env, user);
+  const incoming = Array.isArray(data.students) ? data.students : [];
+  if (!incoming.length) {
+    throw Object.assign(new Error("Add at least one student to the roster import."), { status: 400 });
+  }
+  if (incoming.length > 300) {
+    throw Object.assign(new Error("Import a maximum of 300 students at a time."), { status: 400 });
+  }
+
+  const normalizedRows = incoming.map(normalizedRosterStudent);
+  const seen = new Set();
+  for (const row of normalizedRows) {
+    if (seen.has(row.registrationNumber)) {
+      throw Object.assign(new Error("Duplicate admission number in this import: " + row.registrationNumber + "."), { status: 400 });
+    }
+    seen.add(row.registrationNumber);
+  }
+
+  const [existingRosterPage, schoolUsersPage] = await Promise.all([
+    queryDocumentsByField(env, "schoolStudentRoster", "schoolId", school.id, 500),
+    queryDocumentsByField(env, "users", "schoolId", school.id, 500)
+  ]);
+  if (existingRosterPage.truncated || schoolUsersPage.truncated) {
+    throw Object.assign(new Error("This school roster is too large for a safe single import. Import a smaller batch."), { status: 409 });
+  }
+
+  const existingRoster = new Map(
+    existingRosterPage.documents.map(item => [normalizedRegistrationNumber(item.registrationNumber || item.admissionNumber), item])
+  );
+  const existingUsers = new Map();
+  for (const item of schoolUsersPage.documents) {
+    if (normalized(item.role) !== "student") continue;
+    const registrationNumber = normalizedRegistrationNumber(item.registrationNumber || item.admissionNumber);
+    if (registrationNumber) existingUsers.set(registrationNumber, item);
+  }
+
+  const now = new Date().toISOString();
+  const prepared = [];
+  for (const row of normalizedRows) {
+    const id = await sha256Key(school.id + ":" + row.registrationNumber);
+    const existing = existingRoster.get(row.registrationNumber) || null;
+    const linkedUser = existingUsers.get(row.registrationNumber) || null;
+    const linkedUserId = clean(existing?.linkedUserId || linkedUser?.id);
+    const linkedUserStatus = clean(linkedUser?.status || existing?.linkedUserStatus);
+    const status = linkedUserId
+      ? (normalized(linkedUserStatus) === "approved" ? "active" : "claim_pending")
+      : "pre_enrolled";
+    prepared.push({
+      id,
+      record: {
+        firstName: row.firstName,
+        lastName: row.lastName,
+        fullName: (row.firstName + " " + row.lastName).trim(),
+        email: row.email,
+        phone: row.phone,
+        registrationNumber: row.registrationNumber,
+        admissionNumber: row.registrationNumber,
+        classLevel: row.classLevel,
+        level: row.classLevel,
+        studentId: clean(existing?.studentId) || clean(linkedUser?.studentId) ||
+          ("STU-" + new Date().getUTCFullYear() + "-" + crypto.randomUUID().slice(0, 8).toUpperCase()),
+        schoolId: school.id,
+        schoolCode: clean(school.schoolCode),
+        schoolName: clean(school.schoolName || school.name),
+        status,
+        linkedUserId,
+        linkedUserStatus,
+        source: incoming.length > 1 ? "bulk_csv" : "manual_roster",
+        createdBy: clean(existing?.createdBy) || user.uid,
+        createdAt: existing?.createdAt || now,
+        updatedBy: user.uid,
+        updatedAt: now
+      },
+      existed: Boolean(existing)
+    });
+  }
+
+  await runTransaction(env, async tx => {
+    for (const item of prepared) {
+      tx.set("schoolStudentRoster/" + item.id, item.record);
+    }
+  });
+
+  return {
+    ok: true,
+    school: publicSchool(school),
+    imported: prepared.length,
+    created: prepared.filter(item => !item.existed).length,
+    updated: prepared.filter(item => item.existed).length,
+    students: prepared.map(item => publicSchoolRosterStudent({ id: item.id, ...item.record }))
+  };
+}
+
 function requireCloudinary(env) {
   for (const name of ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]) {
     if (!clean(env[name])) throw Object.assign(new Error("Secure evidence service is not configured."), { status: 503 });
@@ -2150,7 +2309,7 @@ async function onboardSchoolUser(request, env, data) {
   }
 
   const now = new Date().toISOString();
-  const studentId = role === "student"
+  const generatedStudentId = role === "student"
     ? `STU-${new Date().getUTCFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
     : "";
   const studentLockId = role === "student"
@@ -2161,10 +2320,15 @@ async function onboardSchoolUser(request, env, data) {
     : "";
 
   return runTransaction(env, async tx => {
+    let rosterStudent = null;
     if (studentLockId) {
       const lock = await tx.get(`schoolStudentRegistrations/${studentLockId}`);
       if (lock && clean(lock.userId) !== identity.uid) {
         throw Object.assign(new Error("This student registration number is already linked to another account. Contact your school administrator if this is an error."), { status: 409 });
+      }
+      rosterStudent = await tx.get(`schoolStudentRoster/${studentLockId}`);
+      if (rosterStudent && clean(rosterStudent.linkedUserId) && clean(rosterStudent.linkedUserId) !== identity.uid) {
+        throw Object.assign(new Error("This school roster record is already claimed by another account. Contact your school administrator if this is an error."), { status: 409 });
       }
     }
     if (staffLockId) {
@@ -2192,13 +2356,15 @@ async function onboardSchoolUser(request, env, data) {
       admissionNumber: role === "student" ? registrationNumber : "",
       staffId: role === "teacher" ? staffId : "",
       department: bounded(data.department, 140, "Department"),
-      classLevel: role === "student" ? bounded(data.level, 80, "Level") : "",
-      level: role === "student" ? bounded(data.level, 80, "Level") : "",
+      classLevel: role === "student" ? (bounded(data.level, 80, "Level") || clean(rosterStudent?.classLevel || rosterStudent?.level)) : "",
+      level: role === "student" ? (bounded(data.level, 80, "Level") || clean(rosterStudent?.classLevel || rosterStudent?.level)) : "",
       position: role === "teacher" ? bounded(data.position, 120, "Position") : "",
       occupation: role === "teacher" ? bounded(data.position, 120, "Position") : "",
       relationship: role === "parent" ? relationship : "",
       parentRole: role === "parent" ? relationship : "",
-      studentId,
+      studentId: role === "student" ? (clean(rosterStudent?.studentId) || generatedStudentId) : "",
+      rosterId: role === "student" && rosterStudent ? studentLockId : "",
+      rosterMatched: role === "student" ? Boolean(rosterStudent) : false,
       status: "pending_school_approval",
       approved: false,
       schoolVerificationStatus: "pending",
@@ -2206,7 +2372,7 @@ async function onboardSchoolUser(request, env, data) {
         role === "student" ? "registration-number-and-school-admin" :
         role === "teacher" ? "staff-id-and-school-admin" :
         "school-admin-and-parent-child-link",
-      accountSource: "school-code-signup",
+      accountSource: role === "student" && rosterStudent ? "school-roster-claim" : "school-code-signup",
       profileCompleted: false,
       createdAt: now,
       updatedAt: now
@@ -2222,6 +2388,16 @@ async function onboardSchoolUser(request, env, data) {
         createdAt: now,
         updatedAt: now
       });
+      if (rosterStudent) {
+        tx.set(`schoolStudentRoster/${studentLockId}`, {
+          ...rosterStudent,
+          linkedUserId: identity.uid,
+          linkedUserStatus: "pending_school_approval",
+          status: "claim_pending",
+          claimedAt: now,
+          updatedAt: now
+        });
+      }
     }
     if (staffLockId) {
       tx.set(`schoolStaffRegistrations/${staffLockId}`, {
@@ -2351,6 +2527,7 @@ async function deleteSchoolPermanently(env, user, data) {
   const schoolName = clean(school.schoolName || school.name) || "School";
   const deleteCollections = [
     "schoolStudentRegistrations",
+    "schoolStudentRoster",
     "schoolStaffRegistrations",
     "schoolAdminInvites",
     "parentStudentLinks",
@@ -2680,6 +2857,14 @@ async function route(request, env, path, data) {
     }
   }
 
+  if (path === "/v1/roles/school/roster/list") {
+    return schoolRosterList(env, user);
+  }
+
+  if (path === "/v1/roles/school/roster/import") {
+    return importSchoolRoster(env, user, data);
+  }
+
   if (path === "/v1/roles/overview") {
     return roleOverview(env, user, clean(data.subjectId));
   }
@@ -2720,8 +2905,21 @@ async function route(request, env, path, data) {
         if (registrationNumber && schoolId) {
           const lockId = await sha256Key(`${schoolId}:${registrationNumber}`);
           const lock = await tx.get(`schoolStudentRegistrations/${lockId}`);
+          const rosterStudent = await tx.get(`schoolStudentRoster/${lockId}`);
           if (status === "rejected") {
             if (lock) tx.delete(`schoolStudentRegistrations/${lockId}`);
+            if (rosterStudent) {
+              tx.set(`schoolStudentRoster/${lockId}`, {
+                ...rosterStudent,
+                linkedUserId: "",
+                linkedUserStatus: "",
+                status: "pre_enrolled",
+                lastRejectedClaimUserId: targetUserId,
+                reviewedAt: now,
+                reviewedBy: user.uid,
+                updatedAt: now
+              });
+            }
           } else {
             tx.set(`schoolStudentRegistrations/${lockId}`, {
               ...(lock || {}),
@@ -2734,6 +2932,20 @@ async function route(request, env, path, data) {
               reviewedBy: user.uid,
               updatedAt: now
             });
+            if (rosterStudent) {
+              tx.set(`schoolStudentRoster/${lockId}`, {
+                ...rosterStudent,
+                linkedUserId: targetUserId,
+                linkedUserStatus: status,
+                status:
+                  status === "approved" ? "active" :
+                  status === "suspended" ? "suspended" :
+                  "claim_pending",
+                reviewedAt: now,
+                reviewedBy: user.uid,
+                updatedAt: now
+              });
+            }
           }
         }
       }
