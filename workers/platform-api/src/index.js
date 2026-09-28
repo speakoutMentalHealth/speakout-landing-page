@@ -632,6 +632,136 @@ const publicRoleCertificate = item => ({
   issueDate: item.issueDate || item.issuedAt || item.createdAt || null
 });
 
+const normalizedParentVisibility = item => {
+  const value = normalized(item?.parentVisibility || "progress");
+  return ["progress", "progress_feedback", "hidden"].includes(value) ? value : "progress";
+};
+
+const publicParentProgramme = item => ({
+  id: item.id,
+  name: clean(item.name || "Programme"),
+  type: clean(item.type || "programme"),
+  category: clean(item.category || "General"),
+  status: clean(item.status || "active"),
+  source: clean(item.source),
+  scheduleDay: clean(item.scheduleDay),
+  scheduleTime: clean(item.scheduleTime),
+  frequency: clean(item.frequency),
+  venue: clean(item.venue),
+  parentVisibility: normalizedParentVisibility(item)
+});
+
+const publicParentMembership = item => ({
+  id: item.id,
+  programmeId: clean(item.programmeId),
+  userId: clean(item.userId),
+  status: clean(item.status || "active"),
+  joinedAt: item.joinedAt || item.createdAt || null
+});
+
+const publicParentSession = item => ({
+  id: item.id,
+  programmeId: clean(item.programmeId),
+  sessionDate: clean(item.sessionDate),
+  topic: clean(item.topic || "Session"),
+  learningObjective: clean(item.learningObjective),
+  status: clean(item.status || "completed")
+});
+
+const publicParentAttendance = item => ({
+  id: item.id,
+  programmeId: clean(item.programmeId),
+  sessionId: clean(item.sessionId),
+  studentId: clean(item.studentId),
+  status: clean(item.status || "present")
+});
+
+const publicParentAssignment = item => ({
+  id: item.id,
+  programmeId: clean(item.programmeId),
+  title: clean(item.title || "Assignment"),
+  dueDate: clean(item.dueDate),
+  status: clean(item.status || "active")
+});
+
+const publicParentSubmission = (item, programme) => ({
+  id: item.id,
+  programmeId: clean(item.programmeId),
+  assignmentId: clean(item.assignmentId),
+  studentId: clean(item.studentId),
+  status: clean(item.status || "submitted"),
+  submissionMethod: clean(item.submissionMethod),
+  submittedOnBehalf: item.submittedOnBehalf === true,
+  feedback: normalizedParentVisibility(programme) === "progress_feedback" ? clean(item.feedback) : "",
+  submittedAt: item.submittedAt || item.updatedAt || null
+});
+
+async function parentProgrammeOverview(env, subjectIds) {
+  if (!subjectIds.length) {
+    return {
+      programmes: [],
+      memberships: [],
+      sessions: [],
+      attendance: [],
+      assignments: [],
+      submissions: [],
+      truncated: false
+    };
+  }
+
+  const membershipsPage = await queryDocumentsByValues(env, "programmeMemberships", "userId", subjectIds);
+  const activeMemberships = membershipsPage.documents.filter(item => normalized(item.status || "active") !== "inactive");
+  const programmeIds = [...new Set(activeMemberships.map(item => clean(item.programmeId)).filter(Boolean))].slice(0, 80);
+
+  const programmeRecords = [];
+  for (const programmeId of programmeIds) {
+    const programme = await getDocument(env, "programmes/" + safeId(programmeId, "programme identifier"));
+    if (
+      programme &&
+      normalized(programme.status) === "active" &&
+      normalizedParentVisibility(programme) !== "hidden"
+    ) {
+      programmeRecords.push(programme);
+    }
+  }
+
+  const visibleProgrammeIds = programmeRecords.map(item => item.id);
+  const visibleSet = new Set(visibleProgrammeIds);
+  const visibleMemberships = activeMemberships.filter(item => visibleSet.has(clean(item.programmeId)));
+
+  const [sessionsPage, attendancePage, assignmentsPage, submissionsPage] = await Promise.all([
+    queryDocumentsByValues(env, "programmeSessions", "programmeId", visibleProgrammeIds),
+    queryDocumentsByValues(env, "programmeAttendance", "studentId", subjectIds),
+    queryDocumentsByValues(env, "programmeAssignments", "programmeId", visibleProgrammeIds),
+    queryDocumentsByValues(env, "programmeSubmissions", "studentId", subjectIds)
+  ]);
+
+  const programmeMap = new Map(programmeRecords.map(item => [item.id, item]));
+
+  return {
+    programmes: programmeRecords.map(publicParentProgramme),
+    memberships: visibleMemberships.map(publicParentMembership),
+    sessions: sessionsPage.documents
+      .filter(item => visibleSet.has(clean(item.programmeId)))
+      .map(publicParentSession),
+    attendance: attendancePage.documents
+      .filter(item => visibleSet.has(clean(item.programmeId)))
+      .map(publicParentAttendance),
+    assignments: assignmentsPage.documents
+      .filter(item => visibleSet.has(clean(item.programmeId)))
+      .map(publicParentAssignment),
+    submissions: submissionsPage.documents
+      .filter(item => visibleSet.has(clean(item.programmeId)))
+      .map(item => publicParentSubmission(item, programmeMap.get(clean(item.programmeId)) || {})),
+    truncated:
+      membershipsPage.truncated ||
+      sessionsPage.truncated ||
+      attendancePage.truncated ||
+      assignmentsPage.truncated ||
+      submissionsPage.truncated
+  };
+}
+
 async function roleOverview(env, user, requestedSubjectId = "") {
   const role = normalized(user.profile.role);
   let subjects = [];
@@ -647,9 +777,13 @@ async function roleOverview(env, user, requestedSubjectId = "") {
     }
   } else if (role === "parent") {
     const links = await queryDocumentsByField(env, "parentStudentLinks", "parentId", user.uid, 100);
-    const subjectIds = links.documents
+    let subjectIds = links.documents
       .filter(link => normalized(link.status) === "approved")
       .map(link => clean(link.studentId)).filter(Boolean).slice(0, 20);
+    if (clean(requestedSubjectId)) {
+      const requested = safeId(requestedSubjectId, "student identifier");
+      subjectIds = subjectIds.filter(subjectId => subjectId === requested);
+    }
     for (const subjectId of subjectIds) {
       const subject = await getDocument(env, `users/${safeId(subjectId, "student identifier")}`);
       if (subject && normalized(subject.role) === "student") subjects.push(subject);
@@ -682,16 +816,22 @@ async function roleOverview(env, user, requestedSubjectId = "") {
 
   const uniqueSubjects = [...new Map(subjects.map(subject => [subject.id, subject])).values()].slice(0, 300);
   const subjectIds = uniqueSubjects.map(subject => subject.id);
-  const [progressPage, certificatePage] = await Promise.all([
+  const [progressPage, certificatePage, parentProgrammes] = await Promise.all([
     queryDocumentsByValues(env, "userProgress", "userId", subjectIds),
-    queryDocumentsByValues(env, "certificates", "userId", subjectIds)
+    queryDocumentsByValues(env, "certificates", "userId", subjectIds),
+    role === "parent" ? parentProgrammeOverview(env, subjectIds) : Promise.resolve(null)
   ]);
   return {
     role,
     subjects: uniqueSubjects.map(publicSubject),
     progress: progressPage.documents.map(publicRoleProgress),
     certificates: certificatePage.documents.map(publicRoleCertificate),
-    truncated: uniqueSubjects.length >= 300 || progressPage.truncated || certificatePage.truncated
+    parentProgrammes,
+    truncated:
+      uniqueSubjects.length >= 300 ||
+      progressPage.truncated ||
+      certificatePage.truncated ||
+      Boolean(parentProgrammes?.truncated)
   };
 }
 
