@@ -2358,7 +2358,13 @@ async function deleteSchoolPermanently(env, user, data) {
     "schoolAnnouncements",
     "schoolResources",
     "schoolReports",
-    "workshops"
+    "workshops",
+    "programmes",
+    "programmeMemberships",
+    "programmeSessions",
+    "programmeAttendance",
+    "programmeAssignments",
+    "programmeSubmissions"
   ];
 
   const linkedByCollection = [];
