@@ -1090,7 +1090,7 @@ async function loadParentLinks(){
       }
     }
 
-    if(!snap && SCHOOL.schoolCode){
+    if((!snap || snap.empty) && SCHOOL.schoolCode){
       snap =
         await getDocs(
           query(
