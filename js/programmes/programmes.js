@@ -114,6 +114,17 @@ function studentAction(item){
   return '<span class="program-pill">Membership managed by school</span>';
 }
 
+function parentVisibilityControl(item){
+  if(!isTeacher() && !isSchoolAdmin()) return "";
+  const current = normalize(item.parentVisibility || "progress");
+  return '<label class="program-pill" style="gap:6px">Parent view ' +
+    '<select data-parent-visibility-id="' + escapeHtml(item.id) + '" style="border:0;background:transparent;font:inherit;font-weight:800">' +
+      '<option value="progress"' + (current === "progress" ? " selected" : "") + '>Progress only</option>' +
+      '<option value="progress_feedback"' + (current === "progress_feedback" ? " selected" : "") + '>Progress + feedback</option>' +
+      '<option value="hidden"' + (current === "hidden" ? " selected" : "") + '>Hidden</option>' +
+    '</select></label>';
+}
+
 function render(){
   const q = normalize(searchInput.value);
   const filter = normalize(statusFilter.value || "all");
@@ -157,6 +168,7 @@ function render(){
       (item.scheduleTime ? '<span class="program-pill">' + escapeHtml(item.scheduleTime) + '</span>' : '') +
       (item.frequency ? '<span class="program-pill">' + escapeHtml(item.frequency) + '</span>' : '') +
       (item.venue ? '<span class="program-pill">' + escapeHtml(item.venue) + '</span>' : '') +
+      parentVisibilityControl(item) +
       '</div>' +
       '<div class="program-actions">' +
       '<a class="program-btn dark" href="programme-workspace.html?id=' + encodeURIComponent(item.id) + '">' + manageLabel + '</a>' +
@@ -185,6 +197,25 @@ function render(){
         show(error.message || "Could not update programme.","bad");
       }finally{
         button.disabled = false;
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-parent-visibility-id]").forEach(select => {
+    select.addEventListener("change",async () => {
+      select.disabled = true;
+      try{
+        await updateDoc(doc(db,"programmes",select.dataset.parentVisibilityId),{
+          parentVisibility:select.value,
+          updatedAt:serverTimestamp()
+        });
+        show("Parent programme visibility updated.","ok");
+        await loadProgrammes();
+      }catch(error){
+        console.error(error);
+        show(error.message || "Could not update parent visibility.","bad");
+      }finally{
+        select.disabled = false;
       }
     });
   });
