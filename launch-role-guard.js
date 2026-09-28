@@ -385,6 +385,10 @@ const linksByRole = {
       "student-dashboard.html"
     ],
     [
+      "Programs",
+      "programmes.html"
+    ],
+    [
       "Courses",
       "speakhub.html?audience=student"
     ],
@@ -453,6 +457,10 @@ const linksByRole = {
       "teacher-dashboard.html"
     ],
     [
+      "Programs",
+      "programmes.html"
+    ],
+    [
       "Teacher Library",
       "teacher-library.html"
     ],
@@ -483,6 +491,10 @@ const linksByRole = {
     [
       "Dashboard",
       "school-dashboard.html"
+    ],
+    [
+      "Programs",
+      "programmes.html"
     ],
     [
       "Students",
