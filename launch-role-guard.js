@@ -933,10 +933,6 @@ export function renderRoleNav(
   const links =
     supportMode
       ? [
-          [
-            "Admin Home",
-            "admin-dashboard.html"
-          ],
           ...linksByRole.school_admin
         ]
       : (
