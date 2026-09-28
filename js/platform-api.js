@@ -131,6 +131,8 @@ export const adminApi = {
   retrieveEvidence,
   updateSchoolStatus: (schoolId, status) =>
     platformRequest("/v1/admin/schools/status", { schoolId, status }),
+  deleteSchool: schoolId =>
+    platformRequest("/v1/admin/schools/delete", { schoolId }),
   listExternalLearning: () => platformRequest("/v1/admin/external-learning/list"),
   listCredentials: () => platformRequest("/v1/admin/credentials/list"),
   reviewCredential: (recordId, decision, note) =>
