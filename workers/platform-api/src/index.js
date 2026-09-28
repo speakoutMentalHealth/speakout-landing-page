@@ -3005,6 +3005,77 @@ async function route(request, env, path, data) {
     return importSchoolRoster(env, user, data);
   }
 
+  if (path === "/v1/roles/parent-links/status") {
+    const linkId = safeId(data.linkId, "parent link identifier");
+    const nextStatus = normalized(data.status);
+    if (!["approved", "rejected", "cancelled", "pending"].includes(nextStatus)) {
+      throw Object.assign(new Error("Invalid parent-link status."), { status: 400 });
+    }
+
+    return runTransaction(env, async tx => {
+      const link = await tx.get("parentStudentLinks/" + linkId);
+      if (!link) throw Object.assign(new Error("Parent-child link not found."), { status: 404 });
+
+      const role = normalized(user.profile.role);
+      const schoolManager = ["school_admin", "school", "admin", "super_admin"].includes(role);
+      const ownStudent = role === "student" && clean(link.studentId) === user.uid;
+      const ownParent = role === "parent" && clean(link.parentId) === user.uid;
+
+      if (ownParent && nextStatus !== "cancelled") {
+        throw Object.assign(new Error("Parents can cancel their own request, but cannot approve a child link."), { status: 403 });
+      }
+      if (ownStudent && !["approved", "rejected"].includes(nextStatus)) {
+        throw Object.assign(new Error("Students can approve or reject only their own parent-link requests."), { status: 403 });
+      }
+      if (schoolManager && !["admin", "super_admin"].includes(role) && !sameSchool(user.profile, link)) {
+        throw Object.assign(new Error("You can manage only parent-child links in your school."), { status: 403 });
+      }
+      if (!schoolManager && !ownStudent && !ownParent) {
+        throw Object.assign(new Error("This account cannot manage the requested parent-child link."), { status: 403 });
+      }
+
+      const parent = await tx.get("users/" + safeId(link.parentId, "parent identifier"));
+      const student = await tx.get("users/" + safeId(link.studentId, "student identifier"));
+      if (!parent || normalized(parent.role) !== "parent") {
+        throw Object.assign(new Error("The linked parent account is unavailable."), { status: 409 });
+      }
+      if (!student || normalized(student.role) !== "student") {
+        throw Object.assign(new Error("The linked student account is unavailable."), { status: 409 });
+      }
+      if (nextStatus === "approved") {
+        if (normalized(parent.status) !== "approved" || normalized(student.status) !== "approved") {
+          throw Object.assign(new Error("Both the parent and student accounts must be school-approved before the child link can be activated."), { status: 409 });
+        }
+        if (clean(parent.schoolId) !== clean(student.schoolId) && clean(parent.schoolCode) !== clean(student.schoolCode)) {
+          throw Object.assign(new Error("Parent and student must belong to the same verified school."), { status: 409 });
+        }
+      }
+
+      const now = new Date().toISOString();
+      tx.set("parentStudentLinks/" + linkId, {
+        ...link,
+        status: nextStatus,
+        updatedAt: now,
+        reviewedAt: now,
+        reviewedBy: user.uid,
+        reviewSource:
+          ownStudent ? "student" :
+          ownParent ? "parent" :
+          "school"
+      });
+
+      return {
+        ok: true,
+        linkId,
+        status: nextStatus,
+        reviewSource:
+          ownStudent ? "student" :
+          ownParent ? "parent" :
+          "school"
+      };
+    });
+  }
+
   if (path === "/v1/roles/overview") {
     return roleOverview(env, user, clean(data.subjectId));
   }
