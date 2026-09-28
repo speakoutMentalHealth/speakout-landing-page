@@ -65,3 +65,42 @@ test("programme security collections are school-scoped and cascade with school d
   assert.match(rules,/assignmentBelongsToProgramme/u);
   assert.match(rules,/sessionBelongsToProgramme/u);
 });
+
+test("shared school computers default to session-only authentication with idle logout", () => {
+  const authPage = read("auth.html");
+  const nestedAuthPage = read("auth/auth.html");
+  const auth = read("js/auth.js");
+  const guard = read("launch-role-guard.js");
+
+  assert.match(authPage,/id="privateDevice"/u);
+  assert.match(nestedAuthPage,/id="privateDevice"/u);
+  assert.match(authPage,/shared computers/u);
+  assert.match(auth,/browserSessionPersistence/u);
+  assert.match(auth,/browserLocalPersistence/u);
+  assert.match(auth,/privateDevice/u);
+  assert.match(auth,/speakoutDeviceMode/u);
+  assert.match(guard,/SHARED_DEVICE_IDLE_MS/u);
+  assert.match(guard,/30 \* 60 \* 1000/u);
+  assert.match(guard,/sessionExpired=1/u);
+  assert.match(guard,/setPersistence\(auth,browserSessionPersistence\)/u);
+});
+
+test("school admin has programme reporting and no fixed club placeholder", () => {
+  const dashboard = read("school-dashboard.html");
+  const nav = read("launch-role-guard.js");
+  const report = read("school-programme-report.html");
+  const reportJs = read("js/programmes/school-programme-report.js");
+
+  assert.match(dashboard,/href="school-programme-report\.html"/u);
+  assert.match(dashboard,/href="programmes\.html"/u);
+  assert.doesNotMatch(dashboard,/>Mental Health Club<\/h3>/u);
+  assert.match(nav,/"Reports",\s*"school-programme-report\.html"/u);
+  assert.match(report,/Programme performance/u);
+  assert.match(report,/Export CSV/u);
+  assert.match(report,/Needs attention/u);
+  assert.match(reportJs,/programmeSessions/u);
+  assert.match(reportJs,/programmeMemberships/u);
+  assert.match(reportJs,/programmeAssignments/u);
+  assert.match(reportJs,/programmeSubmissions/u);
+  assert.match(reportJs,/submittedOnBehalf/u);
+});
