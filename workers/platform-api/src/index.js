@@ -2309,7 +2309,7 @@ async function onboardSchoolUser(request, env, data) {
   }
 
   const now = new Date().toISOString();
-  const studentId = role === "student"
+  const generatedStudentId = role === "student"
     ? `STU-${new Date().getUTCFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
     : "";
   const studentLockId = role === "student"
@@ -2320,10 +2320,15 @@ async function onboardSchoolUser(request, env, data) {
     : "";
 
   return runTransaction(env, async tx => {
+    let rosterStudent = null;
     if (studentLockId) {
       const lock = await tx.get(`schoolStudentRegistrations/${studentLockId}`);
       if (lock && clean(lock.userId) !== identity.uid) {
         throw Object.assign(new Error("This student registration number is already linked to another account. Contact your school administrator if this is an error."), { status: 409 });
+      }
+      rosterStudent = await tx.get(`schoolStudentRoster/${studentLockId}`);
+      if (rosterStudent && clean(rosterStudent.linkedUserId) && clean(rosterStudent.linkedUserId) !== identity.uid) {
+        throw Object.assign(new Error("This school roster record is already claimed by another account. Contact your school administrator if this is an error."), { status: 409 });
       }
     }
     if (staffLockId) {
@@ -2351,13 +2356,15 @@ async function onboardSchoolUser(request, env, data) {
       admissionNumber: role === "student" ? registrationNumber : "",
       staffId: role === "teacher" ? staffId : "",
       department: bounded(data.department, 140, "Department"),
-      classLevel: role === "student" ? bounded(data.level, 80, "Level") : "",
-      level: role === "student" ? bounded(data.level, 80, "Level") : "",
+      classLevel: role === "student" ? (bounded(data.level, 80, "Level") || clean(rosterStudent?.classLevel || rosterStudent?.level)) : "",
+      level: role === "student" ? (bounded(data.level, 80, "Level") || clean(rosterStudent?.classLevel || rosterStudent?.level)) : "",
       position: role === "teacher" ? bounded(data.position, 120, "Position") : "",
       occupation: role === "teacher" ? bounded(data.position, 120, "Position") : "",
       relationship: role === "parent" ? relationship : "",
       parentRole: role === "parent" ? relationship : "",
-      studentId,
+      studentId: role === "student" ? (clean(rosterStudent?.studentId) || generatedStudentId) : "",
+      rosterId: role === "student" && rosterStudent ? studentLockId : "",
+      rosterMatched: role === "student" ? Boolean(rosterStudent) : false,
       status: "pending_school_approval",
       approved: false,
       schoolVerificationStatus: "pending",
@@ -2365,7 +2372,7 @@ async function onboardSchoolUser(request, env, data) {
         role === "student" ? "registration-number-and-school-admin" :
         role === "teacher" ? "staff-id-and-school-admin" :
         "school-admin-and-parent-child-link",
-      accountSource: "school-code-signup",
+      accountSource: role === "student" && rosterStudent ? "school-roster-claim" : "school-code-signup",
       profileCompleted: false,
       createdAt: now,
       updatedAt: now
@@ -2381,6 +2388,16 @@ async function onboardSchoolUser(request, env, data) {
         createdAt: now,
         updatedAt: now
       });
+      if (rosterStudent) {
+        tx.set(`schoolStudentRoster/${studentLockId}`, {
+          ...rosterStudent,
+          linkedUserId: identity.uid,
+          linkedUserStatus: "pending_school_approval",
+          status: "claim_pending",
+          claimedAt: now,
+          updatedAt: now
+        });
+      }
     }
     if (staffLockId) {
       tx.set(`schoolStaffRegistrations/${staffLockId}`, {
