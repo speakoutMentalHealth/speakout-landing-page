@@ -527,16 +527,13 @@ import {
 
 import {
   collection,
-  getDocs,
   query,
   where,
   doc,
   getDoc,
-  addDoc,
-  updateDoc,
-  serverTimestamp,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { roleApi } from "./js/platform-api.js";
 
 
 let currentUser = null;
@@ -950,16 +947,9 @@ async function renderLinks(){
             button.disabled =
               true;
 
-            await updateDoc(
-              doc(
-                db,
-                "parentStudentLinks",
-                button.dataset.cancel
-              ),
-              {
-                status:"cancelled",
-                updatedAt:serverTimestamp()
-              }
+            await roleApi.updateParentStudentLink(
+              button.dataset.cancel,
+              "cancelled"
             );
 
             show(
@@ -1073,112 +1063,13 @@ async function findStudent(search){
   }
 
 
-  let student = null;
-
-
-  try{
-
-    const studentIdSnap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "users"
-          ),
-          where(
-            "studentId",
-            "==",
-            term
-          )
-        )
-      );
-
-
-    studentIdSnap.forEach(document=>{
-
-      const data =
-        document.data();
-
-      if(
-        normalize(data.role) ===
-        "student"
-      ){
-
-        student = {
-          id:document.id,
-          ...data
-        };
-
-      }
-
-    });
-
-
-    if(student){
-      return student;
-    }
-
-  }catch(error){
-
-    console.warn(
-      "Student ID search failed:",
-      error
+  const result =
+    await roleApi.findStudentForParentLink(
+      term
     );
 
-  }
 
-
-  try{
-
-    const emailTerm =
-      term.toLowerCase();
-
-    const emailSnap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "users"
-          ),
-          where(
-            "email",
-            "==",
-            emailTerm
-          )
-        )
-      );
-
-
-    emailSnap.forEach(document=>{
-
-      const data =
-        document.data();
-
-      if(
-        normalize(data.role) ===
-        "student"
-      ){
-
-        student = {
-          id:document.id,
-          ...data
-        };
-
-      }
-
-    });
-
-  }catch(error){
-
-    console.warn(
-      "Student email search failed:",
-      error
-    );
-
-  }
-
-
-  return student;
+  return result.student || null;
 
 }
 
@@ -1438,45 +1329,14 @@ async function sendRequest(){
   try{
 
     const existing =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "parentStudentLinks"
-          ),
-          where(
-            "parentId",
-            "==",
-            currentUser.uid
-          ),
-          where(
-            "studentId",
-            "==",
-            foundStudent.id
-          )
-        )
+      links.find(
+        link =>
+          link.studentId === foundStudent.id &&
+          isActiveLink(link)
       );
 
 
-    let activeExisting =
-      false;
-
-
-    existing.forEach(document=>{
-
-      if(
-        isActiveLink(
-          document.data()
-        )
-      ){
-        activeExisting =
-          true;
-      }
-
-    });
-
-
-    if(activeExisting){
+    if(existing){
 
       show(
         "A link request already exists for this child.",
@@ -1488,80 +1348,15 @@ async function sendRequest(){
     }
 
 
-    const parentName =
-      parentProfile.fullName ||
-      `${parentProfile.firstName || ""} ${parentProfile.lastName || ""}`.trim();
-
-
-    const studentName =
-      `${foundStudent.firstName || foundStudent.fullName || ""} ${foundStudent.lastName || ""}`.trim();
-
-
-    await addDoc(
-      collection(
-        db,
-        "parentStudentLinks"
-      ),
-      {
-
-        parentId:
-          currentUser.uid,
-
-        parentName:
-          parentName,
-
-        parentEmail:
-          parentProfile.email ||
-          currentUser.email ||
-          "",
-
-        studentId:
-          foundStudent.id,
-
-        studentName:
-          studentName,
-
-        studentCode:
-          foundStudent.studentId ||
-          "",
-
-        relationship:
-          relationship.value,
-
-        note:
-          requestNote.value.trim(),
-
-        schoolId:
-          foundStudent.schoolId ||
-          parentProfile.schoolId ||
-          "",
-
-        schoolCode:
-          foundStudent.schoolCode ||
-          parentProfile.schoolCode ||
-          "",
-
-        status:
-          "pending",
-
-        approvalRequired:
-          true,
-
-        approvedAt:
-          null,
-
-        createdAt:
-          serverTimestamp(),
-
-        updatedAt:
-          serverTimestamp()
-
-      }
+    await roleApi.requestParentStudentLink(
+      foundStudent.id,
+      relationship.value,
+      requestNote.value.trim()
     );
 
 
     show(
-      "Link request sent. Access will remain locked until the request is approved.",
+      "Link request sent. Access will remain locked until the student or school verifies the relationship.",
       "ok"
     );
 
