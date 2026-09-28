@@ -149,6 +149,7 @@ function render(){
       '<span class="program-pill">' + escapeHtml(pretty(item.type || "programme")) + '</span>' +
       '<span class="program-pill">' + escapeHtml(item.category || "General") + '</span>' +
       '<span class="program-pill">' + escapeHtml(pretty(item.source || "school")) + '</span>' +
+      ((isTeacher() || isSchoolAdmin()) ? '<span class="program-pill">Parent: ' + escapeHtml(pretty(item.parentVisibility || "progress")) + '</span>' : '') +
       '</div></div>' +
       '<div class="program-actions">' + studentAction(item) + '</div></div>' +
       '<div class="program-meta">' +
@@ -249,6 +250,7 @@ $("programmeForm").addEventListener("submit",async event => {
       frequency:$("frequency").value.trim(),
       venue:$("venue").value.trim(),
       membershipMode:$("membershipMode").value,
+      parentVisibility:$("parentVisibility").value || "progress",
       schoolId:school.id,
       schoolCode:school.schoolCode || "",
       schoolName:school.schoolName || school.name || "",
