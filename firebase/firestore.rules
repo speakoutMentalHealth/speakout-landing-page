@@ -226,8 +226,21 @@ service cloud.firestore {
         get(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + studentId)).data.status == "active";
     }
 
+    function sessionBelongsToProgramme(sessionId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeSessions/$(sessionId)) &&
+        get(/databases/$(database)/documents/programmeSessions/$(sessionId)).data.programmeId == programmeId;
+    }
+
+    function assignmentBelongsToProgramme(assignmentId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeAssignments/$(assignmentId)) &&
+        get(/databases/$(database)/documents/programmeAssignments/$(assignmentId)).data.programmeId == programmeId;
+    }
+
     match /programmes/{programmeId} {
-      allow create: if isSuperAdmin() ||
+      allow create: if
+        membershipId == request.resource.data.programmeId + "__" + request.resource.data.userId &&
+        (
+          isSuperAdmin() ||
         (
           isSchoolAdmin() &&
           request.resource.data.schoolId == userSchoolId()
@@ -314,6 +327,7 @@ service cloud.firestore {
           programmeData(request.resource.data.programmeId).status == "active" &&
           programmeData(request.resource.data.programmeId).membershipMode in ["open", "voluntary"] &&
           request.resource.data.status == "active"
+        )
         );
 
       allow update: if isSuperAdmin() ||
@@ -358,8 +372,10 @@ service cloud.firestore {
           (isStudent() && resource.data.studentId == request.auth.uid)
         );
       allow create: if isApproved() &&
+        attendanceId == request.resource.data.sessionId + "__" + request.resource.data.studentId &&
         canManageProgramme(request.resource.data.programmeId) &&
         request.resource.data.schoolId == userSchoolId() &&
+        sessionBelongsToProgramme(request.resource.data.sessionId, request.resource.data.programmeId) &&
         studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId);
       allow update, delete: if isApproved() &&
         canManageProgramme(resource.data.programmeId) &&
@@ -391,6 +407,8 @@ service cloud.firestore {
         );
 
       allow create: if isApproved() &&
+        submissionId == request.resource.data.assignmentId + "__" + request.resource.data.studentId &&
+        assignmentBelongsToProgramme(request.resource.data.assignmentId, request.resource.data.programmeId) &&
         (
           (
             isStudent() &&
