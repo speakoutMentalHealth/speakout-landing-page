@@ -1064,13 +1064,54 @@ async function loadParentLinks(){
         USERS.map(user=>user.id)
       );
 
-    const snap =
-      await getDocs(
-        collection(
-          db,
-          "parentStudentLinks"
-        )
+    let snap = null;
+
+    if(SCHOOL.id){
+      try{
+        snap =
+          await getDocs(
+            query(
+              collection(
+                db,
+                "parentStudentLinks"
+              ),
+              where(
+                "schoolId",
+                "==",
+                SCHOOL.id
+              )
+            )
+          );
+      }catch(error){
+        console.warn(
+          "schoolId parent-link query failed:",
+          error
+        );
+      }
+    }
+
+    if(!snap && SCHOOL.schoolCode){
+      snap =
+        await getDocs(
+          query(
+            collection(
+              db,
+              "parentStudentLinks"
+            ),
+            where(
+              "schoolCode",
+              "==",
+              SCHOOL.schoolCode
+            )
+          )
+        );
+    }
+
+    if(!snap){
+      throw new Error(
+        "No school scope is available for parent-child links."
       );
+    }
 
     PARENT_LINKS =
       new Map();
