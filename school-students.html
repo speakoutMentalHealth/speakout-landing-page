@@ -694,8 +694,21 @@ function learningSummary(userId){
 
 function updateStats(){
 
+  const rosterNumbers =
+    new Set(
+      ROSTER.map(item=>normalize(item.registrationNumber || item.admissionNumber))
+        .filter(Boolean)
+    );
+
+  const legacyUsers =
+    USERS.filter(user=>{
+      const number =
+        normalize(user.registrationNumber || user.admissionNumber);
+      return !number || !rosterNumbers.has(number);
+    });
+
   totalCount.textContent =
-    USERS.length;
+    ROSTER.length + legacyUsers.length;
 
   approvedCount.textContent =
     USERS.filter(
@@ -703,8 +716,19 @@ function updateStats(){
         normalize(user.status) === "approved"
     ).length;
 
-  pendingCount.textContent =
-    USERS.filter(
+  const unclaimedRoster =
+    ROSTER.filter(
+      item =>
+        [
+          "pre_enrolled",
+          "claim_pending"
+        ].includes(
+          normalize(item.status)
+        )
+    ).length;
+
+  const legacyPending =
+    legacyUsers.filter(
       user =>
         [
           "pending",
@@ -713,6 +737,9 @@ function updateStats(){
           normalize(user.status)
         )
     ).length;
+
+  pendingCount.textContent =
+    unclaimedRoster + legacyPending;
 
   rejectedCount.textContent =
     USERS.filter(
@@ -724,6 +751,335 @@ function updateStats(){
           normalize(user.status)
         )
     ).length;
+}
+
+
+function renderRoster(){
+
+  rosterRows.innerHTML =
+    ROSTER.length
+      ? ROSTER.map(item=>{
+
+          const name =
+            item.fullName ||
+            `${item.firstName || ""} ${item.lastName || ""}`.trim() ||
+            "Student";
+
+          const linked =
+            Boolean(item.linkedUserId);
+
+          return `
+            <tr>
+              <td>
+                <span class="student-name">${escapeHtml(name)}</span>
+                ${item.studentId ? `<span class="student-sub">SpeakOut ID: ${escapeHtml(item.studentId)}</span>` : ""}
+              </td>
+              <td>${escapeHtml(item.registrationNumber || item.admissionNumber || "—")}</td>
+              <td>${escapeHtml(item.classLevel || "—")}</td>
+              <td>${escapeHtml(item.email || item.phone || "—")}</td>
+              <td>${pill(item.status || "pre_enrolled")}</td>
+              <td>
+                ${linked
+                  ? `<span class="pill approved">Linked</span><span class="student-sub">${escapeHtml(pretty(item.linkedUserStatus || "pending"))}</span>`
+                  : `<span class="pill pending">Not activated</span>`
+                }
+              </td>
+            </tr>
+          `;
+
+        }).join("")
+      : `
+        <tr>
+          <td colspan="6">
+            <div class="notice warn">
+              No students have been pre-enrolled on the roster yet.
+            </div>
+          </td>
+        </tr>
+      `;
+
+}
+
+
+async function loadRoster(){
+
+  try{
+
+    const result =
+      await roleApi.schoolRoster();
+
+    ROSTER =
+      Array.isArray(result.students)
+        ? result.students
+        : [];
+
+    renderRoster();
+
+    updateStats();
+
+  }catch(error){
+
+    console.error(
+      "Roster load failed:",
+      error
+    );
+
+    ROSTER = [];
+
+    renderRoster();
+
+    show(
+      error.message ||
+      "Could not load the school roster.",
+      "bad"
+    );
+
+  }
+
+}
+
+
+function parseCsv(text){
+
+  const rows = [];
+  let row = [];
+  let field = "";
+  let quoted = false;
+
+  const source =
+    String(text || "").replace(/^\uFEFF/,"");
+
+  for(let index=0; index<source.length; index++){
+
+    const char = source[index];
+
+    if(quoted){
+
+      if(char === '"'){
+
+        if(source[index + 1] === '"'){
+          field += '"';
+          index++;
+        }else{
+          quoted = false;
+        }
+
+      }else{
+        field += char;
+      }
+
+      continue;
+    }
+
+    if(char === '"'){
+      quoted = true;
+    }else if(char === ","){
+      row.push(field);
+      field = "";
+    }else if(char === "\n"){
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    }else if(char !== "\r"){
+      field += char;
+    }
+
+  }
+
+  row.push(field);
+
+  if(row.some(value=>String(value).trim())){
+    rows.push(row);
+  }
+
+  return rows;
+
+}
+
+
+function normalizedHeader(value){
+
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,"");
+
+}
+
+
+function rosterRowsFromCsv(text){
+
+  const parsed =
+    parseCsv(text);
+
+  if(parsed.length < 2){
+    throw new Error(
+      "The CSV needs a header row and at least one student."
+    );
+  }
+
+  const headers =
+    parsed[0].map(normalizedHeader);
+
+  const indexOfAny = names =>
+    headers.findIndex(header=>names.includes(header));
+
+  const firstIndex =
+    indexOfAny(["firstname","first","givenname"]);
+
+  const lastIndex =
+    indexOfAny(["lastname","last","surname","familyname"]);
+
+  const admissionIndex =
+    indexOfAny([
+      "admissionnumber",
+      "admissionno",
+      "registrationnumber",
+      "registrationno",
+      "studentnumber",
+      "studentno",
+      "matricnumber",
+      "matricno"
+    ]);
+
+  const classIndex =
+    indexOfAny(["classlevel","class","level","grade"]);
+
+  const emailIndex =
+    indexOfAny(["email","emailaddress"]);
+
+  const phoneIndex =
+    indexOfAny(["phone","phonenumber","mobile","whatsapp"]);
+
+  if(
+    firstIndex < 0 ||
+    lastIndex < 0 ||
+    admissionIndex < 0
+  ){
+    throw new Error(
+      "Required CSV columns: First Name, Last Name and Admission Number."
+    );
+  }
+
+  const output = [];
+
+  parsed.slice(1).forEach((values,rowIndex)=>{
+
+    if(!values.some(value=>String(value).trim())){
+      return;
+    }
+
+    const record = {
+      firstName:String(values[firstIndex] || "").trim(),
+      lastName:String(values[lastIndex] || "").trim(),
+      admissionNumber:String(values[admissionIndex] || "").trim(),
+      classLevel:classIndex >= 0 ? String(values[classIndex] || "").trim() : "",
+      email:emailIndex >= 0 ? String(values[emailIndex] || "").trim() : "",
+      phone:phoneIndex >= 0 ? String(values[phoneIndex] || "").trim() : ""
+    };
+
+    if(
+      !record.firstName ||
+      !record.lastName ||
+      !record.admissionNumber
+    ){
+      throw new Error(
+        `Row ${rowIndex + 2} is missing a first name, last name or admission number.`
+      );
+    }
+
+    output.push(record);
+
+  });
+
+  if(!output.length){
+    throw new Error(
+      "No student rows were found in the CSV."
+    );
+  }
+
+  if(output.length > 300){
+    throw new Error(
+      "Import a maximum of 300 students at a time."
+    );
+  }
+
+  return output;
+
+}
+
+
+function renderCsvPreview(){
+
+  if(!CSV_ROWS.length){
+
+    rosterPreview.className =
+      "notice warn";
+
+    rosterPreview.textContent =
+      "Choose a CSV file to preview the roster before importing.";
+
+    importRosterButton.disabled =
+      true;
+
+    return;
+  }
+
+  const firstRows =
+    CSV_ROWS
+      .slice(0,10)
+      .map(item=>
+        `${escapeHtml(item.firstName)} ${escapeHtml(item.lastName)} — ${escapeHtml(item.admissionNumber)}${item.classLevel ? ` — ${escapeHtml(item.classLevel)}` : ""}`
+      )
+      .join("<br>");
+
+  rosterPreview.className =
+    "notice ok";
+
+  rosterPreview.innerHTML =
+    `<strong>${CSV_ROWS.length} student${CSV_ROWS.length === 1 ? "" : "s"} ready to import.</strong><br>${firstRows}${CSV_ROWS.length > 10 ? "<br>…" : ""}`;
+
+  importRosterButton.disabled =
+    false;
+
+}
+
+
+function downloadCsvTemplate(){
+
+  const content =
+    "First Name,Last Name,Admission Number,Class / Level,Email,Phone\n" +
+    "Example,Student,KPA-001,SS1,,\n";
+
+  const blob =
+    new Blob(
+      [content],
+      {
+        type:"text/csv;charset=utf-8"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+  link.href =
+    url;
+
+  link.download =
+    "SpeakOut-School-Student-Roster-Template.csv";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+
+  URL.revokeObjectURL(url);
+
 }
 
 
@@ -931,6 +1287,7 @@ function render(){
               "ok"
             );
 
+            await loadRoster();
             await loadUsers();
 
           }catch(error){
@@ -1239,156 +1596,48 @@ addForm.addEventListener(
 
     event.preventDefault();
 
-
     try{
 
       addButton.disabled =
         true;
 
       addButton.textContent =
-        "Adding Student...";
+        "Adding to Roster...";
 
-
-      const first =
-        firstName.value.trim();
-
-      const last =
-        lastName.value.trim();
-
-      const emailValue =
-        email.value.trim().toLowerCase();
-
-
-      if(!first || !last){
-
-        throw new Error(
-          "First name and last name are required."
-        );
-
-      }
-
-
-      if(emailValue){
-
-        const emailCheck =
-          await getDocs(
-            query(
-              collection(
-                db,
-                "users"
-              ),
-              where(
-                "email",
-                "==",
-                emailValue
-              )
-            )
-          );
-
-
-        if(!emailCheck.empty){
-
-          throw new Error(
-            "A user record already exists with this email address."
-          );
-
-        }
-
-      }
-
-
-      const studentId =
-        generateStudentId();
-
-
-      const userData = {
-
-        firstName:first,
-
-        lastName:last,
-
-        fullName:
-          `${first} ${last}`.trim(),
-
-        email:
-          emailValue,
-
-        phone:
-          phone.value.trim(),
-
-        role:
-          "student",
-
-        schoolId:
-          SCHOOL.id,
-
-        schoolCode:
-          SCHOOL.schoolCode ||
-          "",
-
-        schoolName:
-          SCHOOL.schoolName ||
-          SCHOOL.name ||
-          "",
-
-        studentId,
-
-        admissionNumber:
-          admissionNumber.value.trim(),
-
-        classLevel:
-          classLevel.value.trim(),
-
-        occupation:
-          classLevel.value.trim(),
-
-        bio:
-          bio.value.trim(),
-
-        status:
-          "pending_school_approval",
-
-        approved:
-          false,
-
-        accountSource:
-          "school-created-record",
-
-        createdBySchool:
-          true,
-
-        authLinked:
-          false,
-
-        createdAt:
-          serverTimestamp(),
-
-        updatedAt:
-          serverTimestamp()
-
+      const student = {
+        firstName:firstName.value.trim(),
+        lastName:lastName.value.trim(),
+        email:email.value.trim().toLowerCase(),
+        phone:phone.value.trim(),
+        classLevel:classLevel.value.trim(),
+        admissionNumber:admissionNumber.value.trim()
       };
 
+      if(
+        !student.firstName ||
+        !student.lastName ||
+        !student.admissionNumber
+      ){
+        throw new Error(
+          "First name, last name and admission number are required."
+        );
+      }
 
-      await addDoc(
-        collection(
-          db,
-          "users"
-        ),
-        userData
-      );
-
+      const result =
+        await roleApi.importSchoolRoster(
+          [student]
+        );
 
       addForm.reset();
 
-
       show(
-        `Student record added. Student ID: ${studentId}`,
+        result.updated
+          ? "Student roster record updated."
+          : "Student pre-enrolled successfully.",
         "ok"
       );
 
-
-      await loadUsers();
-
+      await loadRoster();
 
     }catch(error){
 
@@ -1396,13 +1645,11 @@ addForm.addEventListener(
         error
       );
 
-
       show(
         error.message ||
-        "Could not add student.",
+        "Could not add the student to the school roster.",
         "bad"
       );
-
 
     }finally{
 
@@ -1416,6 +1663,127 @@ addForm.addEventListener(
 
   }
 );
+
+
+rosterFile.addEventListener(
+  "change",
+  async ()=>{
+
+    CSV_ROWS = [];
+
+    try{
+
+      const file =
+        rosterFile.files?.[0];
+
+      if(!file){
+
+        renderCsvPreview();
+
+        return;
+      }
+
+      if(
+        !file.name.toLowerCase().endsWith(".csv")
+      ){
+        throw new Error(
+          "Upload a CSV file. In Excel or Google Sheets, use Download / Save As CSV first."
+        );
+      }
+
+      CSV_ROWS =
+        rosterRowsFromCsv(
+          await file.text()
+        );
+
+      renderCsvPreview();
+
+    }catch(error){
+
+      CSV_ROWS = [];
+
+      importRosterButton.disabled =
+        true;
+
+      rosterPreview.className =
+        "notice bad";
+
+      rosterPreview.textContent =
+        error.message ||
+        "Could not read this roster file.";
+
+    }
+
+  }
+);
+
+
+downloadRosterTemplate.addEventListener(
+  "click",
+  downloadCsvTemplate
+);
+
+
+importRosterButton.addEventListener(
+  "click",
+  async ()=>{
+
+    if(!CSV_ROWS.length){
+      return;
+    }
+
+    try{
+
+      importRosterButton.disabled =
+        true;
+
+      importRosterButton.textContent =
+        "Importing Roster...";
+
+      const result =
+        await roleApi.importSchoolRoster(
+          CSV_ROWS
+        );
+
+      show(
+        `Roster import complete: ${result.created || 0} created, ${result.updated || 0} updated.`,
+        "ok"
+      );
+
+      CSV_ROWS = [];
+
+      rosterFile.value =
+        "";
+
+      renderCsvPreview();
+
+      await loadRoster();
+
+    }catch(error){
+
+      console.error(
+        error
+      );
+
+      show(
+        error.message ||
+        "Could not import the school roster.",
+        "bad"
+      );
+
+    }finally{
+
+      importRosterButton.textContent =
+        "Import Roster";
+
+      importRosterButton.disabled =
+        !CSV_ROWS.length;
+
+    }
+
+  }
+);
+
 
 
 [
@@ -1510,11 +1878,13 @@ requireRoles(
     );
 
 
+    await loadRoster();
+
     await loadUsers();
 
 
     show(
-      "School students loaded.",
+      "School roster and student accounts loaded.",
       "ok"
     );
 
