@@ -390,15 +390,15 @@ input:focus,textarea:focus,select:focus{
 <div class="grid g4" style="margin-bottom:18px">
 <div class="card stat">
 <strong id="totalCount">0</strong>
-<span>Total Students</span>
+<span>School Roster</span>
 </div>
 <div class="card stat">
 <strong id="approvedCount">0</strong>
-<span>Approved</span>
+<span>Approved Portal Accounts</span>
 </div>
 <div class="card stat">
 <strong id="pendingCount">0</strong>
-<span>Pending</span>
+<span>Pending / Unclaimed</span>
 </div>
 <div class="card stat">
 <strong id="rejectedCount">0</strong>
@@ -414,9 +414,8 @@ input:focus,textarea:focus,select:focus{
           Add a student
         </h2>
 <p class="small-note">
-          This creates the student's Firestore profile and Student ID.
-          It does not create a Firebase Authentication password account.
-          The learner must still register/login through your normal authentication flow if portal login is required.
+          Pre-enrol the learner on the school roster. This does not create a password account.
+          When the learner later signs up with the same school code and admission number, the portal links the account to this roster record for school verification.
         </p>
 <form id="addForm">
 <div class="form-grid">
@@ -471,11 +470,50 @@ input:focus,textarea:focus,select:focus{
 </div>
 </div>
 <div class="panel" style="margin-top:18px">
+<span class="label">Bulk Onboarding</span>
+<h2>Import the school roster</h2>
+<p class="small-note">
+  Upload a CSV exported from Excel or Google Sheets. Required columns: First Name, Last Name and Admission Number.
+  Optional columns: Class / Level, Email and Phone. Importing a roster does not create passwords or sign students in.
+</p>
+<div class="form-grid">
+  <input id="rosterFile" type="file" accept=".csv,text/csv"/>
+  <button class="btn soft" id="downloadRosterTemplate" type="button">Download CSV Template</button>
+</div>
+<div id="rosterPreview" class="notice warn" style="margin-top:14px">Choose a CSV file to preview the roster before importing.</div>
+<div class="actions">
+  <button class="btn primary" id="importRosterButton" type="button" disabled>Import Roster</button>
+</div>
+</div>
+
+<div class="panel" style="margin-top:18px">
+<h2>Pre-enrolled school roster</h2>
+<p class="small-note">
+  Students can exist on this roster before they have a portal account. “Active” means the roster has been linked to an approved student account.
+</p>
+<div class="table-wrap">
+<table class="table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Admission Number</th>
+<th>Class / Level</th>
+<th>Contact</th>
+<th>Roster Status</th>
+<th>Portal Link</th>
+</tr>
+</thead>
+<tbody id="rosterRows"></tbody>
+</table>
+</div>
+</div>
+
+<div class="panel" style="margin-top:18px">
 <h2>
-        Students
+        Portal student accounts
       </h2>
 <p class="small-note">
-        Approval controls access status. Use View Progress for approved students to open their learning record.
+        Approval controls portal access. Use View Progress for approved students to open their learning record.
       </p>
 <div class="table-wrap">
 <table class="table">
@@ -518,7 +556,6 @@ import {
   getDocs,
   query,
   where,
-  addDoc,
   doc,
   updateDoc,
   serverTimestamp,
@@ -529,6 +566,8 @@ import { roleApi } from "./js/platform-api.js";
 
 let SCHOOL = null;
 let USERS = [];
+let ROSTER = [];
+let CSV_ROWS = [];
 let PROGRESS = new Map();
 
 
@@ -555,6 +594,11 @@ const bio = document.getElementById("bio");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
 const rows = document.getElementById("rows");
+const rosterRows = document.getElementById("rosterRows");
+const rosterFile = document.getElementById("rosterFile");
+const rosterPreview = document.getElementById("rosterPreview");
+const importRosterButton = document.getElementById("importRosterButton");
+const downloadRosterTemplate = document.getElementById("downloadRosterTemplate");
 
 
 function show(message,type=""){
