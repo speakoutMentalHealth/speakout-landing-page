@@ -750,6 +750,20 @@ function render(){
           const links =
             linkedChildrenSummary(user.id);
 
+          const parentLinks =
+            PARENT_LINKS.get(user.id) || [];
+
+          const pendingChildLinks =
+            parentLinks.filter(
+              link =>
+                [
+                  "pending",
+                  "pending_school_approval"
+                ].includes(
+                  normalize(link.status)
+                )
+            );
+
           const name =
             `${user.firstName || user.fullName || "Parent"} ${user.lastName || ""}`.trim();
 
@@ -841,12 +855,27 @@ function render(){
                       : ""
                   }
 
-                  <a
-                    class="btn gold"
-                    href="parent-child-link.html?parentId=${encodeURIComponent(user.id)}"
-                  >
-                    Child Links
-                  </a>
+                  ${status === "approved" && pendingChildLinks.length
+                    ? pendingChildLinks.map(link=>`
+                        <button
+                          class="btn success"
+                          data-link-id="${escapeHtml(link.id)}"
+                          data-link-status="approved"
+                          title="Approve link to ${escapeHtml(link.studentName || link.studentCode || "student")}"
+                        >
+                          Approve Child Link
+                        </button>
+                        <button
+                          class="btn danger"
+                          data-link-id="${escapeHtml(link.id)}"
+                          data-link-status="rejected"
+                          title="Reject link to ${escapeHtml(link.studentName || link.studentCode || "student")}"
+                        >
+                          Reject Child Link
+                        </button>
+                      `).join("")
+                    : ""
+                  }
 
                 </div>
 
@@ -895,6 +924,52 @@ function render(){
             show(
               error.message ||
               "Could not update parent.",
+              "bad"
+            );
+
+          }finally{
+
+            button.disabled = false;
+
+          }
+
+        }
+      );
+
+    });
+
+
+  rows
+    .querySelectorAll("button[data-link-id]")
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        async ()=>{
+
+          try{
+
+            button.disabled = true;
+
+            await roleApi.updateParentStudentLink(
+              button.dataset.linkId,
+              button.dataset.linkStatus
+            );
+
+            show(
+              `Parent-child link updated to ${pretty(button.dataset.linkStatus)}.`,
+              "ok"
+            );
+
+            await loadUsers();
+
+          }catch(error){
+
+            console.error(error);
+
+            show(
+              error.message ||
+              "Could not update the parent-child link.",
               "bad"
             );
 
