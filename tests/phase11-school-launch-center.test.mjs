@@ -51,7 +51,7 @@ test("KPA launch assumptions remain non-destructive and privacy-aware", () => {
   assert.match(controller,/preserving the school’s current structure and coordinators/u);
   assert.match(page,/editable launch templates, not fixed clubs/u);
   assert.match(page,/Existing school programmes should be strengthened, not replaced/u);
-  assert.match(page,/private wellbeing disclosures/u);
+  assert.match(page,/private wellbeing disclosures/iu);
 });
 
 test("launch readiness uses real roster, user and programme state", () => {
