@@ -3064,6 +3064,8 @@ async function route(request, env, path, data) {
         studentId,
         studentName: humanName(student),
         studentCode: clean(student.studentId),
+        studentClass: clean(student.classLevel || student.occupation),
+        studentSchoolName: clean(student.schoolName || student.schoolCode),
         relationship,
         note,
         schoolId: clean(student.schoolId),
