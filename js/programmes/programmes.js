@@ -219,7 +219,9 @@ function render(){
 
 async function loadProgrammes(){
   if(!school) return;
-  let snap = await getDocs(query(collection(db,"programmes"),where("schoolId","==",school.id)));
+  let snap = isStudent()
+    ? await getDocs(query(collection(db,"programmes"),where("schoolId","==",school.id),where("status","==","active")))
+    : await getDocs(query(collection(db,"programmes"),where("schoolId","==",school.id)));
   programmes = snap.docs.map(document => ({ id:document.id, ...document.data() })).filter(sameSchoolProgramme);
   programmes.sort((a,b) => String(a.name || "").localeCompare(String(b.name || "")));
   await loadMemberships();
