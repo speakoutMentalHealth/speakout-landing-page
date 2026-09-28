@@ -237,10 +237,7 @@ service cloud.firestore {
     }
 
     match /programmes/{programmeId} {
-      allow create: if
-        membershipId == request.resource.data.programmeId + "__" + request.resource.data.userId &&
-        (
-          isSuperAdmin() ||
+      allow create: if isSuperAdmin() ||
         (
           isSchoolAdmin() &&
           request.resource.data.schoolId == userSchoolId()
@@ -308,26 +305,29 @@ service cloud.firestore {
           (isStudent() && resource.data.userId == request.auth.uid)
         );
 
-      allow create: if isSuperAdmin() ||
+      allow create: if
+        membershipId == request.resource.data.programmeId + "__" + request.resource.data.userId &&
         (
-          isSchoolAdmin() &&
-          request.resource.data.schoolId == userSchoolId() &&
-          studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
-        ) ||
-        (
-          isProgrammeFacilitator(request.resource.data.programmeId) &&
-          request.resource.data.schoolId == userSchoolId() &&
-          studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
-        ) ||
-        (
-          isStudent() &&
-          request.resource.data.userId == request.auth.uid &&
-          request.resource.data.schoolId == userSchoolId() &&
-          sameProgrammeSchool(request.resource.data.programmeId) &&
-          programmeData(request.resource.data.programmeId).status == "active" &&
-          programmeData(request.resource.data.programmeId).membershipMode in ["open", "voluntary"] &&
-          request.resource.data.status == "active"
-        )
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isProgrammeFacilitator(request.resource.data.programmeId) &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isStudent() &&
+            request.resource.data.userId == request.auth.uid &&
+            request.resource.data.schoolId == userSchoolId() &&
+            sameProgrammeSchool(request.resource.data.programmeId) &&
+            programmeData(request.resource.data.programmeId).status == "active" &&
+            programmeData(request.resource.data.programmeId).membershipMode in ["open", "voluntary"] &&
+            request.resource.data.status == "active"
+          )
         );
 
       allow update: if isSuperAdmin() ||
