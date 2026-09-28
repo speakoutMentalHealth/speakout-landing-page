@@ -64,7 +64,7 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 <div class="container">
 <span class="kicker">Admin</span>
 <h1>Admin Schools</h1>
-<p>Review school registrations, approve partner schools, suspend inactive schools and manage school codes for the SpeakOut platform.</p>
+<p>Review school registrations, approve partner schools, suspend inactive schools, permanently remove schools when necessary and manage school codes for the SpeakOut platform.</p>
 </div>
 </section>
 <section>
@@ -232,6 +232,7 @@ function render(){
             <button class="btn danger" data-id="${item.id}" data-status="rejected">Reject</button>
             <button class="btn soft" data-id="${item.id}" data-status="pending">Pending</button>
             <button class="btn dark" data-id="${item.id}" data-status="suspended">Suspend</button>
+            <button class="btn danger" data-delete="${item.id}">Delete</button>
           </div>
         </td>
       </tr>
@@ -241,6 +242,20 @@ function render(){
   rows.querySelectorAll("button[data-id]").forEach(btn => {
     btn.onclick = async () => {
       await updateSchoolStatus(btn.dataset.id, btn.dataset.status);
+    };
+  });
+
+  rows.querySelectorAll("button[data-delete]").forEach(btn => {
+    btn.onclick = async () => {
+      const item = ITEMS.find(x => x.id === btn.dataset.delete);
+      if(!item) return;
+      const schoolName = item.schoolName || item.name || "this school";
+      const confirmation = window.prompt(
+        `Permanently delete "${schoolName}" from SpeakOut? This removes the school and school-owned records. Linked user accounts are preserved but detached. Type DELETE to continue.`
+      );
+      if(confirmation !== "DELETE") return;
+      btn.disabled = true;
+      await deleteSchool(item.id, schoolName).finally(() => { btn.disabled = false; });
     };
   });
 
@@ -303,6 +318,20 @@ async function updateSchoolStatus(id,status){
   }catch(error){
     console.error(error);
     show(error.message || "Could not update school status.","bad");
+  }
+}
+
+async function deleteSchool(id,schoolName){
+  try{
+    show(`Deleting ${schoolName}...`,"warn");
+    const result = await adminApi.deleteSchool(id);
+    show(
+      `${result.schoolName || schoolName} permanently removed. ${result.detachedUsers || 0} linked user account(s) detached and ${result.deletedLinkedRecords || 0} school-owned record(s) removed.`,
+      "ok"
+    );
+  }catch(error){
+    console.error(error);
+    show(error.message || "Could not delete school.","bad");
   }
 }
 

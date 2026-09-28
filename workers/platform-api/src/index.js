@@ -2327,6 +2327,93 @@ async function updateSchoolStatus(request, env, user, data) {
   return { ok: true, schoolId, status, schoolCode, activationUrl, emailSent };
 }
 
+
+async function schoolLinkedDocuments(env, collectionName, schoolId, schoolCode) {
+  const records = new Map();
+  for (const [field, value] of [["schoolId", schoolId], ["schoolCode", schoolCode]]) {
+    if (!clean(value)) continue;
+    const page = await queryDocumentsByField(env, collectionName, field, value, 1000);
+    if (page.truncated) {
+      throw Object.assign(new Error(`Too many linked ${collectionName} records to delete safely in one operation.`), { status: 409 });
+    }
+    for (const record of page.documents) records.set(record.id, record);
+  }
+  return [...records.values()];
+}
+
+async function deleteSchoolPermanently(env, user, data) {
+  requireAdmin(user);
+  const schoolId = safeId(data.schoolId, "school identifier");
+  const school = await getDocument(env, `schools/${schoolId}`);
+  if (!school) throw Object.assign(new Error("School record not found."), { status: 404 });
+
+  const schoolCode = clean(school.schoolCode);
+  const schoolName = clean(school.schoolName || school.name) || "School";
+  const deleteCollections = [
+    "schoolStudentRegistrations",
+    "schoolStaffRegistrations",
+    "schoolAdminInvites",
+    "parentStudentLinks",
+    "teacherStudents",
+    "schoolAnnouncements",
+    "schoolResources",
+    "schoolReports",
+    "workshops"
+  ];
+
+  const linkedByCollection = [];
+  let linkedRecordCount = 0;
+  for (const collectionName of deleteCollections) {
+    const documents = await schoolLinkedDocuments(env, collectionName, schoolId, schoolCode);
+    linkedByCollection.push({ collectionName, documents });
+    linkedRecordCount += documents.length;
+  }
+
+  const linkedUsers = await schoolLinkedDocuments(env, "users", schoolId, schoolCode);
+  const writeCount = 1 + linkedRecordCount + linkedUsers.length;
+  if (writeCount > 450) {
+    throw Object.assign(new Error("This school has too many linked records for a safe one-step deletion. Remove or archive linked records first."), { status: 409 });
+  }
+
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    const current = await tx.get(`schools/${schoolId}`);
+    if (!current) throw Object.assign(new Error("School record not found."), { status: 404 });
+
+    for (const profile of linkedUsers) {
+      const schoolAdmin = ["school_admin", "school"].includes(normalized(profile.role));
+      tx.patch(`users/${safeId(profile.id, "user identifier")}`, {
+        schoolId: "",
+        schoolCode: "",
+        schoolName: "",
+        schoolVerificationStatus: schoolAdmin ? "removed" : "",
+        ...(schoolAdmin ? {
+          status: "suspended",
+          approved: false,
+          suspensionReason: "school_deleted"
+        } : {}),
+        updatedAt: now
+      });
+    }
+
+    for (const group of linkedByCollection) {
+      for (const record of group.documents) {
+        tx.delete(`${group.collectionName}/${safeId(record.id, "record identifier")}`);
+      }
+    }
+
+    tx.delete(`schools/${schoolId}`);
+  });
+
+  return {
+    ok: true,
+    schoolId,
+    schoolName,
+    detachedUsers: linkedUsers.length,
+    deletedLinkedRecords: linkedRecordCount
+  };
+}
+
 async function activateSchoolAdmin(request, env, data) {
   const identity = await verifiedIdentity(request, env);
   const inviteToken = safeId(data.inviteToken, "activation token");
@@ -2473,6 +2560,7 @@ async function route(request, env, path, data) {
 
   const user = await authenticatedUser(request, env);
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
+  if (path === "/v1/admin/schools/delete") return deleteSchoolPermanently(env, user, data);
   if (path === "/v1/admin/on-the-move/send-email") return sendOnTheMoveEmail(env, user, data);
   if (path === "/v1/admin/courses/publish-rich") return publishRichInternalCourse(env, user, data.course);
   const courseSpecificLearningPaths = new Set([
