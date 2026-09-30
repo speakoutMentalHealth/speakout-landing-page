@@ -254,7 +254,7 @@ test("Discover renders starter content immediately and media loading is bounded"
   assert.match(data,/withTimeout\(getDocs/u);
   assert.match(search,/items=\[\.\.\.shows,\.\.\.episodes\];\s*render\(\);/u);
   assert.match(search,/Promise\.allSettled\(\[loadTvEpisodes\(\),loadTvAudio\(\),loadTvShows\(\)\]\)/u);
-  assert.match(workerCache,/speakout-tv-v12/u);
+  assert.match(workerCache,/speakout-tv-v13/u);
   assert.match(workerCache,/tv-rail-controls\.js/u);
 });
 
