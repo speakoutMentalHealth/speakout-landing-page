@@ -58,7 +58,9 @@ function ensureDefaultAudioPlayer(){
 function contentCard(x){
  const img=imageFor(x),saved=isSaved(x.id);
  const source=x.sourceType==="youtube-curated"&&x.sourceChannelTitle?'<span class="tv-source-attribution">YouTube · '+esc(x.sourceChannelTitle)+'</span>':"";
- return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+source+'</div><small>'+esc(x.show||"SpeakOut TV")+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
+ const learning=String(x.learningType||"standard").toLowerCase();
+ const label=learning==="course"?"CRASH COURSE · "+String(x.regionFocus||"nigeria").toUpperCase():learning==="audiobook"?"BOOK / AUDIOBOOK · "+String(x.regionFocus||"africa").toUpperCase():(x.show||"SpeakOut TV");
+ return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+source+'</div><small>'+esc(label)+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
 }
 function episodeCard(x){
  const img=imageFor(x);
@@ -162,6 +164,13 @@ function renderFresh(){
  $("#freshTitle").textContent=thisWeek.length?"Fresh on SpeakOut TV":"Recently Added";
  $("#freshSub").textContent=thisWeek.length?"Newly published conversations and stories from this week.":"The most recently published SpeakOut TV content.";
  rail.innerHTML=picks.map(contentCard).join("");
+}
+function renderLearningSections(){
+ const courses=regularEpisodes.filter(x=>String(x.learningType||"standard").toLowerCase()==="course").sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
+ const books=regularEpisodes.filter(x=>String(x.learningType||"standard").toLowerCase()==="audiobook").sort((a,b)=>dateValue(b)-dateValue(a)||order(a,b));
+ const courseRail=$("#coursesRail"),bookRail=$("#booksRail");
+ if(courseRail)courseRail.innerHTML=courses.slice(0,14).map(contentCard).join("")||'<div class="ios-audio-empty">Nigeria and Africa-focused crash courses will appear here after editorial review.</div>';
+ if(bookRail)bookRail.innerHTML=books.slice(0,14).map(contentCard).join("")||'<div class="ios-audio-empty">Curated educational books and audiobooks from YouTube will appear here after editorial review.</div>';
 }
 function pickFeatured(){
  if(!regularEpisodes.length)return null;
@@ -397,7 +406,7 @@ function renderLiveExperience(allEpisodes){
 }
 
 const viewGroups={
- home:["home","featured","today-focus","for-you","topic-journeys","fresh","shelf","reset","series","stories"],
+ home:["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","shelf","reset","series","stories"],
  watch:["episodes"],
  listen:["audio"],
  live:["live"]
@@ -435,6 +444,7 @@ async function load(){
  const homeEpisodes=regularEpisodes.filter(discoveryEligible);
  renderDailyProgramming();
  renderFresh();
+ renderLearningSections();
  const featured=pickFeatured();
  const first=regularEpisodes[0]||featured;
  if(first){
