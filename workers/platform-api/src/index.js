@@ -120,7 +120,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "learningType", "regionFocus", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -208,6 +208,20 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("Invalid TV audience."), { status: 400 });
     }
     record.audience = audience;
+
+    const learningType = normalized(record.learningType || "standard");
+    if (!["standard", "course", "audiobook"].includes(learningType)) {
+      throw Object.assign(new Error("Invalid TV learning type."), { status: 400 });
+    }
+    record.learningType = learningType;
+    const regionFocus = normalized(record.regionFocus || (learningType === "standard" ? "" : "nigeria"));
+    if (regionFocus && !["nigeria", "africa"].includes(regionFocus)) {
+      throw Object.assign(new Error("Invalid TV regional focus."), { status: 400 });
+    }
+    if (learningType !== "standard" && !regionFocus) {
+      throw Object.assign(new Error("Learning content requires a Nigeria or Africa regional focus."), { status: 409 });
+    }
+    record.regionFocus = regionFocus;
 
     const programmingDays = normalized(record.programmingDays || "all");
     if (!["all", "weekdays", "weekend", "mon", "tue", "wed", "thu", "fri", "sat", "sun"].includes(programmingDays)) {
@@ -1540,7 +1554,7 @@ function publicTvEpisode(item = {}) {
   return pickPublicFields(item, [
     "id","title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl",
     "format","featured","homePlacement","programmingDays","placementPriority","placementStart",
-    "placementEnd","contentPillar","audience","publishDate","scheduledAt","sponsor","status","order",
+    "placementEnd","contentPillar","audience","learningType","regionFocus","publishDate","scheduledAt","sponsor","status","order",
     "createdAt","updatedAt","sourceType","sourceChannelTitle","sourceChannelId","sourceVideoId",
     "sourceUrl","sourceAttribution","curatedBySpeakOut"
   ]);
@@ -1792,6 +1806,8 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
     placementEnd: "",
     contentPillar: normalized(source.contentPillar || candidate.contentPillar || "motivation") || "motivation",
     audience: normalized(source.audience || candidate.audience || "youth") || "youth",
+    learningType: normalized(source.learningType || candidate.learningType || "standard") || "standard",
+    regionFocus: normalized(source.regionFocus || candidate.regionFocus || ""),
     featured: "false",
     publishDate: clean(candidate.publishedAt).slice(0, 10),
     order: 0,
@@ -1817,6 +1833,7 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
 
 async function curatorState(env) {
   await ensureDefaultCuratorDiscoveries(env, "curator-state-bootstrap");
+  await ensureAfricaLearningDiscoveries(env, "curator-state-africa-learning");
   const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
     listDocuments(env, "tvCuratorDiscoveries", 50),
@@ -1922,6 +1939,75 @@ const DEFAULT_CURATOR_DISCOVERIES = Object.freeze([
     audience: "youth"
   }
 ]);
+
+const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
+  {
+    id: "discover-africa-crash-courses",
+    label: "Nigeria & Africa Crash Courses",
+    query: "Nigeria Africa crash course tutorial lecture education",
+    includeKeywords: ["course","crash course","tutorial","lecture","lesson","training","explained","students"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school",
+    audience: "students",
+    learningType: "course",
+    regionFocus: "nigeria"
+  },
+  {
+    id: "discover-africa-audiobooks",
+    label: "Africa Educational Audiobooks",
+    query: "Africa Nigeria educational audiobook history learning",
+    includeKeywords: ["audiobook","audio book","book","history","education","learning","lecture"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "general",
+    audience: "everyone",
+    learningType: "audiobook",
+    regionFocus: "africa"
+  }
+]);
+
+async function ensureAfricaLearningDiscoveries(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/africaLearningDiscoveryBootstrap";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { seeded: false, reason: "already-bootstrapped" };
+  const currentRules = await listDocuments(env, "tvCuratorDiscoveries", 50);
+  let activeSlots = Math.max(0, 8 - currentRules.documents.filter(item => normalized(item.status || "active") === "active").length);
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    const current = await tx.get(markerPath);
+    if (current?.completedAt) return { ok: true };
+    let seededCount = 0;
+    for (const rule of AFRICA_LEARNING_DISCOVERIES) {
+      const existing = await tx.get("tvCuratorDiscoveries/" + rule.id);
+      if (existing) continue;
+      const status = activeSlots > 0 ? "active" : "paused";
+      if (activeSlots > 0) activeSlots -= 1;
+      const input = curatorDiscoveryInput({
+        ...rule,
+        status,
+        show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
+        lookbackDays: 30,
+        maxResults: 15,
+        relevanceLanguage: "en"
+      });
+      tx.set("tvCuratorDiscoveries/" + rule.id, {
+        ...input,
+        mode: "review",
+        createdAt: now,
+        updatedAt: now,
+        updatedBy: actor,
+        bootstrapAfricaLearning: true
+      });
+      seededCount += 1;
+    }
+    tx.set(markerPath, {
+      completedAt: now,
+      seededCount,
+      updatedBy: actor
+    });
+    return { ok: true };
+  });
+  return { seeded: true };
+}
 
 async function ensureDefaultCuratorDiscoveries(env, actor = "system") {
   const markerPath = "tvCuratorSettings/defaultDiscoveryBootstrap";
@@ -2062,6 +2148,8 @@ async function syncCuratorSource(env, source, actor = "system") {
         show: clean(refreshedSource.show || "SpeakOut Picks"),
         contentPillar: normalized(refreshedSource.contentPillar || "motivation"),
         audience: normalized(refreshedSource.audience || "youth"),
+        learningType: normalized(refreshedSource.learningType || "standard"),
+        regionFocus: normalized(refreshedSource.regionFocus || ""),
         sourceMode: normalized(refreshedSource.mode || "review"),
         status: normalized(refreshedSource.mode) === "draft" ? "drafted" : "pending",
         discoveredAt: now,
@@ -2134,6 +2222,8 @@ async function syncCuratorDiscovery(env, discovery, actor = "system") {
         show: clean(rule.show || "SpeakOut Picks"),
         contentPillar: normalized(rule.contentPillar || "motivation"),
         audience: normalized(rule.audience || "youth"),
+        learningType: normalized(rule.learningType || "standard"),
+        regionFocus: normalized(rule.regionFocus || ""),
         sourceMode: "review",
         status: "pending",
         discoveredAt: now,
@@ -2165,6 +2255,7 @@ async function syncCuratorDiscovery(env, discovery, actor = "system") {
 async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = "") {
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
   await ensureDefaultCuratorDiscoveries(env, actor);
+  await ensureAfricaLearningDiscoveries(env, actor);
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
   const discoveries = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))

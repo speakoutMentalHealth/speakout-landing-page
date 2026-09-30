@@ -190,6 +190,16 @@
 <option value="parents">Parents / caregivers</option>
 <option value="educators">Educators</option>
 </select></label>
+<label>Learning section<select id="learningType">
+<option value="standard">Standard TV content</option>
+<option value="course">Crash course</option>
+<option value="audiobook">Audiobook / listen & learn</option>
+</select><small>Use Crash course or Audiobook only for curated learning content.</small></label>
+<label>Regional focus<select id="regionFocus">
+<option value="">Not applicable</option>
+<option value="nigeria">Nigeria-first</option>
+<option value="africa">Africa-wide</option>
+</select><small>Required for learning content.</small></label>
 <label>Main Stage legacy flag<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
 <label>Publish date<input id="publishDate" type="date"></label>
 <label>Schedule live date & time<input id="scheduledAt" type="datetime-local"></label>
@@ -248,6 +258,6 @@
 </section>
 </main>
 
-<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"],libraryFields:["format","homePlacement"],thumbnailField:"imageUrl"});</script>
+<script type="module">import {createAdminCmsController} from "./js/admin-cms-ui.js";createAdminCmsController({collectionName:"tvEpisodes",fieldIds:["title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl","format","status","homePlacement","programmingDays","placementPriority","placementStart","placementEnd","contentPillar","audience","learningType","regionFocus","featured","publishDate","order","scheduledAt","sponsor","consentConfirmed","minorInvolved","editorialReview"],libraryFields:["format","homePlacement"],thumbnailField:"imageUrl"});</script>
 <script type="module" src="js/tv-admin-live.js"></script>
 </body></html>

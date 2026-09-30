@@ -48,7 +48,7 @@
 </section>
 
 <section class="studio-card" id="sources">
-<div class="card-title"><div><span class="eyebrow">SOURCE REGISTRY</span><h2>Trusted YouTube channels</h2><p class="admin-muted">Add only creators SpeakOut is comfortable curating. Keyword filters affect discovery, not ownership or endorsement.</p></div></div>
+<div class="card-title"><div><span class="eyebrow">SOURCE REGISTRY</span><h2>Trusted YouTube channels</h2><p class="admin-muted">Add only creators SpeakOut is comfortable curating. Learning sources should be Nigeria-first or clearly Africa-relevant. Keyword filters affect discovery, not ownership or endorsement.</p></div></div>
 <form id="sourceForm" class="curator-source-form">
 <input id="sourceId" type="hidden">
 <label class="cms-field full"><span>YouTube channel URL, @handle or channel ID</span><input id="channelRef" required placeholder="https://youtube.com/@creator"></label>
@@ -59,14 +59,15 @@
 <label class="cms-field"><span>Workflow</span><select id="sourceMode"><option value="review">Candidate inbox only</option><option value="draft">Automatically create a draft</option></select></label>
 <label class="cms-field"><span>Status</span><select id="sourceStatus"><option value="active">Active</option><option value="paused">Paused</option></select></label>
 <label class="cms-field"><span>Default content pillar</span><select id="sourcePillar"><option value="motivation">Confidence & motivation</option><option value="youth">Youth voices</option><option value="school">School & student life</option><option value="adhd">ADHD & focus</option><option value="relationships">Relationships</option><option value="stories">Real stories</option><option value="community">Community</option><option value="advocacy">Advocacy</option><option value="general">General wellbeing</option></select></label>
-<label class="cms-field"><span>Audience</span><select id="sourceAudience"><option value="youth">Youth</option><option value="students">Students</option><option value="everyone">Everyone</option><option value="parents">Parents</option><option value="educators">Educators</option></select></label>
+<label class="cms-field"><span>Audience</span><select id="sourceAudience"><option value="youth">Youth</option><option value="students">Students</option><option value="everyone">Everyone</option><option value="parents">Parents</option><option value="educators">Educators</option></select></label><label class="cms-field"><span>Learning type</span><select id="sourceLearningType"><option value="standard">Standard TV content</option><option value="course">Crash course</option><option value="audiobook">Audiobook / listen & learn</option></select></label>
+<label class="cms-field"><span>Regional focus</span><select id="sourceRegionFocus"><option value="nigeria">Nigeria-first</option><option value="africa">Africa-wide</option></select></label>
 <div class="curator-form-actions full"><button class="btn gold" type="submit" id="saveSource">Save source</button><button class="btn soft" type="button" id="cancelSource" hidden>Cancel edit</button></div>
 </form>
 <div id="sourceList" class="curator-source-list"><p class="admin-muted">Loading sources…</p></div>
 </section>
 
 <section class="studio-card" id="discovery">
-<div class="card-title"><div><span class="eyebrow">GLOBAL YOUTUBE DISCOVERY</span><h2>Search beyond approved channels</h2><p class="admin-muted">Each active rule searches recent public, embeddable YouTube videos. Global discovery is always review-first: it can create inbox candidates, never publish or auto-draft them.</p></div><span class="secure-pill">Review only</span></div>
+<div class="card-title"><div><span class="eyebrow">GLOBAL YOUTUBE DISCOVERY</span><h2>Search beyond approved channels</h2><p class="admin-muted">Each active rule searches recent public, embeddable YouTube videos. Learning discovery is Nigeria/Africa filtered. Global discovery is always review-first: it can create inbox candidates, never publish or auto-draft them.</p></div><span class="secure-pill">Review only</span></div>
 <form id="discoveryForm" class="curator-source-form">
 <input id="discoveryId" type="hidden">
 <label class="cms-field full"><span>Search query</span><input id="discoveryQuery" required placeholder="youth mental health, ADHD students, school stress"></label>
@@ -78,7 +79,8 @@
 <label class="cms-field"><span>Results per scan</span><input id="discoveryMaxResults" type="number" min="5" max="25" step="1" value="15"></label>
 <label class="cms-field"><span>Status</span><select id="discoveryStatus"><option value="active">Active</option><option value="paused">Paused</option></select></label>
 <label class="cms-field"><span>Default content pillar</span><select id="discoveryPillar"><option value="motivation">Confidence & motivation</option><option value="youth">Youth voices</option><option value="school">School & student life</option><option value="adhd">ADHD & focus</option><option value="relationships">Relationships</option><option value="stories">Real stories</option><option value="community">Community</option><option value="advocacy">Advocacy</option><option value="general">General wellbeing</option></select></label>
-<label class="cms-field"><span>Audience</span><select id="discoveryAudience"><option value="youth">Youth</option><option value="students">Students</option><option value="everyone">Everyone</option><option value="parents">Parents</option><option value="educators">Educators</option></select></label>
+<label class="cms-field"><span>Audience</span><select id="discoveryAudience"><option value="youth">Youth</option><option value="students">Students</option><option value="everyone">Everyone</option><option value="parents">Parents</option><option value="educators">Educators</option></select></label><label class="cms-field"><span>Learning type</span><select id="discoveryLearningType"><option value="standard">Standard TV content</option><option value="course">Crash course</option><option value="audiobook">Audiobook / listen & learn</option></select></label>
+<label class="cms-field"><span>Regional focus</span><select id="discoveryRegionFocus"><option value="nigeria">Nigeria-first</option><option value="africa">Africa-wide</option></select></label>
 <div class="curator-form-actions full"><button class="btn gold" type="submit" id="saveDiscovery">Save discovery rule</button><button class="btn soft" type="button" id="cancelDiscovery" hidden>Cancel edit</button></div>
 </form>
 <div class="curator-discovery-note"><strong>Quota guard</strong><span>Up to eight discovery rules can be active for scheduled scans. This keeps the automatic search workload bounded while trusted-channel monitoring continues separately.</span></div>
@@ -99,7 +101,7 @@
 <div class="card-title"><div><span class="eyebrow">WORKFLOW</span><h2>How automation stays safe</h2></div></div>
 <div class="curator-flow">
 <article><b>1</b><strong>Discover</strong><span>Cloudflare checks trusted channels and active global search rules on schedule.</span></article>
-<article><b>2</b><strong>Filter</strong><span>Search terms plus include/exclude keywords narrow recent public, embeddable videos.</span></article>
+<article><b>2</b><strong>Filter</strong><span>Search terms plus include/exclude keywords narrow recent public, embeddable videos. Learning candidates must also show Nigeria/Africa relevance.</span></article>
 <article><b>3</b><strong>Review or draft</strong><span>Review mode creates an inbox candidate; trusted mode may create an unpublished draft.</span></article>
 <article><b>4</b><strong>Editorial check</strong><span>TV Studio still requires metadata, artwork and review before anything can go public.</span></article>
 </div>
