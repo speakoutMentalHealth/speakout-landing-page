@@ -1969,6 +1969,8 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
   const markerPath = "tvCuratorSettings/africaLearningDiscoveryBootstrap";
   const marker = await getDocument(env, markerPath);
   if (marker?.completedAt) return { seeded: false, reason: "already-bootstrapped" };
+  const currentRules = await listDocuments(env, "tvCuratorDiscoveries", 50);
+  let activeSlots = Math.max(0, 8 - currentRules.documents.filter(item => normalized(item.status || "active") === "active").length);
   const now = new Date().toISOString();
   await runTransaction(env, async tx => {
     const current = await tx.get(markerPath);
@@ -1977,9 +1979,11 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
     for (const rule of AFRICA_LEARNING_DISCOVERIES) {
       const existing = await tx.get("tvCuratorDiscoveries/" + rule.id);
       if (existing) continue;
+      const status = activeSlots > 0 ? "active" : "paused";
+      if (activeSlots > 0) activeSlots -= 1;
       const input = curatorDiscoveryInput({
         ...rule,
-        status: "active",
+        status,
         show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
         lookbackDays: 30,
         maxResults: 15,
