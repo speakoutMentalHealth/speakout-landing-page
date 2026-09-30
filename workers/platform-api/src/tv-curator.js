@@ -150,7 +150,9 @@ export async function fetchYouTubeUploads(apiKey,source={},limit=20){
   for(const id of ids){
     const video=byId.get(id);
     if(!video?.eligible)continue;
-    if(matchesCuratorSource(video,source))output.push(video);
+    if(!matchesCuratorSource(video,source))continue;
+    if(!matchesAfricaLearningRelevance(video,source))continue;
+    output.push(video);
   }
   return output;
 }
