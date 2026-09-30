@@ -81,7 +81,7 @@ const defaultSeries=[
 let items=[],filter="all";
 
 function searchable(x){
- return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience].flat().join(" "));
+ return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience,x.learningType,x.regionFocus].flat().join(" "));
 }
 function matchesQuery(x,q){
  if(!q)return true;
@@ -103,7 +103,8 @@ function hrefFor(x){
 }
 function mediaCard(x){
  const kind=kindOf(x),img=imageFor(x);
- const badge=kind==="audio"?(x.audioType||"AUDIO"):kind==="live"?"LIVE":(x.show||"SPEAKOUT TV");
+ const learning=String(x.learningType||"standard").toLowerCase();
+ const badge=kind==="audio"?(x.audioType||"AUDIO"):kind==="live"?"LIVE":learning==="course"?"CRASH COURSE":learning==="audiobook"?"BOOK / AUDIOBOOK":(x.show||"SPEAKOUT TV");
  return '<a class="discovery-media-card" href="'+hrefFor(x)+'">'+
   '<div class="discovery-media-art '+artClass(x,kind)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x,kind))+
   artOverlay(x,kind)+(x.sourceType==="youtube-curated"&&x.sourceChannelTitle?'<span class="tv-source-attribution">YouTube · '+esc(x.sourceChannelTitle)+'</span>':"")+'<span class="discovery-media-play">'+(kind==="audio"?"◉":"▶")+'</span></div>'+
