@@ -23,6 +23,22 @@ async function youtubeGet(apiKey,resource,params){
   return body;
 }
 
+const LEARNING_TYPES=new Set(["standard","course","audiobook"]);
+const REGION_FOCUS=new Set(["nigeria","africa"]);
+const AFRICA_RELEVANCE_TERMS=[
+  "nigeria","nigerian","naija","lagos","abuja","africa","african","west africa","sub-saharan",
+  "ghana","kenya","south africa","uganda","rwanda","tanzania","ethiopia","zambia","zimbabwe","senegal"
+];
+
+const learningType=value=>LEARNING_TYPES.has(lower(value))?lower(value):"standard";
+const regionFocus=value=>REGION_FOCUS.has(lower(value))?lower(value):"nigeria";
+
+export function matchesAfricaLearningRelevance(video={},rule={}){
+  if(learningType(rule.learningType)==="standard")return true;
+  const hay=lower([video.title,video.description,video.channelTitle,Array.isArray(video.tags)?video.tags.join(" "):video.tags].join(" "));
+  return AFRICA_RELEVANCE_TERMS.some(term=>hay.includes(term));
+}
+
 export function normalizeKeywordList(value,max=20){
   const source=Array.isArray(value)?value:String(value||"").split(",");
   const unique=[];
@@ -157,7 +173,9 @@ export function curatorDiscoveryInput(input={}){
     audience:audience||"youth",
     lookbackDays:Number.isFinite(rawLookback)?Math.max(1,Math.min(30,Math.round(rawLookback))):14,
     maxResults:Number.isFinite(rawMax)?Math.max(5,Math.min(25,Math.round(rawMax))):15,
-    relevanceLanguage:clean(input.relevanceLanguage||"en").slice(0,12)
+    relevanceLanguage:clean(input.relevanceLanguage||"en").slice(0,12),
+    learningType:learningType(input.learningType),
+    regionFocus:regionFocus(input.regionFocus)
   };
 }
 
@@ -177,7 +195,9 @@ export async function searchYouTubeVideos(apiKey,rule={},limit=0){
     safeSearch:"strict",
     videoEmbeddable:"true",
     videoSyndicated:"true",
-    relevanceLanguage:clean(rule.relevanceLanguage||"en")
+    relevanceLanguage:clean(rule.relevanceLanguage||"en"),
+    regionCode:"NG",
+    ...(learningType(rule.learningType)!=="standard"?{videoDuration:"long"}:{})
   });
   const ids=(search.items||[]).map(item=>clean(item?.id?.videoId)).filter(Boolean);
   if(!ids.length)return [];
@@ -186,7 +206,9 @@ export async function searchYouTubeVideos(apiKey,rule={},limit=0){
   for(const id of ids){
     const video=byId.get(id);
     if(!video?.eligible)continue;
-    if(matchesCuratorSource(video,rule))output.push(video);
+    if(!matchesCuratorSource(video,rule))continue;
+    if(!matchesAfricaLearningRelevance(video,rule))continue;
+    output.push(video);
   }
   return output;
 }
@@ -204,6 +226,8 @@ export function curatorSourceInput(input={}){
     mode,status,
     show:clean(input.show||"SpeakOut Picks").slice(0,120),
     contentPillar:pillar||"motivation",
-    audience:audience||"youth"
+    audience:audience||"youth",
+    learningType:learningType(input.learningType),
+    regionFocus:regionFocus(input.regionFocus)
   };
 }
