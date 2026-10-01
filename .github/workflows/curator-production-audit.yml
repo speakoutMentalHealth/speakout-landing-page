@@ -1,0 +1,135 @@
+name: Curator Production Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/curator-production-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Read curator production state
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: workers/platform-api
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: workers/platform-api/package-lock.json
+      - name: Install Worker dependencies
+        run: npm ci
+      - name: Report curator state
+        shell: bash
+        run: |
+          if [[ -z "$FIREBASE_SERVICE_ACCOUNT" ]]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL is not configured."
+            exit 1
+          fi
+          node --input-type=module <<'NODE'
+          import { importPKCS8, SignJWT } from "jose";
+
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||"{}");
+          const now=Math.floor(Date.now()/1000);
+          const key=await importPKCS8(String(sa.private_key||"").replace(/\\n/g,"\n"),"RS256");
+          const assertion=await new SignJWT({scope:"https://www.googleapis.com/auth/datastore"})
+            .setProtectedHeader({alg:"RS256",typ:"JWT"})
+            .setIssuer(sa.client_email)
+            .setAudience("https://oauth2.googleapis.com/token")
+            .setIssuedAt(now)
+            .setExpirationTime(now+3600)
+            .sign(key);
+
+          const tokenResponse=await fetch("https://oauth2.googleapis.com/token",{
+            method:"POST",
+            headers:{"content-type":"application/x-www-form-urlencoded"},
+            body:new URLSearchParams({
+              grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",
+              assertion
+            })
+          });
+          if(!tokenResponse.ok)throw new Error("Google OAuth failed: "+tokenResponse.status);
+          const {access_token}=await tokenResponse.json();
+          if(!access_token)throw new Error("Google OAuth did not return an access token.");
+
+          const base="https://firestore.googleapis.com/v1/projects/speaakout-portal/databases/(default)/documents";
+          const headers={authorization:"Bearer "+access_token};
+
+          const fromValue=value=>{
+            if(!value)return null;
+            if("stringValue" in value)return value.stringValue;
+            if("integerValue" in value)return Number(value.integerValue);
+            if("doubleValue" in value)return Number(value.doubleValue);
+            if("booleanValue" in value)return Boolean(value.booleanValue);
+            if("timestampValue" in value)return value.timestampValue;
+            if("nullValue" in value)return null;
+            if("arrayValue" in value)return (value.arrayValue.values||[]).map(fromValue);
+            if("mapValue" in value)return decodeFields(value.mapValue.fields||{});
+            return null;
+          };
+          const decodeFields=fields=>Object.fromEntries(Object.entries(fields||{}).map(([k,v])=>[k,fromValue(v)]));
+
+          async function list(collection,pageSize=500){
+            let token="",rows=[];
+            do{
+              const u=new URL(base+"/"+collection);
+              u.searchParams.set("pageSize",String(pageSize));
+              if(token)u.searchParams.set("pageToken",token);
+              const response=await fetch(u,{headers});
+              if(!response.ok)throw new Error(collection+" list failed: "+response.status+" "+await response.text());
+              const body=await response.json();
+              rows.push(...(body.documents||[]).map(doc=>({
+                id:String(doc.name||"").split("/").pop(),
+                ...decodeFields(doc.fields||{})
+              })));
+              token=body.nextPageToken||"";
+            }while(token&&rows.length<2000);
+            return rows;
+          }
+
+          const [rules,candidates,episodes]=await Promise.all([
+            list("tvCuratorDiscoveries",100),
+            list("tvCuratorCandidates",500),
+            list("tvEpisodes",500)
+          ]);
+
+          const pendingLearning=candidates
+            .filter(x=>x.status==="pending"&&["course","audiobook"].includes(String(x.learningType||"").toLowerCase()))
+            .sort((a,b)=>String(b.discoveredAt||b.publishedAt||"").localeCompare(String(a.discoveredAt||a.publishedAt||"")));
+
+          const summary={
+            discoveries:rules.map(x=>({
+              id:x.id,label:x.label,query:x.query,status:x.status,
+              learningType:x.learningType,regionFocus:x.regionFocus,
+              lastSyncedAt:x.lastSyncedAt||"",lastSyncNewCount:x.lastSyncNewCount??null,
+              lastSyncScannedCount:x.lastSyncScannedCount??null,lastSyncError:x.lastSyncError||""
+            })),
+            candidateCounts:{
+              total:candidates.length,
+              pending:candidates.filter(x=>x.status==="pending").length,
+              drafted:candidates.filter(x=>x.status==="drafted").length,
+              rejected:candidates.filter(x=>x.status==="rejected").length,
+              learningPending:pendingLearning.length
+            },
+            pendingLearning:pendingLearning.slice(0,80).map(x=>({
+              id:x.id,title:x.title,channelTitle:x.channelTitle,sourceLabel:x.sourceLabel,
+              learningType:x.learningType,regionFocus:x.regionFocus,
+              publishedAt:x.publishedAt,discoveredAt:x.discoveredAt,url:x.url,
+              description:String(x.description||"").slice(0,300)
+            })),
+            publishedLearningEpisodes:episodes
+              .filter(x=>["active","published"].includes(String(x.status||"").toLowerCase())&&["course","audiobook"].includes(String(x.learningType||"").toLowerCase()))
+              .map(x=>({id:x.id,title:x.title,learningType:x.learningType,regionFocus:x.regionFocus,status:x.status}))
+          };
+          console.log("CURATOR_AUDIT_JSON="+JSON.stringify(summary));
+          NODE
