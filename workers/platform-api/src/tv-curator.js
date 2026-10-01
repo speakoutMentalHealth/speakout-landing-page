@@ -199,7 +199,7 @@ export async function searchYouTubeVideos(apiKey,rule={},limit=0){
     videoSyndicated:"true",
     relevanceLanguage:clean(rule.relevanceLanguage||"en"),
     regionCode:"NG",
-    ...(learningType(rule.learningType)!=="standard"?{videoDuration:"long"}:{})
+    ...(learningType(rule.learningType)==="audiobook"?{videoDuration:"long"}:{})
   });
   const ids=(search.items||[]).map(item=>clean(item?.id?.videoId)).filter(Boolean);
   if(!ids.length)return [];
