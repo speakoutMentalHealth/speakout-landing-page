@@ -21,7 +21,7 @@ test("YouTube learning searches stay embeddable and Nigeria-viewable",()=>{
   const helper=read("workers/platform-api/src/tv-curator.js");
   assert.match(helper,/videoEmbeddable:"true"/u);
   assert.match(helper,/regionCode:"NG"/u);
-  assert.match(helper,/learningType\(rule\.learningType\)===\"audiobook\"\?\{videoDuration:\"long\"\}/u);
+  assert.match(helper,/learningType\(rule\.learningType\)==="audiobook"\?\{videoDuration:"long"\}/u);
   assert.match(helper,/matchesAfricaLearningRelevance/u);
 });
 
