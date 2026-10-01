@@ -1834,6 +1834,7 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
 async function curatorState(env) {
   await ensureDefaultCuratorDiscoveries(env, "curator-state-bootstrap");
   await ensureAfricaLearningDiscoveries(env, "curator-state-africa-learning");
+  await ensureAfricaLearningDiscoveryTuningV2(env, "curator-state-africa-learning-v2");
   const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
     listDocuments(env, "tvCuratorDiscoveries", 50),
@@ -1944,8 +1945,8 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-africa-crash-courses",
     label: "Nigeria & Africa Crash Courses",
-    query: "Nigeria Africa crash course tutorial lecture education",
-    includeKeywords: ["course","crash course","tutorial","lecture","lesson","training","explained","students"],
+    query: "Nigeria education tutorial lecture students",
+    includeKeywords: ["course","crash course","tutorial","lecture","lesson","training","class","explained","education","study"],
     excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
     contentPillar: "school",
     audience: "students",
@@ -1955,8 +1956,8 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-africa-audiobooks",
     label: "Africa Educational Audiobooks",
-    query: "Africa Nigeria educational audiobook history learning",
-    includeKeywords: ["audiobook","audio book","book","history","education","learning","lecture"],
+    query: "Africa audiobook history education",
+    includeKeywords: ["audiobook","audio book","book","history","education","learning","biography"],
     excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
     contentPillar: "general",
     audience: "everyone",
@@ -2007,6 +2008,48 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
     return { ok: true };
   });
   return { seeded: true };
+}
+
+async function ensureAfricaLearningDiscoveryTuningV2(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/africaLearningDiscoveryTuningV2";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { tuned: false, reason: "already-tuned" };
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    const currentMarker = await tx.get(markerPath);
+    if (currentMarker?.completedAt) return { ok: true };
+    let tunedCount = 0;
+    for (const rule of AFRICA_LEARNING_DISCOVERIES) {
+      const path = "tvCuratorDiscoveries/" + rule.id;
+      const existing = await tx.get(path);
+      if (!existing) continue;
+      const input = curatorDiscoveryInput({
+        ...existing,
+        ...rule,
+        status: existing.status || "active",
+        show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
+        lookbackDays: 30,
+        maxResults: 25,
+        relevanceLanguage: "en"
+      });
+      tx.set(path, {
+        ...existing,
+        ...input,
+        mode: "review",
+        updatedAt: now,
+        updatedBy: actor,
+        tuningVersion: 2
+      });
+      tunedCount += 1;
+    }
+    tx.set(markerPath, {
+      completedAt: now,
+      tunedCount,
+      updatedBy: actor
+    });
+    return { ok: true };
+  });
+  return { tuned: true };
 }
 
 async function ensureDefaultCuratorDiscoveries(env, actor = "system") {
@@ -2256,6 +2299,7 @@ async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = ""
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
   await ensureDefaultCuratorDiscoveries(env, actor);
   await ensureAfricaLearningDiscoveries(env, actor);
+  await ensureAfricaLearningDiscoveryTuningV2(env, actor);
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
   const discoveries = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))

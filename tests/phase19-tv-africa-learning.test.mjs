@@ -21,7 +21,7 @@ test("YouTube learning searches stay embeddable and Nigeria-viewable",()=>{
   const helper=read("workers/platform-api/src/tv-curator.js");
   assert.match(helper,/videoEmbeddable:"true"/u);
   assert.match(helper,/regionCode:"NG"/u);
-  assert.match(helper,/videoDuration:"long"/u);
+  assert.match(helper,/learningType\(rule\.learningType\)===\"audiobook\"\?\{videoDuration:\"long\"\}/u);
   assert.match(helper,/matchesAfricaLearningRelevance/u);
 });
 
@@ -34,6 +34,11 @@ test("Worker seeds Nigeria and Africa learning discovery rules and preserves met
   assert.match(worker,/learningType/u);
   assert.match(worker,/regionFocus/u);
   assert.match(worker,/ensureAfricaLearningDiscoveries/u);
+  assert.match(worker,/ensureAfricaLearningDiscoveryTuningV2/u);
+  assert.match(worker,/africaLearningDiscoveryTuningV2/u);
+  assert.match(worker,/Nigeria education tutorial lecture students/u);
+  assert.match(worker,/Africa audiobook history education/u);
+  assert.match(worker,/maxResults: 25/u);
 });
 
 test("TV Studio and Curator expose learning type and regional focus controls",()=>{
