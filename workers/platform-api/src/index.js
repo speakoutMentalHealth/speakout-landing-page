@@ -120,7 +120,7 @@ const CMS_COLLECTION_FIELDS = Object.freeze({
   homepagePodcasts: ["title", "description", "audioUrl", "category", "imageUrl"],
   homepageReports: ["title", "description", "url", "category", "imageUrl"],
   homepageVideos: ["title", "description", "youtubeUrl", "thumbnailUrl", "category"],
-  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "learningType", "regionFocus", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
+  tvEpisodes: ["title", "show", "description", "presenter", "guest", "guestRole", "tags", "url", "tiktokUrl", "imageUrl", "format", "featured", "homePlacement", "programmingDays", "placementPriority", "placementStart", "placementEnd", "contentPillar", "audience", "learningType", "learningCategory", "regionFocus", "bookRights", "publishDate", "scheduledAt", "sponsor", "consentConfirmed", "minorInvolved", "editorialReview"],
   tvAudio: ["title", "audioType", "description", "url", "imageUrl", "publishDate"],
   tvShows: ["title", "slug", "description", "host", "imageUrl", "category"]
 });
@@ -214,14 +214,29 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("Invalid TV learning type."), { status: 400 });
     }
     record.learningType = learningType;
-    const regionFocus = normalized(record.regionFocus || (learningType === "standard" ? "" : "nigeria"));
-    if (regionFocus && !["nigeria", "africa"].includes(regionFocus)) {
+
+    const learningCategory = normalized(record.learningCategory || (learningType === "standard" ? "" : "general"));
+    const validLearningCategories = [
+      "general","medicine_health","nursing","public_health","ai_ml","ict_computing","programming",
+      "cybersecurity","data_science","business_entrepreneurship","finance","leadership","communication",
+      "research_academic","career_skills","personal_development","psychology","history_culture"
+    ];
+    if (learningCategory && !validLearningCategories.includes(learningCategory)) {
+      throw Object.assign(new Error("Invalid TV learning category."), { status: 400 });
+    }
+    record.learningCategory = learningCategory;
+
+    const regionFocus = normalized(record.regionFocus || (learningType === "standard" ? "" : "global"));
+    if (regionFocus && !["global", "nigeria", "africa"].includes(regionFocus)) {
       throw Object.assign(new Error("Invalid TV regional focus."), { status: 400 });
     }
-    if (learningType !== "standard" && !regionFocus) {
-      throw Object.assign(new Error("Learning content requires a Nigeria or Africa regional focus."), { status: 409 });
-    }
     record.regionFocus = regionFocus;
+
+    const bookRights = normalized(record.bookRights || (learningType === "audiobook" ? "review_required" : "not_applicable"));
+    if (!["not_applicable","review_required","official_author","official_publisher","public_domain","licensed"].includes(bookRights)) {
+      throw Object.assign(new Error("Invalid audiobook rights status."), { status: 400 });
+    }
+    record.bookRights = bookRights;
 
     const programmingDays = normalized(record.programmingDays || "all");
     if (!["all", "weekdays", "weekend", "mon", "tue", "wed", "thu", "fri", "sat", "sun"].includes(programmingDays)) {
@@ -270,6 +285,10 @@ function cmsRecord(collectionName, input) {
       if (format === "live" && ["featured", "daily"].includes(homePlacement)) {
         throw Object.assign(new Error("Live broadcasts use the Live channel and cannot use Main Stage or Today’s Focus placement."), { status: 409 });
       }
+    }
+    if (publicTvStatus && learningType === "audiobook" &&
+        !["official_author","official_publisher","public_domain","licensed"].includes(normalized(record.bookRights))) {
+      throw Object.assign(new Error("Publishing a full audiobook requires a verified official, licensed or public-domain source."), { status: 409 });
     }
     if (publicTvStatus && normalized(record.editorialReview) !== "complete") {
       throw Object.assign(new Error("Published TV content requires completed editorial review."), { status: 409 });
@@ -1522,7 +1541,7 @@ async function authenticatedEvidenceResponse(env, record) {
   requireCloudinary(env);
   const encodedPublicId = publicId.split("/").map(encodeURIComponent).join("/");
   const deliveryTail = `v${version}/${encodedPublicId}.${format}`;
-  const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, 8);
+  const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, MAX_ACTIVE_DISCOVERIES);
   const response = await fetch(`https://res.cloudinary.com/${encodeURIComponent(env.CLOUDINARY_CLOUD_NAME)}/${resourceType}/authenticated/s--${signature}--/${deliveryTail}`);
   if (!response.ok || !response.body) {
     throw Object.assign(new Error("Secure evidence retrieval failed."), { status: response.status === 404 ? 404 : 502 });
@@ -1554,7 +1573,7 @@ function publicTvEpisode(item = {}) {
   return pickPublicFields(item, [
     "id","title","show","description","presenter","guest","guestRole","tags","url","tiktokUrl","imageUrl",
     "format","featured","homePlacement","programmingDays","placementPriority","placementStart",
-    "placementEnd","contentPillar","audience","learningType","regionFocus","publishDate","scheduledAt","sponsor","status","order",
+    "placementEnd","contentPillar","audience","learningType","learningCategory","regionFocus","bookRights","publishDate","scheduledAt","sponsor","status","order",
     "createdAt","updatedAt","sourceType","sourceChannelTitle","sourceChannelId","sourceVideoId",
     "sourceUrl","sourceAttribution","curatedBySpeakOut"
   ]);
@@ -1807,7 +1826,9 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
     contentPillar: normalized(source.contentPillar || candidate.contentPillar || "motivation") || "motivation",
     audience: normalized(source.audience || candidate.audience || "youth") || "youth",
     learningType: normalized(source.learningType || candidate.learningType || "standard") || "standard",
+    learningCategory: normalized(source.learningCategory || candidate.learningCategory || ""),
     regionFocus: normalized(source.regionFocus || candidate.regionFocus || ""),
+    bookRights: normalized(source.bookRights || candidate.bookRights || (normalized(source.learningType || candidate.learningType) === "audiobook" ? "review_required" : "not_applicable")),
     featured: "false",
     publishDate: clean(candidate.publishedAt).slice(0, 10),
     order: 0,
@@ -1835,6 +1856,8 @@ async function curatorState(env) {
   await ensureDefaultCuratorDiscoveries(env, "curator-state-bootstrap");
   await ensureAfricaLearningDiscoveries(env, "curator-state-africa-learning");
   await ensureAfricaLearningDiscoveryTuningV2(env, "curator-state-africa-learning-v2");
+  await ensureGlobalLearningDiscoveries(env, "curator-state-global-learning");
+  await ensureLearningDiscoveryArchitectureV3(env, "curator-state-learning-v3");
   const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
     listDocuments(env, "tvCuratorDiscoveries", 50),
@@ -1941,6 +1964,83 @@ const DEFAULT_CURATOR_DISCOVERIES = Object.freeze([
   }
 ]);
 
+const MAX_ACTIVE_DISCOVERIES = 16;
+
+const GLOBAL_LEARNING_DISCOVERIES = Object.freeze([
+  {
+    id: "discover-global-medicine-health",
+    label: "Medicine & Health Sciences",
+    query: "medicine crash course medical students",
+    includeKeywords: ["medicine","medical","anatomy","physiology","pharmacology","pathology","clinical","course","lecture","tutorial"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "medicine_health", regionFocus: "global"
+  },
+  {
+    id: "discover-global-nursing-public-health",
+    label: "Nursing & Public Health",
+    query: "nursing public health course students",
+    includeKeywords: ["nursing","nurse","public health","community health","course","lecture","tutorial","lesson"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "public_health", regionFocus: "global"
+  },
+  {
+    id: "discover-global-ai-ml",
+    label: "AI & Machine Learning",
+    query: "artificial intelligence machine learning course beginners",
+    includeKeywords: ["artificial intelligence","machine learning","AI","deep learning","course","tutorial","lecture","beginners"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "ai_ml", regionFocus: "global"
+  },
+  {
+    id: "discover-global-ict-programming",
+    label: "ICT, Programming & Cybersecurity",
+    query: "ICT programming computer science full course beginners",
+    includeKeywords: ["ICT","programming","coding","computer science","cybersecurity","web development","course","tutorial"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "ict_computing", regionFocus: "global"
+  },
+  {
+    id: "discover-global-business",
+    label: "Business & Entrepreneurship",
+    query: "business entrepreneurship course students beginners",
+    includeKeywords: ["business","entrepreneurship","startup","marketing","management","finance","course","lecture","tutorial"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "business_entrepreneurship", regionFocus: "global"
+  },
+  {
+    id: "discover-global-research-academic",
+    label: "Research & Academic Skills",
+    query: "research methods academic writing course students",
+    includeKeywords: ["research methods","academic writing","research","study skills","thesis","statistics","course","lecture","tutorial"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "school", audience: "students", learningType: "course",
+    learningCategory: "research_academic", regionFocus: "global"
+  },
+  {
+    id: "discover-global-career-skills",
+    label: "Career, Leadership & Communication",
+    query: "career skills leadership communication course students",
+    includeKeywords: ["career","leadership","communication","presentation","interview","workplace","course","training","students"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "motivation", audience: "students", learningType: "course",
+    learningCategory: "career_skills", regionFocus: "global"
+  },
+  {
+    id: "discover-global-audiobooks",
+    label: "Motivational & Personal Development Audiobooks",
+    query: "official audiobook personal development motivation leadership",
+    includeKeywords: ["audiobook","audio book","personal development","motivation","leadership","success","self improvement","book"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    contentPillar: "motivation", audience: "students", learningType: "audiobook",
+    learningCategory: "personal_development", regionFocus: "global", bookRights: "review_required"
+  }
+]);
+
 const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-africa-crash-courses",
@@ -1951,6 +2051,7 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
     contentPillar: "school",
     audience: "students",
     learningType: "course",
+    learningCategory: "general",
     regionFocus: "nigeria"
   },
   {
@@ -1962,7 +2063,9 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
     contentPillar: "general",
     audience: "everyone",
     learningType: "audiobook",
-    regionFocus: "africa"
+    learningCategory: "history_culture",
+    regionFocus: "africa",
+    bookRights: "review_required"
   }
 ]);
 
@@ -1971,7 +2074,7 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
   const marker = await getDocument(env, markerPath);
   if (marker?.completedAt) return { seeded: false, reason: "already-bootstrapped" };
   const currentRules = await listDocuments(env, "tvCuratorDiscoveries", 50);
-  let activeSlots = Math.max(0, 8 - currentRules.documents.filter(item => normalized(item.status || "active") === "active").length);
+  let activeSlots = Math.max(0, MAX_ACTIVE_DISCOVERIES - currentRules.documents.filter(item => normalized(item.status || "active") === "active").length);
   const now = new Date().toISOString();
   await runTransaction(env, async tx => {
     const current = await tx.get(markerPath);
@@ -1986,9 +2089,10 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
         ...rule,
         status,
         show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
-        lookbackDays: 30,
-        maxResults: 15,
-        relevanceLanguage: "en"
+        lookbackDays: 0,
+        maxResults: 25,
+        relevanceLanguage: "en",
+        searchOrder: "relevance"
       });
       tx.set("tvCuratorDiscoveries/" + rule.id, {
         ...input,
@@ -2028,9 +2132,10 @@ async function ensureAfricaLearningDiscoveryTuningV2(env, actor = "system") {
         ...rule,
         status: existing.status || "active",
         show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
-        lookbackDays: 30,
+        lookbackDays: 0,
         maxResults: 25,
-        relevanceLanguage: "en"
+        relevanceLanguage: "en",
+        searchOrder: "relevance"
       });
       tx.set(path, {
         ...existing,
@@ -2047,6 +2152,88 @@ async function ensureAfricaLearningDiscoveryTuningV2(env, actor = "system") {
       tunedCount,
       updatedBy: actor
     });
+    return { ok: true };
+  });
+  return { tuned: true };
+}
+
+async function ensureGlobalLearningDiscoveries(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/globalLearningDiscoveryBootstrap";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { seeded: false, reason: "already-bootstrapped" };
+  const currentRules = await listDocuments(env, "tvCuratorDiscoveries", 50);
+  let activeSlots = Math.max(0, MAX_ACTIVE_DISCOVERIES - currentRules.documents.filter(item => normalized(item.status || "active") === "active").length);
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    const current = await tx.get(markerPath);
+    if (current?.completedAt) return { ok: true };
+    let seededCount = 0;
+    for (const rule of GLOBAL_LEARNING_DISCOVERIES) {
+      const existing = await tx.get("tvCuratorDiscoveries/" + rule.id);
+      if (existing) continue;
+      const status = activeSlots > 0 ? "active" : "paused";
+      if (activeSlots > 0) activeSlots -= 1;
+      const input = curatorDiscoveryInput({
+        ...rule,
+        status,
+        show: rule.learningType === "audiobook" ? "Books & Audiobooks" : "Crash Courses",
+        lookbackDays: 0,
+        maxResults: 25,
+        relevanceLanguage: "en",
+        searchOrder: "relevance"
+      });
+      tx.set("tvCuratorDiscoveries/" + rule.id, {
+        ...input,
+        mode: "review",
+        createdAt: now,
+        updatedAt: now,
+        updatedBy: actor,
+        bootstrapGlobalLearning: true
+      });
+      seededCount += 1;
+    }
+    tx.set(markerPath, { completedAt: now, seededCount, updatedBy: actor });
+    return { ok: true };
+  });
+  return { seeded: true };
+}
+
+async function ensureLearningDiscoveryArchitectureV3(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/learningDiscoveryArchitectureV3";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { tuned: false, reason: "already-tuned" };
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    const current = await tx.get(markerPath);
+    if (current?.completedAt) return { ok: true };
+    let updatedCount = 0;
+    for (const rule of [...AFRICA_LEARNING_DISCOVERIES, ...GLOBAL_LEARNING_DISCOVERIES]) {
+      const path = "tvCuratorDiscoveries/" + rule.id;
+      const existing = await tx.get(path);
+      if (!existing) continue;
+      const input = curatorDiscoveryInput({
+        ...existing,
+        ...rule,
+        status: existing.status || "active",
+        show: rule.id.startsWith("discover-africa-")
+          ? (rule.learningType === "audiobook" ? "Nigeria & Africa Picks" : "Nigeria & Africa Picks")
+          : (rule.learningType === "audiobook" ? "Books & Audiobooks" : "Crash Courses"),
+        lookbackDays: 0,
+        maxResults: 25,
+        relevanceLanguage: "en",
+        searchOrder: "relevance"
+      });
+      tx.set(path, {
+        ...existing,
+        ...input,
+        mode: "review",
+        updatedAt: now,
+        updatedBy: actor,
+        architectureVersion: 3
+      });
+      updatedCount += 1;
+    }
+    tx.set(markerPath, { completedAt: now, updatedCount, updatedBy: actor });
     return { ok: true };
   });
   return { tuned: true };
@@ -2113,8 +2300,8 @@ async function saveCuratorDiscovery(env, user, data = {}) {
   if (input.status === "active") {
     const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
     const active = page.documents.filter(item => item.id !== id && normalized(item.status || "active") === "active");
-    if (active.length >= 8) {
-      throw Object.assign(new Error("Pause another YouTube discovery rule before activating more than eight scheduled searches."), { status: 409 });
+    if (active.length >= MAX_ACTIVE_DISCOVERIES) {
+      throw Object.assign(new Error("Pause another YouTube discovery rule before activating more than sixteen scheduled searches."), { status: 409 });
     }
   }
   const now = new Date().toISOString();
@@ -2192,7 +2379,9 @@ async function syncCuratorSource(env, source, actor = "system") {
         contentPillar: normalized(refreshedSource.contentPillar || "motivation"),
         audience: normalized(refreshedSource.audience || "youth"),
         learningType: normalized(refreshedSource.learningType || "standard"),
+        learningCategory: normalized(refreshedSource.learningCategory || ""),
         regionFocus: normalized(refreshedSource.regionFocus || ""),
+        bookRights: normalized(refreshedSource.bookRights || (normalized(refreshedSource.learningType) === "audiobook" ? "review_required" : "not_applicable")),
         sourceMode: normalized(refreshedSource.mode || "review"),
         status: normalized(refreshedSource.mode) === "draft" ? "drafted" : "pending",
         discoveredAt: now,
@@ -2266,7 +2455,9 @@ async function syncCuratorDiscovery(env, discovery, actor = "system") {
         contentPillar: normalized(rule.contentPillar || "motivation"),
         audience: normalized(rule.audience || "youth"),
         learningType: normalized(rule.learningType || "standard"),
+        learningCategory: normalized(rule.learningCategory || ""),
         regionFocus: normalized(rule.regionFocus || ""),
+        bookRights: normalized(rule.bookRights || (normalized(rule.learningType) === "audiobook" ? "review_required" : "not_applicable")),
         sourceMode: "review",
         status: "pending",
         discoveredAt: now,
@@ -2300,6 +2491,8 @@ async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = ""
   await ensureDefaultCuratorDiscoveries(env, actor);
   await ensureAfricaLearningDiscoveries(env, actor);
   await ensureAfricaLearningDiscoveryTuningV2(env, actor);
+  await ensureGlobalLearningDiscoveries(env, actor);
+  await ensureLearningDiscoveryArchitectureV3(env, actor);
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
   const discoveries = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))
