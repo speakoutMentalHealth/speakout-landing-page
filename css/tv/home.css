@@ -60,6 +60,21 @@
 .topic-journey-card small{margin-top:5px;color:var(--tv-muted);font-size:.65rem;line-height:1.38}
 .topic-journey-card:nth-child(2n){background:var(--tv-surface-2)}
 
+/* Learning library */
+#courses,#books,#regional-learning{border-top:1px solid transparent}
+.learning-topic-links{
+  display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:0 0 12px;
+}
+.learning-topic-links::-webkit-scrollbar{display:none}
+.learning-topic-links a{
+  flex:0 0 auto;display:inline-flex;align-items:center;min-height:34px;padding:0 11px;
+  border:1px solid var(--tv-line);border-radius:999px;background:rgba(255,255,255,.035);
+  color:#cbd6df;text-decoration:none;font-size:.66rem;font-weight:800;white-space:nowrap;
+}
+.learning-topic-links a:hover,.learning-topic-links a:focus-visible{
+  border-color:rgba(88,166,255,.38);background:rgba(88,166,255,.08);color:#fff;
+}
+
 /* Quick reset */
 .reset-head{align-items:center}
 .reset-progress{

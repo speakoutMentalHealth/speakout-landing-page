@@ -24,20 +24,47 @@ async function youtubeGet(apiKey,resource,params){
 }
 
 const LEARNING_TYPES=new Set(["standard","course","audiobook"]);
-const REGION_FOCUS=new Set(["nigeria","africa"]);
+const REGION_FOCUS=new Set(["global","nigeria","africa"]);
+const LEARNING_CATEGORIES=new Set([
+  "general","medicine_health","nursing","public_health","ai_ml","ict_computing","programming",
+  "cybersecurity","data_science","business_entrepreneurship","finance","leadership","communication",
+  "research_academic","career_skills","personal_development","psychology","history_culture"
+]);
+const BOOK_RIGHTS=new Set(["not_applicable","review_required","official_author","official_publisher","public_domain","licensed"]);
+const SEARCH_ORDERS=new Set(["date","relevance"]);
 const AFRICA_RELEVANCE_TERMS=[
   "nigeria","nigerian","naija","lagos","abuja","africa","african","west africa","sub-saharan",
   "ghana","kenya","south africa","uganda","rwanda","tanzania","ethiopia","zambia","zimbabwe","senegal"
 ];
 
 const learningType=value=>LEARNING_TYPES.has(lower(value))?lower(value):"standard";
-const regionFocus=value=>REGION_FOCUS.has(lower(value))?lower(value):"nigeria";
+const regionFocus=(value,type="standard")=>{
+  if(learningType(type)==="standard")return "";
+  const normalized=lower(value);
+  if(REGION_FOCUS.has(normalized))return normalized;
+  return "global";
+};
+const learningCategory=(value,type="standard")=>{
+  if(learningType(type)==="standard")return "";
+  const normalized=lower(value).replace(/[^a-z0-9_-]/gu,"");
+  if(LEARNING_CATEGORIES.has(normalized))return normalized;
+  return "general";
+};
+const bookRights=(value,type="standard")=>{
+  if(learningType(type)!=="audiobook")return "not_applicable";
+  const normalized=lower(value);
+  if(BOOK_RIGHTS.has(normalized)&&normalized!=="not_applicable")return normalized;
+  return "review_required";
+};
+const searchOrder=value=>SEARCH_ORDERS.has(lower(value))?lower(value):"date";
 
-export function matchesAfricaLearningRelevance(video={},rule={}){
-  if(learningType(rule.learningType)==="standard")return true;
+export function matchesLearningRegion(video={},rule={}){
+  if(learningType(rule.learningType)==="standard"||regionFocus(rule.regionFocus,rule.learningType)==="global")return true;
   const hay=lower([video.title,video.description,video.channelTitle,Array.isArray(video.tags)?video.tags.join(" "):video.tags].join(" "));
   return AFRICA_RELEVANCE_TERMS.some(term=>hay.includes(term));
 }
+
+export const matchesAfricaLearningRelevance=matchesLearningRegion;
 
 export function normalizeKeywordList(value,max=20){
   const source=Array.isArray(value)?value:String(value||"").split(",");
@@ -151,7 +178,7 @@ export async function fetchYouTubeUploads(apiKey,source={},limit=20){
     const video=byId.get(id);
     if(!video?.eligible)continue;
     if(!matchesCuratorSource(video,source))continue;
-    if(!matchesAfricaLearningRelevance(video,source))continue;
+    if(!matchesLearningRegion(video,source))continue;
     output.push(video);
   }
   return output;
@@ -162,8 +189,9 @@ export function curatorDiscoveryInput(input={}){
   const status=["active","paused"].includes(lower(input.status))?lower(input.status):"active";
   const pillar=lower(input.contentPillar||"motivation").replace(/[^a-z0-9_-]/gu,"");
   const audience=lower(input.audience||"youth").replace(/[^a-z0-9_-]/gu,"");
-  const rawLookback=Number(input.lookbackDays||14);
+  const rawLookback=Number(input.lookbackDays??14);
   const rawMax=Number(input.maxResults||15);
+  const type=learningType(input.learningType);
   return {
     query:clean(input.query).replace(/\s+/gu," ").slice(0,160),
     label:clean(input.label).slice(0,120),
@@ -173,33 +201,38 @@ export function curatorDiscoveryInput(input={}){
     show:clean(input.show||"SpeakOut Picks").slice(0,120),
     contentPillar:pillar||"motivation",
     audience:audience||"youth",
-    lookbackDays:Number.isFinite(rawLookback)?Math.max(1,Math.min(30,Math.round(rawLookback))):14,
+    lookbackDays:Number.isFinite(rawLookback)?Math.max(0,Math.min(3650,Math.round(rawLookback))):14,
     maxResults:Number.isFinite(rawMax)?Math.max(5,Math.min(25,Math.round(rawMax))):15,
     relevanceLanguage:clean(input.relevanceLanguage||"en").slice(0,12),
-    learningType:learningType(input.learningType),
-    regionFocus:regionFocus(input.regionFocus)
+    searchOrder:searchOrder(input.searchOrder||(type==="standard"?"date":"relevance")),
+    learningType:type,
+    learningCategory:learningCategory(input.learningCategory,type),
+    regionFocus:regionFocus(input.regionFocus,type),
+    bookRights:bookRights(input.bookRights,type)
   };
 }
 
 export async function searchYouTubeVideos(apiKey,rule={},limit=0){
   const query=clean(rule.query);
   if(!query)throw Object.assign(new Error("Enter a YouTube discovery search query."),{status:400});
-  const lookbackDays=Math.max(1,Math.min(30,Number(rule.lookbackDays)||14));
+  const lookbackDays=Math.max(0,Math.min(3650,Number(rule.lookbackDays)??14));
   const max=Math.max(5,Math.min(25,Number(limit)||Number(rule.maxResults)||15));
-  const publishedAfter=new Date(Date.now()-lookbackDays*24*60*60*1000).toISOString();
+  const type=learningType(rule.learningType);
+  const region=regionFocus(rule.regionFocus,type);
+  const publishedAfter=lookbackDays>0?new Date(Date.now()-lookbackDays*24*60*60*1000).toISOString():"";
   const search=await youtubeGet(apiKey,"search",{
     part:"snippet",
     type:"video",
     q:query,
-    order:"date",
+    order:searchOrder(rule.searchOrder||(type==="standard"?"date":"relevance")),
     maxResults:max,
-    publishedAfter,
+    ...(publishedAfter?{publishedAfter}:{}),
     safeSearch:"strict",
     videoEmbeddable:"true",
     videoSyndicated:"true",
     relevanceLanguage:clean(rule.relevanceLanguage||"en"),
-    regionCode:"NG",
-    ...(learningType(rule.learningType)==="audiobook"?{videoDuration:"long"}:{})
+    ...(region==="nigeria"?{regionCode:"NG"}:{}),
+    ...(type==="audiobook"?{videoDuration:"long"}:{})
   });
   const ids=(search.items||[]).map(item=>clean(item?.id?.videoId)).filter(Boolean);
   if(!ids.length)return [];
@@ -209,7 +242,7 @@ export async function searchYouTubeVideos(apiKey,rule={},limit=0){
     const video=byId.get(id);
     if(!video?.eligible)continue;
     if(!matchesCuratorSource(video,rule))continue;
-    if(!matchesAfricaLearningRelevance(video,rule))continue;
+    if(!matchesLearningRegion(video,rule))continue;
     output.push(video);
   }
   return output;
@@ -220,6 +253,7 @@ export function curatorSourceInput(input={}){
   const status=["active","paused"].includes(lower(input.status))?lower(input.status):"active";
   const pillar=lower(input.contentPillar||"motivation").replace(/[^a-z0-9_-]/gu,"");
   const audience=lower(input.audience||"youth").replace(/[^a-z0-9_-]/gu,"");
+  const type=learningType(input.learningType);
   return {
     channelRef:clean(input.channelRef).slice(0,300),
     label:clean(input.label).slice(0,120),
@@ -229,7 +263,9 @@ export function curatorSourceInput(input={}){
     show:clean(input.show||"SpeakOut Picks").slice(0,120),
     contentPillar:pillar||"motivation",
     audience:audience||"youth",
-    learningType:learningType(input.learningType),
-    regionFocus:regionFocus(input.regionFocus)
+    learningType:type,
+    learningCategory:learningCategory(input.learningCategory,type),
+    regionFocus:regionFocus(input.regionFocus,type),
+    bookRights:bookRights(input.bookRights,type)
   };
 }

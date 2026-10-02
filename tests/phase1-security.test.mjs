@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v13/u);
+  assert.match(sw, /speakout-tv-v14/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -598,7 +598,7 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v13/u);
+  assert.match(sw, /speakout-tv-v14/u);
   for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
@@ -714,7 +714,7 @@ test("SpeakOut TV keeps Featured and mixed discovery content home-only", () => {
   assert.match(page,/document\.documentElement\.dataset\.tvRoute/u);
   assert.match(script,/document\.documentElement\.dataset\.tvRoute=chosen/u);
   assert.match(script,/if\(hash==="listen"\|\|hash==="audio"\)\{location\.replace\("radio\.html"\)/u);
-  assert.match(script,/home:\["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","shelf","reset","series","stories"\]/u);
+  assert.match(script,/home:\["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","regional-learning","shelf","reset","series","stories"\]/u);
   assert.match(script,/watch:\["episodes"\]/u);
   assert.match(script,/live:\["live"\]/u);
 });
