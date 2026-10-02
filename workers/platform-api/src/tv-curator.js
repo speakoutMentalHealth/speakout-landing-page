@@ -39,19 +39,22 @@ const AFRICA_RELEVANCE_TERMS=[
 
 const learningType=value=>LEARNING_TYPES.has(lower(value))?lower(value):"standard";
 const regionFocus=(value,type="standard")=>{
+  if(learningType(type)==="standard")return "";
   const normalized=lower(value);
   if(REGION_FOCUS.has(normalized))return normalized;
-  return learningType(type)==="standard"?"":"global";
+  return "global";
 };
 const learningCategory=(value,type="standard")=>{
+  if(learningType(type)==="standard")return "";
   const normalized=lower(value).replace(/[^a-z0-9_-]/gu,"");
   if(LEARNING_CATEGORIES.has(normalized))return normalized;
-  return learningType(type)==="standard"?"":"general";
+  return "general";
 };
 const bookRights=(value,type="standard")=>{
+  if(learningType(type)!=="audiobook")return "not_applicable";
   const normalized=lower(value);
-  if(BOOK_RIGHTS.has(normalized))return normalized;
-  return learningType(type)==="audiobook"?"review_required":"not_applicable";
+  if(BOOK_RIGHTS.has(normalized)&&normalized!=="not_applicable")return normalized;
+  return "review_required";
 };
 const searchOrder=value=>SEARCH_ORDERS.has(lower(value))?lower(value):"date";
 
