@@ -93,7 +93,7 @@ test("curator refreshes stored YouTube metadata before the 30-day policy window"
   assert.match(worker,/metadataExpired[^\n]+30\*24\*60\*60\*1000/u);
   assert.match(worker,/status: "unavailable"/u);
   assert.match(worker,/status: "hidden"/u);
-  assert.deepEqual(production.triggers.crons,["17 */6 * * *"]);
+  assert.deepEqual(production.triggers.crons,["17 * * * *"]);
 });
 
 test("curator refresh preserves editor-owned display metadata after TV Studio edits",()=>{
@@ -140,8 +140,42 @@ test("global YouTube discovery is bounded, embeddable and review-only",()=>{
   assert.match(worker,/sourceMode: "review"/u);
   assert.match(worker,/status: "pending"/u);
   assert.match(worker,/MAX_ACTIVE_DISCOVERIES = 16/u);
-  assert.match(worker,/slice\(0, MAX_ACTIVE_DISCOVERIES\)/u);
-  assert.match(worker,/syncAllCuratorDiscoveries\(env, "cloudflare-cron"\)/u);
+  assert.match(worker,/DISCOVERY_SYNC_BATCH_SIZE = 3/u);
+  assert.match(worker,/SOURCE_SYNC_BATCH_SIZE = 2/u);
+  assert.match(worker,/METADATA_REFRESH_BATCH_SIZE = 25/u);
+  assert.match(worker,/syncAllCuratorDiscoveries\(env, "cloudflare-cron", "", tick \* DISCOVERY_SYNC_BATCH_SIZE/u);
+});
+
+test("curator dashboard reads state without running migrations in the request",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const start=worker.indexOf("async function curatorState(env)");
+  const end=worker.indexOf("async function saveCuratorSource",start);
+  const body=worker.slice(start,end);
+  assert.match(body,/listDocuments\(env, "tvCuratorSources"/u);
+  assert.match(body,/listDocuments\(env, "tvCuratorDiscoveries"/u);
+  assert.match(body,/listDocuments\(env, "tvCuratorCandidates"/u);
+  assert.doesNotMatch(body,/ensureDefaultCuratorDiscoveries/u);
+  assert.doesNotMatch(body,/ensureGlobalLearningDiscoveries/u);
+  assert.doesNotMatch(body,/ensureLearningDiscoveryArchitectureV3/u);
+});
+
+test("curator stays within free-plan subrequest budget by batching and reusing Firebase auth",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const client=read("js/platform-api.js");
+  const admin=read("js/tv-curator-admin.js");
+  assert.match(worker,/firebaseAccessTokenMemory/u);
+  assert.match(worker,/DISCOVERY_SYNC_BATCH_SIZE = 3/u);
+  assert.match(worker,/SOURCE_SYNC_BATCH_SIZE = 2/u);
+  assert.match(worker,/METADATA_REFRESH_BATCH_SIZE = 25/u);
+  assert.match(worker,/hasMore/u);
+  assert.match(worker,/nextCursor/u);
+  assert.match(worker,/hour % 6 === 0/u);
+  assert.match(worker,/hour % 6 === 3/u);
+  assert.match(client,/syncTvCuratorDiscovery: \(id = "", cursor = 0\)/u);
+  assert.match(client,/syncTvCurator: \(id = "", cursor = 0\)/u);
+  assert.match(admin,/while\(true\)/u);
+  assert.match(admin,/result\.hasMore/u);
+  assert.match(admin,/result\.nextCursor/u);
 });
 
 test("curator admin manages whole-YouTube discovery rules",()=>{
