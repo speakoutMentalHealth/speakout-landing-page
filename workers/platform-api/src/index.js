@@ -2088,7 +2088,7 @@ async function ensureAfricaLearningDiscoveries(env, actor = "system") {
       const input = curatorDiscoveryInput({
         ...rule,
         status,
-        show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
+        show: "Nigeria & Africa Picks",
         lookbackDays: 0,
         maxResults: 25,
         relevanceLanguage: "en",
@@ -2131,7 +2131,7 @@ async function ensureAfricaLearningDiscoveryTuningV2(env, actor = "system") {
         ...existing,
         ...rule,
         status: existing.status || "active",
-        show: rule.learningType === "audiobook" ? "Listen & Learn Africa" : "Learn Nigeria & Africa",
+        show: "Nigeria & Africa Picks",
         lookbackDays: 0,
         maxResults: 25,
         relevanceLanguage: "en",
@@ -2496,7 +2496,7 @@ async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = ""
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
   const discoveries = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))
-    .slice(0, 8);
+    .slice(0, MAX_ACTIVE_DISCOVERIES);
   const results = [];
   for (const discovery of discoveries) {
     try {
