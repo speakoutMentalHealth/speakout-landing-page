@@ -81,7 +81,7 @@ const defaultSeries=[
 let items=[],filter="all";
 
 function searchable(x){
- return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience,x.learningType,x.regionFocus].flat().join(" "));
+ return norm([x.title,x.show,x.description,x.presenter,x.guest,x.guestRole,x.tags,x.audioType,x.category,x.host,x.contentPillar,x.audience,x.learningType,x.learningCategory,x.regionFocus,x.bookRights].flat().join(" "));
 }
 function matchesQuery(x,q){
  if(!q)return true;
