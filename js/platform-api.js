@@ -188,14 +188,14 @@ export const adminApi = {
     platformRequest("/v1/admin/tv-curator/source/save", { source, id }),
   deleteTvCuratorSource: id =>
     platformRequest("/v1/admin/tv-curator/source/delete", { id }),
-  syncTvCurator: (id = "") =>
-    platformRequest("/v1/admin/tv-curator/sync", id ? { id } : {}),
+  syncTvCurator: (id = "", cursor = 0) =>
+    platformRequest("/v1/admin/tv-curator/sync", id ? { id } : { cursor }),
   saveTvCuratorDiscovery: (discovery, id = "") =>
     platformRequest("/v1/admin/tv-curator/discovery/save", { discovery, id }),
   deleteTvCuratorDiscovery: id =>
     platformRequest("/v1/admin/tv-curator/discovery/delete", { id }),
-  syncTvCuratorDiscovery: (id = "") =>
-    platformRequest("/v1/admin/tv-curator/discovery/sync", id ? { id } : {}),
+  syncTvCuratorDiscovery: (id = "", cursor = 0) =>
+    platformRequest("/v1/admin/tv-curator/discovery/sync", id ? { id } : { cursor }),
   reviewTvCuratorCandidate: (id, decision) =>
     platformRequest("/v1/admin/tv-curator/review", { id, decision })
 };
