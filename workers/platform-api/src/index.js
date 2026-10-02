@@ -1562,7 +1562,7 @@ async function authenticatedEvidenceResponse(env, record) {
   requireCloudinary(env);
   const encodedPublicId = publicId.split("/").map(encodeURIComponent).join("/");
   const deliveryTail = `v${version}/${encodedPublicId}.${format}`;
-  const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, MAX_ACTIVE_DISCOVERIES);
+  const signature = (await sha1Base64Url(`${deliveryTail}${env.CLOUDINARY_API_SECRET}`)).slice(0, 8);
   const response = await fetch(`https://res.cloudinary.com/${encodeURIComponent(env.CLOUDINARY_CLOUD_NAME)}/${resourceType}/authenticated/s--${signature}--/${deliveryTail}`);
   if (!response.ok || !response.body) {
     throw Object.assign(new Error("Secure evidence retrieval failed."), { status: response.status === 404 ? 404 : 502 });
