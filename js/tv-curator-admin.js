@@ -47,7 +47,7 @@ function renderSources(){
     return '<article class="curator-source-card">'+
       '<div class="curator-source-avatar">'+(source.channelThumbnailUrl?'<img src="'+safe(source.channelThumbnailUrl)+'" alt="" loading="lazy">':'YT')+'</div>'+
       '<div class="curator-source-copy"><small>'+safe(source.label||source.channelTitle||"YouTube source")+'</small><strong>'+safe(source.channelTitle||source.channelRef)+'</strong>'+
-      '<span>'+safe(mode)+' · '+(active?"Active":"Paused")+' · '+safe(keywords)+' · '+safe(source.learningType||"standard")+' · '+safe(source.regionFocus||"nigeria")+'</span>'+
+      '<span>'+safe(mode)+' · '+(active?"Active":"Paused")+' · '+safe(keywords)+' · '+safe(source.learningType||"standard")+' · '+safe(source.learningCategory||"general")+' · '+safe(source.regionFocus||"global")+'</span>'+
       '<em>Last sync: '+safe(fmt(source.lastSyncedAt))+(source.lastSyncError?' · '+safe(source.lastSyncError):'')+'</em></div>'+
       '<div class="curator-source-actions">'+
       '<button class="btn soft" type="button" data-source-sync="'+safe(source.id)+'">Sync</button>'+
@@ -69,7 +69,7 @@ function renderDiscoveries(){
     return '<article class="curator-source-card discovery-card">'+
       '<div class="curator-source-avatar discovery-avatar">⌕</div>'+
       '<div class="curator-source-copy"><small>'+safe(rule.label||"Global discovery")+'</small><strong>'+safe(rule.query||"YouTube search")+'</strong>'+
-      '<span>Review only · '+(active?"Active":"Paused")+' · '+safe(filters)+' · '+safe(rule.lookbackDays||14)+' day lookback · '+safe(rule.learningType||"standard")+' · '+safe(rule.regionFocus||"nigeria")+'</span>'+
+      '<span>Review only · '+(active?"Active":"Paused")+' · '+safe(filters)+' · '+(Number(rule.lookbackDays)===0?"Evergreen":safe(rule.lookbackDays||14)+" day lookback")+' · '+safe(rule.searchOrder||"date")+' · '+safe(rule.learningType||"standard")+' · '+safe(rule.learningCategory||"general")+' · '+safe(rule.regionFocus||"global")+'</span>'+
       '<em>Last scan: '+safe(fmt(rule.lastSyncedAt))+(rule.lastSyncError?' · '+safe(rule.lastSyncError):'')+'</em></div>'+
       '<div class="curator-source-actions">'+
       '<button class="btn soft" type="button" data-discovery-sync="'+safe(rule.id)+'">Scan</button>'+
@@ -86,7 +86,7 @@ function candidateMatches(item){
   if(state!=="all"&&item.status!==state)return false;
   if(source!=="all"&&item.sourceId!==source)return false;
   if(query){
-    const hay=[item.title,item.channelTitle,item.sourceLabel,item.discoveryQuery,item.description,item.contentPillar,item.learningType,item.regionFocus,item.show].join(" ").toLowerCase();
+    const hay=[item.title,item.channelTitle,item.sourceLabel,item.discoveryQuery,item.description,item.contentPillar,item.learningType,item.learningCategory,item.regionFocus,item.bookRights,item.show].join(" ").toLowerCase();
     if(!hay.includes(query))return false;
   }
   return true;
@@ -117,7 +117,7 @@ function renderCandidates(){
       '<span>YouTube · '+safe(item.channelTitle||"Creator")+'</span></div>'+
       '<div class="candidate-copy"><small>'+(discovery?'⌕ GLOBAL · ':'')+safe(item.sourceLabel||"Curated source")+' · '+safe(fmt(item.publishedAt))+'</small>'+
       '<h3>'+safe(item.title||"Untitled video")+'</h3><p>'+safe(description||"No description supplied by the creator.")+'</p>'+
-      '<div class="candidate-meta"><span>'+safe(item.contentPillar||"general")+'</span><span>'+safe(item.learningType||"standard")+'</span><span>'+safe(item.regionFocus||"nigeria")+'</span><span>'+safe(item.show||"SpeakOut Picks")+'</span><span class="candidate-state '+safe(item.status||"pending")+'">'+safe(item.status||"pending")+'</span></div>'+
+      '<div class="candidate-meta"><span>'+safe(item.contentPillar||"general")+'</span><span>'+safe(item.learningType||"standard")+'</span><span>'+safe(item.learningCategory||"general")+'</span><span>'+safe(item.regionFocus||"global")+'</span>'+(item.learningType==="audiobook"?'<span>'+safe(item.bookRights||"review_required")+'</span>':"")+'<span>'+safe(item.show||"SpeakOut Picks")+'</span><span class="candidate-state '+safe(item.status||"pending")+'">'+safe(item.status||"pending")+'</span></div>'+
       '<div class="candidate-actions"><a class="btn soft" href="'+safe(item.url)+'" target="_blank" rel="noopener">Source ↗</a>'+
       (pending?'<button class="btn gold" type="button" data-candidate-draft="'+safe(item.id)+'">Send to drafts</button><button class="btn dark" type="button" data-candidate-reject="'+safe(item.id)+'">Reject</button>':"")+
       (drafted&&item.draftEpisodeId?'<a class="btn gold" href="admin-tv.html#library">Open TV Studio</a>':"")+
@@ -137,7 +137,9 @@ function fillSource(source){
   $("sourcePillar").value=source?.contentPillar||"motivation";
   $("sourceAudience").value=source?.audience||"youth";
   $("sourceLearningType").value=source?.learningType||"standard";
-  $("sourceRegionFocus").value=source?.regionFocus||"nigeria";
+  $("sourceLearningCategory").value=source?.learningCategory||"general";
+  $("sourceRegionFocus").value=source?.regionFocus||"global";
+  $("sourceBookRights").value=source?.bookRights||(source?.learningType==="audiobook"?"review_required":"not_applicable");
   $("cancelSource").hidden=!source;
   if(source)$("channelRef").scrollIntoView({behavior:"smooth",block:"center"});
 }
@@ -153,7 +155,9 @@ function sourcePayload(){
     contentPillar:$("sourcePillar").value,
     audience:$("sourceAudience").value,
     learningType:$("sourceLearningType").value,
-    regionFocus:$("sourceRegionFocus").value
+    learningCategory:$("sourceLearningCategory").value,
+    regionFocus:$("sourceRegionFocus").value,
+    bookRights:$("sourceBookRights").value
   };
 }
 
@@ -164,13 +168,16 @@ function fillDiscovery(rule){
   $("discoveryShow").value=rule?.show||"SpeakOut Picks";
   $("discoveryIncludeKeywords").value=(rule?.includeKeywords||[]).join(", ");
   $("discoveryExcludeKeywords").value=(rule?.excludeKeywords||[]).join(", ");
-  $("discoveryLookback").value=String(rule?.lookbackDays||14);
+  $("discoveryLookback").value=String(rule?.lookbackDays??14);
+  $("discoverySearchOrder").value=rule?.searchOrder||(rule?.learningType&&rule.learningType!=="standard"?"relevance":"date");
   $("discoveryMaxResults").value=String(rule?.maxResults||15);
   $("discoveryStatus").value=rule?.status||"active";
   $("discoveryPillar").value=rule?.contentPillar||"motivation";
   $("discoveryAudience").value=rule?.audience||"youth";
   $("discoveryLearningType").value=rule?.learningType||"standard";
-  $("discoveryRegionFocus").value=rule?.regionFocus||"nigeria";
+  $("discoveryLearningCategory").value=rule?.learningCategory||"general";
+  $("discoveryRegionFocus").value=rule?.regionFocus||"global";
+  $("discoveryBookRights").value=rule?.bookRights||(rule?.learningType==="audiobook"?"review_required":"not_applicable");
   $("cancelDiscovery").hidden=!rule;
   if(rule)$("discoveryQuery").scrollIntoView({behavior:"smooth",block:"center"});
 }
@@ -181,13 +188,16 @@ function discoveryPayload(){
     show:$("discoveryShow").value.trim()||"SpeakOut Picks",
     includeKeywords:$("discoveryIncludeKeywords").value,
     excludeKeywords:$("discoveryExcludeKeywords").value,
-    lookbackDays:Number($("discoveryLookback").value||14),
+    lookbackDays:Number($("discoveryLookback").value),
+    searchOrder:$("discoverySearchOrder").value,
     maxResults:Number($("discoveryMaxResults").value||15),
     status:$("discoveryStatus").value,
     contentPillar:$("discoveryPillar").value,
     audience:$("discoveryAudience").value,
     learningType:$("discoveryLearningType").value,
+    learningCategory:$("discoveryLearningCategory").value,
     regionFocus:$("discoveryRegionFocus").value,
+    bookRights:$("discoveryBookRights").value,
     relevanceLanguage:"en"
   };
 }
