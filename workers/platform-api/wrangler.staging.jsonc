@@ -22,7 +22,7 @@
     "SPOTIFY_RSS_URL": "https://anchor.fm/s/f8d8cfa4/podcast/rss"
   },
   "triggers": {
-    "crons": ["17 */6 * * *"]
+    "crons": ["17 * * * *"]
   },
   "observability": {
     "enabled": true,
