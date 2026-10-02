@@ -117,7 +117,7 @@ test("SpeakOut TV publishes a YouTube services and privacy disclosure",()=>{
 });
 
 
-test("global YouTube discovery is bounded, recent, embeddable and review-only",()=>{
+test("global YouTube discovery is bounded, embeddable and review-only",()=>{
   const helper=read("workers/platform-api/src/tv-curator.js");
   const worker=read("workers/platform-api/src/index.js");
   const rule=curatorDiscoveryInput({
@@ -127,7 +127,7 @@ test("global YouTube discovery is bounded, recent, embeddable and review-only",(
     maxResults:99
   });
   assert.equal(rule.query,"youth mental health");
-  assert.equal(rule.lookbackDays,30);
+  assert.equal(rule.lookbackDays,99);
   assert.equal(rule.maxResults,25);
   assert.equal(rule.status,"active");
   assert.match(helper,/youtubeGet\(apiKey,"search"/u);
@@ -139,7 +139,8 @@ test("global YouTube discovery is bounded, recent, embeddable and review-only",(
   assert.match(worker,/sourceKind: "discovery"/u);
   assert.match(worker,/sourceMode: "review"/u);
   assert.match(worker,/status: "pending"/u);
-  assert.match(worker,/slice\(0, 8\)/u);
+  assert.match(worker,/MAX_ACTIVE_DISCOVERIES = 16/u);
+  assert.match(worker,/slice\(0, MAX_ACTIVE_DISCOVERIES\)/u);
   assert.match(worker,/syncAllCuratorDiscoveries\(env, "cloudflare-cron"\)/u);
 });
 
