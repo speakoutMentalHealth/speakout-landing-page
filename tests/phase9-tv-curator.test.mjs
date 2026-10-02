@@ -34,7 +34,7 @@ test("YouTube curator is server-side and never exposes the API key to browser co
   assert.match(worker,/configured: Boolean\(clean\(env\.YOUTUBE_API_KEY\)\)/u);
   assert.match(worker,/env\.YOUTUBE_API_KEY/u);
   assert.match(worker,/\/v1\/admin\/tv-curator\/sync/u);
-  assert.match(worker,/scheduled\(_controller, env, ctx\)/u);
+  assert.match(worker,/scheduled\(controller, env, ctx\)/u);
   assert.doesNotMatch(client,/YOUTUBE_API_KEY/u);
   assert.doesNotMatch(admin,/YOUTUBE_API_KEY\s*[:=]/u);
 });
