@@ -254,10 +254,18 @@ $("cancelDiscovery").addEventListener("click",()=>fillDiscovery(null));
 $("syncAll").addEventListener("click",async()=>{
   if(busy)return;setBusy(true);
   try{
-    status("Checking all active trusted YouTube sources…","warn");
-    const result=await adminApi.syncTvCurator();
-    const created=(result.results||[]).reduce((sum,row)=>sum+Number(row.created||0),0);
-    const errors=(result.results||[]).filter(row=>row.error).length;
+    let cursor=0,created=0,errors=0,processed=0,guard=0;
+    do{
+      status("Checking trusted YouTube sources"+(processed?" · "+processed+" processed":"")+"…","warn");
+      const result=await adminApi.syncTvCurator("",cursor);
+      created+=(result.results||[]).reduce((sum,row)=>sum+Number(row.created||0),0);
+      errors+=(result.results||[]).filter(row=>row.error).length;
+      processed+=(result.results||[]).length;
+      cursor=Number(result.nextCursor)||0;
+      if(!result.hasMore)break;
+      guard+=1;
+      if(guard>50)throw new Error("Trusted-source sync stopped after too many batches.");
+    }while(true);
     await load();
     status("Trusted-source sync complete: "+created+" new candidate"+(created===1?"":"s")+(errors?" · "+errors+" source error"+(errors===1?"":"s"):"")+".",errors?"warn":"ok");
   }catch(error){console.error(error);status(error.message||"Curator sync failed.","bad")}
@@ -266,10 +274,19 @@ $("syncAll").addEventListener("click",async()=>{
 $("syncDiscoveryAll").addEventListener("click",async()=>{
   if(busy)return;setBusy(true);
   try{
-    status("Searching YouTube with active discovery rules…","warn");
-    const result=await adminApi.syncTvCuratorDiscovery();
-    const created=(result.results||[]).reduce((sum,row)=>sum+Number(row.created||0),0);
-    const errors=(result.results||[]).filter(row=>row.error).length;
+    let cursor=0,created=0,errors=0,processed=0,guard=0,total=0;
+    do{
+      status("Searching YouTube"+(total?" · "+processed+" of "+total+" rules":" with active discovery rules")+"…","warn");
+      const result=await adminApi.syncTvCuratorDiscovery("",cursor);
+      created+=(result.results||[]).reduce((sum,row)=>sum+Number(row.created||0),0);
+      errors+=(result.results||[]).filter(row=>row.error).length;
+      processed+=(result.results||[]).length;
+      total=Number(result.total)||total;
+      cursor=Number(result.nextCursor)||0;
+      if(!result.hasMore)break;
+      guard+=1;
+      if(guard>50)throw new Error("Global discovery stopped after too many batches.");
+    }while(true);
     await load();
     status("Global discovery complete: "+created+" new candidate"+(created===1?"":"s")+(errors?" · "+errors+" search error"+(errors===1?"":"s"):"")+".",errors?"warn":"ok");
   }catch(error){console.error(error);status(error.message||"Global discovery failed.","bad")}
