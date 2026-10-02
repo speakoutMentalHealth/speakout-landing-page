@@ -365,11 +365,27 @@ function encodeFields(data) {
   return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, toFirestore(value)]));
 }
 
+let firebaseAccessTokenMemory = { token: "", expiresAt: 0, clientEmail: "" };
+
 async function firebaseAccessToken(env) {
+  const nowMs = Date.now();
+  if (
+    firebaseAccessTokenMemory.token &&
+    firebaseAccessTokenMemory.clientEmail === clean(env.FIREBASE_CLIENT_EMAIL) &&
+    firebaseAccessTokenMemory.expiresAt > nowMs + 60_000
+  ) return firebaseAccessTokenMemory.token;
+
   const cached = await env.TOKEN_CACHE?.get("firebase-access-token", "json");
-  if (cached?.token) return cached.token;
+  if (cached?.token) {
+    firebaseAccessTokenMemory = {
+      token: cached.token,
+      expiresAt: nowMs + 3_000_000,
+      clientEmail: clean(env.FIREBASE_CLIENT_EMAIL)
+    };
+    return cached.token;
+  }
   const key = await importPKCS8(String(env.FIREBASE_PRIVATE_KEY).replace(/\\n/g, "\n"), "RS256");
-  const now = Math.floor(Date.now() / 1000);
+  const now = Math.floor(nowMs / 1000);
   const assertion = await new SignJWT({ scope: "https://www.googleapis.com/auth/datastore" })
     .setProtectedHeader({ alg: "RS256", typ: "JWT" })
     .setIssuer(env.FIREBASE_CLIENT_EMAIL)
@@ -383,6 +399,11 @@ async function firebaseAccessToken(env) {
   });
   const result = await response.json();
   if (!response.ok || !result.access_token) throw new Error("Firebase service authorization failed.");
+  firebaseAccessTokenMemory = {
+    token: result.access_token,
+    expiresAt: nowMs + 3_000_000,
+    clientEmail: clean(env.FIREBASE_CLIENT_EMAIL)
+  };
   await env.TOKEN_CACHE?.put("firebase-access-token", JSON.stringify({ token: result.access_token }), { expirationTtl: 3300 });
   return result.access_token;
 }
@@ -1853,11 +1874,6 @@ function curatorEpisodeRecord(candidate = {}, source = {}) {
 }
 
 async function curatorState(env) {
-  await ensureDefaultCuratorDiscoveries(env, "curator-state-bootstrap");
-  await ensureAfricaLearningDiscoveries(env, "curator-state-africa-learning");
-  await ensureAfricaLearningDiscoveryTuningV2(env, "curator-state-africa-learning-v2");
-  await ensureGlobalLearningDiscoveries(env, "curator-state-global-learning");
-  await ensureLearningDiscoveryArchitectureV3(env, "curator-state-learning-v3");
   const [sourcesPage, discoveryPage, candidatesPage] = await Promise.all([
     listDocuments(env, "tvCuratorSources", 250),
     listDocuments(env, "tvCuratorDiscoveries", 50),
@@ -1965,6 +1981,9 @@ const DEFAULT_CURATOR_DISCOVERIES = Object.freeze([
 ]);
 
 const MAX_ACTIVE_DISCOVERIES = 16;
+const DISCOVERY_SYNC_BATCH_SIZE = 3;
+const SOURCE_SYNC_BATCH_SIZE = 2;
+const METADATA_REFRESH_BATCH_SIZE = 25;
 
 const GLOBAL_LEARNING_DISCOVERIES = Object.freeze([
   {
@@ -2239,6 +2258,17 @@ async function ensureLearningDiscoveryArchitectureV3(env, actor = "system") {
   return { tuned: true };
 }
 
+async function ensureCuratorArchitecture(env, actor = "system") {
+  const current = await getDocument(env, "tvCuratorSettings/learningDiscoveryArchitectureV3");
+  if (current?.completedAt) return { ready: true, version: 3 };
+  await ensureDefaultCuratorDiscoveries(env, actor);
+  await ensureAfricaLearningDiscoveries(env, actor);
+  await ensureAfricaLearningDiscoveryTuningV2(env, actor);
+  await ensureGlobalLearningDiscoveries(env, actor);
+  await ensureLearningDiscoveryArchitectureV3(env, actor);
+  return { ready: true, version: 3 };
+}
+
 async function ensureDefaultCuratorDiscoveries(env, actor = "system") {
   const markerPath = "tvCuratorSettings/defaultDiscoveryBootstrap";
   const marker = await getDocument(env, markerPath);
@@ -2486,17 +2516,34 @@ async function syncCuratorDiscovery(env, discovery, actor = "system") {
   return { sourceId: rule.id, sourceTitle: rule.label || rule.query, sourceKind: "discovery", ...result };
 }
 
-async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = "") {
+async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = "", cursor = 0, options = {}) {
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
-  await ensureDefaultCuratorDiscoveries(env, actor);
-  await ensureAfricaLearningDiscoveries(env, actor);
-  await ensureAfricaLearningDiscoveryTuningV2(env, actor);
-  await ensureGlobalLearningDiscoveries(env, actor);
-  await ensureLearningDiscoveryArchitectureV3(env, actor);
+  if (options.bootstrap !== false) await ensureCuratorArchitecture(env, actor);
+
   const page = await listDocuments(env, "tvCuratorDiscoveries", 50);
-  const discoveries = page.documents
+  const active = page.documents
     .filter(item => normalized(item.status || "active") === "active" && (!discoveryId || item.id === discoveryId))
-    .slice(0, MAX_ACTIVE_DISCOVERIES);
+    .sort((a,b) => clean(a.label || a.query).localeCompare(clean(b.label || b.query)));
+
+  let discoveries = active;
+  let start = 0;
+  let hasMore = false;
+  let nextCursor = 0;
+
+  if (!discoveryId) {
+    const total = active.length;
+    start = total ? Math.max(0, Number(cursor) || 0) % total : 0;
+    if (options.wrap && total) {
+      discoveries = [...active.slice(start), ...active.slice(0, start)].slice(0, DISCOVERY_SYNC_BATCH_SIZE);
+      nextCursor = (start + discoveries.length) % total;
+      hasMore = total > discoveries.length;
+    } else {
+      discoveries = active.slice(start, start + DISCOVERY_SYNC_BATCH_SIZE);
+      nextCursor = start + discoveries.length;
+      hasMore = nextCursor < total;
+    }
+  }
+
   const results = [];
   for (const discovery of discoveries) {
     try {
@@ -2519,10 +2566,19 @@ async function syncAllCuratorDiscoveries(env, actor = "system", discoveryId = ""
       results.push({ sourceId: discovery.id, sourceTitle: discovery.label || discovery.query, sourceKind: "discovery", error: error.message || "Discovery sync failed." });
     }
   }
-  return { configured: true, results };
+
+  return {
+    configured: true,
+    results,
+    cursor: start,
+    nextCursor,
+    hasMore,
+    total: active.length,
+    batchSize: discoveries.length
+  };
 }
 
-async function refreshStoredYouTubeMetadata(env, actor = "system") {
+async function refreshStoredYouTubeMetadata(env, actor = "system", maxItems = METADATA_REFRESH_BATCH_SIZE) {
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, refreshed: 0, unavailable: 0 };
   const [candidatePage, episodePage] = await Promise.all([
     listDocuments(env, "tvCuratorCandidates", 1000),
@@ -2540,17 +2596,18 @@ async function refreshStoredYouTubeMetadata(env, actor = "system") {
   const ids = [...new Set([
     ...candidateRows.map(item => clean(item.videoId)),
     ...episodeRows.map(item => clean(item.sourceVideoId))
-  ])].filter(Boolean);
+  ])].filter(Boolean).slice(0, Math.max(1, Math.min(METADATA_REFRESH_BATCH_SIZE, Number(maxItems) || METADATA_REFRESH_BATCH_SIZE)));
   if (!ids.length) return { configured: true, refreshed: 0, unavailable: 0 };
 
+  const selectedIds = new Set(ids);
   const metadata = await fetchYouTubeVideosByIds(env.YOUTUBE_API_KEY, ids);
   const now = new Date().toISOString();
   let refreshed = 0, unavailable = 0;
 
   const chunks = [];
   const operations = [
-    ...candidateRows.map(item => ({ kind:"candidate", item, videoId:clean(item.videoId) })),
-    ...episodeRows.map(item => ({ kind:"episode", item, videoId:clean(item.sourceVideoId) }))
+    ...candidateRows.filter(item => selectedIds.has(clean(item.videoId))).map(item => ({ kind:"candidate", item, videoId:clean(item.videoId) })),
+    ...episodeRows.filter(item => selectedIds.has(clean(item.sourceVideoId))).map(item => ({ kind:"episode", item, videoId:clean(item.sourceVideoId) }))
   ];
   for (let start=0; start<operations.length; start+=150) chunks.push(operations.slice(start,start+150));
 
@@ -2639,10 +2696,29 @@ async function refreshStoredYouTubeMetadata(env, actor = "system") {
   return { configured:true, refreshed, unavailable };
 }
 
-async function syncAllCuratorSources(env, actor = "system", sourceId = "") {
+async function syncAllCuratorSources(env, actor = "system", sourceId = "", cursor = 0, options = {}) {
   if (!clean(env.YOUTUBE_API_KEY)) return { configured: false, results: [], error: "YOUTUBE_API_KEY is not configured." };
   const page = await listDocuments(env, "tvCuratorSources", 250);
-  const sources = page.documents.filter(source => normalized(source.status || "active") === "active" && (!sourceId || source.id === sourceId));
+  const active = page.documents
+    .filter(source => normalized(source.status || "active") === "active" && (!sourceId || source.id === sourceId))
+    .sort((a,b) => clean(a.label || a.channelTitle || a.channelRef).localeCompare(clean(b.label || b.channelTitle || b.channelRef)));
+  let sources = active;
+  let start = 0;
+  let hasMore = false;
+  let nextCursor = 0;
+  if (!sourceId) {
+    const total = active.length;
+    start = total ? Math.max(0, Number(cursor) || 0) % total : 0;
+    if (options.wrap && total) {
+      sources = [...active.slice(start), ...active.slice(0, start)].slice(0, SOURCE_SYNC_BATCH_SIZE);
+      nextCursor = (start + sources.length) % total;
+      hasMore = total > sources.length;
+    } else {
+      sources = active.slice(start, start + SOURCE_SYNC_BATCH_SIZE);
+      nextCursor = start + sources.length;
+      hasMore = nextCursor < total;
+    }
+  }
   const results = [];
   for (const source of sources) {
     try {
@@ -2668,7 +2744,7 @@ async function syncAllCuratorSources(env, actor = "system", sourceId = "") {
       results.push({ sourceId: source.id, sourceTitle: source.label || source.channelTitle || source.channelRef, error: error.message || "Sync failed." });
     }
   }
-  return { configured: true, results };
+  return { configured: true, results, cursor:start, nextCursor, hasMore, total:active.length, batchSize:sources.length };
 }
 
 async function reviewCuratorCandidate(env, user, data = {}) {
@@ -4208,15 +4284,15 @@ async function route(request, env, path, data) {
   if (path === "/v1/admin/tv-curator/discovery/sync") {
     requireAdmin(user);
     const discoveryId = clean(data.id) ? safeId(data.id, "discovery rule identifier") : "";
-    return syncAllCuratorDiscoveries(env, user.uid, discoveryId);
+    const cursor = Math.max(0, Number(data.cursor) || 0);
+    return syncAllCuratorDiscoveries(env, user.uid, discoveryId, cursor, { bootstrap: cursor === 0 });
   }
 
   if (path === "/v1/admin/tv-curator/sync") {
     requireAdmin(user);
     const sourceId = clean(data.id) ? safeId(data.id, "curator source identifier") : "";
-    const sync = await syncAllCuratorSources(env, user.uid, sourceId);
-    const refresh = await refreshStoredYouTubeMetadata(env, user.uid);
-    return { ...sync, metadataRefresh: refresh };
+    const cursor = Math.max(0, Number(data.cursor) || 0);
+    return syncAllCuratorSources(env, user.uid, sourceId, cursor);
   }
 
   if (path === "/v1/admin/tv-curator/review") {
@@ -4303,11 +4379,21 @@ async function route(request, env, path, data) {
 }
 
 export default {
-  async scheduled(_controller, env, ctx) {
+  async scheduled(controller, env, ctx) {
     ctx.waitUntil((async()=>{
-      await syncAllCuratorSources(env, "cloudflare-cron");
-      await syncAllCuratorDiscoveries(env, "cloudflare-cron");
-      await refreshStoredYouTubeMetadata(env, "cloudflare-cron");
+      const scheduledTime = Number(controller?.scheduledTime) || Date.now();
+      const hour = new Date(scheduledTime).getUTCHours();
+      const tick = Math.floor(scheduledTime / 3_600_000);
+
+      if (hour % 6 === 0) {
+        await syncAllCuratorSources(env, "cloudflare-cron", "", tick * SOURCE_SYNC_BATCH_SIZE, { wrap:true });
+        return;
+      }
+      if (hour % 6 === 3) {
+        await refreshStoredYouTubeMetadata(env, "cloudflare-cron", METADATA_REFRESH_BATCH_SIZE);
+        return;
+      }
+      await syncAllCuratorDiscoveries(env, "cloudflare-cron", "", tick * DISCOVERY_SYNC_BATCH_SIZE, { wrap:true, bootstrap:true });
     })().catch(error => console.error("TV curator scheduled sync:", error)));
   },
   async fetch(request, env) {
