@@ -1,60 +1,65 @@
-# SpeakOut Production Launch Sign-off
+# SpeakOut production and marketing readiness audit
 
-Date: 15 September 2026  
-Environment: `https://speakoutmentalhealth.org`  
-Status: **Not ready for final sign-off**
+Audit date: 3 October 2026 (Africa/Lagos). Baseline commit: `4293a99439f8bc9bc09550a06bb0a726952da898`.
 
-## Completed checks
+**Decision: proceed with a controlled pilot after the listed fixes deploy; broad platform and paid conversion campaigns remain conditional on authenticated acceptance, recovery readiness and measurement.** The public website is already live. This is an audit of readiness, not a claim that every advertised service is unavailable.
 
-- Production Firebase authentication succeeds for the student, teacher, parent, school-admin and super-admin test accounts.
-- Test accounts are approved and scoped to the existing `demo-school` tenant.
-- Teacher and parent overviews each return the linked UAT student with 10 progress records and 3 certificates.
-- The normalized school-admin overview returns the four linked UAT profiles and their scoped learning records.
-- The production Cloudflare learning API is deployed and its authenticated role endpoints return HTTP 200.
-- The external-learning admin queue matches Firestore and exposes no private evidence URLs.
-- Mobile checks at 390 x 844 found no horizontal overflow on the member-access page or public landing page.
-- The mobile course player now keeps module navigation in a sticky, accessible bottom sheet and returns learners directly to the lesson after navigation.
-- Internal lessons now use course artwork, estimated reading time, focused reading cards, styled content sections and reflection prompts instead of an uninterrupted wall of text.
-- The public e-library now introduces its interactive reading features, identifies books that support listening, and gives internal books a clear `Read or Listen` action.
-- The book reader now provides browser-native read-aloud controls (play, pause/resume, stop and four playback speeds), a focused reading measure, styled content blocks and a sticky mobile sections drawer.
-- Certificate rendering no longer substitutes an email address for the learner name. New internal certificates store the human name separately from `recipientEmail`, while legacy certificates resolve the owner profile and fall back to `Learner` rather than printing an email address.
-- The production player returned HTTP 200 with the new mobile and visual-learning components after deployment.
-- The production library, book reader and certificate viewer returned HTTP 200 with their rollout markers after deployment.
-- Production Worker version `15b8dbc2-0e59-4528-a91b-3038482c0d56` is active, and its unauthenticated learning-dashboard guard correctly returns HTTP 401.
-- The current curriculum contains 15 published course records: 6 internal courses with 108 lessons (minimum 324 words; average 426 words) and 9 external learning pathways.
-- The complete static regression suite passes: 49 tests, 0 failures.
+## Evidence and limits
 
-## Open launch blockers
+- Current main: Firebase Hosting, GitHub Pages and SpeakOut CI succeeded on 3 October. CI logs show 17 Firestore emulator tests passed. The platform API deployed successfully at commit `8891ad004f374e32fdae49e1d0cdb9dee411eea8`.
+- Baseline repository suite: 255 passed, zero failed. Updated suite: 256 passed, zero failed. Most repository checks are structural/source checks; they do not establish a complete production learner journey.
+- Latest recorded Firestore rules deployment found: 28 September, commit `4ba1b2d2b26e25cf0a20cf2d015eea149dbb8624`, successful. This is deployment evidence, not a fresh readback of the currently released rules.
+- 25 public entry-page source files: zero missing local link/script/image/style destinations. This does not verify external destinations or every runtime route.
+- Live browser: homepage, sign-in gateway, individual join panel and school registration panel rendered. No applications, accounts, emails or donations were submitted.
+- Live TV loaded published videos, crash courses and an audiobook. The audiobook could be saved locally and opened in a YouTube embed. The player exposed its title and duration; sustained playback and resume behavior were not conclusively verified.
+- The curator production audit succeeded. Its report includes 363 candidates, 307 pending, 28 drafted and 28 rejected; 106 learning candidates pending. It shows a published audiobook classified as `official_author`. This proves queue and publication state, not a legal determination or a fresh save-and-publish transaction.
+- Paystack opened a donation form for Speakout Mental Health Outreach, with donor details and an NGN amount. No recurring-plan control was visible. Payment, receipt and settlement were not tested.
+- Direct API requests from this audit's shell received 403 responses; the live browser successfully loaded TV data. The shell responses are an environment/access limitation and are not evidence of a production outage.
+- No signed-in test accounts or cloud administrative credentials were available for this audit. No current Core Web Vitals measurement, backup configuration readback or restore drill was completed.
 
-### 1. Public course catalogue permissions
+## Corrective changes in this release
 
-The public SpeakHub catalogue currently shows zero courses and reports `Missing or insufficient permissions` because production rules require an approved session to read `courses`.
+1. Academy: use the approval boolean or approved status accepted by the existing role gate/API; add behavioral tests for accepted and denied profile states. This client check does not grant server permissions or normalize legacy records; Firestore still uses canonical approved status.
+2. Academy: signed-out/pending states show unavailable statistics rather than zero inventory, clear stale course/progress state, disable unavailable filters and provide actionable sign-in/join links.
+3. Academy: remove database implementation wording from the user-facing benefits.
+4. Homepage: Latest Episodes now opens the Watch view; Programming Schedule opens the Live view instead of unsupported hashes.
+5. Donations: describe the current checkout as one-time giving and replace the recurring-giving implication.
+6. Hosting: exclude the internal internship-agreement DOCX from both Firebase and GitHub Pages output. The source file remains in a public repository and its history; owner review is still required. Hosting exclusion does not make public Git content private.
 
-Course lessons are embedded inside each course document, so allowing public reads on `courses` would expose lesson content as well as catalogue metadata. That unsafe rule was never deployed and has been removed from the repository. The catalogue must instead load a deliberately filtered public metadata response while authenticated players continue reading protected course documents.
+## Launch gates
 
-### 2. Authenticated visual walkthrough
+| Area | Status | Required evidence / owner |
+| --- | --- | --- |
+| Latest hosting and baseline CI | Passed | Successful deployment and CI at the audited baseline; verify the corrective release separately. Technical owner. |
+| Public entry routes and gateway panels | Passed within scope | Main public screens rendered; source destinations exist. Technical owner. |
+| TV catalogue and published audiobook opening | Passed within scope | Catalogue, local saving and embedded player opening observed. Technical/editorial owners. |
+| Full learner journey | Blocked by access | Approved test learner: registration/login, lessons, assessment, stored progress, certificate issuance and verification, logout and recovery. Technical owner + tester. |
+| School and parent workflow | Blocked by access | Two school tenants; cross-school denial; parent sees only linked children; facilitator club creation; school-code verification; student approval; super-admin school support. Technical owner + KPA coordinator. |
+| Admin publishing | Blocked by access | Save draft, publish, confirm public visibility, unpublish and confirm removal; include audiobook rights/category gates. Editorial owner + tester. |
+| Approval consistency | Needs verification | Audit legacy profiles for inconsistent status/approved flags. Firestore checks canonical status while client/API support the boolean too. Verify suspended/rejected profiles are denied in every path; normalize records through trusted writes. Technical owner. |
+| Impact figures and testimonials | Blocked by evidence | Validate 21+ schools reached, 30+ volunteers, 185+ summit participants, partner counts and testimonials; label plans/targets separately from delivered activity and distinguish engaged/onboarded/reached. Programme owner. No figures were invented or replaced. |
+| Course/certificate marketing claims | Conditional | Match each promoted course to current price, provider, completion and certificate requirements. The Academy supports selected certificates and free/premium pathways; do not generalize all content as free and certified. Learning owner. |
+| Donation success and receipt | Needs verification | Authorized test transaction, receipt and correct recipient/settlement; no automatic recurrence claim until a real plan exists. Finance owner. |
+| Enquiry handoff and response | Conditional | Contact form prepares a WhatsApp message; it does not independently submit to an inbox. Confirm successful handoff, user-send step and a named responder. Programme owner. |
+| Analytics and conversion reporting | Failed for measured campaigns | Current marketing layer only queues in-memory events; no production GA4/GTM identifier found. Select/configure reporting and verify actual completed conversions, not click or submit intent alone. Marketing + technical owners. |
+| Search Console | Unverified external setup | Confirm property verification and sitemap submission in the account. Public code cannot establish this. Marketing owner. |
+| Backups and recovery | Unverified, required before scale | Confirm current backup/export schedule and retention, then document a restore test. September's audit reported no scheduled backups; current absence is not asserted. Technical owner. |
+| Monitoring and abuse protection | Needs verification | No App Check integration or explicit Worker application-level throttle was found in the reviewed code; provider-side protections remain unverified. Check auth quotas, signup/public-write abuse controls and operational alerts. Technical owner. |
+| Mobile, accessibility and performance | Unverified for current release | Real Android/iPhone and desktop checks; keyboard, labels, contrast, overflow and slow-network journeys; collect current cold-load/performance evidence. Technical owner + testers. |
+| Public internal document | Owner review required | Decide whether the internship agreement belongs in a public repository; move future private records outside it. Source/history remain public after hosting exclusion. Organisation owner. |
 
-The available in-app test browser cannot reach Firebase Authentication and reports `auth/network-request-failed`. Direct Firebase authentication and every authenticated API check succeed. A normal Chrome/Edge browser surface is required to complete the visual role walkthrough.
+## Acceptance script
 
-### 3. Performance trace
+Use designated test records; do not enter real student health information during testing.
 
-Chrome DevTools MCP is not configured in the current environment. No Core Web Vitals values have been invented or inferred. A real cold-load trace is still required for the landing page, SpeakHub catalogue, library and primary dashboards.
+1. Learner: join, verify email/recovery where supported, approve through the trusted workflow, sign in, open a course, finish a lesson, leave/reopen, complete assessment, obtain and verify certificate, log out.
+2. School A admin: verify school code/registration number, approve student and facilitator, create a flexible club, record a session and assignment, verify persisted reporting. School B must not read School A's learner records.
+3. Parent: pair with the designated child through the verified workflow; see that child's allowed learning information; confirm an unrelated child's records are inaccessible.
+4. Admin: publish and unpublish designated media; exercise audiobook category/rights checks; confirm public views update; reject/suspend a test profile and confirm access is denied across client, API and Firestore.
+5. Marketing: follow a campaign-tagged link; complete a designated enquiry; verify the reporting destination receives a safe conversion and that the enquiry reaches the responsible person.
+6. Finance: separately authorize a small test donation and check its receipt/settlement.
+7. Operations: perform a backup and restore drill in an isolated destination; confirm alerting and rollback instructions.
 
-### 4. Analytics
+## Recommended sequence
 
-No production analytics provider or measurement identifier is present in the deployable HTML or JavaScript. A provider, measurement property and privacy/consent policy must be selected before implementation.
-
-### 5. Backups
-
-The production Firestore database currently has zero scheduled backup policies. A retention policy must be approved and created, followed by a documented restore test.
-
-## Required decisions
-
-1. Implement and deploy a filtered public course-catalogue endpoint without exposing embedded lessons.
-2. Select an analytics provider and supply its production site/property identifier.
-3. Approve a Firestore backup policy. Recommended baseline: daily backups retained for 7 days and weekly Sunday backups retained for 14 weeks.
-4. Enable the Chrome DevTools MCP service or provide an accessible Chrome/Edge test surface for authenticated visual and performance QA.
-
-## Sign-off gate
-
-Final production sign-off remains blocked until the five open items above are resolved and their production checks pass.
+Deploy verified corrective changes. Validate the public release. Run authenticated acceptance with KPA/designated testers. Reconcile impact/certificate claims, reporting and recovery evidence. Start targeted campaigns for the journeys that passed; expand once the remaining relevant gates pass. Avoid adding optional features during this sign-off phase.

@@ -2,6 +2,7 @@
 # This does not make secrets in a public Git repository private; assessment keys
 # must still be migrated and rotated before launch.
 exclude:
+  - SpeakOut_Internship_Letter_Agreement_Friday_Akolo_Dauda.docx
   - functions
   - workers
   - tests
