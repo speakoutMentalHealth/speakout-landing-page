@@ -302,17 +302,17 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
       <span>Free + Premium</span>
       <span>Certificate pathways</span>
       <span>Role-based learning</span>
-      <span>Firestore powered</span>
+      <span>Self-paced learning</span>
     </div>
   </div>
 </section>
 
 <section class="stats">
   <div class="container grid g4">
-    <div class="stat"><strong id="totalCount">0</strong><span>Total Courses</span></div>
-    <div class="stat"><strong id="featuredCount">0</strong><span>Featured</span></div>
-    <div class="stat"><strong id="certCount">0</strong><span>Certificate Eligible</span></div>
-    <div class="stat"><strong id="catCount">0</strong><span>Categories</span></div>
+    <div class="stat"><strong id="totalCount">—</strong><span>Total Courses</span></div>
+    <div class="stat"><strong id="featuredCount">—</strong><span>Featured</span></div>
+    <div class="stat"><strong id="certCount">—</strong><span>Certificate Eligible</span></div>
+    <div class="stat"><strong id="catCount">—</strong><span>Categories</span></div>
   </div>
 </section>
 
@@ -330,7 +330,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 01</small>
         <h3>Mental Health</h3>
         <p>Psychology, mental-health literacy, nursing, counselling and wellbeing learning for students and professionals.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="mental-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="mental-health">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
 
       <button class="pathway-card" type="button" data-pathway="medical-health" aria-pressed="false">
@@ -338,7 +338,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 02</small>
         <h3>Medical &amp; Health Sciences</h3>
         <p>Clinical foundations, patient safety, anatomy, emergency medicine, maternal care and health-science learning.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="medical-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="medical-health">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
 
       <button class="pathway-card" type="button" data-pathway="public-health" aria-pressed="false">
@@ -346,7 +346,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 03</small>
         <h3>Public Health</h3>
         <p>Epidemiology, population health, nutrition, disease prevention and global-health perspectives.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="public-health">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="public-health">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
 
       <button class="pathway-card" type="button" data-pathway="clinical-research" aria-pressed="false">
@@ -354,7 +354,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 04</small>
         <h3>Clinical Research</h3>
         <p>Good clinical practice, consent, ethics, research questions, protocols and evidence-based research skills.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="clinical-research">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="clinical-research">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
 
       <button class="pathway-card" type="button" data-pathway="technology-digital" aria-pressed="false">
@@ -362,7 +362,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 05</small>
         <h3>Technology &amp; Digital Skills</h3>
         <p>Programming, cybersecurity, AI, data and practical digital skills from beginner through advanced learning.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="technology-digital">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="technology-digital">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
 
       <button class="pathway-card" type="button" data-pathway="leadership-career" aria-pressed="false">
@@ -370,7 +370,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
         <small>Pathway 06</small>
         <h3>Leadership &amp; Career Development</h3>
         <p>Leadership, career growth, communication, community impact and professional-development learning.</p>
-        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="leadership-career">0 courses</span><span class="pathway-arrow">Explore →</span></span>
+        <span class="pathway-card-footer"><span class="pathway-count" data-pathway-count="leadership-career">Sign in to explore</span><span class="pathway-arrow">Explore →</span></span>
       </button>
     </div>
 
@@ -523,6 +523,7 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
 import { db, auth } from "./firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "./phase2-verified-courses.js";
 import { isPublicCourse } from "./js/content-visibility.js";
+import { isApprovedProfile } from "./js/profile-approval.js";
 import { collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
@@ -600,6 +601,25 @@ function updateStats(items){
   stat("featuredCount", items.filter(i => i.featured === true).length);
   stat("certCount", items.filter(i => i.certificateEligible === true).length);
   stat("catCount", new Set(items.map(i => i.category).filter(Boolean)).size);
+}
+function setCatalogueControlsEnabled(enabled){
+  [searchInput,categoryFilter,audienceFilter,accessFilter,levelFilter,sortFilter,showAllHealthBtn,document.getElementById("resetFilters")].forEach(el=>{
+    if(el) el.disabled = !enabled;
+  });
+}
+function renderLockedCatalogue(message){
+  setCatalogueControlsEnabled(false);
+  courses = [];
+  progressMap = {};
+  renderPathwayState();
+  for(const id of ["totalCount","featuredCount","certCount","catCount"]){
+    document.getElementById(id).textContent = "—";
+  }
+  document.querySelectorAll("[data-pathway-count]").forEach(el=>{
+    el.textContent = "Available after approval";
+  });
+  activePathwayStatus.textContent = message;
+  emptyState.style.display = "none";
 }
 function coursePathway(item){
   const category=normalize(item?.category);
@@ -801,6 +821,7 @@ async function loadProgress(user){
   }
 }
 async function loadCourses(){
+  setCatalogueControlsEnabled(true);
   try{
     const snap = await getDocs(query(collection(db,"courses"),where("status","==","active")));
     const byId = new Map();
@@ -929,25 +950,20 @@ onAuthStateChanged(auth, async user => {
     featuredGrid.innerHTML = '<div class="notice">Featured learning pathways are available after login.</div>';
     healthCertificateGrid.innerHTML = '<div class="notice">Sign in to browse free health and mental-health certificate pathways.</div>';
     resultCount.textContent="Sign in to browse courses";
-    renderPathwayState();
-    grid.innerHTML = '<div class="notice">SpeakHub courses are protected for registered learners. Sign in to browse, start courses and track progress.</div>';
-    emptyState.style.display = "none";
-    updateStats([]);
+    grid.innerHTML = '<div class="notice">SpeakHub courses are protected for registered learners. Sign in to browse, start courses and track progress. <a class="btn primary" href="auth/auth.html#join">Join SpeakOut</a> <a class="btn ghost" href="auth/auth.html">Sign In</a></div>';
+    renderLockedCatalogue("Sign in with an approved account to browse learning pathways.");
     return;
   }
 
-  const status = normalize(currentProfile?.status || "");
   const role = normalize(currentProfile?.role || "");
-  if(status !== "approved" && role !== "admin" && role !== "super_admin"){
+  if(!isApprovedProfile(currentProfile) && role !== "admin" && role !== "super_admin"){
     loading.style.display = "block";
     loading.textContent = "Your account is awaiting approval. Course access will unlock after approval.";
     featuredGrid.innerHTML = '<div class="notice">Learning access is pending account approval.</div>';
     healthCertificateGrid.innerHTML = '<div class="notice">Health certificate pathways will unlock after account approval.</div>';
     resultCount.textContent="Catalogue access pending approval";
-    renderPathwayState();
     grid.innerHTML = '<div class="notice">Your course catalogue will appear here once your account is approved.</div>';
-    emptyState.style.display = "none";
-    updateStats([]);
+    renderLockedCatalogue("Learning pathways become available after your account is approved.");
     return;
   }
 
