@@ -265,6 +265,10 @@ function cmsRecord(collectionName, input) {
       throw Object.assign(new Error("TV placement end date cannot be before the start date."), { status: 400 });
     }
     const publicTvStatus = ["active", "published"].includes(status);
+    const fullAudiobookTitle = /\b(?:full|complete|unabridged)\s+(?:length\s+)?audio\s*book\b|\baudio\s*book\s+(?:full|complete|unabridged)\b/iu.test(record.title);
+    if (publicTvStatus && fullAudiobookTitle && learningType !== "audiobook") {
+      throw Object.assign(new Error("Content labeled as a full audiobook must use Audiobook / listen & learn so rights verification cannot be bypassed."), { status: 409 });
+    }
     if (publicTvStatus) {
       if (record.title.trim().length < 8) {
         throw Object.assign(new Error("Published TV content requires a clear title of at least 8 characters."), { status: 409 });
