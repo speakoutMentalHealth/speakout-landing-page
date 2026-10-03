@@ -1,5 +1,5 @@
 name: Curator Production Audit
-# audit-trigger: 2026-10-03T18:52Z
+# audit-trigger: 2026-10-03T18:56Z
 
 on:
   workflow_dispatch:
@@ -148,11 +148,11 @@ jobs:
             publishedLearningEpisodes:episodes
               .filter(x=>["active","published"].includes(String(x.status||"").toLowerCase())&&["course","audiobook"].includes(String(x.learningType||"").toLowerCase()))
               .map(x=>({
-  id:x.id,title:x.title,learningType:x.learningType,learningCategory:x.learningCategory,
-  regionFocus:x.regionFocus,bookRights:x.bookRights,status:x.status,
-  sourceVideoId:x.sourceVideoId||"",sourceChannelTitle:x.sourceChannelTitle||"",
-  sourceUrl:x.sourceUrl||x.url||"",sourceType:x.sourceType||""
-}))
+                id:x.id,title:x.title,learningType:x.learningType,learningCategory:x.learningCategory,
+                regionFocus:x.regionFocus,bookRights:x.bookRights,status:x.status,
+                sourceVideoId:x.sourceVideoId||"",sourceChannelTitle:x.sourceChannelTitle||"",
+                sourceUrl:x.sourceUrl||x.url||"",sourceType:x.sourceType||""
+              }))
           };
           console.log("CURATOR_AUDIT_JSON="+JSON.stringify(summary));
           NODE
