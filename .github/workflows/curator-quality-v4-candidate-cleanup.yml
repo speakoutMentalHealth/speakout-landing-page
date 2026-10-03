@@ -1,0 +1,134 @@
+name: Curator Quality V4 Candidate Cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/curator-quality-v4-candidate-cleanup.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    name: Reject pre-V4 noisy learning candidates
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: workers/platform-api
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: workers/platform-api/package-lock.json
+      - name: Install Worker dependencies
+        run: npm ci
+      - name: Reject candidates excluded by Quality V4
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { importPKCS8, SignJWT } from "jose";
+
+          const excludes={
+            "Nursing & Public Health":["day in the life","career change","career spotlight","why public health","why nursing","master's","msc nursing","degree program","shorts","students talk","student talk"],
+            "Career, Leadership & Communication":["shorts","resume","linkedin","conference","placement","career fair","job fair","top 3","checklist"],
+            "Motivational & Personal Development Audiobooks":["book summary","audiobook summary","best audiobooks","mindset audiobook","ai generated","audiobook rise","audiobook elevate","audiobook library","growth listen","narrative directions","stillness & power audiobooks","jim fan academy","motivation mentor","leadership mastery"],
+            "Nigeria & Africa Crash Courses":["getting ready","day in the life","vlog","shorts"],
+            "Africa Educational Audiobooks":["ai generated","golden library","3ords"]
+          };
+
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||"{}");
+          if(!sa.client_email||!sa.private_key)throw new Error("Firebase service account unavailable.");
+          const nowSec=Math.floor(Date.now()/1000);
+          const key=await importPKCS8(String(sa.private_key).replace(/\\n/g,"\n"),"RS256");
+          const assertion=await new SignJWT({scope:"https://www.googleapis.com/auth/datastore"})
+            .setProtectedHeader({alg:"RS256",typ:"JWT"})
+            .setIssuer(sa.client_email)
+            .setAudience("https://oauth2.googleapis.com/token")
+            .setIssuedAt(nowSec).setExpirationTime(nowSec+3600).sign(key);
+          const tokenResponse=await fetch("https://oauth2.googleapis.com/token",{
+            method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},
+            body:new URLSearchParams({grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",assertion})
+          });
+          if(!tokenResponse.ok)throw new Error("Google OAuth failed: "+tokenResponse.status);
+          const {access_token}=await tokenResponse.json();
+          const base="https://firestore.googleapis.com/v1/projects/speaakout-portal/databases/(default)/documents";
+          const headers={authorization:"Bearer "+access_token,"content-type":"application/json"};
+
+          const fromValue=value=>{
+            if(!value)return null;
+            if("stringValue" in value)return value.stringValue;
+            if("integerValue" in value)return Number(value.integerValue);
+            if("doubleValue" in value)return Number(value.doubleValue);
+            if("booleanValue" in value)return Boolean(value.booleanValue);
+            if("timestampValue" in value)return value.timestampValue;
+            if("nullValue" in value)return null;
+            if("arrayValue" in value)return (value.arrayValue.values||[]).map(fromValue);
+            if("mapValue" in value)return decodeFields(value.mapValue.fields||{});
+            return null;
+          };
+          const decodeFields=fields=>Object.fromEntries(Object.entries(fields||{}).map(([k,v])=>[k,fromValue(v)]));
+          const toValue=value=>{
+            if(value===null||value===undefined)return {nullValue:null};
+            if(typeof value==="boolean")return {booleanValue:value};
+            if(typeof value==="number")return Number.isInteger(value)?{integerValue:String(value)}:{doubleValue:value};
+            if(typeof value==="string")return {stringValue:value};
+            if(Array.isArray(value))return {arrayValue:{values:value.map(toValue)}};
+            return {mapValue:{fields:Object.fromEntries(Object.entries(value).map(([k,v])=>[k,toValue(v)]))}};
+          };
+
+          async function listCandidates(){
+            let token="",rows=[];
+            do{
+              const u=new URL(base+"/tvCuratorCandidates");
+              u.searchParams.set("pageSize","500");
+              if(token)u.searchParams.set("pageToken",token);
+              const response=await fetch(u,{headers});
+              if(!response.ok)throw new Error("Candidate list failed: "+response.status);
+              const body=await response.json();
+              rows.push(...(body.documents||[]).map(doc=>({
+                id:String(doc.name||"").split("/").pop(),
+                ...decodeFields(doc.fields||{})
+              })));
+              token=body.nextPageToken||"";
+            }while(token&&rows.length<2000);
+            return rows;
+          }
+
+          async function patchCandidate(id,data){
+            const params=new URLSearchParams();
+            for(const field of Object.keys(data))params.append("updateMask.fieldPaths",field);
+            const fields=Object.fromEntries(Object.entries(data).map(([k,v])=>[k,toValue(v)]));
+            const response=await fetch(base+"/tvCuratorCandidates/"+id+"?"+params.toString(),{
+              method:"PATCH",headers,body:JSON.stringify({fields})
+            });
+            if(!response.ok)throw new Error(id+" update failed: "+response.status+" "+await response.text());
+          }
+
+          const candidates=await listCandidates();
+          const now=new Date().toISOString();
+          const rejected=[];
+          for(const item of candidates){
+            if(String(item.status||"").toLowerCase()!=="pending")continue;
+            const terms=excludes[String(item.sourceLabel||"")];
+            if(!terms?.length)continue;
+            const hay=[item.title,item.description,item.channelTitle,Array.isArray(item.tags)?item.tags.join(" "):item.tags].join(" ").toLowerCase();
+            const matched=terms.find(term=>hay.includes(term.toLowerCase()));
+            if(!matched)continue;
+            await patchCandidate(item.id,{
+              status:"rejected",
+              reviewedAt:now,
+              reviewedBy:"github-curator-quality-v4",
+              rejectionReason:"Quality V4 exclusion: "+matched,
+              updatedAt:now
+            });
+            rejected.push({id:item.id,source:item.sourceLabel,matched});
+          }
+          console.log("QUALITY_V4_REJECTED_COUNT="+rejected.length);
+          for(const row of rejected)console.log("QUALITY_V4_REJECTED="+row.id+" | "+row.source+" | "+row.matched);
+          NODE
