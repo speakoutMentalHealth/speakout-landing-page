@@ -41,9 +41,27 @@ test("Worker seeds a global multi-field learning library and keeps Africa picks 
   assert.match(worker,/AFRICA_LEARNING_DISCOVERIES/u);
   assert.match(worker,/globalLearningDiscoveryBootstrap/u);
   assert.match(worker,/learningDiscoveryArchitectureV3/u);
+  assert.match(worker,/learningDiscoveryQualityV4/u);
   assert.match(worker,/MAX_ACTIVE_DISCOVERIES = 16/u);
   assert.match(worker,/lookbackDays: 0/u);
   assert.match(worker,/searchOrder: "relevance"/u);
+});
+
+test("learning discovery quality V4 suppresses noisy course and audiobook results",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const helper=read("workers/platform-api/src/tv-curator.js");
+  assert.match(worker,/learningDiscoveryQualityV4/u);
+  assert.match(worker,/qualityVersion: 4/u);
+  assert.match(worker,/public health nursing lecture tutorial course community health/u);
+  assert.match(worker,/day in the life/u);
+  assert.match(worker,/leadership communication skills training course students/u);
+  assert.match(worker,/resume/u);
+  assert.match(worker,/official audiobook author publisher public domain personal development/u);
+  assert.match(worker,/audiobook rise/u);
+  assert.match(worker,/leadership mastery/u);
+  assert.match(worker,/Africa public domain audiobook history biography LibriVox/u);
+  assert.match(worker,/golden library/u);
+  assert.match(helper,/video\.channelTitle/u);
 });
 
 test("TV publishing requires explicit rights verification for full audiobooks",()=>{
