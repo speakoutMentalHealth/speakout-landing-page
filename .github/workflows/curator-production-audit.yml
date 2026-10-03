@@ -1,5 +1,5 @@
 name: Curator Production Audit
-# audit-trigger: 2026-10-03T19:05Z
+# audit-trigger: 2026-10-03T19:13Z
 
 on:
   workflow_dispatch:
