@@ -1,5 +1,5 @@
 name: Curator Production Audit
-# audit-trigger: 2026-10-01T14:00Z
+# audit-trigger: 2026-10-03T18:45Z
 
 on:
   workflow_dispatch:
@@ -111,7 +111,8 @@ jobs:
           const summary={
             discoveries:rules.map(x=>({
               id:x.id,label:x.label,query:x.query,status:x.status,
-              learningType:x.learningType,regionFocus:x.regionFocus,
+              learningType:x.learningType,learningCategory:x.learningCategory,regionFocus:x.regionFocus,
+              searchOrder:x.searchOrder,lookbackDays:x.lookbackDays,bookRights:x.bookRights,
               lastSyncedAt:x.lastSyncedAt||"",lastSyncNewCount:x.lastSyncNewCount??null,
               lastSyncScannedCount:x.lastSyncScannedCount??null,lastSyncError:x.lastSyncError||""
             })),
@@ -120,17 +121,33 @@ jobs:
               pending:candidates.filter(x=>x.status==="pending").length,
               drafted:candidates.filter(x=>x.status==="drafted").length,
               rejected:candidates.filter(x=>x.status==="rejected").length,
-              learningPending:pendingLearning.length
+              learningPending:pendingLearning.length,
+              learningByCategory:Object.fromEntries(
+                Object.entries(candidates
+                  .filter(x=>["course","audiobook"].includes(String(x.learningType||"").toLowerCase()))
+                  .reduce((acc,x)=>{
+                    const key=String(x.learningCategory||"general");
+                    acc[key]=(acc[key]||0)+1;
+                    return acc;
+                  },{})).sort((a,b)=>b[1]-a[1])
+              ),
+              learningPendingBySource:Object.fromEntries(
+                Object.entries(pendingLearning.reduce((acc,x)=>{
+                  const key=String(x.sourceLabel||x.discoveryQuery||"unknown");
+                  acc[key]=(acc[key]||0)+1;
+                  return acc;
+                },{})).sort((a,b)=>b[1]-a[1])
+              )
             },
             pendingLearning:pendingLearning.slice(0,80).map(x=>({
               id:x.id,title:x.title,channelTitle:x.channelTitle,sourceLabel:x.sourceLabel,
-              learningType:x.learningType,regionFocus:x.regionFocus,
-              publishedAt:x.publishedAt,discoveredAt:x.discoveredAt,url:x.url,
+              learningType:x.learningType,learningCategory:x.learningCategory,regionFocus:x.regionFocus,
+              bookRights:x.bookRights,publishedAt:x.publishedAt,discoveredAt:x.discoveredAt,url:x.url,
               description:String(x.description||"").slice(0,300)
             })),
             publishedLearningEpisodes:episodes
               .filter(x=>["active","published"].includes(String(x.status||"").toLowerCase())&&["course","audiobook"].includes(String(x.learningType||"").toLowerCase()))
-              .map(x=>({id:x.id,title:x.title,learningType:x.learningType,regionFocus:x.regionFocus,status:x.status}))
+              .map(x=>({id:x.id,title:x.title,learningType:x.learningType,learningCategory:x.learningCategory,regionFocus:x.regionFocus,bookRights:x.bookRights,status:x.status}))
           };
           console.log("CURATOR_AUDIT_JSON="+JSON.stringify(summary));
           NODE
