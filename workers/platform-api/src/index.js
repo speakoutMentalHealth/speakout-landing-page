@@ -2045,7 +2045,7 @@ const GLOBAL_LEARNING_DISCOVERIES = Object.freeze([
     label: "Career, Leadership & Communication",
     query: "leadership communication skills training course students",
     includeKeywords: ["leadership training","communication skills","presentation skills","interview skills","course","training","workshop","lecture","workplace communication"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","shorts","resume","linkedin","conference","placement","career fair","job fair","top 3","checklist"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","shorts","resume","conference","placement","career fair","job fair","top 3","checklist"],
     contentPillar: "motivation", audience: "students", learningType: "course",
     learningCategory: "career_skills", regionFocus: "global"
   },
@@ -2066,7 +2066,7 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
     label: "Nigeria & Africa Crash Courses",
     query: "Nigeria education tutorial lecture students",
     includeKeywords: ["course","crash course","tutorial","lecture","lesson","training","class","explained","education","study"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","getting ready","day in the life","vlog","shorts"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","getting ready","day in the life","vlog"],
     contentPillar: "school",
     audience: "students",
     learningType: "course",
