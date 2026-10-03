@@ -72,6 +72,8 @@ test("TV publishing requires explicit rights verification for full audiobooks",(
   assert.match(worker,/public_domain/u);
   assert.match(worker,/licensed/u);
   assert.match(worker,/Publishing a full audiobook requires a verified official, licensed or public-domain source/u);
+  assert.match(worker,/fullAudiobookTitle/u);
+  assert.match(worker,/Content labeled as a full audiobook must use Audiobook \/ listen & learn so rights verification cannot be bypassed/u);
   assert.match(worker,/learningCategory/u);
 });
 
