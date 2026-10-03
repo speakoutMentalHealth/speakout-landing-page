@@ -1,0 +1,119 @@
+name: Curator Quality V4 Apply
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/curator-quality-v4-apply.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    name: Apply curator quality V4
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: workers/platform-api
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: workers/platform-api/package-lock.json
+      - name: Install Worker dependencies
+        run: npm ci
+      - name: Apply quality V4 discovery rules
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { importPKCS8, SignJWT } from "jose";
+
+          const rules={
+            "discover-global-nursing-public-health":{
+              query:"public health nursing lecture tutorial course community health",
+              includeKeywords:["public health nursing","community health nursing","public health","community health","lecture","tutorial","course","lesson","review","concepts"],
+              excludeKeywords:["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","day in the life","career change","career spotlight","why public health","why nursing","master's","msc nursing","degree program","shorts","students talk","student talk"]
+            },
+            "discover-global-career-skills":{
+              query:"leadership communication skills training course students",
+              includeKeywords:["leadership training","communication skills","presentation skills","interview skills","course","training","workshop","lecture","workplace communication"],
+              excludeKeywords:["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","shorts","resume","linkedin","conference","placement","career fair","job fair","top 3","checklist"]
+            },
+            "discover-global-audiobooks":{
+              query:"official audiobook author publisher public domain personal development",
+              includeKeywords:["audiobook","audio book","official","public domain","author","publisher","personal development"],
+              excludeKeywords:["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","book summary","audiobook summary","best audiobooks","mindset audiobook","ai generated","audiobook rise","audiobook elevate","audiobook library","growth listen","narrative directions","stillness & power audiobooks","jim fan academy","motivation mentor","leadership mastery"]
+            },
+            "discover-africa-crash-courses":{
+              query:"Nigeria education tutorial lecture students",
+              includeKeywords:["course","crash course","tutorial","lecture","lesson","training","class","explained","education","study"],
+              excludeKeywords:["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","getting ready","day in the life","vlog","shorts"]
+            },
+            "discover-africa-audiobooks":{
+              query:"Africa public domain audiobook history biography LibriVox",
+              includeKeywords:["audiobook","audio book","public domain","librivox","history","biography"],
+              excludeKeywords:["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","ai generated","golden library","3ords"]
+            }
+          };
+
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||"{}");
+          if(!sa.client_email||!sa.private_key)throw new Error("Firebase service account unavailable.");
+          const nowSec=Math.floor(Date.now()/1000);
+          const key=await importPKCS8(String(sa.private_key).replace(/\\n/g,"\n"),"RS256");
+          const assertion=await new SignJWT({scope:"https://www.googleapis.com/auth/datastore"})
+            .setProtectedHeader({alg:"RS256",typ:"JWT"})
+            .setIssuer(sa.client_email)
+            .setAudience("https://oauth2.googleapis.com/token")
+            .setIssuedAt(nowSec).setExpirationTime(nowSec+3600).sign(key);
+          const tokenResponse=await fetch("https://oauth2.googleapis.com/token",{
+            method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},
+            body:new URLSearchParams({grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",assertion})
+          });
+          if(!tokenResponse.ok)throw new Error("Google OAuth failed: "+tokenResponse.status);
+          const {access_token}=await tokenResponse.json();
+          const base="https://firestore.googleapis.com/v1/projects/speaakout-portal/databases/(default)/documents";
+          const headers={authorization:"Bearer "+access_token,"content-type":"application/json"};
+          const toValue=value=>{
+            if(value===null||value===undefined)return {nullValue:null};
+            if(typeof value==="boolean")return {booleanValue:value};
+            if(typeof value==="number")return Number.isInteger(value)?{integerValue:String(value)}:{doubleValue:value};
+            if(typeof value==="string")return {stringValue:value};
+            if(Array.isArray(value))return {arrayValue:{values:value.map(toValue)}};
+            return {mapValue:{fields:Object.fromEntries(Object.entries(value).map(([k,v])=>[k,toValue(v)]))}};
+          };
+          const encodeFields=data=>Object.fromEntries(Object.entries(data).map(([k,v])=>[k,toValue(v)]));
+
+          async function patch(path,data){
+            const params=new URLSearchParams();
+            for(const field of Object.keys(data))params.append("updateMask.fieldPaths",field);
+            const response=await fetch(base+"/"+path+"?"+params.toString(),{
+              method:"PATCH",headers,body:JSON.stringify({fields:encodeFields(data)})
+            });
+            if(!response.ok)throw new Error(path+" failed: "+response.status+" "+await response.text());
+            return response.json();
+          }
+
+          const now=new Date().toISOString();
+          const results=[];
+          for(const [id,rule] of Object.entries(rules)){
+            await patch("tvCuratorDiscoveries/"+id,{
+              ...rule,
+              qualityVersion:4,
+              updatedAt:now,
+              updatedBy:"github-curator-quality-v4"
+            });
+            results.push(id);
+          }
+          await patch("tvCuratorSettings/learningDiscoveryQualityV4",{
+            completedAt:now,
+            updatedCount:results.length,
+            updatedBy:"github-curator-quality-v4"
+          });
+          console.log("QUALITY_V4_APPLIED="+results.join(","));
+          NODE
