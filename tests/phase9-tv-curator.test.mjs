@@ -157,6 +157,7 @@ test("curator dashboard reads state without running migrations in the request",(
   assert.doesNotMatch(body,/ensureDefaultCuratorDiscoveries/u);
   assert.doesNotMatch(body,/ensureGlobalLearningDiscoveries/u);
   assert.doesNotMatch(body,/ensureLearningDiscoveryArchitectureV3/u);
+  assert.doesNotMatch(body,/ensureLearningDiscoveryQualityV4/u);
 });
 
 test("curator stays within free-plan subrequest budget by batching and reusing Firebase auth",()=>{
