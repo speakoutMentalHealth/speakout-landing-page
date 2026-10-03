@@ -1998,9 +1998,9 @@ const GLOBAL_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-global-nursing-public-health",
     label: "Nursing & Public Health",
-    query: "nursing public health course students",
-    includeKeywords: ["nursing","nurse","public health","community health","course","lecture","tutorial","lesson"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    query: "public health nursing lecture tutorial course community health",
+    includeKeywords: ["public health nursing","community health nursing","public health","community health","lecture","tutorial","course","lesson","review","concepts"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","day in the life","career change","career spotlight","why public health","why nursing","master's","msc nursing","degree program","shorts","students talk","student talk"],
     contentPillar: "school", audience: "students", learningType: "course",
     learningCategory: "public_health", regionFocus: "global"
   },
@@ -2043,18 +2043,18 @@ const GLOBAL_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-global-career-skills",
     label: "Career, Leadership & Communication",
-    query: "career skills leadership communication course students",
-    includeKeywords: ["career","leadership","communication","presentation","interview","workplace","course","training","students"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    query: "leadership communication skills training course students",
+    includeKeywords: ["leadership training","communication skills","presentation skills","interview skills","course","training","workshop","lecture","workplace communication"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","shorts","resume","linkedin","conference","placement","career fair","job fair","top 3","checklist"],
     contentPillar: "motivation", audience: "students", learningType: "course",
     learningCategory: "career_skills", regionFocus: "global"
   },
   {
     id: "discover-global-audiobooks",
     label: "Motivational & Personal Development Audiobooks",
-    query: "official audiobook personal development motivation leadership",
-    includeKeywords: ["audiobook","audio book","personal development","motivation","leadership","success","self improvement","book"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    query: "official audiobook author publisher public domain personal development",
+    includeKeywords: ["audiobook","audio book","official","public domain","author","publisher","personal development"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","book summary","audiobook summary","best audiobooks","mindset audiobook","ai generated","audiobook rise","audiobook elevate","audiobook library","growth listen","narrative directions","stillness & power audiobooks","jim fan academy","motivation mentor","leadership mastery"],
     contentPillar: "motivation", audience: "students", learningType: "audiobook",
     learningCategory: "personal_development", regionFocus: "global", bookRights: "review_required"
   }
@@ -2066,7 +2066,7 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
     label: "Nigeria & Africa Crash Courses",
     query: "Nigeria education tutorial lecture students",
     includeKeywords: ["course","crash course","tutorial","lecture","lesson","training","class","explained","education","study"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","getting ready","day in the life","vlog","shorts"],
     contentPillar: "school",
     audience: "students",
     learningType: "course",
@@ -2076,9 +2076,9 @@ const AFRICA_LEARNING_DISCOVERIES = Object.freeze([
   {
     id: "discover-africa-audiobooks",
     label: "Africa Educational Audiobooks",
-    query: "Africa audiobook history education",
-    includeKeywords: ["audiobook","audio book","book","history","education","learning","biography"],
-    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto"],
+    query: "Africa public domain audiobook history biography LibriVox",
+    includeKeywords: ["audiobook","audio book","public domain","librivox","history","biography"],
+    excludeKeywords: ["giveaway","gambling","betting","casino","prank","politics","celebrity gossip","crypto","ai generated","golden library","3ords"],
     contentPillar: "general",
     audience: "everyone",
     learningType: "audiobook",
@@ -2258,15 +2258,63 @@ async function ensureLearningDiscoveryArchitectureV3(env, actor = "system") {
   return { tuned: true };
 }
 
+async function ensureLearningDiscoveryQualityV4(env, actor = "system") {
+  const markerPath = "tvCuratorSettings/learningDiscoveryQualityV4";
+  const marker = await getDocument(env, markerPath);
+  if (marker?.completedAt) return { tuned: false, reason: "already-tuned" };
+  const now = new Date().toISOString();
+  const ruleIds = new Set([
+    "discover-global-nursing-public-health",
+    "discover-global-career-skills",
+    "discover-global-audiobooks",
+    "discover-africa-crash-courses",
+    "discover-africa-audiobooks"
+  ]);
+  await runTransaction(env, async tx => {
+    const current = await tx.get(markerPath);
+    if (current?.completedAt) return { ok: true };
+    let updatedCount = 0;
+    for (const rule of [...GLOBAL_LEARNING_DISCOVERIES, ...AFRICA_LEARNING_DISCOVERIES]) {
+      if (!ruleIds.has(rule.id)) continue;
+      const path = "tvCuratorDiscoveries/" + rule.id;
+      const existing = await tx.get(path);
+      if (!existing) continue;
+      const input = curatorDiscoveryInput({
+        ...existing,
+        ...rule,
+        status: existing.status || "active",
+        show: rule.id.startsWith("discover-africa-") ? "Nigeria & Africa Picks" : (rule.learningType === "audiobook" ? "Books & Audiobooks" : "Crash Courses"),
+        lookbackDays: 0,
+        maxResults: 25,
+        relevanceLanguage: "en",
+        searchOrder: "relevance"
+      });
+      tx.set(path, {
+        ...existing,
+        ...input,
+        mode: "review",
+        updatedAt: now,
+        updatedBy: actor,
+        qualityVersion: 4
+      });
+      updatedCount += 1;
+    }
+    tx.set(markerPath, { completedAt: now, updatedCount, updatedBy: actor });
+    return { ok: true };
+  });
+  return { tuned: true };
+}
+
 async function ensureCuratorArchitecture(env, actor = "system") {
-  const current = await getDocument(env, "tvCuratorSettings/learningDiscoveryArchitectureV3");
-  if (current?.completedAt) return { ready: true, version: 3 };
+  const quality = await getDocument(env, "tvCuratorSettings/learningDiscoveryQualityV4");
+  if (quality?.completedAt) return { ready: true, version: 4 };
   await ensureDefaultCuratorDiscoveries(env, actor);
   await ensureAfricaLearningDiscoveries(env, actor);
   await ensureAfricaLearningDiscoveryTuningV2(env, actor);
   await ensureGlobalLearningDiscoveries(env, actor);
   await ensureLearningDiscoveryArchitectureV3(env, actor);
-  return { ready: true, version: 3 };
+  await ensureLearningDiscoveryQualityV4(env, actor);
+  return { ready: true, version: 4 };
 }
 
 async function ensureDefaultCuratorDiscoveries(env, actor = "system") {

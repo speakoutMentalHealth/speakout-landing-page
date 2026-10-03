@@ -119,7 +119,7 @@ export async function resolveYouTubeChannel(apiKey,ref){
 export function matchesCuratorSource(video,source={}){
   const include=normalizeKeywordList(source.includeKeywords);
   const exclude=normalizeKeywordList(source.excludeKeywords);
-  const hay=lower([video.title,video.description,Array.isArray(video.tags)?video.tags.join(" "):video.tags].join(" "));
+  const hay=lower([video.title,video.description,video.channelTitle,Array.isArray(video.tags)?video.tags.join(" "):video.tags].join(" "));
   if(exclude.some(keyword=>hay.includes(lower(keyword))))return false;
   if(!include.length)return true;
   return include.some(keyword=>hay.includes(lower(keyword)));
