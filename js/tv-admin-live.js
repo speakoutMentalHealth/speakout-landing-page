@@ -24,6 +24,13 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   const placementEnd = $("placementEnd");
   const contentPillar = $("contentPillar");
   const audience = $("audience");
+  const learningType = $("learningType");
+  const bookRights = $("bookRights");
+  const bookRightsField = $("bookRightsField");
+  const bookRightsHelp = $("bookRightsHelp");
+  const editorialReviewField = $("editorialReviewField");
+  const readinessRights = $("readinessRights");
+  const audiobookReadinessHelp = $("audiobookReadinessHelp");
   const featured = $("featured");
   const summary = $("publishSummary");
   const publishHint = $("publishHint");
@@ -103,14 +110,34 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     const tagCount = String(tags?.value || "").split(",").map(value => value.trim()).filter(Boolean).length;
     const tagsOk = tagCount >= 2;
     const reviewOk = editorialReview?.value === "complete";
+    const audiobook = learningType?.value === "audiobook";
+    const verifiedBookRights = ["official_author","official_publisher","public_domain","licensed"].includes(String(bookRights?.value || "").toLowerCase());
+    const rightsOk = !audiobook || verifiedBookRights;
     const consentOk = minorInvolved?.value !== "yes" || consentConfirmed?.value === "yes";
     const placementOk = Boolean(homePlacement?.value) && !(format?.value === "live" && ["featured","daily"].includes(homePlacement?.value));
     const placementScheduled = ["featured","daily"].includes(homePlacement?.value);
     const scheduleOk = !placementScheduled || scheduleInputState().valid;
     const pillarOk = Boolean(contentPillar?.value);
     const audienceOk = Boolean(audience?.value);
-    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,reviewOk,consentOk,placementOk,scheduleOk,pillarOk,audienceOk};
-    return {...checks,ready:Object.values(checks).every(Boolean)};
+    const checks = {mediaOk,titleOk,descriptionOk,artworkOk,tagsOk,rightsOk,reviewOk,consentOk,placementOk,scheduleOk,pillarOk,audienceOk};
+    return {...checks,audiobook,verifiedBookRights,ready:Object.values(checks).every(Boolean)};
+  }
+
+  function publishingBlockers(state) {
+    const blockers = [];
+    if (!state.mediaOk) blockers.push("use a supported YouTube, Vimeo or Twitch link");
+    if (!state.titleOk) blockers.push("use a clear title of at least 8 characters");
+    if (!state.descriptionOk) blockers.push("add a useful description of at least 50 characters");
+    if (!state.artworkOk) blockers.push("add a valid artwork URL");
+    if (!state.tagsOk) blockers.push("add at least two discovery tags");
+    if (!state.placementOk) blockers.push("choose a valid homepage placement");
+    if (!state.scheduleOk) blockers.push("fix the programming schedule");
+    if (!state.pillarOk) blockers.push("choose a content pillar");
+    if (!state.audienceOk) blockers.push("choose an audience");
+    if (!state.rightsOk) blockers.push("verify the full audiobook source rights");
+    if (!state.reviewOk) blockers.push("mark Editorial review as Complete");
+    if (!state.consentOk) blockers.push("confirm consent for content involving a minor");
+    return blockers;
   }
 
   function updateReadiness() {
@@ -124,26 +151,48 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     setReadiness("schedule", state.scheduleOk, true);
     setReadiness("pillar", state.pillarOk, true);
     setReadiness("audience", state.audienceOk, true);
+    setReadiness("rights", state.rightsOk, true);
     setReadiness("review", state.reviewOk, true);
     setReadiness("consent", state.consentOk, true);
 
+    if (readinessRights) readinessRights.hidden = !state.audiobook;
+    if (audiobookReadinessHelp) audiobookReadinessHelp.hidden = !state.audiobook;
+    if (bookRightsField) bookRightsField.hidden = !state.audiobook;
+    if (bookRightsHelp) {
+      bookRightsHelp.textContent = state.audiobook
+        ? (state.rightsOk
+          ? "Source rights are verified for publishing. Keep the evidence/verification with the editorial record."
+          : "Required before Go Live: choose Official author, Official publisher, Public domain, or Licensed / authorized.")
+        : "Only full audiobooks require a rights check. Crash courses and standard TV content are not blocked by this field.";
+    }
+
     const publishing = ["published","active"].includes(status?.value);
+    bookRightsField?.classList.toggle("publishing-blocker", publishing && state.audiobook && !state.rightsOk);
+    editorialReviewField?.classList.toggle("publishing-blocker", publishing && !state.reviewOk);
     const hidden = status?.value === "hidden";
     if (publishing && state.ready) {
-      readinessTitle.textContent = "Approved and ready to publish";
+      readinessTitle.textContent = state.audiobook ? "Audiobook verified and ready to publish" : "Approved and ready to publish";
       readinessBadge.textContent = "Ready";
       readinessBadge.className = "readiness-badge ready";
-      readinessNote.textContent = "The core editorial checks are complete. Publishing will make this item visible on SpeakOut TV.";
+      readinessNote.textContent = state.audiobook
+        ? "Audiobook source rights and editorial review are verified. Publishing will make this item visible on SpeakOut TV."
+        : "The core editorial checks are complete. Publishing will make this item visible on SpeakOut TV.";
       summary.textContent = "Ready to publish";
-      publishHint.textContent = "Editorial review and publishing checks are complete.";
+      publishHint.textContent = state.audiobook ? "Rights verification and editorial review are complete." : "Editorial review and publishing checks are complete.";
       publishButton?.removeAttribute("data-blocked");
     } else if (publishing) {
-      readinessTitle.textContent = "Complete the highlighted checks";
+      const blockers = publishingBlockers(state);
+      const rightsBlocked = state.audiobook && !state.rightsOk;
+      readinessTitle.textContent = rightsBlocked ? "Audiobook needs source verification" : "Complete the highlighted checks";
       readinessBadge.textContent = "Needs attention";
       readinessBadge.className = "readiness-badge blocked";
-      readinessNote.textContent = "Published content needs a supported media link, clear title, useful description, artwork, at least two tags, valid programming placement and schedule, content pillar, audience, completed editorial review and any required consent.";
-      summary.textContent = "Publishing is not ready yet";
-      publishHint.textContent = "Complete the highlighted editorial checks or switch visibility back to Draft.";
+      readinessNote.textContent = rightsBlocked
+        ? "This full audiobook cannot go live until its YouTube source is verified as an official author/publisher upload, licensed/authorized, or public domain."
+        : "Before Go Live: "+blockers.join("; ")+".";
+      summary.textContent = rightsBlocked ? "Audiobook cannot go live yet" : "Publishing is not ready yet";
+      publishHint.textContent = rightsBlocked
+        ? "Verify Audiobook rights, then complete Editorial review."
+        : "Complete the highlighted checks or switch visibility back to Draft.";
       publishButton?.setAttribute("data-blocked","true");
     } else if (hidden) {
       readinessTitle.textContent = "Hidden content can be saved";
@@ -212,6 +261,14 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
   url?.addEventListener("change", prepare);
   url?.addEventListener("blur", () => { if (url.value.trim()) prepare(); });
 
+  learningType?.addEventListener("change", () => {
+    if (learningType.value === "audiobook" && (!bookRights.value || bookRights.value === "not_applicable")) {
+      bookRights.value = "review_required";
+    } else if (learningType.value !== "audiobook") {
+      bookRights.value = "not_applicable";
+    }
+    updateReadiness();
+  });
   form?.addEventListener("input", updateReadiness);
   form?.addEventListener("change", updateReadiness);
   form?.addEventListener("reset", () => setTimeout(() => {
@@ -225,11 +282,17 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
     if (state.ready) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    const blockers = publishingBlockers(state);
+    const rightsBlocked = state.audiobook && !state.rightsOk;
     if (statusBox) {
-      statusBox.textContent = "Publishing stopped: complete the highlighted editorial checks or save this item as a draft.";
+      statusBox.textContent = rightsBlocked
+        ? "Cannot publish audiobook yet: verify Audiobook rights (official author/publisher, public domain, or licensed/authorized) and complete Editorial review."
+        : "Publishing stopped: "+blockers.join("; ")+".";
       statusBox.className = "notice bad";
       statusBox.scrollIntoView({behavior:"smooth",block:"center"});
     }
+    if (rightsBlocked) bookRights?.focus();
+    else if (!state.reviewOk) editorialReview?.focus();
   }, true);
 
   function timestampValue(value) {

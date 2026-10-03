@@ -222,14 +222,14 @@
 <option value="nigeria">Nigeria pick</option>
 <option value="africa">Africa pick</option>
 </select><small>Global is the default for learning. Nigeria/Africa adds the item to the regional collection.</small></label>
-<label>Audiobook rights check<select id="bookRights">
+<label id="bookRightsField" hidden>Audiobook rights check<select id="bookRights">
 <option value="not_applicable">Not applicable</option>
 <option value="review_required">Needs rights review</option>
 <option value="official_author">Official author upload</option>
 <option value="official_publisher">Official publisher upload</option>
 <option value="public_domain">Public domain</option>
 <option value="licensed">Licensed / authorized</option>
-</select><small>Full audiobooks cannot be published until the source is verified.</small></label>
+</select><small id="bookRightsHelp">Full audiobooks cannot go live until the YouTube source is verified as official, licensed/authorized, or public domain.</small></label>
 <label>Main Stage legacy flag<select id="featured"><option value="false">Standard</option><option value="true">Feature on Main Stage</option></select></label>
 <label>Publish date<input id="publishDate" type="date"></label>
 <label>Schedule live date & time<input id="scheduledAt" type="datetime-local"></label>
@@ -245,7 +245,7 @@
 </div>
 
 <details class="editorial-panel" open><summary>Editorial review & consent</summary><div class="premium-grid editorial-grid">
-<label>Editorial review<select id="editorialReview"><option value="pending">Pending — keep as draft</option><option value="complete">Complete — approved for publishing</option></select></label>
+<label id="editorialReviewField">Editorial review<select id="editorialReview"><option value="pending">Pending — keep as draft</option><option value="complete">Complete — approved for publishing</option></select></label>
 <label>Minor involved<select id="minorInvolved"><option value="no">No</option><option value="yes">Yes</option></select></label>
 <label>Consent confirmed<select id="consentConfirmed"><option value="not_applicable">Not applicable</option><option value="yes">Yes</option><option value="no">No</option></select></label>
 </div></details>
@@ -262,10 +262,15 @@
 <span data-readiness="schedule">Schedule</span>
 <span data-readiness="pillar">Content pillar</span>
 <span data-readiness="audience">Audience</span>
+<span data-readiness="rights" id="readinessRights" hidden>Audiobook rights</span>
 <span data-readiness="review">Editorial review</span>
 <span data-readiness="consent">Consent check</span>
 </div>
 <p id="readinessNote">Publishing is intentionally draft-first. Complete the review checks before switching visibility to Published.</p>
+<div class="audiobook-readiness-help" id="audiobookReadinessHelp" hidden>
+<strong>Full audiobook publishing rule</strong>
+<span>Before Go Live, confirm the YouTube upload is from the author/publisher, licensed or authorized, or public domain, then mark Editorial review as Complete.</span>
+</div>
 </section>
 
 <div class="publish-bar"><div><strong id="publishSummary">Draft-first publishing</strong><small id="publishHint">Save as draft while you prepare it. Published content must complete editorial review.</small></div><button class="publish-btn" type="submit">Save content</button></div>

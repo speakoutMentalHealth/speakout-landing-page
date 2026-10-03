@@ -71,6 +71,26 @@ test("TV Studio and Curator expose learning categories global region and audiobo
   assert.match(admin,/searchOrder/u);
 });
 
+test("TV Studio explains audiobook Go Live blockers before submission",()=>{
+  const studio=read("admin-tv.html");
+  const script=read("js/tv-admin-live.js");
+  const styles=read("css/tv-admin-premium.css");
+  assert.match(studio,/id="bookRightsField" hidden/u);
+  assert.match(studio,/data-readiness="rights"/u);
+  assert.match(studio,/id="audiobookReadinessHelp"/u);
+  assert.match(script,/const audiobook = learningType\?\.value === "audiobook"/u);
+  assert.match(script,/const rightsOk = !audiobook \|\| verifiedBookRights/u);
+  assert.match(script,/\["official_author","official_publisher","public_domain","licensed"\]/u);
+  assert.match(script,/Audiobook needs source verification/u);
+  assert.match(script,/Cannot publish audiobook yet/u);
+  assert.match(script,/bookRights\?\.focus\(\)/u);
+  assert.match(script,/bookRightsField\.hidden = !state\.audiobook/u);
+  assert.match(script,/learningType\.value !== "audiobook"/u);
+  assert.match(script,/bookRights\.value = "not_applicable"/u);
+  assert.match(styles,/\.tv-admin label\.publishing-blocker/u);
+  assert.match(styles,/\.audiobook-readiness-help/u);
+});
+
 test("SpeakOut TV presents global courses books and a separate Nigeria Africa collection",()=>{
   const page=read("tv.html");
   const home=read("js/speakout-tv.js");
