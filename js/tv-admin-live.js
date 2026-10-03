@@ -157,6 +157,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/
 
     if (readinessRights) readinessRights.hidden = !state.audiobook;
     if (audiobookReadinessHelp) audiobookReadinessHelp.hidden = !state.audiobook;
+    if (bookRightsField) bookRightsField.hidden = !state.audiobook;
     if (bookRightsHelp) {
       bookRightsHelp.textContent = state.audiobook
         ? (state.rightsOk
