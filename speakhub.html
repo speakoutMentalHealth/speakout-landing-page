@@ -955,8 +955,7 @@ onAuthStateChanged(auth, async user => {
     return;
   }
 
-  const role = normalize(currentProfile?.role || "");
-  if(!isApprovedProfile(currentProfile) && role !== "admin" && role !== "super_admin"){
+  if(!isApprovedProfile(currentProfile)){
     loading.style.display = "block";
     loading.textContent = "Your account is awaiting approval. Course access will unlock after approval.";
     featuredGrid.innerHTML = '<div class="notice">Learning access is pending account approval.</div>';

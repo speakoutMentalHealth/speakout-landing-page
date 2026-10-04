@@ -1,3 +1,4 @@
+import { isApprovedProfile } from "../../../js/profile-approval.js";
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
 import { curatorDiscoveryInput, curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel, searchYouTubeVideos } from "./tv-curator.js";
 import { VERIFIED_EXTERNAL_COURSE_BY_ID } from "./verified-external-courses.js";
@@ -581,7 +582,7 @@ async function verifiedIdentity(request, env) {
 async function authenticatedUser(request, env) {
   const identity = await verifiedIdentity(request, env);
   const profile = await getDocument(env, `users/${identity.uid}`);
-  if (!profile || (profile.approved !== true && normalized(profile.status) !== "approved")) {
+  if (!isApprovedProfile(profile)) {
     throw Object.assign(new Error("Approved account required."), { status: 403 });
   }
   return { ...identity, profile };

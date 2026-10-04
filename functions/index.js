@@ -43,7 +43,7 @@ async function approvedProfile(uid) {
     throw new HttpsError("failed-precondition", "Learner profile not found.");
   }
   const p = { uid, ...snap.data() };
-  if (!(norm(p.status) === "approved" || p.approved === true)) {
+  if (p.status !== "approved") {
     throw new HttpsError("permission-denied", "Your account must be approved.");
   }
   return p;

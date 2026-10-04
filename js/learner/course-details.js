@@ -1,3 +1,4 @@
+import { isApprovedProfile } from "../profile-approval.js";
 import { db, auth } from "../../firebase-config.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
 import { isPublicCourse } from "../content-visibility.js";
@@ -631,8 +632,7 @@ onAuthStateChanged(auth,async user=>{
     const profileSnap=await getDoc(doc(db,"users",user.uid));
     if(!profileSnap.exists()){location.href="auth.html#pending";return}
     const profile={uid:user.uid,...profileSnap.data()};
-    const role=(profile.role||"").toLowerCase();
-    const approved=profile.status==="approved"||profile.approved===true||role==="admin"||role==="super_admin";
+    const approved=isApprovedProfile(profile);
     if(!approved){location.href="auth.html#pending";return}
     await loadCourse();
   }catch(error){
