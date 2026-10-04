@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
@@ -23,4 +24,9 @@ test("deployed access entry points use canonical approval without role bypasses"
   }
   const functions = readFileSync(new URL("../functions/index.js", import.meta.url), "utf8");
   assert.match(functions, /if \(p\.status !== "approved"\)/);
+});
+
+
+test("Cloud Functions certificate backend parses as JavaScript", () => {
+  execFileSync(process.execPath, ["--check", new URL("../functions/index.js", import.meta.url).pathname]);
 });
