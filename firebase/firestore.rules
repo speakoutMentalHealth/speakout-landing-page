@@ -518,6 +518,25 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    // Academic records are sensitive school records. All access is mediated by
+    // the authenticated Platform API so fee clearance, parent links, PIN state,
+    // versioning, rate limits and audit logging cannot be bypassed by clients.
+    match /academicResults/{resultId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultUnlocks/{unlockId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultPinAttempts/{attemptId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultAuditLogs/{auditId} {
+      allow read, write: if false;
+    }
+
     match /externalCredentials/{credentialId} {
       // Manual provider credentials are authoritative verification records.
       // All learner/admin access is mediated by the authenticated Platform API.
