@@ -4,7 +4,7 @@ body{margin:0;background:
   radial-gradient(800px 420px at 15% -10%,rgba(40,112,190,.12),transparent 65%),
   var(--tv-bg);
   color:var(--tv-text);
-  font-family:Manrope,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   font-synthesis:none;
@@ -27,7 +27,7 @@ img{max-width:100%;display:block}
   letter-spacing:.1em;
   text-transform:uppercase;
 }
-h1,h2,h3,strong{font-family:"Space Grotesk",Manrope,sans-serif} h1,h2,h3{text-wrap:balance} p{text-wrap:pretty}
+h1,h2,h3,strong{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif} h1,h2,h3{text-wrap:balance} p{text-wrap:pretty}
 :focus-visible{outline:2px solid var(--tv-orange);outline-offset:3px}
 .tv-skip-link{position:fixed;left:14px;top:10px;z-index:200;transform:translateY(-160%);padding:10px 14px;border-radius:10px;background:#fff;color:#071225;font-weight:800;box-shadow:0 12px 30px rgba(0,0,0,.3);transition:transform .16s ease}
 .tv-skip-link:focus{transform:translateY(0)}
@@ -43,6 +43,7 @@ h1,h2,h3,strong{font-family:"Space Grotesk",Manrope,sans-serif} h1,h2,h3{text-wr
 .ios-topbar-inner{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .ios-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;letter-spacing:-.03em}
 .ios-brand img{width:38px;height:38px;border-radius:10px;object-fit:cover;background:#fff}
+.ios-brand-wordmark{display:inline-flex;align-items:baseline;gap:5px;min-height:38px;line-height:38px;white-space:nowrap}
 .ios-brand b{color:var(--tv-orange);font-weight:800}
 .youth-top-actions{display:flex;align-items:center;gap:10px}
 .youth-now{display:none;color:var(--tv-muted);font-size:.72rem}
@@ -179,7 +180,8 @@ html[data-tv-route="watch"] .home-only,
 html[data-tv-route="watch"] .media-only-view:not(.watch-only){display:none}
 html[data-tv-route="live"] .home-only,
 html[data-tv-route="live"] .media-only-view:not(.live-only){display:none}
-.youth-feature.feature-empty{display:none}
+.youth-feature.feature-empty{display:block}
+.youth-feature.feature-empty .feature-copy{visibility:hidden}
 
 /* responsive */
 @media(min-width:760px){
