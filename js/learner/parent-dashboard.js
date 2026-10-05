@@ -667,6 +667,12 @@ async function loadChildren(){
                       >
                         View Progress
                       </a>
+                      <a
+                        class="btn soft"
+                        href="parent-results.html?studentId=${encodeURIComponent(link.studentId)}"
+                      >
+                        View Results
+                      </a>
                     `
                     : `
                       <span class="btn soft">
