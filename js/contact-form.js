@@ -6,13 +6,25 @@
 
   const status = document.getElementById("contactFormStatus");
   const submitButton = form.querySelector('button[type="submit"]');
+  let handingOff = false;
 
   const field = (name) => form.elements.namedItem(name);
   const clean = (value, max = 1000) =>
     String(value ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
 
+  const setBusy = (busy) => {
+    handingOff = busy;
+    form.setAttribute("aria-busy", busy ? "true" : "false");
+    if (submitButton) submitButton.disabled = busy;
+  };
+
+  form.addEventListener("input", () => {
+    if (!handingOff && status) status.textContent = "";
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    if (handingOff) return;
 
     if (!form.reportValidity()) return;
 
@@ -37,15 +49,13 @@
     const whatsappUrl = "https://wa.me/2348118103510?text=" + encodeURIComponent(body);
 
     if (status) status.textContent = "Opening WhatsApp with your message. Review it before sending.";
-    if (submitButton) submitButton.disabled = true;
+    setBusy(true);
 
     window.speakoutMarketing?.track?.("contact_form_handoff", { channel: "whatsapp", reason });
 
     const opened = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    if (!opened) window.location.href = whatsappUrl;
+    if (!opened) window.location.assign(whatsappUrl);
 
-    window.setTimeout(() => {
-      if (submitButton) submitButton.disabled = false;
-    }, 1200);
+    window.setTimeout(() => setBusy(false), 1200);
   });
 })();
