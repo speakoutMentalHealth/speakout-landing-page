@@ -1,0 +1,66 @@
+name: Lighthouse Readiness
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/lighthouse-readiness.yml"
+      - "scripts/lighthouse-summary.mjs"
+      - "index.html"
+      - "speakhub.html"
+      - "tv.html"
+      - "pages/donate.html"
+      - "pages/contact.html"
+      - "css/**"
+      - "js/**"
+  workflow_dispatch:
+  schedule:
+    - cron: "47 5 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse-readiness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Live Lighthouse baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Confirm Chrome
+        run: google-chrome --version
+
+      - name: Audit live launch surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p lighthouse-results
+          declare -A URLS=(
+            [home]="https://speakoutmentalhealth.org/"
+            [contact]="https://speakoutmentalhealth.org/pages/contact.html"
+            [donate]="https://speakoutmentalhealth.org/pages/donate.html"
+            [academy]="https://speakoutmentalhealth.org/speakhub.html"
+            [tv]="https://speakoutmentalhealth.org/tv.html"
+          )
+          for name in home contact donate academy tv; do
+            npx --yes lighthouse@13.5.0 "${URLS[$name]}"               --output=json               --output-path="lighthouse-results/$name.json"               --only-categories=performance,accessibility,best-practices,seo               --chrome-flags="--headless --no-sandbox --disable-gpu"               --quiet
+          done
+
+      - name: Summarize launch scores
+        run: node scripts/lighthouse-summary.mjs lighthouse-results
+
+      - name: Upload Lighthouse evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-readiness
+          path: lighthouse-results/*.json
+          retention-days: 14
