@@ -32,12 +32,39 @@ const order=(a,b)=>(Number(a.order)||999)-(Number(b.order)||999);
 const spotifyEmbed=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"");if(h!=="open.spotify.com")return null;const p=u.pathname.replace(/^\/embed/,"");if(/^\/(episode|show|track)\//.test(p))return "https://open.spotify.com/embed"+p+"?theme=0"}catch{}return null};
 const tiktokLiveUrl=raw=>{try{const u=new URL(raw),h=u.hostname.replace(/^www\./,"").toLowerCase();return ["tiktok.com","m.tiktok.com"].includes(h)&&["https:","http:"].includes(u.protocol)?u.href:""}catch{return ""}};
 const safeAudio=raw=>{try{const u=new URL(raw,location.href);return["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
-const imageFor=x=>{const y=ytId(x?.url||x?.videoUrl);return x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/hqdefault.jpg":"")};
+const optimizedYoutubeImage=(raw,quality="mqdefault")=>{
+ if(!raw)return "";
+ try{
+  const u=new URL(raw,location.href),host=u.hostname.replace(/^www\./,"").toLowerCase();
+  if(!["i.ytimg.com","img.youtube.com"].includes(host))return raw;
+  const match=u.pathname.match(/\/vi(?:_webp)?\/([^/]+)\//);
+  return match?"https://i.ytimg.com/vi/"+encodeURIComponent(match[1])+"/"+quality+".jpg":raw;
+ }catch{return raw}
+};
+const imageFor=(x,quality="mqdefault")=>{
+ const y=ytId(x?.url||x?.videoUrl);
+ const raw=x?.imageUrl||x?.thumbnailUrl||(y?"https://i.ytimg.com/vi/"+encodeURIComponent(y)+"/"+quality+".jpg":"");
+ return optimizedYoutubeImage(raw,quality);
+};
 const normalize=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const preferredScrollBehavior=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
 const scheduleValue=x=>x?.scheduledAt?.toMillis?.()||Date.parse(x?.scheduledAt||"")||0;
 const formatSchedule=(ms,opts={})=>ms?new Intl.DateTimeFormat(undefined,{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit",...opts}).format(new Date(ms)):"";
 const livePeople=x=>[x?.presenter?"Host · "+x.presenter:"",x?.guest?"Guest · "+x.guest:"",x?.guestRole||"",x?.sponsor?"Supported by "+x.sponsor:""].filter(Boolean);
+
+function deferFeatureBackdrop(backdrop,img){
+ if(!backdrop||!img||navigator.connection?.saveData)return;
+ let applied=false;
+ const apply=()=>{
+  if(applied)return;
+  applied=true;
+  backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';
+  backdrop.classList.add("has-image");
+ };
+ ["pointerdown","keydown","scroll"].forEach(type=>{
+  window.addEventListener(type,apply,{once:true,passive:type!=="keydown"});
+ });
+}
 
 function setFrame(target,item,autoplay=false){
  const src=embed(item?.url||item?.videoUrl);if(!src||!target)return;
@@ -45,9 +72,9 @@ function setFrame(target,item,autoplay=false){
 }
 function renderEpisodePreview(target,item){
  if(!target||!item)return;
- const img=imageFor(item);
+ const img=imageFor(item,"hqdefault");
  target.innerHTML='<button class="tv-player-preview" type="button" data-episode-open="'+esc(item.id)+'">'+
-  (img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':'<div class="ios-thumb-fallback">SPEAKOUT TV</div>')+
+  (img?'<img src="'+esc(img)+'" alt="" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">':'<div class="ios-thumb-fallback">SPEAKOUT TV</div>')+
   '<span class="tv-player-preview-play">▶</span><span class="sr-only">Play '+esc(item.title||"SpeakOut TV")+'</span></button>';
 }
 const defaultSpotifySrc="https://open.spotify.com/embed/show/4Z8Ua9vAYLT5YJEWYV1gfx?utm_source=generator&theme=0";
@@ -69,12 +96,12 @@ function contentCard(x){
  const category=learningCategoryLabel(x.learningCategory);
  const regional=["nigeria","africa"].includes(String(x.regionFocus||"").toLowerCase())?" · "+String(x.regionFocus).toUpperCase():"";
  const label=learning==="course"?"CRASH COURSE · "+category+regional:learning==="audiobook"?"BOOK / AUDIOBOOK · "+category+regional:(x.show||"SpeakOut TV");
- return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+source+'</div><small>'+esc(label)+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
+ return '<div class="youth-content-card" data-episode-id="'+esc(x.id)+'"><button class="content-save'+(saved?' is-saved':'')+'" type="button" data-save-id="'+esc(x.id)+'" aria-label="'+(saved?'Remove from saved':'Save for later')+'">'+(saved?'✓':'＋')+'</button><button class="youth-content-open" type="button" data-episode-open="'+esc(x.id)+'"><div class="youth-content-thumb '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">':artFallback(x))+artOverlay(x)+source+'</div><small>'+esc(label)+'</small><strong>'+esc(x.title||"SpeakOut TV")+'</strong><p>'+esc(x.description||"Watch on SpeakOut TV.")+'</p></button></div>';
 }
 function episodeCard(x){
  const img=imageFor(x);
  const source=x.sourceType==="youtube-curated"&&x.sourceChannelTitle?'<span class="tv-source-attribution">YouTube · '+esc(x.sourceChannelTitle)+'</span>':"";
- return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'"><div class="ios-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':artFallback(x))+artOverlay(x)+source+'</div><span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
+ return '<button class="ios-episode-card" type="button" data-episode-id="'+esc(x.id)+'"><div class="ios-episode-art '+artClass(x)+'">'+(img?'<img src="'+esc(img)+'" alt="" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">':artFallback(x))+artOverlay(x)+source+'</div><span>'+esc(x.title||"SpeakOut TV")+'</span></button>';
 }
 function originalCard(x,episode){
  const item={...x,show:x.title},img=x.imageUrl||imageFor(episode),style=img?' style="background-image:url(\''+esc(img)+'\')"':"";
@@ -324,14 +351,14 @@ function liveMetaMarkup(item){
 function liveScheduleCard(item){
  const img=imageFor(item),when=scheduleValue(item);
  return '<article class="live-schedule-card">'+
-  '<div class="live-schedule-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':'<div class="live-schedule-fallback">SPEAKOUT LIVE</div>')+'<span>'+esc(formatSchedule(when,{weekday:"long"}))+'</span></div>'+
+  '<div class="live-schedule-art">'+(img?'<img src="'+esc(img)+'" alt="" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">':'<div class="live-schedule-fallback">SPEAKOUT LIVE</div>')+'<span>'+esc(formatSchedule(when,{weekday:"long"}))+'</span></div>'+
   '<div class="live-schedule-copy"><small>'+esc(formatSchedule(when))+'</small><strong>'+esc(item.title||"SpeakOut Live")+'</strong><p>'+esc(item.description||"Join the conversation live on SpeakOut TV.")+'</p>'+
   '<div class="live-card-actions"><button type="button" data-live-calendar="'+esc(item.id)+'">＋ Reminder</button><button type="button" data-live-share="'+esc(item.id)+'">Share</button></div></div></article>';
 }
 function previousLiveCard(item){
  const img=imageFor(item);
  return '<button class="live-previous-card" type="button" data-live-watch="'+esc(item.id)+'">'+
-  '<div class="live-previous-art">'+(img?'<img src="'+esc(img)+'" alt="" loading="lazy" decoding="async">':'<div class="live-schedule-fallback">LIVE</div>')+'<span>▶</span></div>'+
+  '<div class="live-previous-art">'+(img?'<img src="'+esc(img)+'" alt="" width="320" height="180" loading="lazy" decoding="async" fetchpriority="low">':'<div class="live-schedule-fallback">LIVE</div>')+'<span>▶</span></div>'+
   '<small>'+esc(item.show||"SpeakOut Live")+'</small><strong>'+esc(item.title||"SpeakOut Live")+'</strong></button>';
 }
 function calendarText(item){
@@ -465,7 +492,7 @@ async function load(){
  if(featured){
    $("#featured")?.classList.remove("feature-empty");
    $("#introTitle").textContent=featured.title||"Worth watching now.";$("#introDescription").textContent=featured.description||"Original SpeakOut stories and conversations.";
-   const img=imageFor(featured),backdrop=$("#introBackdrop");if(backdrop&&img){backdrop.style.backgroundImage='url("'+img.replace(/"/g,"%22")+'")';backdrop.classList.add("has-image")}
+   const img=imageFor(featured,"hqdefault"),backdrop=$("#introBackdrop");deferFeatureBackdrop(backdrop,img)
    $("#introPlay")?.addEventListener("click",()=>playEpisode(featured,true));
  }
  $("#latestRail").innerHTML=regularEpisodes.map(episodeCard).join("")||'<div class="ios-audio-empty">Published TV episodes will appear here.</div>';
