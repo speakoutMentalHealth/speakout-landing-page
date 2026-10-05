@@ -21,7 +21,8 @@ const {
   getFirestore,
   FieldValue
 } = require("firebase-admin/firestore");
-const crypto = require("crypto");\nconst { approvalState, normalizationPatch } = require("./approval-normalization.js");
+const crypto = require("crypto");
+const { approvalState, normalizationPatch } = require("./approval-normalization.js");
 
 initializeApp();
 const db = getFirestore();
