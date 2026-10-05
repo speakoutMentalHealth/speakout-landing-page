@@ -63,7 +63,7 @@ async function download(record){
   show("Preparing secure result download...");
   const blob=await academicResultsApi.download(record.id);
   const url=URL.createObjectURL(blob);const a=document.createElement("a");
-  a.href=url;a.download=[record.studentCode||"student",record.academicSession,record.academicPeriod].filter(Boolean).join("-").replace(/[^A-Za-z0-9._-]+/g,"-")+".pdf";
+  a.href=url;const ext=record.fileFormat||"pdf";a.download=[record.studentCode||"student",record.academicSession,record.academicPeriod].filter(Boolean).join("-").replace(/[^A-Za-z0-9._-]+/g,"-")+"."+ext;
   document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);show("Result downloaded.","ok");
 }
 resultsBox.addEventListener("click",async event=>{
