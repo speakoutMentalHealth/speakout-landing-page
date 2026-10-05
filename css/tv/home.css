@@ -203,3 +203,9 @@
   .topic-journey-grid{display:grid;grid-template-columns:repeat(3,1fr)}
   .topic-journey-card{min-width:0}
 }
+
+
+/* Core Web Vitals: reserve the mobile Featured footprint before editorial data arrives. */
+@media(max-width:759px){
+  .youth-feature,.feature-copy{min-height:408px}
+}
