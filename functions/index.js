@@ -22,7 +22,6 @@ const {
   FieldValue
 } = require("firebase-admin/firestore");
 const crypto = require("crypto");
-const { approvalState, normalizationPatch } = require("./approval-normalization.js");
 
 initializeApp();
 const db = getFirestore();
@@ -55,14 +54,6 @@ async function requireAdmin(uid) {
   const role = norm(p.role);
   if (role !== "admin" && role !== "super_admin") {
     throw new HttpsError("permission-denied", "Admin access required.");
-  }
-  return p;
-}
-
-async function requireSuperAdmin(uid) {
-  const p = await approvedProfile(uid);
-  if (norm(p.role) !== "super_admin") {
-    throw new HttpsError("permission-denied", "Super admin access required.");
   }
   return p;
 }
@@ -866,102 +857,4 @@ exports.reviewBookSubmission = onCall(async request => {
       bookId: book ? book.id : null
     };
   });
-});
-
-
-exports.auditApprovalProfiles = onCall(async request => {
-  const uid = requireAuth(request);
-  await requireSuperAdmin(uid);
-
-  const requestedLimit = Number(request.data?.limit || 250);
-  const pageSize = Math.max(1, Math.min(500, Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 250));
-  const cursor = String(request.data?.cursor || "").trim();
-
-  let query = db.collection("users").orderBy("__name__").limit(pageSize);
-  if (cursor) query = query.startAfter(cursor);
-
-  const snap = await query.get();
-  const records = snap.docs.map(docSnap => {
-    const data = docSnap.data() || {};
-    const state = approvalState(data);
-    return {
-      uid: docSnap.id,
-      role: norm(data.role),
-      status: typeof data.status === "string" ? data.status : "",
-      approved: data.approved === true,
-      canonicalApproved: state.canonicalApproved,
-      needsLegacyFlagSync: state.needsLegacyFlagSync,
-      issue: state.issue
-    };
-  });
-
-  const issues = records.filter(item => item.issue !== "none");
-  return {
-    ok: true,
-    scanned: records.length,
-    issueCount: issues.length,
-    issues,
-    nextCursor: snap.docs.length === pageSize ? snap.docs[snap.docs.length - 1].id : null
-  };
-});
-
-exports.normalizeApprovalFlags = onCall(async request => {
-  const uid = requireAuth(request);
-  await requireSuperAdmin(uid);
-
-  if (request.data?.confirm !== "NORMALIZE_APPROVAL_FLAGS") {
-    throw new HttpsError("failed-precondition", "Explicit normalization confirmation is required.");
-  }
-
-  const requestedLimit = Number(request.data?.limit || 250);
-  const pageSize = Math.max(1, Math.min(500, Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 250));
-  const cursor = String(request.data?.cursor || "").trim();
-  const dryRun = request.data?.dryRun !== false;
-
-  let query = db.collection("users").orderBy("__name__").limit(pageSize);
-  if (cursor) query = query.startAfter(cursor);
-
-  const snap = await query.get();
-  const changes = [];
-  const batch = db.batch();
-
-  for (const docSnap of snap.docs) {
-    const data = docSnap.data() || {};
-    const patch = normalizationPatch(data);
-    if (!patch) continue;
-
-    changes.push({
-      uid: docSnap.id,
-      role: norm(data.role),
-      status: typeof data.status === "string" ? data.status : "",
-      fromApproved: data.approved === true,
-      toApproved: patch.approved
-    });
-
-    if (!dryRun) {
-      batch.set(docSnap.ref, {
-        ...patch,
-        approvalFlagNormalizedAt: FieldValue.serverTimestamp(),
-        approvalFlagNormalizedBy: uid
-      }, { merge: true });
-    }
-  }
-
-  if (!dryRun && changes.length) await batch.commit();
-
-  logger.info("Approval flag normalization", {
-    actor: uid,
-    dryRun,
-    scanned: snap.size,
-    changed: changes.length
-  });
-
-  return {
-    ok: true,
-    dryRun,
-    scanned: snap.size,
-    changed: changes.length,
-    changes,
-    nextCursor: snap.docs.length === pageSize ? snap.docs[snap.docs.length - 1].id : null
-  };
 });
