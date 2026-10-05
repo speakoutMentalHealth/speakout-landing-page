@@ -1,9 +1,18 @@
-import {db} from "../firebase-config.js";
-import {collection,getDocs,query,where} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import {PLATFORM_API_BASE} from "./platform-config.js";
 
 let tvPromise=null;
 let audioPromise=null;
+let firestoreRuntimePromise=null;
+
+async function firestoreRuntime(){
+ if(!firestoreRuntimePromise){
+  firestoreRuntimePromise=Promise.all([
+   import("../firebase-config.js"),
+   import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")
+  ]).then(([config,firestore])=>({db:config.db,...firestore}));
+ }
+ return firestoreRuntimePromise;
+}
 
 const publicStatus=value=>["active","published"].includes(String(value||"").toLowerCase());
 const MEDIA_REQUEST_TIMEOUT_MS=7000;
@@ -32,6 +41,7 @@ async function apiGet(path){
 }
 
 async function firestorePublic(collectionName){
+ const {db,collection,getDocs,query,where}=await firestoreRuntime();
  const rows=[];
  const seen=new Set();
  const results=await Promise.allSettled([
