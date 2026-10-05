@@ -582,16 +582,15 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
   const home=read("css/tv/home.css");
   for (const page of ["tv.html","show.html","watch.html","tv-search.html","radio.html"]) {
     const html=read(page);
-    assert.match(html, /family=Manrope/u, page);
-    assert.match(html, /family=Space\+Grotesk/u, page);
+    assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/u, page);
     assert.match(html, /meta name="theme-color" content="#071225"/u, page);
     assert.match(html, /css\/tv\/tokens\.css/u, page);
     assert.match(html, /css\/tv\/base\.css/u, page);
   }
   assert.match(tokens, /--tv-text:#f5f8fb/u);
   assert.match(tokens, /--tv-muted:#91a4b8/u);
-  assert.match(base, /font-family:Manrope/u);
-  assert.match(base, /font-family:"Space Grotesk"/u);
+  assert.match(base, /font-family:-apple-system,BlinkMacSystemFont/u);
+  assert.doesNotMatch(base, /font-family:Manrope|font-family:"Space Grotesk"/u);
   assert.match(home, /feature-copy h2/u);
   assert.doesNotMatch(home, /!important/u);
 });
