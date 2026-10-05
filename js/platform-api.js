@@ -129,6 +129,68 @@ export const learningApi = {
     platformRequest("/v1/learning/assessments/submit", { courseId, type, moduleIndex, answers })
 };
 
+
+function appendSupportContextToForm(form) {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") return form;
+  const supportSchoolId = String(localStorage.getItem("speakoutSupportSchoolId") || "").trim();
+  const supportSchoolCode = String(localStorage.getItem("speakoutSupportSchoolCode") || "").trim();
+  if (supportSchoolId) form.append("__supportSchoolId", supportSchoolId);
+  if (supportSchoolCode) form.append("__supportSchoolCode", supportSchoolCode);
+  return form;
+}
+
+async function uploadAcademicResult(file, fields = {}) {
+  if (!(file instanceof File)) throw new Error("Select a result file to upload.");
+  const form = new FormData();
+  form.append("file", file);
+  for (const [key, value] of Object.entries(fields || {})) {
+    form.append(key, String(value ?? ""));
+  }
+  appendSupportContextToForm(form);
+  const response = await fetch(endpoint("/v1/academic-results/upload"), {
+    method: "POST",
+    headers: { Authorization: await authorizationHeader() },
+    body: form,
+    credentials: "omit"
+  });
+  return parseResponse(response);
+}
+
+async function downloadAcademicResult(resultId) {
+  const response = await fetch(endpoint("/v1/academic-results/download"), {
+    method: "POST",
+    headers: {
+      Authorization: await authorizationHeader(),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(withSupportContext({ resultId })),
+    credentials: "omit",
+    cache: "no-store"
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.error || body.message || "The result could not be downloaded.");
+  }
+  return response.blob();
+}
+
+export const academicResultsApi = {
+  schoolList: () => platformRequest("/v1/academic-results/school/list"),
+  parentList: () => platformRequest("/v1/academic-results/parent/list"),
+  upload: uploadAcademicResult,
+  setFeeClearance: (resultId, status) =>
+    platformRequest("/v1/academic-results/fee-clearance", { resultId, status }),
+  setPublication: (resultId, status) =>
+    platformRequest("/v1/academic-results/publication", { resultId, status }),
+  generatePin: resultId =>
+    platformRequest("/v1/academic-results/pin/generate", { resultId }),
+  revokePin: resultId =>
+    platformRequest("/v1/academic-results/pin/revoke", { resultId }),
+  unlock: (resultId, pin) =>
+    platformRequest("/v1/academic-results/parent/unlock", { resultId, pin }),
+  download: downloadAcademicResult
+};
+
 export const roleApi = {
   overview: subjectId => platformRequest("/v1/roles/overview", subjectId ? { subjectId } : {}),
   updateSchoolUserStatus: (userId, status) =>
