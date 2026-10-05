@@ -21,6 +21,15 @@
     if(!priority && !critical && !img.hasAttribute('loading')) img.setAttribute('loading','lazy');
   });
 
+  // Defer non-critical embedded media to reduce initial mobile work.
+  document.querySelectorAll('iframe').forEach(frame=>{
+    const critical=Boolean(frame.closest('header,.hero,.page-hero,[data-eager-media]'));
+    if(!critical && !frame.hasAttribute('loading')) frame.setAttribute('loading','lazy');
+    if(!frame.hasAttribute('title') && frame.getAttribute('aria-label')){
+      frame.setAttribute('title',frame.getAttribute('aria-label'));
+    }
+  });
+
   // Add On The Move to the public Programs menu without duplicating it.
   const publicProgramsMenu=[...document.querySelectorAll('.drop-menu')].find(menu=>
     [...menu.querySelectorAll('a')].some(a=>(a.textContent||'').trim()==='All Programs')
