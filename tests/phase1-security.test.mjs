@@ -742,14 +742,15 @@ test("SpeakOut TV initial route CSS prevents home content flashing into media-on
   assert.match(styles,/html\[data-tv-route="home"\] \.media-only-view/u);
 });
 
-test("SpeakOut TV Featured requires explicit editorial configuration", () => {
+test("SpeakOut TV Featured reserves stable space while requiring explicit editorial configuration", () => {
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
   const styles=read("css/tv/base.css");
   assert.match(page,/youth-feature home-only feature-empty/u);
   assert.match(script,/return editorial\[0\]\|\|null/u);
   assert.match(script,/classList\.remove\("feature-empty"\)/u);
-  assert.match(styles,/\.youth-feature\.feature-empty\{display:none\}/u);
+  assert.match(styles,/\.youth-feature\.feature-empty\{display:block\}/u);
+  assert.match(styles,/\.youth-feature\.feature-empty \.feature-copy\{visibility:hidden\}/u);
 });
 
 
