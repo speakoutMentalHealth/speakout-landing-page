@@ -46,3 +46,17 @@ a,button{-webkit-tap-highlight-color:transparent}
   :root{--so-muted:#46536a;--so-focus:#0647ad}
   a{text-decoration-thickness:.12em;text-underline-offset:.16em}
 }
+
+/* Launch hardening: accessibility, anchored navigation and narrow-layout resilience */
+:where(main,section,.container){min-width:0}
+[id]{scroll-margin-top:96px}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+textarea{resize:vertical}
+[role="status"]:empty{display:none}
+@media(pointer:coarse){
+  button,.btn,[role="button"],a[class*="btn"]{min-height:44px}
+}
+@media(max-width:760px){
+  textarea{min-height:120px}
+  .container{max-width:100%}
+}
