@@ -1,0 +1,26 @@
+name: Public Launch Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 5 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-launch-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Live public route smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check live public launch routes
+        run: node scripts/public-smoke.mjs
