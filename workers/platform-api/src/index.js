@@ -1390,6 +1390,7 @@ function publicAcademicResultForParent(record, unlocked) {
     feeClearanceStatus: clean(record.feeClearanceStatus || "pending"),
     unlocked: unlocked === true,
     resultVersion: Number(record.resultVersion || 1),
+    fileFormat: clean(record.fileFormat),
     publishedAt: record.publishedAt || null,
     updatedAt: record.updatedAt || null
   };
@@ -1524,7 +1525,7 @@ async function updateAcademicResultFeeClearance(env, user, data) {
   const resultId = safeId(data.resultId, "result identifier");
   const feeClearanceStatus = academicFeeStatus(data.status);
 
-  return runTransaction(env, async tx => {
+  const output = await runTransaction(env, async tx => {
     const current = await tx.get("academicResults/" + resultId);
     if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
     if (clean(current.schoolId) !== clean(school.id)) {
@@ -1547,8 +1548,13 @@ async function updateAcademicResultFeeClearance(env, user, data) {
       record.pinVersion = Number(current.pinVersion || 0) + 1;
     }
     tx.set("academicResults/" + resultId, record);
-    return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...record }) };
+    return { record };
   });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_fee_clearance_updated", {
+    feeClearanceStatus
+  });
+  return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...output.record }) };
 }
 
 async function updateAcademicResultPublication(env, user, data) {
@@ -1556,7 +1562,7 @@ async function updateAcademicResultPublication(env, user, data) {
   const resultId = safeId(data.resultId, "result identifier");
   const status = academicPublicationStatus(data.status);
 
-  return runTransaction(env, async tx => {
+  const output = await runTransaction(env, async tx => {
     const current = await tx.get("academicResults/" + resultId);
     if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
     if (clean(current.schoolId) !== clean(school.id)) {
@@ -1572,8 +1578,13 @@ async function updateAcademicResultPublication(env, user, data) {
       updatedBy: user.uid
     };
     tx.set("academicResults/" + resultId, record);
-    return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...record }) };
+    return { record };
   });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_publication_updated", {
+    publicationStatus: status
+  });
+  return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...output.record }) };
 }
 
 function generateAcademicResultPin() {
