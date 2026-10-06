@@ -213,8 +213,16 @@ try {
   const denied = await firestore(`certificates/forged-${suffix}`, { method: "PATCH", data: { userId: learner.localId, status: "active" }, token: learner.idToken });
   assert.equal(denied.response.status, 403, "learner certificate forgery was not denied by live rules");
 
-  const initialResultState = await worker("/v1/academic-results/school/list", schoolAdmin.idToken, {});
-  assert.equal(initialResultState.response.ok, true);
+  let initialResultState = null;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const candidate = await worker("/v1/academic-results/school/list", schoolAdmin.idToken, {});
+    if (candidate.response.ok && candidate.body?.policy?.defaultAccessMode) {
+      initialResultState = candidate;
+      break;
+    }
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+  assert.ok(initialResultState, "staging Worker did not serve the academic-result policy API after deployment");
   assert.equal(initialResultState.body.policy.defaultAccessMode, "fee_and_pin");
   assert.equal(initialResultState.body.policy.allowImmediatePublish, false);
   assert.equal(initialResultState.body.policy.managerAuthority, "school_admin_only");
