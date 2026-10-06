@@ -1,0 +1,110 @@
+name: Academic Results Staging Acceptance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "workers/platform-api/**"
+      - "firebase/firestore.rules"
+      - "js/platform-api.js"
+      - "school-results.html"
+      - "parent-results.html"
+      - "school-dashboard.html"
+      - "parent-dashboard.html"
+      - "js/learner/parent-dashboard.js"
+      - "tests/staging-live.integration.mjs"
+      - ".github/workflows/staging-academic-results.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: academic-results-staging
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    name: Authenticated staging acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+      STAGING_CLOUDINARY_CREDENTIALS_JSON: ${{ secrets.STAGING_CLOUDINARY_CREDENTIALS_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check staging credentials
+        id: preflight
+        shell: bash
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID STAGING_FIREBASE_SERVICE_ACCOUNT_JSON STAGING_CLOUDINARY_CREDENTIALS_JSON; do
+            if [[ -z "${!name}" ]]; then
+              echo "::warning::Missing staging acceptance secret: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" == "0" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Authenticated staging acceptance was not run because required staging-only credentials are not configured." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Setup Node
+        if: steps.preflight.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Setup Java
+        if: steps.preflight.outputs.ready == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Prepare temporary staging credentials
+        if: steps.preflight.outputs.ready == 'true'
+        shell: bash
+        run: |
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-staging.json"
+          printf '%s' "$STAGING_CLOUDINARY_CREDENTIALS_JSON" > "$RUNNER_TEMP/cloudinary-staging.json"
+          chmod 600 "$RUNNER_TEMP/firebase-staging.json" "$RUNNER_TEMP/cloudinary-staging.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "CLOUDINARY_CREDENTIALS_FILE=$RUNNER_TEMP/cloudinary-staging.json" >> "$GITHUB_ENV"
+
+      - name: Install repository dependencies
+        if: steps.preflight.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Deploy staging Firestore rules
+        if: steps.preflight.outputs.ready == 'true'
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
+
+      - name: Install Worker dependencies
+        if: steps.preflight.outputs.ready == 'true'
+        working-directory: workers/platform-api
+        run: npm ci
+
+      - name: Deploy branch Worker to staging
+        if: steps.preflight.outputs.ready == 'true'
+        working-directory: workers/platform-api
+        run: npx wrangler deploy --config wrangler.staging.jsonc
+
+      - name: Run authenticated school-parent result acceptance
+        if: steps.preflight.outputs.ready == 'true'
+        run: node tests/staging-live.integration.mjs
+
+      - name: Record acceptance result
+        if: steps.preflight.outputs.ready == 'true'
+        run: |
+          echo "### Academic Results staging acceptance: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated authenticated school admin upload/release/PIN flow and approved-parent unlock/download against staging." >> "$GITHUB_STEP_SUMMARY"
