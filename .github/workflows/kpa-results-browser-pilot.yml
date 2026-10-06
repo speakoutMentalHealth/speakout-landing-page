@@ -1,0 +1,94 @@
+name: KPA Results Browser Pilot
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tests/kpa-results-browser-pilot.mjs"
+      - ".github/workflows/kpa-results-browser-pilot.yml"
+      - "school-results.html"
+      - "parent-results.html"
+      - "school-dashboard.html"
+      - "parent-dashboard.html"
+      - "js/auth.js"
+      - "js/firebase-config.js"
+      - "js/platform-config.js"
+      - "js/platform-api.js"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kpa-results-browser-pilot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-pilot:
+    name: KPA school-to-parent browser pilot
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+      STAGING_CLOUDINARY_CREDENTIALS_JSON: ${{ secrets.STAGING_CLOUDINARY_CREDENTIALS_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check staging test credentials
+        shell: bash
+        run: |
+          if [[ -z "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" || -z "$STAGING_CLOUDINARY_CREDENTIALS_JSON" ]]; then
+            echo "::error::KPA browser pilot requires both staging credential secrets."
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Prepare temporary staging credentials
+        shell: bash
+        run: |
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-staging.json"
+          printf '%s' "$STAGING_CLOUDINARY_CREDENTIALS_JSON" > "$RUNNER_TEMP/cloudinary-staging.json"
+          chmod 600 "$RUNNER_TEMP/firebase-staging.json" "$RUNNER_TEMP/cloudinary-staging.json"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "CLOUDINARY_CREDENTIALS_FILE=$RUNNER_TEMP/cloudinary-staging.json" >> "$GITHUB_ENV"
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Install Playwright for pilot
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Start local portal
+        shell: bash
+        run: |
+          python3 -m http.server 5000 --bind 127.0.0.1 > "$RUNNER_TEMP/kpa-pilot-http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/kpa-pilot-http.pid"
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:5000/auth.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/kpa-pilot-http.log"
+          exit 1
+
+      - name: Run KPA results browser pilot
+        run: node tests/kpa-results-browser-pilot.mjs
+
+      - name: Upload browser-pilot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kpa-results-browser-pilot-evidence
+          path: artifacts/kpa-results-browser-pilot
+          if-no-files-found: warn
+          retention-days: 14
