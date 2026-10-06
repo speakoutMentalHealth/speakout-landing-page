@@ -1,3 +1,4 @@
+import { isApprovedProfile } from "./profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword,
@@ -76,7 +77,7 @@ async function redirectByUserRole(user){
     await signOut(auth);
     return;
   }
-  const approved=profile.approved===true||normalize(profile.status)==="approved";
+  const approved=isApprovedProfile(profile);
   if(!approved){
     showLogin(
       normalize(profile.schoolVerificationStatus)==="pending"
