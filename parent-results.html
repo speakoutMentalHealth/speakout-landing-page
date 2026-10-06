@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Child Results | SpeakOut</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="logo.png" rel="icon">
+<link href="css/production-ready.css" rel="stylesheet">
+<link href="css/learner-portal.css" rel="stylesheet">
+<style>
+:root{--navy:#07152b;--blue:#0a5fbf;--gold:#f4a21c;--green:#0f8f6f;--red:#991b1b;--line:#e5edf6;--muted:#637083;--bg:#f7f9fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#111827;font-family:Outfit,Arial,sans-serif}.container{width:min(1040px,92%);margin:auto}.nav{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;text-decoration:none}.brand img{width:44px;height:44px;object-fit:contain}.brand h2,.brand p{margin:0}.brand h2{color:var(--blue);font-size:1.05rem}.brand p{color:#d98200;font-size:.7rem;font-weight:900;text-transform:uppercase}.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:44px 0}.hero h1{margin:8px 0;font-size:clamp(2rem,5vw,4rem)}.hero p{max-width:800px;line-height:1.6;color:rgba(255,255,255,.86)}
+section{padding:28px 0}.notice{padding:13px 15px;border-radius:15px;background:#eaf3ff;color:var(--blue);font-weight:800;margin-bottom:16px}.notice.ok{background:#e9fbf5;color:var(--green)}.notice.bad{background:#fee2e2;color:var(--red)}.notice.warn{background:#fff4df;color:#704800}.results{display:grid;gap:15px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 28px rgba(7,21,43,.07)}.card h2{margin:0;color:var(--navy)}.meta{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.pill{display:inline-flex;border-radius:999px;padding:6px 9px;background:#f4f7fb;color:var(--muted);font-size:.74rem;font-weight:850}.pill.good{background:#e9fbf5;color:var(--green)}.pill.warn{background:#fff4df;color:#704800}.lock{border:1px solid #f3d28d;background:#fffaf0;border-radius:16px;padding:14px;margin-top:12px}.unlock{display:flex;gap:8px;flex-wrap:wrap}.unlock input{flex:1;min-width:180px;min-height:44px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:1.08rem;letter-spacing:.12em}.btn{border:0;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.primary{background:var(--blue);color:#fff}.soft{background:#eaf3ff;color:var(--blue)}.dark{background:var(--navy);color:#fff}.muted{color:var(--muted);line-height:1.5}.empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:22px}
+@media(max-width:720px){.nav-inner{align-items:flex-start;padding:12px 0;flex-direction:column}.btn{border-radius:14px}.unlock .btn{width:100%}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="parent-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>Parent Results</p></div></a><nav id="roleNav"></nav></div></header>
+<main>
+<section class="hero"><div class="container"><h1>My Child’s Results</h1><p>View school-published results for children linked to your parent account. Where the school requires fee clearance and an access code, enter the code once to unlock that specific result.</p></div></section>
+<section><div class="container">
+<div id="statusBox" class="notice">Loading results...</div>
+<div id="resultsBox" class="results"></div>
+</div></section>
+</main>
+<script type="module">
+import { requireRoles, renderRoleNav } from "./launch-role-guard.js";
+import { academicResultsApi } from "./js/platform-api.js";
+const statusBox=document.getElementById("statusBox");
+const resultsBox=document.getElementById("resultsBox");
+let results=[];
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function norm(v){return String(v||"").trim().toLowerCase()}
+function show(message,type=""){statusBox.textContent=message;statusBox.className="notice "+type}
+function feeCleared(r){return["cleared","waived"].includes(norm(r.feeClearanceStatus))}
+function filteredResults(){const wanted=new URLSearchParams(location.search).get("studentId");return wanted?results.filter(r=>r.studentId===wanted):results}
+function render(){
+  const items=filteredResults();
+  if(!items.length){resultsBox.innerHTML='<div class="empty">No published school results are available for your approved child links yet.</div>';return}
+  resultsBox.innerHTML=items.map(r=>{
+    const cleared=feeCleared(r), mode=norm(r.accessMode), downloadable=r.unlocked===true;
+    let gate="";
+    if(!downloadable&&mode==="fee_and_pin"){
+      gate=cleared
+        ?'<div class="lock"><b>Result locked</b><p class="muted">Enter the 8-digit code issued by the school after fee clearance.</p><div class="unlock"><input inputmode="numeric" maxlength="8" pattern="[0-9]{8}" placeholder="8-digit code" data-pin><button class="btn primary" data-action="unlock">Unlock Result</button></div></div>'
+        :'<div class="notice warn">This result is published, but the school has not confirmed fee clearance yet.</div>';
+    }else if(!downloadable&&mode==="fee_only"){
+      gate='<div class="notice warn">This result will become downloadable after the school confirms fee clearance.</div>';
+    }
+    return '<article class="card" data-id="'+esc(r.id)+'"><h2>'+esc(r.studentName||"Student")+'</h2>'+
+      '<div class="meta"><span class="pill">'+esc(r.studentCode||"Student")+'</span><span class="pill">'+esc(r.classLevel||"Class")+'</span><span class="pill">'+esc(r.academicSession)+'</span><span class="pill">'+esc(r.academicPeriod)+'</span><span class="pill '+(cleared?"good":"warn")+'">Fees: '+esc(r.feeClearanceStatus)+'</span></div>'+
+      '<p class="muted">'+esc(r.title||"Academic Result")+' · '+esc(r.schoolName||r.schoolCode||"School")+'</p>'+
+      (downloadable?'<button class="btn dark" data-action="download">Download Result</button>':gate)+'</article>';
+  }).join("");
+}
+async function load(){
+  const data=await academicResultsApi.parentList();
+  results=data.results||[];
+  render();
+}
+async function download(record){
+  show("Preparing secure result download...");
+  const blob=await academicResultsApi.download(record.id);
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;const ext=record.fileFormat||"pdf";a.download=[record.studentCode||"student",record.academicSession,record.academicPeriod].filter(Boolean).join("-").replace(/[^A-Za-z0-9._-]+/g,"-")+"."+ext;
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);show("Result downloaded.","ok");
+}
+resultsBox.addEventListener("click",async event=>{
+  const button=event.target.closest("button[data-action]");if(!button)return;
+  const card=button.closest("[data-id]");const record=results.find(r=>r.id===card?.dataset.id);if(!record)return;
+  button.disabled=true;
+  try{
+    if(button.dataset.action==="unlock"){
+      const pin=card.querySelector("[data-pin]")?.value.trim()||"";
+      await academicResultsApi.unlock(record.id,pin);
+      await load();show("Result unlocked successfully.","ok");
+    }else if(button.dataset.action==="download"){await download(record)}
+  }catch(error){show(error.message||"Action failed.","bad")}finally{button.disabled=false}
+});
+requireRoles(["parent"],async(user,profile)=>{
+  const role=norm(profile.role);if(!["parent","admin","super_admin"].includes(role)){location.href="auth.html";return}
+  renderRoleNav(profile,"Results");
+  try{await load();show("Published child results loaded.","ok")}catch(error){show(error.message||"Could not load results.","bad")}
+});
+</script>
+</body>
+</html>

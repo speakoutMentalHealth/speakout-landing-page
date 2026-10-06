@@ -1095,6 +1095,749 @@ async function importSchoolRoster(env, user, data) {
   };
 }
 
+
+/* =========================================================
+   ACADEMIC RESULTS: PRIVATE STORAGE, FEE CLEARANCE & PIN ACCESS
+========================================================= */
+
+function academicResultFile(data) {
+  const file = data.file;
+  if (!(file instanceof File)) {
+    throw Object.assign(new Error("Select a result file to upload."), { status: 400 });
+  }
+  const allowed = ["application/pdf", "image/jpeg", "image/png"];
+  if (!allowed.includes(file.type) || file.size > 12 * 1024 * 1024) {
+    throw Object.assign(new Error("Result files must be PDF, JPG or PNG and no larger than 12 MB."), { status: 400 });
+  }
+  return file;
+}
+
+function academicResultExtension(file) {
+  return ({
+    "application/pdf": "pdf",
+    "image/jpeg": "jpg",
+    "image/png": "png"
+  })[file.type] || "bin";
+}
+
+function academicAccessMode(value) {
+  const mode = normalized(value || "fee_and_pin");
+  if (!["fee_and_pin", "fee_only", "open_after_publish"].includes(mode)) {
+    throw Object.assign(new Error("Invalid result access mode."), { status: 400 });
+  }
+  return mode;
+}
+
+function academicPublicationStatus(value) {
+  const status = normalized(value || "draft");
+  if (!["draft", "published"].includes(status)) {
+    throw Object.assign(new Error("Invalid result publication status."), { status: 400 });
+  }
+  return status;
+}
+
+function academicFeeStatus(value) {
+  const status = normalized(value || "pending");
+  if (!["pending", "cleared", "waived"].includes(status)) {
+    throw Object.assign(new Error("Invalid fee-clearance status."), { status: 400 });
+  }
+  return status;
+}
+
+function academicResultSafeFilename(record, format) {
+  const base = [
+    clean(record.studentCode || record.studentId || "student"),
+    clean(record.academicSession || "session"),
+    clean(record.academicPeriod || "result")
+  ].filter(Boolean).join("-");
+  const safe = base.replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 140) || "academic-result";
+  return safe + "." + format;
+}
+
+async function uploadPrivateAcademicResult(env, user, school, student, file) {
+  const assetId = crypto.randomUUID();
+  const format = academicResultExtension(file);
+  const resourceType = file.type.startsWith("image/") ? "image" : "raw";
+  const folder = "speakout/private-results/" + school.id + "/" + student.id;
+  const objectName = crypto.randomUUID();
+  const r2Key = folder + "/" + objectName + "." + format;
+
+  if (env.EVIDENCE_BUCKET) {
+    const stored = await env.EVIDENCE_BUCKET.put(r2Key, file.stream(), {
+      httpMetadata: {
+        contentType: file.type,
+        contentDisposition: "attachment; filename=\"result." + format + "\"",
+        cacheControl: "private, no-store, max-age=0"
+      },
+      customMetadata: {
+        schoolId: school.id,
+        studentId: student.id,
+        assetId,
+        format
+      }
+    });
+    if (!stored) {
+      throw Object.assign(new Error("Secure result upload failed."), { status: 502 });
+    }
+    return {
+      assetId,
+      publicId: r2Key,
+      version: 1,
+      format,
+      resourceType,
+      storage: "r2",
+      contentType: file.type
+    };
+  }
+
+  requireCloudinary(env);
+  const timestamp = Math.floor(Date.now() / 1000);
+  const cloudinaryPublicId = resourceType === "raw" ? objectName + "." + format : objectName;
+  const signatureBase =
+    "folder=" + folder +
+    "&public_id=" + cloudinaryPublicId +
+    "&timestamp=" + timestamp +
+    "&type=authenticated" +
+    env.CLOUDINARY_API_SECRET;
+
+  const upload = new FormData();
+  upload.append("file", file);
+  upload.append("api_key", env.CLOUDINARY_API_KEY);
+  upload.append("timestamp", String(timestamp));
+  upload.append("folder", folder);
+  upload.append("public_id", cloudinaryPublicId);
+  upload.append("type", "authenticated");
+  upload.append("signature", await sha1Hex(signatureBase));
+
+  const response = await fetch(
+    "https://api.cloudinary.com/v1_1/" + encodeURIComponent(env.CLOUDINARY_CLOUD_NAME) + "/" + resourceType + "/upload",
+    { method: "POST", body: upload }
+  );
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !clean(result.public_id)) {
+    throw Object.assign(new Error("Secure result upload failed."), { status: 502 });
+  }
+
+  return {
+    assetId: clean(result.asset_id) || assetId,
+    publicId: clean(result.public_id),
+    version: Number(result.version || 1),
+    format: normalized(result.format || format),
+    resourceType,
+    storage: "cloudinary",
+    contentType: file.type
+  };
+}
+
+async function removePrivateAcademicResult(env, record) {
+  if (!record) return;
+  const publicId = clean(record.filePublicId);
+  const storage = normalized(record.fileStorage);
+  if (!publicId) return;
+
+  if (storage === "r2" && env.EVIDENCE_BUCKET) {
+    await env.EVIDENCE_BUCKET.delete(publicId).catch(() => null);
+    return;
+  }
+
+  if (storage === "cloudinary") {
+    requireCloudinary(env);
+    const timestamp = Math.floor(Date.now() / 1000);
+    const resourceType = normalized(record.fileResourceType || "raw");
+    const signature = await sha1Hex(
+      "public_id=" + publicId + "&timestamp=" + timestamp + "&type=authenticated" + env.CLOUDINARY_API_SECRET
+    );
+    const body = new URLSearchParams({
+      public_id: publicId,
+      timestamp: String(timestamp),
+      type: "authenticated",
+      api_key: env.CLOUDINARY_API_KEY,
+      signature
+    });
+    await fetch(
+      "https://api.cloudinary.com/v1_1/" + encodeURIComponent(env.CLOUDINARY_CLOUD_NAME) + "/" + resourceType + "/destroy",
+      {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body
+      }
+    ).catch(() => null);
+  }
+}
+
+function academicResultStorageDescriptor(record) {
+  const schoolId = safeId(record.schoolId, "school identifier");
+  const studentId = safeId(record.studentId, "student identifier");
+  const publicId = clean(record.filePublicId);
+  const assetId = clean(record.fileAssetId);
+  const format = normalized(record.fileFormat || "pdf");
+  const resourceType = normalized(record.fileResourceType || (format === "pdf" ? "raw" : "image"));
+  const version = Number(record.fileVersion || 1);
+  const expectedPrefix = "speakout/private-results/" + schoolId + "/" + studentId + "/";
+  const assetName = publicId.slice(expectedPrefix.length);
+
+  if (
+    !publicId.startsWith(expectedPrefix) ||
+    !/^[A-Za-z0-9._-]{8,120}$/.test(assetName) ||
+    !/^[A-Za-z0-9_-]{8,180}$/.test(assetId) ||
+    !/^[a-z0-9]{2,12}$/.test(format) ||
+    !["raw", "image"].includes(resourceType) ||
+    !Number.isInteger(version) ||
+    version < 1
+  ) {
+    throw Object.assign(new Error("This result file needs migration before it can be downloaded securely."), { status: 409 });
+  }
+
+  return { schoolId, studentId, publicId, assetId, format, resourceType, version };
+}
+
+async function authenticatedAcademicResultResponse(env, record) {
+  const descriptor = academicResultStorageDescriptor(record);
+  const filename = academicResultSafeFilename(record, descriptor.format);
+
+  if (env.EVIDENCE_BUCKET) {
+    const object = await env.EVIDENCE_BUCKET.get(descriptor.publicId);
+    if (object) {
+      if (
+        clean(object.customMetadata?.schoolId) !== descriptor.schoolId ||
+        clean(object.customMetadata?.studentId) !== descriptor.studentId ||
+        clean(object.customMetadata?.assetId) !== descriptor.assetId
+      ) {
+        throw Object.assign(new Error("Academic-result ownership validation failed."), { status: 403 });
+      }
+      const headers = new Headers();
+      object.writeHttpMetadata(headers);
+      headers.set("content-type", headers.get("content-type") || clean(record.fileContentType) || "application/octet-stream");
+      headers.set("content-disposition", "attachment; filename=\"" + filename + "\"");
+      headers.set("cache-control", "private, no-store, max-age=0");
+      headers.set("x-content-type-options", "nosniff");
+      headers.set("x-robots-tag", "noindex, nofollow");
+      return new Response(object.body, { status: 200, headers });
+    }
+    if (normalized(record.fileStorage) === "r2") {
+      throw Object.assign(new Error("Secure result file was not found."), { status: 404 });
+    }
+  }
+
+  requireCloudinary(env);
+  const encodedPublicId = descriptor.publicId.split("/").map(encodeURIComponent).join("/");
+  const deliveryTail = descriptor.resourceType === "raw"
+    ? "v" + descriptor.version + "/" + encodedPublicId
+    : "v" + descriptor.version + "/" + encodedPublicId + "." + descriptor.format;
+  const signature = (await sha1Base64Url(deliveryTail + env.CLOUDINARY_API_SECRET)).slice(0, 8);
+  const response = await fetch(
+    "https://res.cloudinary.com/" + encodeURIComponent(env.CLOUDINARY_CLOUD_NAME) + "/" +
+    descriptor.resourceType + "/authenticated/s--" + signature + "--/" + deliveryTail
+  );
+  if (!response.ok || !response.body) {
+    throw Object.assign(new Error("Secure result retrieval failed."), { status: response.status === 404 ? 404 : 502 });
+  }
+
+  return new Response(response.body, {
+    status: 200,
+    headers: {
+      "content-type": response.headers.get("content-type") || clean(record.fileContentType) || "application/octet-stream",
+      "content-disposition": "attachment; filename=\"" + filename + "\"",
+      "cache-control": "private, no-store, max-age=0",
+      "x-content-type-options": "nosniff",
+      "x-robots-tag": "noindex, nofollow"
+    }
+  });
+}
+
+function publicAcademicResultForSchool(record) {
+  return {
+    id: clean(record.id),
+    schoolId: clean(record.schoolId),
+    schoolCode: clean(record.schoolCode),
+    schoolName: clean(record.schoolName),
+    studentId: clean(record.studentId),
+    studentCode: clean(record.studentCode),
+    studentName: clean(record.studentName),
+    classLevel: clean(record.classLevel),
+    academicSession: clean(record.academicSession),
+    academicPeriod: clean(record.academicPeriod),
+    title: clean(record.title || "Academic Result"),
+    status: clean(record.status || "draft"),
+    accessMode: clean(record.accessMode || "fee_and_pin"),
+    feeClearanceStatus: clean(record.feeClearanceStatus || "pending"),
+    pinActive: record.pinActive === true,
+    pinIssuedAt: record.pinIssuedAt || null,
+    pinVersion: Number(record.pinVersion || 0),
+    resultVersion: Number(record.resultVersion || 1),
+    fileFormat: clean(record.fileFormat),
+    createdAt: record.createdAt || null,
+    updatedAt: record.updatedAt || null,
+    publishedAt: record.publishedAt || null
+  };
+}
+
+function publicAcademicResultForParent(record, unlocked) {
+  return {
+    id: clean(record.id),
+    schoolId: clean(record.schoolId),
+    schoolCode: clean(record.schoolCode),
+    schoolName: clean(record.schoolName),
+    studentId: clean(record.studentId),
+    studentCode: clean(record.studentCode),
+    studentName: clean(record.studentName),
+    classLevel: clean(record.classLevel),
+    academicSession: clean(record.academicSession),
+    academicPeriod: clean(record.academicPeriod),
+    title: clean(record.title || "Academic Result"),
+    status: clean(record.status || "published"),
+    accessMode: clean(record.accessMode || "fee_and_pin"),
+    feeClearanceStatus: clean(record.feeClearanceStatus || "pending"),
+    unlocked: unlocked === true,
+    resultVersion: Number(record.resultVersion || 1),
+    fileFormat: clean(record.fileFormat),
+    publishedAt: record.publishedAt || null,
+    updatedAt: record.updatedAt || null
+  };
+}
+
+async function academicResultSchool(env, user) {
+  return schoolForRosterManager(env, user);
+}
+
+async function academicResultStudent(env, school, studentId) {
+  const id = safeId(studentId, "student identifier");
+  const student = await getDocument(env, "users/" + id);
+  if (!student || normalized(student.role) !== "student") {
+    throw Object.assign(new Error("Student account not found."), { status: 404 });
+  }
+  const same =
+    clean(student.schoolId) === clean(school.id) ||
+    (clean(school.schoolCode) && clean(student.schoolCode) === clean(school.schoolCode));
+  if (!same) {
+    throw Object.assign(new Error("The selected student does not belong to this school."), { status: 403 });
+  }
+  return student;
+}
+
+async function academicResultAudit(env, user, record, action, extra = {}) {
+  const auditId = "result_" + crypto.randomUUID();
+  await transactionalSet(env, "academicResultAuditLogs/" + auditId, {
+    action,
+    actorUid: user.uid,
+    actorEmail: clean(user.email || user.profile.email),
+    actorRole: clean(user.supportRole || user.profile.role),
+    schoolId: clean(record.schoolId),
+    studentId: clean(record.studentId),
+    resultId: clean(record.id),
+    resultVersion: Number(record.resultVersion || 1),
+    createdAt: new Date().toISOString(),
+    ...extra
+  });
+}
+
+async function schoolAcademicResults(env, user) {
+  const school = await academicResultSchool(env, user);
+  const page = await queryDocumentsByField(env, "academicResults", "schoolId", school.id, 500);
+  return {
+    school: publicSchool(school),
+    results: page.documents
+      .map(publicAcademicResultForSchool)
+      .sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""))),
+    truncated: page.truncated
+  };
+}
+
+async function uploadAcademicResult(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const student = await academicResultStudent(env, school, data.studentId);
+  const file = academicResultFile(data);
+  const academicSession = bounded(data.academicSession, 40, "Academic session");
+  const academicPeriod = bounded(data.academicPeriod, 60, "Academic period");
+  const title = bounded(data.title || "Academic Result", 160, "Result title");
+  if (!academicSession || !academicPeriod) {
+    throw Object.assign(new Error("Academic session and term/semester are required."), { status: 400 });
+  }
+
+  const accessMode = academicAccessMode(data.accessMode || "fee_and_pin");
+  const status = academicPublicationStatus(data.status || "draft");
+  const resultId = await sha256Key(
+    [school.id, student.id, normalized(academicSession), normalized(academicPeriod)].join("|")
+  );
+  const existing = await getDocument(env, "academicResults/" + resultId);
+  const uploaded = await uploadPrivateAcademicResult(env, user, school, student, file);
+  const now = new Date().toISOString();
+
+  const record = {
+    id: resultId,
+    schoolId: school.id,
+    schoolCode: clean(school.schoolCode),
+    schoolName: clean(school.schoolName || school.name),
+    studentId: student.id,
+    studentCode: clean(student.studentId || student.registrationNumber || student.admissionNumber),
+    studentName: humanName(student),
+    classLevel: clean(student.classLevel || student.level || student.occupation),
+    academicSession,
+    academicPeriod,
+    title,
+    status,
+    accessMode,
+    feeClearanceStatus: existing ? academicFeeStatus(existing.feeClearanceStatus || "pending") : "pending",
+    feeClearedAt: existing?.feeClearedAt || null,
+    feeClearedBy: existing?.feeClearedBy || "",
+    pinHash: "",
+    pinActive: false,
+    pinIssuedAt: null,
+    pinIssuedBy: "",
+    pinVersion: Number(existing?.pinVersion || 0) + 1,
+    resultVersion: Number(existing?.resultVersion || 0) + 1,
+    fileAssetId: uploaded.assetId,
+    filePublicId: uploaded.publicId,
+    fileVersion: uploaded.version,
+    fileFormat: uploaded.format,
+    fileResourceType: uploaded.resourceType,
+    fileStorage: uploaded.storage,
+    fileContentType: uploaded.contentType,
+    createdBy: clean(existing?.createdBy) || user.uid,
+    createdAt: existing?.createdAt || now,
+    updatedBy: user.uid,
+    updatedAt: now,
+    publishedAt: status === "published" ? now : null,
+    publishedBy: status === "published" ? user.uid : ""
+  };
+
+  try {
+    await transactionalSet(env, "academicResults/" + resultId, record);
+  } catch (error) {
+    await removePrivateAcademicResult(env, {
+      filePublicId: uploaded.publicId,
+      fileStorage: uploaded.storage,
+      fileResourceType: uploaded.resourceType
+    });
+    throw error;
+  }
+
+  if (existing?.filePublicId) {
+    await removePrivateAcademicResult(env, existing);
+  }
+  await academicResultAudit(env, user, record, existing ? "result_replaced" : "result_uploaded");
+
+  return { ok: true, result: publicAcademicResultForSchool(record) };
+}
+
+async function updateAcademicResultFeeClearance(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const resultId = safeId(data.resultId, "result identifier");
+  const feeClearanceStatus = academicFeeStatus(data.status);
+
+  const output = await runTransaction(env, async tx => {
+    const current = await tx.get("academicResults/" + resultId);
+    if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
+    if (clean(current.schoolId) !== clean(school.id)) {
+      throw Object.assign(new Error("You can manage only results in your school."), { status: 403 });
+    }
+    const now = new Date().toISOString();
+    const record = {
+      ...current,
+      feeClearanceStatus,
+      feeClearedAt: ["cleared", "waived"].includes(feeClearanceStatus) ? now : null,
+      feeClearedBy: ["cleared", "waived"].includes(feeClearanceStatus) ? user.uid : "",
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    if (!["cleared", "waived"].includes(feeClearanceStatus)) {
+      record.pinHash = "";
+      record.pinActive = false;
+      record.pinIssuedAt = null;
+      record.pinIssuedBy = "";
+      record.pinVersion = Number(current.pinVersion || 0) + 1;
+    }
+    tx.set("academicResults/" + resultId, record);
+    return { record };
+  });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_fee_clearance_updated", {
+    feeClearanceStatus
+  });
+  return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...output.record }) };
+}
+
+async function updateAcademicResultPublication(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const resultId = safeId(data.resultId, "result identifier");
+  const status = academicPublicationStatus(data.status);
+
+  const output = await runTransaction(env, async tx => {
+    const current = await tx.get("academicResults/" + resultId);
+    if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
+    if (clean(current.schoolId) !== clean(school.id)) {
+      throw Object.assign(new Error("You can manage only results in your school."), { status: 403 });
+    }
+    const now = new Date().toISOString();
+    const record = {
+      ...current,
+      status,
+      publishedAt: status === "published" ? (current.publishedAt || now) : null,
+      publishedBy: status === "published" ? user.uid : "",
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    tx.set("academicResults/" + resultId, record);
+    return { record };
+  });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_publication_updated", {
+    publicationStatus: status
+  });
+  return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...output.record }) };
+}
+
+function generateAcademicResultPin() {
+  const random = new Uint32Array(1);
+  crypto.getRandomValues(random);
+  return String(random[0] % 100000000).padStart(8, "0");
+}
+
+async function academicResultPinHash(resultId, pinVersion, pin) {
+  return sha256Key("academic-result|" + resultId + "|" + pinVersion + "|" + pin);
+}
+
+async function generateAcademicResultPinForSchool(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const resultId = safeId(data.resultId, "result identifier");
+  const pin = generateAcademicResultPin();
+
+  const output = await runTransaction(env, async tx => {
+    const current = await tx.get("academicResults/" + resultId);
+    if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
+    if (clean(current.schoolId) !== clean(school.id)) {
+      throw Object.assign(new Error("You can manage only results in your school."), { status: 403 });
+    }
+    if (!["cleared", "waived"].includes(academicFeeStatus(current.feeClearanceStatus))) {
+      throw Object.assign(new Error("School-fee clearance must be confirmed before a result PIN can be generated."), { status: 409 });
+    }
+    if (academicAccessMode(current.accessMode) !== "fee_and_pin") {
+      throw Object.assign(new Error("This result is not configured for PIN access."), { status: 409 });
+    }
+
+    const pinVersion = Number(current.pinVersion || 0) + 1;
+    const now = new Date().toISOString();
+    const record = {
+      ...current,
+      pinHash: await academicResultPinHash(resultId, pinVersion, pin),
+      pinActive: true,
+      pinVersion,
+      pinIssuedAt: now,
+      pinIssuedBy: user.uid,
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    tx.set("academicResults/" + resultId, record);
+    return { record };
+  });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_pin_generated");
+  return {
+    ok: true,
+    pin,
+    result: publicAcademicResultForSchool({ id: resultId, ...output.record }),
+    warning: "This PIN is shown only in this response. Store or send it securely."
+  };
+}
+
+async function revokeAcademicResultPin(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const resultId = safeId(data.resultId, "result identifier");
+
+  const output = await runTransaction(env, async tx => {
+    const current = await tx.get("academicResults/" + resultId);
+    if (!current) throw Object.assign(new Error("Academic result not found."), { status: 404 });
+    if (clean(current.schoolId) !== clean(school.id)) {
+      throw Object.assign(new Error("You can manage only results in your school."), { status: 403 });
+    }
+    const now = new Date().toISOString();
+    const record = {
+      ...current,
+      pinHash: "",
+      pinActive: false,
+      pinIssuedAt: null,
+      pinIssuedBy: "",
+      pinVersion: Number(current.pinVersion || 0) + 1,
+      updatedAt: now,
+      updatedBy: user.uid
+    };
+    tx.set("academicResults/" + resultId, record);
+    return { record };
+  });
+
+  await academicResultAudit(env, user, { id: resultId, ...output.record }, "result_pin_revoked");
+  return { ok: true, result: publicAcademicResultForSchool({ id: resultId, ...output.record }) };
+}
+
+async function approvedParentLink(env, parentId, studentId) {
+  const links = await queryDocumentsByField(env, "parentStudentLinks", "parentId", parentId, 100);
+  return links.documents.find(link =>
+    clean(link.studentId) === clean(studentId) &&
+    normalized(link.status) === "approved"
+  ) || null;
+}
+
+async function parentAcademicResultAccessState(env, user, result) {
+  if (normalized(result.status) !== "published") return false;
+  const link = await approvedParentLink(env, user.uid, result.studentId);
+  if (!link) return false;
+
+  const mode = academicAccessMode(result.accessMode || "fee_and_pin");
+  if (mode === "open_after_publish") return true;
+
+  const feesCleared = ["cleared", "waived"].includes(academicFeeStatus(result.feeClearanceStatus || "pending"));
+  if (!feesCleared) return false;
+  if (mode === "fee_only") return true;
+
+  const unlockId = await sha256Key(result.id + "|" + user.uid);
+  const unlock = await getDocument(env, "academicResultUnlocks/" + unlockId);
+  return Boolean(
+    unlock &&
+    clean(unlock.parentId) === user.uid &&
+    clean(unlock.resultId) === clean(result.id) &&
+    Number(unlock.resultVersion) === Number(result.resultVersion || 1) &&
+    Number(unlock.pinVersion) === Number(result.pinVersion || 0) &&
+    normalized(unlock.status || "active") === "active"
+  );
+}
+
+async function parentAcademicResults(env, user) {
+  requireRole(user, ["parent"]);
+  const links = await queryDocumentsByField(env, "parentStudentLinks", "parentId", user.uid, 100);
+  const studentIds = [...new Set(
+    links.documents
+      .filter(link => normalized(link.status) === "approved")
+      .map(link => clean(link.studentId))
+      .filter(Boolean)
+  )].slice(0, 30);
+
+  if (!studentIds.length) return { results: [], truncated: links.truncated };
+
+  const page = await queryDocumentsByValues(env, "academicResults", "studentId", studentIds);
+  const published = page.documents.filter(record => normalized(record.status) === "published");
+  const results = [];
+
+  for (const record of published) {
+    const unlocked = await parentAcademicResultAccessState(env, user, record);
+    results.push(publicAcademicResultForParent(record, unlocked));
+  }
+
+  results.sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
+  return { results, truncated: links.truncated || page.truncated };
+}
+
+async function academicPinAttemptRecord(env, resultId, parentId) {
+  const id = await sha256Key(resultId + "|" + parentId);
+  return { id, record: await getDocument(env, "academicResultPinAttempts/" + id) };
+}
+
+async function recordAcademicPinFailure(env, resultId, parentId, existing) {
+  const now = Date.now();
+  const previous = Number(existing?.failedCount || 0);
+  const failedCount = previous + 1;
+  const locked = failedCount >= 5;
+  const next = {
+    resultId,
+    parentId,
+    failedCount: locked ? 0 : failedCount,
+    lockedUntil: locked ? new Date(now + 15 * 60 * 1000).toISOString() : null,
+    updatedAt: new Date(now).toISOString()
+  };
+  const id = await sha256Key(resultId + "|" + parentId);
+  await transactionalSet(env, "academicResultPinAttempts/" + id, next);
+  return next;
+}
+
+async function unlockAcademicResultForParent(env, user, data) {
+  requireRole(user, ["parent"]);
+  const resultId = safeId(data.resultId, "result identifier");
+  const pin = clean(data.pin).replace(/\s+/g, "");
+  if (!/^\d{8}$/.test(pin)) {
+    throw Object.assign(new Error("Enter the 8-digit result PIN issued by the school."), { status: 400 });
+  }
+
+  const result = await getDocument(env, "academicResults/" + resultId);
+  if (!result || normalized(result.status) !== "published") {
+    throw Object.assign(new Error("This academic result is not available."), { status: 404 });
+  }
+  const link = await approvedParentLink(env, user.uid, result.studentId);
+  if (!link) {
+    throw Object.assign(new Error("This result is not linked to your approved child account."), { status: 403 });
+  }
+  if (academicAccessMode(result.accessMode) !== "fee_and_pin") {
+    throw Object.assign(new Error("This result does not require a PIN."), { status: 409 });
+  }
+  if (!["cleared", "waived"].includes(academicFeeStatus(result.feeClearanceStatus))) {
+    throw Object.assign(new Error("The school has not cleared this result for fee access yet."), { status: 409 });
+  }
+  if (result.pinActive !== true || !clean(result.pinHash)) {
+    throw Object.assign(new Error("The school has not issued an active PIN for this result."), { status: 409 });
+  }
+
+  const attempt = await academicPinAttemptRecord(env, resultId, user.uid);
+  if (attempt.record?.lockedUntil && Date.parse(attempt.record.lockedUntil) > Date.now()) {
+    throw Object.assign(new Error("Too many incorrect PIN attempts. Try again later or contact the school."), { status: 429 });
+  }
+
+  const expected = await academicResultPinHash(resultId, Number(result.pinVersion || 0), pin);
+  if (expected !== clean(result.pinHash)) {
+    await recordAcademicPinFailure(env, resultId, user.uid, attempt.record);
+    throw Object.assign(new Error("The result PIN is incorrect."), { status: 403 });
+  }
+
+  const unlockId = await sha256Key(resultId + "|" + user.uid);
+  const now = new Date().toISOString();
+  await runTransaction(env, async tx => {
+    tx.set("academicResultUnlocks/" + unlockId, {
+      resultId,
+      parentId: user.uid,
+      studentId: clean(result.studentId),
+      schoolId: clean(result.schoolId),
+      resultVersion: Number(result.resultVersion || 1),
+      pinVersion: Number(result.pinVersion || 0),
+      status: "active",
+      unlockedAt: now,
+      updatedAt: now
+    });
+    if (attempt.record) tx.delete("academicResultPinAttempts/" + attempt.id);
+  });
+
+  await academicResultAudit(env, user, { id: resultId, ...result }, "result_unlocked_by_parent", {
+    parentId: user.uid
+  });
+  return { ok: true, result: publicAcademicResultForParent({ id: resultId, ...result }, true) };
+}
+
+async function downloadAcademicResult(env, user, data) {
+  const resultId = safeId(data.resultId, "result identifier");
+  const result = await getDocument(env, "academicResults/" + resultId);
+  if (!result) throw Object.assign(new Error("Academic result not found."), { status: 404 });
+
+  const role = clean(user.supportRole) || normalized(user.profile.role);
+  let allowed = false;
+
+  if (["admin", "super_admin", "school_admin", "school"].includes(role)) {
+    if (["admin", "super_admin"].includes(role) && !user.supportMode) {
+      allowed = true;
+    } else {
+      const school = await academicResultSchool(env, user);
+      allowed = clean(result.schoolId) === clean(school.id);
+    }
+  } else if (role === "parent") {
+    allowed = await parentAcademicResultAccessState(env, user, { id: resultId, ...result });
+  }
+
+  if (!allowed) {
+    throw Object.assign(new Error("You are not authorized to download this academic result."), { status: 403 });
+  }
+
+  await academicResultAudit(env, user, { id: resultId, ...result }, "result_downloaded", {
+    accessRole: role
+  });
+  return authenticatedAcademicResultResponse(env, result);
+}
+
+
 function requireCloudinary(env) {
   for (const name of ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]) {
     if (!clean(env[name])) throw Object.assign(new Error("Secure evidence service is not configured."), { status: 503 });
@@ -3539,6 +4282,43 @@ async function route(request, env, path, data) {
       await removePrivateEvidence(env, uploaded);
       throw error;
     }
+  }
+
+
+  if (path === "/v1/academic-results/school/list") {
+    return schoolAcademicResults(env, user);
+  }
+
+  if (path === "/v1/academic-results/upload") {
+    return uploadAcademicResult(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/fee-clearance") {
+    return updateAcademicResultFeeClearance(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/publication") {
+    return updateAcademicResultPublication(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/pin/generate") {
+    return generateAcademicResultPinForSchool(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/pin/revoke") {
+    return revokeAcademicResultPin(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/parent/list") {
+    return parentAcademicResults(env, user);
+  }
+
+  if (path === "/v1/academic-results/parent/unlock") {
+    return unlockAcademicResultForParent(env, user, data);
+  }
+
+  if (path === "/v1/academic-results/download") {
+    return downloadAcademicResult(env, user, data);
   }
 
   if (path === "/v1/roles/school/roster/list") {
