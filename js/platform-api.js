@@ -177,6 +177,7 @@ async function downloadAcademicResult(resultId) {
 export const academicResultsApi = {
   schoolList: () => platformRequest("/v1/academic-results/school/list"),
   parentList: () => platformRequest("/v1/academic-results/parent/list"),
+  savePolicy: policy => platformRequest("/v1/academic-results/policy", policy),
   upload: uploadAcademicResult,
   setFeeClearance: (resultId, status) =>
     platformRequest("/v1/academic-results/fee-clearance", { resultId, status }),
