@@ -324,6 +324,12 @@ try {
     { timeout: 30000 }
   );
 
+  assert.equal(await schoolPage.locator("#policyAccessMode").inputValue(), "fee_and_pin");
+  assert.equal(await schoolPage.locator("#publishNow").isDisabled(), true);
+  await schoolPage.locator("#parentReleaseMessage").fill("Contact the school office if a cleared result remains locked.");
+  await schoolPage.locator("#policyForm button[type='submit']").click();
+  await schoolPage.locator("#statusBox").getByText("Result-release policy saved.").waitFor({ timeout: 20000 });
+
   await schoolPage.locator("#studentId").selectOption(student.localId);
   await schoolPage.locator("#academicSession").fill("2026/2027");
   await schoolPage.locator("#academicPeriod").fill("First Term");
