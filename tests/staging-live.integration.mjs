@@ -25,6 +25,9 @@ const firestoreBase = `https://firestore.googleapis.com/v1/projects/${projectId}
 const cleanupPaths = [];
 const authUsers = [];
 let evidencePublicId = "";
+let academicResultPublicId = "";
+let academicResultResourceType = "image";
+let academicResultId = "";
 
 function base64Url(value) {
   return Buffer.from(value).toString("base64url");
@@ -114,12 +117,88 @@ async function worker(path, token, data, form = false) {
 const adminToken = await serviceAccessToken();
 
 try {
-  const [learner, admin] = await Promise.all([signup("learner"), signup("admin")]);
+  const [learner, admin, schoolAdmin, parent] = await Promise.all([
+    signup("learner"),
+    signup("admin"),
+    signup("schooladmin"),
+    signup("parent")
+  ]);
   const learnerProfile = `users/${learner.localId}`;
   const adminProfile = `users/${admin.localId}`;
+  const schoolAdminProfile = `users/${schoolAdmin.localId}`;
+  const parentProfile = `users/${parent.localId}`;
+  const schoolId = `stage-school-${suffix}`;
+  const schoolCode = `STAGE-${randomBytes(3).toString("hex").toUpperCase()}`;
+  const parentLinkId = createHash("sha256").update(`${parent.localId}:${learner.localId}`).digest("hex");
+
   for (const [path, data] of [
-    [learnerProfile, { uid: learner.localId, email: learner.email, fullName: "Staging Learner", role: "student", status: "approved", approved: true }],
+    [`schools/${schoolId}`, {
+      schoolName: "Staging Acceptance School",
+      schoolCode,
+      schoolType: "secondary",
+      city: "Keffi",
+      state: "Nasarawa",
+      country: "Nigeria",
+      status: "active"
+    }],
+    [learnerProfile, {
+      uid: learner.localId,
+      email: learner.email,
+      fullName: "Staging Learner",
+      firstName: "Staging",
+      lastName: "Learner",
+      studentId: `STAGE-STU-${randomBytes(3).toString("hex").toUpperCase()}`,
+      classLevel: "SS2",
+      role: "student",
+      status: "approved",
+      approved: true,
+      schoolId,
+      schoolCode,
+      schoolName: "Staging Acceptance School"
+    }],
     [adminProfile, { uid: admin.localId, email: admin.email, fullName: "Staging Admin", role: "admin", status: "approved", approved: true }],
+    [schoolAdminProfile, {
+      uid: schoolAdmin.localId,
+      email: schoolAdmin.email,
+      fullName: "Staging School Admin",
+      role: "school_admin",
+      status: "approved",
+      approved: true,
+      schoolId,
+      schoolCode,
+      schoolName: "Staging Acceptance School"
+    }],
+    [parentProfile, {
+      uid: parent.localId,
+      email: parent.email,
+      fullName: "Staging Parent",
+      role: "parent",
+      status: "approved",
+      approved: true,
+      schoolId,
+      schoolCode,
+      schoolName: "Staging Acceptance School"
+    }],
+    [`parentStudentLinks/${parentLinkId}`, {
+      parentId: parent.localId,
+      parentName: "Staging Parent",
+      parentEmail: parent.email,
+      studentId: learner.localId,
+      studentName: "Staging Learner",
+      studentCode: "STAGING",
+      studentClass: "SS2",
+      relationship: "Guardian",
+      schoolId,
+      schoolCode,
+      status: "approved",
+      approvalRequired: true,
+      approvedAt: new Date().toISOString(),
+      reviewedAt: new Date().toISOString(),
+      reviewedBy: schoolAdmin.localId,
+      reviewSource: "school",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }],
     [`courses/${courseId}`, { title: "Staging Integration Course", status: "active", modules: [{ title: "Module 1", lessons: [{ id: "lesson-1", title: "Lesson 1" }], quiz: { id: `${courseId}__module__0`, title: "Module Quiz", passMark: 70, questionCount: 1 } }], finalAssessment: { id: `${courseId}__final`, title: "Final", passMark: 70, questionCount: 1 } }],
     [`courses/${externalCourseId}`, { title: "Staging External Course", status: "active", courseType: "external", completionMethod: "certificate-upload", provider: "Staging Provider", externalUrl: "https://example.com/staging-course" }],
     [`courseAssessments/${courseId}__module__0`, { id: `${courseId}__module__0`, courseId, type: "module", moduleIndex: 0, title: "Module Quiz", passMark: 70, questions: [{ question: "Choose A", options: ["A", "B"], answer: 0 }] }],
@@ -130,8 +209,95 @@ try {
     cleanupPaths.push(path);
   }
 
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
   const denied = await firestore(`certificates/forged-${suffix}`, { method: "PATCH", data: { userId: learner.localId, status: "active" }, token: learner.idToken });
   assert.equal(denied.response.status, 403, "learner certificate forgery was not denied by live rules");
+
+
+  const resultForm = new FormData();
+  resultForm.append("file", new File([png], "result.png", { type: "image/png" }));
+  resultForm.append("studentId", learner.localId);
+  resultForm.append("academicSession", "2026/2027");
+  resultForm.append("academicPeriod", "First Term");
+  resultForm.append("title", "First Term Result");
+  resultForm.append("accessMode", "fee_and_pin");
+  resultForm.append("status", "draft");
+
+  const resultUpload = await worker("/v1/academic-results/upload", schoolAdmin.idToken, resultForm, true);
+  assert.equal(resultUpload.response.ok, true, `result upload failed (${resultUpload.response.status}): ${JSON.stringify(resultUpload.body)}`);
+  academicResultId = resultUpload.body.result.id;
+  assert.ok(academicResultId, "academic result id missing after upload");
+  cleanupPaths.push(`academicResults/${academicResultId}`);
+
+  const storedResult = await firestore(`academicResults/${academicResultId}`);
+  assert.equal(storedResult.response.ok, true, "uploaded academic result metadata missing");
+  assert.equal(storedResult.data.status, "draft");
+  assert.equal(storedResult.data.feeClearanceStatus, "pending");
+  assert.ok(storedResult.data.filePublicId, "private academic-result file metadata missing");
+  academicResultPublicId = storedResult.data.filePublicId;
+  academicResultResourceType = storedResult.data.fileResourceType || "image";
+
+  const parentBeforePublish = await worker("/v1/academic-results/parent/list", parent.idToken, {});
+  assert.equal(parentBeforePublish.response.ok, true);
+  assert.equal(parentBeforePublish.body.results.length, 0, "draft result leaked to parent");
+
+  const publish = await worker("/v1/academic-results/publication", schoolAdmin.idToken, { resultId: academicResultId, status: "published" });
+  assert.equal(publish.response.ok, true, "school could not publish academic result");
+
+  const parentPendingFees = await worker("/v1/academic-results/parent/list", parent.idToken, {});
+  assert.equal(parentPendingFees.response.ok, true);
+  assert.equal(parentPendingFees.body.results.length, 1);
+  assert.equal(parentPendingFees.body.results[0].unlocked, false);
+  assert.equal(parentPendingFees.body.results[0].feeClearanceStatus, "pending");
+
+  const prematureUnlock = await worker("/v1/academic-results/parent/unlock", parent.idToken, { resultId: academicResultId, pin: "12345678" });
+  assert.equal(prematureUnlock.response.status, 409, "parent unlocked result before fee clearance");
+
+  const cleared = await worker("/v1/academic-results/fee-clearance", schoolAdmin.idToken, { resultId: academicResultId, status: "cleared" });
+  assert.equal(cleared.response.ok, true, "school could not confirm fee clearance");
+
+  const pinIssue = await worker("/v1/academic-results/pin/generate", schoolAdmin.idToken, { resultId: academicResultId });
+  assert.equal(pinIssue.response.ok, true, "school could not generate result PIN");
+  assert.match(pinIssue.body.pin || "", /^\d{8}$/u, "result PIN was not an 8-digit code");
+
+  const wrongPin = pinIssue.body.pin === "00000000" ? "99999999" : "00000000";
+  const wrongUnlock = await worker("/v1/academic-results/parent/unlock", parent.idToken, { resultId: academicResultId, pin: wrongPin });
+  assert.equal(wrongUnlock.response.status, 403, "incorrect result PIN was accepted");
+
+  const unlock = await worker("/v1/academic-results/parent/unlock", parent.idToken, { resultId: academicResultId, pin: pinIssue.body.pin });
+  assert.equal(unlock.response.ok, true, "valid result PIN did not unlock result");
+  assert.equal(unlock.body.result.unlocked, true);
+
+  const parentUnlockId = createHash("sha256").update(`${academicResultId}|${parent.localId}`).digest("hex");
+  const parentAttemptId = parentUnlockId;
+  cleanupPaths.push(`academicResultUnlocks/${parentUnlockId}`, `academicResultPinAttempts/${parentAttemptId}`);
+
+  const download = await worker("/v1/academic-results/download", parent.idToken, { resultId: academicResultId });
+  assert.equal(download.response.ok, true, "authorized parent result download failed");
+  assert.match(download.response.headers.get("cache-control") || "", /no-store/u);
+  assert.match(download.response.headers.get("content-disposition") || "", /attachment/u);
+  assert.ok(download.body.byteLength > 0, "downloaded academic result was empty");
+
+  const newPin = await worker("/v1/academic-results/pin/generate", schoolAdmin.idToken, { resultId: academicResultId });
+  assert.equal(newPin.response.ok, true, "school could not rotate result PIN");
+  assert.notEqual(newPin.body.pin, pinIssue.body.pin, "result PIN rotation unexpectedly reused the same PIN");
+
+  const parentAfterRotation = await worker("/v1/academic-results/parent/list", parent.idToken, {});
+  assert.equal(parentAfterRotation.response.ok, true);
+  assert.equal(parentAfterRotation.body.results[0].unlocked, false, "PIN rotation did not invalidate prior parent unlock");
+
+  const oldPinAfterRotation = await worker("/v1/academic-results/parent/unlock", parent.idToken, { resultId: academicResultId, pin: pinIssue.body.pin });
+  assert.equal(oldPinAfterRotation.response.status, 403, "old PIN remained valid after rotation");
+
+  const unlockRotated = await worker("/v1/academic-results/parent/unlock", parent.idToken, { resultId: academicResultId, pin: newPin.body.pin });
+  assert.equal(unlockRotated.response.ok, true, "rotated result PIN did not unlock result");
+
+  const resetFees = await worker("/v1/academic-results/fee-clearance", schoolAdmin.idToken, { resultId: academicResultId, status: "pending" });
+  assert.equal(resetFees.response.ok, true, "school could not reset fee clearance");
+
+  const downloadAfterFeeReset = await worker("/v1/academic-results/download", parent.idToken, { resultId: academicResultId });
+  assert.equal(downloadAfterFeeReset.response.status, 403, "parent retained result download after fee clearance reset");
+
 
   const enrollment = await worker("/v1/learning/enroll", learner.idToken, { courseId });
   assert.equal(enrollment.response.ok, true, `enrollment failed (${enrollment.response.status}): ${JSON.stringify(enrollment.body)}`);
@@ -159,7 +325,7 @@ try {
   assert.equal(certificate.response.ok && projection.response.ok, true, "atomic course certificate/projection write missing");
   assert.equal("userId" in projection.data, false);
 
-  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
+
   const submissionForm = new FormData();
   submissionForm.append("file", new File([png], "evidence.png", { type: "image/png" }));
   submissionForm.append("courseId", externalCourseId);
@@ -191,7 +357,18 @@ try {
   assert.equal(inventory.body.writesPerformed, 0);
   assert.equal(inventory.body.truncated, false);
 
-  console.log(JSON.stringify({ ok: true, liveRules: true, atomicLearning: true, atomicCertificates: true, protectedEvidence: true, dryRunWrites: inventory.body.writesPerformed }));
+  console.log(JSON.stringify({
+    ok: true,
+    liveRules: true,
+    atomicLearning: true,
+    atomicCertificates: true,
+    protectedEvidence: true,
+    academicResults: true,
+    resultFeeGate: true,
+    resultPinRotation: true,
+    resultParentDownload: true,
+    dryRunWrites: inventory.body.writesPerformed
+  }));
 } finally {
   for (const path of [...cleanupPaths].reverse()) await firestore(path, { method: "DELETE" }).catch(() => null);
   if (evidencePublicId) {
@@ -199,6 +376,40 @@ try {
     const signature = createHash("sha1").update(`public_id=${evidencePublicId}&timestamp=${timestamp}&type=authenticated${cloudinary.apiSecret}`).digest("hex");
     const form = new URLSearchParams({ public_id: evidencePublicId, timestamp: String(timestamp), type: "authenticated", api_key: cloudinary.apiKey, signature });
     await fetch(`https://api.cloudinary.com/v1_1/${cloudinary.cloudName}/image/destroy`, { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: form }).catch(() => null);
+  }
+
+  if (academicResultId) {
+    const auditResponse = await fetch(`${firestoreBase}/academicResultAuditLogs?pageSize=100`, {
+      headers: { authorization: `Bearer ${adminToken}` }
+    }).catch(() => null);
+    if (auditResponse?.ok) {
+      const body = await auditResponse.json().catch(() => ({}));
+      for (const document of body.documents || []) {
+        const data = decodedFields(document.fields);
+        if (data.resultId === academicResultId) {
+          const relative = document.name.split("/documents/")[1];
+          if (relative) await firestore(relative, { method: "DELETE" }).catch(() => null);
+        }
+      }
+    }
+  }
+
+  if (academicResultPublicId) {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const signature = createHash("sha1").update(
+      `public_id=${academicResultPublicId}&timestamp=${timestamp}&type=authenticated${cloudinary.apiSecret}`
+    ).digest("hex");
+    const form = new URLSearchParams({
+      public_id: academicResultPublicId,
+      timestamp: String(timestamp),
+      type: "authenticated",
+      api_key: cloudinary.apiKey,
+      signature
+    });
+    await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudinary.cloudName}/${academicResultResourceType}/destroy`,
+      { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body: form }
+    ).catch(() => null);
   }
   for (const user of authUsers) {
     await fetch(authUrl("delete"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: user.idToken }) }).catch(() => null);
