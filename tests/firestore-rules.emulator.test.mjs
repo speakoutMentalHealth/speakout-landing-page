@@ -466,3 +466,19 @@ test("programme membership and submissions preserve school tenancy and ownership
     reviewedBy: ""
   }));
 });
+
+
+test("legacy approval flags cannot override denied status for learners or admins", async () => {
+  await seed("schools/school-a", { name: "School A" });
+  for (const role of ["student", "school_admin", "super_admin"]) {
+    for (const status of ["pending", "rejected", "suspended"]) {
+      const uid = `${role}-${status}`;
+      await seed(`users/${uid}`, { ...profile(uid, role), status, approved: true });
+      const db = testEnv.authenticatedContext(uid).firestore();
+      await assertFails(getDoc(doc(db, "schools/school-a")));
+      await assertFails(updateDoc(doc(db, `users/${uid}`), { status: "approved" }));
+    }
+  }
+  await seed("users/canonical-admin", { ...profile("canonical-admin", "super_admin"), approved: false });
+  await assertSucceeds(getDoc(doc(testEnv.authenticatedContext("canonical-admin").firestore(), "schools/school-a")));
+});
