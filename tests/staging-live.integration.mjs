@@ -213,6 +213,29 @@ try {
   const denied = await firestore(`certificates/forged-${suffix}`, { method: "PATCH", data: { userId: learner.localId, status: "active" }, token: learner.idToken });
   assert.equal(denied.response.status, 403, "learner certificate forgery was not denied by live rules");
 
+  const initialResultState = await worker("/v1/academic-results/school/list", schoolAdmin.idToken, {});
+  assert.equal(initialResultState.response.ok, true);
+  assert.equal(initialResultState.body.policy.defaultAccessMode, "fee_and_pin");
+  assert.equal(initialResultState.body.policy.allowImmediatePublish, false);
+  assert.equal(initialResultState.body.policy.managerAuthority, "school_admin_only");
+
+  const savedPolicy = await worker("/v1/academic-results/policy", schoolAdmin.idToken, {
+    defaultAccessMode: "fee_and_pin",
+    allowImmediatePublish: false,
+    parentReleaseMessage: "Contact the school accounts office if a cleared result remains locked."
+  });
+  assert.equal(savedPolicy.response.ok, true, "school could not save academic-result policy");
+  assert.equal(savedPolicy.body.policy.pinDeliveryMethod, "school_issued_manual");
+
+  const blockedPublishForm = new FormData();
+  blockedPublishForm.append("file", new File([png], "blocked-result.png", { type: "image/png" }));
+  blockedPublishForm.append("studentId", learner.localId);
+  blockedPublishForm.append("academicSession", "2026/2027");
+  blockedPublishForm.append("academicPeriod", "Policy Guard");
+  blockedPublishForm.append("title", "Policy Guard Result");
+  blockedPublishForm.append("status", "published");
+  const blockedPublish = await worker("/v1/academic-results/upload", schoolAdmin.idToken, blockedPublishForm, true);
+  assert.equal(blockedPublish.response.status, 409, "draft-first institution policy did not block immediate publication");
 
   const resultForm = new FormData();
   resultForm.append("file", new File([png], "result.png", { type: "image/png" }));
