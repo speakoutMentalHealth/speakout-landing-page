@@ -1144,6 +1144,69 @@ function academicFeeStatus(value) {
   return status;
 }
 
+
+function publicAcademicResultPolicy(school = {}) {
+  const raw = school.academicResultPolicy && typeof school.academicResultPolicy === "object"
+    ? school.academicResultPolicy
+    : {};
+  const requestedMode = normalized(raw.defaultAccessMode || "fee_and_pin");
+  return {
+    defaultAccessMode: ["fee_and_pin", "fee_only", "open_after_publish"].includes(requestedMode)
+      ? requestedMode
+      : "fee_and_pin",
+    allowImmediatePublish: raw.allowImmediatePublish === true,
+    managerAuthority: "school_admin_only",
+    feeClearanceAuthority: "school_admin_only",
+    pinDeliveryMethod: "school_issued_manual",
+    parentReleaseMessage: clean(raw.parentReleaseMessage).slice(0, 500),
+    updatedAt: raw.updatedAt || null,
+    updatedBy: clean(raw.updatedBy)
+  };
+}
+
+async function updateAcademicResultPolicy(env, user, data) {
+  const school = await academicResultSchool(env, user);
+  const defaultAccessMode = academicAccessMode(data.defaultAccessMode || "fee_and_pin");
+  const allowImmediatePublish = data.allowImmediatePublish === true || normalized(data.allowImmediatePublish) === "true";
+  const parentReleaseMessage = bounded(data.parentReleaseMessage, 500, "Parent result-release message");
+  const now = new Date().toISOString();
+
+  const policy = {
+    defaultAccessMode,
+    allowImmediatePublish,
+    managerAuthority: "school_admin_only",
+    feeClearanceAuthority: "school_admin_only",
+    pinDeliveryMethod: "school_issued_manual",
+    parentReleaseMessage,
+    updatedAt: now,
+    updatedBy: user.uid
+  };
+
+  await runTransaction(env, async tx => {
+    const current = await tx.get("schools/" + safeId(school.id, "school identifier"));
+    if (!current) {
+      throw Object.assign(new Error("School record not found."), { status: 404 });
+    }
+    tx.patch("schools/" + school.id, {
+      academicResultPolicy: policy,
+      updatedAt: now
+    });
+  });
+
+  await academicResultAudit(env, user, {
+    id: "policy",
+    schoolId: school.id,
+    studentId: "",
+    resultVersion: 1
+  }, "result_policy_updated", {
+    defaultAccessMode,
+    allowImmediatePublish,
+    pinDeliveryMethod: policy.pinDeliveryMethod
+  });
+
+  return { ok: true, policy };
+}
+
 function academicResultSafeFilename(record, format) {
   const base = [
     clean(record.studentCode || record.studentId || "student"),
@@ -1436,6 +1499,7 @@ async function schoolAcademicResults(env, user) {
   const page = await queryDocumentsByField(env, "academicResults", "schoolId", school.id, 500);
   return {
     school: publicSchool(school),
+    policy: publicAcademicResultPolicy(school),
     results: page.documents
       .map(publicAcademicResultForSchool)
       .sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""))),
@@ -1454,8 +1518,12 @@ async function uploadAcademicResult(env, user, data) {
     throw Object.assign(new Error("Academic session and term/semester are required."), { status: 400 });
   }
 
-  const accessMode = academicAccessMode(data.accessMode || "fee_and_pin");
+  const policy = publicAcademicResultPolicy(school);
+  const accessMode = academicAccessMode(data.accessMode || policy.defaultAccessMode);
   const status = academicPublicationStatus(data.status || "draft");
+  if (status === "published" && !policy.allowImmediatePublish) {
+    throw Object.assign(new Error("This school requires result review before publication. Upload the result as a draft, then publish it after review."), { status: 409 });
+  }
   const resultId = await sha256Key(
     [school.id, student.id, normalized(academicSession), normalized(academicPeriod)].join("|")
   );
@@ -4287,6 +4355,10 @@ async function route(request, env, path, data) {
 
   if (path === "/v1/academic-results/school/list") {
     return schoolAcademicResults(env, user);
+  }
+
+  if (path === "/v1/academic-results/policy") {
+    return updateAcademicResultPolicy(env, user, data);
   }
 
   if (path === "/v1/academic-results/upload") {
