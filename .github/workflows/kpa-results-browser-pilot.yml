@@ -2,26 +2,13 @@ name: KPA Results Browser Pilot
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - "tests/kpa-results-browser-pilot.mjs"
-      - ".github/workflows/kpa-results-browser-pilot.yml"
-      - "school-results.html"
-      - "parent-results.html"
-      - "school-dashboard.html"
-      - "parent-dashboard.html"
-      - "js/auth.js"
-      - "js/firebase-config.js"
-      - "js/platform-config.js"
-      - "js/platform-api.js"
 
 permissions:
   contents: read
 
 concurrency:
-  group: academic-results-staging
-  cancel-in-progress: false
+  group: kpa-results-browser-pilot-manual
+  cancel-in-progress: true
 
 jobs:
   browser-pilot:
