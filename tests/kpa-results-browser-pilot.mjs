@@ -349,6 +349,7 @@ try {
 
   await resultCard.locator("[data-action='publish']").click();
   await schoolPage.locator("#statusBox").getByText("Result published.").waitFor({ timeout: 20000 });
+  await resultCard.getByText("published", { exact: true }).waitFor({ timeout: 20000 });
 
   await schoolPage.locator("#pinNotice").evaluate(node => {
     node.style.display = "none";
