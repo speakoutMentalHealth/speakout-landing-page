@@ -15,7 +15,7 @@
 .hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:44px 0}.hero h1{margin:8px 0;font-size:clamp(2rem,5vw,4rem)}.hero p{max-width:820px;line-height:1.6;color:rgba(255,255,255,.86)}
 section{padding:28px 0}.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr 1fr}.panel,.result-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 28px rgba(7,21,43,.07)}.label{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eaf3ff;color:var(--blue);font-weight:900;font-size:.76rem;text-transform:uppercase}.panel h2{margin:10px 0}.panel p{color:var(--muted);line-height:1.55}
 .notice{padding:13px 15px;border-radius:15px;background:#eaf3ff;color:var(--blue);font-weight:800;margin-bottom:16px}.notice.ok{background:#e9fbf5;color:var(--green)}.notice.bad{background:#fee2e2;color:var(--red)}.notice.warn{background:#fff4df;color:#704800}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:.78rem;font-weight:900;color:var(--navy);text-transform:uppercase}.field input,.field select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}.check{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:700}.check input{width:auto;min-height:auto;margin:0;accent-color:var(--blue)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:.78rem;font-weight:900;color:var(--navy);text-transform:uppercase}.field input,.field select,.field textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font:inherit}.field textarea{min-height:92px;resize:vertical}.check{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:700}.check input{width:auto;min-height:auto;margin:0;accent-color:var(--blue)}
 .btn{border:0;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}.primary{background:var(--blue);color:#fff}.soft{background:#eaf3ff;color:var(--blue)}.gold{background:var(--gold);color:#241300}.danger{background:#fee2e2;color:var(--red)}.success{background:#e9fbf5;color:var(--green)}.dark{background:var(--navy);color:#fff}
 .results{display:grid;gap:14px}.result-card h3{margin:0;color:var(--navy)}.meta{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.pill{display:inline-flex;border-radius:999px;padding:6px 9px;background:#f4f7fb;color:var(--muted);font-size:.74rem;font-weight:850}.pill.good{background:#e9fbf5;color:var(--green)}.pill.warn{background:#fff4df;color:#704800}.pill.bad{background:#fee2e2;color:var(--red)}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .pin-box{font-size:1.7rem;letter-spacing:.18em;font-weight:900;color:var(--navy);background:#fff;border:2px dashed #b8c8dd;border-radius:16px;padding:14px;margin-top:10px;text-align:center}.muted{color:var(--muted);font-size:.9rem}.empty{padding:24px;text-align:center;color:var(--muted)}
@@ -29,6 +29,21 @@ section{padding:28px 0}.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr
 <section><div class="container">
 <div id="statusBox" class="notice">Loading academic-result controls...</div>
 <div id="pinNotice"></div>
+<div class="panel" style="margin-bottom:18px">
+<span class="label">Institution Policy</span>
+<h2>Result Release Policy</h2>
+<p>For safety, academic results are managed by approved school administrators only. Configure the default release rule and whether an upload may publish immediately.</p>
+<form id="policyForm">
+<div class="form-grid">
+<div class="field"><label for="policyAccessMode">Default release rule</label><select id="policyAccessMode"><option value="fee_and_pin">Fee clearance + PIN</option><option value="fee_only">Fee clearance only</option><option value="open_after_publish">Open after publishing</option></select></div>
+<div class="field"><label>Operational authority</label><input value="School administrators only" disabled></div>
+<div class="field full"><label class="check"><input id="policyImmediatePublish" type="checkbox"> Allow immediate publishing during result upload</label></div>
+<div class="field full"><label for="parentReleaseMessage">Parent release note</label><textarea id="parentReleaseMessage" maxlength="500" placeholder="Example: Contact the school accounts office if your fees are paid but your result remains locked."></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" type="submit">Save Result Policy</button></div>
+</form>
+<p class="muted">PIN delivery is manual: the school gives the generated PIN directly to the authorized parent/guardian. PINs are not sent automatically by the platform.</p>
+</div>
 <div class="grid g2">
 <div class="panel">
 <span class="label">Upload / Replace</span>
@@ -42,7 +57,7 @@ section{padding:28px 0}.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr
 <div class="field full"><label for="title">Result title</label><input id="title" value="Academic Result" maxlength="160"></div>
 <div class="field"><label for="accessMode">Release rule</label><select id="accessMode"><option value="fee_and_pin" selected>Fee clearance + PIN</option><option value="fee_only">Fee clearance only</option><option value="open_after_publish">Open after publishing</option></select></div>
 <div class="field"><label for="resultFile">Result file</label><input id="resultFile" type="file" accept=".pdf,image/jpeg,image/png" required></div>
-<div class="field full"><label class="check"><input id="publishNow" type="checkbox"> Publish immediately after upload</label></div>
+<div class="field full"><label class="check"><input id="publishNow" type="checkbox" disabled> Publish immediately after upload</label></div>
 </div>
 <div class="actions"><button class="btn primary" type="submit">Upload Result</button><a class="btn soft" href="school-dashboard.html">Back to Dashboard</a></div>
 </form>
@@ -70,12 +85,38 @@ const resultsBox=document.getElementById("resultsBox");
 const studentSelect=document.getElementById("studentId");
 const uploadForm=document.getElementById("uploadForm");
 const pinNotice=document.getElementById("pinNotice");
+const policyForm=document.getElementById("policyForm");
 let results=[];
+let resultPolicy={
+  defaultAccessMode:"fee_and_pin",
+  allowImmediatePublish:false,
+  managerAuthority:"school_admin_only",
+  feeClearanceAuthority:"school_admin_only",
+  pinDeliveryMethod:"school_issued_manual",
+  parentReleaseMessage:""
+};
 
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function norm(v){return String(v||"").trim().toLowerCase()}
 function show(message,type=""){statusBox.textContent=message;statusBox.className="notice "+type}
 function statusClass(v){const n=norm(v);if(["published","cleared","waived","active"].includes(n))return"good";if(["draft","pending"].includes(n))return"warn";return""}
+
+function applyPolicy(policy={}){
+  resultPolicy={...resultPolicy,...policy};
+  document.getElementById("policyAccessMode").value=resultPolicy.defaultAccessMode||"fee_and_pin";
+  document.getElementById("policyImmediatePublish").checked=resultPolicy.allowImmediatePublish===true;
+  document.getElementById("parentReleaseMessage").value=resultPolicy.parentReleaseMessage||"";
+  document.getElementById("accessMode").value=resultPolicy.defaultAccessMode||"fee_and_pin";
+  const publishNow=document.getElementById("publishNow");
+  publishNow.checked=false;
+  publishNow.disabled=resultPolicy.allowImmediatePublish!==true;
+  const label=publishNow.closest(".check");
+  if(label){
+    label.lastChild.textContent=resultPolicy.allowImmediatePublish
+      ?" Publish immediately after upload"
+      :" Immediate publishing is disabled by school policy; upload as draft and review before publishing";
+  }
+}
 
 async function downloadResult(record){
   try{
@@ -130,8 +171,29 @@ async function loadStudents(){
 async function loadResults(){
   const data=await academicResultsApi.schoolList();
   results=data.results||[];
+  applyPolicy(data.policy||{});
   renderResults();
 }
+
+policyForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const button=policyForm.querySelector('button[type="submit"]');
+  button.disabled=true;
+  try{
+    show("Saving result-release policy...");
+    const data=await academicResultsApi.savePolicy({
+      defaultAccessMode:document.getElementById("policyAccessMode").value,
+      allowImmediatePublish:document.getElementById("policyImmediatePublish").checked,
+      parentReleaseMessage:document.getElementById("parentReleaseMessage").value.trim()
+    });
+    applyPolicy(data.policy||{});
+    show("Result-release policy saved.","ok");
+  }catch(error){
+    show(error.message||"Could not save result policy.","bad");
+  }finally{
+    button.disabled=false;
+  }
+});
 
 uploadForm.addEventListener("submit",async event=>{
   event.preventDefault();

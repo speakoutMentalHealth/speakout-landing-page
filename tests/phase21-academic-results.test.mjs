@@ -11,6 +11,7 @@ test("academic results are managed through the secure platform API",()=>{
 
   for(const route of [
     "/v1/academic-results/school/list",
+    "/v1/academic-results/policy",
     "/v1/academic-results/upload",
     "/v1/academic-results/fee-clearance",
     "/v1/academic-results/publication",
@@ -46,6 +47,24 @@ test("fee clearance and result PIN state cannot be bypassed",()=>{
   assert.match(worker,/result_pin_generated/u);
   assert.match(worker,/result_pin_revoked/u);
   assert.match(worker,/result_downloaded/u);
+  assert.match(worker,/result_policy_updated/u);
+});
+
+test("institution result policy defaults to reviewed release and is enforced",()=>{
+  const worker=read("workers/platform-api/src/index.js");
+  const client=read("js/platform-api.js");
+  const school=read("school-results.html");
+
+  assert.match(worker,/defaultAccessMode:\s*\["fee_and_pin", "fee_only", "open_after_publish"\]/u);
+  assert.match(worker,/allowImmediatePublish:\s*raw\.allowImmediatePublish === true/u);
+  assert.match(worker,/managerAuthority:\s*"school_admin_only"/u);
+  assert.match(worker,/feeClearanceAuthority:\s*"school_admin_only"/u);
+  assert.match(worker,/pinDeliveryMethod:\s*"school_issued_manual"/u);
+  assert.match(worker,/requires result review before publication/u);
+  assert.match(client,/savePolicy:\s*policy => platformRequest\("\/v1\/academic-results\/policy"/u);
+  assert.match(school,/id="policyForm"/u);
+  assert.match(school,/School administrators only/u);
+  assert.match(school,/Immediate publishing is disabled by school policy/u);
 });
 
 test("parents can only reach published results for approved child links",()=>{
