@@ -160,10 +160,21 @@ async function login(page, user, expectedPage) {
   await page.goto(`${baseUrl}/auth.html#login`, { waitUntil: "domcontentloaded" });
   await page.locator("#loginEmail").fill(user.email);
   await page.locator("#loginPassword").fill(password);
-  await Promise.all([
-    page.waitForURL(url => url.pathname.endsWith(expectedPage), { timeout: 30000 }),
-    page.locator("#loginForm button[type='submit']").click()
-  ]);
+  await page.locator("#loginForm button[type='submit']").click();
+
+  const deadline = Date.now() + 30000;
+  while (Date.now() < deadline) {
+    try {
+      const pathname = new URL(page.url()).pathname;
+      if (pathname.endsWith(expectedPage)) {
+        await page.waitForLoadState("domcontentloaded").catch(() => null);
+        return;
+      }
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+
+  throw new Error(`Login did not reach ${expectedPage}. Current URL: ${page.url()}`);
 }
 
 async function deleteAuditLogsForResult() {
