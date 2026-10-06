@@ -53,7 +53,9 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Authenticated staging acceptance was not run because required staging-only credentials are not configured." >> "$GITHUB_STEP_SUMMARY"
+            echo "### Academic Results staging acceptance: BLOCKED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Required staging-only credentials are not configured. This is a release gate, not a skipped optional check." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
       - name: Setup Node
