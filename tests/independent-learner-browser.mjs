@@ -360,9 +360,10 @@ async function verifyCertificatePublicly(browser) {
     await page.goto(`${baseUrl}/verify-certificate.html?code=${encodeURIComponent(verificationCode)}`, {
       waitUntil: "domcontentloaded"
     });
-    await page.getByText("Valid Certificate", { exact: true }).waitFor({ timeout: 30000 });
-    await page.getByText(fullName, { exact: false }).waitFor({ timeout: 30000 });
-    await page.getByText(courseTitle, { exact: false }).waitFor({ timeout: 30000 });
+    const verificationCard = page.locator("#result .card");
+    await verificationCard.getByText("Valid Certificate", { exact: true }).waitFor({ timeout: 30000 });
+    await verificationCard.getByText("Name: " + fullName, { exact: true }).waitFor({ timeout: 30000 });
+    await verificationCard.getByText("Award: " + courseTitle, { exact: true }).waitFor({ timeout: 30000 });
     await page.screenshot({ path: `${artifactsDir}/public-certificate-verification.png`, fullPage: true });
   } finally {
     await context.close();
