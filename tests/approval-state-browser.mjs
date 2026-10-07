@@ -171,8 +171,24 @@ async function browserLogin(browser, testCase) {
     await page.locator("#loginForm button[type='submit']").click();
 
     if (testCase.allowed) {
-      await page.waitForURL(url => new URL(url).pathname.endsWith(testCase.expectedPage), { timeout: 30000 });
-      await page.waitForLoadState("domcontentloaded").catch(() => null);
+      const deadline = Date.now() + 30000;
+      let reached = false;
+      while (Date.now() < deadline) {
+        try {
+          const pathname = new URL(page.url()).pathname;
+          if (pathname.endsWith(testCase.expectedPage)) {
+            reached = true;
+            await page.waitForLoadState("domcontentloaded").catch(() => null);
+            break;
+          }
+        } catch {}
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+      assert.equal(
+        reached,
+        true,
+        `${testCase.label} did not reach ${testCase.expectedPage}. Current URL: ${page.url()}`
+      );
       await new Promise(resolve => setTimeout(resolve, 700));
       assert.equal(
         new URL(page.url()).pathname.endsWith(testCase.expectedPage),
