@@ -137,7 +137,11 @@ async function loadMemberships(){
     return;
   }
   if(canManage()){
-    const snap = await getDocs(query(collection(db,"programmeMemberships"),where("programmeId","==",programmeId)));
+    const snap = await getDocs(query(
+      collection(db,"programmeMemberships"),
+      where("schoolId","==",programme.schoolId),
+      where("programmeId","==",programmeId)
+    ));
     members = snap.docs.map(document => ({ id:document.id, ...document.data() }))
       .filter(item => normalize(item.status || "active") !== "inactive");
   }
@@ -147,7 +151,11 @@ async function loadSessions(){
   sessions = [];
   if(isStudent() && !ownMembership) return;
   try{
-    const snap = await getDocs(query(collection(db,"programmeSessions"),where("programmeId","==",programmeId)));
+    const snap = await getDocs(query(
+      collection(db,"programmeSessions"),
+      where("schoolId","==",programme.schoolId),
+      where("programmeId","==",programmeId)
+    ));
     sessions = snap.docs.map(document => ({ id:document.id, ...document.data() }));
     sessions.sort((a,b) => String(b.sessionDate || "").localeCompare(String(a.sessionDate || "")));
   }catch(error){
@@ -159,7 +167,11 @@ async function loadAssignments(){
   assignments = [];
   if(isStudent() && !ownMembership) return;
   try{
-    const snap = await getDocs(query(collection(db,"programmeAssignments"),where("programmeId","==",programmeId)));
+    const snap = await getDocs(query(
+      collection(db,"programmeAssignments"),
+      where("schoolId","==",programme.schoolId),
+      where("programmeId","==",programmeId)
+    ));
     assignments = snap.docs.map(document => ({ id:document.id, ...document.data() }));
     assignments.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
   }catch(error){
@@ -171,7 +183,11 @@ async function loadAttendance(){
   attendance = [];
   if(!canManage()) return;
   try{
-    const snap = await getDocs(query(collection(db,"programmeAttendance"),where("programmeId","==",programmeId)));
+    const snap = await getDocs(query(
+      collection(db,"programmeAttendance"),
+      where("schoolId","==",programme.schoolId),
+      where("programmeId","==",programmeId)
+    ));
     attendance = snap.docs.map(document => ({ id:document.id, ...document.data() }));
   }catch(error){
     console.warn("Attendance load failed",error);
@@ -194,7 +210,11 @@ async function loadSubmissions(){
   }
   if(canManage()){
     try{
-      const snap = await getDocs(query(collection(db,"programmeSubmissions"),where("programmeId","==",programmeId)));
+      const snap = await getDocs(query(
+        collection(db,"programmeSubmissions"),
+        where("schoolId","==",programme.schoolId),
+        where("programmeId","==",programmeId)
+      ));
       submissions = snap.docs.map(document => ({ id:document.id, ...document.data() }));
     }catch(error){
       console.warn("Submission list failed",error);
