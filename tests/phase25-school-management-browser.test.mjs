@@ -37,3 +37,21 @@ test("school management UAT runs against staging rules, Worker and browser UI", 
   assert.match(workflow, /Run school management browser UAT/u);
   assert.match(workflow, /Upload UAT evidence/u);
 });
+
+
+test("programme workspace queries stay explicitly school-scoped", () => {
+  const source = read("js/programmes/programme-workspace.js");
+  for (const collection of [
+    "programmeMemberships",
+    "programmeSessions",
+    "programmeAttendance",
+    "programmeAssignments",
+    "programmeSubmissions"
+  ]) {
+    const start = source.indexOf(`collection(db,"${collection}")`);
+    assert.ok(start >= 0, `missing ${collection} query`);
+    const block = source.slice(start, start + 260);
+    assert.match(block, /where\("schoolId","==",programme\.schoolId\)/u, collection);
+    assert.match(block, /where\("programmeId","==",programmeId\)/u, collection);
+  }
+});
