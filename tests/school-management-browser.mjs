@@ -308,6 +308,9 @@ async function parentRequestsLink(browser, parent, student) {
   assert.equal(secureLookup.response.ok, true, "Parent could not securely find the approved child in the same school");
   assert.equal(secureLookup.body.student?.id, student.localId);
 
+  parentLinkId = createHash("sha256").update(`${parent.localId}:${student.localId}`).digest("hex");
+  cleanupPaths.add(`parentStudentLinks/${parentLinkId}`);
+
   const { context, page } = await login(browser, parent, "parent-dashboard.html");
   try {
     await page.goto(`${baseUrl}/parent-child-link.html`, { waitUntil: "domcontentloaded" });
@@ -317,15 +320,22 @@ async function parentRequestsLink(browser, parent, student) {
     const send = page.locator("#sendRequestBtn");
     await send.waitFor({ timeout: 30000 });
     await send.click();
-    await page.locator("#statusBox").getByText(
-      "Link request sent. Access will remain locked until the student or school verifies the relationship.",
-      { exact: true }
-    ).waitFor({ timeout: 30000 });
+
+    await page.waitForFunction(
+      () => document.querySelector("#pendingLinks")?.textContent?.trim() === "1",
+      null,
+      { timeout: 30000 }
+    );
+    await page.locator("#requestRows").getByText(studentAIdCode, { exact: true }).waitFor({ timeout: 30000 });
   } finally {
     await context.close();
   }
-  parentLinkId = createHash("sha256").update(`${parent.localId}:${student.localId}`).digest("hex");
-  cleanupPaths.add(`parentStudentLinks/${parentLinkId}`);
+
+  const link = await firestore(`parentStudentLinks/${parentLinkId}`);
+  assert.equal(link.response.ok, true, "Parent link record was not created");
+  assert.equal(link.data.status, "pending");
+  assert.equal(link.data.parentId, parent.localId);
+  assert.equal(link.data.studentId, student.localId);
 }
 
 async function parentVerifiesProgress(browser, parent, student) {
