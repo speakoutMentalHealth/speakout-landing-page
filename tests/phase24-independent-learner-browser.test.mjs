@@ -30,3 +30,18 @@ test("independent learner acceptance covers the full V1 browser path", () => {
   assert.match(workflow, /Deploy branch Firestore rules to staging/u);
   assert.match(workflow, /Deploy branch Worker to staging/u);
 });
+
+
+test("independent learner dashboard does not self-write protected student identity", () => {
+  const source = read("js/learner/student-dashboard.js");
+  const start = source.indexOf("async function ensureStudentId");
+  const end = source.indexOf("function renderProfile", start);
+  assert.ok(start >= 0 && end > start);
+  const block = source.slice(start, end);
+  assert.doesNotMatch(block, /setDoc\(/u);
+  assert.match(block, /independentLearnerId\(user\.uid\)/u);
+  assert.match(block, /p\.schoolId \|\| p\.schoolCode/u);
+
+  const page = read("student-dashboard.html");
+  assert.match(page, /<span>Learner ID<\/span>/u);
+});
