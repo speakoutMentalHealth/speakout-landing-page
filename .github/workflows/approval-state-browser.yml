@@ -1,0 +1,118 @@
+name: Approval State Browser Acceptance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "js/profile-approval.js"
+      - "js/auth.js"
+      - "launch-role-guard.js"
+      - "js/learner/course-details.js"
+      - "course-player.html"
+      - "speakhub.html"
+      - "js/school-dashboard.js"
+      - "workers/platform-api/**"
+      - "firebase/firestore.rules"
+      - "tests/approval-state-browser.mjs"
+      - ".github/workflows/approval-state-browser.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: approval-state-browser
+  cancel-in-progress: false
+
+jobs:
+  approval-browser:
+    name: Approved and denied account browser matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check staging credentials
+        shell: bash
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID STAGING_FIREBASE_SERVICE_ACCOUNT_JSON; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing required staging secret: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" != "0" ]]; then
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Prepare temporary staging credentials
+        shell: bash
+        run: |
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-staging.json"
+          chmod 600 "$RUNNER_TEMP/firebase-staging.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Deploy branch Firestore rules to staging
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
+
+      - name: Install Worker dependencies
+        working-directory: workers/platform-api
+        run: npm ci
+
+      - name: Deploy branch Worker to staging
+        working-directory: workers/platform-api
+        run: npx wrangler deploy --config wrangler.staging.jsonc
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Start local portal
+        shell: bash
+        run: |
+          python3 -m http.server 5000 --bind 127.0.0.1 > "$RUNNER_TEMP/approval-browser-http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/approval-browser-http.pid"
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:5000/auth.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/approval-browser-http.log"
+          exit 1
+
+      - name: Run approval-state browser matrix
+        run: node tests/approval-state-browser.mjs
+
+      - name: Record acceptance result
+        if: success()
+        run: |
+          echo "### Approval-state browser acceptance: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated canonical approved access and denial of pending/rejected/suspended profiles, including privileged roles and stale legacy approved=true flags." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: approval-state-browser-evidence
+          path: artifacts/approval-state-browser
+          if-no-files-found: warn
+          retention-days: 14
