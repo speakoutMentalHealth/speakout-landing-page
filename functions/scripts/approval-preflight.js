@@ -1,7 +1,5 @@
-"use strict";
-
-const { initializeApp } = require("firebase-admin/app");
-const { getFirestore, FieldPath, FieldValue } = require("firebase-admin/firestore");
+import { initializeApp } from "firebase-admin/app";
+import { getFirestore, FieldPath, FieldValue } from "firebase-admin/firestore";
 
 initializeApp();
 const db = getFirestore();
