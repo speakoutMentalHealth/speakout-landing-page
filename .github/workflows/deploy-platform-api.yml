@@ -6,10 +6,12 @@ on:
     branches: [main]
     paths:
       - "workers/platform-api/**"
+      - "js/profile-approval.js"
       - ".github/workflows/deploy-platform-api.yml"
   pull_request:
     paths:
       - "workers/platform-api/**"
+      - "js/profile-approval.js"
       - ".github/workflows/deploy-platform-api.yml"
 
 permissions:
