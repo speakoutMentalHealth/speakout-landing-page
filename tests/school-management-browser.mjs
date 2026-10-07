@@ -304,9 +304,14 @@ async function facilitatorRunsProgramme(browser, facilitator, student) {
 }
 
 async function parentRequestsLink(browser, parent, student) {
+  const secureLookup = await worker("/v1/roles/parent-links/find-student", parent, { search: studentAIdCode });
+  assert.equal(secureLookup.response.ok, true, "Parent could not securely find the approved child in the same school");
+  assert.equal(secureLookup.body.student?.id, student.localId);
+
   const { context, page } = await login(browser, parent, "parent-dashboard.html");
   try {
     await page.goto(`${baseUrl}/parent-child-link.html`, { waitUntil: "domcontentloaded" });
+    await page.locator("#statusBox").getByText("Parent account loaded.", { exact: true }).waitFor({ timeout: 30000 });
     await page.locator("#studentSearch").fill(studentAIdCode);
     await page.locator("#findForm button[type='submit']").click();
     const send = page.locator("#sendRequestBtn");
