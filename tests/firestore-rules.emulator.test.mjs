@@ -475,6 +475,7 @@ test("legacy approval flags cannot override denied status for learners or admins
       const uid = `${role}-${status}`;
       await seed(`users/${uid}`, { ...profile(uid, role), status, approved: true });
       const db = testEnv.authenticatedContext(uid).firestore();
+      await assertSucceeds(getDoc(doc(db, `users/${uid}`)));
       await assertFails(getDoc(doc(db, "schools/school-a")));
       await assertFails(updateDoc(doc(db, `users/${uid}`), { status: "approved" }));
     }
