@@ -334,7 +334,10 @@ async function completeCourse(page) {
   await page.locator('input[name="q-0"][value="0"]').check();
   await page.locator("#submitAssessmentBtn").click();
   await page.locator("#lessonTitle").getByText("Course Completed", { exact: true }).waitFor({ timeout: 30000 });
-  await page.getByText(fullName, { exact: false }).first().waitFor({ timeout: 30000 });
+  await page.locator("#assessmentArea .completion-card").getByText(
+    `Congratulations, ${fullName}`,
+    { exact: true }
+  ).waitFor({ timeout: 30000 });
 }
 
 async function verifyCertificatePublicly(browser) {
