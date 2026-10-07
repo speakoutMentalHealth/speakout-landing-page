@@ -124,8 +124,9 @@ async function seedProfile(user, { label, role, status, approved }) {
   cleanupPaths.push(path);
 }
 
-async function workerOverview(user) {
-  const response = await fetch(`${workerBase}/v1/roles/overview`, {
+async function workerApprovalProbe(user, role) {
+  const path = role === "student" ? "/v1/learning/dashboard" : "/v1/roles/overview";
+  const response = await fetch(`${workerBase}${path}`, {
     method: "POST",
     headers: {
       authorization: `Bearer ${user.idToken}`,
@@ -235,7 +236,7 @@ try {
   }
 
   for (const testCase of cases) {
-    const apiResponse = await workerOverview(testCase.user);
+    const apiResponse = await workerApprovalProbe(testCase.user, testCase.role);
     if (testCase.allowed) {
       assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API`);
     } else {
