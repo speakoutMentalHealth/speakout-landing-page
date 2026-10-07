@@ -196,7 +196,12 @@ async function browserLogin(browser, testCase) {
         `${testCase.label} was redirected away from its approved dashboard`
       );
     } else {
-      await page.locator("#loginMsg").getByText("Your account is pending approval.").waitFor({ timeout: 30000 });
+      const expectedMessage = testCase.status === "suspended"
+        ? "Your account is suspended. Please contact SpeakOut for assistance."
+        : testCase.status === "rejected"
+          ? "Your account is not approved. Please contact SpeakOut if you believe this is an error."
+          : "Your account is pending approval.";
+      await page.locator("#loginMsg").getByText(expectedMessage, { exact: true }).waitFor({ timeout: 30000 });
       assert.equal(
         new URL(page.url()).pathname.endsWith("auth.html"),
         true,
