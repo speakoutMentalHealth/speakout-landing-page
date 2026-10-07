@@ -1,4 +1,5 @@
 
+import { isApprovedProfile } from "./profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, getDoc, collection, getDocs, query, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -60,9 +61,8 @@ onAuthStateChanged(auth, async user => {
 
   const profile = snap.data();
   const role = (profile.role || "").toLowerCase();
-  const status = (profile.status || "").toLowerCase();
 
-  if(profile.approved !== true || status !== "approved" || !roleOk(role)){
+  if(!isApprovedProfile(profile) || !roleOk(role)){
     await signOut(auth);
     window.location.href = LOGIN;
     return;
