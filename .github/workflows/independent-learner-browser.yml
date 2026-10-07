@@ -1,0 +1,121 @@
+name: Independent Learner Browser Acceptance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "auth.html"
+      - "js/auth.js"
+      - "speakhub.html"
+      - "course-player.html"
+      - "student-dashboard.html"
+      - "launch-role-guard.js"
+      - "js/learner/student-dashboard.js"
+      - "verify-certificate.html"
+      - "js/content-visibility.js"
+      - "js/platform-api.js"
+      - "firebase/firestore.rules"
+      - "workers/platform-api/**"
+      - "tests/independent-learner-browser.mjs"
+      - ".github/workflows/independent-learner-browser.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: independent-learner-browser
+  cancel-in-progress: false
+
+jobs:
+  browser-acceptance:
+    name: Independent learner browser journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check staging credentials
+        shell: bash
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID STAGING_FIREBASE_SERVICE_ACCOUNT_JSON; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing required staging secret: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" != "0" ]]; then
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Prepare temporary staging credentials
+        shell: bash
+        run: |
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-staging.json"
+          chmod 600 "$RUNNER_TEMP/firebase-staging.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Deploy branch Firestore rules to staging
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
+
+      - name: Install Worker dependencies
+        working-directory: workers/platform-api
+        run: npm ci
+
+      - name: Deploy branch Worker to staging
+        working-directory: workers/platform-api
+        run: npx wrangler deploy --config wrangler.staging.jsonc
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Start local portal
+        shell: bash
+        run: |
+          python3 -m http.server 5000 --bind 127.0.0.1 > "$RUNNER_TEMP/independent-learner-http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/independent-learner-http.pid"
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:5000/auth.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/independent-learner-http.log"
+          exit 1
+
+      - name: Run independent learner browser journey
+        run: node tests/independent-learner-browser.mjs
+
+      - name: Record acceptance result
+        if: success()
+        run: |
+          echo "### Independent learner browser acceptance: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated individual registration without a school, trusted approval, login, SpeakHub discovery, progress persistence, secure assessments, certificate issuance/public verification, logout and password-recovery request." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: independent-learner-browser-evidence
+          path: artifacts/independent-learner-browser
+          if-no-files-found: warn
+          retention-days: 14
