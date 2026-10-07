@@ -20,7 +20,7 @@ test("every administrative screen uses the centralized role gate", () => {
 test("the shared role gate handles missing, pending, and wrong-role sessions without loops", () => {
   const guard = read("launch-role-guard.js");
 
-  assert.match(guard, /profile\.approved === true\s*\|\|\s*status === "approved"/u);
+  assert.match(guard, /isApprovedProfile\(profile\)/u);
   assert.ok((guard.match(/await signOut\(auth\)/gu) || []).length >= 3);
   assert.match(guard, /routeForRole\(role\)/u);
   assert.match(guard, /window\.location\.replace/u);
