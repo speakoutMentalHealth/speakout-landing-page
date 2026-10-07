@@ -104,25 +104,14 @@ function safe(value,fallback="—"){
 }
 
 
-function generateStudentId(){
+function independentLearnerId(uid){
+  const stable = String(uid || "")
+    .replace(/[^a-z0-9]/gi, "")
+    .slice(0,10)
+    .toUpperCase();
 
-  const random =
-    Math.random()
-      .toString(36)
-      .slice(2,5)
-      .toUpperCase();
-
-  return (
-    "STU-" +
-    Date.now()
-      .toString()
-      .slice(-6) +
-    "-" +
-    random
-  );
-
+  return stable ? `SO-${stable}` : "SO-LEARNER";
 }
-
 
 /* =========================================================
    IMAGE
@@ -295,38 +284,25 @@ async function ensureStudentId(user,p){
     return p.studentId;
   }
 
+  /*
+    School-linked identifiers remain institution controlled.
+    Independent learners do not need to write a protected identity field
+    just to open their dashboard; derive a stable display ID from the
+    Firebase UID instead.
+  */
+  if(p.schoolId || p.schoolCode){
+    return "";
+  }
 
-  const newId =
-    generateStudentId();
-
-
-  await setDoc(
-    doc(
-      db,
-      "users",
-      user.uid
-    ),
-    {
-      studentId:
-        newId,
-
-      updatedAt:
-        serverTimestamp()
-    },
-    {
-      merge:true
-    }
-  );
-
+  const learnerId =
+    independentLearnerId(user.uid);
 
   p.studentId =
-    newId;
+    learnerId;
 
-
-  return newId;
+  return learnerId;
 
 }
-
 
 function renderProfile(user,p){
 
