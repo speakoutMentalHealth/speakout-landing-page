@@ -79,12 +79,15 @@ async function redirectByUserRole(user){
   }
   const approved=isApprovedProfile(profile);
   if(!approved){
-    showLogin(
-      normalize(profile.schoolVerificationStatus)==="pending"
-        ?"Your account is waiting for verification by your school administrator."
-        :"Your account is pending approval.",
-      "warning"
-    );
+    const status=normalize(profile.status);
+    const message=normalize(profile.schoolVerificationStatus)==="pending"
+      ?"Your account is waiting for verification by your school administrator."
+      :status==="suspended"
+        ?"Your account is suspended. Please contact SpeakOut for assistance."
+        :status==="rejected"
+          ?"Your account is not approved. Please contact SpeakOut if you believe this is an error."
+          :"Your account is pending approval.";
+    showLogin(message,"warning");
     sessionStorage.setItem("speakoutManualLogout","true");
     await signOut(auth);
     return;

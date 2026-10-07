@@ -86,9 +86,13 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow create: if isSignedIn() && request.auth.uid == userId && validNewUser(userId);
-      allow read: if isApproved() &&
-        (request.auth.uid == userId || isSuperAdmin() ||
-          (isSchoolAdmin() && resource.data.schoolId == userSchoolId()));
+      // A signed-in user may read only their own profile so the client can resolve
+      // pending/rejected/suspended status and sign them out safely. All cross-user
+      // reads still require canonical approval and the appropriate privileged role.
+      allow read: if (isSignedIn() && request.auth.uid == userId) ||
+        (isApproved() &&
+          (isSuperAdmin() ||
+            (isSchoolAdmin() && resource.data.schoolId == userSchoolId())));
       allow update: if isSuperAdmin() ||
         (isApproved() && request.auth.uid == userId &&
           onlyEditableProfileFieldsChanged());
