@@ -1,5 +1,6 @@
 // launch-role-guard.js
 
+import { isApprovedProfile } from "./js/profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 
 import {
@@ -513,15 +514,8 @@ export function requireRoles(
         );
 
 
-      const status =
-        normalize(
-          profile.status
-        );
-
-
       const approved =
-        profile.approved === true ||
-        status === "approved";
+        isApprovedProfile(profile);
 
 
       /*

@@ -1,5 +1,5 @@
-// Match the approved-profile formats accepted by the role gate and trusted API.
+// Match the canonical approval status required by Firestore.
+// Legacy flags and role names cannot override pending, rejected or suspended status.
 export function isApprovedProfile(profile) {
-  return profile?.approved === true ||
-    String(profile?.status || "").trim().toLowerCase() === "approved";
+  return profile?.status === "approved";
 }

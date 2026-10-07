@@ -43,7 +43,7 @@ async function approvedProfile(uid) {
     throw new HttpsError("failed-precondition", "Learner profile not found.");
   }
   const p = { uid, ...snap.data() };
-  if (!(norm(p.status) === "approved" || p.approved === true)) {
+  if (p.status !== "approved") {
     throw new HttpsError("permission-denied", "Your account must be approved.");
   }
   return p;
@@ -584,13 +584,22 @@ exports.submitAssessment = onCall(async request => {
           certificate = { id: certId, ...existingCert.data() };
           updated.certificateId = certId;
         } else {
-          const nameCandidates = [\n            profile.fullName,\n            `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),\n            request.auth?.token?.name\n          ].map(value => String(value || "").trim());\n          const recipientName = nameCandidates.find(value => value && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value));\n          if (!recipientName) {\n            throw new HttpsError("failed-precondition", "Complete your first and last name in your profile before a certificate can be issued.");\n          }
+          const nameCandidates = [
+            profile.fullName,
+            `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
+            request.auth?.token?.name
+          ].map(value => String(value || "").trim());
+          const recipientName = nameCandidates.find(value => value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
+          if (!recipientName) {
+            throw new HttpsError("failed-precondition", "Complete your first and last name in your profile before a certificate can be issued.");
+          }
 
           certificate = {
             id: certId,
             recipientId: uid,
             recipientName,
-            recipientEmail: profile.email || request.auth?.token?.email || "",\n            recipientEmailNormalized: String(profile.email || request.auth?.token?.email || "").trim().toLowerCase(),
+            recipientEmail: profile.email || request.auth?.token?.email || "",
+            recipientEmailNormalized: String(profile.email || request.auth?.token?.email || "").trim().toLowerCase(),
             courseId,
             courseTitle: course.title || "",
             issuer: course.certificate?.issuer || course.provider || "SpeakHub Academy",
