@@ -19,9 +19,9 @@ test("trusted API exposes bounded role-scoped learning summaries", () => {
   assert.match(client, /overview: subjectId => platformRequest\("\/v1\/roles\/overview"/u);
 });
 
-test("approved boolean and approved status are accepted consistently by the API", () => {
+test("trusted API requires the canonical approval policy", () => {
   const worker = read("workers/platform-api/src/index.js");
-  assert.match(worker, /profile\.approved !== true && normalized\(profile\.status\) !== "approved"/u);
+  assert.match(worker, /!isApprovedProfile\(profile\)/u);
 });
 
 test("teacher roster is functional and uses the secure role API", () => {
