@@ -277,6 +277,7 @@ async function browserRegister(page) {
 
 async function browserLogin(page) {
   await page.goto(`${baseUrl}/auth.html#login`, { waitUntil: "domcontentloaded" });
+  await page.locator('[data-tab-target="loginPanel"]').click();
   await page.locator("#loginEmail").fill(email);
   await page.locator("#loginPassword").fill(password);
   await page.locator("#loginForm button[type='submit']").click();
