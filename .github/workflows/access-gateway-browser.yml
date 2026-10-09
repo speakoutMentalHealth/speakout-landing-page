@@ -1,0 +1,51 @@
+name: Access Gateway Accessibility
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "auth/auth.html"
+      - "js/auth.js"
+      - "js/auth-access.js"
+      - "css/**"
+      - "production-ready.js"
+      - "tests/access-gateway-browser.mjs"
+      - ".github/workflows/access-gateway-browser.yml"
+  push:
+    branches: [main]
+    paths:
+      - "auth/auth.html"
+      - "js/auth.js"
+      - "js/auth-access.js"
+      - "tests/access-gateway-browser.mjs"
+      - ".github/workflows/access-gateway-browser.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gateway:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm install --no-save playwright@1.56.1 axe-core@4.10.3
+      - run: npx playwright install --with-deps chromium
+      - name: Start portal
+        run: |
+          python3 -m http.server 4173 > /tmp/gateway-server.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/auth/auth.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Check labels, keyboard tabs and responsive layout
+        run: node tests/access-gateway-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: access-gateway-evidence
+          path: artifacts/access-gateway
+          retention-days: 30
