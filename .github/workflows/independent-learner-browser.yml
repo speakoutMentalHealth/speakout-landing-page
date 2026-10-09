@@ -17,6 +17,7 @@ on:
       - "js/platform-api.js"
       - "firebase/firestore.rules"
       - "workers/platform-api/**"
+      - "tests/staging-cleanup.mjs"
       - "tests/independent-learner-browser.mjs"
       - ".github/workflows/independent-learner-browser.yml"
 
@@ -24,7 +25,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: independent-learner-browser
+  group: speakout-shared-staging
   cancel-in-progress: false
 
 jobs:

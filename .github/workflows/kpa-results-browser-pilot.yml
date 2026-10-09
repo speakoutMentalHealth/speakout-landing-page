@@ -7,8 +7,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: kpa-results-browser-pilot-manual
-  cancel-in-progress: true
+  group: speakout-shared-staging
+  cancel-in-progress: false
 
 jobs:
   browser-pilot:

@@ -1,6 +1,7 @@
+import { runCleanup } from "./staging-cleanup.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const projectId = "speakout-portal-staging";
 const apiKey = "AIzaSyAfe0T3E__vQBxZKQHpoiABrSXOfXkh7FA";
@@ -286,7 +287,7 @@ try {
     assert.equal(deleted.response.ok, true, `${id} could not be deleted`);
   }
 
-  console.log(JSON.stringify({
+  const summary = {
     ok: true,
     draftNotPublic: true,
     publishPublic: true,
@@ -297,19 +298,17 @@ try {
     recordsDeleted: true,
     standardId,
     audiobookId
-  }, null, 2));
+  };
+  await mkdir("artifacts/admin-publishing-staging", { recursive: true });
+  await writeFile("artifacts/admin-publishing-staging/summary.json", JSON.stringify(summary, null, 2));
+  console.log(JSON.stringify(summary, null, 2));
 } finally {
-  for (const id of [standardId, audiobookId]) {
-    await firestore(`tvEpisodes/${id}`, { method: "DELETE" }).catch(() => null);
-  }
-  if (authUser?.localId) {
-    await firestore(`users/${authUser.localId}`, { method: "DELETE" }).catch(() => null);
-  }
-  if (authUser?.idToken) {
-    await fetch(authUrl("delete"), {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ idToken: authUser.idToken })
-    }).catch(() => null);
-  }
+  const tasks = [standardId, audiobookId].map(id => ({
+    label: `tvEpisodes/${id}`, run: () => firestore(`tvEpisodes/${id}`, { method: "DELETE" })
+  }));
+  if (authUser?.localId) tasks.push({ label: `users/${authUser.localId}`, run: () => firestore(`users/${authUser.localId}`, { method: "DELETE" }) });
+  if (authUser?.idToken) tasks.push({ label: `Auth user ${authUser.localId}`, run: () => fetch(authUrl("delete"), {
+    method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: authUser.idToken })
+  }) });
+  await runCleanup(tasks, "artifacts/admin-publishing-staging");
 }

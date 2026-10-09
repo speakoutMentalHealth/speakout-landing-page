@@ -1,3 +1,4 @@
+import { runCleanup } from "./staging-cleanup.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -283,16 +284,13 @@ try {
   console.log(JSON.stringify(summary, null, 2));
 } finally {
   if (browser) await browser.close().catch(() => null);
-
-  for (const path of [...cleanupPaths].reverse()) {
-    await firestore(path, { method: "DELETE" }).catch(() => null);
-  }
-
+  const tasks = [];
+  for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
   for (const user of authUsers) {
-    await fetch(authUrl("delete"), {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ idToken: user.idToken })
-    }).catch(() => null);
+    if (!user?.idToken) continue;
+    tasks.push({ label: `Auth user ${user.localId}`, run: () => fetch(authUrl("delete"), {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: user.idToken })
+    }) });
   }
+  await runCleanup(tasks, artifactsDir);
 }

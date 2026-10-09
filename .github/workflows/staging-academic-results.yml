@@ -21,7 +21,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: academic-results-staging
+  group: speakout-shared-staging
   cancel-in-progress: false
 
 jobs:

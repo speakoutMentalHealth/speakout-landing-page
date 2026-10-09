@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const PROJECT_ID = "demo-speakout-rules";
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
@@ -482,4 +482,15 @@ test("legacy approval flags cannot override denied status for learners or admins
   }
   await seed("users/canonical-admin", { ...profile("canonical-admin", "super_admin"), approved: false });
   await assertSucceeds(getDoc(doc(testEnv.authenticatedContext("canonical-admin").firestore(), "schools/school-a")));
+});
+
+ test("even approved super admins cannot forge or alter server support sessions", async () => {
+  await seed("users/support-admin", profile("support-admin", "super_admin"));
+  await seed("adminSupportSessions/support-admin", { actorUid: "support-admin", schoolId: "school-a", active: true });
+  const db = testEnv.authenticatedContext("support-admin").firestore();
+  const ref = doc(db, "adminSupportSessions/support-admin");
+  await assertFails(getDoc(ref));
+  await assertFails(updateDoc(ref, { active: true }));
+  await assertFails(deleteDoc(ref));
+  await assertFails(setDoc(doc(db, "adminSupportSessions/forged"), { active: true }));
 });

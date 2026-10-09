@@ -14,6 +14,7 @@ on:
       - "js/school-dashboard.js"
       - "workers/platform-api/**"
       - "firebase/firestore.rules"
+      - "tests/staging-cleanup.mjs"
       - "tests/approval-state-browser.mjs"
       - ".github/workflows/approval-state-browser.yml"
 
@@ -21,7 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: approval-state-browser
+  group: speakout-shared-staging
   cancel-in-progress: false
 
 jobs:

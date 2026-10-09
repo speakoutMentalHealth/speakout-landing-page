@@ -20,6 +20,7 @@ on:
       - "js/platform-api.js"
       - "firebase/firestore.rules"
       - "workers/platform-api/**"
+      - "tests/staging-cleanup.mjs"
       - "tests/school-management-browser.mjs"
       - ".github/workflows/school-management-browser.yml"
 
@@ -27,7 +28,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: school-management-browser
+  group: speakout-shared-staging
   cancel-in-progress: false
 
 jobs:
