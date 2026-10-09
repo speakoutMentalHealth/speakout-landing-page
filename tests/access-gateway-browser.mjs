@@ -10,11 +10,12 @@ await mkdir(evidence, { recursive: true });
 const browser = await chromium.launch();
 const reports = [];
 try {
+  for (const route of ["auth/auth.html", "auth.html"]) {
   for (const width of [320, 390, 768, 1280]) {
     const page = await browser.newPage({ viewport: { width, height: 844 } });
     // Navigation and names must remain usable without Firebase/network access.
     await page.route("https://www.gstatic.com/firebasejs/**", route => route.abort());
-    await page.goto(`${base}/auth/auth.html`);
+    await page.goto(`${base}/${route}`);
     await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
     const login = page.getByRole("tab", { name: "Sign In", exact: true });
     await login.click();
@@ -40,15 +41,16 @@ try {
           .map(el => el.id);
         return { violations: result.violations, unnamed, overflow: document.documentElement.scrollWidth > innerWidth + 1 };
       });
-      reports.push({ width, panel: name, ...report });
-      await page.screenshot({ path: `${evidence}/${width}-${name.replaceAll(" ", "-")}.png`, fullPage: true });
+      reports.push({ route, width, panel: name, ...report });
+      await page.screenshot({ path: `${evidence}/${route.replaceAll("/", "-")}-${width}-${name.replaceAll(" ", "-")}.png`, fullPage: true });
       assert.deepEqual(report.unnamed, [], `${width} ${name}: unnamed controls`);
       assert.deepEqual(report.violations, [], `${width} ${name}: invalid accessible form/tab semantics`);
       assert.equal(report.overflow, false, `${width} ${name}: horizontal overflow`);
     }
-    await page.goto(`${base}/auth/auth.html#join`);
+    await page.goto(`${base}/${route}#join`);
     assert.equal(await page.getByRole("tab", { name: "Join SpeakOut" }).getAttribute("aria-selected"), "true");
     await page.close();
+  }
   }
   console.log("Gateway labels, keyboard navigation, deep links and responsive checks passed.");
 } finally {
