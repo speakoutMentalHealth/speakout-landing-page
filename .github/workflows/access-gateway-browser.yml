@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "auth/auth.html"
+      - "auth.html"
       - "js/auth.js"
       - "js/auth-access.js"
       - "css/**"
@@ -14,6 +15,7 @@ on:
     branches: [main]
     paths:
       - "auth/auth.html"
+      - "auth.html"
       - "js/auth.js"
       - "js/auth-access.js"
       - "tests/access-gateway-browser.mjs"
