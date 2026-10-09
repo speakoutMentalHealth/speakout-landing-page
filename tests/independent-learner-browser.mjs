@@ -41,7 +41,8 @@ async function deleteAuthFixture(localId) {
   });
   const found = await lookup.json();
   if (!lookup.ok) {
-    const category = /^[A-Z_]+$/.test(found.error?.status || "") ? found.error.status : "UNKNOWN";
+    const value = found.error?.status || found.error?.message || "";
+    const category = /^[A-Z_]+$/.test(value) ? value : "UNKNOWN";
     throw new Error(`Staging Auth fixture lookup HTTP ${lookup.status}: ${category}`);
   }
   if (!found.users?.length) return { ok: true };
@@ -422,7 +423,8 @@ async function logoutAndRecover(page) {
   });
   const linkBody = await linkResponse.json();
   if (!linkResponse.ok) {
-    const category = /^[A-Z_]+$/.test(linkBody.error?.status || "") ? linkBody.error.status : "UNKNOWN";
+    const value = linkBody.error?.status || linkBody.error?.message || "";
+    const category = /^[A-Z_]+$/.test(value) ? value : "UNKNOWN";
     throw new Error(`Staging recovery link generation HTTP ${linkResponse.status}: ${category}`);
   }
   assert.equal(typeof linkBody.oobLink, "string", "Staging recovery link missing");
