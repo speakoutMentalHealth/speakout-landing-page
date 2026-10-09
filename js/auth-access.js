@@ -33,6 +33,10 @@ tabs.forEach((tab, index) => {
   });
 });
 
-const params = new URLSearchParams(location.search);
-selectPanel(params.get("schoolInvite") || location.hash === "#school" ? "schoolPanel"
-  : params.get("school") || location.hash === "#join" ? "joinPanel" : "loginPanel");
+function selectFromLocation() {
+  const params = new URLSearchParams(location.search);
+  selectPanel(params.get("schoolInvite") || location.hash === "#school" ? "schoolPanel"
+    : params.get("school") || location.hash === "#join" ? "joinPanel" : "loginPanel");
+}
+selectFromLocation();
+window.addEventListener("hashchange", selectFromLocation);
