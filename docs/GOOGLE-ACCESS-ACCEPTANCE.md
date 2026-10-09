@@ -27,3 +27,5 @@ On the deployed site, use a dedicated, owned Google account and complete the fol
 Firebase must have Google enabled and the actual site domain authorized. Google users manage their Google password through Google. SpeakOut password-reset tests remain separate for email/password users. Real inbox delivery, completed production password recovery and actual Google OAuth acceptance must be recorded separately; mocks do not close those gates.
 
 References: https://firebase.google.com/docs/auth/web/google-signin and https://firebase.google.com/docs/auth/web/redirect-best-practices.
+
+Google button mark: `images/google-g.png` is the unmodified gradient G asset downloaded from https://developers.google.com/static/identity/images/g-logo.png on 9 October 2026. It is decorative beside the accessible button text and preserves its aspect ratio. Source guidance: https://developers.google.com/identity/branding-guidelines.
