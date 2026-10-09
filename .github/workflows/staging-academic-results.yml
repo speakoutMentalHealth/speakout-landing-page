@@ -2,20 +2,7 @@ name: Academic Results Staging Acceptance
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - "workers/platform-api/**"
-      - "firebase/firestore.rules"
-      - "js/platform-api.js"
-      - "school-results.html"
-      - "parent-results.html"
-      - "school-dashboard.html"
-      - "parent-dashboard.html"
-      - "js/learner/parent-dashboard.js"
-      - "tests/staging-live.integration.mjs"
-      - "tests/kpa-results-browser-pilot.mjs"
-      - ".github/workflows/staging-academic-results.yml"
+  # Pull requests use the combined gate to avoid competing staging deployments.
 
 permissions:
   contents: read

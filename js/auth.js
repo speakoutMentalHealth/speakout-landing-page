@@ -1,3 +1,4 @@
+import { selectPanel } from "./auth-access.js";
 import { isApprovedProfile } from "./profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 import {
@@ -51,19 +52,6 @@ const showLogin=(m,t="info")=>setMessage(byId("loginMsg"),m,t);
 const showRegister=(m,t="info")=>setMessage(byId("regMsg"),m,t);
 const showSchool=(m,t="info")=>setMessage(byId("schoolRegMsg"),m,t);
 const showSchoolAdmin=(m,t="info")=>setMessage(byId("schoolAdminMsg"),m,t);
-
-function selectPanel(panelId){
-  document.querySelectorAll(".access-panel").forEach(panel=>panel.classList.toggle("active",panel.id===panelId));
-  document.querySelectorAll("[data-tab-target]").forEach(button=>button.classList.toggle("active",button.dataset.tabTarget===panelId));
-}
-
-document.querySelectorAll("[data-tab-target]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    selectPanel(button.dataset.tabTarget);
-    const hash=button.dataset.tabTarget==="loginPanel"?"login":button.dataset.tabTarget==="joinPanel"?"join":"school";
-    history.replaceState(null,"",`${location.pathname}${location.search}#${hash}`);
-  });
-});
 
 async function getUserProfile(uid){
   const snap=await getDoc(doc(db,"users",uid));
