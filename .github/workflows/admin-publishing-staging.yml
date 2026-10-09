@@ -9,6 +9,7 @@ on:
       - "js/admin-cms-ui.js"
       - "js/platform-api.js"
       - "workers/platform-api/**"
+      - "tests/staging-cleanup.mjs"
       - "tests/admin-publishing-staging.mjs"
       - ".github/workflows/admin-publishing-staging.yml"
 
@@ -16,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: admin-publishing-staging
+  group: speakout-shared-staging
   cancel-in-progress: false
 
 jobs:
@@ -80,3 +81,12 @@ jobs:
         run: |
           echo "### Admin publishing staging UAT: PASS" >> "$GITHUB_STEP_SUMMARY"
           echo "Validated draft-first TV publishing, public visibility, hide/unpublish behavior, deletion and audiobook rights enforcement." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload publishing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-publishing-staging-evidence
+          path: artifacts/admin-publishing-staging
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,152 @@
+name: Combined Release Acceptance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-acceptance.yml"
+      - "workers/platform-api/src/support-session.js"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: speakout-shared-staging
+  cancel-in-progress: false
+
+jobs:
+  browser-acceptance:
+    name: Final commit staging release gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      STAGING_CLOUDINARY_CREDENTIALS_JSON: ${{ secrets.STAGING_CLOUDINARY_CREDENTIALS_JSON }}
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check staging credentials
+        shell: bash
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID STAGING_FIREBASE_SERVICE_ACCOUNT_JSON STAGING_CLOUDINARY_CREDENTIALS_JSON; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing required staging secret: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" != "0" ]]; then
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Prepare temporary staging credentials
+        shell: bash
+        run: |
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/firebase-staging.json"
+          printf '%s' "$STAGING_CLOUDINARY_CREDENTIALS_JSON" > "$RUNNER_TEMP/cloudinary-staging.json"
+          echo "CLOUDINARY_CREDENTIALS_FILE=$RUNNER_TEMP/cloudinary-staging.json" >> "$GITHUB_ENV"
+          chmod 600 "$RUNNER_TEMP/cloudinary-staging.json" "$RUNNER_TEMP/firebase-staging.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Deploy branch Firestore rules to staging
+        run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
+
+      - name: Install Worker dependencies
+        working-directory: workers/platform-api
+        run: npm ci
+
+      - name: Deploy branch Worker to staging
+        working-directory: workers/platform-api
+        run: npx wrangler deploy --config wrangler.staging.jsonc
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Start local portal
+        shell: bash
+        run: |
+          python3 -m http.server 5000 --bind 127.0.0.1 > "$RUNNER_TEMP/independent-learner-http.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/independent-learner-http.pid"
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:5000/auth.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/independent-learner-http.log"
+          exit 1
+
+      - name: Record tested commit and environment
+        run: |
+          mkdir -p artifacts/release
+          git rev-parse HEAD > artifacts/release/commit.txt
+          echo "Staging Firebase: speakout-portal-staging; branch rules and Worker deployed from recorded commit; frontend served locally from that checkout." > artifacts/release/environment.txt
+          echo "Cloud Functions are not deployed by this workflow; production deployment parity requires separate verification." >> artifacts/release/environment.txt
+
+      - name: Setup complete
+        id: credentials
+        run: echo "Staging setup complete"
+
+      - name: Approval-state browser matrix
+        run: node tests/approval-state-browser.mjs
+
+      - name: Independent learner journey
+        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        run: node tests/independent-learner-browser.mjs
+
+      - name: School management journey
+        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        run: node tests/school-management-browser.mjs
+
+      - name: Admin publishing and rights
+        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        run: node tests/admin-publishing-staging.mjs
+
+      - name: Academic results API acceptance
+        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        run: node tests/staging-live.integration.mjs
+
+      - name: Academic results browser pilot
+        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        run: node tests/kpa-results-browser-pilot.mjs
+
+      - name: Record release result
+        if: always()
+        env:
+          RELEASE_STATUS: ${{ job.status }}
+        run: |
+          echo "### Combined release acceptance: $RELEASE_STATUS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commit: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Scope: staging API/rules and local frontend. Production parity and Cloud Functions deployment remain separate gates." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload combined release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-release-evidence-${{ github.sha }}
+          path: artifacts
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Remove temporary credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/firebase-staging.json" "$RUNNER_TEMP/cloudinary-staging.json"

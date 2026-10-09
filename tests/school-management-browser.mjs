@@ -1,3 +1,4 @@
+import { runCleanup } from "./staging-cleanup.mjs";
 import assert from "node:assert/strict";
 import { createHash, createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -103,7 +104,7 @@ async function listCollection(name) {
   const response = await fetch(`${firestoreBase}/${name}?pageSize=300`, {
     headers: { authorization: `Bearer ${adminToken}` }
   });
-  if (!response.ok) return [];
+  assert.equal(response.ok, true, `Could not list ${name} for cleanup`);
   const body = await response.json().catch(() => ({}));
   return (body.documents || []).map(document => ({
     path: document.name.split("/documents/")[1],
@@ -510,9 +511,19 @@ try {
   });
   assert.equal(directProgrammeRead.response.status, 403, "School B could directly read School A programme data");
 
+  cleanupPaths.add(`adminSupportSessions/${superAdmin.localId}`);
+  const beforeSupport = await worker("/v1/roles/overview", superAdmin, { __supportSchoolId: schoolAId });
+  assert.equal(beforeSupport.response.status, 403, "Support school context worked before session activation");
+
   const supportStart = await worker("/v1/admin/support/school/start", superAdmin, { schoolId: schoolAId });
   assert.equal(supportStart.response.ok, true, "Super Admin could not start explicit School A support mode");
-  if (supportStart.body.auditId) cleanupPaths.add(`adminAuditLogs/${supportStart.body.auditId}`);
+  assert.ok(supportStart.body.auditId, "school_support_started audit identifier missing");
+  cleanupPaths.add(`adminAuditLogs/${supportStart.body.auditId}`);
+  const supportStartAudit = await firestore(`adminAuditLogs/${supportStart.body.auditId}`);
+  assert.equal(supportStartAudit.response.ok, true, "school_support_started audit record missing");
+  assert.equal(supportStartAudit.data.action, "school_support_started");
+  assert.equal(supportStartAudit.data.actorUid, superAdmin.localId);
+  assert.equal(supportStartAudit.data.schoolId, schoolAId);
 
   const supportedOverview = await worker("/v1/roles/overview", superAdmin, { __supportSchoolId: schoolAId });
   assert.equal(supportedOverview.response.ok, true, "Super Admin support context could not load school overview");
@@ -520,9 +531,21 @@ try {
   assert.equal(supportedOverview.body.subjects?.some(item => item.id === studentA.localId), true);
   assert.equal(supportedOverview.body.subjects?.some(item => item.id === studentB.localId), false);
 
+  const wrongSupportSchool = await worker("/v1/roles/overview", superAdmin, { __supportSchoolId: schoolBId });
+  assert.equal(wrongSupportSchool.response.status, 403, "Support session allowed another school");
+
   const supportEnd = await worker("/v1/admin/support/school/end", superAdmin, { schoolId: schoolAId });
   assert.equal(supportEnd.response.ok, true, "Super Admin could not end support mode");
-  if (supportEnd.body.auditId) cleanupPaths.add(`adminAuditLogs/${supportEnd.body.auditId}`);
+  assert.ok(supportEnd.body.auditId, "school_support_ended audit identifier missing");
+  cleanupPaths.add(`adminAuditLogs/${supportEnd.body.auditId}`);
+  const supportEndAudit = await firestore(`adminAuditLogs/${supportEnd.body.auditId}`);
+  assert.equal(supportEndAudit.response.ok, true, "school_support_ended audit record missing");
+  assert.equal(supportEndAudit.data.action, "school_support_ended");
+  assert.equal(supportEndAudit.data.actorUid, superAdmin.localId);
+  assert.equal(supportEndAudit.data.schoolId, schoolAId);
+
+  const afterSupport = await worker("/v1/roles/overview", superAdmin, { __supportSchoolId: schoolAId });
+  assert.equal(afterSupport.response.status, 403, "Ended support session still authorized school access");
 
   const summary = {
     ok: true,
@@ -550,19 +573,16 @@ try {
   console.log(JSON.stringify(summary, null, 2));
 } finally {
   if (browser) await browser.close().catch(() => null);
-
-  await cleanupProgrammeData().catch(() => null);
-
-  for (const path of [...cleanupPaths].reverse()) {
-    await firestore(path, { method: "DELETE" }).catch(() => null);
-  }
-
+  const tasks = [];
+  let discoveryError;
+  try { await cleanupProgrammeData(); } catch (error) { discoveryError = error; }
+  if (discoveryError) tasks.push({ label: "Discover programme records", run: async () => { throw discoveryError; } });
+  for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
   for (const user of authUsers) {
-    if (!user.idToken) continue;
-    await fetch(authUrl("delete"), {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ idToken: user.idToken })
-    }).catch(() => null);
+    if (!user?.idToken) continue;
+    tasks.push({ label: `Auth user ${user.localId}`, run: () => fetch(authUrl("delete"), {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: user.idToken })
+    }) });
   }
+  await runCleanup(tasks, artifactsDir);
 }

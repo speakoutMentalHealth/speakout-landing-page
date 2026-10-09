@@ -1,3 +1,4 @@
+import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
 import { isApprovedProfile } from "../../../js/profile-approval.js";
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
 import { curatorDiscoveryInput, curatorSourceInput, fetchYouTubeUploads, fetchYouTubeVideosByIds, resolveYouTubeChannel, searchYouTubeVideos } from "./tv-curator.js";
@@ -613,6 +614,9 @@ async function applySuperAdminSchoolContext(env, user, data) {
   if (!school) {
     throw Object.assign(new Error("The selected support school is unavailable."), { status: 404 });
   }
+
+  const session = await getDocument(env, "adminSupportSessions/" + safeId(user.uid, "support actor identifier"));
+  requireActiveSupportSession(session, user.uid, school.id);
 
   return {
     ...user,
@@ -4193,8 +4197,6 @@ async function route(request, env, path, data) {
   }
 
   let user = await authenticatedUser(request, env);
-  user = await applySuperAdminSchoolContext(env, user, data);
-
   if (path === "/v1/admin/support/school/start") {
     if (!isSuperAdminUser(user)) {
       throw Object.assign(new Error("Super Admin access required."), { status: 403 });
@@ -4214,7 +4216,16 @@ async function route(request, env, path, data) {
       schoolName: clean(school.schoolName || school.name),
       createdAt: now
     });
-    return { ok: true, school: publicSchool(school), auditId };
+    const expiresAt = new Date(Date.now() + SUPPORT_SESSION_MS).toISOString();
+    await transactionalSet(env, "adminSupportSessions/" + safeId(user.uid, "support actor identifier"), {
+      actorUid: user.uid,
+      schoolId: school.id,
+      active: true,
+      startedAt: now,
+      expiresAt,
+      auditId
+    });
+    return { ok: true, school: publicSchool(school), auditId, expiresAt };
   }
 
   if (path === "/v1/admin/support/school/end") {
@@ -4224,6 +4235,17 @@ async function route(request, env, path, data) {
     const schoolId = safeId(data.schoolId || data.__supportSchoolId, "school identifier");
     const school = await getDocument(env, "schools/" + schoolId);
     const now = new Date().toISOString();
+    // Revoke first, so an audit-write failure cannot leave support access active.
+    const sessionPath = "adminSupportSessions/" + safeId(user.uid, "support actor identifier");
+    await runTransaction(env, async tx => {
+      const session = await tx.get(sessionPath);
+      if (session && session.schoolId !== schoolId) {
+        throw Object.assign(new Error("The active support session belongs to another school."), { status: 409 });
+      }
+      tx.set(sessionPath, {
+        actorUid: user.uid, schoolId, active: false, endedAt: now, expiresAt: now
+      });
+    });
     const auditId = safeId("support_" + crypto.randomUUID(), "support audit identifier");
     await transactionalSet(env, "adminAuditLogs/" + auditId, {
       action: "school_support_ended",
@@ -4237,6 +4259,8 @@ async function route(request, env, path, data) {
     });
     return { ok: true, schoolId, auditId };
   }
+
+  user = await applySuperAdminSchoolContext(env, user, data);
 
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
   if (path === "/v1/admin/schools/delete") return deleteSchoolPermanently(env, user, data);

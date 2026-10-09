@@ -26,6 +26,7 @@
       "functions/**",
       "workers/**",
       "tests/**",
+      "artifacts/**",
       "demo/**",
       "speakout-landing-page/**",
       "firestore-schema/**",

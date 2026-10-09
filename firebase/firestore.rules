@@ -690,12 +690,13 @@ service cloud.firestore {
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
 
-    match /{document=**} {
-      allow read: if isSuperAdmin();
-      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if isSuperAdmin() &&
+    // Session state is exclusively managed by the authenticated Worker.
+    match /{collection}/{document=**} {
+      allow read: if collection != "adminSupportSessions" && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
