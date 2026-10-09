@@ -40,6 +40,7 @@ async function deleteAuthFixture(localId) {
     method: "POST", headers, body: JSON.stringify({ localId: [localId] })
   });
   const found = await lookup.json();
+  if (lookup.status === 404 || found.error?.message === "USER_NOT_FOUND") return { ok: true };
   if (!lookup.ok) {
     const value = found.error?.status || found.error?.message || "";
     const category = /^[A-Z_]+$/.test(value) ? value : "UNKNOWN";
