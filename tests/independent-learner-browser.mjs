@@ -40,7 +40,10 @@ async function deleteAuthFixture(localId) {
     method: "POST", headers, body: JSON.stringify({ localId: [localId] })
   });
   const found = await lookup.json();
-  assert.equal(lookup.ok, true, "Could not look up staging cleanup fixture");
+  if (!lookup.ok) {
+    const category = /^[A-Z_]+$/.test(found.error?.status || "") ? found.error.status : "UNKNOWN";
+    throw new Error(`Staging Auth fixture lookup HTTP ${lookup.status}: ${category}`);
+  }
   if (!found.users?.length) return { ok: true };
   assert.equal(found.users.length, 1);
   assert.match(found.users[0].email || "", /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
@@ -417,8 +420,11 @@ async function logoutAndRecover(page) {
     headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
     body: JSON.stringify({ requestType: "PASSWORD_RESET", email, returnOobLink: true })
   });
-  assert.equal(linkResponse.ok, true, "Could not generate staging recovery link");
   const linkBody = await linkResponse.json();
+  if (!linkResponse.ok) {
+    const category = /^[A-Z_]+$/.test(linkBody.error?.status || "") ? linkBody.error.status : "UNKNOWN";
+    throw new Error(`Staging recovery link generation HTTP ${linkResponse.status}: ${category}`);
+  }
   assert.equal(typeof linkBody.oobLink, "string", "Staging recovery link missing");
   const resetLink = new URL(linkBody.oobLink);
   assert.equal(resetLink.origin, `https://${projectId}.firebaseapp.com`, "Unexpected recovery-link origin");
