@@ -20,17 +20,45 @@ assert.equal(serviceAccount.project_id, projectId);
 const suffix = `${Date.now()}-${randomBytes(3).toString("hex")}`;
 const email = `independent-learner-${suffix}@example.test`;
 const password = `Stage-${randomBytes(18).toString("base64url")}!9a`;
+const recoveredPassword = `Reset-${randomBytes(18).toString("base64url")}!9a`;
 const firstName = "Independent";
 const lastName = "Learner";
 const fullName = `${firstName} ${lastName}`;
 const courseId = `independent-browser-${suffix}`;
 const courseTitle = `Independent Learner Browser Course ${suffix}`;
 const authUrl = operation => `https://identitytoolkit.googleapis.com/v1/accounts:${operation}?key=${apiKey}`;
+const adminAuthUrl = operation => `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:${operation}`;
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 const cleanupPaths = [];
 let userSession = null;
 let adminToken = "";
 let verificationCode = "";
+
+async function deleteAuthFixture(localId) {
+  const headers = { authorization: `Bearer ${adminToken}`, "content-type": "application/json" };
+  const lookup = await fetch(adminAuthUrl("lookup"), {
+    method: "POST", headers, body: JSON.stringify({ localId: [localId] })
+  });
+  const found = await lookup.json();
+  if (lookup.status === 404 || found.error?.message === "USER_NOT_FOUND") return { ok: true };
+  if (!lookup.ok) {
+    const value = found.error?.status || found.error?.message || "";
+    const category = /^[A-Z_]+$/.test(value) ? value : "UNKNOWN";
+    throw new Error(`Staging Auth fixture lookup HTTP ${lookup.status}: ${category}`);
+  }
+  if (!found.users?.length) return { ok: true };
+  assert.equal(found.users.length, 1);
+  assert.match(found.users[0].email || "", /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  const response = await fetch(adminAuthUrl("delete"), {
+    method: "POST", headers, body: JSON.stringify({ localId })
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    const code = /^[A-Z_]+$/.test(body.error?.message || "") ? body.error.message : "UNKNOWN";
+    throw new Error(`Staging Auth cleanup HTTP ${response.status}: ${code}`);
+  }
+  return response;
+}
 
 function base64Url(value) {
   return Buffer.from(value).toString("base64url");
@@ -43,7 +71,7 @@ async function serviceAccessToken() {
     iss: serviceAccount.client_email,
     sub: serviceAccount.client_email,
     aud: "https://oauth2.googleapis.com/token",
-    scope: "https://www.googleapis.com/auth/datastore",
+    scope: "https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/identitytoolkit",
     iat: now,
     exp: now + 3500
   }));
@@ -129,11 +157,11 @@ async function patchFields(path, data) {
   return { response, body, data: decodedFields(body.fields) };
 }
 
-async function signInRest() {
+async function signInRest(accountPassword = password) {
   const response = await fetch(authUrl("signInWithPassword"), {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email, password, returnSecureToken: true })
+    body: JSON.stringify({ email, password: accountPassword, returnSecureToken: true })
   });
   const body = await response.json();
   assert.equal(response.ok, true, "registered independent learner could not sign in through Firebase Auth");
@@ -276,11 +304,11 @@ async function browserRegister(page) {
   ).waitFor({ timeout: 30000 });
 }
 
-async function browserLogin(page) {
+async function browserLogin(page, accountPassword = password) {
   await page.goto(`${baseUrl}/auth.html#login`, { waitUntil: "domcontentloaded" });
   await page.locator('[data-tab-target="loginPanel"]').click();
   await page.locator("#loginEmail").fill(email);
-  await page.locator("#loginPassword").fill(password);
+  await page.locator("#loginPassword").fill(accountPassword);
   await page.locator("#loginForm button[type='submit']").click();
   await waitForPath(page, "student-dashboard.html");
 }
@@ -339,6 +367,8 @@ async function completeCourse(page) {
     `Congratulations, ${fullName}`,
     { exact: true }
   ).waitFor({ timeout: 30000 });
+
+
 }
 
 async function verifyCertificatePublicly(browser) {
@@ -384,14 +414,64 @@ async function logoutAndRecover(page) {
     "If an account exists for that email, password reset instructions have been sent.",
     { exact: true }
   ).waitFor({ timeout: 30000 });
+
+  // Obtain a real, single-use staging link without sending another email.
+  // Neither the link, reset code nor generated passwords may enter artifacts/logs.
+  const linkResponse = await fetch(adminAuthUrl("sendOobCode"), {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ requestType: "PASSWORD_RESET", email, returnOobLink: true })
+  });
+  const linkBody = await linkResponse.json();
+  if (!linkResponse.ok) {
+    const value = linkBody.error?.status || linkBody.error?.message || "";
+    const category = /^[A-Z_]+$/.test(value) ? value : "UNKNOWN";
+    throw new Error(`Staging recovery link generation HTTP ${linkResponse.status}: ${category}`);
+  }
+  assert.equal(typeof linkBody.oobLink, "string", "Staging recovery link missing");
+  const resetLink = new URL(linkBody.oobLink);
+  assert.equal(resetLink.origin, `https://${projectId}.firebaseapp.com`, "Unexpected recovery-link origin");
+  assert.equal(resetLink.searchParams.get("mode"), "resetPassword");
+  const code = resetLink.searchParams.get("oobCode");
+  assert.ok(code, "Recovery code missing");
+  // Errors from navigation can contain the secret-bearing URL: sanitize them.
+  let phase = "open form";
+  try {
+    await page.goto(resetLink.href, { waitUntil: "domcontentloaded" });
+    phase = "enter new password";
+    await page.locator('input[type="password"]').fill(recoveredPassword);
+    phase = "save new password";
+    await page.getByRole("button", { name: /^save$/i }).click();
+    phase = "confirm completion";
+    await page.getByText(/Your password has been reset|Password changed|You can now sign in with your new password/i).first().waitFor({ timeout: 30000 });
+  } catch {
+    throw new Error(`Hosted staging password-reset form did not complete at phase: ${phase}. Reset credentials are withheld from logs.`);
+  }
+  userSession = await signInRest(recoveredPassword);
+  const oldLogin = await fetch(authUrl("signInWithPassword"), {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, password, returnSecureToken: true })
+  });
+  assert.equal(oldLogin.status, 400, "Old password still worked after recovery");
+  const replay = await fetch(authUrl("resetPassword"), {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ oobCode: code, newPassword: password })
+  });
+  assert.equal(replay.status, 400, "Consumed reset code was accepted again");
+  await browserLogin(page, recoveredPassword);
+  await page.locator("#logoutBtn").waitFor({ timeout: 30000 });
+  await page.screenshot({ path: `${artifactsDir}/recovered-learner-dashboard.png`, fullPage: true });
 }
 
 await mkdir(artifactsDir, { recursive: true });
 adminToken = await serviceAccessToken();
+// Remove the single disposable Auth fixture left by the initial failed recovery run.
+await deleteAuthFixture("DZMBfUKjn1PDpcvkjGR5y7smxvE2");
 await seedCourse();
 
 let browser = null;
 let learnerContext = null;
+let journeyFailure = null;
 
 try {
   browser = await chromium.launch({ headless: true });
@@ -442,27 +522,37 @@ try {
     publicCertificateVerification: true,
     logout: true,
     passwordRecoveryRequest: true,
+    hostedPasswordReset: true,
+    oldPasswordDenied: true,
+    consumedResetCodeDenied: true,
+    recoveredBrowserLogin: true,
+    recoveryEmailDeliveryVerified: false,
     courseId,
     verificationCode,
     screenshots: [
       `${artifactsDir}/independent-learner-dashboard.png`,
       `${artifactsDir}/course-completed.png`,
-      `${artifactsDir}/public-certificate-verification.png`
+      `${artifactsDir}/public-certificate-verification.png`,
+      `${artifactsDir}/recovered-learner-dashboard.png`
     ]
   };
 
   await writeFile(`${artifactsDir}/summary.json`, JSON.stringify(summary, null, 2));
   console.log(JSON.stringify(summary, null, 2));
+} catch (error) {
+  journeyFailure = error;
 } finally {
   if (learnerContext) await learnerContext.close().catch(() => null);
   if (browser) await browser.close().catch(() => null);
   const tasks = [];
   for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
   for (const user of [userSession]) {
-    if (!user?.idToken) continue;
-    tasks.push({ label: `Auth user ${user.localId}`, run: () => fetch(authUrl("delete"), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: user.idToken })
-    }) });
+    if (!user?.localId) continue;
+    tasks.push({ label: `Auth user ${user.localId}`, run: () => deleteAuthFixture(user.localId) });
   }
-  await runCleanup(tasks, artifactsDir);
+  try { await runCleanup(tasks, artifactsDir); } catch (cleanupFailure) {
+    if (journeyFailure) throw new AggregateError([journeyFailure, cleanupFailure], "Learner journey and cleanup failed");
+    throw cleanupFailure;
+  }
 }
+if (journeyFailure) throw journeyFailure;
