@@ -7,6 +7,9 @@ on:
     paths:
       - ".github/workflows/release-acceptance.yml"
       - "workers/platform-api/src/support-session.js"
+      - "auth/auth.html"
+      - "js/auth.js"
+      - "js/auth-access.js"
   push:
     branches: [main]
 
