@@ -3,6 +3,8 @@ import { isApprovedProfile } from "./profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
   deleteUser,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -12,7 +14,7 @@ import {
   browserSessionPersistence,
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { onboardingApi } from "./platform-api.js";
 
 function projectUrl(path){
@@ -36,6 +38,92 @@ const clean=value=>String(value||"").trim();
 const normalize=value=>clean(value).toLowerCase().replace(/\s+/g,"_");
 const byId=id=>document.getElementById(id);
 const value=id=>clean(byId(id)?.value);
+let googleUser=null;
+let authActionInProgress=false;
+
+function setGoogleProfileMode(user){
+  googleUser=user;
+  const active=Boolean(user);
+  for(const id of ["password","confirmPassword"]){
+    const input=byId(id);
+    if(!input) continue;
+    input.required=!active;
+    input.disabled=active;
+    input.value="";
+    input.closest("label").hidden=active;
+  }
+  if(byId("email")){
+    byId("email").readOnly=active;
+    if(active) byId("email").value=user.email||"";
+  }
+  if(byId("googleProfileNote")) byId("googleProfileNote").hidden=!active;
+  if(byId("cancelGoogleProfile")) byId("cancelGoogleProfile").hidden=!active;
+  const submit=byId("registerForm")?.querySelector('[type="submit"]');
+  if(submit) submit.textContent=active?"Submit application":"Create Account";
+}
+
+function beginGoogleProfile(user){
+  sessionStorage.setItem("speakoutOnboarding","true");
+  setGoogleProfileMode(user);
+  const names=clean(user.displayName).split(/\s+/);
+  if(!value("firstName")) byId("firstName").value=names[0]||"";
+  if(!value("lastName")) byId("lastName").value=names.slice(1).join(" ");
+  selectPanel("joinPanel");
+  showRegister("Google account connected. Confirm your details, choose your role and accept the terms to submit your application.");
+  byId("firstName")?.focus();
+}
+
+async function applyDevicePersistence(){
+  const privateDevice=Boolean(byId("privateDevice")?.checked);
+  await setPersistence(auth,privateDevice?browserLocalPersistence:browserSessionPersistence);
+  if(privateDevice) localStorage.setItem("speakoutDeviceMode","private");
+  else localStorage.removeItem("speakoutDeviceMode");
+  sessionStorage.setItem("speakoutDeviceMode",privateDevice?"private":"shared");
+  return privateDevice;
+}
+
+async function handleGoogleSignIn(){
+  if(authActionInProgress) return;
+  authActionInProgress=true;
+  sessionStorage.setItem("speakoutOnboarding","true");
+  sessionStorage.removeItem("speakoutManualLogout");
+  const buttons=document.querySelectorAll("[data-google-signin]");
+  buttons.forEach(button=>button.disabled=true);
+  const message=byId("joinPanel")?.classList.contains("active")?showRegister:showLogin;
+  try{
+    await applyDevicePersistence();
+    message("Connecting to Google...");
+    const provider=new GoogleAuthProvider();
+    provider.setCustomParameters({prompt:"select_account"});
+    const credential=await signInWithPopup(auth,provider);
+    if(!credential.user.email) throw new Error("Google did not provide an email address.");
+    const profile=await getUserProfile(credential.user.uid);
+    if(profile){
+      sessionStorage.removeItem("speakoutOnboarding");
+      setGoogleProfileMode(null);
+      selectPanel("loginPanel");
+      await redirectByUserRole(credential.user);
+    }else beginGoogleProfile(credential.user);
+  }catch(error){
+    const messages={
+      "auth/popup-closed-by-user":"Google sign-in was cancelled. You can try again.",
+      "auth/cancelled-popup-request":"Another Google sign-in is already open.",
+      "auth/popup-blocked":"Allow pop-ups for this site, then select Continue with Google again.",
+      "auth/operation-not-allowed":"Google sign-in is not enabled yet. Please use email and password or contact SpeakOut.",
+      "auth/unauthorized-domain":"Google sign-in is unavailable on this address. Please use the official SpeakOut website.",
+      "auth/account-exists-with-different-credential":"This email already uses another sign-in method. Sign in using that method; contact SpeakOut if you need help.",
+      "auth/network-request-failed":"Google sign-in could not connect. Check your internet connection and try again."
+    };
+    message(messages[error?.code]||"Google sign-in could not be completed. Please try again.","error");
+    sessionStorage.removeItem("speakoutOnboarding");
+    sessionStorage.setItem("speakoutManualLogout","true");
+    try{await signOut(auth);}catch{}
+    setGoogleProfileMode(null);
+  }finally{
+    authActionInProgress=false;
+    buttons.forEach(button=>button.disabled=false);
+  }
+}
 
 function dashboardForRole(role){
   const route=ROLE_DASHBOARDS[normalize(role)];
@@ -61,6 +149,10 @@ async function getUserProfile(uid){
 async function redirectByUserRole(user){
   const profile=await getUserProfile(user.uid);
   if(!profile){
+    if(user.providerData?.some(provider=>provider.providerId==="google.com")){
+      beginGoogleProfile(user);
+      return;
+    }
     showLogin("Your account exists, but your SpeakOut profile was not found. Please contact SpeakOut admin.","error");
     await signOut(auth);
     return;
@@ -89,18 +181,7 @@ async function handleLogin(event){
   if(!email||!password){showLogin("Enter your email and password.","error");return;}
   try{
     sessionStorage.removeItem("speakoutManualLogout");
-    const privateDevice=Boolean(byId("privateDevice")?.checked);
-    await setPersistence(
-      auth,
-      privateDevice ? browserLocalPersistence : browserSessionPersistence
-    );
-    if(privateDevice){
-      localStorage.setItem("speakoutDeviceMode","private");
-      sessionStorage.setItem("speakoutDeviceMode","private");
-    }else{
-      localStorage.removeItem("speakoutDeviceMode");
-      sessionStorage.setItem("speakoutDeviceMode","shared");
-    }
+    const privateDevice=await applyDevicePersistence();
     showLogin(privateDevice ? "Signing you in on this private device..." : "Signing you in securely for this session...");
     const credential=await signInWithEmailAndPassword(auth,email,password);
     await redirectByUserRole(credential.user);
@@ -178,7 +259,11 @@ byId("schoolCode")?.addEventListener("input",()=>{
 byId("role")?.addEventListener("change",syncSchoolRoleFields);
 
 async function createIndividualProfile(credential,data){
-  await setDoc(doc(db,"users",credential.user.uid),{
+  const profileRef=doc(db,"users",credential.user.uid);
+  await runTransaction(db,async transaction=>{
+    const existing=await transaction.get(profileRef);
+    if(existing.exists()) throw new Error("A SpeakOut profile already exists. Sign in to continue.");
+    transaction.set(profileRef,{
     uid:credential.user.uid,
     ...data,
     status:"pending",
@@ -186,7 +271,8 @@ async function createIndividualProfile(credential,data){
     profileCompleted:false,
     createdAt:serverTimestamp(),
     updatedAt:serverTimestamp()
-  },{merge:true});
+    });
+  });
 }
 
 async function handleRegister(event){
@@ -195,9 +281,12 @@ async function handleRegister(event){
   const email=value("email"), phone=value("phone"), password=value("password"), confirmPassword=value("confirmPassword");
   const role=normalize(value("role")||"student"), schoolCode=value("schoolCode").toUpperCase();
   const locationValue=value("location"), reason=value("reason"), contentType=value("contentType");
-  if(!firstName||!lastName||!email||!password){showRegister("Enter your first name, last name, email and password.","error");return;}
-  if(password.length<6){showRegister("Your password must contain at least 6 characters.","error");return;}
-  if(password!==confirmPassword){showRegister("Your passwords do not match.","error");return;}
+  const usingGoogle=Boolean(googleUser);
+  if(usingGoogle&&auth.currentUser?.uid!==googleUser.uid){showRegister("Your Google session expired. Select Continue with Google again.","error");return;}
+  if(!firstName||!lastName||!email||(!usingGoogle&&!password)){showRegister("Enter your name, email and sign-in details.","error");return;}
+  if(!usingGoogle&&password.length<6){showRegister("Your password must contain at least 6 characters.","error");return;}
+  if(!usingGoogle&&password!==confirmPassword){showRegister("Your passwords do not match.","error");return;}
+  if(usingGoogle&&email!==googleUser.email){showRegister("Use the email supplied by your Google account.","error");return;}
   if(!byId("terms")?.checked){showRegister("Please confirm the terms before submitting.","error");return;}
   if(schoolCode&&(!resolvedSchool||resolvedCode!==schoolCode)){
     try{await resolveSchoolCode();}catch{showRegister("Verify your school code before creating the account.","error");return;}
@@ -224,7 +313,8 @@ async function handleRegister(event){
   sessionStorage.setItem("speakoutOnboarding","true");
   try{
     showRegister(schoolLinked?"Creating your account and linking your school...":"Creating your account...");
-    credential=await createUserWithEmailAndPassword(auth,email,password);
+    credential=usingGoogle?{user:googleUser}:await createUserWithEmailAndPassword(auth,email,password);
+    if(usingGoogle&&await getUserProfile(credential.user.uid)) throw new Error("A SpeakOut profile already exists. Sign in to continue.");
     if(schoolLinked){
       await onboardingApi.joinSchool({
         firstName,lastName,fullName,phone,role,schoolCode,
@@ -256,10 +346,11 @@ async function handleRegister(event){
       "success"
     );
     byId("registerForm")?.reset();
+    setGoogleProfileMode(null);
     clearResolvedSchool();
   }catch(error){
     console.error("Registration error:",error);
-    if(credential?.user&&!profileCreated){
+    if(credential?.user&&!profileCreated&&!usingGoogle){
       try{await deleteUser(credential.user);}catch{}
     }
     const message=error?.code==="auth/email-already-in-use"
@@ -267,7 +358,7 @@ async function handleRegister(event){
       :error?.message||"Registration failed.";
     showRegister(message,"error");
   }finally{
-    sessionStorage.removeItem("speakoutOnboarding");
+    if(!googleUser) sessionStorage.removeItem("speakoutOnboarding");
   }
 }
 
@@ -356,6 +447,16 @@ byId("forgotPasswordLink")?.addEventListener("click",async event=>{
 });
 
 byId("loginForm")?.addEventListener("submit",handleLogin);
+document.querySelectorAll("[data-google-signin]").forEach(button=>button.addEventListener("click",handleGoogleSignIn));
+byId("cancelGoogleProfile")?.addEventListener("click",async()=>{
+  sessionStorage.setItem("speakoutManualLogout","true");
+  await signOut(auth);
+  byId("registerForm")?.reset();
+  setGoogleProfileMode(null);
+  sessionStorage.removeItem("speakoutOnboarding");
+  clearResolvedSchool();
+  showRegister("Google profile setup cancelled. You can reconnect when ready.");
+});
 byId("registerForm")?.addEventListener("submit",handleRegister);
 byId("schoolRegisterForm")?.addEventListener("submit",handleSchoolRegistration);
 byId("schoolAdminActivateForm")?.addEventListener("submit",handleSchoolAdminActivation);
@@ -385,11 +486,17 @@ if(querySchool&&byId("schoolCode")){
 
 if(document.body?.dataset?.authPage==="auth"){
   onAuthStateChanged(auth,async user=>{
+    if(authActionInProgress) return;
     const urlLoggedOut=params.get("loggedOut")==="1";
     const sessionExpired=params.get("sessionExpired")==="1";
     const manualLogout=sessionStorage.getItem("speakoutManualLogout")==="true";
     const onboarding=sessionStorage.getItem("speakoutOnboarding")==="true";
-    if(onboarding) return;
+    if(onboarding){
+      if(user?.providerData?.some(provider=>provider.providerId==="google.com")&&!googleUser){
+        try{await redirectByUserRole(user);}catch{showRegister("Your account could not be loaded. Please try again.","error");}
+      }
+      return;
+    }
     if(urlLoggedOut||sessionExpired||manualLogout){
       sessionStorage.removeItem("speakoutManualLogout");
       if(sessionExpired){

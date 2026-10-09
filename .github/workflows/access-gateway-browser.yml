@@ -10,6 +10,7 @@ on:
       - "css/**"
       - "production-ready.js"
       - "tests/access-gateway-browser.mjs"
+      - "tests/google-auth-browser.mjs"
       - ".github/workflows/access-gateway-browser.yml"
   push:
     branches: [main]
@@ -19,6 +20,7 @@ on:
       - "js/auth.js"
       - "js/auth-access.js"
       - "tests/access-gateway-browser.mjs"
+      - "tests/google-auth-browser.mjs"
       - ".github/workflows/access-gateway-browser.yml"
   workflow_dispatch:
 permissions:
@@ -45,6 +47,8 @@ jobs:
           exit 1
       - name: Check labels, keyboard tabs and responsive layout
         run: node tests/access-gateway-browser.mjs
+      - name: Check Google profile and approval flows with Firebase mocks
+        run: node tests/google-auth-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
