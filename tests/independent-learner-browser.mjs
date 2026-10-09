@@ -20,6 +20,7 @@ assert.equal(serviceAccount.project_id, projectId);
 const suffix = `${Date.now()}-${randomBytes(3).toString("hex")}`;
 const email = `independent-learner-${suffix}@example.test`;
 const password = `Stage-${randomBytes(18).toString("base64url")}!9a`;
+const recoveredPassword = `Reset-${randomBytes(18).toString("base64url")}!9a`;
 const firstName = "Independent";
 const lastName = "Learner";
 const fullName = `${firstName} ${lastName}`;
@@ -43,7 +44,7 @@ async function serviceAccessToken() {
     iss: serviceAccount.client_email,
     sub: serviceAccount.client_email,
     aud: "https://oauth2.googleapis.com/token",
-    scope: "https://www.googleapis.com/auth/datastore",
+    scope: "https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/identitytoolkit",
     iat: now,
     exp: now + 3500
   }));
@@ -129,11 +130,11 @@ async function patchFields(path, data) {
   return { response, body, data: decodedFields(body.fields) };
 }
 
-async function signInRest() {
+async function signInRest(accountPassword = password) {
   const response = await fetch(authUrl("signInWithPassword"), {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email, password, returnSecureToken: true })
+    body: JSON.stringify({ email, password: accountPassword, returnSecureToken: true })
   });
   const body = await response.json();
   assert.equal(response.ok, true, "registered independent learner could not sign in through Firebase Auth");
@@ -276,11 +277,11 @@ async function browserRegister(page) {
   ).waitFor({ timeout: 30000 });
 }
 
-async function browserLogin(page) {
+async function browserLogin(page, accountPassword = password) {
   await page.goto(`${baseUrl}/auth.html#login`, { waitUntil: "domcontentloaded" });
   await page.locator('[data-tab-target="loginPanel"]').click();
   await page.locator("#loginEmail").fill(email);
-  await page.locator("#loginPassword").fill(password);
+  await page.locator("#loginPassword").fill(accountPassword);
   await page.locator("#loginForm button[type='submit']").click();
   await waitForPath(page, "student-dashboard.html");
 }
@@ -339,6 +340,8 @@ async function completeCourse(page) {
     `Congratulations, ${fullName}`,
     { exact: true }
   ).waitFor({ timeout: 30000 });
+
+
 }
 
 async function verifyCertificatePublicly(browser) {
@@ -384,6 +387,45 @@ async function logoutAndRecover(page) {
     "If an account exists for that email, password reset instructions have been sent.",
     { exact: true }
   ).waitFor({ timeout: 30000 });
+
+  // Obtain a real, single-use staging link without sending another email.
+  // Neither the link, reset code nor generated passwords may enter artifacts/logs.
+  const linkResponse = await fetch(authUrl("sendOobCode"), {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ requestType: "PASSWORD_RESET", email, targetProjectId: projectId, returnOobLink: true })
+  });
+  assert.equal(linkResponse.ok, true, "Could not generate staging recovery link");
+  const linkBody = await linkResponse.json();
+  assert.equal(typeof linkBody.oobLink, "string", "Staging recovery link missing");
+  const resetLink = new URL(linkBody.oobLink);
+  assert.equal(resetLink.origin, `https://${projectId}.firebaseapp.com`, "Unexpected recovery-link origin");
+  assert.equal(resetLink.searchParams.get("mode"), "resetPassword");
+  const code = resetLink.searchParams.get("oobCode");
+  assert.ok(code, "Recovery code missing");
+  // Errors from navigation can contain the secret-bearing URL: sanitize them.
+  try {
+    await page.goto(resetLink.href, { waitUntil: "domcontentloaded" });
+    await page.locator('input[type="password"]').fill(recoveredPassword);
+    await page.getByRole("button", { name: /^save$/i }).click();
+    await page.getByText("Your password has been reset", { exact: false }).waitFor({ timeout: 30000 });
+  } catch {
+    throw new Error("Hosted staging password-reset form did not complete. Reset credentials are withheld from logs.");
+  }
+  userSession = await signInRest(recoveredPassword);
+  const oldLogin = await fetch(authUrl("signInWithPassword"), {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, password, returnSecureToken: true })
+  });
+  assert.equal(oldLogin.status, 400, "Old password still worked after recovery");
+  const replay = await fetch(authUrl("resetPassword"), {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ oobCode: code, newPassword: password })
+  });
+  assert.equal(replay.status, 400, "Consumed reset code was accepted again");
+  await browserLogin(page, recoveredPassword);
+  await page.locator("#logoutBtn").waitFor({ timeout: 30000 });
+  await page.screenshot({ path: `${artifactsDir}/recovered-learner-dashboard.png`, fullPage: true });
 }
 
 await mkdir(artifactsDir, { recursive: true });
@@ -442,12 +484,18 @@ try {
     publicCertificateVerification: true,
     logout: true,
     passwordRecoveryRequest: true,
+    hostedPasswordReset: true,
+    oldPasswordDenied: true,
+    consumedResetCodeDenied: true,
+    recoveredBrowserLogin: true,
+    recoveryEmailDeliveryVerified: false,
     courseId,
     verificationCode,
     screenshots: [
       `${artifactsDir}/independent-learner-dashboard.png`,
       `${artifactsDir}/course-completed.png`,
-      `${artifactsDir}/public-certificate-verification.png`
+      `${artifactsDir}/public-certificate-verification.png`,
+      `${artifactsDir}/recovered-learner-dashboard.png`
     ]
   };
 
@@ -459,9 +507,10 @@ try {
   const tasks = [];
   for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
   for (const user of [userSession]) {
-    if (!user?.idToken) continue;
+    if (!user?.localId) continue;
     tasks.push({ label: `Auth user ${user.localId}`, run: () => fetch(authUrl("delete"), {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ idToken: user.idToken })
+      method: "POST", headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+      body: JSON.stringify({ localId: user.localId, targetProjectId: projectId })
     }) });
   }
   await runCleanup(tasks, artifactsDir);
