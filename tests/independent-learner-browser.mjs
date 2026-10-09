@@ -27,11 +27,33 @@ const fullName = `${firstName} ${lastName}`;
 const courseId = `independent-browser-${suffix}`;
 const courseTitle = `Independent Learner Browser Course ${suffix}`;
 const authUrl = operation => `https://identitytoolkit.googleapis.com/v1/accounts:${operation}?key=${apiKey}`;
+const adminAuthUrl = operation => `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:${operation}`;
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 const cleanupPaths = [];
 let userSession = null;
 let adminToken = "";
 let verificationCode = "";
+
+async function deleteAuthFixture(localId) {
+  const headers = { authorization: `Bearer ${adminToken}`, "content-type": "application/json" };
+  const lookup = await fetch(adminAuthUrl("lookup"), {
+    method: "POST", headers, body: JSON.stringify({ localId: [localId] })
+  });
+  const found = await lookup.json();
+  assert.equal(lookup.ok, true, "Could not look up staging cleanup fixture");
+  if (!found.users?.length) return { ok: true };
+  assert.equal(found.users.length, 1);
+  assert.match(found.users[0].email || "", /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  const response = await fetch(adminAuthUrl("delete"), {
+    method: "POST", headers, body: JSON.stringify({ localId })
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    const code = /^[A-Z_]+$/.test(body.error?.message || "") ? body.error.message : "UNKNOWN";
+    throw new Error(`Staging Auth cleanup HTTP ${response.status}: ${code}`);
+  }
+  return response;
+}
 
 function base64Url(value) {
   return Buffer.from(value).toString("base64url");
@@ -390,10 +412,10 @@ async function logoutAndRecover(page) {
 
   // Obtain a real, single-use staging link without sending another email.
   // Neither the link, reset code nor generated passwords may enter artifacts/logs.
-  const linkResponse = await fetch(authUrl("sendOobCode"), {
+  const linkResponse = await fetch(adminAuthUrl("sendOobCode"), {
     method: "POST",
     headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
-    body: JSON.stringify({ requestType: "PASSWORD_RESET", email, targetProjectId: projectId, returnOobLink: true })
+    body: JSON.stringify({ requestType: "PASSWORD_RESET", email, returnOobLink: true })
   });
   assert.equal(linkResponse.ok, true, "Could not generate staging recovery link");
   const linkBody = await linkResponse.json();
@@ -404,13 +426,17 @@ async function logoutAndRecover(page) {
   const code = resetLink.searchParams.get("oobCode");
   assert.ok(code, "Recovery code missing");
   // Errors from navigation can contain the secret-bearing URL: sanitize them.
+  let phase = "open form";
   try {
     await page.goto(resetLink.href, { waitUntil: "domcontentloaded" });
+    phase = "enter new password";
     await page.locator('input[type="password"]').fill(recoveredPassword);
+    phase = "save new password";
     await page.getByRole("button", { name: /^save$/i }).click();
-    await page.getByText("Your password has been reset", { exact: false }).waitFor({ timeout: 30000 });
+    phase = "confirm completion";
+    await page.getByText(/Your password has been reset|Password changed|You can now sign in with your new password/i).first().waitFor({ timeout: 30000 });
   } catch {
-    throw new Error("Hosted staging password-reset form did not complete. Reset credentials are withheld from logs.");
+    throw new Error(`Hosted staging password-reset form did not complete at phase: ${phase}. Reset credentials are withheld from logs.`);
   }
   userSession = await signInRest(recoveredPassword);
   const oldLogin = await fetch(authUrl("signInWithPassword"), {
@@ -430,10 +456,13 @@ async function logoutAndRecover(page) {
 
 await mkdir(artifactsDir, { recursive: true });
 adminToken = await serviceAccessToken();
+// Remove the single disposable Auth fixture left by the initial failed recovery run.
+await deleteAuthFixture("DZMBfUKjn1PDpcvkjGR5y7smxvE2");
 await seedCourse();
 
 let browser = null;
 let learnerContext = null;
+let journeyFailure = null;
 
 try {
   browser = await chromium.launch({ headless: true });
@@ -501,6 +530,8 @@ try {
 
   await writeFile(`${artifactsDir}/summary.json`, JSON.stringify(summary, null, 2));
   console.log(JSON.stringify(summary, null, 2));
+} catch (error) {
+  journeyFailure = error;
 } finally {
   if (learnerContext) await learnerContext.close().catch(() => null);
   if (browser) await browser.close().catch(() => null);
@@ -508,10 +539,11 @@ try {
   for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
   for (const user of [userSession]) {
     if (!user?.localId) continue;
-    tasks.push({ label: `Auth user ${user.localId}`, run: () => fetch(authUrl("delete"), {
-      method: "POST", headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
-      body: JSON.stringify({ localId: user.localId, targetProjectId: projectId })
-    }) });
+    tasks.push({ label: `Auth user ${user.localId}`, run: () => deleteAuthFixture(user.localId) });
   }
-  await runCleanup(tasks, artifactsDir);
+  try { await runCleanup(tasks, artifactsDir); } catch (cleanupFailure) {
+    if (journeyFailure) throw new AggregateError([journeyFailure, cleanupFailure], "Learner journey and cleanup failed");
+    throw cleanupFailure;
+  }
 }
+if (journeyFailure) throw journeyFailure;
