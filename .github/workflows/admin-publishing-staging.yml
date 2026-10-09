@@ -2,16 +2,7 @@ name: Admin Publishing Staging UAT
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - "admin-tv.html"
-      - "js/admin-cms-ui.js"
-      - "js/platform-api.js"
-      - "workers/platform-api/**"
-      - "tests/staging-cleanup.mjs"
-      - "tests/admin-publishing-staging.mjs"
-      - ".github/workflows/admin-publishing-staging.yml"
+  # Pull requests use the combined gate to avoid competing staging deployments.
 
 permissions:
   contents: read
