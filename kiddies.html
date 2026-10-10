@@ -124,7 +124,7 @@ section{padding:58px 0}
   .modal-content h2{font-size:1.65rem}
 }
 </style>
-<link href="css/frontend-revamp.css" rel="stylesheet"/><meta content="#071b3a" name="theme-color"/><link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><link href="https://speakoutmentalhealth.org/kiddies.html" rel="canonical"/><meta content="index,follow,max-image-preview:large" name="robots"/><meta content="website" property="og:type"/><meta content="SpeakOut Mental Health Outreach" property="og:site_name"/><meta content="Kiddies Corner | Nursery and Primary" property="og:title"/><meta content="SpeakOut advances youth mental health, school wellbeing, learning and community support." property="og:description"/><meta content="https://speakoutmentalhealth.org/kiddies.html" property="og:url"/><meta content="summary_large_image" name="twitter:card"/><meta content="Kiddies Corner | Nursery and Primary" name="twitter:title"/><meta content="SpeakOut advances youth mental health, school wellbeing, learning and community support." name="twitter:description"/><meta content="https://speakoutmentalhealth.org/images/logo.png" property="og:image"/><meta content="https://speakoutmentalhealth.org/images/logo.png" name="twitter:image"/></head>
+<link href="css/frontend-revamp.css" rel="stylesheet"/><meta content="#071b3a" name="theme-color"/><link href="css/production-ready.css" rel="stylesheet"/><script defer="True" src="production-ready.js"></script><link href="https://speakoutmentalhealth.org/kiddies.html" rel="canonical"/><meta content="index,follow,max-image-preview:large" name="robots"/><meta content="website" property="og:type"/><meta content="SpeakOut Mental Health Outreach" property="og:site_name"/><meta content="Kiddies Corner | Nursery and Primary" property="og:title"/><meta content="SpeakOut advances youth mental health, school wellbeing, learning and community support." property="og:description"/><meta content="https://speakoutmentalhealth.org/kiddies.html" property="og:url"/><meta content="summary_large_image" name="twitter:card"/><meta content="Kiddies Corner | Nursery and Primary" name="twitter:title"/><meta content="SpeakOut advances youth mental health, school wellbeing, learning and community support." name="twitter:description"/><meta content="https://speakoutmentalhealth.org/images/logo.png" property="og:image"/><meta content="https://speakoutmentalhealth.org/images/logo.png" name="twitter:image"/><link rel="stylesheet" href="css/pages/kiddies-adventure-hub.css"></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="nav">
 <div class="container nav-inner">
@@ -135,7 +135,7 @@ section{padding:58px 0}
 <p>Kiddies Corner</p>
 </div>
 </a>
-<button class="menu" onclick="document.body.classList.toggle('menu-open')" type="button">☰</button>
+<button aria-label="Toggle navigation" class="menu" onclick="document.body.classList.toggle('menu-open')" type="button">☰</button>
 <nav class="nav-links">
 <a href="portal.html">Portal</a>
 <a href="speakhub.html">SpeakHub</a>
@@ -149,27 +149,27 @@ section{padding:58px 0}
 <section class="hero">
 <div class="container">
 <span class="kicker">Nursery • Primary • Courses and Materials</span>
-<h1>Kiddies Corner | Nursery and Primary</h1>
-<p>Nursery and Primary courses, materials and learning activities. Levels describe the content, so everyone can explore this corner and browse Secondary or Tertiary learning too.</p>
+<h1>Little discoveries.<br>Big possibilities.</h1>
+<p>Welcome to Kiddies Corner. Explore words, numbers and shapes with a grown-up. Choose a little adventure, try an activity and celebrate what you discover.</p>
 <div class="actions">
-<a class="btn primary" href="#items">Browse Resources</a>
+<a class="btn primary" href="#kiddies-levels">Choose an adventure</a>
 <a class="btn light" href="#filters">Search</a>
 <a class="btn gold" href="portal.html">Back to Portal</a>
 </div>
 <div class="trust">
-<span>Pre-installed</span>
-<span>Admin expandable</span>
-<span>Approved users only</span>
+<span>Learn through play</span>
+<span>Go at your own pace</span>
+<span>Explore with a grown-up</span>
 </div>
 </div>
 </section>
 <section aria-labelledby="kiddies-levels">
 <div class="container">
-<h2 id="kiddies-levels">Nursery and Primary learning</h2>
-<p>Choose a section to see its clearly labelled courses and materials.</p>
+<h2 id="kiddies-levels">Where shall we explore?</h2>
+<p>Start with a short, guided adventure. Levels help you find suitable activities; you can explore another level too.</p>
 <div class="grid g3">
-<article class="card"><h3>Nursery</h3><p>Nursery 1–3 courses and materials.</p><a class="btn primary" href="my-learning.html?stage=nursery">Nursery courses</a><a class="btn light" href="my-learning.html?stage=nursery#materials">Nursery materials</a></article>
-<article class="card"><h3>Primary</h3><p>Primary 1–6 courses and materials.</p><a class="btn primary" href="my-learning.html?stage=primary">Primary courses</a><a class="btn light" href="my-learning.html?stage=primary#materials">Primary materials</a></article>
+<article class="card adventure-card nursery"><div class="adventure-art" aria-hidden="true">Aa <span>●</span> ■</div><span class="label">4 little adventures</span><h3>Nursery</h3><p>Meet familiar words, take turns, count circles and become a shape detective.</p><a class="btn gold" href="kiddies-unit.html?id=nursery-unit-01">Play Our Learning Space</a><a class="btn primary" href="my-learning.html?stage=nursery">Nursery courses</a><a class="btn light" href="my-learning.html?stage=nursery#materials">Nursery materials</a></article>
+<article class="card adventure-card primary-path"><div class="adventure-art" aria-hidden="true">ABC <span>1 2 3</span></div><span class="label">6 Primary 1 adventures</span><h3>Primary</h3><p>Become a story detective, build sentences and discover numbers together.</p><a class="btn gold" href="kiddies-unit.html?id=primary1-unit-01">Play Words and Numbers</a><a class="btn primary" href="my-learning.html?stage=primary">Primary courses</a><a class="btn light" href="my-learning.html?stage=primary#materials">Primary materials</a></article>
 <article class="card"><h3>Explore other levels</h3><p>You can take courses from another section. Every item shows its education level.</p><a class="btn light" href="my-learning.html?stage=secondary">Secondary learning</a><a class="btn light" href="my-learning.html?stage=tertiary">Tertiary learning</a></article>
 </div></div></section>
 <section class="stats">
@@ -187,8 +187,8 @@ section{padding:58px 0}
 <h2 style="color:var(--navy);font-size:clamp(1.55rem,3vw,2.6rem);margin:0 0 8px;">Find the right resource</h2>
 <p style="color:var(--muted);line-height:1.6;margin:0;">Search by title, category, audience, topic or keyword.</p>
 <div class="controls-grid">
-<input class="input" id="searchInput" placeholder="Search resources..." type="text"/>
-<select class="select" id="categoryFilter">
+<input class="input" id="searchInput" aria-label="Search resources" placeholder="Search resources..." type="text"/>
+<select class="select" id="categoryFilter" aria-label="Resource category">
 <option value="all">All Categories</option>
 <option value="literacy">Literacy</option>
 <option value="numeracy">Numeracy</option>
@@ -203,7 +203,7 @@ section{padding:58px 0}
 <option value="creativity">Creativity</option>
 <option value="environment">Environment</option>
 </select>
-<select class="select" id="audienceFilter">
+<select class="select" id="audienceFilter" aria-label="Resource age group">
 <option value="all">All Ages</option>
 <option value="ages-3-5">Ages 3–5</option>
 <option value="ages-6-9">Ages 6–9</option>
@@ -221,8 +221,8 @@ section{padding:58px 0}
 <div class="container">
 <div class="title">
 <span class="label">Live Resources</span>
-<h2>Pre-installed resources plus admin additions</h2>
-<p>Only resources marked <strong>active</strong> appear here.</p>
+<h2>More ways to learn and grow</h2>
+<p>Explore the available stories and activities below, or return to your Nursery or Primary adventure above.</p>
 </div>
 <div class="loading" id="loading">Loading resources...</div>
 <div class="grid g3" id="itemGrid"></div>
@@ -246,7 +246,7 @@ section{padding:58px 0}
 <div class="container footer-grid">
 <div>
 <h3>SpeakOut</h3>
-<p>Kiddies Corner protected resource center.</p>
+<p>Little discoveries, playful learning and support from a grown-up.</p>
 </div>
 <div>
 <h4>Portal</h4>

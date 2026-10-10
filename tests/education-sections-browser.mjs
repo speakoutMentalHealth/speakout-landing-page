@@ -30,6 +30,80 @@ const reports = [];
 try {
   for(const width of [320,390,768,1280]) {
     const {context,page}=await setup({},width,'?stage=nursery');
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    await page.getByRole('heading',{name:'Lesson 1: Notice and name',exact:true}).waitFor();
+    assert.equal(await page.locator('.journey-stop').count(),4);
+    await page.getByRole('button',{name:'Cup',exact:true}).click();
+    await page.getByText(/Let’s look again/).waitFor();
+    assert.equal(await page.getByRole('button',{name:'Next activity',exact:true}).count(),0);
+    await page.getByRole('button',{name:'Book',exact:true}).click();
+    await page.getByRole('button',{name:'Next activity',exact:true}).click();
+    await page.getByRole('button',{name:'A cloth',exact:true}).click();
+    await page.getByRole('button',{name:'Collect my exploration star',exact:true}).click();
+    await page.getByText('1 of 4 exploration stars',{exact:true}).waitFor();
+    await page.reload();await page.getByText('1 of 4 exploration stars',{exact:true}).waitFor();
+    await page.getByRole('button',{name:/3. Counting explorer/}).click();
+    await page.getByRole('img',{name:'3 circles',exact:true}).waitFor();
+    await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+    assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[],`Adventure accessibility at ${width}`);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:`${evidence}/gamified-nursery-${width}.png`,fullPage:true});
+    await page.getByRole('button',{name:'Start a fresh star collection',exact:true}).click();
+    await page.getByText('1 of 4 exploration stars',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Confirm: clear this unit’s stars',exact:true}).click();
+    await page.getByText('0 of 4 exploration stars',{exact:true}).waitFor();
+    if(width===320){
+      const nursery=(await import('../js/kiddies-adventures.js')).ADVENTURES['nursery-unit-01'];
+      for(let i=0;i<nursery.length;i++){
+        await page.getByRole('button',{name:new RegExp(`${i+1}. ${nursery[i].name}`)}).click();
+        for(let j=0;j<nursery[i].questions.length;j++){
+          const question=nursery[i].questions[j];await page.getByRole('button',{name:question.choices[question.answer],exact:true}).click();
+          await page.getByRole('button',{name:j+1===nursery[i].questions.length?'Collect my exploration star':'Next activity',exact:true}).click();
+        }
+      }
+      await page.getByText('4 of 4 exploration stars',{exact:true}).waitFor();
+      await page.getByRole('button',{name:/3. Counting explorer/}).click();
+    }
+    await page.emulateMedia({media:'print'});
+    assert.equal(await page.locator('#playPanel').isVisible(),false);
+    await page.getByText(/Aim: the learner practises counting/).waitFor({state:'visible'});
+    assert.equal(await page.evaluate(()=>window.writes.length),0);
+    await context.close();
+  }
+  {
+    const {context,page}=await setup({},390,'?stage=primary&class=Primary%201');
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    const adventures=(await import('../js/kiddies-adventures.js')).ADVENTURES['primary1-unit-01'];
+    for(let i=0;i<adventures.length;i++) {
+      const current=adventures[i];await page.getByRole('button',{name:new RegExp(`${i+1}. ${current.name}`)}).click();
+      for(let j=0;j<current.questions.length;j++) {
+        const question=current.questions[j];await page.getByRole('button',{name:question.choices[question.answer],exact:true}).click();
+        await page.getByRole('button',{name:j+1===current.questions.length?'Collect my exploration star':'Next activity',exact:true}).click();
+      }
+    }
+    await page.getByText('6 of 6 exploration stars',{exact:true}).waitFor();
+    await page.getByText('★ Curious Explorer — you explored every activity!',{exact:true}).waitFor();
+    await page.screenshot({path:`${evidence}/gamified-primary-complete-390.png`,fullPage:true});
+    await context.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('blocked')}}));
+    await page.reload();await page.getByText('0 of 6 exploration stars',{exact:true}).waitFor();
+    await page.getByRole('button',{name:/1. Story detective/}).click();
+    await page.getByRole('button',{name:'Sade',exact:true}).click();await page.getByRole('button',{name:'Next activity',exact:true}).click();
+    await page.getByRole('button',{name:'The story does not say',exact:true}).click();await page.getByRole('button',{name:'Collect my exploration star',exact:true}).click();
+    await page.getByText('Exploration star added for this visit. Browser storage is unavailable.',{exact:true}).waitFor();
+    await context.close();
+  }
+  {
+    const {context,page}=await setup({},390,'?stage=nursery');
+    await context.route('**/auth-guard.js',r=>r.fulfill({contentType:'application/javascript',body:''}));
+    await context.route('**/protected-page-guard.js',r=>r.fulfill({contentType:'application/javascript',body:''}));
+    await page.goto(`${base}/kiddies.html`,{waitUntil:'domcontentloaded'});
+    await page.getByRole('link',{name:'Play Our Learning Space',exact:true}).waitFor();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:`${evidence}/kiddies-adventure-hub-390.png`,fullPage:true});
+    await context.close();
+  }
+  for(const width of [320,390,768,1280]) {
+    const {context,page}=await setup({},width,'?stage=nursery');
     await page.getByRole('heading',{name:'Our Learning Space',exact:true}).waitFor();
     await page.getByRole('radio',{name:'Primary',exact:true}).check();
     await page.getByRole('heading',{name:'Words and Numbers Around Us',exact:true}).waitFor();
