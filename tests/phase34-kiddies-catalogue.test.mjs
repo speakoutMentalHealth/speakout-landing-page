@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {KIDDIES_UNITS,publishedUnits} from '../js/kiddies-catalogue.js';
 import {matchesPlacement} from '../js/education-levels.js';
 test('Published short units are separately classified, mapped honestly and placed by section',()=>{
- assert.equal(publishedUnits().length,2);
+ assert.equal(publishedUnits().length,4);
  for(const unit of KIDDIES_UNITS){assert.equal(unit.contentKind,'introductory-unit');assert.equal(unit.review.humanApproval,false);assert.match(unit.mapping,/not established/);assert.equal(unit.contentTrack,'school-curriculum');assert.ok(unit.sections.some(s=>/sheet/i.test(s.title)));}
  const [nursery,primary]=KIDDIES_UNITS;
  assert.equal(nursery.sections.filter(s=>/Lesson \d/.test(s.title)).length,4);

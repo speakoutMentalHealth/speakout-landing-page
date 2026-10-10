@@ -14,6 +14,9 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
  document.title=`${unit.title} | SpeakOut`;
  byId('unitLevel').textContent=unit.educationStages[0]==='nursery'?'Kiddies Corner · Nursery · introductory unit':'Kiddies Corner · Primary 1 · introductory unit';
  byId('unitTitle').textContent=unit.title;byId('unitDescription').textContent=unit.description;
+ byId('unitNumber').textContent=`Unit ${unit.unitNumber||1} · suggested learning sequence`;
+ const sequence=publishedUnits().filter(item=>item.educationStages[0]===unit.educationStages[0]&&item.classLevels.join('|')===unit.classLevels.join('|')).sort((a,b)=>a.unitNumber-b.unitNumber);
+ byId('unitSequence').replaceChildren(...sequence.map(item=>{const link=element('a',`Unit ${item.unitNumber}: ${item.title}`,'unit-sequence-link');link.href=`kiddies-unit.html?id=${encodeURIComponent(item.id)}${params.get('mode')==='materials'?'&mode=materials':''}`;if(item.id===unit.id)link.setAttribute('aria-current','page');return link;}));
  byId('mappingNote').textContent=unit.mapping;byId('curriculumSource').href=unit.source;
  byId('backToLearning').href=`my-learning.html?stage=${unit.educationStages[0]}${unit.classLevels.length?'&class='+encodeURIComponent(unit.classLevels[0]):''}${params.get('mode')==='materials'?'#materials':''}`;
  const select=byId('unitSection');select.replaceChildren(...unit.sections.map((section,i)=>new Option(section.title,String(i))));
@@ -28,6 +31,14 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
  }
  function picture(value){
   const box=element('div','','challenge-picture');
+  if(value==='size-books'){
+   box.setAttribute('role','img');box.setAttribute('aria-label','A larger book on the left and a smaller book on the right');
+   const big=element('span','','choice-art book larger-book'),small=element('span','','choice-art book smaller-book');big.setAttribute('aria-hidden','true');small.setAttribute('aria-hidden','true');box.append(big,small);return box;
+  }
+  if(value&&typeof value==='object'){
+   if(value.type==='pattern'){box.setAttribute('role','img');box.setAttribute('aria-label',value.shapes.join(', ')+', then a space for the next shape');value.shapes.forEach(shape=>{const drawing=element('span','','pattern-shape '+shape);drawing.setAttribute('aria-hidden','true');box.append(drawing);});const gap=element('span','?','pattern-gap');gap.setAttribute('aria-hidden','true');box.append(gap);return box;}
+   if(value.type==='groups'){value.counts.forEach((amount,group)=>{const set=element('div','',`picture-group ${value.spread&&group===1?'spread-group':''}`);set.setAttribute('role','img');set.setAttribute('aria-label',`Group ${group===0?'A':'B'}: ${amount} circles${value.removed?`, ${value.removed} crossed out`:''}`);set.append(element('span',value.removed?`Take ${value.removed} away`:`Group ${group===0?'A':'B'}`,'picture-group-label'));const row=element('div','','circle-row');for(let i=0;i<amount;i++){const circle=element('span','',`counting-circle ${value.removed&&i>=amount-value.removed?'crossed-circle':''}`);circle.setAttribute('aria-hidden','true');row.append(circle);}set.append(row);box.append(set);});return box;}
+  }
   if(['groups24','groups33','join22','remove51'].includes(value)){
    const amounts=value==='groups24'?[2,4]:value==='groups33'?[3,3]:value==='join22'?[2,2]:[5];
    amounts.forEach((amount,group)=>{const set=element('div','',`picture-group ${value==='groups33'&&group===1?'spread-group':''}`);set.setAttribute('role','img');set.setAttribute('aria-label',value==='remove51'?'Five circles, one crossed out':`${value==='join22'?'Joining group':'Group'} ${group===0?'A':'B'}: ${amount} circles`);set.append(element('span',value==='remove51'?'Take one away':`Group ${group===0?'A':'B'}`,'picture-group-label'));const row=element('div','','circle-row');for(let i=0;i<amount;i++){const circle=element('span','',`counting-circle ${value==='remove51'&&i===4?'crossed-circle':''}`);circle.setAttribute('aria-hidden','true');row.append(circle);}set.append(row);box.append(set);});return box;
@@ -57,6 +68,7 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
    completed.add(select.value);const saved=saveExploration(storage,key,completed);progress();
    panel.replaceChildren(element('span','★','earned-star'),element('h3','You explored this activity!'),element('p','Great exploring. Tell your grown-up what you noticed. This star celebrates practice; it is not a grade.'));
    const following=lessons[index+1];const continueButton=element('button',following===undefined?'Try this activity again':'Explore the next lesson','btn primary');continueButton.type='button';continueButton.addEventListener('click',()=>{if(following!==undefined)select.value=String(following);render();byId('lessonTitle').focus();});panel.append(continueButton);
+   const nextUnit=sequence.find(item=>item.unitNumber>unit.unitNumber);if(following===undefined&&nextUnit){const link=element('a',`Explore Unit ${nextUnit.unitNumber}: ${nextUnit.title}`,'btn');link.href=`kiddies-unit.html?id=${encodeURIComponent(nextUnit.id)}`;panel.append(link);}
    byId('unitStatus').textContent=saved?'Exploration star added. Progress is saved for this account on this browser.':'Exploration star added for this visit. Browser storage is unavailable.';
    const celebration=panel.querySelector('h3');celebration.tabIndex=-1;celebration.focus();
   });panel.append(choices,feedback,next,element('p','Ask a grown-up to read the choices, or point to your choice. There is no timer.','game-help'));

@@ -30,7 +30,45 @@ const reports = [];
 try {
   for(const width of [320,390,768,1280]) {
     const {context,page}=await setup({},width,'?stage=nursery');
-    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    assert.equal(await page.getByRole('link',{name:'Open learning unit',exact:true}).count(),2);
+    await page.getByRole('heading',{name:'Patterns and Little Stories',exact:true}).waitFor();
+    await page.getByRole('radio',{name:'Primary',exact:true}).check();
+    await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 1');
+    await page.getByRole('heading',{name:'Stories, Sounds and Numbers to Ten',exact:true}).waitFor();
+    await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');
+    assert.equal(await page.getByRole('heading',{name:'Stories, Sounds and Numbers to Ten',exact:true}).count(),0);
+    for(const id of ['nursery-unit-02','primary1-unit-02']) {
+      await page.goto(`${base}/kiddies-unit.html?id=${id}`);
+      await page.getByText('Unit 2 · suggested learning sequence',{exact:true}).waitFor();
+      assert.equal(await page.locator('#unitSequence a').count(),2);
+      const adventures=(await import('../js/kiddies-adventures.js')).ADVENTURES[id];
+      for(let i=0;i<adventures.length;i++) {
+        await page.getByRole('button',{name:new RegExp(`${i+1}. ${adventures[i].name}`)}).click();
+        if(i===adventures.length-1) {
+          await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+          assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[],`Unit 2 accessibility ${id} at ${width}`);
+          assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+          await page.screenshot({path:`${evidence}/${id}-practice-${width}.png`,fullPage:true});
+          if(id==='primary1-unit-02')assert.equal(await page.locator('.circle-row .counting-circle').count(),7);
+          else assert.equal(await page.locator('.pattern-shape').count(),4);
+        }
+        for(let j=0;j<adventures[i].questions.length;j++){
+          const question=adventures[i].questions[j];await page.getByRole('button',{name:question.choices[question.answer],exact:true}).click();
+          if(id==='primary1-unit-02'&&i===5&&j===1)assert.equal(await page.locator('.crossed-circle').count(),2);
+          await page.getByRole('button',{name:j+1===adventures[i].questions.length?'Collect my exploration star':'Next activity',exact:true}).click();
+        }
+      }
+      await page.getByText(`${adventures.length} of ${adventures.length} exploration stars`,{exact:true}).waitFor();
+      await page.getByRole('link',{name:/Unit 1:/}).click();
+      await page.getByText(`0 of ${adventures.length} exploration stars`,{exact:true}).waitFor();
+      const second=page.getByRole('link',{name:/Unit 2:/});await second.click();
+      await page.getByText(`${adventures.length} of ${adventures.length} exploration stars`,{exact:true}).waitFor();
+    }
+    assert.equal(await page.evaluate(()=>window.writes.length),0);await context.close();
+  }
+  for(const width of [320,390,768,1280]) {
+    const {context,page}=await setup({},width,'?stage=nursery');
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).first().click();
     await page.getByRole('heading',{name:'Lesson 1: Notice and name',exact:true}).waitFor();
     assert.equal(await page.locator('.journey-stop').count(),4);
     await page.getByRole('button',{name:'Cup',exact:true}).click();
@@ -72,7 +110,7 @@ try {
   }
   {
     const {context,page}=await setup({},390,'?stage=primary&class=Primary%201');
-    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).first().click();
     const adventures=(await import('../js/kiddies-adventures.js')).ADVENTURES['primary1-unit-01'];
     for(let i=0;i<adventures.length;i++) {
       const current=adventures[i];await page.getByRole('button',{name:new RegExp(`${i+1}. ${current.name}`)}).click();
@@ -112,7 +150,7 @@ try {
     assert.equal(await page.getByRole('heading',{name:'Words and Numbers Around Us',exact:true}).count(),0);
     await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 1');
     await page.getByRole('button',{name:/Materials/}).click();
-    await page.getByRole('link',{name:'Open practice materials',exact:true}).click();
+    await page.getByRole('link',{name:'Open practice materials',exact:true}).first().click();
     await page.getByRole('heading',{name:'English practice sheet',exact:true}).waitFor();
     await page.getByLabel('Choose a lesson or practice sheet').selectOption({label:'Mathematics practice sheet'});
     await page.getByText(/M1 four; M2 zero/).waitFor();
@@ -129,7 +167,7 @@ try {
   {
     const {context,page}=await setup({failCourses:true},390,'?stage=nursery');
     await page.getByRole('heading',{name:'Could not load courses',exact:true}).waitFor();
-    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).first().click();
     await page.getByRole('heading',{name:'Lesson 1: Notice and name',exact:true}).waitFor();
     await page.goto(`${base}/kiddies-unit.html?id=missing`);
     await page.getByText('This learning unit is unavailable. Return to My Learning to choose another.',{exact:true}).waitFor();
