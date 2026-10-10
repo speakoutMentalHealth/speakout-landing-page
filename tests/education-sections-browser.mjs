@@ -28,6 +28,19 @@ async function setup(options = {}, width = 390, hash = "") {
 }
 const reports = [];
 try {
+  for(const width of [320,390,768,1280]){
+    const page=await browser.newPage({viewport:{width,height:844}});await page.goto(`${base}/national-curriculum.html`);
+    await page.getByRole('heading',{name:'SS 1–3',exact:true}).waitFor();
+    assert.equal(await page.locator('#nationalGroups article').count(),4);
+    await page.getByText('Business Studies',{exact:true}).waitFor();
+    assert.equal(await page.locator('#sharedSubjects li').count(),8);
+    assert.match(await page.locator('#nationalGroups article').first().getByRole('link').getAttribute('href'),/stage=primary/);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+    const violations=await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)});
+    assert.deepEqual(violations,[],`National guide accessibility at ${width}`);
+    await page.emulateMedia({media:'print'});assert.equal(await page.locator('#nationalGroups').isVisible(),true);await page.close();
+  }
   for(const kind of ['books','courses']) {
     const context=await browser.newContext();
     const record={id:'track-fixture',title:'Track fixture',status:'draft',educationStages:['primary'],classLevels:['Primary 2'],curriculum:{track:'school-curriculum',status:'mapping-in-progress',mappings:[{chapterId:'chapter-1'}]}};
