@@ -3,6 +3,7 @@ import { db } from "../../firebase-config.js";
 import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { EDUCATION_STAGES, validPlacement, schoolPlacement, matchesPlacement, contentStages } from "../education-levels.js";
 import { isPublicBook, isPublicCourse } from "../content-visibility.js";
+import { contentTrack, contentTrackLabel } from "../content-tracks.js";
 import { escapeHtml } from "./ui-utils.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
 
@@ -50,7 +51,7 @@ function card(item) {
   const href = tab === "courses" ? `${details ? "course-details" : "course-player"}.html?id=${encodeURIComponent(item.id)}` :
     [item.purchaseUrl, item.downloadUrl, item.bookUrl, item.fileUrl, item.readUrl].map(safeUrl).find(Boolean) || `book-reader.html?id=${encodeURIComponent(item.id)}`;
   const classLabel = Array.isArray(item.classLevels) ? item.classLevels.join(", ") : String(item.classLevels || "");
-  return `<article class="learning-card"><p class="education-label">${escapeHtml(contentStages(item).map(id => stageFor(id)?.label).filter(Boolean).join(" · "))}</p><span class="label">${escapeHtml(item.subject || String(item.category || (tab === "courses" ? "Course" : "Reading material")).replaceAll("-", " "))}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.shortDescription || item.description || "")}</p><p class="learning-meta">${escapeHtml(item.provider || item.author || item.authorName || "SpeakOut")} · ${escapeHtml(classLabel || "Across this education section")}${tab === "courses" && (item.difficulty || item.level) ? `<br>Difficulty: ${escapeHtml(item.difficulty || item.level)}` : ""}</p><a class="btn primary" href="${escapeHtml(href)}">${tab === "courses" ? (external ? "View course pathway" : "Open course") : item.purchaseUrl ? "View purchase options" : "Open material"}</a></article>`;
+  return `<article class="learning-card"><p class="education-label">${escapeHtml(contentStages(item).map(id => stageFor(id)?.label).filter(Boolean).join(" · "))}</p><p class="learning-meta">${escapeHtml(contentTrackLabel(item))}</p><span class="label">${escapeHtml(item.subject || String(item.category || (tab === "courses" ? "Course" : "Reading material")).replaceAll("-", " "))}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.shortDescription || item.description || "")}</p><p class="learning-meta">${escapeHtml(item.provider || item.author || item.authorName || "SpeakOut")} · ${escapeHtml(classLabel || "Across this education section")}${tab === "courses" && (item.difficulty || item.level) ? `<br>Difficulty: ${escapeHtml(item.difficulty || item.level)}` : ""}</p><a class="btn primary" href="${escapeHtml(href)}">${tab === "courses" ? (external ? "View course pathway" : "Open course") : item.purchaseUrl ? "View purchase options" : "Open material"}</a></article>`;
 }
 
 function render() {
@@ -60,8 +61,10 @@ function render() {
   byId("learningTitle").textContent = `${["nursery", "primary"].includes(placement.educationStage) ? "Kiddies Corner · " : ""}${label} learning`;
   byId("placementLabel").textContent = placement.classLevel || "All classes / levels";
   byId("sectionHeading").textContent = `${label} courses and materials`;
-  const availableCourses = courses.filter(item => matchesPlacement(item, placement, { allClasses: !placement.classLevel }));
-  const availableMaterials = materials.filter(item => matchesPlacement(item, placement, { allClasses: !placement.classLevel }));
+  const track=byId('contentTrackFilter').value;
+  const matches=item=>matchesPlacement(item, placement, { allClasses: !placement.classLevel })&&(!track||contentTrack(item)===track);
+  const availableCourses = courses.filter(matches);
+  const availableMaterials = materials.filter(matches);
   byId("courseCount").textContent = availableCourses.length;
   byId("materialCount").textContent = availableMaterials.length;
   byId("coursesTab").setAttribute("aria-pressed", String(tab === "courses"));
@@ -71,7 +74,7 @@ function render() {
   byId("catalogueNote").textContent = "Education levels and classes are content labels, not access restrictions. Browse any section above. Course difficulty is separate from school class. Provider courses may have their own enrolment requirements.";
   byId("resultCount").textContent = `${items.length} ${tab} shown for ${placement.classLevel || label}`;
   const error = catalogueErrors.includes(tab);
-  byId("learningCards").innerHTML = error ? `<div class="learning-empty"><h3>Could not load ${tab}</h3><p>Refresh this page to try again. Your saved learning level is unchanged.</p></div>` : items.length ? items.map(card).join("") : `<div class="learning-empty"><h3>${query ? "No matching titles" : `No ${tab} ready for this class yet`}</h3><p>${query ? "Try a different subject or clear your search." : "Reviewed content for this section will appear here when ready. You can browse another section above; its courses and materials will clearly show their education level."}</p></div>`;
+  byId("learningCards").innerHTML = error ? `<div class="learning-empty"><h3>Could not load ${tab}</h3><p>Refresh this page to try again. Your saved learning level is unchanged.</p></div>` : items.length ? items.map(card).join("") : `<div class="learning-empty"><h3>${query ? "No matching titles" : track ? `No ${tab} match this content type` : `No ${tab} ready for this class yet`}</h3><p>${query ? "Try a different subject or clear your search." : track ? "Choose All content types to see other available resources for this section." : "Reviewed content for this section will appear here when ready. You can browse another section above; its courses and materials will clearly show their education level."}</p></div>`;
 }
 
 byId("placementForm").addEventListener("submit", event => {
@@ -92,6 +95,7 @@ byId("saveDefaultPlacement").addEventListener("click", async () => {
   finally { byId("saveDefaultPlacement").disabled = false; }
 });
 byId("learningSearch").addEventListener("input", render);
+byId('contentTrackFilter').addEventListener('change',render);
 for (const kind of ["courses", "materials"]) byId(`${kind}Tab`).addEventListener("click", () => { tab = kind; render(); });
 
 requireRoles(["student", "teacher", "parent", "school_admin", "admin", "super_admin"], async (user, profile) => {

@@ -13,6 +13,8 @@ const course = (id, stages, classes = []) => ({ id, title: id, educationStages: 
 const book = (id, stages, classes = []) => ({ id, title: id, educationStages: stages, classLevels: classes, status: "active", category: "reading", author: "Test author", coverUrl: "images/logo.png", shortDescription: "A browser fixture, not a published school textbook.", chapters: [1,2,3].map(i => ({title:`Chapter ${i}`,content:"A meaningful test reading passage. ".repeat(200)})) });
 const courses = [course("Primary 2 course", ["primary"], ["Primary 2"]), course("Primary 3 course", ["primary"], ["Primary 3"]), course("Primary shared course", ["primary"]), course("Secondary course", ["secondary"]), course("Tertiary course", ["tertiary"]), { ...course("Unclassified course", []), audience: "student" }, { ...course("Draft course", ["primary"]), status: "draft" }];
 const books = [book("Primary 2 material", ["primary"], ["Primary 2"]), book("Primary 3 material", ["primary"], ["Primary 3"]), book("Secondary material", ["secondary"])];
+courses[0].contentTrack='school-curriculum';courses[0].curriculumAlignment='verified';
+courses[2].contentTrack='supplementary';books[0].contentTrack='supplementary';
 async function setup(options = {}, width = 390, hash = "") {
   const context = await browser.newContext({ viewport: { width, height: 844 } });
   await context.addInitScript(data => { window.fixture = data; window.writes = []; }, { courses: options.withdrawCourse ? [...courses, { id: "harvard-cs50-scratch", status: "draft" }] : courses, books, profile: { role:"student", status:"approved", schoolId:"", schoolCode:"", ...options.profile }, preference: options.preference || null, failSave: options.failSave || false, failCourses: options.failCourses || false });
@@ -26,6 +28,33 @@ async function setup(options = {}, width = 390, hash = "") {
 }
 const reports = [];
 try {
+  for(const kind of ['books','courses']) {
+    const context=await browser.newContext();
+    const record={id:'track-fixture',title:'Track fixture',status:'draft',educationStages:['primary'],classLevels:['Primary 2'],curriculum:{track:'school-curriculum',status:'mapping-in-progress',mappings:[{chapterId:'chapter-1'}]}};
+    await context.addInitScript(record=>{window.editorRecord=record;window.writes=[];},record);
+    await context.route('**/launch-role-guard.js',route=>route.fulfill({contentType:'application/javascript',body:'export function requireRoles(roles,callback){window.editorRoles=roles;callback({uid:"fixture-admin"},{role:"admin"})}'}));
+    await context.route('**/firebase-config.js',route=>route.fulfill({contentType:'application/javascript',body:'export const db={};export const auth={};'}));
+    await context.route('**/firebase-auth.js',route=>route.fulfill({contentType:'application/javascript',body:'export async function signOut(){}'}));
+    await context.route('**/js/platform-api.js',route=>route.fulfill({contentType:'application/javascript',body:'export async function adminApi(){throw Error("No external writes in browser fixtures")}' }));
+    await context.route('**/firebase-firestore.js',route=>route.fulfill({contentType:'application/javascript',body:`export const doc=(_db,path,id)=>({path,id});export const collection=(_db,path)=>({path});export const serverTimestamp=()=> 'server-time';const snapshot=()=>({id:window.editorRecord.id,exists:()=>true,data:()=>window.editorRecord});export async function getDoc(){return snapshot()};export async function getDocs(){return {forEach:fn=>fn(snapshot())}};export function onSnapshot(ref,callback){callback({forEach:fn=>{if(ref.path==='courses')fn(snapshot())}});return()=>{}};export async function setDoc(ref,value,options){window.writes.push({ref,value,options});window.editorRecord={...window.editorRecord,...value}};export async function updateDoc(){};export function writeBatch(){throw Error('No batch imports in fixture')}`}));
+    const page=await context.newPage();await page.goto(`${base}/admin-${kind}.html`);
+    if(kind==='courses')await page.getByRole('button',{name:'Existing Courses',exact:true}).click();
+    await page.locator('#adminList button').filter({hasText:'Edit'}).click();
+    assert.equal(await page.locator('#contentTrack').inputValue(),'school-curriculum');
+    await page.locator('#status').selectOption('draft');
+    await page.locator('#contentTrack').selectOption('supplementary');
+    await page.locator(kind==='books'?'#bookForm button[type=submit]':'#courseForm button[type=submit]').click();
+    await page.waitForFunction(()=>window.writes.length===1);
+    assert.equal(await page.evaluate(()=>window.editorRecord.contentTrack),'supplementary');
+    assert.deepEqual(await page.evaluate(()=>window.editorRecord.curriculum),record.curriculum);
+    assert.equal(await page.evaluate(()=>window.writes[0].options.merge),true);
+    assert.deepEqual(await page.evaluate(()=>window.editorRoles),['admin','super_admin']);
+    await page.locator('#contentTrack').selectOption('');
+    await page.locator(kind==='books'?'#bookForm button[type=submit]':'#courseForm button[type=submit]').click();
+    await page.waitForFunction(()=>window.writes.length===2);
+    assert.equal(await page.evaluate(()=>window.editorRecord.contentTrack),'');
+    await context.close();
+  }
   for (const width of [320,390,768,1280]) {
     const {context,page} = await setup({preference:{educationStage:"primary",classLevel:"Primary 2"}},width);
     await page.getByRole("heading",{name:"Primary 2 course",exact:true}).waitFor();
@@ -40,6 +69,23 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Horizontal overflow at ${width}px`);
     await page.screenshot({path:`${evidence}/primary-materials-${width}.png`,fullPage:true});
     reports.push({width,accessibilityViolations:issues.length});await context.close();
+  }
+  {
+    const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'}});
+    await page.getByLabel('Content type',{exact:true}).selectOption('school-curriculum');
+    await page.getByRole('heading',{name:'Primary 2 course',exact:true}).waitFor();
+    assert.equal(await page.locator('.learning-card').count(),1);
+    await page.getByText('School-curriculum material · alignment not established',{exact:true}).waitFor();
+    await page.getByLabel('Content type',{exact:true}).selectOption('supplementary');
+    await page.getByRole('heading',{name:'Primary shared course',exact:true}).waitFor();
+    assert.equal(await page.getByRole('heading',{name:'Primary 2 course',exact:true}).count(),0);
+    await page.getByRole('button',{name:/Materials/}).click();
+    await page.getByRole('heading',{name:'Primary 2 material',exact:true}).waitFor();
+    await page.getByLabel('Content type',{exact:true}).selectOption('unclassified');
+    assert.equal(await page.locator('.learning-card').count(),0);
+    await page.getByLabel('Content type',{exact:true}).selectOption('');
+    await page.getByRole('heading',{name:'Primary 2 material',exact:true}).waitFor();
+    assert.equal(await page.evaluate(()=>window.writes.length),0);await context.close();
   }
   {
     const {context,page}=await setup();
