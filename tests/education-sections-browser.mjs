@@ -75,7 +75,7 @@ try {
           assert.equal(await studio.locator('.studio-shape').count(),3);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
           await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('#creativeStudio'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[]);
           await studio.screenshot({path:`${evidence}/${id}-studio-${i}-${width}.png`});
-          await page.emulateMedia({media:'print'});assert.equal(await studio.isVisible(),false);assert.equal(await page.locator('.studio-launch').isVisible(),false);assert.equal(await page.locator('.teaching-notes').evaluate(el=>el.open),true);await page.emulateMedia({media:'screen'});assert.equal(await studio.isVisible(),true);
+          await page.emulateMedia({media:'print'});assert.equal(await studio.isVisible(),false);assert.equal(await page.locator('.studio-launch').isVisible(),false);await page.waitForFunction(()=>document.querySelector('.teaching-notes')?.open===true);assert.equal(await page.locator('.teaching-notes').evaluate(el=>el.open),true);await page.emulateMedia({media:'screen'});assert.equal(await studio.isVisible(),true);
         }
         for(let j=0;j<adventures[i].questions.length;j++){
           const question=adventures[i].questions[j];
