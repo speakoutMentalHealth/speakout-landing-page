@@ -1071,6 +1071,222 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "nursery-unit-06",
+    "title": "Together, Safe and Kind",
+    "educationStages": [
+      "nursery"
+    ],
+    "classLevels": [],
+    "subject": "Supported social learning and shared routines",
+    "description": "Four adult-supported lessons on belonging, sharing turns, requesting a pause and caring for shared spaces.",
+    "mapping": "The NERDC pre-primary guide provides a broad social-learning context. Exact outcome alignment is not established; independent teacher review is pending.",
+    "source": "https://ppec.nerdcportals.com.ng/pre_primary/web/ppec_tg.pdf",
+    "unitNumber": 6,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "Original SpeakOut introductory Supported social learning and shared routines material for Nursery, authored as a supervised and adaptable learning pack. National subject or thematic association is provisional; detailed learning-outcome mapping and independent teacher validation remain outstanding. Lessons may be taken without finishing earlier units. These are not a full-term scheme or a nationally approved textbook. Interactive stars recognise exploration, not mastery."
+        ]
+      },
+      {
+        "title": "Facilitator preparation and inclusive teaching",
+        "paragraphs": [
+          "Use large paper drawings, familiar books or picture cards, and a clean working space. Avoid collecting personal stories about children, their families or safety incidents. Do not require eye contact, spoken answers, reading speed, personal disclosures or physical participation. Accept a choice, sign, communication aid, pointing, drawing or dictation. Model both options rather than asking children to guess, and offer an immediate pause. Never ask children to handle unknown or sharp objects. Suggested sessions are 10–15 minutes, with shorter or longer pacing as needed."
+        ]
+      },
+      {
+        "title": "Nursery Lesson 1: Welcome and belonging",
+        "paragraphs": [
+          "Aim: notice that people can join in different ways. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: Amina says hello. Musa waves. Both are ways to greet someone. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Offer a wave, spoken greeting, sign or pointing choice. Let a learner choose whether to greet. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Which two ways can be greetings? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: A spoken hello and a wave. Neither eye contact nor speaking is required. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Nursery Lesson 2: Asking for a turn",
+        "paragraphs": [
+          "Aim: practise sharing a resource without taking it. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: Bala is using the picture book. Zainab asks, 'May I look when you finish?' Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Use two paper drawings to practise asking, waiting briefly and agreeing a turn. Adults can adjust the wait. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: What can Zainab ask? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: May I look when you finish? An adult may help everyone find another way to participate. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Nursery Lesson 3: A comfortable pause",
+        "paragraphs": [
+          "Aim: recognise and request a pause during learning. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: The drawing activity feels tiring. Musa tells a trusted adult, 'I need a break.' Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Offer a picture card, gesture, sign or words for a pause. Honour the request; no learner must explain private feelings. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: What can Musa do when tired? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: Ask a trusted adult for a pause. Pausing is allowed. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Nursery Lesson 4: Caring for our space",
+        "paragraphs": [
+          "Aim: choose safe, familiar ways to help together. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: A book belongs on a low shelf. An unfamiliar sharp object is on the floor. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Point to a picture of returning a book safely; ask an adult about unfamiliar or sharp objects. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Who should handle an unfamiliar sharp object? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: A responsible adult, not a child. Help with an agreed, safe task instead. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Reusable practice sheet",
+        "paragraphs": [
+          "Task N1: Which two ways can be greetings? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task N2: What can Zainab ask? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task N3: What can Musa do when tired? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task N4: Who should handle an unfamiliar sharp object? Use paper drawings, signs, pointing or an adult-written answer."
+        ]
+      },
+      {
+        "title": "Answer and adaptation guide",
+        "paragraphs": [
+          "Answer N1: A spoken hello and a wave. Neither eye contact nor speaking is required.",
+          "Answer N2: May I look when you finish? An adult may help everyone find another way to participate.",
+          "Answer N3: Ask a trusted adult for a pause. Pausing is allowed.",
+          "Answer N4: A responsible adult, not a child. Help with an agreed, safe task instead."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary1-unit-06",
+    "title": "Our Community, Our Choices",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 1"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Six adult-supported lessons on community roles, respectful greetings, shared rules, fairness, common resources and trusted help.",
+    "mapping": "Social and Citizenship Studies is a Primary 1–3 curriculum subject area. Exact Primary 1 outcome mapping and independent teacher validation are pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 6,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "Original SpeakOut introductory Social and Citizenship Studies material for Primary 1, authored as a supervised and adaptable learning pack. National subject or thematic association is provisional; detailed learning-outcome mapping and independent teacher validation remain outstanding. Lessons may be taken without finishing earlier units. These are not a full-term scheme or a nationally approved textbook. Interactive stars recognise exploration, not mastery."
+        ]
+      },
+      {
+        "title": "Facilitator preparation and inclusive teaching",
+        "paragraphs": [
+          "Use large paper drawings, familiar books or picture cards, and a clean working space. Avoid collecting personal stories about children, their families or safety incidents. Do not require eye contact, spoken answers, reading speed, personal disclosures or physical participation. Accept a choice, sign, communication aid, pointing, drawing or dictation. Model both options rather than asking children to guess, and offer an immediate pause. Never ask children to handle unknown or sharp objects. Suggested sessions are 10–15 minutes, with shorter or longer pacing as needed."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: Belonging to groups",
+        "paragraphs": [
+          "Aim: recognise that people participate in many groups. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: A school group includes learners, facilitators and helpers; people may have different roles. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Draw a group with different ways of participating. Let children describe roles without naming private details. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Who belongs in a school community? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: Learners and adults with different roles can all belong. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Respectful greetings",
+        "paragraphs": [
+          "Aim: compare respectful ways to acknowledge someone. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: Sade says good morning. Musa waves. Either can be respectful in an agreed situation. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Offer several greetings and let the learner choose a comfortable option. Discuss local differences without ranking cultures. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Must everyone greet in exactly the same way? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: No. Respect can be shown in more than one appropriate way. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Rules that help us",
+        "paragraphs": [
+          "Aim: explain the purpose of a simple shared-space rule. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: The class keeps walkways clear so people can move safely. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Draw a clear walkway and a blocked one. Ask who benefits from keeping it clear. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Why do we keep walkways clear? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: So everyone can move more safely, including people using mobility aids. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 4: Fair turns and help",
+        "paragraphs": [
+          "Aim: practise asking for turns and offering help. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: Two learners want one book. They ask an adult to help agree turns or find another copy. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Use story cards for ask, agree, wait or choose another resource. Discuss consent before helping someone. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: What should we do before moving another person's belongings? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: Ask permission or consult the responsible adult. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 5: Caring for common resources",
+        "paragraphs": [
+          "Aim: choose realistic ways to look after shared materials. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: A paper book has a torn corner. A learner tells the teacher instead of hiding it. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Compare a clean storage picture with one showing wet books. Use a drawing rather than damaged real materials. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: What can a learner do if a class book is damaged? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: Tell a responsible adult and ask how to care for it safely. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 6: Finding trusted help",
+        "paragraphs": [
+          "Aim: identify a safe response when a situation is worrying. This is an example learning aim rather than a verified NERDC outcome.",
+          "Model: A learner finds an unknown bottle in the classroom and feels unsure. Read the scenario aloud, and explain any unfamiliar terms in the learner's home language before modelling the target English expression.",
+          "Together: Practise pointing to or telling an available trusted adult. Never taste, touch or open unknown substances. Invite the child to show a choice in their preferred response mode and describe why it helps.",
+          "Try: Should the learner open an unknown bottle to find out what it is? Offer two safe alternatives, pause for the child's response and revisit the model if needed. Do not infer independent understanding from a single button tap.",
+          "Check and answers: No. Leave it alone and tell a trusted adult. Record whether the response was prompted, modelled or independent. Next time, practise with a different fictional situation or drawing."
+        ]
+      },
+      {
+        "title": "Reusable practice sheet",
+        "paragraphs": [
+          "Task S1: Who belongs in a school community? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task S2: Must everyone greet in exactly the same way? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task S3: Why do we keep walkways clear? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task S4: What should we do before moving another person's belongings? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task S5: What can a learner do if a class book is damaged? Use paper drawings, signs, pointing or an adult-written answer.",
+          "Task S6: Should the learner open an unknown bottle to find out what it is? Use paper drawings, signs, pointing or an adult-written answer."
+        ]
+      },
+      {
+        "title": "Answer and adaptation guide",
+        "paragraphs": [
+          "Answer S1: Learners and adults with different roles can all belong.",
+          "Answer S2: No. Respect can be shown in more than one appropriate way.",
+          "Answer S3: So everyone can move more safely, including people using mobility aids.",
+          "Answer S4: Ask permission or consult the responsible adult.",
+          "Answer S5: Tell a responsible adult and ask how to care for it safely.",
+          "Answer S6: No. Leave it alone and tell a trusted adult."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}
