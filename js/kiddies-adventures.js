@@ -144,7 +144,7 @@ ADVENTURES["nursery-unit-06"]=[
           "I must never stop"
         ],
         "answer": 0,
-        "explanation": "Requesting a pause is okay.",
+        "explanation": "Requesting a pause is okay; an adult can help you take a comfortable break.",
         "picture": ""
       },
       {
