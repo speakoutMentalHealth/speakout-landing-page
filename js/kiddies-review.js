@@ -1,5 +1,6 @@
 import { validateKiddiesStarterPack } from './kiddies-starter-pack.js';
 import { bookReadiness } from './content-visibility.js';
+import { CURRICULUM_SOURCES, draftCurriculumLabel } from './curriculum-mapping.js';
 const byId=id=>document.getElementById(id);
 let pack;
 function renderBook(index) {
@@ -8,6 +9,18 @@ function renderBook(index) {
  byId('bookTitle').textContent=book.title;
  byId('bookStage').textContent=`Kiddies Corner · ${book.educationStages[0]} · Draft`;
  byId('bookMeta').textContent=`Provisional classes: ${book.classLevels.join(', ')} · ${book.chapters.length} chapters · ${bookReadiness(book).wordCount} chapter words · AI-assisted original draft`;
+ let mapping=document.getElementById('curriculumReview');
+ if(!mapping){mapping=document.createElement('section');mapping.id='curriculumReview';byId('bookMeta').after(mapping);}
+ mapping.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent='Nigerian curriculum mapping';mapping.append(heading);
+ const note=document.createElement('p');note.textContent=book.curriculum?draftCurriculumLabel(book.curriculum):'Outcome mapping not recorded; not curriculum verified.';mapping.append(note);
+ if(book.curriculum){
+  for(const id of book.curriculum.sourceIds){const source=CURRICULUM_SOURCES.find(item=>item.id===id),paragraph=document.createElement('p'),link=document.createElement('a');link.href=source.url;link.textContent=`${source.authority}: ${source.title}`;paragraph.append(link,document.createTextNode(` — ${source.edition||'edition pending'}; ${source.inspection}. ${source.scope||''} ${source.rights||''}`));mapping.append(paragraph);}
+  const list=document.createElement('ul');
+  for(const entry of book.curriculum.mappings){const item=document.createElement('li');item.textContent=`${entry.chapterId}: ${entry.topic} — PDF page ${entry.pdfPage}, printed page ${entry.printedPage}. Candidate partial mapping; teacher review pending.`;list.append(item);}
+  for(const gap of book.curriculum.gaps){const item=document.createElement('li');item.textContent=`Outstanding: ${gap}`;list.append(item);}
+  mapping.append(list);
+ }
  byId('chapters').replaceChildren(...book.chapters.map(chapter=>{
   const article=document.createElement('article'),heading=document.createElement('h3');heading.textContent=chapter.title;article.append(heading);
   // Only plain-text paragraphs/headings enter the review DOM. Do not execute
