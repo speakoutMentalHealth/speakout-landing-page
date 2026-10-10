@@ -16,7 +16,7 @@ test('Published short units are separately classified, mapped honestly and place
 });
 test('Learner reader retains role approval gate, safe text rendering and no learner-data writes',async()=>{
  const code=await readFile(new URL('../js/learner/kiddies-unit.js',import.meta.url),'utf8');
- assert.match(code,/requireRoles/);assert.match(code,/textContent=text/);assert.doesNotMatch(code,/innerHTML|setDoc|updateDoc|localStorage/);
+ assert.match(code,/requireRoles/);assert.match(code,/textContent=text/);assert.doesNotMatch(code,/innerHTML|setDoc|updateDoc/);
  const visibility=await readFile(new URL('../js/content-visibility.js',import.meta.url),'utf8');
  assert.match(visibility,/5000/);
 });

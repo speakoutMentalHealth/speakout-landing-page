@@ -1,10 +1,16 @@
 import {requireRoles,renderRoleNav} from '../../launch-role-guard.js';
 import {publishedUnits} from '../kiddies-catalogue.js';
+import {ADVENTURES,isCorrect,readExploration,saveExploration} from '../kiddies-adventures.js';
 const byId=id=>document.getElementById(id);
-requireRoles(['student','teacher','parent','school_admin','admin','super_admin'],(_user,profile)=>{
+const element=(tag,text,className='')=>{const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;};
+requireRoles(['student','teacher','parent','school_admin','admin','super_admin'],(user,profile)=>{
  renderRoleNav(profile,'My Learning');
  const params=new URLSearchParams(location.search),unit=publishedUnits().find(item=>item.id===params.get('id'));
  if(!unit){byId('unitStatus').textContent='This learning unit is unavailable. Return to My Learning to choose another.';return;}
+ const adventures=ADVENTURES[unit.id]||[],lessons=unit.sections.map((s,i)=>/Lesson \d/.test(s.title)?i:-1).filter(i=>i>=0);
+ const key=`speakout-exploration:${user.uid}:${unit.id}:v${unit.version}`,allowed=lessons.map(String);
+ let storage=null;try{storage=window.localStorage;}catch{}
+ let completed=readExploration(storage,key,allowed),round=0,resetArmed=false;
  document.title=`${unit.title} | SpeakOut`;
  byId('unitLevel').textContent=unit.educationStages[0]==='nursery'?'Kiddies Corner · Nursery · introductory unit':'Kiddies Corner · Primary 1 · introductory unit';
  byId('unitTitle').textContent=unit.title;byId('unitDescription').textContent=unit.description;
@@ -12,8 +18,63 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
  byId('backToLearning').href=`my-learning.html?stage=${unit.educationStages[0]}${unit.classLevels.length?'&class='+encodeURIComponent(unit.classLevels[0]):''}${params.get('mode')==='materials'?'#materials':''}`;
  const select=byId('unitSection');select.replaceChildren(...unit.sections.map((section,i)=>new Option(section.title,String(i))));
  const requested=Number(params.get('section'));
- const first=params.get('mode')==='materials'?unit.sections.findIndex(s=>/practice sheet|activity sheet/i.test(s.title)):unit.sections.findIndex(s=>/Lesson \d/.test(s.title));
+ const first=params.get('mode')==='materials'?unit.sections.findIndex(s=>/practice sheet|activity sheet/i.test(s.title)):(lessons.find(i=>!completed.has(String(i)))??lessons[0]);
  select.value=String(params.has('section')&&Number.isInteger(requested)&&requested>=0&&requested<unit.sections.length?requested:Math.max(0,first));
- const render=()=>{const section=unit.sections[Number(select.value)],heading=document.createElement('h2');heading.id='lessonTitle';heading.textContent=section.title;byId('lessonContent').replaceChildren(heading,...section.paragraphs.map(text=>{const p=document.createElement('p');p.textContent=text;return p;}));const url=new URL(location.href);url.searchParams.set('section',select.value);history.replaceState(null,'',url);byId('unitStatus').textContent=`${section.title} selected.`;};
+ function progress(){
+  byId('explorationCount').textContent=`${completed.size} of ${lessons.length} exploration stars`;
+  byId('explorationProgress').max=lessons.length;byId('explorationProgress').value=completed.size;
+  byId('starCollection').textContent=completed.size===lessons.length?'★ Curious Explorer — you explored every activity!':'Each explored activity adds a star. You can revisit any lesson.';
+  byId('lessonJourney').replaceChildren(...lessons.map((index,i)=>{const button=element('button',`${completed.has(String(index))?'★':'○'} ${i+1}. ${adventures[i]?.name||unit.sections[index].title}`,'journey-stop');button.type='button';button.setAttribute('aria-pressed',String(Number(select.value)===index));button.addEventListener('click',()=>{select.value=String(index);render();byId('lessonTitle').focus();});return button;}));
+ }
+ function picture(value){
+  const box=element('div','','challenge-picture');
+  if(['groups24','groups33','join22','remove51'].includes(value)){
+   const amounts=value==='groups24'?[2,4]:value==='groups33'?[3,3]:value==='join22'?[2,2]:[5];
+   amounts.forEach((amount,group)=>{const set=element('div','',`picture-group ${value==='groups33'&&group===1?'spread-group':''}`);set.setAttribute('role','img');set.setAttribute('aria-label',value==='remove51'?'Five circles, one crossed out':`${value==='join22'?'Joining group':'Group'} ${group===0?'A':'B'}: ${amount} circles`);set.append(element('span',value==='remove51'?'Take one away':`Group ${group===0?'A':'B'}`,'picture-group-label'));const row=element('div','','circle-row');for(let i=0;i<amount;i++){const circle=element('span','',`counting-circle ${value==='remove51'&&i===4?'crossed-circle':''}`);circle.setAttribute('aria-hidden','true');row.append(circle);}set.append(row);box.append(set);});return box;
+  }
+  if(typeof value==='number'){box.setAttribute('role','img');box.setAttribute('aria-label',`${value} circles`);for(let i=0;i<value;i++){const circle=element('span','','counting-circle');circle.setAttribute('aria-hidden','true');box.append(circle);}if(!value)box.append(element('span','An empty picture'));}
+  else {box.setAttribute('aria-hidden','true');box.append(element('span','','large-shape '+value));}
+  return box;
+ }
+ function play(){
+  const index=lessons.indexOf(Number(select.value)),adventure=adventures[index],panel=byId('playPanel');panel.hidden=!adventure;
+  if(!adventure)return;
+  panel.replaceChildren(element('span',`TRY IT TOGETHER · ${round+1} OF ${adventure.questions.length}`,'game-kicker'));
+  const question=adventure.questions[round];
+  const heading=element('h3',question.prompt);heading.id='challengeTitle';panel.append(heading);
+  if(question.picture!==''&&question.picture!==undefined)panel.append(picture(question.picture));
+  const feedback=element('p','','game-feedback');feedback.id='gameFeedback';feedback.setAttribute('role','status');
+  const choices=element('div','','answer-choices');
+  const next=element('button',round+1===adventure.questions.length?'Collect my exploration star':'Next activity','btn primary');next.type='button';next.hidden=true;
+  let answered=false;
+  question.choices.forEach((choice,i)=>{const button=element('button',choice,'answer-choice');button.type='button';if(['Book','Cup','Cloth'].includes(choice)){const art=element('span','','choice-art '+choice.toLowerCase());art.setAttribute('aria-hidden','true');button.prepend(art);}button.addEventListener('click',()=>{
+   if(answered)return;
+   if(isCorrect(question,i)){answered=true;feedback.textContent=`You found it! ${question.explanation}`;feedback.className='game-feedback correct';button.classList.add('chosen');choices.querySelectorAll('button').forEach(b=>{b.disabled=true;});next.hidden=false;next.focus();}
+   else {feedback.textContent=`Let’s look again. ${question.explanation} You can try another choice.`;feedback.className='game-feedback retry';}
+  });choices.append(button);});
+  next.addEventListener('click',()=>{
+   if(round+1<adventure.questions.length){round++;play();byId('challengeTitle').tabIndex=-1;byId('challengeTitle').focus();return;}
+   completed.add(select.value);const saved=saveExploration(storage,key,completed);progress();
+   panel.replaceChildren(element('span','★','earned-star'),element('h3','You explored this activity!'),element('p','Great exploring. Tell your grown-up what you noticed. This star celebrates practice; it is not a grade.'));
+   const following=lessons[index+1];const continueButton=element('button',following===undefined?'Try this activity again':'Explore the next lesson','btn primary');continueButton.type='button';continueButton.addEventListener('click',()=>{if(following!==undefined)select.value=String(following);render();byId('lessonTitle').focus();});panel.append(continueButton);
+   byId('unitStatus').textContent=saved?'Exploration star added. Progress is saved for this account on this browser.':'Exploration star added for this visit. Browser storage is unavailable.';
+   const celebration=panel.querySelector('h3');celebration.tabIndex=-1;celebration.focus();
+  });panel.append(choices,feedback,next,element('p','Ask a grown-up to read the choices, or point to your choice. There is no timer.','game-help'));
+ }
+ function render(){
+  round=0;resetArmed=false;byId('resetExploration').textContent='Start a fresh star collection';
+  const section=unit.sections[Number(select.value)],heading=element('h2',section.title);heading.id='lessonTitle';heading.tabIndex=-1;
+  const adventure=adventures[lessons.indexOf(Number(select.value))];
+  const paragraphs=section.paragraphs.map(text=>{const p=document.createElement('p');p.textContent=text;return p;});
+  if(adventure){const notes=element('details','','teaching-notes');notes.append(element('summary','Grown-up guide: full lesson, examples and answers'),...paragraphs);byId('lessonContent').replaceChildren(heading,element('p',adventure.intro,'learner-intro'),notes);}
+  else byId('lessonContent').replaceChildren(heading,...paragraphs);
+  byId('adventureIcon').textContent=adventure?.icon||'Aa';
+  const url=new URL(location.href);url.searchParams.set('section',select.value);history.replaceState(null,'',url);
+  byId('unitStatus').textContent=`${section.title} selected.`;progress();play();
+ }
+ byId('resetExploration').addEventListener('click',()=>{if(!resetArmed){resetArmed=true;byId('resetExploration').textContent='Confirm: clear this unit’s stars';byId('unitStatus').textContent='Click Confirm to clear this unit’s stars on this browser. Lessons stay available.';return;}completed=new Set();saveExploration(storage,key,completed);render();byId('unitStatus').textContent='Your star collection is empty. Let’s explore again!';});
+ let printNotes=null;
+ const printMode=active=>{if(active&&printNotes===null){printNotes=[...document.querySelectorAll('.teaching-notes')].map(el=>({el,open:el.open}));printNotes.forEach(({el})=>{el.open=true;});}else if(!active&&printNotes!==null){printNotes.forEach(({el,open})=>{el.open=open;});printNotes=null;}};
+ window.addEventListener('beforeprint',()=>printMode(true));window.addEventListener('afterprint',()=>printMode(false));window.matchMedia('print').addEventListener('change',event=>printMode(event.matches));
  select.addEventListener('change',render);byId('printSection').addEventListener('click',()=>window.print());byId('unitContent').hidden=false;render();
 });
