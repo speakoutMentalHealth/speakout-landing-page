@@ -1,4 +1,5 @@
 import { runCleanup } from "./staging-cleanup.mjs";
+import { responseDiagnostic } from "./staging-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -109,6 +110,8 @@ async function signup(label) {
 
 async function seedProfile(user, { label, role, status, approved }) {
   const path = `users/${user.localId}`;
+  // Include attempted writes in cleanup even if their acknowledgement fails.
+  cleanupPaths.push(path);
   const created = await firestore(path, {
     method: "PATCH",
     data: {
@@ -121,8 +124,11 @@ async function seedProfile(user, { label, role, status, approved }) {
       source: "approval-state-browser-acceptance"
     }
   });
-  assert.equal(created.response.ok, true, `failed to seed ${label}`);
-  cleanupPaths.push(path);
+  if (!created.response.ok) {
+    const diagnostic = { operation: "seed-profile", scenario: label, ...responseDiagnostic(created.response, created.body) };
+    await writeFile(`${artifactsDir}/profile-seed-failure.json`, JSON.stringify(diagnostic, null, 2));
+    assert.fail(`failed to seed ${label}: HTTP ${diagnostic.httpStatus}; ${diagnostic.serverCode}`);
+  }
 }
 
 async function workerApprovalProbe(user, role) {

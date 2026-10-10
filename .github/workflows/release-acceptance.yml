@@ -52,6 +52,7 @@ on:
       - "tests/kpa-results-browser-pilot.mjs"
       - "tests/school-management-browser.mjs"
       - "tests/staging-cleanup.mjs"
+      - "tests/staging-diagnostics.mjs"
       - "tests/staging-live.integration.mjs"
       - "verify-certificate.html"
       - "workers/platform-api/**"

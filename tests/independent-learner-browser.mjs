@@ -1,4 +1,5 @@
 import { runCleanup } from "./staging-cleanup.mjs";
+import { observeCatalogue, profileDiagnostic } from "./staging-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -129,9 +130,10 @@ const fields = object =>
 const decodedFields = object =>
   Object.fromEntries(Object.entries(object || {}).map(([key, value]) => [key, decode(value)]));
 
-async function firestore(path, { method = "GET", data } = {}) {
+async function firestore(path, { method = "GET", data, signal } = {}) {
   const response = await fetch(`${firestoreBase}/${path}`, {
     method,
+    signal,
     headers: {
       authorization: `Bearer ${adminToken}`,
       "content-type": "application/json"
@@ -313,10 +315,28 @@ async function browserLogin(page, accountPassword = password) {
   await waitForPath(page, "student-dashboard.html");
 }
 
+async function searchCatalogue(page) {
+  const evidence = observeCatalogue(page, new URL(baseUrl).origin);
+  try {
+    await page.goto(`${baseUrl}/speakhub.html`, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelector("#searchInput")?.disabled === false, undefined, { timeout: 30000 });
+    await page.locator("#searchInput").fill(courseTitle);
+  } catch (error) {
+    const diagnostic = { operation: "catalogue-unlock", ...await evidence.capture() };
+    try {
+      diagnostic.serverProfile = profileDiagnostic(await firestore(`users/${userSession.localId}`, { signal: AbortSignal.timeout(10000) }));
+    } catch {
+      diagnostic.serverProfile = { lookupFailed: true };
+    }
+    await writeFile(`${artifactsDir}/catalogue-unlock-failure.json`, JSON.stringify(diagnostic, null, 2));
+    throw error;
+  } finally {
+    evidence.dispose();
+  }
+}
+
 async function completeCourse(page) {
-  await page.goto(`${baseUrl}/speakhub.html`, { waitUntil: "domcontentloaded" });
-  await page.locator("#searchInput").waitFor({ timeout: 30000 });
-  await page.locator("#searchInput").fill(courseTitle);
+  await searchCatalogue(page);
 
   const card = page.locator("#courseGrid .card").filter({ has: page.getByRole("heading", { name: courseTitle, exact: true }) });
   await card.waitFor({ timeout: 30000 });
@@ -336,9 +356,7 @@ async function completeCourse(page) {
   await page.locator("#submitAssessmentBtn").waitFor({ timeout: 30000 });
 
   // Leave the course after lesson completion and reopen it to prove persisted progress.
-  await page.goto(`${baseUrl}/speakhub.html`, { waitUntil: "domcontentloaded" });
-  await page.locator("#searchInput").waitFor({ timeout: 30000 });
-  await page.locator("#searchInput").fill(courseTitle);
+  await searchCatalogue(page);
   const reopenedCard = page.locator("#courseGrid .card").filter({ has: page.getByRole("heading", { name: courseTitle, exact: true }) });
   await reopenedCard.waitFor({ timeout: 30000 });
   await reopenedCard.locator(".progress-text").getByText("50% complete", { exact: true }).waitFor({ timeout: 30000 });
