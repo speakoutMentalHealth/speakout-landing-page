@@ -2,10 +2,10 @@ name: Education Sections Browser
 on:
   pull_request:
     branches: [main]
-    paths: ["js/curriculum-mapping.js", "firestore-seed/build-kiddies-starter.mjs", "kiddies-review.html", "admin-kiddies-review.html", "js/kiddies-review.js", "js/kiddies-starter-pack.js", "js/admin/kiddies-drafts.js", "css/pages/kiddies-review.css", "firestore-seed/kiddies-starter-pack.json", "tests/kiddies-starter-browser.mjs", "my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
+    paths: ["js/content-tracks.js", "js/curriculum-mapping.js", "firestore-seed/build-kiddies-starter.mjs", "kiddies-review.html", "admin-kiddies-review.html", "js/kiddies-review.js", "js/kiddies-starter-pack.js", "js/admin/kiddies-drafts.js", "css/pages/kiddies-review.css", "firestore-seed/kiddies-starter-pack.json", "tests/kiddies-starter-browser.mjs", "my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
   push:
     branches: [main]
-    paths: ["js/curriculum-mapping.js", "firestore-seed/build-kiddies-starter.mjs", "kiddies-review.html", "admin-kiddies-review.html", "js/kiddies-review.js", "js/kiddies-starter-pack.js", "js/admin/kiddies-drafts.js", "css/pages/kiddies-review.css", "firestore-seed/kiddies-starter-pack.json", "tests/kiddies-starter-browser.mjs", "my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
+    paths: ["js/content-tracks.js", "js/curriculum-mapping.js", "firestore-seed/build-kiddies-starter.mjs", "kiddies-review.html", "admin-kiddies-review.html", "js/kiddies-review.js", "js/kiddies-starter-pack.js", "js/admin/kiddies-drafts.js", "css/pages/kiddies-review.css", "firestore-seed/kiddies-starter-pack.json", "tests/kiddies-starter-browser.mjs", "my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
 permissions:
   contents: read
 jobs:
