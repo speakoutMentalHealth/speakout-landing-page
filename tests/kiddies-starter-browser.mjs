@@ -7,6 +7,19 @@ const pack=JSON.parse(await readFile('firestore-seed/kiddies-starter-pack.json',
 const browser=await chromium.launch();
 try {
  for(const width of [320,390,768,1280]){
+  const page=await browser.newPage({viewport:{width,height:844}});await page.goto(`${base}/kiddies-units-review.html`);
+  assert.equal(await page.locator('#nursery-unit-01').isVisible(),true);assert.equal(await page.locator('#primary1-unit-01').isVisible(),false);
+  assert.equal(await page.locator('#nursery-unit-01 h3').filter({hasText:/^Lesson [1-4]:/}).count(),4);
+  await page.getByRole('button',{name:'Primary 1: Words and Numbers Around Us',exact:true}).click();
+  await page.getByText('Primary 1 unit selected. Six lessons; review pending.',{exact:true}).waitFor();
+  assert.equal(await page.locator('#primary1-unit-01 h3').filter({hasText:/^(English|Mathematics) Lesson [1-3]:/}).count(),6);
+  await page.locator('#primary1-unit-01').getByRole('heading',{name:'Mathematics practice sheet',exact:true}).waitFor();
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+  const issues=await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)});assert.deepEqual(issues,[],`Teaching units accessibility at ${width}`);
+  await page.emulateMedia({media:'print'});assert.equal(await page.locator('#primary1-unit-01').isVisible(),true);assert.equal(await page.locator('#nursery-unit-01').isVisible(),false);await page.close();
+ }
+ for(const width of [320,390,768,1280]){
   const page=await browser.newPage({viewport:{width,height:844}});await page.goto(`${base}/kiddies-review.html`);
   await page.getByText('Review copy ready. Nothing has been imported or published.',{exact:true}).waitFor();
   assert.equal(await page.locator('#chapters article').count(),6);

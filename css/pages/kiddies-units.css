@@ -1,0 +1,1 @@
+.unit h3{margin-top:36px}.unit p{max-width:76ch}.unit{padding:28px}@media(max-width:500px){.unit{padding:16px}}@media print{.reviewIntro,#unitStatus{display:none}.unit{break-before:auto;padding:0}.unit p{max-width:none}.unit>p:last-child{display:none}.unit .badge{display:block;font-weight:700}}
