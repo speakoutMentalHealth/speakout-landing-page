@@ -15,7 +15,7 @@ test('Primary 2 to 6 have distinct age-labelled lesson and interactive content',
   assert.equal(unit.unitNumber,1);
   assert.equal(unit.review.humanApproval,false);
   assert.match(unit.mapping,/not established/);
-  assert.equal(unit.sections.filter(s=>/Lesson \\d/.test(s.title)).length,6);
+  assert.equal(unit.sections.filter(s=>/Lesson \d/.test(s.title)).length,6);
   assert.ok(unit.sections.some(s=>s.title==='English practice sheet'));
   assert.ok(unit.sections.some(s=>s.title==='Mathematics practice sheet'));
   assert.equal(ADVENTURES[id].length,6);
