@@ -13,7 +13,7 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
  let completed=readExploration(storage,key,allowed),round=0,resetArmed=false;
  const designs=new Map();
  document.title=`${unit.title} | SpeakOut`;
- byId('unitLevel').textContent=unit.educationStages[0]==='nursery'?'Kiddies Corner · Nursery · introductory unit':'Kiddies Corner · Primary 1 · introductory unit';
+ byId('unitLevel').textContent=unit.educationStages[0]==='nursery'?'Kiddies Corner · Nursery · introductory unit':`Kiddies Corner · ${unit.classLevels[0]||'Primary'} · introductory unit`;
  byId('unitTitle').textContent=unit.title;byId('unitDescription').textContent=unit.description;
  byId('unitNumber').textContent=`Unit ${unit.unitNumber||1} · suggested learning sequence`;
  const sequence=publishedUnits().filter(item=>item.educationStages[0]===unit.educationStages[0]&&item.classLevels.join('|')===unit.classLevels.join('|')).sort((a,b)=>a.unitNumber-b.unitNumber);
