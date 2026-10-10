@@ -2277,6 +2277,416 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "primary2-unit-03",
+    "title": "Community Helpers and Respect",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 2"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Three original class-specific introductory lessons with practice sheets and supported answers.",
+    "mapping": "Broad Primary subject framework association only. Specific Primary 2 outcomes are not established; independent qualified teacher review and supervised trial remain pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Status and teaching guidance",
+        "paragraphs": [
+          "Original SpeakOut introductory unit. Broad subject relationship only: exact NERDC class outcome alignment is not established. This is not a full-term scheme; teacher review and supervised trial are pending. Read stories aloud, accept pointing, writing, signs or communication aids, and avoid personal disclosures or forced role-play. Suggested pacing: short supported sessions with breaks. All unsafe situations are fictional and for discussion only."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: People who help",
+        "paragraphs": [
+          "Aim: discuss people who help using a safe familiar scenario and explain a reason for a choice.",
+          "Model: School communities have different roles. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Discuss helpers using fictional examples. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Which person can help a learner find a school book? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: A teacher or librarian. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Keeping a shared place safe",
+        "paragraphs": [
+          "Aim: discuss keeping a shared place safe using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Clear walkways support different people. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Draw a clear and blocked route on paper. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Why keep a walkway clear? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: To allow people to move safely. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Showing respect",
+        "paragraphs": [
+          "Aim: discuss showing respect using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Different families may use different respectful greetings. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Role-play a greeting through speech, signing or pictures. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Must everyone greet in the same way? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Reusable classroom practice sheet",
+        "paragraphs": [
+          "Task C1: Which person can help a learner find a school book? Explain your reason in words, pictures, signs or dictation.",
+          "Task C2: Why keep a walkway clear? Explain your reason in words, pictures, signs or dictation.",
+          "Task C3: Must everyone greet in the same way? Explain your reason in words, pictures, signs or dictation."
+        ]
+      },
+      {
+        "title": "Answers and facilitator support",
+        "paragraphs": [
+          "Answer C1: A teacher or librarian. Discuss helpers using fictional examples.",
+          "Answer C2: To allow people to move safely. Draw a clear and blocked route on paper.",
+          "Answer C3: No. Role-play a greeting through speech, signing or pictures."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary3-unit-03",
+    "title": "Responsibilities and Trusted Help",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 3"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Three original class-specific introductory lessons with practice sheets and supported answers.",
+    "mapping": "Broad Primary subject framework association only. Specific Primary 3 outcomes are not established; independent qualified teacher review and supervised trial remain pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Status and teaching guidance",
+        "paragraphs": [
+          "Original SpeakOut introductory unit. Broad subject relationship only: exact NERDC class outcome alignment is not established. This is not a full-term scheme; teacher review and supervised trial are pending. Read stories aloud, accept pointing, writing, signs or communication aids, and avoid personal disclosures or forced role-play. Suggested pacing: short supported sessions with breaks. All unsafe situations are fictional and for discussion only."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: Community responsibilities",
+        "paragraphs": [
+          "Aim: discuss community responsibilities using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Rules work better when their purpose is explained. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Make a drawing of a shared shelf. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Why do we put used books away? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: To help others find and use them. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Different viewpoints",
+        "paragraphs": [
+          "Aim: discuss different viewpoints using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Neighbours can prefer different activities and still cooperate. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Read fictional viewpoints without identifying children. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Can two people disagree respectfully? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: Yes. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Seeking help",
+        "paragraphs": [
+          "Aim: discuss seeking help using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Trusted adults can respond to concerns about unsafe items. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Practise an adult-help request without any real hazards. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Should children open unknown containers? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Reusable classroom practice sheet",
+        "paragraphs": [
+          "Task C1: Why do we put used books away? Explain your reason in words, pictures, signs or dictation.",
+          "Task C2: Can two people disagree respectfully? Explain your reason in words, pictures, signs or dictation.",
+          "Task C3: Should children open unknown containers? Explain your reason in words, pictures, signs or dictation."
+        ]
+      },
+      {
+        "title": "Answers and facilitator support",
+        "paragraphs": [
+          "Answer C1: To help others find and use them. Make a drawing of a shared shelf.",
+          "Answer C2: Yes. Read fictional viewpoints without identifying children.",
+          "Answer C3: No. Practise an adult-help request without any real hazards."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary4-unit-03",
+    "title": "Rights, Decisions and Shared Resources",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 4"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Three original class-specific introductory lessons with practice sheets and supported answers.",
+    "mapping": "Broad Primary subject framework association only. Specific Primary 4 outcomes are not established; independent qualified teacher review and supervised trial remain pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Status and teaching guidance",
+        "paragraphs": [
+          "Original SpeakOut introductory unit. Broad subject relationship only: exact NERDC class outcome alignment is not established. This is not a full-term scheme; teacher review and supervised trial are pending. Read stories aloud, accept pointing, writing, signs or communication aids, and avoid personal disclosures or forced role-play. Suggested pacing: short supported sessions with breaks. All unsafe situations are fictional and for discussion only."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: Rights and responsibilities",
+        "paragraphs": [
+          "Aim: discuss rights and responsibilities using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Classroom participation can include different communication methods. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Consider signs, pointing and communication aids. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Does participation always require speaking? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Decision-making together",
+        "paragraphs": [
+          "Aim: discuss decision-making together using a safe familiar scenario and explain a reason for a choice.",
+          "Model: A class may compare safe options and explain reasons. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Review fictional choices in a group. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: What improves a shared decision? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: Listening to different views. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Shared resources",
+        "paragraphs": [
+          "Aim: discuss shared resources using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Community materials need fair and accessible arrangements. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Use cards rather than personal disputes. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: What can help when two learners need one book? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: Agreeing on turns or finding another copy. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Reusable classroom practice sheet",
+        "paragraphs": [
+          "Task C1: Does participation always require speaking? Explain your reason in words, pictures, signs or dictation.",
+          "Task C2: What improves a shared decision? Explain your reason in words, pictures, signs or dictation.",
+          "Task C3: What can help when two learners need one book? Explain your reason in words, pictures, signs or dictation."
+        ]
+      },
+      {
+        "title": "Answers and facilitator support",
+        "paragraphs": [
+          "Answer C1: No. Consider signs, pointing and communication aids.",
+          "Answer C2: Listening to different views. Review fictional choices in a group.",
+          "Answer C3: Agreeing on turns or finding another copy. Use cards rather than personal disputes."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary5-unit-03",
+    "title": "Information, Differences and Public Care",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 5"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Three original class-specific introductory lessons with practice sheets and supported answers.",
+    "mapping": "Broad Primary subject framework association only. Specific Primary 5 outcomes are not established; independent qualified teacher review and supervised trial remain pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Status and teaching guidance",
+        "paragraphs": [
+          "Original SpeakOut introductory unit. Broad subject relationship only: exact NERDC class outcome alignment is not established. This is not a full-term scheme; teacher review and supervised trial are pending. Read stories aloud, accept pointing, writing, signs or communication aids, and avoid personal disclosures or forced role-play. Suggested pacing: short supported sessions with breaks. All unsafe situations are fictional and for discussion only."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: Reliable community information",
+        "paragraphs": [
+          "Aim: discuss reliable community information using a safe familiar scenario and explain a reason for a choice.",
+          "Model: A claim needs a source, and one rumour may be wrong. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Compare fictional notices with missing sources. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Should we share an unverified rumour as fact? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Welcoming differences",
+        "paragraphs": [
+          "Aim: discuss welcoming differences using a safe familiar scenario and explain a reason for a choice.",
+          "Model: People can have different abilities, languages and customs. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Invite optional examples without disclosure of family identity. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Can respectful cooperation include different languages? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: Yes. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Public spaces and care",
+        "paragraphs": [
+          "Aim: discuss public spaces and care using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Safe disposal depends on local waste services. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Use drawings; no physical waste handling. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Should a learner touch unknown medical waste? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Reusable classroom practice sheet",
+        "paragraphs": [
+          "Task C1: Should we share an unverified rumour as fact? Explain your reason in words, pictures, signs or dictation.",
+          "Task C2: Can respectful cooperation include different languages? Explain your reason in words, pictures, signs or dictation.",
+          "Task C3: Should a learner touch unknown medical waste? Explain your reason in words, pictures, signs or dictation."
+        ]
+      },
+      {
+        "title": "Answers and facilitator support",
+        "paragraphs": [
+          "Answer C1: No. Compare fictional notices with missing sources.",
+          "Answer C2: Yes. Invite optional examples without disclosure of family identity.",
+          "Answer C3: No. Use drawings; no physical waste handling."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary6-unit-03",
+    "title": "Evidence, Peace and Community Projects",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 6"
+    ],
+    "subject": "Social and Citizenship Studies",
+    "description": "Three original class-specific introductory lessons with practice sheets and supported answers.",
+    "mapping": "Broad Primary subject framework association only. Specific Primary 6 outcomes are not established; independent qualified teacher review and supervised trial remain pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Status and teaching guidance",
+        "paragraphs": [
+          "Original SpeakOut introductory unit. Broad subject relationship only: exact NERDC class outcome alignment is not established. This is not a full-term scheme; teacher review and supervised trial are pending. Read stories aloud, accept pointing, writing, signs or communication aids, and avoid personal disclosures or forced role-play. Suggested pacing: short supported sessions with breaks. All unsafe situations are fictional and for discussion only."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 1: Evidence in civic discussion",
+        "paragraphs": [
+          "Aim: discuss evidence in civic discussion using a safe familiar scenario and explain a reason for a choice.",
+          "Model: An argument is stronger when its evidence can be checked. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Compare fictional statements and their sources. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Does repeating a claim prove it is true? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 2: Resolving disagreements",
+        "paragraphs": [
+          "Aim: discuss resolving disagreements using a safe familiar scenario and explain a reason for a choice.",
+          "Model: Listening and identifying shared needs can support peaceful solutions. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Use fictional scenarios with adult facilitation. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: Is threatening someone a good way to settle a dispute? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: No. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Social and Citizenship Lesson 3: Planning a helpful project",
+        "paragraphs": [
+          "Aim: discuss planning a helpful project using a safe familiar scenario and explain a reason for a choice.",
+          "Model: A small community project needs goals, roles, and safety checks. Read and explain the words using appropriate local examples without assuming every home or community is the same.",
+          "Together: Plan a paper-based book-care idea. Invite a choice, question or explanation, and offer a comfortable alternative response mode.",
+          "Try: What should happen before a new community project begins? Rephrase or provide a picture if needed. Ask how the learner knows, rather than treating a guessed button response as independent understanding.",
+          "Check and answer: Plan safely with responsible adults. Revisit an alternative fictional example to distinguish remembering a button from grasping the idea.",
+          "Next step: record any support needed, adapt to the learner and obtain subject-teacher feedback before classroom use."
+        ]
+      },
+      {
+        "title": "Reusable classroom practice sheet",
+        "paragraphs": [
+          "Task C1: Does repeating a claim prove it is true? Explain your reason in words, pictures, signs or dictation.",
+          "Task C2: Is threatening someone a good way to settle a dispute? Explain your reason in words, pictures, signs or dictation.",
+          "Task C3: What should happen before a new community project begins? Explain your reason in words, pictures, signs or dictation."
+        ]
+      },
+      {
+        "title": "Answers and facilitator support",
+        "paragraphs": [
+          "Answer C1: No. Compare fictional statements and their sources.",
+          "Answer C2: No. Use fictional scenarios with adult facilitation.",
+          "Answer C3: Plan safely with responsible adults. Plan a paper-based book-care idea."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}
