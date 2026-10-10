@@ -1178,7 +1178,7 @@ export const KIDDIES_UNITS = [
     ],
     "subject": "Social and Citizenship Studies",
     "description": "Six adult-supported lessons on community roles, respectful greetings, shared rules, fairness, common resources and trusted help.",
-    "mapping": "Social and Citizenship Studies is a Primary 1–3 curriculum subject area. Exact Primary 1 outcome mapping and independent teacher validation are pending.",
+    "mapping": "Social and Citizenship Studies is a Primary 1–3 curriculum subject area. Exact Primary 1 outcome mapping is not established; independent teacher validation is pending.",
     "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
     "unitNumber": 6,
     "contentKind": "introductory-unit",
