@@ -8,7 +8,7 @@ test('Every published lesson has original interactive practice and useful answer
   const adventures=ADVENTURES[unit.id];assert.equal(adventures.length,unit.sections.filter(s=>/Lesson \d/.test(s.title)).length);
   for(const adventure of adventures){assert.ok(adventure.intro.length>50);for(const question of adventure.questions){count++;assert.ok(question.choices.length>=2);assert.ok(question.explanation.length>30);assert.ok(isCorrect(question,question.answer));assert.equal(isCorrect(question,-1),false);assert.equal(isCorrect(question,String(question.answer)),false);assert.ok(question.answer<question.choices.length);}}
  }
- assert.equal(count,80);
+ assert.equal(count,100);
  const nursery=ADVENTURES['nursery-unit-01'][2].questions;
  assert.equal(nursery[0].choices[nursery[0].answer],'Three');assert.equal(nursery[0].picture,3);
  assert.equal(nursery[1].choices[nursery[1].answer],'Two');assert.equal(nursery[1].picture,2);

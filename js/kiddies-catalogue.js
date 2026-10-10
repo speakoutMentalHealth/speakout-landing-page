@@ -855,6 +855,222 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "nursery-unit-05",
+    "title": "Talk, Listen and Tell",
+    "educationStages": [
+      "nursery"
+    ],
+    "classLevels": [],
+    "subject": "Supported communication and storytelling",
+    "description": "Four adult-led language adventures: ask for help, describe on and under, follow supported steps and retell a little story.",
+    "mapping": "Partial relationships to NERDC pre-primary responding, supported directions and retelling (printed pp.27–30 / PDF pp.44–47). Exact lesson outcome alignment is not established; position and help-request examples are original SpeakOut aims. Independent teacher validation remains pending.",
+    "source": "https://ppec.nerdcportals.com.ng/pre_primary/web/ppec_tg.pdf",
+    "unitNumber": 5,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation",
+        "paragraphs": [
+          "Prepare a safe book, paper and large drawings of a book and table. An adult can do all drawing and object movement. Keep the book light, the table stable and the activity on a comfortable surface. Do not ask a child to crawl under furniture, lift furniture, balance books overhead or reach beyond a comfortable range. Paper drawings are sufficient. Avoid small loose objects, sharp items and recordings. Supervise throughout; sessions of around ten minutes are suggestions, with breaks whenever wanted.",
+          "Agree a comfortable response route before beginning: speech, a sign, pointing, dictation, a familiar communication aid or directing an adult. Use home-language explanation to establish meaning before introducing English position words. Eye contact, touch, public speaking and body movement are optional. Never withhold a break, help or ordinary care until a child produces an English word or a polite formula. A request that communicates a need deserves a response even when it is brief, unspoken or unfamiliar to the adult.",
+          "Offer one clear example, practise together and then change one detail. Repeat or simplify when needed. The screen choices check recognition with support; they do not establish independent communication, listening or memory. During paper work a child needs neither a device nor an account. Keep actual responses and support separate from the website's exploration stars."
+        ]
+      },
+      {
+        "title": "Lesson 1: A way to ask for help",
+        "paragraphs": [
+          "Aim: use or recognise an agreed way of asking for help or a pause. Present a book that an adult holds closed. Explain that this is a pretend activity, and demonstrate help without deliberately frustrating the learner.",
+          "Model: say, “Help with the book, please,” while showing the agreed help sign or picture. Open the book and respond, “I can help you.” Then model a pause request and stop the activity. The message is the important part. Please is a useful example word, not a condition for receiving help. Show that signs, words and a communication aid can carry the same request.",
+          "Together: invite the learner to choose whether to look at the book or pause. Allow a clear response through their established route, then follow it. Ask whether they want adult help opening the book; do not force the learner to struggle first. If the signal is unclear, offer two labelled options and check what they mean rather than assuming silence is agreement.",
+          "Try: use another familiar, safe situation such as asking an adult to repeat a story sentence. The learner can indicate “again” or a help symbol. Practise during comfortable moments, without testing distress tolerance or withholding something wanted. Do not turn this into a disclosure exercise about private experiences.",
+          "Check and answers: an agreed help sign communicates help; an agreed pause sign communicates a pause. A spoken “help”, a signed request or a selected help symbol is acceptable. There is no single required wording. Next step: practise the same request in another familiar activity, or establish a reliable response route with the caregiver before adding vocabulary."
+        ]
+      },
+      {
+        "title": "Lesson 2: On and under in a drawing",
+        "paragraphs": [
+          "Aim: distinguish two positions of a book relative to a drawn table. Draw a table with a clear top and legs. In Picture A the book rests on the tabletop; in Picture B it is beneath the tabletop, between the legs, with a visible gap above it.",
+          "Model: describe Picture A: “The book is on the table.” Point to where the book touches the top. Describe Picture B: “The book is under the table.” Show the book below the tabletop. Explain that the same object can be in a different position. These examples teach position, not a rule about where books must always be kept.",
+          "Together: show one picture at a time and offer on or under. An adult can read the labels and describe the drawing. A learner using an established communication aid can select the position word. Revisit the drawings if the words are unfamiliar; do not judge the learner's spatial understanding solely by an English response.",
+          "Try: draw the same two positions again with the table facing the other way on the page. Keep the book's relationship to the top clear. Invite a matching description, or ask the learner to direct the adult to draw a book on the table. No child needs to get under a real table or carry a book.",
+          "Check and answers: Picture A is on; Picture B is under. The label depends on the book's position relative to the table, not its colour or the side of the page. Next step: repeat the two words with clear drawings and a familiar object. Add a new position word only after these examples are comfortable."
+        ]
+      },
+      {
+        "title": "Lesson 3: First this, then that",
+        "paragraphs": [
+          "Aim: follow or direct two related steps with support. Prepare a book drawing and a circle drawing on one sheet. Explain the task: “First show the book. Then show the circle.” Read slowly, indicate the two drawings and offer a repeat whenever wanted.",
+          "Model: show the book first, then the circle. Say the ordering words as each step happens. Demonstrate how to ask for the instruction again using the learner's familiar request. Instructions here are invitations to a safe learning task, not a lesson that every adult instruction must be obeyed.",
+          "Together: give the two steps again. The learner can point, sign the labels, name them or direct the adult's pointing. Pause between steps if needed. If two steps are too much, practise one at a time and then join them. Do not hide the sheet or forbid another explanation in order to test memory.",
+          "Try: reverse the instruction: “First show the circle. Then show the book.” Keep the pictures in their original places so the learner has to follow the stated order rather than always move left to right. Offer the full instruction again before asking for a response. Movement is optional; the adult can act on the learner's directions.",
+          "Check and answers: the first example requires book then circle; the reversed example requires circle then book. Asking for a repeat is a useful communication response. Next step: retain one-step support or practise another pair of related picture choices. Two steps completed after adult modelling do not prove independent recall of new directions."
+        ]
+      },
+      {
+        "title": "Lesson 4: Tell our little story again",
+        "paragraphs": [
+          "Aim: identify stated details and retell a three-event fictional sequence with support. Read: “Amina chooses a book. Musa opens the book. They look at a picture together.” Explain that these are pretend characters. Draw three simple pictures or describe each event aloud.",
+          "Model: say, “First Amina chooses the book. Next Musa opens it. Then they look at a picture together.” Point to the matching drawings. Re-read the story when explaining each event. Say that the story does not tell us the book's colour; imagining a colour for a new drawing is different from claiming it was stated.",
+          "Together: ask who opens the book and what happens last. Offer pictures or two choices if helpful. A learner can select events while the adult narrates. Treat that as supported retelling rather than independently spoken language. A child need not act out a character, use a particular voice or speak to a group.",
+          "Try: let the learner direct the adult to arrange the three drawings in story order. Then invite a retelling through their preferred method. Exact sentences are unnecessary when the order and meaning stay the same. If three events are demanding, practise choosing and opening first, then add looking at the picture in a later session.",
+          "Check and answers: Amina chooses the book, Musa opens it, and looking at a picture together is last. The book's colour is not stated. “The story does not say” is an accurate response, not a failure. Next step: re-read and retell another short fictional sequence, with support adjusted to the learner rather than to star totals."
+        ]
+      },
+      {
+        "title": "Reusable activity sheet",
+        "paragraphs": [
+          "Adult preparation: use a separate paper box for each prompt. Box A has large HELP and PAUSE symbols chosen with the caregiver. Box B has the two book-and-table drawings from Lesson 2. Box C has a book drawing and a circle. Box D has the three story events. Read labels aloud and explain the symbols before asking for choices. Work on one box at a time; handwriting and cutting are unnecessary.",
+          "Prompt A: show an agreed way to ask for help opening the book, then a way to request a pause.",
+          "Prompt B: describe or indicate which book is on the table and which is under it.",
+          "Prompt C: direct the adult to show the circle first and the book next.",
+          "Prompt D: retell Amina and Musa's three events and choose what happens last.",
+          "Answer guidance: A accept established help and pause requests through any reliable response route; respond to the actual request. B the book touching the tabletop is on; the book beneath the top is under. C circle then book. D Amina chooses, Musa opens, both look at a picture; looking together is last. Do not supply an invented book colour or demand a spoken sentence to recognise understanding."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Record the task, response method, adult support and next small teaching step privately, using a local code if needed. Useful notes include “selected the pause symbol after its meaning was demonstrated”, “chose under from two descriptions” or “directed two steps after a repeat”. These descriptions record what happened without labelling a child by a diagnosis or a score.",
+          "Use demonstrated with current support, developing with modelling, or not observed yet. Fatigue, unfamiliar vocabulary and an inaccessible response route can affect participation. Adapt before interpreting a missed choice. Keep requests for help and breaks available throughout. Do not collect voice recordings, photographs, addresses or personal disclosures for this unit. Website stars celebrate exploring; actual supported communication guides the adult's next lesson."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary1-unit-05",
+    "title": "Read, Ask and Solve",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 1"
+    ],
+    "subject": "English Studies and Mathematics",
+    "description": "Six adult-led adventures: shared-story evidence, questions, pin/tin/pit/sit, number order, two parts of ten and represented problems within ten.",
+    "mapping": "English Studies and Mathematics match Primary 1–3 subject headings in the national framework. Detailed revised Primary 1 outcome alignment is not established. This original continuation is not a full term or subject programme.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 5,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation and pacing",
+        "paragraphs": [
+          "Prepare paper, a safe familiar book and large drawings of circles. An adult may write and draw while the learner directs. Use pictured groups rather than coins, beads, pins or other small loose counters. Pin is a reading example only: show a drawing, never give a sharp pin to a child. Keep all activity on a comfortable surface and supervise pencil use. Suggested sessions are about fifteen minutes with pauses, not a required pace. Paper work needs neither a device nor a login.",
+          "Begin with a short conversation or supported choice to see which earlier ideas are comfortable. Return to smaller numbers or familiar sounds when useful. Use home-language explanation for meaning, then model the English words or sounds being taught. Accept speech, signs, pointing, dictation or an established communication aid. Do not make independent handwriting, rapid reading, eye contact or English fluency a condition for demonstrating number understanding. No photographs, recordings or private mental-health disclosures are required.",
+          "The longer story is for shared reading; it is not limited to the phonics set in Lesson 3. Read it aloud unless the learner can already read its words. Teach one new demand at a time and distinguish an answer after modelling from independent understanding. The site's choices and stars support practice, while adult observation of explanation and fresh examples guides teaching."
+        ]
+      },
+      {
+        "title": "English Lesson 1: Find evidence in a shared story",
+        "paragraphs": [
+          "Aim: answer who and where questions using stated story details. Read the original story: “Bala has a book. Zainab asks to look at it. Bala puts the book on the table. They look at one picture together.” Explain that the characters are fictional. Read aloud first and point to simple drawings of the events.",
+          "Model: ask, “Who asks to look at the book?” Re-read the second sentence and answer Zainab. Ask, “Where does Bala put the book?” Re-read the third sentence and answer on the table. In the second sentence it refers to the book; in the last sentence they refers to Bala and Zainab. Explain those links by naming the characters and object again.",
+          "Together: arrange four event drawings in the stated order: Bala has the book, Zainab asks, Bala puts it on the table, and both look at a picture. Read each sentence as the learner chooses or directs the matching drawing. Offer two events at a time when four are too demanding; working memory should not obscure story meaning.",
+          "Try: ask whether the story tells us the book's colour or the kind of picture. The learner can choose “the story does not say” and explain by checking the sentences with an adult. Do not assume the drawn book's colour was in the written story. Invite a short retelling through a comfortable response route; exact wording is unnecessary.",
+          "Check and answers: Zainab asks to look; Bala puts the book on the table; looking at a picture together happens last. The book's colour and the picture's subject are not stated. Next step: repeat who and where with a new short shared story, retaining adult reading where needed. One correct choice does not establish independent reading of the passage."
+        ]
+      },
+      {
+        "title": "English Lesson 2: Ask a clear written question",
+        "paragraphs": [
+          "Aim: distinguish a statement from a question and build one simple question about position. Use the story's book and table drawing. Explain that a statement gives information and a question asks for information. Focus on the message before introducing the written end mark.",
+          "Model: read “The book is on the table.” and “Where is the book?” aloud with a natural voice. The first tells us its position; the second asks for it. Point to the capital letter at each start. Show the full stop after the statement and the question mark after the question. Do not teach that every question must begin with where; it is the example used here.",
+          "Together: offer the words “Where / is / the / book” and the two end marks. Read each word and let the learner direct a meaningful order. Model “Where is the book?” and answer “The book is on the table.” A learner may dictate, choose a word sequence or use a familiar communication aid while an adult writes.",
+          "Try: draw the book under the table and invite the same question with a matching answer. Then compare “Where is the book?” with “The book is under the table.” Ask which one requests information. Neither handwriting accuracy nor an exaggerated questioning tone should be the deciding clue to understanding.",
+          "Check and answers: Where is the book? is the question and uses a question mark. The book is under the table. is a statement and uses a full stop. An appropriate response to the new picture is under the table. Next step: practise another familiar where question, then introduce a different question word only when meaning is secure."
+        ]
+      },
+      {
+        "title": "English Lesson 3: Blend pin, tin, pit and sit",
+        "paragraphs": [
+          "Aim: revisit p and t and introduce short i and n in a small supported blending set. Revisit s from earlier work. This is a SpeakOut example sequence, not a complete phonics programme or a claim that every letter has one sound. A teacher should check the pronunciation model against the school's reading approach and the learner's language experience.",
+          "Model: use the short vowel heard in pin, and model n without adding an extra vowel. Produce p and t briefly rather than as puh and tuh. Distinguish letter names from the sounds being blended. Write pin and indicate p-i-n, blending into the whole word. Explain pin with a large drawing and a description of a small fastening object; there is no real sharp object to handle.",
+          "Together: blend t-i-n into tin and explain the word with a picture of a metal container. Compare pin and tin: the first sound changes while the last two sounds stay the same. Let the learner choose a matching word after an adult model, then blend if comfortable. Record that support rather than treating repetition as independent reading.",
+          "Try: blend p-i-t into pit, meaning a hole in the ground, using a drawing rather than visiting a real pit. Blend s-i-t into sit, explaining the action without requiring body movement. Compare pin and pit: the last sound changes. Read examples in a new order so a memorised button position is not mistaken for recognition. The website provides text prompts, not a pronunciation recording.",
+          "Check and answers: p-i-n forms pin; t-i-n forms tin; p-i-t forms pit; s-i-t forms sit. Pin and tin differ at the start; pin and pit differ at the end. Next step: revisit individual modelled sounds and word meanings before adding new words. A learner may select or indicate a word through an established aid without speaking aloud."
+        ]
+      },
+      {
+        "title": "Mathematics Lesson 4: Find a number's place",
+        "paragraphs": [
+          "Aim: use an ordered number strip from zero to ten to identify a number immediately before or after another. Draw separate, equally spaced boxes labelled 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Read the labels together. This is a representation of order, not a ruler or a lesson in measuring length.",
+          "Model: point to 7, then the next box, 8. Say, “Eight is immediately after seven on this strip.” Point to 4, then the previous box, 3. Say, “Three is immediately before four.” Explain that immediately means the neighbouring number, not any later or earlier number. Zero is the first label on this particular strip.",
+          "Together: cover the label between 5 and 7 while leaving the box visible. Read 5, space, 7 and find 6 using the full strip or counted drawings. The adult can indicate boxes while the learner speaks, signs or selects a numeral. Revisit quantity alongside numerals if the learner recognises the sequence only as a memorised chant.",
+          "Try: ask for the missing label in 8, space, 10, then for the number immediately after 0. Keep the full strip available and describe it aloud when needed. Do not require left/right vocabulary as an extra test; identify the next or previous labelled box directly. Return to zero through five when a smaller range helps.",
+          "Check and answers: after 7 is 8; before 4 is 3; between 5 and 7 is 6; between 8 and 10 is 9; after 0 is 1. Next step: use a new missing label in the same range and ask how the learner checked it, with support. Do not infer number magnitude understanding from sequence choices alone."
+        ]
+      },
+      {
+        "title": "Mathematics Lesson 5: Two parts make ten",
+        "paragraphs": [
+          "Aim: show ten as two visible parts, including six and four or seven and three. Draw ten circles as two separated groups. Count each circle once and state both group quantities. Use these pictures to connect the parts with the whole; do not require memorised number facts before modelling.",
+          "Model: draw Group A with six circles and Group B with four. Count the first group, the second group and then every circle across both groups. Say, “Six and four make ten,” and write 6 + 4 = 10. Label the numeral ten clearly so it is not read as separate group sizes one and zero. No place-value lesson is claimed here.",
+          "Together: draw seven circles and three circles. Count to check both parts and the total. Write 7 + 3 = 10 and match each numeral with its group. A learner can direct the adult's tracking and use a communication aid; a large spoken explanation is unnecessary. Keep all ten circles visible, with no colour-only grouping clue.",
+          "Try: reverse the group positions in the six-and-four example. Ask whether the total changes when the same groups change places, without adding or removing circles. Count to check, then state 4 + 6 = 10. If tracking ten is difficult, revisit a smaller whole such as five as two and three before returning to ten.",
+          "Check and answers: six plus four, seven plus three and four plus six each total ten. The parts stay the same quantity when their positions change. Next step: explore another pictured pair, such as five and five, only with appropriate support. Correct choices here do not demonstrate recall of every combination or independent mental calculation."
+        ]
+      },
+      {
+        "title": "Mathematics Lesson 6: Show what the problem does",
+        "paragraphs": [
+          "Aim: represent a simple joining or taking-away story before deciding on a calculation. Use circles representing drawings, not physical objects to collect. Read each problem aloud so decoding the written question is not an extra barrier to number work.",
+          "Model: “Bala draws six circles. Then he draws two more. How many circles has he drawn altogether?” Draw six first, then a separate group of two. Count all circles and write 6 + 2 = 8. Explain that two more are added to the existing group. Do not teach a single keyword as a rule that always chooses an operation; show the actual change.",
+          "Together: “Zainab draws nine circles. She crosses out three. How many are not crossed out?” Draw nine and visibly cross out exactly three. Count only the six uncrossed circles and write 9 − 3 = 6. The starting quantity is nine, the change is crossing out three and the remaining quantity is six. Avoid treating all nine visible outlines as the answer.",
+          "Try: let the learner direct the adult's drawing for “Five circles, then three more,” or “Eight circles, with two crossed out.” Ask whether each example joins or takes away, and then count the result. The learner may indicate groups and changes rather than write an equation. If uncertain, act through drawings together instead of asking for a guess.",
+          "Check and answers: 6 + 2 = 8; 9 − 3 = 6; 5 + 3 = 8; 8 − 2 = 6. The addition example counts both groups; the subtraction example counts only uncrossed circles. Next step: use another represented problem within a comfortable range. A button answer alone does not prove the learner selected or explained the operation independently."
+        ]
+      },
+      {
+        "title": "English practice sheet",
+        "paragraphs": [
+          "Task E1: an adult re-reads the four-sentence Bala and Zainab story. Answer who asks to look, where Bala puts the book, what happens last and whether the book's colour is stated. Use drawings, speech, signs or dictation.",
+          "Task E2: arrange Where / is / the / book and select a full stop or question mark. Give a matching answer for a drawing of the book under the table. An adult can write the learner's chosen sequence and punctuation.",
+          "Task E3: after adult sound modelling, blend p-i-n, t-i-n, p-i-t and s-i-t. Match to the written words and safe pictures. Compare which sound changes between pin and tin, then between pin and pit. No real pin, tin container or pit visit is needed."
+        ]
+      },
+      {
+        "title": "Mathematics practice sheet",
+        "paragraphs": [
+          "Task M1: use the complete zero-to-ten strip to fill 5, space, 7 and 8, space, 10. Find the number immediately after 7 and immediately before 4. The adult may read numerals and the learner may indicate the box.",
+          "Task M2: draw groups of six and four, then seven and three. Count the parts and both totals. Reverse the six-and-four group positions without changing any circles. Describe or indicate whether the total changes.",
+          "Task M3: draw five circles and then three more; find the total. On a new drawing show eight circles and cross out two; count those not crossed out. Explain or indicate the action before matching an equation."
+        ]
+      },
+      {
+        "title": "Answer guidance and support",
+        "paragraphs": [
+          "E1: Zainab asks to look; Bala puts the book on the table; both look at one picture last; the colour is not stated. Preserve those facts while accepting a retelling in the learner's own words. E2: Where is the book? uses a capital start and question mark; The book is under the table. is a suitable answer. A meaningful dictated response is valid without independent handwriting. E3: pin, tin, pit and sit; pin/tin change at the first sound, pin/pit at the last. Word selection after modelling should be recorded as supported.",
+          "M1: missing labels 6 and 9; after 7 is 8; before 4 is 3. M2: 6 + 4 = 10 and 7 + 3 = 10; reversing the first pair gives 4 + 6 = 10, so the total stays ten. M3: 5 + 3 = 8 and 8 − 2 = 6. Count every drawn circle once for addition and only uncrossed circles for subtraction. Revisit representations or smaller quantities when the calculation does not yet match the action."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Record the particular example, response route, adult support and next teaching step privately. Distinguish story understanding, supported sound blending, numeral order, part-whole counting and choosing the represented action. A learner may understand the number problem while needing language or motor support. Use demonstrated with current support, developing with modelling, or not observed yet, rather than a diagnostic label or a timed score.",
+          "Try a fresh supported example before assuming transfer. Provide breaks and repeat explanations without penalties. Stars record exploration on the current browser, not school grades, reading levels or mastery. Choose the next lesson from the learner's actual responses; reaching the last lesson does not require completing another unit first."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}
