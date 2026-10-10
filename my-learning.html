@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#071b3a">
+  <title>My Learning | SpeakOut</title>
+  <link rel="icon" href="logo.png"><link rel="stylesheet" href="css/learner-portal.css">
+  <link rel="stylesheet" href="css/pages/my-learning.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="nav"><div class="container nav-inner"><a class="brand" href="student-dashboard.html"><img src="logo.png" width="44" height="44" alt="SpeakOut"><div><strong>SpeakOut</strong><p>My Learning</p></div></a><nav id="roleNav" class="links" aria-label="Learner navigation"></nav></div></header>
+  <main id="main-content">
+    <section class="hero"><div class="container"><span class="kicker">Learn at your level</span><h1 id="learningTitle">Your learning section</h1><p>Courses and reading materials organised for your education level and class.</p></div></section>
+    <section><div class="container">
+      <p class="notice" id="learningStatus" role="status">Loading your learning section…</p>
+      <div id="learningContent" hidden>
+        <form id="placementForm" class="panel">
+          <h2>Your education level</h2><p id="placementHelp">Choose your section and class to find suitable learning.</p>
+          <fieldset class="stage-fieldset"><legend>Education section</legend><div id="stageChoices" class="stage-choices"></div></fieldset>
+          <div class="placement-row"><div class="class-field"><label for="classChoice">Class / level</label><select id="classChoice" required><option value="">Choose a class</option></select></div><button id="savePlacement" class="btn primary" type="submit">Save my learning level</button></div>
+        </form>
+        <section id="catalogue" hidden aria-labelledby="sectionHeading">
+          <div class="learning-heading"><div><span class="label" id="placementLabel"></span><h2 id="sectionHeading">Learning for your class</h2></div><label for="learningSearch">Find a subject or title<input id="learningSearch" type="search" placeholder="Search your section"></label></div>
+          <nav class="learning-tabs" aria-label="Learning content"><button type="button" id="coursesTab" aria-pressed="true">Courses <span id="courseCount">0</span></button><button type="button" id="materialsTab" aria-pressed="false">Materials <span id="materialCount">0</span></button></nav>
+          <p id="catalogueNote" class="learning-note"></p><p id="resultCount" aria-live="polite"></p>
+          <div class="learning-grid" id="learningCards"></div>
+        </section>
+      </div>
+    </div></section>
+  </main>
+  <script type="module" src="js/learner/my-learning.js"></script>
+</body>
+</html>

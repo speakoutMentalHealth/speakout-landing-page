@@ -1,0 +1,38 @@
+name: Education Sections Browser
+on:
+  pull_request:
+    branches: [main]
+    paths: ["my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
+  push:
+    branches: [main]
+    paths: ["my-learning.html", "js/education-levels.js", "js/learner/my-learning.js", "css/pages/my-learning.css", "tests/education-sections-browser.mjs", ".github/workflows/education-sections-browser.yml"]
+permissions:
+  contents: read
+jobs:
+  learning-sections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm install --no-save playwright@1.56.1 axe-core@4.10.3
+      - run: npx playwright install --with-deps chromium
+      - name: Start portal
+        run: |
+          python3 -m http.server 4173 > /tmp/education-server.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/my-learning.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Check education sections and accessible class filtering
+        run: node tests/education-sections-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: education-sections-evidence
+          path: artifacts/education-sections
+          retention-days: 30

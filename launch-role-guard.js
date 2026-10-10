@@ -640,6 +640,10 @@ const linksByRole = {
       "student-dashboard.html"
     ],
     [
+      "My Learning",
+      "my-learning.html"
+    ],
+    [
       "Programs",
       "programmes.html"
     ],

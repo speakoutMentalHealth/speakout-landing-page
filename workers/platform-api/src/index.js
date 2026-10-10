@@ -86,7 +86,7 @@ function publicCourseMetadata(course = {}) {
   const fields = [
     "id", "title", "courseType", "provider", "providerLogo", "category", "audience", "difficulty", "duration",
     "description", "status", "featured", "free", "certificateEligible", "completionMethod", "slug", "instructor",
-    "level", "accessType", "coverUrl", "shortDescription", "fullDescription", "outcomes", "prerequisites", "tags",
+    "level", "educationStages", "classLevels", "subject", "accessType", "coverUrl", "shortDescription", "fullDescription", "outcomes", "prerequisites", "tags",
     "lessonCount", "minimumCompletion", "minimumScore", "instructionalStandard", "instructionalStructure", "externalProvider",
     "externalUrl", "courseUrl", "providerCourseUrl", "providerUrl", "url", "enrollmentUrl", "contactUrl"
   ];
