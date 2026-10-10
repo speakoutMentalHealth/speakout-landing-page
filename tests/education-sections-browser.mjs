@@ -15,7 +15,7 @@ const courses = [course("Primary 2 course", ["primary"], ["Primary 2"]), course(
 const books = [book("Primary 2 material", ["primary"], ["Primary 2"]), book("Primary 3 material", ["primary"], ["Primary 3"]), book("Secondary material", ["secondary"])];
 async function setup(options = {}, width = 390, hash = "") {
   const context = await browser.newContext({ viewport: { width, height: 844 } });
-  await context.addInitScript(data => { window.fixture = data; window.writes = []; }, { courses, books, profile: { role:"student", status:"approved", schoolId:"", schoolCode:"", ...options.profile }, preference: options.preference || null, failSave: options.failSave || false, failCourses: options.failCourses || false });
+  await context.addInitScript(data => { window.fixture = data; window.writes = []; }, { courses: options.withdrawCourse ? [...courses, { id: "harvard-cs50-scratch", status: "draft" }] : courses, books, profile: { role:"student", status:"approved", schoolId:"", schoolCode:"", ...options.profile }, preference: options.preference || null, failSave: options.failSave || false, failCourses: options.failCourses || false });
   await context.route("**/launch-role-guard.js", route => route.fulfill({contentType:"application/javascript",body:`export function renderRoleNav(){document.getElementById('roleNav').innerHTML='<a href="student-dashboard.html">Dashboard</a>'} export function requireRoles(roles,callback){if(window.fixture.profile.status==='approved')callback({uid:'fixture-user'},window.fixture.profile);else location.href='/auth.html'}` }));
   await context.route("**/firebase-config.js", route => route.fulfill({contentType:"application/javascript",body:"export const db={};"}));
   await context.route("**/firebase-firestore.js", route => route.fulfill({contentType:"application/javascript",body:`export const doc=(_db,path,id)=>({path,id});export const collection=(_db,path)=>({path});export const serverTimestamp=()=> 'server-time';export async function getDoc(ref){const value=window.fixture.preference;return{exists:()=>Boolean(value),data:()=>value}};export async function setDoc(ref,value){if(window.fixture.failSave)throw Error('save failed');window.writes.push({ref,value});window.fixture.preference=value};export async function getDocs(ref){if(window.fixture.failCourses&&ref.path==='courses')throw Error('offline');const data=ref.path==='courses'?window.fixture.courses:window.fixture.books;return{forEach:callback=>data.forEach(item=>callback({id:item.id,data:()=>item}))}};` }));
@@ -72,6 +72,14 @@ try {
   {
     const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'}},390,'#materials');
     await page.getByRole('heading',{name:'Primary 2 material',exact:true}).waitFor();await page.getByLabel('Find a subject or title').fill('not-in-the-catalogue');await page.getByRole('heading',{name:'No matching titles'}).waitFor();await context.close();
+  }
+  for (const withdrawCourse of [false, true]) {
+    const {context,page}=await setup({preference:{educationStage:'tertiary',classLevel:'100 Level'},withdrawCourse});
+    await page.getByRole('heading',{name:'Tertiary course',exact:true}).waitFor();
+    assert.equal(await page.getByRole('heading',{name:'Primary 2 course',exact:true}).count(),0);
+    const bundled=page.getByRole('heading',{name:"CS50's Introduction to Programming with Scratch",exact:true});
+    if(withdrawCourse) assert.equal(await bundled.count(),0); else await bundled.waitFor();
+    await context.close();
   }
   await writeFile(`${evidence}/summary.json`,JSON.stringify({scope:'Mocked Firebase browser checks; live persistence is verified separately by emulator rules tests.',reports},null,2));
   console.log('Education sections: class filtering, school placement, saved preference, save failure, partial catalogue failure and responsive accessibility passed.');
