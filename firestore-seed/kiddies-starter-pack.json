@@ -1,0 +1,404 @@
+{
+  "version": 1,
+  "generatedFrom": "content/kiddies/*.md",
+  "status": "draft",
+  "reviewStatus": "pending-teacher-review",
+  "sources": [
+    {
+      "title": "UNICEF play-based learning reference (pedagogy only; no text copied)",
+      "url": "https://www.unicef.org/sites/default/files/2018-12/UNICEF-Lego-Foundation-Learning-through-Play.pdf"
+    },
+    {
+      "title": "NERDC curriculum portal for teacher mapping; no alignment claimed",
+      "url": "https://nerdc.gov.ng/content_manager/new_curriculum_home.html"
+    }
+  ],
+  "books": [
+    {
+      "educationStages": [
+        "nursery"
+      ],
+      "classLevels": [
+        "Nursery 1",
+        "Nursery 2",
+        "Nursery 3"
+      ],
+      "subject": "Early language and numeracy",
+      "category": "foundational-learning",
+      "status": "draft",
+      "reviewStatus": "pending-teacher-review",
+      "sourceType": "original-ai-assisted",
+      "rightsNote": "Original AI-assisted SpeakOut draft; human originality, educational suitability and rights review pending. No third-party text or imagery was intentionally included.",
+      "curriculumAlignment": "not-verified",
+      "version": 1,
+      "accessType": "free",
+      "price": 0,
+      "currency": "NGN",
+      "coverUrl": "images/logo.png",
+      "tags": [
+        "kiddies-corner",
+        "original-draft",
+        "adult-led",
+        "offline-activities"
+      ],
+      "id": "speakout-kiddies-nursery-activity-book-v1",
+      "title": "Nursery: Talk, Notice and Count",
+      "author": "SpeakOut editorial draft (AI-assisted; review pending)",
+      "shortDescription": "Six original adult-supported activity chapters for teacher review. Supplementary practice; not an official curriculum or complete class programme.",
+      "chapters": [
+        {
+          "id": "chapter-1",
+          "title": "1. Welcome to shared learning",
+          "content": "<h3>For the adult\nThis activity book is an original SpeakOut draft for Nursery learning. It offers shared talking, listening, counting and pattern activities. It is not an official curriculum, a developmental test or a promise about what every child should achieve. A teacher should review the activities for the class, language, environment and individual learners before use. Older learners are welcome to explore them too. Nursery is the content label, not an access boundary.</h3>\n<p>Choose one small activity for a session. Read instructions yourself and invite the child to take part through speech, pointing, drawing, movement or another familiar form of communication. An adult operates the device; the child does not need an account, independent reading or continuous screen time to complete the activity. Print the page or copy the prompt onto paper if connectivity is weak. The suggested five-to-ten-minute activity window is flexible: pause sooner whenever the child wants a break.</p>\n<p>Prepare a clear space and a few large, clean, familiar objects such as cups, folded cloths or empty cardboard boxes with smooth edges. Do not use coins, seeds, beads, bottle caps or other small loose pieces for these nursery activities. Check materials yourself, supervise throughout and remove damaged objects. Scissors, staples, sharp edges, cords and plastic bags are unnecessary. Paper drawings and the adult&#39;s hands can replace physical objects. There is no need to purchase a special learning kit.</p>\n<p>Begin with an invitation: “Would you like to look at these pictures with me?” Offer two choices and accept “not now”. Sit where the child can comfortably see or reach. For a child who cannot comfortably handle the materials, let them direct you by pointing, looking, speaking or using their usual communication method. Ask the family or teacher about helpful adaptations; do not assume that one adaptation suits every child.</p>\n<p>Use a language the child understands for discussion. You can model an English word alongside a familiar home-language word, but do not mark the home language as wrong. Allow a pause after each invitation. The adult&#39;s job is to respond to the child&#39;s idea, not demand a rehearsed answer. A quiet child can still participate through choosing, observing or gesturing.</p>\n<h3>Try together\nPlace two large objects on the table. Say what you notice about one. Invite the child to choose the other and show one thing they notice. Finish by letting the child decide where the objects should go. Say, “You chose the cup. I saw you point to it.” This describes participation without comparing the child with classmates.</h3>\n<h3>Small learning record\nRecord the activity name, the date and one observation: “Pointed to a familiar object”, “Used a home-language word”, or “Preferred to watch today”. Keep this note with the responsible adult. Do not put children&#39;s full names, photographs, voices or personal stories into the platform for this activity. No public leaderboard or score is needed. Use the note to decide what to offer next, not to label the child.</h3>"
+        },
+        {
+          "id": "chapter-2",
+          "title": "2. Notice and name familiar things",
+          "content": "<h3>Learn together\nWords are useful when they help us share something we can notice. Place a cup, a folded cloth and a book where the child can see them. Describe one item in a simple sentence: “This is a cup.” Then add one meaningful detail: “The cup is empty.” Invite a choice: “Which one would you like to talk about?” There is no required sequence of objects and no need to memorise a list of vocabulary.</h3>\n<p>If the child points without speaking, acknowledge the choice and model the word once. If the child uses a different name from their home language, accept it and ask the adult who knows that language to help with the English equivalent. Avoid pretending to know a translation. If the child says a longer sentence, respond to its meaning instead of interrupting every small language error. You can naturally repeat a clear version in your reply.</p>\n<h3>The picture basket\nDraw three simple pictures: a cup, a book and a cloth. They do not need to be realistic artwork. Place the real objects next to the pictures and invite the child to match one picture to an object. Then move the pictures and ask whether the match still works. The purpose is to notice a connection between a picture and what it represents, not to test drawing skill or speed.</h3>\n<p>Try a playful description: “I am thinking of something we can open and look inside. It has pages.” Let the child choose the book or offer another sensible idea. Ask, “What helped you choose?” A gesture towards the pages is an answer. If the description is confusing, show the object and explain. Do not turn an adult&#39;s unclear clue into a child&#39;s failure.</p>\n<h3>Two useful words\nModel two position words with the large objects: “beside” and “inside”. Put the cloth beside the empty box, then inside it. Ask the child to show one position or direct you to make it. Switch roles so the child can give a clue. Use pictures if handling objects is difficult. Avoid introducing many new position words in the same session.</h3>\n<h3>A tiny story\nTell this original story: “Amina took her book to the mat. Musa brought a cup. They put the cup beside the book. Amina opened the book and showed Musa a picture.” Ask who brought the cup and where they put it. The child may point to the cup, say a name or act out the placement. Retell the story together using your own objects and names if that makes it more familiar.</h3>\n<h3>Adult observation and extension\nNotice whether the child identifies an object, connects a picture with it or uses a position word in any familiar language. Choose one observation, not a score for every prompt. Next time, swap in a different safe, familiar object. For a learner ready for more, invite two details such as size and use. For a learner who wants fewer choices, use only two objects and let them watch your first example.</h3>"
+        },
+        {
+          "id": "chapter-3",
+          "title": "3. Listen, respond and take turns",
+          "content": "<h3>A conversation game\nA turn can be a word, a gesture, a drawing or a sound. Sit together with an empty cardboard box. Tap it once softly and invite a response. The child may tap, point, copy you or suggest another sound. Say what happened: “I made a sound, then you made one.” Keep the volume comfortable and stop immediately if a sound is unpleasant. Listening tasks should not require a child to tolerate noise or demonstrate hearing ability.</h3>\n<p>Move to a shared picture or familiar object. Say one sentence and leave room for the child to respond. You might say, “This cup could be in our pretend shop.” The child can decide what goes beside it. Build the conversation around that idea. You do not need to ask a question after every sentence. A comment can invite participation without turning the whole conversation into an examination.</p>\n<h3>Copy and change\nMake a simple two-part pattern using actions the child can comfortably do: a gentle hand tap followed by a wave. Show the pattern slowly and invite the child to copy or direct you. Then let the child invent a change. They might replace the wave with a point. Repeat their pattern so they see that their contribution matters. A seated gesture, eye movement or picture choice can replace standing or large movements.</h3>\n<p>Describe the order using “first” and “next”. Ask the child to show what comes first, not to repeat a long instruction. If following both actions is difficult, try one action and alternate turns. If the task is easy and enjoyable, introduce a third action only when the child wants to. A successful session is shared participation, not reaching the longest possible pattern.</p>\n<h3>Our turn-taking story\nRead this original story aloud: “Bisi and Tunde wanted to draw on the same sheet. Bisi drew a circle. Tunde added a line. Bisi made another mark. Tunde said, ‘Now my turn.’ They looked at their picture together.” Ask what each child added. Invite the learner to choose one mark for a shared picture. Add your own mark after theirs and name whose turn it is.</h3>\n<p>If the child wants to draw continuously, offer a second sheet rather than forcing them to give up their work. You can model a shared turn on another activity. Avoid using a learning task to require physical contact, obedience to every adult request or sharing of a personal item. The activity should be a manageable invitation, with the learner&#39;s choices respected.</p>\n<h3>Words that help\nPractise a few practical phrases through pretend play: “My turn, please”, “Help, please”, “Again”, and “I want to stop”. Accept equivalent words or gestures. Model listening when the child uses a stopping signal. End the session calmly; do not make continuing a condition for praise or access to ordinary care.</h3>\n<h3>Reflection for the adult\nWhich invitation produced a response? Was a gesture easier than a spoken answer? Did the child create a new pattern? Note one example privately. In a group, give every child space to contribute without ranking volume, speed or confidence. A teacher can revisit the same activity with quieter materials, fewer turns or a different communication method.</h3>"
+        },
+        {
+          "id": "chapter-4",
+          "title": "4. Count one object at a time",
+          "content": "<h3>What counting means here\nIn this activity, counting connects a number word with each object in a small group. Start with one, two or three large objects. The goal is not to recite a long number sequence. Put three large cups in a line. Touch or point towards one cup as you say “one”, another as you say “two”, and the last as you say “three”. Keep each cup visible and leave enough space to distinguish them.</h3>\n<p>Explain the last number simply: “There are three cups altogether.” Invite the child to move or direct you to move the cups into a different arrangement. Count again and notice that there are still three. Changing the arrangement does not add or remove a cup. If the child recounts from the beginning, allow it. Recounting is a useful way to check, not a mistake to discourage.</p>\n<h3>Make a small set\nSay, “Can we put two cups beside the box?” The child can choose the cups, point to them or tell you which to move. Count together afterwards. If there are three cups, describe what you see and invite a check: “We have three here. We wanted two. What could we move?” Demonstrate moving one away if needed. Avoid demanding the correct answer repeatedly after the child has lost interest.</h3>\n<p>Use drawings when objects are unavailable. Draw three large circles with clear spaces between them. Point to one circle for each count. Ask the child to choose a group of two by pointing while you cover the other circle with paper. Keep the activity free from small counters and loose pieces. There is no need to use food as a reward or counting material.</p>\n<h3>An empty group\nShow an empty space beside the cups. Ask, “How many cups are here?” Model “none” and “zero” if helpful. Zero describes that the group has no cups. Put one cup into that space and describe the change. Move it away again. A child can show the answer by pointing to the empty space; they do not have to recognise a written numeral.</h3>\n<h3>Match groups and number marks\nAn adult may write 1, 2 and 3 on separate sheets and put each beside a matching group. Explain that the written mark represents the number. Let the child choose a match or watch you. Distinguish recognising the symbol from counting objects: a learner may count accurately before they remember the written mark. Do not treat handwriting as a requirement for demonstrating quantity.</h3>\n<h3>Adult checks\nWatch for touching or indicating each object once, starting with the first object and using the final count for the total. If an object is counted twice, separate the objects or move each counted cup to a new space. If an object is skipped, model a slower count. Record the support that helped. Repeat with a new arrangement on another day; do not turn a brief shared activity into a timed drill.</h3>"
+        },
+        {
+          "id": "chapter-5",
+          "title": "5. Sort, compare and continue patterns",
+          "content": "<h3>Make a rule together\nSorting means putting things together because they share a feature. Use large, familiar objects or your own paper drawings. You might draw two cups and two books. Put the cup pictures in one group and the book pictures in another. Say the rule aloud: “These show cups; these show books.” Invite the child to choose where another picture belongs and explain or indicate why.</h3>\n<p>A different reasonable rule can also work. A child may want to group pictures by colour instead of what they show. Ask them to demonstrate their rule, then follow it yourself. If an object could fit two groups, discuss that possibility. The activity is about noticing and explaining features, not guessing the adult&#39;s hidden answer.</p>\n<h3>Compare without guessing from size\nPut two cup pictures in one row and three cup pictures in another. Align one picture from the first row with one from the second. Notice that the second row has one extra picture. Say, “This group has more cups.” Now spread the row of two farther apart. Ask whether spacing added a cup. Count or match again to check. A row that looks longer does not always contain more objects.</h3>\n<p>Use “more”, “fewer” and “the same number” with small groups. Make two groups of two and match them in pairs. Explain that neither group has an extra object. If the comparison is confusing, keep to two groups and the same kind of picture. Do not mix object size, number and colour changes all at once.</p>\n<h3>Continue a two-part pattern\nDraw a cup, a book, a cup and a book in a line. Name the pattern slowly. Ask what could come next and let the child point to a choice. Add the cup picture, then ask what follows it. The repeated unit is cup–book. Move to another pattern only after discussing this one. A pattern can be made with shapes, gestures or spoken words, not only colours.</h3>\n<p>Let the child design a repeating pattern. They may choose circle–line, wave–tap or another comfortable pair. Ask them to show you the part that repeats. If they make a non-repeating design, describe it as their design and offer to build a repeating pattern together on a separate page. Creative drawing does not need to be corrected into a mathematics task.</p>\n<h3>Find and repair a change\nMake cup–book–cup–cup. Say, “I changed our pattern. Can you notice where?” Let the child move a picture, ask you to move it or explain what they would change. Then repeat the corrected pattern together. Present this as checking shared work, not catching a child&#39;s mistake.</h3>\n<h3>Adult observation\nRecord whether the learner sorted by a stated feature, matched two small groups or continued a repeating unit. Choose the activity they enjoyed most for the next session. A learner who finds colour difficult can use shapes or object types; a learner who does not use spoken language can place, point or direct an adult. Keep the rule visible and use larger, clearer pictures when needed.</h3>"
+        },
+        {
+          "id": "chapter-6",
+          "title": "6. Our pretend shop and next steps",
+          "content": "<h3>Bring the ideas together\nSet up a pretend shop with drawings of cups, books and cloths. Use no money, food or small loose pieces. The shop is a shared language and number activity, not a lesson about real prices. Invite the child to be the customer or the shopkeeper. An adult can perform the handling while the child makes decisions through their usual communication method.</h3>\n<p>Start with one request: “I would like two cups, please.” The shopkeeper chooses a group and you count together. Place the cups beside a drawn book and describe the position. Swap roles if the child wants to. Make one deliberate, friendly error, such as offering one cup instead of two, and say, “Let&#39;s check our order.” Model correcting your own work calmly.</p>\n<p>Next, ask the shopkeeper to sort the pictures into groups. They can choose the sorting rule. You might finish by arranging cup–book–cup–book along the counter and inviting the child to continue the pattern. Combine only familiar tasks. If the activity becomes confusing, return to a single request and one small group.</p>\n<h3>A new original story\nRead: “Sadiya opened a pretend shop on her mat. Her uncle asked for two books. Sadiya gave him one book, then counted again. She added another book. They put the two books beside an empty box. Her uncle asked how many books were inside the box. Sadiya pointed to the empty space and smiled.” Ask what Sadiya changed after checking. Ask how many books were inside the box. The story allows the child to show two and zero in meaningful situations.</h3>\n<p>Retell it using the learner&#39;s preferred names or language. Change “uncle” to another familiar caregiver if helpful. Family examples should not require every child to have the same household structure. Let the learner invent a different ending or ask you to read the story again. Enjoying a familiar story is a valid use of the session.</p>\n<h3>A gentle review\nOffer three separate invitations over time: choose and describe an object; make a group of two or three; continue a familiar two-part pattern. Provide the same supports used during practice. Do not surprise the child with a formal test or remove their communication supports to see whether they can perform independently. Record what they do and how you helped.</h3>\n<p>Use notes such as “Counted three pictures with pointing support” or “Created a cup–book pattern”. Avoid labels such as “behind”, “lazy” or “not clever”. A learning observation does not establish a diagnosis or a fixed ability. Discuss useful adjustments with the teacher or caregiver through an appropriate private channel.</p>\n<h3>Plan another session\nChoose one next activity based on the learner&#39;s interest. Repeat with different large objects, introduce a new position word, compare equal groups or retell a new two-person story. Move from three objects to four or five only when the learner is interested and the task remains comfortable. Finishing this activity book does not prove readiness for a particular class or guarantee entry to Primary.</h3>\n<p>The teacher review should check every task, language example, material choice, accessibility adaptation and class label. Confirm that adults can deliver it without special purchases or reliable internet. Mark revisions and trial observations before approving a student-facing edition. Keep the activity book free of identifiable child information and report concerns through the school&#39;s established safeguarding process, not through a public lesson comment.</p>"
+        }
+      ],
+      "relatedCourseId": "speakout-kiddies-nursery-course-outline-v1"
+    },
+    {
+      "educationStages": [
+        "primary"
+      ],
+      "classLevels": [
+        "Primary 1",
+        "Primary 2",
+        "Primary 3"
+      ],
+      "subject": "English and mathematics",
+      "category": "foundational-learning",
+      "status": "draft",
+      "reviewStatus": "pending-teacher-review",
+      "sourceType": "original-ai-assisted",
+      "rightsNote": "Original AI-assisted SpeakOut draft; human originality, educational suitability and rights review pending. No third-party text or imagery was intentionally included.",
+      "curriculumAlignment": "not-verified",
+      "version": 1,
+      "accessType": "free",
+      "price": 0,
+      "currency": "NGN",
+      "coverUrl": "images/logo.png",
+      "tags": [
+        "kiddies-corner",
+        "original-draft",
+        "adult-led",
+        "offline-activities"
+      ],
+      "id": "speakout-kiddies-primary-activity-book-v1",
+      "title": "Primary: Read, Explain and Solve",
+      "author": "SpeakOut editorial draft (AI-assisted; review pending)",
+      "shortDescription": "Six original adult-supported activity chapters for teacher review. Supplementary practice; not an official curriculum or complete class programme.",
+      "chapters": [
+        {
+          "id": "chapter-1",
+          "title": "1. Getting ready to learn",
+          "content": "<h3>About this activity book\nThis original SpeakOut draft offers supplementary reading and number activities for review with Primary 1–3 teachers. Its provisional class labels describe the content, not who may access it. Learners from any education section may explore it. It is not an official Nigerian curriculum, a complete term&#39;s teaching or a certified assessment. Teachers should check the examples, local language needs, class placement and accessibility before approving a student-facing edition.</h3>\n<p>An adult should first read each activity and choose an appropriate starting point. The learner may read independently, listen to an adult, point, speak, draw or use their usual communication method. These different routes should not be treated as different levels of effort. Understanding a story is separate from handwriting, and solving a number problem is separate from operating a device.</p>\n<p>Prepare paper, a pencil if comfortable, and drawings of familiar objects. The activities do not require purchases, coins, food, small counters or an internet connection during the lesson. Use large pictures that are easy to distinguish. An adult can print or copy a page before a session. If sharing one device with a group, the facilitator reads the prompt and learners work with their own paper or discuss responses in turns.</p>\n<p>Choose a short session and leave time for a pause. The suggested ten-to-fifteen-minute session is a planning option, not a requirement. A learner may need more time, fewer tasks or a different communication format. Offer help without turning every hesitation into a test. Ask, “Would you like me to read it with you?” and accept the answer.</p>\n<h3>Our learning habits\nBegin with three practical habits: look or listen for useful information; try one step; check whether the answer fits the question. Model them yourself. Say, “I thought there were four pictures, but I counted again and found five.” This shows that checking is part of learning. Avoid comparing children&#39;s speed or rewarding only the first answer.</h3>\n<p>Use the home language for discussion where it helps the learner explain an idea. Model English vocabulary clearly when English is the subject of the activity, while recognising that mathematical understanding can be demonstrated in another language. Ask a knowledgeable adult about unfamiliar translations instead of guessing. A teacher may adjust names and familiar objects without changing the mathematical quantities or the meaning of a reading question.</p>\n<h3>A first shared task\nWrite or read: “Ada has a book. She puts it on the table.” Ask what Ada has and where she puts it. The learner can answer with words, a picture or a pointing choice. Then draw three books and ask how many there are. Discuss how the reading question and the counting question need different information. Neither requires a long written response.</h3>\n<h3>Keep useful notes\nA responsible adult can privately record the activity, date, support used and one example of the learner&#39;s reasoning. Do not collect photographs, voice recordings, full names or personal disclosures for this pack. A note such as “Explained the story after it was read aloud” is more useful than a fixed ability label. Let this record guide another activity, not a public ranking.</h3>"
+        },
+        {
+          "id": "chapter-2",
+          "title": "2. Read for meaning and tell it again",
+          "content": "<h3>Our original story\nRead aloud or share this short story:</h3>\n<p>“Zainab and Chidi were arranging books in their classroom. Zainab placed the storybooks on a low shelf. Chidi found a book under a chair. Its cover was dusty, so he wiped the cover with a clean cloth. They put the book beside the other storybooks. Before leaving, they checked that the path to the door was clear. Their teacher thanked them for explaining where everything belonged.”</p>\n<p>Read it once for enjoyment, then discuss it. The learner does not need to answer questions while hearing the story for the first time. If reading independently, invite them to pause at a full stop and check whether the sentence makes sense. Offer to read an unfamiliar word, then return to the sentence&#39;s meaning. Do not make sounding out every word the only route to participating.</p>\n<h3>Find information in the text\nAsk where Chidi found the book. The text says it was under a chair. Ask what he used to wipe the cover. The text names a clean cloth. Invite the learner to point to or repeat the relevant part of the story. Explain that a useful answer comes from the text, not from remembering what happened in a different classroom.</h3>\n<p>Now ask why the children checked the path to the door. The story does not give a spoken explanation, but it describes making the path clear. A reasonable answer is that people should be able to move through it without books in the way. Explain that this answer combines a detail in the story with an ordinary inference. Accept another sensible explanation grounded in the text; do not require one exact sentence.</p>\n<h3>Beginning, middle and end\nDraw three empty boxes. In the first, place or write the children arranging books. In the second, show Chidi finding and cleaning the book. In the third, show the books in place and the clear path. The learner can draw, dictate or arrange adult-written labels. The artwork does not need to be judged for neatness.</h3>\n<p>Ask the learner to retell the story using “first”, “next” and “finally”. They may use different words as long as the order makes sense. If an event is missing, return to the text together. Compare two retellings and notice that they can both be accurate even when they use different sentences.</p>\n<h3>Another ending\nInvite a new ending beginning, “The next morning…” Label it as the learner&#39;s invented continuation, not something stated in the original story. This distinction helps separate what a text says from what we imagine. Do not ask for a personal story about a difficult event; a fictional classroom gives enough material for the activity.</h3>\n<h3>Review together\nCheck three things: a factual answer matches the text; a retelling keeps the main events in order; an invented ending is identified as invented. For a learner ready for more, ask which sentence helped them answer. For a learner who needs fewer choices, use two picture options and read the relevant sentence again. Privately note the support that made understanding easier.</h3>"
+        },
+        {
+          "id": "chapter-3",
+          "title": "3. Build clear sentences and useful questions",
+          "content": "<h3>A sentence shares an idea\nStart with “The book is on the shelf.” Read it aloud and point out that it tells us something complete about the book. Write the words on paper or simply say them together. Ask the learner to choose a different familiar object and place. You might make “The cup is on the table.” Keep the meaning clear before discussing spelling or handwriting.</h3>\n<p>Model a capital letter at the start and a full stop at the end. Explain that these marks help a reader see where the sentence begins and finishes. They are useful tools, not the whole purpose of writing. If a learner dictates a sentence for an adult to write, they can still decide the idea, word order and punctuation. Invite them to show the start and end in whatever way is comfortable.</p>\n<h3>Repair a mixed-up message\nOffer “shelf on is book the the” and ask what might make the message easier to understand. Rearrange it to “The book is on the shelf.” Read both versions and compare. A learner can move large word cards, point while an adult moves them or say the words in order. Use only a few words initially. Small cards are unnecessary; a whole sheet with large separated words works too.</h3>\n<p>Try two sentences that change one detail: “The book is under the table” and “The book is on the table.” Act them out with a drawing or safe object. Ask what changed. This shows that a small word can change meaning. Avoid introducing many grammar labels before learners understand what the sentence communicates.</p>\n<h3>Ask to find out\nTurn the statement into a question: “Where is the book?” Explain that this question asks for its place. Practise “Who found the book?” for a person and “What did Chidi use?” for an object. Read the classroom story again and match each question to information it requests. A useful question should be understandable and answerable from the available information.</h3>\n<p>Model a question mark at the end. Compare “The book is on the shelf.” with “Is the book on the shelf?” Notice that one tells and the other asks. The learner can respond by speaking, pointing or showing a choice. Do not require personal information such as a home address to practise asking questions.</p>\n<h3>Make a small message\nInvite the learner to create a fictional note for a classroom shelf: “Please put storybooks here.” Discuss who will read the note and what they need to know. They may add a simple picture. Read the message together and ask whether a reader could understand it without guessing. A short, clear message is useful; it does not need to become a long composition.</h3>\n<h3>Adult feedback\nRespond first to meaning: “I know where you want the books to go.” Then select one teaching point, such as a full stop or a clearer place word. Do not mark every issue at once. Keep a first attempt and a revised attempt privately if useful. Describe the revision as improving the message, not fixing a learner who is “bad at English”. Teachers should adapt examples to the language and literacy work already being taught.</h3>"
+        },
+        {
+          "id": "chapter-4",
+          "title": "4. Join and separate small groups",
+          "content": "<h3>Start with a drawing\nDraw four large circles in one group and three in another. Explain that the circles represent books, without claiming they are realistic pictures. Ask how many books there would be if the groups were joined. The learner may count each circle, count on from four or use another understandable method. There are seven altogether. Write 4 + 3 = 7 and read it as “four plus three equals seven”.</h3>\n<p>Connect each symbol to the drawing. The plus sign shows joining the groups in this example. The equals sign shows that both sides represent the same quantity. It does not mean “write any answer after this”. Draw seven circles on a second page and compare them with the joined groups. Ask what is the same even though the arrangement is different.</p>\n<h3>Tell a number story\nRead: “There are four books on a shelf. A helper adds three books. How many books are on the shelf now?” Ask what we know and what we need to find. The two known amounts are four and three. The unknown amount is the new total. Let the learner draw or explain before writing a number sentence.</h3>\n<p>Change only one quantity for a second problem: “There are four books. Two more are added.” The total is six. Ask what changed from the first story. Comparing the problems helps the learner notice the number information, instead of memorising that every story about books has the same answer.</p>\n<h3>Take some away\nDraw seven books. Cross out two and leave the other five visible. Explain that the crossing-out represents two books being moved elsewhere. Write 7 − 2 = 5. Ask how many remain, not how many marks are on the page altogether. The moved books have not disappeared from the world; they are no longer in the group being counted.</h3>\n<p>Read: “A shelf has seven books. Two are taken to a table. How many stay on the shelf?” Ask which group the question means. A learner who answers seven may be counting books in both places. Return to “stay on the shelf” and show the two locations. Treat this as interpreting the question, not simply making an arithmetic error.</p>\n<h3>Check by reversing the action\nIf five books remain and two were moved, joining those groups again gives seven. Write 5 + 2 = 7 next to 7 − 2 = 5. Discuss how the two statements describe connected actions. Let the learner check by drawing or counting. They do not need to use a particular mental method to have a valid answer.</h3>\n<h3>Practice and explanations\nOffer 3 + 2, 6 − 1 and 5 − 5 with pictures as needed. The answers are five, five and zero. For the last example, an empty group remains. Ask the learner to explain one answer using a sentence, a drawing or directed pointing. Avoid timed competition. A teacher can adjust the number range and notation to the class&#39;s current work; this draft uses small whole-number groups only.</h3>"
+        },
+        {
+          "id": "chapter-5",
+          "title": "5. Tens, ones and fair comparison",
+          "content": "<h3>Make a group of ten\nDraw ten large marks together and enclose them in a clear boundary. Explain that this group can be counted as one ten. Draw three separate marks beside it. There are thirteen marks altogether: ten and three more. Write 13 and describe its two digits in this example: one ten and three ones. The digit 1 is not saying there is only one object in the whole drawing.</h3>\n<p>Make another drawing with one group of ten and five separate marks. That is fifteen. Compare thirteen and fifteen. Both have one ten, but fifteen has two more ones. Match the ones in pairs to check. Use large paper drawings or ten frames; small counters, money and purchased equipment are not necessary.</p>\n<h3>Keep the amount when regrouping\nShow thirteen separate marks, then draw a boundary around ten of them. Ask whether adding the boundary created more marks. It did not. The grouping helps us describe the amount more conveniently. Count all thirteen again if the learner wants to check. Explain that an amount can be represented in different ways without changing it.</h3>\n<p>Now show two groups of ten and no separate ones. There are twenty. Discuss the written number 20: two tens and zero additional ones. Zero has a useful role in the notation. Do not replace this explanation with a rule about ignoring zero; that would make the number confusing.</p>\n<h3>Compare the groups that matter\nCompare 12 and 21 through drawings. Twelve has one ten and two ones; twenty-one has two tens and one one. Twenty-one is greater even though twelve has more separate ones. Count the whole amounts or compare tens first. A teacher may use “greater than”, “less than” and “equal to” after learners can explain the quantities. Symbols can be introduced separately, not as a speed trick.</h3>\n<p>Try an equality comparison: ten and four ones is the same quantity as fourteen individual marks. The layouts differ but the amounts match. Ask the learner what evidence supports “the same”. Pointing to paired marks, counting or describing tens and ones are all useful explanations.</p>\n<h3>A small school problem\nRead: “One box has ten notebooks and four extra notebooks beside it. Another box has ten notebooks and two extra notebooks. Which collection has more?” Both collections contain one ten. Comparing four extra with two extra shows the first has two more. The problem is about collections, not the physical size or colour of the boxes.</h3>\n<h3>Adapt and extend\nA learner new to this idea can stay with numbers eleven to fifteen and clear grouped drawings. A learner ready for more can represent twenty-three with two tens and three ones, then compare it with twenty-five. Do not infer a permanent ability from one response. Teachers should check that the range, vocabulary and place-value representations fit the class before approval. Record whether the learner counted all, grouped ten or compared groups, so the next session can build on a visible method.</h3>"
+        },
+        {
+          "id": "chapter-6",
+          "title": "6. A reading-and-number mini-project",
+          "content": "<h3>Read the planning note\nShare this original note:</h3>\n<p>“On Friday, a class will arrange a small reading shelf. There are six storybooks on the table and four storybooks in a box. The class wants all ten books on the shelf. Three helpers will work together. One will check the books, one will arrange them and one will keep the path clear. Afterwards, they will write a short note to show where the storybooks belong.”</p>\n<p>The project is fictional; it does not require learners to move furniture, handle cleaning chemicals or rearrange a real classroom. Use drawings. An adult is responsible for any real-world activity beyond the paper task. The learner can discuss roles without being assigned responsibility for another person&#39;s safety.</p>\n<h3>Find and organise information\nAsk what the class wants to arrange, how many helpers there are and what note they plan to write. The answers are a reading shelf, three helpers and a note showing where storybooks belong. Ask which sentence supports each answer. Then draw a table group of six books and a box group of four books. Label their locations so the quantities do not become detached from the story.</h3>\n<p>Join the two groups in a shelf drawing and write 6 + 4 = 10. Check the total by counting all ten pictures or explaining that four more after six reaches ten. A learner may demonstrate counting on slowly with an adult; fluent mental calculation is not the only acceptable method.</p>\n<h3>Ask a new question\nSay, “Two of the ten books will be read at a table. How many remain on the shelf?” Draw the move and solve 10 − 2 = 8. Check by joining the eight shelf books with the two table books. Explain that the total collection still contains ten books, while eight are in the location the question asks about.</h3>\n<p>Invite the learner to invent a number question using the same pictures. Make sure the question includes enough information to answer. If a quantity is missing, ask what information a reader would need. Label this as improving a question, not rejecting the learner&#39;s idea.</p>\n<h3>Make the shelf note\nCreate a short message, such as “Storybooks go on this shelf.” Read it aloud and check that it tells a reader what to place and where. Add a capital letter and full stop. A learner may dictate the note, draw a supporting picture or write it. Compare two different clear messages and discuss why both work.</h3>\n<h3>Review without ranking\nAsk the learner to show one text detail, one number method and one clear sentence. Keep familiar supports available. Record a specific observation, for example, “Used the drawing to explain why eight stayed on the shelf.” This is a practice record, not a certified score or evidence of completing Primary 1, 2 or 3. Do not publish children’s results or compare them on a leaderboard.</h3>\n<p>Before student publication, a teacher should review the arithmetic, reading questions, answer notes, language demand and class labels. Check that the original stories are locally understandable and that alternatives work for learners who do not write, speak or see the same way. Trial one activity with appropriate consent and record only de-identified teaching observations. Use findings to revise the pack. This draft provides supplementary practice, not a complete curriculum or a replacement for classroom teaching.</p>"
+        }
+      ],
+      "relatedCourseId": "speakout-kiddies-primary-course-outline-v1"
+    }
+  ],
+  "courses": [
+    {
+      "educationStages": [
+        "nursery"
+      ],
+      "classLevels": [
+        "Nursery 1",
+        "Nursery 2",
+        "Nursery 3"
+      ],
+      "subject": "Early language and numeracy",
+      "category": "foundational-learning",
+      "status": "draft",
+      "reviewStatus": "pending-teacher-review",
+      "sourceType": "original-ai-assisted",
+      "rightsNote": "Original AI-assisted SpeakOut draft; human originality, educational suitability and rights review pending. No third-party text or imagery was intentionally included.",
+      "curriculumAlignment": "not-verified",
+      "version": 1,
+      "accessType": "free",
+      "price": 0,
+      "currency": "NGN",
+      "coverUrl": "images/logo.png",
+      "tags": [
+        "kiddies-corner",
+        "original-draft",
+        "adult-led",
+        "offline-activities"
+      ],
+      "id": "speakout-kiddies-nursery-course-outline-v1",
+      "title": "Nursery: Talk, Notice and Count — course outline",
+      "courseType": "internal",
+      "provider": "SpeakHub Academy",
+      "difficulty": "Foundation",
+      "duration": "Six flexible adult-led sessions; teacher review pending",
+      "completionMethod": "internal",
+      "certificateEligible": false,
+      "certificate": {
+        "available": false,
+        "type": "none"
+      },
+      "editorialStage": "outline",
+      "shortDescription": "Planning outline paired with the original activity book. This is not a complete or publishable course. A teacher must refine class placement, lesson progression, learning checks and accessibility before a full course is authored.",
+      "outcomes": [
+        "Name or indicate familiar objects",
+        "Share a conversational turn using a preferred communication method",
+        "Count small groups with one indication per object",
+        "Sort by a stated feature and continue a two-part pattern"
+      ],
+      "prerequisites": [
+        "An adult facilitator reads the instructions and selects suitable activities",
+        "Paper or copied prompts; no purchase, child device account or continuous internet required"
+      ],
+      "relatedBookId": "speakout-kiddies-nursery-activity-book-v1",
+      "modules": [
+        {
+          "id": "nursery-outline-module-1",
+          "title": "1. Welcome to shared learning",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-1",
+              "title": "1. Welcome to shared learning",
+              "content": "<p>Course planning draft: use chapter 1 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "nursery-outline-module-2",
+          "title": "2. Notice and name familiar things",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-2",
+              "title": "2. Notice and name familiar things",
+              "content": "<p>Course planning draft: use chapter 2 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "nursery-outline-module-3",
+          "title": "3. Listen, respond and take turns",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-3",
+              "title": "3. Listen, respond and take turns",
+              "content": "<p>Course planning draft: use chapter 3 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "nursery-outline-module-4",
+          "title": "4. Count one object at a time",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-4",
+              "title": "4. Count one object at a time",
+              "content": "<p>Course planning draft: use chapter 4 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "nursery-outline-module-5",
+          "title": "5. Sort, compare and continue patterns",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-5",
+              "title": "5. Sort, compare and continue patterns",
+              "content": "<p>Course planning draft: use chapter 5 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "nursery-outline-module-6",
+          "title": "6. Our pretend shop and next steps",
+          "lessons": [
+            {
+              "id": "nursery-outline-lesson-6",
+              "title": "6. Our pretend shop and next steps",
+              "content": "<p>Course planning draft: use chapter 6 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "educationStages": [
+        "primary"
+      ],
+      "classLevels": [
+        "Primary 1",
+        "Primary 2",
+        "Primary 3"
+      ],
+      "subject": "English and mathematics",
+      "category": "foundational-learning",
+      "status": "draft",
+      "reviewStatus": "pending-teacher-review",
+      "sourceType": "original-ai-assisted",
+      "rightsNote": "Original AI-assisted SpeakOut draft; human originality, educational suitability and rights review pending. No third-party text or imagery was intentionally included.",
+      "curriculumAlignment": "not-verified",
+      "version": 1,
+      "accessType": "free",
+      "price": 0,
+      "currency": "NGN",
+      "coverUrl": "images/logo.png",
+      "tags": [
+        "kiddies-corner",
+        "original-draft",
+        "adult-led",
+        "offline-activities"
+      ],
+      "id": "speakout-kiddies-primary-course-outline-v1",
+      "title": "Primary: Read, Explain and Solve — course outline",
+      "courseType": "internal",
+      "provider": "SpeakHub Academy",
+      "difficulty": "Foundation",
+      "duration": "Six flexible adult-led sessions; teacher review pending",
+      "completionMethod": "internal",
+      "certificateEligible": false,
+      "certificate": {
+        "available": false,
+        "type": "none"
+      },
+      "editorialStage": "outline",
+      "shortDescription": "Planning outline paired with the original activity book. This is not a complete or publishable course. A teacher must refine class placement, lesson progression, learning checks and accessibility before a full course is authored.",
+      "outcomes": [
+        "Locate information and retell an original short story",
+        "Create a clear sentence or dictated message",
+        "Explain small-group addition and subtraction with drawings",
+        "Represent and compare tens and ones"
+      ],
+      "prerequisites": [
+        "An adult facilitator reads the instructions and selects suitable activities",
+        "Paper or copied prompts; no purchase, child device account or continuous internet required"
+      ],
+      "relatedBookId": "speakout-kiddies-primary-activity-book-v1",
+      "modules": [
+        {
+          "id": "primary-outline-module-1",
+          "title": "1. Getting ready to learn",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-1",
+              "title": "1. Getting ready to learn",
+              "content": "<p>Course planning draft: use chapter 1 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "primary-outline-module-2",
+          "title": "2. Read for meaning and tell it again",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-2",
+              "title": "2. Read for meaning and tell it again",
+              "content": "<p>Course planning draft: use chapter 2 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "primary-outline-module-3",
+          "title": "3. Build clear sentences and useful questions",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-3",
+              "title": "3. Build clear sentences and useful questions",
+              "content": "<p>Course planning draft: use chapter 3 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "primary-outline-module-4",
+          "title": "4. Join and separate small groups",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-4",
+              "title": "4. Join and separate small groups",
+              "content": "<p>Course planning draft: use chapter 4 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "primary-outline-module-5",
+          "title": "5. Tens, ones and fair comparison",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-5",
+              "title": "5. Tens, ones and fair comparison",
+              "content": "<p>Course planning draft: use chapter 5 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        },
+        {
+          "id": "primary-outline-module-6",
+          "title": "6. A reading-and-number mini-project",
+          "lessons": [
+            {
+              "id": "primary-outline-lesson-6",
+              "title": "6. A reading-and-number mini-project",
+              "content": "<p>Course planning draft: use chapter 6 of the paired activity book as the review stimulus. Agree the learner-facing instructions, adult notes, adaptations and observation prompts with a teacher. Do not treat this outline as a delivered lesson or a scored assessment.</p>",
+              "activity": "Teacher review: choose one short task from the paired chapter, specify the adult support and record a de-identified observation. No graded quiz or certificate is proposed for this outline."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
