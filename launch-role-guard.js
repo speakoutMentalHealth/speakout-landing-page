@@ -644,12 +644,12 @@ const linksByRole = {
       "programmes.html"
     ],
     [
-      "Courses",
-      "speakhub.html?audience=student"
+      "My Learning",
+      "my-learning.html"
     ],
     [
-      "Library",
-      "student-library.html"
+      "Materials",
+      "my-learning.html#materials"
     ],
     [
       "Kiddies",

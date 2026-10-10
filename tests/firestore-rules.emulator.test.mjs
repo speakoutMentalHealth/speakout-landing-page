@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 
 const PROJECT_ID = "demo-speakout-rules";
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
@@ -493,4 +493,29 @@ test("legacy approval flags cannot override denied status for learners or admins
   await assertFails(updateDoc(ref, { active: true }));
   await assertFails(deleteDoc(ref));
   await assertFails(setDoc(doc(db, "adminSupportSessions/forged"), { active: true }));
+});
+
+test("independent learners can save only their own valid education preference", async () => {
+  await seed("users/independent", { ...profile("independent", "student", ""), schoolCode: "" });
+  const db = testEnv.authenticatedContext("independent").firestore();
+  const ref = doc(db, "learningPreferences/independent");
+  await assertSucceeds(setDoc(ref, { educationStage: "primary", classLevel: "Primary 2", updatedAt: serverTimestamp() }));
+  await assertSucceeds(getDoc(ref));
+  await assertFails(setDoc(ref, { educationStage: "primary", classLevel: "SS 1", updatedAt: serverTimestamp() }));
+  await assertFails(setDoc(ref, { educationStage: "primary", classLevel: "Primary 2", approved: true, updatedAt: serverTimestamp() }));
+  await assertFails(setDoc(doc(db, "learningPreferences/another"), { educationStage: "primary", classLevel: "Primary 2", updatedAt: serverTimestamp() }));
+  await assertFails(getDoc(doc(db, "learningPreferences/another")));
+});
+
+test("school-linked and unapproved learners cannot replace school placement with preferences", async () => {
+  for (const [uid, data] of [
+    ["school-learner", profile("school-learner", "student")],
+    ["code-only", { ...profile("code-only", "student", ""), schoolCode: "SCHOOL-A" }],
+    ["pending-learner", { ...profile("pending-learner", "student", ""), status: "pending", approved: true }],
+    ["teacher-preference", profile("teacher-preference", "teacher", "")]
+  ]) {
+    await seed(`users/${uid}`, data);
+    const db = testEnv.authenticatedContext(uid).firestore();
+    await assertFails(setDoc(doc(db, `learningPreferences/${uid}`), { educationStage: "tertiary", classLevel: "100 Level", updatedAt: serverTimestamp() }));
+  }
 });

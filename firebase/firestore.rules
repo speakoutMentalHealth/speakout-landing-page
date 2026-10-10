@@ -126,6 +126,26 @@ service cloud.firestore {
         (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
     }
 
+    // Learning preferences personalise a catalogue; they never approve an
+    // account, change a school record or grant access to private school data.
+    match /learningPreferences/{userId} {
+      function validLearningPreference() {
+        let value = request.resource.data;
+        return value.keys().hasOnly(["educationStage", "classLevel", "updatedAt"]) &&
+          value.keys().hasAll(["educationStage", "classLevel", "updatedAt"]) &&
+          value.updatedAt == request.time &&
+          ((value.educationStage == "nursery" && value.classLevel in ["Nursery 1", "Nursery 2", "Nursery 3"]) ||
+           (value.educationStage == "primary" && value.classLevel in ["Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6"]) ||
+           (value.educationStage == "secondary" && value.classLevel in ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3"]) ||
+           (value.educationStage == "tertiary" && value.classLevel in ["100 Level", "200 Level", "300 Level", "400 Level", "500 Level", "600 Level", "ND 1", "ND 2", "HND 1", "HND 2", "NCE 1", "NCE 2", "NCE 3", "Postgraduate"]));
+      }
+      allow read: if isApproved() && request.auth.uid == userId;
+      allow create, update: if isStudent() && request.auth.uid == userId &&
+        userDoc().data.get("schoolId", "") == "" &&
+        userDoc().data.get("schoolCode", "") == "" && validLearningPreference();
+      allow delete: if isApproved() && request.auth.uid == userId;
+    }
+
     match /books/{bookId} {
       allow read: if true;
       allow write: if isSuperAdmin();
