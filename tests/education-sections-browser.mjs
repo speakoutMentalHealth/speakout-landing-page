@@ -21,7 +21,7 @@ async function setup(options = {}, width = 390, hash = "") {
   await context.route("**/firebase-firestore.js", route => route.fulfill({contentType:"application/javascript",body:`export const doc=(_db,path,id)=>({path,id});export const collection=(_db,path)=>({path});export const serverTimestamp=()=> 'server-time';export async function getDoc(ref){const value=window.fixture.preference;return{exists:()=>Boolean(value),data:()=>value}};export async function setDoc(ref,value){if(window.fixture.failSave)throw Error('save failed');window.writes.push({ref,value});window.fixture.preference=value};export async function getDocs(ref){if(window.fixture.failCourses&&ref.path==='courses')throw Error('offline');const data=ref.path==='courses'?window.fixture.courses:window.fixture.books;return{forEach:callback=>data.forEach(item=>callback({id:item.id,data:()=>item}))}};` }));
   const page = await context.newPage();
   await page.goto(`${base}/my-learning.html${hash}`);
-  await page.getByText(options.preference || options.profile?.classLevel ? "Your learning section is ready." : "Choose your education level and class to get started.", { exact:true }).waitFor();
+  await page.getByText(options.preference || options.profile?.classLevel || hash.includes("?stage=") ? "Your learning section is ready." : "Choose your education level and class to get started.", { exact:true }).waitFor();
   return { context, page };
 }
 const reports = [];
@@ -44,8 +44,8 @@ try {
   {
     const {context,page}=await setup();
     await page.getByRole('radio',{name:'Nursery',exact:true}).check();await page.getByLabel('Class / level',{exact:true}).selectOption('Nursery 2');
-    await page.getByRole('button',{name:'Save my learning level'}).click();
-    await page.getByText('Your learning level has been saved.',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Save as my default'}).click();
+    await page.getByText('Your default learning level has been saved.',{exact:true}).waitFor();
     await page.getByRole('heading',{name:'No courses ready for this class yet'}).waitFor();
     assert.equal(await page.getByRole('heading',{name:'Tertiary course',exact:true}).count(),0);
     assert.equal((await page.evaluate(()=>window.writes))[0].value.educationStage,'nursery');
@@ -54,16 +54,21 @@ try {
   {
     const {context,page}=await setup({profile:{schoolId:'school-a',classLevel:'SS2'},preference:{educationStage:'primary',classLevel:'Primary 2'}});
     await page.getByRole('heading',{name:'Secondary course',exact:true}).waitFor();
-    assert.equal(await page.getByLabel('Class / level',{exact:true}).isDisabled(),true);
-    assert.equal(await page.getByRole('button',{name:'Save my learning level'}).isVisible(),false);
+    assert.equal(await page.getByLabel('Class / level',{exact:true}).isDisabled(),false);
+    assert.equal(await page.getByRole('button',{name:'Save as my default'}).isVisible(),false);
+    await page.getByRole('radio',{name:'Primary',exact:true}).check();
+    await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');
+    await page.getByRole('button',{name:'Browse learning',exact:true}).click();
+    await page.getByRole('heading',{name:'Primary 2 course',exact:true}).waitFor();
+    assert.equal(await page.evaluate(()=>window.fixture.profile.classLevel),'SS2');
     assert.equal(await page.evaluate(()=>window.writes.length),0);
     await context.close();
   }
   {
     const {context,page}=await setup({failSave:true});
-    await page.getByRole('radio',{name:'Primary',exact:true}).check();await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');await page.getByRole('button',{name:'Save my learning level'}).click();
+    await page.getByRole('radio',{name:'Primary',exact:true}).check();await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');await page.getByRole('button',{name:'Save as my default'}).click();
     await page.getByText('Could not save your learning level. Please try again.',{exact:true}).waitFor();
-    assert.equal(await page.getByRole('button',{name:'Save my learning level'}).isEnabled(),true);assert.equal(await page.locator('#catalogue').isVisible(),false);await context.close();
+    assert.equal(await page.getByRole('button',{name:'Save as my default'}).isEnabled(),true);assert.equal(await page.locator('#catalogue').isVisible(),true);await context.close();
   }
   {
     const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'},failCourses:true});
@@ -72,6 +77,32 @@ try {
   {
     const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'}},390,'#materials');
     await page.getByRole('heading',{name:'Primary 2 material',exact:true}).waitFor();await page.getByLabel('Find a subject or title').fill('not-in-the-catalogue');await page.getByRole('heading',{name:'No matching titles'}).waitFor();await context.close();
+  }
+
+  {
+    const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'}});
+    await page.getByRole('radio',{name:'Secondary',exact:true}).check();
+    await page.getByRole('button',{name:'Browse learning',exact:true}).click();
+    const card=page.locator('.learning-card').filter({has:page.getByRole('heading',{name:'Secondary course',exact:true})});
+    await card.waitFor();
+    assert.equal(await card.locator('.education-label').textContent(),'Secondary');
+    assert.match(await card.getByRole('link',{name:'View course pathway'}).getAttribute('href'),/course-details.html/);
+    assert.equal(await page.evaluate(()=>window.fixture.preference.classLevel),'Primary 2');
+    assert.equal(await page.evaluate(()=>window.writes.length),0);
+    await page.getByRole('button',{name:/Materials/}).click();
+    await page.getByRole('heading',{name:'Secondary material',exact:true}).waitFor();
+    await context.close();
+  }
+  for (const stage of ['nursery','primary']) {
+    const {context,page}=await setup({profile:{schoolId:'school-a',classLevel:'SS2'}},390,`?stage=${stage}#materials`);
+    assert.match(await page.locator('#learningTitle').textContent(),/Kiddies Corner/);
+    assert.equal(await page.getByRole('radio',{name:stage==='nursery'?'Nursery':'Primary',exact:true}).isChecked(),true);
+    assert.equal(await page.evaluate(()=>window.writes.length),0);
+    if(stage==='primary') {
+      await page.getByRole('heading',{name:'Primary 3 material',exact:true}).waitFor();
+      await page.getByRole('heading',{name:'Primary 2 material',exact:true}).waitFor();
+    }
+    await context.close();
   }
   for (const withdrawCourse of [false, true]) {
     const {context,page}=await setup({preference:{educationStage:'tertiary',classLevel:'100 Level'},withdrawCourse});
@@ -82,5 +113,5 @@ try {
     await context.close();
   }
   await writeFile(`${evidence}/summary.json`,JSON.stringify({scope:'Mocked Firebase browser checks; live persistence is verified separately by emulator rules tests.',reports},null,2));
-  console.log('Education sections: class filtering, school placement, saved preference, save failure, partial catalogue failure and responsive accessibility passed.');
+  console.log('Education sections: class filtering, open cross-level browsing, school default unchanged, optional saved preference, save failure, partial catalogue failure and responsive accessibility passed.');
 } finally { await browser.close(); }
