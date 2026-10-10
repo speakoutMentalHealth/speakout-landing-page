@@ -645,6 +645,216 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "nursery-unit-04",
+    "title": "Make, Move and Tell",
+    "educationStages": [
+      "nursery"
+    ],
+    "classLevels": [],
+    "subject": "Creative expression and supported storytelling",
+    "description": "Four adult-led creative adventures: explore lines, arrange shapes, follow a gentle tap-pause pair and share a pretend story.",
+    "mapping": "Partial relationships to NERDC pre-primary visual/performance art (printed pp.36–37 / PDF pp.53–54). Exact lesson outcome alignment is not established; independent teacher validation remains pending.",
+    "source": "https://ppec.nerdcportals.com.ng/pre_primary/web/ppec_tg.pdf",
+    "unitNumber": 4,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation",
+        "paragraphs": [
+          "Prepare plain paper and your own large drawings of straight and curved lines, circles and squares. A thick pencil or age-suitable crayon is optional and remains under adult supervision. The adult can draw on the learner's instructions. No paint, glue, scissors, beads, small loose pieces, costumes, instruments or purchase is needed. Start with one activity, pause when requested and keep the session comfortable.",
+          "Accept pointing, signing, speaking, dictation or an established communication aid. Explain in a familiar home language before modelling English labels. Describe pictures aloud and enlarge them when useful. Movement, sound and touch are optional; use a spoken or visual sequence when clapping is uncomfortable or inaccessible. No blindfolds, loud sounds, compulsory singing, standing, eye contact or public performance. Do not demand a realistic drawing, a particular pencil grip or a disclosure about personal feelings. Adult assistance must be described honestly."
+        ]
+      },
+      {
+        "title": "Lesson 1: A line can travel",
+        "paragraphs": [
+          "Aim: notice and choose between a straight line and a curved line. Prepare two large examples on paper. Give them generous space; do not use colour as the only clue. A straight line does not bend in the example, while a curved line bends smoothly.",
+          "Model: draw one straight line and one curved line. Say, “This line is straight. This one curves.” Follow the route with your own pointer while describing it. The learner can direct you to repeat either example. These are marks to explore, not a handwriting test.",
+          "Together: ask which line bends. Name the line selected and describe the difference again. If the vocabulary is new, let the learner match the example to another curved line without requiring the word. Both drawing and choosing an adult's drawing are useful participation routes.",
+          "Try: offer a blank space. Invite the learner to choose a line for the adult to draw, draw a line themselves if comfortable, or describe a line through their usual communication method. A wandering or mixed line is welcome in this open activity; it need not copy the examples exactly.",
+          "Check and answers: the curved example bends; the straight example does not bend. The open drawing has no single right shape. Ask what the learner intended rather than supplying a meaning. Next step: repeat one familiar mark or combine two chosen marks, without adding handwriting demands."
+        ]
+      },
+      {
+        "title": "Lesson 2: Shapes can make a picture",
+        "paragraphs": [
+          "Aim: choose and arrange two familiar shapes to make an original picture or design. Prepare a large circle and square drawing. Do not cut pieces for the child; the adult can redraw the learner's choices on a fresh page.",
+          "Model: place a circle drawing above a square drawing and say, “I chose a circle and a square. I can imagine a picture, or keep it as a design.” Name your own idea as an idea rather than the only meaning of the shapes. A circle has a curved boundary; this square has four straight equal sides.",
+          "Together: let the learner decide which shape should be above and which below. Read the choices or indicate them. Explain that swapping positions creates a different arrangement. A learner can choose both shapes without assigning an object name to the result.",
+          "Try: invite another arrangement, with two circles, two squares or one of each. The website's optional shape studio provides nine spaces: choose a shape, choose a space and change it whenever wanted. Paper is an equal alternative. The studio does not award extra stars or decide which arrangement is best.",
+          "Check and answers: a circle remains a circle when moved; a square remains a square when moved. Either arrangement can be a valid design. The learner's explanation, including “just shapes”, is acceptable. Next step: ask whether they want to add one shape or keep their work as it is; stopping is a valid choice."
+        ]
+      },
+      {
+        "title": "Lesson 3: A gentle beat and a pause",
+        "paragraphs": [
+          "Aim: join or indicate an original two-part action sequence: tap, pause. Here pause means no tap during that part of the sequence. An adult may quietly tap their own hand or simply point to two labelled boxes. There is no requirement for audible sound or a specific body movement.",
+          "Model: show two boxes marked TAP and PAUSE. At a slow comfortable pace, indicate TAP, then PAUSE, then begin again: tap, pause; tap, pause. Say that a pause belongs in the sequence. Let the learner request a slower demonstration or silence.",
+          "Together: invite the learner to choose the next part after tap. They can point to PAUSE, sign, say the word or direct an adult's pointer. Do not judge hearing, coordination or timing from this activity. Watching, listening to a description and choosing are all supported routes.",
+          "Try: repeat one pair using the learner's chosen response method. Offer a quiet pointing sequence instead of tapping if preferred. An adult can add the original spoken line “We make a mark, then take a pause” as a description; no song melody or recording is required.",
+          "Check and answers: after tap comes pause in this repeating pair; after pause the pair starts with tap again. A pause means no tap for that part, not that the activity has failed. Next step: repeat the same pair comfortably, or return to choosing one of the two labelled actions rather than enforcing performance."
+        ]
+      },
+      {
+        "title": "Lesson 4: Our pretend picture story",
+        "paragraphs": [
+          "Aim: recognise a character's action and offer a supported turn in an original fictional story. Read: “Amina draws a circle. Musa asks, ‘May I add a square?’ Amina says, ‘Yes, beside the circle.’ They look at their shared design.” An adult can sketch the two shapes as the story is read.",
+          "Model: name the characters and show that asking before changing someone else's work is helpful. Say, “Amina draws the circle; Musa asks before adding the square.” Pretend play tells an invented story. The learner does not have to act, speak publicly or share a personal experience.",
+          "Together: ask who draws the circle and what Musa asks to add. Re-read the relevant sentence when needed. Offer choices, with pointing or an aided response accepted. The story does not name the design's colour; do not turn an invented extra detail into a story fact.",
+          "Try: let the learner choose to narrate, direct the adult's drawings or watch a retelling. Ask whether the characters could make a different design in a new invented story. Make clear that a new story can change the details, while answers about the original use what was read.",
+          "Check and answers: Amina draws a circle; Musa asks to add a square beside it; the colour is unknown. Asking before changing a person's work is a helpful routine. Next step: repeat the same supported role or invent one new action together. A learner can decline to share or continue without losing a participation turn."
+        ]
+      },
+      {
+        "title": "Reusable activity sheet",
+        "paragraphs": [
+          "Adult preparation: draw four spacious boxes. A shows a straight line and a curved line. B shows a circle and square with blank space for a design. C shows TAP and PAUSE boxes, repeated once. D shows Amina's circle and space beside it for Musa's square. Describe the drawings and read the labels aloud.",
+          "Prompt A: choose the line that bends, then choose a mark you would like the adult to draw.",
+          "Prompt B: choose an arrangement of two shapes, with no single correct design.",
+          "Prompt C: indicate what comes after tap in the repeating tap-pause pair.",
+          "Prompt D: name or indicate Amina's shape and Musa's requested shape, then choose whether to join a retelling or watch.",
+          "Answer guidance: A curved line; any intended mark is welcome for the open part. B any chosen arrangement, including a design without an object name. C pause. D circle for Amina, square requested by Musa. Adults can draw or write the learner's choices. Do not replace an original idea with a model merely to make the page look neat."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Use private minimal planning notes: activity, response route, support and one next step. An example is “selected a curved line after the adult described both routes” or “directed two shape placements and chose to keep the design”. Do not collect names, photos, recordings or personal disclosures for this unit. Do not infer a child's emotions, development or home circumstances from a picture or willingness to perform.",
+          "Creative responses are not ranked. Not observed yet or developing with support is useful when vocabulary or a communication route is still being established. The optional shape studio is temporary for this visit: its design is not uploaded or saved, and it is independent of the browser-local exploration stars. Next time, repeat a familiar choice or invite a new one according to actual interest and support needs."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary1-unit-04",
+    "title": "Our Creative Workshop",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 1"
+    ],
+    "subject": "Cultural & Creative Arts",
+    "description": "Six adult-led creative adventures: lines, shape arrangements, repeating designs, beat and pause, pretend roles and respectful discussion of art.",
+    "mapping": "Cultural & Creative Arts matches a Primary 1–3 subject heading in the national framework. Detailed Primary 1 outcome alignment is not established; these introductory lessons do not complete a term or subject.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 4,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation",
+        "paragraphs": [
+          "Prepare plain paper, adult-drawn line and shape examples and two labelled boxes for TAP and PAUSE. Age-suitable drawing tools are optional under adult supervision. The learner can dictate every mark to an adult. No purchased art kit, cutting, glue, paint, instruments, costumes, food, small pieces or outdoor visit is needed. A short supported session on one lesson is enough; repeat rather than rush.",
+          "Explain in a familiar home language and model the English labels where appropriate. Describe drawings aloud. Accept pointing, signing, speaking, dictation or an established communication aid. Movement, touch, singing and audible tapping are optional; quiet visual or spoken sequences offer another route. No forced performance, recording, body contact, costume wearing or personal emotional disclosures. Offer a pause at any time. A teacher should review local examples and avoid assigning one tradition to all Nigerians or asking a child to represent an entire community."
+        ]
+      },
+      {
+        "title": "Lesson 1: Straight and curved lines",
+        "paragraphs": [
+          "Aim: distinguish a straight example from a curved example and use a chosen line intentionally. Draw a clear horizontal straight line and a smooth curved line on separate rows. Give each a text label or spoken description so colour is not the only clue.",
+          "Model: describe the straight line as not bending and the curved line as bending smoothly. Follow each route with an adult's pointer. Draw a second straight line in a different direction and explain that direction does not make it curved. These examples introduce line choices; they are not formal tests of geometrical terminology.",
+          "Together: ask which example bends, then ask whether a straight line placed vertically is still straight. Offer a second drawing and description if helpful. A learner may direct a pointer without drawing. Use the learner's own explanation rather than requiring a memorised sentence.",
+          "Try: invite a simple design using one straight and one curved mark, or ask the adult to draw the learner's instructions. There is no required object to depict. A mixed or irregular line can be discussed as the learner's chosen mark rather than erased as a failure to copy.",
+          "Check and answers: the smoothly bending example is curved; the unbending example is straight in either direction. The open design has no single correct appearance. Next step: ask the learner to identify one intended mark in their work, or practise comparing just the two adult examples again."
+        ]
+      },
+      {
+        "title": "Lesson 2: Arrange shapes, explain a choice",
+        "paragraphs": [
+          "Aim: choose and describe an arrangement of circles and squares. Prepare two large shapes and a generous blank space. A circle has a curved boundary; a square has four straight equal sides. Drawings can be approximate while still discussing the intended shape.",
+          "Model: draw a circle above a square and say, “I chose this arrangement. I might call it a pretend character, or keep it as a design.” Explain that another arrangement is also possible. An artist can explain an intention; viewers should not treat their own guess as the only meaning.",
+          "Together: ask the learner to place the circle beside, above or below the square by directing the adult. Describe the result together. The shapes retain their names when moved. Optional repeated shapes are welcome; there is no requirement to produce a realistic person or object.",
+          "Try: make an original arrangement on paper or in the optional nine-space shape studio. Choose a circle, square or line; choose a space; change a choice when wanted. The studio gives practice in decisions and position, not freehand drawing or a fine-motor assessment. No extra stars depend on using it.",
+          "Check and answers: any intended arrangement is valid. A circle above a square and a circle beside a square are different arrangements, and both can be chosen deliberately. An explanation such as “I wanted the circle beside the square” is useful; an adult may write it exactly as communicated. Next step: add one chosen detail or keep the design unchanged, respecting the maker's decision."
+        ]
+      },
+      {
+        "title": "Lesson 3: Make a repeating border",
+        "paragraphs": [
+          "Aim: identify and continue one circle-square repeating design, then choose whether to reuse or vary it in original work. Draw circle, square, circle, square with equal spaces. The repeating group is circle then square. Colour differences are unnecessary.",
+          "Model: mark the first pair and read it aloud, then the second pair. Explain that the same pair begins again after the fourth shape. Draw the next circle. Repetition is a design choice; an artist can also choose a non-repeating arrangement, but it is a different rule.",
+          "Together: use a second row, square, circle, square, circle. Ask which shape comes next under that rule. Re-read both pairs slowly. A learner can choose the shape through an established response route and direct the adult to add it.",
+          "Try: offer a page edge or the shape studio's top row for a chosen border fragment. The nine-space studio is small; continue longer designs on paper. Ask whether the learner wants a repeating rule or an intentionally changing arrangement. Do not label a deliberate new rule wrong because it differs from the model.",
+          "Check and answers: after circle, square, circle, square comes circle. After square, circle, square, circle comes square. An open original border can have a different stated rule. Next step: explain one pair or revisit the model with adult support; more complicated repeats belong in a later lesson when useful."
+        ]
+      },
+      {
+        "title": "Lesson 4: A steady beat can include a pause",
+        "paragraphs": [
+          "Aim: recognise and join an original four-position action sequence, TAP, TAP, PAUSE, TAP, with an accessible response route. The pause occupies one position with no tap. An adult counts or indicates four evenly spaced positions at a comfortable pace. This is not a formal music-notation lesson.",
+          "Model: quietly demonstrate or point through the four labelled boxes: tap, tap, pause, tap. Keep indicating the third position while making no tap there, then finish the fourth. Say, “The pause is part of our sequence.” No loud instrument or sound output from the website is needed.",
+          "Together: invite the learner to select which position contains a pause. They can use the printed labels, a spoken description or an adult-directed pointer. Join one sequence if wanted, without grading motor timing, hearing or willingness to make sound. A quiet visual version is equally valid here.",
+          "Try: repeat the same sequence twice, allowing a break between demonstrations. Invite an original spoken description, “Two taps, a pause, one tap”, and model it again. A learner may suggest another sequence later; distinguish that invention from recognition of the given example.",
+          "Check and answers: the third position is PAUSE; there are three tap positions in the four-position example. A pause means no tap at that position, not forgetting the sequence. Next step: return to tap-pause pairs if four positions are demanding, or keep the same example and change only the response route."
+        ]
+      },
+      {
+        "title": "Lesson 5: Characters in a pretend workshop",
+        "paragraphs": [
+          "Aim: recognise a character and action, and choose a supported role in an original story. Read: “Bala draws a circle. Zainab asks, ‘May I add a square beside it?’ Bala agrees. Their teacher asks them to describe the design. They say, ‘It is our shared arrangement of shapes.’” The story does not tell us the paper's colour.",
+          "Model: identify Bala and Zainab as characters in a pretend workshop. Explain that a character is part of a story; the learner is not required to tell a personal story. Read a character's line, then demonstrate narration as another way to participate. No costume, accent imitation or physical contact is needed.",
+          "Together: ask who draws the circle and what Zainab requests. Re-read the relevant lines. Discuss asking before changing someone else's work and respecting an answer. In a different story a maker could decline; consent to share does not follow merely from being in the same class.",
+          "Try: let the learner narrate, direct adult drawings, choose a character's line or watch an adult retelling. Offer a new pretend action if they want to invent another version, clearly identifying it as a new story. No public presentation is required to complete the lesson.",
+          "Check and answers: Bala draws the circle; Zainab requests a square beside it; the teacher asks for a description; paper colour is unknown. Both narration and a character's line can participate in role play. Next step: repeat a comfortable role or choose to observe, then discuss a single action without interpreting personal emotions."
+        ]
+      },
+      {
+        "title": "Lesson 6: Talk about art with respect",
+        "paragraphs": [
+          "Aim: describe a visible choice, ask the maker about their intention and give specific respectful feedback. Use original adult-created examples rather than a protected artwork or an image with an unknown creator. A maker need not share their own work; a fictional example is sufficient.",
+          "Model: show one circle-and-square arrangement and say, “I notice a circle beside a square. What would you like to tell us about your design?” Explain that a viewer's observation and the maker's intention are different. Model “I noticed your repeated shapes” rather than “mine is the best” or a guess about someone's private feelings.",
+          "Together: compare two original arrangements and invite one observation about each. Both can have value. Explain that Nigeria has many communities and creative practices; a classroom example is one example, not a design that represents every Nigerian tradition. Do not attach an ethnic, religious or ceremonial meaning to invented shapes.",
+          "Try: let the learner decide whether to discuss their own work, the adult's example or no work today. Ask permission before changing, displaying or sharing someone's design. No photos, names, recordings or uploads are needed. Specific observations are welcome even when a viewer would choose a different arrangement.",
+          "Check and answers: “I notice a repeated circle-square pair” is specific respectful feedback when that pair is present. Asking the maker is preferable to guessing their feelings. There is no required best picture or single national design. Next step: revisit one observation or question and keep the maker's choice about sharing."
+        ]
+      },
+      {
+        "title": "Creative arts practice sheet",
+        "paragraphs": [
+          "Adult preparation: prepare line examples, familiar shapes and the four-position TAP, TAP, PAUSE, TAP sequence. Read one task at a time. The learner may speak, sign, point, dictate or use an established aid. Adults can make every drawing on the learner's instructions.",
+          "Task A1: choose the line that bends smoothly. Is a vertical straight line still straight? Make or direct one chosen mark.",
+          "Task A2: arrange a circle and square in a chosen way, then describe one position. There is no single correct design.",
+          "Task A3: continue circle, square, circle, square with one shape. If making your own border, explain or choose its rule.",
+          "Task A4: in TAP, TAP, PAUSE, TAP, choose the pause position and count the tap positions. Indicate the sequence quietly if wanted.",
+          "Task A5: in the story, Bala draws a circle and Zainab asks to add a square beside it. Who draws the circle? Does the story state the paper's colour? Choose a supported role or watch a retelling.",
+          "Task A6: give one specific observation about an original example or ask the maker a respectful question. Is permission needed before changing or publicly displaying another person's work?"
+        ]
+      },
+      {
+        "title": "Answer guidance and support",
+        "paragraphs": [
+          "A1 curved example; yes, vertical direction does not make a straight line curved; the open mark may vary. A2 any intended arrangement, with an accurate position description such as beside or above. A3 circle for the given repeating rule; a different original rule can also be explained. A4 third position; three tap positions; no performance is compulsory. A5 Bala; paper colour unknown; narration, a character's line, directing adult pictures or observing are acceptable. A6 an accurate specific observation or respectful question, such as “What would you like to tell us?”; yes, ask permission before changing or publicly displaying someone else's work.",
+          "Separate facts about a stated example from choices in open creative work. Accept home-language explanations and adult-written responses. Do not erase a learner's idea to copy a model or infer artistic ability from reading speed, precise drawing or confident performance. The website's recognition questions check the supplied example, not the quality of a creative product."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Keep private minimal notes of task, response route, support and next teaching step. An example is “chose the third position after the sequence was described twice” or “directed a shape beside another and explained that position”. Do not collect names, photos, audio or personal disclosures for this unit. A drawing is not a basis for diagnosing emotions, ability or family circumstances.",
+          "The optional studio does not upload or save artwork; returning to a lesson restores its in-visit arrangement, and refreshing or leaving the page clears it. Browser-local stars are stored separately as exploration markers, with no extra reward for a particular design. Use actual supported responses and interest to plan the next lesson. Independent teacher validation and a supervised trial remain pending."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}

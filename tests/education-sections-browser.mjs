@@ -30,25 +30,28 @@ const reports = [];
 try {
   for(const width of [320,390,768,1280]) {
     const {context,page}=await setup({},width,'?stage=nursery');
-    assert.equal(await page.getByRole('link',{name:'Open learning unit',exact:true}).count(),3);
+    assert.equal(await page.getByRole('link',{name:'Open learning unit',exact:true}).count(),4);
     await page.getByRole('heading',{name:'Patterns and Little Stories',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Little World Explorers',exact:true}).waitFor();
+    await page.getByRole('heading',{name:'Make, Move and Tell',exact:true}).waitFor();
     await page.getByRole('radio',{name:'Primary',exact:true}).check();
     await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 1');
     await page.getByRole('heading',{name:'Stories, Sounds and Numbers to Ten',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Observe, Compare and Care',exact:true}).waitFor();
+    await page.getByRole('heading',{name:'Our Creative Workshop',exact:true}).waitFor();
     await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');
     assert.equal(await page.getByRole('heading',{name:'Stories, Sounds and Numbers to Ten',exact:true}).count(),0);
     assert.equal(await page.getByRole('heading',{name:'Observe, Compare and Care',exact:true}).count(),0);
-    for(const id of ['nursery-unit-02','primary1-unit-02','nursery-unit-03','primary1-unit-03']) {
+    assert.equal(await page.getByRole('heading',{name:'Our Creative Workshop',exact:true}).count(),0);
+    for(const id of ['nursery-unit-02','primary1-unit-02','nursery-unit-03','primary1-unit-03','nursery-unit-04','primary1-unit-04']) {
       await page.goto(`${base}/kiddies-unit.html?id=${id}`);
       const unitNumber=Number(id.slice(-2));
       await page.getByText(`Unit ${unitNumber} · suggested learning sequence`,{exact:true}).waitFor();
-      assert.equal(await page.locator('#unitSequence a').count(),3);
+      assert.equal(await page.locator('#unitSequence a').count(),4);
       const adventures=(await import('../js/kiddies-adventures.js')).ADVENTURES[id];
       for(let i=0;i<adventures.length;i++) {
         await page.locator('.journey-stop').nth(i).click();
-        if(i===adventures.length-1||id.endsWith('03')) {
+        if(i===adventures.length-1||id.endsWith('04')) {
           await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
           assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[],`Unit accessibility ${id} lesson ${i+1} at ${width}`);
           assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
@@ -56,9 +59,29 @@ try {
           if(id==='primary1-unit-02')assert.equal(await page.locator('.circle-row .counting-circle').count(),7);
           else if(id==='nursery-unit-02')assert.equal(await page.locator('.pattern-shape').count(),4);
         }
+        if(adventures[i].creativeBoard){
+          await page.getByRole('button',{name:'Make your own design',exact:true}).click();assert.equal(await page.evaluate(()=>document.activeElement.id),'studioHeading');
+          const studio=page.locator('#creativeStudio');await studio.getByRole('heading',{name:'Your shape studio'}).waitFor();
+          assert.equal(await studio.locator('.studio-space').count(),9);const starsBefore=await page.locator('#explorationCount').textContent();
+          await studio.getByRole('button',{name:'Space 1: empty',exact:true}).focus();await page.keyboard.press('Enter');
+          await studio.getByRole('button',{name:'Square',exact:true}).click();await studio.getByRole('button',{name:'Space 2: empty',exact:true}).click();
+          await studio.getByRole('button',{name:'Line',exact:true}).click();await studio.getByRole('button',{name:'Space 3: empty',exact:true}).click();
+          await studio.getByRole('button',{name:'Erase',exact:true}).click();await studio.getByRole('button',{name:'Space 2: Square',exact:true}).click();
+          await studio.getByRole('button',{name:'Undo last change',exact:true}).click();await studio.getByRole('button',{name:'Space 2: Square',exact:true}).waitFor();
+          await studio.getByRole('button',{name:'Clear this design',exact:true}).click();assert.equal(await studio.locator('.studio-shape').count(),0);
+          await studio.getByRole('button',{name:'Undo last change',exact:true}).click();assert.equal(await studio.locator('.studio-shape').count(),3);
+          assert.equal(await page.locator('#explorationCount').textContent(),starsBefore);
+          await page.locator('.journey-stop').first().click();assert.equal(await studio.isVisible(),false);await page.locator('.journey-stop').nth(i).click();
+          assert.equal(await studio.locator('.studio-shape').count(),3);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+          await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('#creativeStudio'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[]);
+          await studio.screenshot({path:`${evidence}/${id}-studio-${i}-${width}.png`});
+          await page.emulateMedia({media:'print'});assert.equal(await studio.isVisible(),false);assert.equal(await page.locator('.studio-launch').isVisible(),false);assert.equal(await page.locator('.teaching-notes').evaluate(el=>el.open),true);await page.emulateMedia({media:'screen'});assert.equal(await studio.isVisible(),true);
+        }
         for(let j=0;j<adventures[i].questions.length;j++){
           const question=adventures[i].questions[j];
           if(id==='primary1-unit-03'&&i===4){assert.equal(await page.locator('.comparison-strip').count(),2);const sizes=await page.locator('.comparison-strip').evaluateAll(els=>els.map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,left:el.getBoundingClientRect().left})));assert.equal(sizes[0].left,sizes[1].left);if(j===0)assert.ok(sizes[1].width>sizes[0].width);else{assert.equal(sizes[0].width,sizes[1].width);assert.ok(sizes[1].height>sizes[0].height);}await page.screenshot({path:`${evidence}/${id}-comparison-${j}-${width}.png`,fullPage:true});}
+          if(question.picture?.type==='lines')assert.equal(await page.locator('.line-example svg').count(),2);
+          if(question.picture?.type==='rhythm'){assert.equal(await page.locator('.rhythm-position').count(),4);assert.equal(await page.locator('.pause-position').count(),id.startsWith('nursery')?2:1);}
           if(id.endsWith('03')&&question.picture?.type==='plant')assert.equal(await page.locator('.plant-leaf').count(),2);
           await page.getByRole('button',{name:question.choices[question.answer],exact:true}).click();
           if(id==='primary1-unit-02'&&i===5&&j===1)assert.equal(await page.locator('.crossed-circle').count(),2);
@@ -67,6 +90,14 @@ try {
       }
       await page.getByText(`${adventures.length} of ${adventures.length} exploration stars`,{exact:true}).waitFor();
       if(id.endsWith('03')){await page.goto(`${base}/kiddies-unit.html?id=${id}&mode=materials`);await page.getByRole('heading',{name:id.startsWith('nursery')?'Reusable activity sheet':'Science practice sheet',exact:true}).waitFor();if(id.startsWith('primary'))assert.equal(await page.locator('#lessonContent p').filter({hasText:/^Task S[1-6]:/}).count(),6);await page.emulateMedia({media:'print'});assert.equal(await page.locator('#lessonContent').isVisible(),true);assert.equal(await page.locator('#playPanel').isVisible(),false);await page.screenshot({path:`${evidence}/${id}-worksheet-${width}.png`,fullPage:true});await page.emulateMedia({media:'screen'});}
+      if(id.endsWith('04')){
+        await page.locator('.journey-stop').nth(1).click();await page.locator('#creativeStudio .studio-shape').first().waitFor();
+        await page.reload();await page.getByText(`${adventures.length} of ${adventures.length} exploration stars`,{exact:true}).waitFor();await page.locator('.journey-stop').nth(1).click();assert.equal(await page.locator('#creativeStudio .studio-shape').count(),0);
+        assert.equal(await page.evaluate(()=>Object.keys(localStorage).filter(key=>!/speakout-exploration/.test(key)).length),0);
+        await page.goto(`${base}/kiddies-unit.html?id=${id}&mode=materials`);await page.getByRole('heading',{name:id.startsWith('nursery')?'Reusable activity sheet':'Creative arts practice sheet',exact:true}).waitFor();
+        if(id.startsWith('primary'))assert.equal(await page.locator('#lessonContent p').filter({hasText:/^Task A[1-6]:/}).count(),6);
+        await page.emulateMedia({media:'print'});assert.equal(await page.locator('#creativeStudio').isVisible(),false);assert.equal(await page.locator('#playPanel').isVisible(),false);await page.screenshot({path:`${evidence}/${id}-worksheet-${width}.png`,fullPage:true});await page.emulateMedia({media:'screen'});
+      }
       await page.getByRole('link',{name:/Unit 1:/}).click();
       await page.getByText(`0 of ${adventures.length} exploration stars`,{exact:true}).waitFor();
       const second=page.getByRole('link',{name:new RegExp(`Unit ${unitNumber}:`)});await second.click();

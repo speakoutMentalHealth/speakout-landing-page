@@ -6,20 +6,21 @@ Updated 10 October 2026. This is a coverage register, not a claim of a complete 
 
 | Section | Material | Available coverage | Still required for a complete programme |
 | --- | --- | --- | --- |
-| Nursery, adaptable placement | Units 1–3: Our Learning Space; Patterns and Little Stories; Little World Explorers | 12 lessons and 24 interactive questions; language, shared turns, numbers one–five, shapes/patterns and observation of surroundings | A reviewed progression across physical, social/emotional, cognitive, language, creative and national-values domains; adaptations for each actual setting |
+| Nursery, adaptable placement | Units 1–4: Our Learning Space; Patterns and Little Stories; Little World Explorers; Make, Move and Tell | 16 lessons and 32 interactive questions; language, shared turns, numbers one–five, shapes/patterns, surroundings and introductory creative expression | A reviewed progression across physical, social/emotional, cognitive, language, creative and national-values domains; adaptations for each actual setting |
 | Primary 1 English Studies | Units 1–2 | 6 introductory lessons with stories, sentences and a small sound set | Detailed outcome mapping, a reviewed sound/reading sequence, listening/speaking, sustained reading and writing development |
 | Primary 1 Mathematics | Units 1–2 | 6 introductory lessons within ten with quantity, comparison and joining/taking away | Detailed outcomes and broader number, geometry, measurement and other required strands across a full year |
 | Primary 1 Basic Science | Unit 3: Observe, Compare and Care | 6 introductory lessons; evidence, materials, living examples, plant parts, comparison and simple records | Detailed current outcomes, teacher-reviewed progression, broader subject coverage and classroom validation |
+| Primary 1 Cultural & Creative Arts | Unit 4: Our Creative Workshop | 6 introductory lessons; line/shape choices, repeating designs, quiet action sequences, pretend roles and respectful discussion; optional shape studio | Detailed current outcomes, broader subject coverage, local subject review and classroom validation |
 | Other Primary 1 subjects | No new units in this release | National subject guide is available separately | Original subject units, mapping and review; language/faith provision requires appropriate subject expertise |
 | Primary 2–6 | No class-specific units in this release | Existing general resources may be browsed | Class-by-class subject coverage and progression; do not relabel Primary 1 units to fill these gaps |
 | JSS 1–3 and SS 1–3 | Existing resources, no new school programme in this release | Existing catalogue and national subject guide | Audit existing resources against the appropriate class/pathway, author missing units and verify mappings |
 | Tertiary | Existing resources retained | Existing course/material catalogue | Programme-specific audit against the applicable regulator and institution before asserting programme alignment |
 
-Counts above refer to these six introductory units only. A course outline, subject heading or gamified recognition activity does not complete a subject. Digital correct choices do not prove independent explanation, reading, mathematical reasoning or mastery. Paper practice and actual supported responses guide teaching.
+Counts above refer to these eight introductory units only. A course outline, subject heading or gamified recognition activity does not complete a subject. Digital correct choices do not prove independent explanation, reading, mathematical reasoning or mastery. Paper practice and actual supported responses guide teaching.
 
 ## Next authoring batches
 
-1. Broaden Nursery creative expression, supported communication and shared routines. Extend Primary 1 English and Mathematics from observed learner needs and the current detailed outcomes when available.
+1. Nursery creative expression and Primary 1 Cultural & Creative Arts now have introductory units. Next deepen supported communication/shared routines and extend Primary 1 English and Mathematics from observed learner needs and current detailed outcomes when available.
 2. Build Primary 1 subject breadth with qualified subject review, preserving optional subjects and appropriate faith/language choices. Do not create false universal religious or language requirements.
 3. Develop Primary 2 and 3 with distinct class placement, then Primary 4–6 using their framework. Each class needs its own coverage register; a changed class label is not a new lesson.
 4. Audit and develop secondary class/pathway materials; review existing tertiary material by programme and regulator.

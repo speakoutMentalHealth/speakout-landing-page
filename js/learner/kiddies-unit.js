@@ -11,6 +11,7 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
  const key=`speakout-exploration:${user.uid}:${unit.id}:v${unit.version}`,allowed=lessons.map(String);
  let storage=null;try{storage=window.localStorage;}catch{}
  let completed=readExploration(storage,key,allowed),round=0,resetArmed=false;
+ const designs=new Map();
  document.title=`${unit.title} | SpeakOut`;
  byId('unitLevel').textContent=unit.educationStages[0]==='nursery'?'Kiddies Corner · Nursery · introductory unit':'Kiddies Corner · Primary 1 · introductory unit';
  byId('unitTitle').textContent=unit.title;byId('unitDescription').textContent=unit.description;
@@ -36,6 +37,17 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
    const big=element('span','','choice-art book larger-book'),small=element('span','','choice-art book smaller-book');big.setAttribute('aria-hidden','true');small.setAttribute('aria-hidden','true');box.append(big,small);return box;
   }
   if(value&&typeof value==='object'){
+   if(value.type==='lines'){
+    box.classList.add('line-examples');box.setAttribute('role','img');box.setAttribute('aria-label','Line A is straight; Line B bends smoothly and is curved');
+    const ns='http://www.w3.org/2000/svg';
+    for(const [label,path] of [['Line A','M 10 25 L 190 25'],['Line B','M 10 35 Q 55 -5 100 35 T 190 35']]){
+     const row=element('div','','line-example');const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 200 60');svg.setAttribute('aria-hidden','true');const mark=document.createElementNS(ns,'path');mark.setAttribute('d',path);mark.setAttribute('fill','none');mark.setAttribute('stroke','#0a5fbf');mark.setAttribute('stroke-width','5');svg.append(mark);row.append(element('span',label,'picture-group-label'),svg);box.append(row);
+    }return box;
+   }
+   if(value.type==='rhythm'){
+    box.classList.add('rhythm-sequence');box.setAttribute('role','img');box.setAttribute('aria-label',value.actions.map((action,i)=>`Position ${i+1}: ${action.toLowerCase()}`).join('; '));
+    value.actions.forEach((action,i)=>{const beat=element('div','',`rhythm-position ${action==='PAUSE'?'pause-position':''}`);beat.append(element('span',String(i+1),'rhythm-number'),element('strong',action));box.append(beat);});return box;
+   }
    if(value.type==='plant'){
     box.setAttribute('role','img');box.setAttribute('aria-label','Example leafy plant: two broad leaves joined to a central stem; roots drawn below a soil line');
     const drawing=element('div','','plant-drawing');
@@ -84,16 +96,40 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
    const celebration=panel.querySelector('h3');celebration.tabIndex=-1;celebration.focus();
   });panel.append(choices,feedback,next,element('p','Ask a grown-up to read the choices, or point to your choice. There is no timer.','game-help'));
  }
+ function studio(adventure){
+  const host=byId('creativeStudio');host.hidden=!adventure?.creativeBoard;host.replaceChildren();
+  if(host.hidden)return;
+  const sectionKey=select.value;
+  if(!designs.has(sectionKey))designs.set(sectionKey,{cells:Array(9).fill(''),tool:'Circle',history:[]});
+  const design=designs.get(sectionKey);
+  const title=element('h2','Your shape studio');title.id='studioHeading';title.tabIndex=-1;
+  const instructions=element('p','Choose a shape, then choose a space. Use Erase to remove one shape. Make any arrangement you like; there is no single right design. A grown-up can help, or you can use paper.');
+  const tools=element('div','','studio-tools');tools.setAttribute('role','group');tools.setAttribute('aria-label','Choose a studio tool');
+  const board=element('div','','studio-board');board.setAttribute('role','group');board.setAttribute('aria-label','Nine spaces for your design');
+  const status=element('p','Circle selected. Choose a space.','studio-status');status.setAttribute('role','status');
+  const buttons=[];
+  const undo=element('button','Undo last change','btn');undo.type='button';
+  const clear=element('button','Clear this design','btn');clear.type='button';
+  const paint=()=>{buttons.forEach((button,i)=>{const shape=design.cells[i];button.replaceChildren(element('span',`${i+1}${shape?' · '+shape:''}`,'studio-space-label'));button.setAttribute('aria-label',`Space ${i+1}: ${shape||'empty'}`);if(shape){const art=element('span','',`studio-shape ${shape.toLowerCase()}`);art.setAttribute('aria-hidden','true');button.append(art);}});undo.disabled=!design.history.length;clear.disabled=design.cells.every(cell=>!cell);};
+  const remember=()=>{design.history.push([...design.cells]);if(design.history.length>20)design.history.shift();};
+  for(const tool of ['Circle','Square','Line','Erase']){const button=element('button',tool,'studio-tool');button.type='button';button.setAttribute('aria-pressed',String(design.tool===tool));button.addEventListener('click',()=>{design.tool=tool;tools.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));status.textContent=`${tool} selected. Choose a space.`;});tools.append(button);}
+  for(let i=0;i<9;i++){const button=element('button','','studio-space');button.type='button';button.addEventListener('click',()=>{const shape=design.tool==='Erase'?'':design.tool;if(design.cells[i]!==shape){remember();design.cells[i]=shape;paint();}status.textContent=shape?`${shape} placed in space ${i+1}. Tell your grown-up about your choice.`:`Space ${i+1} is empty.`;});buttons.push(button);board.append(button);}
+  undo.addEventListener('click',()=>{if(!design.history.length)return;design.cells=design.history.pop();paint();status.textContent='Last change undone.';});
+  clear.addEventListener('click',()=>{remember();design.cells=Array(9).fill('');paint();status.textContent='Design cleared. Undo last change can restore it.';});
+  const actions=element('div','','studio-tools');actions.append(undo,clear);
+  host.append(title,instructions,tools,board,status,actions,element('p','This design stays only during this visit. It is not uploaded or saved; refreshing or leaving clears it. The studio adds no extra stars and does not grade your artwork.','game-help'));
+  status.textContent=`${design.tool} selected. Choose a space.`;paint();
+ }
  function render(){
   round=0;resetArmed=false;byId('resetExploration').textContent='Start a fresh star collection';
   const section=unit.sections[Number(select.value)],heading=element('h2',section.title);heading.id='lessonTitle';heading.tabIndex=-1;
   const adventure=adventures[lessons.indexOf(Number(select.value))];
   const paragraphs=section.paragraphs.map(text=>{const p=document.createElement('p');p.textContent=text;return p;});
-  if(adventure){const notes=element('details','','teaching-notes');notes.append(element('summary','Grown-up guide: full lesson, examples and answers'),...paragraphs);byId('lessonContent').replaceChildren(heading,element('p',adventure.intro,'learner-intro'),notes);}
+  if(adventure){const notes=element('details','','teaching-notes');notes.append(element('summary','Grown-up guide: full lesson, examples and answers'),...paragraphs);byId('lessonContent').replaceChildren(heading,element('p',adventure.intro,'learner-intro'),notes);if(adventure.creativeBoard){const make=element('button','Make your own design','btn primary studio-launch');make.type='button';make.addEventListener('click',()=>{byId('creativeStudio').scrollIntoView({behavior:'auto',block:'start'});byId('studioHeading').focus();});byId('lessonContent').insertBefore(make,notes);}}
   else byId('lessonContent').replaceChildren(heading,...paragraphs);
   byId('adventureIcon').textContent=adventure?.icon||'Aa';
   const url=new URL(location.href);url.searchParams.set('section',select.value);history.replaceState(null,'',url);
-  byId('unitStatus').textContent=`${section.title} selected.`;progress();play();
+  byId('unitStatus').textContent=`${section.title} selected.`;progress();play();studio(adventure);
  }
  byId('resetExploration').addEventListener('click',()=>{if(!resetArmed){resetArmed=true;byId('resetExploration').textContent='Confirm: clear this unit’s stars';byId('unitStatus').textContent='Click Confirm to clear this unit’s stars on this browser. Lessons stay available.';return;}completed=new Set();saveExploration(storage,key,completed);render();byId('unitStatus').textContent='Your star collection is empty. Let’s explore again!';});
  let printNotes=null;
