@@ -10,7 +10,7 @@ test('Primary 2–6 each have an original science unit, safe instructions and fo
   const unit=KIDDIES_UNITS.find(u=>u.id===id);
   assert.ok(unit,id);
   assert.deepEqual(unit.classLevels,[`Primary ${grade}`]);
-  assert.equal(unit.subject,'Basic Science');
+  assert.equal(unit.subject,grade<=3?'Basic Science':'Basic Science and Technology');
   assert.equal(unit.review.humanApproval,false);
   assert.match(unit.mapping,/not established/);
   assert.equal(unit.sections.filter(s=>/Lesson \d/.test(s.title)).length,4);
