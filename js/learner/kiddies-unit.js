@@ -37,6 +37,19 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
    const big=element('span','','choice-art book larger-book'),small=element('span','','choice-art book smaller-book');big.setAttribute('aria-hidden','true');small.setAttribute('aria-hidden','true');box.append(big,small);return box;
   }
   if(value&&typeof value==='object'){
+   if(value.type==='number-strip'){
+    box.classList.add('number-picture');box.setAttribute('role','img');box.setAttribute('aria-label',`Numbers in order: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Start at ${value.start}.`);
+    const strip=element('div','','number-strip');strip.setAttribute('aria-hidden','true');
+    for(let number=0;number<=10;number++){const step=element('span','','number-step');step.append(element('span',String(number),`number-token ${number===value.start?'start-number':''}`));if(number<10)step.append(element('span','→','number-arrow'));strip.append(step);}
+    box.append(element('span',`Number order · start at ${value.start}`,'picture-group-label'),strip);return box;
+   }
+   if(value.type==='position'){
+    const on=value.position==='on';box.classList.add('position-picture');box.setAttribute('role','img');box.setAttribute('aria-label',on?'A book rests on a tabletop':'A book is beneath the tabletop, between its legs, with a gap above the book');
+    const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 240 170');svg.setAttribute('aria-hidden','true');
+    const table=document.createElementNS(ns,'path');table.setAttribute('d','M 20 65 H 220 M 40 65 V 150 M 200 65 V 150');table.setAttribute('fill','none');table.setAttribute('stroke','#785000');table.setAttribute('stroke-width','6');table.classList.add('position-table');
+    const book=document.createElementNS(ns,'rect');book.setAttribute('x','88');book.setAttribute('y',on?'35':'95');book.setAttribute('width','64');book.setAttribute('height','30');book.setAttribute('rx','3');book.setAttribute('fill','#0a5fbf');book.setAttribute('stroke','#074b96');book.setAttribute('stroke-width','3');book.classList.add('position-book');
+    svg.append(table,book);box.append(svg,element('span','Book and table drawing','picture-group-label'));return box;
+   }
    if(value.type==='lines'){
     box.classList.add('line-examples');box.setAttribute('role','img');box.setAttribute('aria-label','Line A is straight; Line B bends smoothly and is curved');
     const ns='http://www.w3.org/2000/svg';
