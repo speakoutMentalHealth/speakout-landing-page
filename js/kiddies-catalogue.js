@@ -1772,6 +1772,511 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "primary2-unit-02",
+    "title": "Explore Materials and Living Things",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 2"
+    ],
+    "subject": "Basic Science",
+    "description": "Four original Primary 2 introductory Basic Science lessons, with safe examples, practice sheet, worked guidance and review caveats.",
+    "mapping": "Basic Science belongs to the national primary subject framework, but detailed Primary 2 learning outcomes are not established and teacher approval is pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 2,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "This is an original SpeakOut introductory Basic Science teaching pack for Primary 2. It is not a full subject, term plan, verified national outcome mapping, or teacher-approved textbook. Learners may take this unit without completing Unit 1. Exact revised NERDC learning-outcome alignment has not been established; independent teacher validation and supervised classroom piloting remain pending."
+        ]
+      },
+      {
+        "title": "Facilitator preparation, access and safety",
+        "paragraphs": [
+          "Prepare a pencil, safe paper drawings and adult-written picture labels. Use fictional examples rather than claiming any local weather or experimental result. Read instructions aloud, model the science vocabulary and accept answers by speech, pointing, signing, dictation or communication aids. Adapt the pace and give pauses freely. Do not use hazardous substances, flames, electricity, hot water, sharp glass, unfamiliar plants or unsupervised experiments. Invite observation of safe representations; no child photographs, recordings or personal disclosures are necessary."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 1: Materials around us",
+        "paragraphs": [
+          "Aim: explore materials around us through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Paper bends and wood can be rigid, but the properties depend on the specific item. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Fold a safe sheet with supervision; use pictures rather than moving furniture. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Which is usually easier to fold: paper or a wooden desk? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Paper. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 2: Living and nonliving examples",
+        "paragraphs": [
+          "Aim: explore living and nonliving examples through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A healthy potted plant grows and needs suitable resources. A clean stone is a nonliving object. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Observe pictures; never taste or pick unknown plants. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Which example is living: a growing plant or a stone? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: A growing plant. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 3: Simple weather observations",
+        "paragraphs": [
+          "Aim: explore simple weather observations through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Clouds, rain and sunshine can be observed and recorded without forecasting a particular day. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use a hand-drawn weather chart; do not look directly at the sun. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: What might you write after seeing clouds? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: I observed clouds. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 4: Clean water habits",
+        "paragraphs": [
+          "Aim: explore clean water habits through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Clear-looking water is not always safe to drink. Use water supplied or approved by a trusted adult. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use drawings only; never sample unknown water. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Does clear-looking water always mean safe drinking water? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: No. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Reusable science practice sheet",
+        "paragraphs": [
+          "Task S1: Which is usually easier to fold: paper or a wooden desk? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S2: Which example is living: a growing plant or a stone? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S3: What might you write after seeing clouds? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S4: Does clear-looking water always mean safe drinking water? Draw or explain the clue that supports your answer. An adult may write or draw for the learner."
+        ]
+      },
+      {
+        "title": "Answers and facilitator guidance",
+        "paragraphs": [
+          "Answer S1: Paper. Teaching reminder: Fold a safe sheet with supervision; use pictures rather than moving furniture.",
+          "Answer S2: A growing plant. Teaching reminder: Observe pictures; never taste or pick unknown plants.",
+          "Answer S3: I observed clouds. Teaching reminder: Use a hand-drawn weather chart; do not look directly at the sun.",
+          "Answer S4: No. Teaching reminder: Use drawings only; never sample unknown water."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary3-unit-02",
+    "title": "Observe, Group and Measure",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 3"
+    ],
+    "subject": "Basic Science",
+    "description": "Four original Primary 3 introductory Basic Science lessons, with safe examples, practice sheet, worked guidance and review caveats.",
+    "mapping": "Basic Science belongs to the national primary subject framework, but detailed Primary 3 learning outcomes are not established and teacher approval is pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 2,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "This is an original SpeakOut introductory Basic Science teaching pack for Primary 3. It is not a full subject, term plan, verified national outcome mapping, or teacher-approved textbook. Learners may take this unit without completing Unit 1. Exact revised NERDC learning-outcome alignment has not been established; independent teacher validation and supervised classroom piloting remain pending."
+        ]
+      },
+      {
+        "title": "Facilitator preparation, access and safety",
+        "paragraphs": [
+          "Prepare a pencil, safe paper drawings and adult-written picture labels. Use fictional examples rather than claiming any local weather or experimental result. Read instructions aloud, model the science vocabulary and accept answers by speech, pointing, signing, dictation or communication aids. Adapt the pace and give pauses freely. Do not use hazardous substances, flames, electricity, hot water, sharp glass, unfamiliar plants or unsupervised experiments. Invite observation of safe representations; no child photographs, recordings or personal disclosures are necessary."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 1: Classifying common materials",
+        "paragraphs": [
+          "Aim: explore classifying common materials through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Different objects can be grouped by an observed property, such as flexibility or transparency. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use printed pictures; avoid sharp glass and unsafe objects. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Can clear glass and clear plastic share the property of being transparent? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 2: Plants and basic needs",
+        "paragraphs": [
+          "Aim: explore plants and basic needs through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Plants generally need suitable water, air and light, though the exact needs vary by species. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Observe a teacher-approved drawing or accessible plant, without picking it. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Is appropriate water one possible plant need? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 3: Pushes and pulls",
+        "paragraphs": [
+          "Aim: explore pushes and pulls through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A push moves an object away in the direction of applied force; a pull draws it toward the puller. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use drawn arrows or an adult-guided lightweight safe item. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Does a gentle pull bring an object toward the person pulling? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Usually yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 4: Keeping a simple record",
+        "paragraphs": [
+          "Aim: explore keeping a simple record through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A fair comparison uses the same unit and records observations honestly, including uncertainty. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Measure printed lines on paper; never invent findings. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: When comparing two pencils, should we measure with the same unit? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Reusable science practice sheet",
+        "paragraphs": [
+          "Task S1: Can clear glass and clear plastic share the property of being transparent? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S2: Is appropriate water one possible plant need? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S3: Does a gentle pull bring an object toward the person pulling? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S4: When comparing two pencils, should we measure with the same unit? Draw or explain the clue that supports your answer. An adult may write or draw for the learner."
+        ]
+      },
+      {
+        "title": "Answers and facilitator guidance",
+        "paragraphs": [
+          "Answer S1: Yes. Teaching reminder: Use printed pictures; avoid sharp glass and unsafe objects.",
+          "Answer S2: Yes. Teaching reminder: Observe a teacher-approved drawing or accessible plant, without picking it.",
+          "Answer S3: Usually yes. Teaching reminder: Use drawn arrows or an adult-guided lightweight safe item.",
+          "Answer S4: Yes. Teaching reminder: Measure printed lines on paper; never invent findings."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary4-unit-02",
+    "title": "Changes, Sounds and Connections",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 4"
+    ],
+    "subject": "Basic Science",
+    "description": "Four original Primary 4 introductory Basic Science lessons, with safe examples, practice sheet, worked guidance and review caveats.",
+    "mapping": "Basic Science belongs to the national primary subject framework, but detailed Primary 4 learning outcomes are not established and teacher approval is pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 2,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "This is an original SpeakOut introductory Basic Science teaching pack for Primary 4. It is not a full subject, term plan, verified national outcome mapping, or teacher-approved textbook. Learners may take this unit without completing Unit 1. Exact revised NERDC learning-outcome alignment has not been established; independent teacher validation and supervised classroom piloting remain pending."
+        ]
+      },
+      {
+        "title": "Facilitator preparation, access and safety",
+        "paragraphs": [
+          "Prepare a pencil, safe paper drawings and adult-written picture labels. Use fictional examples rather than claiming any local weather or experimental result. Read instructions aloud, model the science vocabulary and accept answers by speech, pointing, signing, dictation or communication aids. Adapt the pace and give pauses freely. Do not use hazardous substances, flames, electricity, hot water, sharp glass, unfamiliar plants or unsupervised experiments. Invite observation of safe representations; no child photographs, recordings or personal disclosures are necessary."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 1: Changing states of water",
+        "paragraphs": [
+          "Aim: explore changing states of water through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Under suitable conditions ice melts to liquid water as it gains heat; water can freeze when cooled. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use pictures and discussion; avoid boiling water or hot equipment. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: What happens when ice melts? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: It becomes liquid water. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 2: Food chains as models",
+        "paragraphs": [
+          "Aim: explore food chains as models through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A simple model might show grass eaten by a grasshopper, which may be eaten by a bird. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Make a paper arrow model; remember real food webs have many links. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: In grass → grasshopper → bird, who eats the grass? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Grasshopper. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 3: Sound and vibration",
+        "paragraphs": [
+          "Aim: explore sound and vibration through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Sounds can arise when objects vibrate, and sound can travel through air. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use diagrams; keep activities quiet and avoid loud sound exposure. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Does a vibrating object sometimes produce sound? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 4: Recording weather patterns",
+        "paragraphs": [
+          "Aim: explore recording weather patterns through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: One weather observation is not enough to describe a season. Trends need repeated records. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Compare fictional weekly tables instead of making local weather claims. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Do two cloudy days prove a whole season is cloudy? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: No. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Reusable science practice sheet",
+        "paragraphs": [
+          "Task S1: What happens when ice melts? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S2: In grass → grasshopper → bird, who eats the grass? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S3: Does a vibrating object sometimes produce sound? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S4: Do two cloudy days prove a whole season is cloudy? Draw or explain the clue that supports your answer. An adult may write or draw for the learner."
+        ]
+      },
+      {
+        "title": "Answers and facilitator guidance",
+        "paragraphs": [
+          "Answer S1: It becomes liquid water. Teaching reminder: Use pictures and discussion; avoid boiling water or hot equipment.",
+          "Answer S2: Grasshopper. Teaching reminder: Make a paper arrow model; remember real food webs have many links.",
+          "Answer S3: Yes. Teaching reminder: Use diagrams; keep activities quiet and avoid loud sound exposure.",
+          "Answer S4: No. Teaching reminder: Compare fictional weekly tables instead of making local weather claims."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary5-unit-02",
+    "title": "Water, Energy and Fair Tests",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 5"
+    ],
+    "subject": "Basic Science",
+    "description": "Four original Primary 5 introductory Basic Science lessons, with safe examples, practice sheet, worked guidance and review caveats.",
+    "mapping": "Basic Science belongs to the national primary subject framework, but detailed Primary 5 learning outcomes are not established and teacher approval is pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 2,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "This is an original SpeakOut introductory Basic Science teaching pack for Primary 5. It is not a full subject, term plan, verified national outcome mapping, or teacher-approved textbook. Learners may take this unit without completing Unit 1. Exact revised NERDC learning-outcome alignment has not been established; independent teacher validation and supervised classroom piloting remain pending."
+        ]
+      },
+      {
+        "title": "Facilitator preparation, access and safety",
+        "paragraphs": [
+          "Prepare a pencil, safe paper drawings and adult-written picture labels. Use fictional examples rather than claiming any local weather or experimental result. Read instructions aloud, model the science vocabulary and accept answers by speech, pointing, signing, dictation or communication aids. Adapt the pace and give pauses freely. Do not use hazardous substances, flames, electricity, hot water, sharp glass, unfamiliar plants or unsupervised experiments. Invite observation of safe representations; no child photographs, recordings or personal disclosures are necessary."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 1: The water cycle",
+        "paragraphs": [
+          "Aim: explore the water cycle through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Evaporation, condensation and precipitation describe processes in the movement of water through the environment. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use a labelled picture; no heated demonstrations are needed. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: What process describes liquid water becoming water vapour? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Evaporation. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 2: Simple electric circuits",
+        "paragraphs": [
+          "Aim: explore simple electric circuits through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A closed loop can let current flow in an appropriate low-voltage circuit, but open loops interrupt it. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use diagrams only; never use wall sockets, mains power or exposed electrical parts. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Can an open circuit interrupt current? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 3: Adaptations in organisms",
+        "paragraphs": [
+          "Aim: explore adaptations in organisms through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: A feature can help an organism survive in its environment, but a single feature does not guarantee survival. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Compare photographs or drawings rather than touching prickly plants. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Can a cactus's water-storing tissues help in dry conditions? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 4: Fair testing",
+        "paragraphs": [
+          "Aim: explore fair testing through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Change one factor while keeping relevant others similar when comparing a result. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use fictional paper examples instead of testing chemicals or medicines. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Should a comparison change many unrelated factors at once? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: No. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Reusable science practice sheet",
+        "paragraphs": [
+          "Task S1: What process describes liquid water becoming water vapour? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S2: Can an open circuit interrupt current? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S3: Can a cactus's water-storing tissues help in dry conditions? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S4: Should a comparison change many unrelated factors at once? Draw or explain the clue that supports your answer. An adult may write or draw for the learner."
+        ]
+      },
+      {
+        "title": "Answers and facilitator guidance",
+        "paragraphs": [
+          "Answer S1: Evaporation. Teaching reminder: Use a labelled picture; no heated demonstrations are needed.",
+          "Answer S2: Yes. Teaching reminder: Use diagrams only; never use wall sockets, mains power or exposed electrical parts.",
+          "Answer S3: Yes. Teaching reminder: Compare photographs or drawings rather than touching prickly plants.",
+          "Answer S4: No. Teaching reminder: Use fictional paper examples instead of testing chemicals or medicines."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary6-unit-02",
+    "title": "Forces, Machines and Evidence",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 6"
+    ],
+    "subject": "Basic Science",
+    "description": "Four original Primary 6 introductory Basic Science lessons, with safe examples, practice sheet, worked guidance and review caveats.",
+    "mapping": "Basic Science belongs to the national primary subject framework, but detailed Primary 6 learning outcomes are not established and teacher approval is pending.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 2,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "About this unit",
+        "paragraphs": [
+          "This is an original SpeakOut introductory Basic Science teaching pack for Primary 6. It is not a full subject, term plan, verified national outcome mapping, or teacher-approved textbook. Learners may take this unit without completing Unit 1. Exact revised NERDC learning-outcome alignment has not been established; independent teacher validation and supervised classroom piloting remain pending."
+        ]
+      },
+      {
+        "title": "Facilitator preparation, access and safety",
+        "paragraphs": [
+          "Prepare a pencil, safe paper drawings and adult-written picture labels. Use fictional examples rather than claiming any local weather or experimental result. Read instructions aloud, model the science vocabulary and accept answers by speech, pointing, signing, dictation or communication aids. Adapt the pace and give pauses freely. Do not use hazardous substances, flames, electricity, hot water, sharp glass, unfamiliar plants or unsupervised experiments. Invite observation of safe representations; no child photographs, recordings or personal disclosures are necessary."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 1: Forces and motion",
+        "paragraphs": [
+          "Aim: explore forces and motion through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Friction can oppose sliding motion between touching surfaces and may depend on the materials. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use arrows and paper diagrams, not risky physical demonstrations. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Can friction oppose a sliding object's motion? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 2: Simple machines",
+        "paragraphs": [
+          "Aim: explore simple machines through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Levers and pulleys can help change the direction or size of an applied force under appropriate conditions. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Use labelled drawings; do not lift heavy loads. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Is a lever an example of a simple machine? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: Yes. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 3: Environmental stewardship",
+        "paragraphs": [
+          "Aim: explore environmental stewardship through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Waste sorting and safe disposal depend on local services; children should not handle hazardous waste. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Practise sorting only clean, drawn examples, with adult guidance. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Should children handle unknown medical waste to recycle it? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: No. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Basic Science Lesson 4: Evaluating a scientific claim",
+        "paragraphs": [
+          "Aim: explore evaluating a scientific claim through a safe observation or model, separating what is shown from what has not been tested.",
+          "Model: Repeated observations and a clear method make a claim easier to check; guesses should be labelled as guesses. Explain each unfamiliar term with a large labelled drawing, then describe the model in plain language. A model is a teaching aid, not a new experimental finding.",
+          "Together: Compare fictional evidence cards and distinguish observation from conclusion. Invite the child to identify the relevant feature in the drawing. Discuss a second familiar example without requiring the child to handle materials.",
+          "Try: Is one unverified story enough to prove a scientific claim? Provide the question in speech or text and let the learner show the reasoning with a supported response. Then draw another safe example that changes one detail, and ask whether the answer still holds.",
+          "Check and answer: No. Ask what part of the description supports the answer, and distinguish prompted repetition from an independently explained idea. Note any missing prerequisite understanding before moving forward.",
+          "Next step: revisit with a fresh drawing or a different fictional setting. Do not treat one correct interactive response as mastery."
+        ]
+      },
+      {
+        "title": "Reusable science practice sheet",
+        "paragraphs": [
+          "Task S1: Can friction oppose a sliding object's motion? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S2: Is a lever an example of a simple machine? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S3: Should children handle unknown medical waste to recycle it? Draw or explain the clue that supports your answer. An adult may write or draw for the learner.",
+          "Task S4: Is one unverified story enough to prove a scientific claim? Draw or explain the clue that supports your answer. An adult may write or draw for the learner."
+        ]
+      },
+      {
+        "title": "Answers and facilitator guidance",
+        "paragraphs": [
+          "Answer S1: Yes. Teaching reminder: Use arrows and paper diagrams, not risky physical demonstrations.",
+          "Answer S2: Yes. Teaching reminder: Use labelled drawings; do not lift heavy loads.",
+          "Answer S3: No. Teaching reminder: Practise sorting only clean, drawn examples, with adult guidance.",
+          "Answer S4: No. Teaching reminder: Compare fictional evidence cards and distinguish observation from conclusion."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}
