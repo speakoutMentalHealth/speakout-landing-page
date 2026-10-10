@@ -36,6 +36,17 @@ requireRoles(['student','teacher','parent','school_admin','admin','super_admin']
    const big=element('span','','choice-art book larger-book'),small=element('span','','choice-art book smaller-book');big.setAttribute('aria-hidden','true');small.setAttribute('aria-hidden','true');box.append(big,small);return box;
   }
   if(value&&typeof value==='object'){
+   if(value.type==='plant'){
+    box.setAttribute('role','img');box.setAttribute('aria-label','Example leafy plant: two broad leaves joined to a central stem; roots drawn below a soil line');
+    const drawing=element('div','','plant-drawing');
+    for(const part of ['plant-stem','plant-leaf left-leaf','plant-leaf right-leaf','plant-soil','plant-root left-root','plant-root right-root']){const mark=element('span','',part);mark.setAttribute('aria-hidden','true');drawing.append(mark);}
+    box.append(drawing,element('p','Example plant · leaves, stem and roots','picture-group-label'));return box;
+   }
+   if(value.type==='strips'){
+    box.classList.add('strip-comparison');box.setAttribute('role','img');box.setAttribute('aria-label',value.lengths[0]===value.lengths[1]?'Strips A and B have the same length from the shared start line; B is wider':'Strips A and B begin at the same start line; B is longer');
+    box.append(element('p','Compare length from the same start','picture-group-label'));
+    value.lengths.forEach((length,i)=>{const row=element('div','','strip-row');const strip=element('span','','comparison-strip');strip.style.width=`${length}%`;strip.style.height=`${value.widths[i]}px`;strip.setAttribute('aria-hidden','true');row.append(element('span',`Strip ${i===0?'A':'B'}`,'picture-group-label'),strip);box.append(row);});return box;
+   }
    if(value.type==='pattern'){box.setAttribute('role','img');box.setAttribute('aria-label',value.shapes.join(', ')+', then a space for the next shape');value.shapes.forEach(shape=>{const drawing=element('span','','pattern-shape '+shape);drawing.setAttribute('aria-hidden','true');box.append(drawing);});const gap=element('span','?','pattern-gap');gap.setAttribute('aria-hidden','true');box.append(gap);return box;}
    if(value.type==='groups'){value.counts.forEach((amount,group)=>{const set=element('div','',`picture-group ${value.spread&&group===1?'spread-group':''}`);set.setAttribute('role','img');set.setAttribute('aria-label',`Group ${group===0?'A':'B'}: ${amount} circles${value.removed?`, ${value.removed} crossed out`:''}`);set.append(element('span',value.removed?`Take ${value.removed} away`:`Group ${group===0?'A':'B'}`,'picture-group-label'));const row=element('div','','circle-row');for(let i=0;i<amount;i++){const circle=element('span','',`counting-circle ${value.removed&&i>=amount-value.removed?'crossed-circle':''}`);circle.setAttribute('aria-hidden','true');row.append(circle);}set.append(row);box.append(set);});return box;}
   }

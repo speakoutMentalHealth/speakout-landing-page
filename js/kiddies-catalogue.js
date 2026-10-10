@@ -436,6 +436,215 @@ export const KIDDIES_UNITS = [
         ]
       }
     ]
+  },
+  {
+    "id": "nursery-unit-03",
+    "title": "Little World Explorers",
+    "educationStages": [
+      "nursery"
+    ],
+    "classLevels": [],
+    "subject": "Observation, language and caring for surroundings",
+    "description": "Four adult-led adventures: notice familiar details, explore drawn plant parts, compare leaf pictures and care for shared things.",
+    "mapping": "Partial thematic relationship to the NERDC pre-primary environmental exploration approach (printed pp.99–100 / PDF pp.116–117). Exact lesson outcome alignment is not established.",
+    "source": "https://ppec.nerdcportals.com.ng/pre_primary/web/ppec_tg.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation",
+        "paragraphs": [
+          "Prepare paper, a familiar book, a clean cloth and your own large drawings of a plant, a chair and a leaf. A real plant is optional and remains with the adult. Use pictures throughout if the room has no suitable plant. No purchase, outdoor trip, photography or internet connection is needed for the paper activities. Start with one adventure; five to ten comfortable minutes is a suggestion, not a target to enforce.",
+          "An adult supervises every activity. Do not offer leaves, soil, seeds, insects, small counters, sharp tools, cleaning chemicals or food for handling or tasting. Avoid smelling unknown plants and do not pull off leaves. Observing through a picture is enough. There are no loud sound tests, blindfolds, compulsory touch or tests of eyesight or hearing. Explain in the learner's home language where helpful. Accept speaking, signing, pointing, dictation or an established communication aid. Describe pictures aloud and pause on request. Recognition in the game is practice, not evidence of independent explanation."
+        ]
+      },
+      {
+        "title": "Lesson 1: Notice one thing",
+        "paragraphs": [
+          "Aim: communicate one detail about a familiar object. Use a book with visible pages and a clean cloth. Say what the learner is being invited to notice before asking a question. Seeing is one possible route; an adult's description or an agreed tactile route with the familiar cloth is another.",
+          "Model: open the book and say, “This book has pages.” Then say, “This is a cloth. It can fold.” Fold it yourself. Explain that we are describing what we can notice, rather than guessing what is hidden. Never ask the child to touch the object to earn a turn.",
+          "Together: offer the two objects or drawings. Ask which one has pages. Read the description again or indicate the pages. If both words are unfamiliar, teach book and cloth first. Ask the learner to choose whether the adult should show the pages or fold the cloth again.",
+          "Try: use a different familiar book. Invite one description through the learner's preferred response route. Offer “has pages” and “is a cloth” as supported choices when an open question is too demanding. A supported choice and an independently supplied description are different observations; both are useful for planning.",
+          "Check and answers: the book has pages; the cloth can fold. Other accurate details about the actual objects are welcome. A book's colour must come from the actual book, not a guessed story detail. Next step: notice another feature of the same object with support before introducing several new words."
+        ]
+      },
+      {
+        "title": "Lesson 2: A plant has parts",
+        "paragraphs": [
+          "Aim: identify a leaf in an adult-prepared plant drawing. Draw a simple small plant with a stem and two broad leaves. The drawing is an example, not a claim that all plants have the same number of leaves or the same shape.",
+          "Model: indicate one leaf and say, “This part is a leaf.” Trace its outline with your own finger on paper. Indicate the stem and say, “This part is the stem.” Keep the plant picture on the table; do not invite collecting, picking, tasting or smelling plants.",
+          "Together: ask the learner to choose the leaf while you describe both parts. Name the selected part without criticism. If the learner points to the stem, repeat both names and show the outline of one leaf again. An adult can move a pointer on the learner's instruction.",
+          "Try: draw another plant with three broad leaves and a stem. Ask for any one leaf. The learner can identify the part without counting or naming the plant species. Describe its position if the picture is inaccessible. Never treat a drawing's simplification as a complete botany lesson.",
+          "Check and answers: any broad leaf shown on the example is a correct leaf choice; the connecting stalk drawn in the middle is the stem. Two leaves in the first drawing and three in the second are details of those drawings only. Next step: revisit the same two part names, or ask an adult to describe an unfamiliar plant picture together."
+        ]
+      },
+      {
+        "title": "Lesson 3: Same detail, different objects",
+        "paragraphs": [
+          "Aim: compare two pictures using one stated feature. Prepare two drawn leaves, one clearly large and one clearly small. Also prepare a book drawing. Comparing by size is different from grouping by the name of the object.",
+          "Model: say, “Both of these pictures show leaves. This leaf picture is larger than that leaf picture.” Indicate both outlines. Explain that both belong in the leaf group even though their sizes differ. The comparison is between these drawings, not a rule about every leaf.",
+          "Together: ask which leaf drawing is smaller, then ask which pictures belong in the leaf group. Say the rule each time. If the learner uses size for the second task, explain that the rule has changed from size to object name. Do not switch rules silently.",
+          "Try: show the smaller leaf drawing beside the book drawing. Ask which picture belongs with the other leaf. Then put both leaf pictures together and describe one difference. An adult can arrange the paper on the learner's instruction; cutting and precise hand movements are unnecessary.",
+          "Check and answers: the smaller outline is the smaller leaf drawing; both leaves belong in the leaf group; the book does not belong in that group. Leaf drawings can differ in size and still both show leaves. Next step: repeat one grouping rule at a time with new adult-prepared pictures, rather than demanding two rules at once."
+        ]
+      },
+      {
+        "title": "Lesson 4: Care for our learning space",
+        "paragraphs": [
+          "Aim: choose a helpful action in a fictional shared learning space. Read: “Amina finishes looking at a book. The book belongs on the shelf. Musa sees an unknown object on the floor and asks their teacher for help.” No child is asked to describe a real frightening incident.",
+          "Model: return a safe book to its agreed place, or demonstrate using a drawing. Say, “We care for shared things.” Explain that an unknown object on the floor is for an adult to check. Children do not pick up rubbish, broken objects or chemicals as a learning task.",
+          "Together: ask what Amina can do with the book. Offer “return it to the agreed place” or “leave it blocking the walkway”. Ask who checks the unknown object. Repeat that asking a familiar supervising adult is a useful choice. If a learner cannot move a book, they can direct an adult to return it.",
+          "Try: use a new story: “Bala has finished with a drawing. The adult has made a folder for finished pictures.” Ask where the picture can go. Invite a learner to choose a pause or ask for assistance at any time; helping is not a demand to tidy without support.",
+          "Check and answers: the book goes to the agreed shelf; the supervising adult checks the unknown object; Bala's drawing can go in the prepared folder. Different classrooms may have different agreed storage places. Next step: practise one agreed routine with support, or repeat the story on paper without moving anything."
+        ]
+      },
+      {
+        "title": "Reusable activity sheet",
+        "paragraphs": [
+          "Adult preparation: make four spacious boxes. A shows an open book and a cloth. B shows a plant with a stem and two broad leaves. C shows two different-sized leaves and a book. D shows a shelf with space for a book and a separate unknown object on a floor. Describe each drawing aloud. Use one box per session if preferred.",
+          "Prompt A: choose the object with pages.",
+          "Prompt B: indicate any leaf.",
+          "Prompt C: choose both pictures that belong in the leaf group.",
+          "Prompt D: choose a helpful place for the finished book and tell or show who should check the unknown object.",
+          "Answer guidance: A book. B either drawn leaf. C both leaf drawings, regardless of size. D agreed shelf for the book; supervising adult for the unknown object. Spoken, signed, pointed, dictated and established aided responses are welcome. The adult may prepare all drawings; artistic quality is not being judged."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Keep planning notes private and minimal: activity, response route, adult support and one next step. Examples are “chose the book after both descriptions were repeated” or “identified a leaf after the adult traced its outline”. Do not collect names, photos, audio, addresses or personal disclosures for this unit. Use developing with support, demonstrated with current support or not observed yet rather than grades or diagnostic labels.",
+          "Return to one familiar object if the new vocabulary is too much. Use larger pictures, spoken descriptions or home-language explanation where helpful. A child may recognise a picture without independently naming it. Exploration stars mark participation on this browser; they do not certify understanding, development or national curriculum achievement."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "primary1-unit-03",
+    "title": "Observe, Compare and Care",
+    "educationStages": [
+      "primary"
+    ],
+    "classLevels": [
+      "Primary 1"
+    ],
+    "subject": "Basic Science",
+    "description": "Six adult-led science adventures: observations and guesses, objects and materials, living examples, plant parts, fair comparisons and simple records.",
+    "mapping": "Basic Science matches a Primary 1–3 subject heading in the national framework. Detailed Primary 1 outcome alignment is not established; these original introductory lessons do not complete a term or subject.",
+    "source": "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "unitNumber": 3,
+    "contentKind": "introductory-unit",
+    "contentTrack": "school-curriculum",
+    "status": "published",
+    "author": "SpeakOut",
+    "version": 1,
+    "review": {
+      "type": "AI-assisted editorial and source review",
+      "date": "2026-10-10",
+      "humanApproval": false
+    },
+    "sections": [
+      {
+        "title": "Facilitator preparation",
+        "paragraphs": [
+          "Prepare paper, a clean familiar cloth and adult-drawn pictures of a wooden chair, a metal spoon, a plastic cup, a small leafy plant and a table. Use pictures instead of real items whenever easier. Describe the material in each example; appearance alone cannot always tell us what an object is made of. No purchase, internet connection or outdoor visit is needed for the paper activities. Work in short sessions and repeat a lesson when useful.",
+          "An adult supervises. No handling or tasting of unknown plants, soil, seeds, insects, chemicals, sharp objects, hot objects or small loose pieces. Do not pull leaves, touch animals or collect rubbish. These lessons use observation and drawings, not experiments with hazardous materials. There are no sensory screening tasks, forced touch, blindfolds or loud sounds. Offer home-language explanation, spoken description, pointing, signing, dictation or an established communication aid. Writing and drawing are optional response routes; lack of handwriting must not hide science understanding."
+        ]
+      },
+      {
+        "title": "Lesson 1: What we notice and what we do not know",
+        "paragraphs": [
+          "Aim: distinguish a stated observation from an unsupported guess. Read the original classroom note: “Zainab sees a small plant beside a table. The plant has three leaves in this drawing. Bala has a book.” Show a matching adult drawing. The note does not say who planted the plant or the colour of Bala's book.",
+          "Model: say, “The drawing shows three leaves. I can count them. I do not know who planted it from this note.” Explain that saying we do not know is useful. Observation may use a spoken description or a familiar communication aid; a learner does not need to see the drawing unaided.",
+          "Together: ask where the plant is and how many leaves the drawing shows. Track each leaf once. Ask whether the note gives the colour of the book. Re-read the note rather than rewarding a plausible guess. A child can explain with a choice between “the note tells us” and “the note does not tell us”.",
+          "Try: read a new note: “Musa's drawing shows a chair with four legs.” Ask how many legs the drawing shows, then who made the chair. The first answer is stated; the second is unknown. Real chairs may have other designs, so this observation describes the drawing only.",
+          "Check and answers: the plant is beside the table and has three leaves in the drawing; book colour and planter are unknown. Musa's drawing shows four chair legs; the maker is unknown. Next step: practise one known and one unknown detail before asking the learner to produce a longer record."
+        ]
+      },
+      {
+        "title": "Lesson 2: An object and its material",
+        "paragraphs": [
+          "Aim: distinguish what an object is from what it is made of in stated examples. Describe a wooden chair, a metal spoon and a plastic cup. These are examples, not claims that every chair is wooden or every cup is plastic.",
+          "Model: say, “Chair names the object. Wood names the material in this example.” Repeat with spoon and metal. Show a drawing with separate labels, or read the labels aloud. Explain that the adult has supplied the material information; a simple outline may not reveal it.",
+          "Together: sort two spoken labels, chair and wood, into object name and material name. Then use plastic cup. Encourage the learner to ask for the description if unsure. Accept a home-language explanation of the distinction before modelling the English terms.",
+          "Try: describe “a metal cup”. Ask for the object name and the material. Compare with the earlier plastic cup: both are cups, but the stated materials differ. Do not ask the learner to scratch, break, heat, taste or test an object to identify its material.",
+          "Check and answers: chair is the object, wood its stated material; spoon is the object, metal its stated material; cup is the object in both cup examples, with plastic or metal as described. Colour is not a material. Next step: repeat a clearly described object with a different stated material, or revisit the distinction using just one example."
+        ]
+      },
+      {
+        "title": "Lesson 3: Living examples and made objects",
+        "paragraphs": [
+          "Aim: recognise a growing plant as living and a chair as a non-living made object, using more than movement as a clue. Show drawings of a growing plant, a goat, a chair and a toy car. No live animal is required.",
+          "Model: explain that plants and animals are living things. A growing plant needs water, air and suitable light to grow; a goat is a living animal that needs care. A chair is non-living. A toy car may move when pushed, but movement alone does not make it living. Avoid teaching that every living thing walks or changes visibly in one session.",
+          "Together: ask which example is a living plant and which is a made object for sitting. Revisit the drawings' names before sorting. Talk about the plant's growth across time rather than demanding visible movement now. A seed, a dead leaf and a wooden chair raise different questions; this first activity uses unambiguous examples.",
+          "Try: compare a goat picture and a toy car picture. Ask which shows a living animal. Then ask why a moving toy does not prove life. An adult may read the explanation again or offer supported choices. Learners do not touch or approach animals for this task.",
+          "Check and answers: growing plant and goat are living examples; chair and toy car are non-living made objects. A toy car's movement when pushed is not evidence that it is living. Next step: compare familiar clear examples, leaving difficult cases for a later properly supported lesson rather than forcing a simple rule onto everything."
+        ]
+      },
+      {
+        "title": "Lesson 4: Parts of a simple plant",
+        "paragraphs": [
+          "Aim: identify leaf, stem and roots in a simplified drawing of a small leafy plant. Draw a leafy plant with roots shown below a soil line. Explain that the underground view is a teaching drawing; roots are often hidden when a plant grows in soil. Use a picture, without digging up or pulling a plant.",
+          "Model: name a leaf, the stem and the roots. Say, “Roots help take in water from the soil and hold this plant in place. The stem connects parts of the plant.” This is an introductory example; plant structures vary. Do not require memorising every function at once.",
+          "Together: indicate each part while the learner names it, or let the learner direct the adult's pointer. Ask which part is shown below the soil line in this drawing. If the drawing is inaccessible, provide a spoken description of the three parts and their positions.",
+          "Try: show a new leafy-plant drawing with the labels removed. Invite the learner to label one part by speaking, signing or dictating. Then ask why not seeing roots above the soil does not mean the plant has none. Do not turn the activity into uprooting a real plant.",
+          "Check and answers: leaves are the broad leafy parts; the central stalk is the stem; roots are drawn below the soil line. Roots can be hidden in soil. Next step: revisit two parts if three are too demanding; add another type of plant picture only with an adult's explanation of its differences."
+        ]
+      },
+      {
+        "title": "Lesson 5: Compare using a clear rule",
+        "paragraphs": [
+          "Aim: compare the lengths of two drawn strips fairly. Prepare two clearly different-length rectangular drawings on paper. Align their left ends on one drawn start line. Keep both drawings the same width so length is the feature being compared. This is a drawing task, not a demand to cut strips.",
+          "Model: trace each drawing from the same start line to its end. Say, “This strip is longer; that strip is shorter.” Explain that a fair comparison checks the same feature from the same starting point. Size words need a reference; a strip may be longer than one and shorter than another.",
+          "Together: invite a learner to choose the longer strip while the adult indicates the ends. Shift the paper positions and realign the starts. Ask whether moving a drawing has changed its length. Describe the drawing verbally if needed; adult assistance is recorded rather than hidden.",
+          "Try: draw a new pair with the same length but different widths, aligning their starts. Ask whether one is longer. Do not let a wider shape stand in for a longer one. Ask the learner to state or choose the rule, length, before answering.",
+          "Check and answers: in the first pair the drawing reaching farther from the shared start is longer; the other is shorter. Moving either does not change its length. In the second pair both have the same length, even though their widths differ. Next step: compare a new clearly drawn pair using the same rule, without introducing formal units of measurement in this unit."
+        ]
+      },
+      {
+        "title": "Lesson 6: Record and ask a question",
+        "paragraphs": [
+          "Aim: make a simple record that separates an observation, an unanswered question and a helpful action. Read: “Amina's first drawing shows two leaves. Her second drawing, made later, shows three leaves. She wonders when another leaf will appear.” These are fictional records, not results from a real learner experiment.",
+          "Model: make three headings: noticed, wondering, helpful action. Under noticed write or dictate “the later drawing shows three leaves”. Under wondering write “when will another leaf appear?” Explain that the two drawings alone do not establish how fast all plants grow or why a change happened.",
+          "Together: compare the fictional records. Count two and three, with adult support if needed. Choose a helpful action: leave an unfamiliar real plant with the adult and ask them how to care for it. Picking all its leaves is not a way to observe its growth. There is no child responsibility to keep a plant alive.",
+          "Try: provide a fictional record of a book returned to its shelf. Ask for one stated observation and one question the record does not answer, such as who made the book. An adult can write the learner's exact words without completing their thinking for them. A learner may also select a prepared question.",
+          "Check and answers: first plant drawing two leaves; later drawing three. When the next leaf appears remains unknown, and no fixed growth schedule follows. Ask the adult about safe care; do not pull leaves. The book record tells us its stated position, not its maker. Next step: repeat a supported record, clearly marking fictional examples versus actual observations."
+        ]
+      },
+      {
+        "title": "Science practice sheet",
+        "paragraphs": [
+          "Adult preparation: read one task at a time and provide matching drawings or spoken descriptions. A learner may point, sign, dictate, speak or use an established aid. Do not require a completed written page as proof of understanding.",
+          "Task S1: the note says, “Zainab sees a plant beside a table.” Where is the plant? Does the note tell us who planted it?",
+          "Task S2: the adult describes a metal cup. Name the object and its stated material. Would a plastic cup still be a cup?",
+          "Task S3: choose the living examples from a growing plant, a goat, a chair and a toy car. Is a toy car living because it moves when pushed?",
+          "Task S4: in a simplified plant drawing, indicate a leaf, the stem and roots below the soil line. Must roots be visible above the soil?",
+          "Task S5: the adult draws two equal-length strips from the same start, with one wider. Is either longer? Explain or choose the comparison rule.",
+          "Task S6: fictional first drawing two leaves, later drawing three. Record one stated observation and one question still unanswered. Choose a helpful action for an unfamiliar real plant."
+        ]
+      },
+      {
+        "title": "Answer guidance and support",
+        "paragraphs": [
+          "S1 beside the table; planter unknown. S2 cup is the object, metal the material; yes, a plastic cup remains a cup with a different material. S3 growing plant and goat; no, a pushed toy's movement does not make it living. S4 broad leaf, connecting stem and underground roots in the prepared drawing; roots need not be visible above soil. S5 same length; compare length from the same start, not width. S6 first drawing two leaves, later three; a valid unanswered question is when another leaf appears; ask the supervising adult about care rather than pulling leaves. Other genuinely unanswered questions are acceptable.",
+          "Use a simpler pair of examples when needed. Home-language explanations and adult-written records can reveal understanding. Do not label a learner unsuccessful because they cannot independently read the tasks. Use the precise description of support, such as “chose metal after the adult reread metal cup”, when planning the next session."
+        ]
+      },
+      {
+        "title": "Observation and next-session decision",
+        "paragraphs": [
+          "Keep private, minimal notes of the task, response route, support and next teaching step. Do not gather photos, audio, personal identifiers or home circumstances for these activities. Distinguish a supported correct choice from an independently explained idea. Not observed yet is preferable to interpreting tiredness, language difference or inaccessible pictures as lack of ability. Stars celebrate exploration; they are not science marks, certification or a developmental assessment."
+        ]
+      }
+    ]
   }
 ];
 export function publishedUnits(){return KIDDIES_UNITS.filter(unit=>unit.status==='published'&&unit.contentKind==='introductory-unit');}
