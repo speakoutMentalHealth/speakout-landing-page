@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc, collection, getDocs, serverTimestamp } from "https
 import { EDUCATION_STAGES, validPlacement, schoolPlacement, matchesPlacement } from "../education-levels.js";
 import { isPublicBook, isPublicCourse } from "../content-visibility.js";
 import { escapeHtml } from "./ui-utils.js";
+import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
 
 const byId = id => document.getElementById(id);
 let placement = null, currentUser = null, currentProfile = null, editable = false;
@@ -93,7 +94,13 @@ requireRoles(["student", "teacher", "parent", "school_admin", "admin", "super_ad
   renderPlacement();
   const results = await Promise.allSettled([getDocs(collection(db, "courses")), getDocs(collection(db, "books"))]);
   const rows = result => { const items = []; result.value.forEach(snapshot => items.push({ ...snapshot.data(), id: snapshot.id })); return items; };
-  if (results[0].status === "fulfilled") courses = rows(results[0]).filter(isPublicCourse); else catalogueErrors.push("courses");
+  if (results[0].status === "fulfilled") {
+    const catalogue = new Map(PHASE2_VERIFIED_COURSES.map(item => [item.id, item]));
+    // Stored records override bundled entries, including an explicit withdrawal
+    // or empty classification. Do not restore a withdrawn course via fallback.
+    rows(results[0]).forEach(item => catalogue.set(item.id, { ...catalogue.get(item.id), ...item }));
+    courses = [...catalogue.values()].filter(isPublicCourse);
+  } else catalogueErrors.push("courses");
   if (results[1].status === "fulfilled") materials = rows(results[1]).filter(isPublicBook); else catalogueErrors.push("materials");
   courses.sort((a,b) => String(a.title).localeCompare(String(b.title)));
   materials.sort((a,b) => String(a.title).localeCompare(String(b.title)));
