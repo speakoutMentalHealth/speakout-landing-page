@@ -75,3 +75,279 @@ ADVENTURES['primary1-unit-05']=[
 export function isCorrect(question,index){return Number.isInteger(index)&&index===question.answer;}
 export function readExploration(storage,key,allowed){try{const value=JSON.parse(storage.getItem(key));return new Set(Array.isArray(value)?value.filter(id=>allowed.includes(id)):[]);}catch{return new Set();}}
 export function saveExploration(storage,key,completed){try{storage.setItem(key,JSON.stringify([...completed]));return true;}catch{return false;}}
+
+// Unit 6: original, facilitator-supported social learning practice.
+ADVENTURES["nursery-unit-06"]=[
+  {
+    "name": "Welcome explorer",
+    "icon": "HELLO",
+    "intro": "Amina says hello. Musa waves. Both ways can show a greeting.",
+    "questions": [
+      {
+        "prompt": "Which can be a greeting?",
+        "choices": [
+          "A friendly wave",
+          "Pushing someone"
+        ],
+        "answer": 0,
+        "explanation": "A friendly wave is one possible greeting.",
+        "picture": ""
+      },
+      {
+        "prompt": "Does everyone need to speak to greet?",
+        "choices": [
+          "Yes",
+          "No"
+        ],
+        "answer": 1,
+        "explanation": "People may greet through a wave, sign or spoken words.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Turn-taking buddy",
+    "icon": "↔",
+    "intro": "Zainab wants to look at a book that Bala is using. They can ask and agree on a turn.",
+    "questions": [
+      {
+        "prompt": "What could Zainab ask?",
+        "choices": [
+          "May I look when you finish?",
+          "Give me the book now!"
+        ],
+        "answer": 0,
+        "explanation": "Asking respectfully helps people agree on turns.",
+        "picture": ""
+      },
+      {
+        "prompt": "If the book is busy, what can help?",
+        "choices": [
+          "Ask an adult for another choice",
+          "Take the book from Bala"
+        ],
+        "answer": 0,
+        "explanation": "A grown-up can help arrange a turn or find another resource.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Pause explorer",
+    "icon": "PAUSE",
+    "intro": "A break can help when an activity feels tiring. You can use a word, sign or agreed card.",
+    "questions": [
+      {
+        "prompt": "What can Musa say when tired?",
+        "choices": [
+          "I need a break",
+          "I must never stop"
+        ],
+        "answer": 0,
+        "explanation": "Requesting a pause is okay; an adult can help you take a comfortable break.",
+        "picture": ""
+      },
+      {
+        "prompt": "Can a learner point to a pause card?",
+        "choices": [
+          "Yes",
+          "No"
+        ],
+        "answer": 0,
+        "explanation": "Pointing, signing and words are all useful ways to ask.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Kindness helper",
+    "icon": "HELP",
+    "intro": "Books go on their safe shelf. Unknown sharp things should be left to responsible adults.",
+    "questions": [
+      {
+        "prompt": "Where can a finished book go?",
+        "choices": [
+          "Its agreed shelf",
+          "Across the walkway"
+        ],
+        "answer": 0,
+        "explanation": "Keeping shared materials in their agreed place makes the space easier to use.",
+        "picture": ""
+      },
+      {
+        "prompt": "Who should handle an unfamiliar sharp object?",
+        "choices": [
+          "A responsible adult",
+          "A child alone"
+        ],
+        "answer": 0,
+        "explanation": "Do not handle an unfamiliar sharp object; ask a trusted adult.",
+        "picture": ""
+      }
+    ]
+  }
+];
+ADVENTURES["primary1-unit-06"]=[
+  {
+    "name": "Community explorer",
+    "icon": "ALL",
+    "intro": "Learners, facilitators and helpers may have different roles in a community.",
+    "questions": [
+      {
+        "prompt": "Who belongs in a school community?",
+        "choices": [
+          "Learners and school helpers",
+          "Only one person"
+        ],
+        "answer": 0,
+        "explanation": "Different people contribute to a shared learning space.",
+        "picture": ""
+      },
+      {
+        "prompt": "Can people contribute in different ways?",
+        "choices": [
+          "Yes",
+          "No"
+        ],
+        "answer": 0,
+        "explanation": "People have different roles and needs.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Greeting detective",
+    "icon": "Aa",
+    "intro": "People can greet respectfully through words, gestures or agreed communication aids.",
+    "questions": [
+      {
+        "prompt": "Which is an appropriate greeting in some settings?",
+        "choices": [
+          "A friendly wave",
+          "Making fun of a person"
+        ],
+        "answer": 0,
+        "explanation": "Friendly waves are a respectful option in many settings.",
+        "picture": ""
+      },
+      {
+        "prompt": "Do all families use exactly the same greeting?",
+        "choices": [
+          "No",
+          "Yes"
+        ],
+        "answer": 0,
+        "explanation": "Customs and accessibility needs differ.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Safe walkway",
+    "icon": "PATH",
+    "intro": "An agreed rule keeps walkways clear so everyone can move through.",
+    "questions": [
+      {
+        "prompt": "Why keep a walkway clear?",
+        "choices": [
+          "To help people move safely",
+          "To store books on the floor"
+        ],
+        "answer": 0,
+        "explanation": "A clear walkway supports safe access.",
+        "picture": ""
+      },
+      {
+        "prompt": "Whose access matters?",
+        "choices": [
+          "Everyone's",
+          "Only the fastest learners'"
+        ],
+        "answer": 0,
+        "explanation": "Rules should support different people, including mobility-aid users.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Fair-turn detective",
+    "icon": "↔",
+    "intro": "A shared book is in use. Ask for a turn or adult support rather than taking it.",
+    "questions": [
+      {
+        "prompt": "Before moving someone's belongings, we should...",
+        "choices": [
+          "Ask permission",
+          "Take them without asking"
+        ],
+        "answer": 0,
+        "explanation": "Respect ownership and consult an adult if needed.",
+        "picture": ""
+      },
+      {
+        "prompt": "If two children need one book, what can help?",
+        "choices": [
+          "Agree on turns or find another copy",
+          "Push for it"
+        ],
+        "answer": 0,
+        "explanation": "Working together can make participation fairer.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Book-care explorer",
+    "icon": "BOOK",
+    "intro": "Shared learning materials need careful handling and agreed storage.",
+    "questions": [
+      {
+        "prompt": "If a book is torn, what should a learner do?",
+        "choices": [
+          "Tell a responsible adult",
+          "Hide the damage"
+        ],
+        "answer": 0,
+        "explanation": "Adults can help decide how to repair or replace it.",
+        "picture": ""
+      },
+      {
+        "prompt": "Which place better protects a book?",
+        "choices": [
+          "A dry agreed shelf",
+          "A wet floor"
+        ],
+        "answer": 0,
+        "explanation": "An agreed dry storage area helps protect paper books.",
+        "picture": ""
+      }
+    ]
+  },
+  {
+    "name": "Trusted-help explorer",
+    "icon": "HELP",
+    "intro": "An unknown bottle or object is not for children to open, taste or touch.",
+    "questions": [
+      {
+        "prompt": "Should a child open an unknown bottle?",
+        "choices": [
+          "No",
+          "Yes"
+        ],
+        "answer": 0,
+        "explanation": "Leave unknown substances alone and seek a responsible adult.",
+        "picture": ""
+      },
+      {
+        "prompt": "If worried, who can a learner ask?",
+        "choices": [
+          "An available trusted adult",
+          "Nobody"
+        ],
+        "answer": 0,
+        "explanation": "Ask an available trusted adult for support.",
+        "picture": ""
+      }
+    ]
+  }
+];

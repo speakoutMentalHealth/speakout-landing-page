@@ -30,7 +30,7 @@ const reports = [];
 try {
   for(const width of [320,390,768,1280]) {
     const {context,page}=await setup({},width,'?stage=nursery');
-    assert.equal(await page.getByRole('link',{name:'Open learning unit',exact:true}).count(),5);
+    assert.equal(await page.getByRole('link',{name:'Open learning unit',exact:true}).count(),6);
     await page.getByRole('heading',{name:'Patterns and Little Stories',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Little World Explorers',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Make, Move and Tell',exact:true}).waitFor();
@@ -46,15 +46,15 @@ try {
     assert.equal(await page.getByRole('heading',{name:'Observe, Compare and Care',exact:true}).count(),0);
     assert.equal(await page.getByRole('heading',{name:'Our Creative Workshop',exact:true}).count(),0);
     assert.equal(await page.getByRole('heading',{name:'Read, Ask and Solve',exact:true}).count(),0);
-    for(const id of ['nursery-unit-02','primary1-unit-02','nursery-unit-03','primary1-unit-03','nursery-unit-04','primary1-unit-04','nursery-unit-05','primary1-unit-05']) {
+    for(const id of ['nursery-unit-02','primary1-unit-02','nursery-unit-03','primary1-unit-03','nursery-unit-04','primary1-unit-04','nursery-unit-05','primary1-unit-05','nursery-unit-06','primary1-unit-06']) {
       await page.goto(`${base}/kiddies-unit.html?id=${id}`);
       const unitNumber=Number(id.slice(-2));
       await page.getByText(`Unit ${unitNumber} · suggested learning sequence`,{exact:true}).waitFor();
-      assert.equal(await page.locator('#unitSequence a').count(),5);
+      assert.equal(await page.locator('#unitSequence a').count(),6);
       const adventures=(await import('../js/kiddies-adventures.js')).ADVENTURES[id];
       for(let i=0;i<adventures.length;i++) {
         await page.locator('.journey-stop').nth(i).click();
-        if(i===adventures.length-1||id.endsWith('04')||id.endsWith('05')) {
+        if(i===adventures.length-1||id.endsWith('04')||id.endsWith('05')||id.endsWith('06')) {
           await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
           assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[],`Unit accessibility ${id} lesson ${i+1} at ${width}`);
           assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
