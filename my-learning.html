@@ -11,14 +11,14 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="nav"><div class="container nav-inner"><a class="brand" href="student-dashboard.html"><img src="logo.png" width="44" height="44" alt="SpeakOut"><div><strong>SpeakOut</strong><p>My Learning</p></div></a><nav id="roleNav" class="links" aria-label="Learner navigation"></nav></div></header>
   <main id="main-content">
-    <section class="hero"><div class="container"><span class="kicker">Learn at your level</span><h1 id="learningTitle">Your learning section</h1><p>Courses and reading materials organised for your education level and class.</p></div></section>
+    <section class="hero"><div class="container"><span class="kicker">Explore every level</span><h1 id="learningTitle">Your learning section</h1><p>Courses and materials organised by education level and class. Everyone can browse every section.</p></div></section>
     <section><div class="container">
       <p class="notice" id="learningStatus" role="status">Loading your learning section…</p>
       <div id="learningContent" hidden>
         <form id="placementForm" class="panel">
-          <h2>Your education level</h2><p id="placementHelp">Choose your section and class to find suitable learning.</p>
-          <fieldset class="stage-fieldset"><legend>Education section</legend><div id="stageChoices" class="stage-choices"></div></fieldset>
-          <div class="placement-row"><div class="class-field"><label for="classChoice">Class / level</label><select id="classChoice" required><option value="">Choose a class</option></select></div><button id="savePlacement" class="btn primary" type="submit">Save my learning level</button></div>
+          <h2>Browse education sections</h2><p id="placementHelp">Choose your section and class to find suitable learning.</p>
+          <fieldset class="stage-fieldset"><legend>Education section</legend><div id="stageChoices" class="stage-groups"></div></fieldset>
+          <div class="placement-row"><div class="class-field"><label for="classChoice">Class / level</label><select id="classChoice"><option value="">All classes / levels</option></select></div><button id="savePlacement" class="btn primary" type="submit">Browse learning</button><button id="saveDefaultPlacement" class="btn" type="button" hidden>Save as my default</button></div>
         </form>
         <section id="catalogue" hidden aria-labelledby="sectionHeading">
           <div class="learning-heading"><div><span class="label" id="placementLabel"></span><h2 id="sectionHeading">Learning for your class</h2></div><label for="learningSearch">Find a subject or title<input id="learningSearch" type="search" placeholder="Search your section"></label></div>

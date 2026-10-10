@@ -21,7 +21,7 @@ test("nursery and primary do not receive generic student or beginner content", (
   assert.deepEqual(contentStages({ audience: ["primary", "university"] }), ["primary", "tertiary"]);
   assert.deepEqual(contentStages({ educationStages: [], audience: "primary" }), []);
 });
-test("class restrictions are respected and malformed labels fail closed", () => {
+test("class filters distinguish content and malformed labels stay unclassified", () => {
   const placement = { educationStage: "primary", classLevel: "Primary 2" };
   assert.equal(matchesPlacement({ educationStages: ["primary"], classLevels: ["Primary 3"] }, placement), false);
   assert.equal(matchesPlacement({ educationStages: ["primary"], classLevels: ["Primary 2"] }, placement), true);
