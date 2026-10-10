@@ -303,7 +303,7 @@ try {
     const {context,page}=await setup({preference:{educationStage:'primary',classLevel:'Primary 2'}});
     await page.getByLabel('Content type',{exact:true}).selectOption('school-curriculum');
     await page.getByRole('heading',{name:'Primary 2 course',exact:true}).waitFor();
-    assert.equal(await page.locator('.learning-card').count(),1);
+    assert.equal(await page.locator('.learning-card').count(),2); // Existing course plus class-specific Primary 2 starter unit.
     await page.getByText('School-curriculum material · alignment not established',{exact:true}).waitFor();
     await page.getByLabel('Content type',{exact:true}).selectOption('supplementary');
     await page.getByRole('heading',{name:'Primary shared course',exact:true}).waitFor();
