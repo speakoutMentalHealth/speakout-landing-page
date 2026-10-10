@@ -6,6 +6,7 @@ import { isPublicBook, isPublicCourse } from "../content-visibility.js";
 import { contentTrack, contentTrackLabel } from "../content-tracks.js";
 import { escapeHtml } from "./ui-utils.js";
 import { PHASE2_VERIFIED_COURSES } from "../../phase2-verified-courses.js";
+import { publishedUnits } from '../kiddies-catalogue.js';
 
 const byId = id => document.getElementById(id);
 let placement = null, defaultPlacement = null, currentUser = null, currentProfile = null, editable = false;
@@ -29,7 +30,7 @@ function renderPlacement() {
     ? `Your school’s recorded class${defaultPlacement ? ` (${defaultPlacement.classLevel})` : ""} is your default. Browse any section without changing your school record.`
     : "Browse any education section. Levels describe the content; they do not restrict access. Independent learners can also save a class as their default.";
   byId("learningContent").hidden = false;
-  document.querySelectorAll('input[name="educationStage"]').forEach(input => input.addEventListener("change", () => { renderClasses(input.value); byId("catalogue").hidden = true; }));
+  document.querySelectorAll('input[name="educationStage"]').forEach(input => input.addEventListener("change", () => { renderClasses(input.value); browseSelection(); }));
 }
 const validBrowse = value => Boolean(stageFor(value?.educationStage) && (!value.classLevel || validPlacement(value)));
 function browseSelection() {
@@ -46,6 +47,11 @@ function browseSelection() {
 
 function safeUrl(value) { try { const url = new URL(value); return ["https:", "http:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } }
 function card(item) {
+  if(item.contentKind === 'introductory-unit') {
+    const stage=item.educationStages[0],level=stage==='nursery'?'Nursery · adaptable across nursery classes':'Primary 1';
+    const href=`kiddies-unit.html?id=${encodeURIComponent(item.id)}${tab==='materials'?'&mode=materials':''}`;
+    return `<article class="learning-card"><p class="education-label">${escapeHtml(stageFor(stage).label)}</p><p class="learning-meta">School-curriculum material · partial mapping; full alignment not established</p><span class="label">${tab==='courses'?'Introductory learning unit':'Practice sheets and adult guidance'}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p><p class="learning-meta">SpeakOut · ${escapeHtml(level)}<br>Learn with an adult · ${item.sections.filter(s=>/Lesson \d/.test(s.title)).length} short lessons</p><a class="btn primary" href="${href}">${tab==='courses'?'Open learning unit':'Open practice materials'}</a></article>`;
+  }
   const external = item.courseType === "external" || item.completionMethod === "certificate-upload";
   const details = external || item.courseType === "instructor-led";
   const href = tab === "courses" ? `${details ? "course-details" : "course-player"}.html?id=${encodeURIComponent(item.id)}` :
@@ -63,8 +69,9 @@ function render() {
   byId("sectionHeading").textContent = `${label} courses and materials`;
   const track=byId('contentTrackFilter').value;
   const matches=item=>matchesPlacement(item, placement, { allClasses: !placement.classLevel })&&(!track||contentTrack(item)===track);
-  const availableCourses = courses.filter(matches);
-  const availableMaterials = materials.filter(matches);
+  const units=publishedUnits().filter(matches);
+  const availableCourses = [...courses.filter(matches),...units];
+  const availableMaterials = [...materials.filter(matches),...units];
   byId("courseCount").textContent = availableCourses.length;
   byId("materialCount").textContent = availableMaterials.length;
   byId("coursesTab").setAttribute("aria-pressed", String(tab === "courses"));
@@ -74,7 +81,8 @@ function render() {
   byId("catalogueNote").textContent = "Education levels and classes are content labels, not access restrictions. Browse any section above. Course difficulty is separate from school class. Provider courses may have their own enrolment requirements.";
   byId("resultCount").textContent = `${items.length} ${tab} shown for ${placement.classLevel || label}`;
   const error = catalogueErrors.includes(tab);
-  byId("learningCards").innerHTML = error ? `<div class="learning-empty"><h3>Could not load ${tab}</h3><p>Refresh this page to try again. Your saved learning level is unchanged.</p></div>` : items.length ? items.map(card).join("") : `<div class="learning-empty"><h3>${query ? "No matching titles" : track ? `No ${tab} match this content type` : `No ${tab} ready for this class yet`}</h3><p>${query ? "Try a different subject or clear your search." : track ? "Choose All content types to see other available resources for this section." : "Reviewed content for this section will appear here when ready. You can browse another section above; its courses and materials will clearly show their education level."}</p></div>`;
+  const failure=error?`<div class="learning-empty"><h3>Could not load ${tab}</h3><p>Some catalogue resources could not load. Any available SpeakOut units are shown below. Refresh to retry; your saved class is unchanged.</p></div>`:'';
+  byId("learningCards").innerHTML = failure + (items.length ? items.map(card).join("") : error ? '' : `<div class="learning-empty"><h3>${query ? "No matching titles" : track ? `No ${tab} match this content type` : `No ${tab} ready for this class yet`}</h3><p>${query ? "Try a different subject or clear your search." : track ? "Choose All content types to see other available resources for this section." : "Reviewed content for this section will appear here when ready. You can browse another section above; its courses and materials will clearly show their education level."}</p></div>`);
 }
 
 byId("placementForm").addEventListener("submit", event => {
@@ -95,6 +103,7 @@ byId("saveDefaultPlacement").addEventListener("click", async () => {
   finally { byId("saveDefaultPlacement").disabled = false; }
 });
 byId("learningSearch").addEventListener("input", render);
+byId('classChoice').addEventListener('change',browseSelection);
 byId('contentTrackFilter').addEventListener('change',render);
 for (const kind of ["courses", "materials"]) byId(`${kind}Tab`).addEventListener("click", () => { tab = kind; render(); });
 

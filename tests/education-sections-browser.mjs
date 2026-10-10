@@ -28,6 +28,44 @@ async function setup(options = {}, width = 390, hash = "") {
 }
 const reports = [];
 try {
+  for(const width of [320,390,768,1280]) {
+    const {context,page}=await setup({},width,'?stage=nursery');
+    await page.getByRole('heading',{name:'Our Learning Space',exact:true}).waitFor();
+    await page.getByRole('radio',{name:'Primary',exact:true}).check();
+    await page.getByRole('heading',{name:'Words and Numbers Around Us',exact:true}).waitFor();
+    assert.equal(await page.getByRole('heading',{name:'Our Learning Space',exact:true}).count(),0);
+    await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 2');
+    assert.equal(await page.getByRole('heading',{name:'Words and Numbers Around Us',exact:true}).count(),0);
+    await page.getByLabel('Class / level',{exact:true}).selectOption('Primary 1');
+    await page.getByRole('button',{name:/Materials/}).click();
+    await page.getByRole('link',{name:'Open practice materials',exact:true}).click();
+    await page.getByRole('heading',{name:'English practice sheet',exact:true}).waitFor();
+    await page.getByLabel('Choose a lesson or practice sheet').selectOption({label:'Mathematics practice sheet'});
+    await page.getByText(/M1 four; M2 zero/).waitFor();
+    await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+    assert.deepEqual(await page.evaluate(async()=>{const r=await axe.run(document.querySelector('main'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa']}});return r.violations.map(v=>v.id)}),[]);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.emulateMedia({media:'print'});
+    assert.equal(await page.locator('#lessonContent').isVisible(),true);
+    assert.equal(await page.locator('.unit-tools').isVisible(),false);
+    assert.equal(await page.evaluate(()=>window.writes.length),0);
+    await page.screenshot({path:`${evidence}/published-primary-unit-${width}.png`,fullPage:true});
+    await context.close();
+  }
+  {
+    const {context,page}=await setup({failCourses:true},390,'?stage=nursery');
+    await page.getByRole('heading',{name:'Could not load courses',exact:true}).waitFor();
+    await page.getByRole('link',{name:'Open learning unit',exact:true}).click();
+    await page.getByRole('heading',{name:'Lesson 1: Notice and name',exact:true}).waitFor();
+    await page.goto(`${base}/kiddies-unit.html?id=missing`);
+    await page.getByText('This learning unit is unavailable. Return to My Learning to choose another.',{exact:true}).waitFor();
+    assert.equal(await page.locator('#unitContent').isVisible(),false);
+    await context.addInitScript(()=>window.fixture.profile.status='pending');
+    await context.route('**/auth.html',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Sign in</title><h1>Sign in</h1>'}));
+    await page.goto(`${base}/kiddies-unit.html?id=nursery-unit-01`);
+    await page.waitForURL('**/auth.html');
+    await context.close();
+  }
   for(const width of [320,390,768,1280]){
     const page=await browser.newPage({viewport:{width,height:844}});await page.goto(`${base}/national-curriculum.html`);
     await page.getByRole('heading',{name:'SS 1–3',exact:true}).waitFor();
@@ -105,7 +143,7 @@ try {
     await page.getByRole('radio',{name:'Nursery',exact:true}).check();await page.getByLabel('Class / level',{exact:true}).selectOption('Nursery 2');
     await page.getByRole('button',{name:'Save as my default'}).click();
     await page.getByText('Your default learning level has been saved.',{exact:true}).waitFor();
-    await page.getByRole('heading',{name:'No courses ready for this class yet'}).waitFor();
+    await page.getByRole('heading',{name:'Our Learning Space',exact:true}).waitFor();
     assert.equal(await page.getByRole('heading',{name:'Tertiary course',exact:true}).count(),0);
     assert.equal((await page.evaluate(()=>window.writes))[0].value.educationStage,'nursery');
     await context.close();
