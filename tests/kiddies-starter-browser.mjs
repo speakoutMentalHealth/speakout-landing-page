@@ -10,8 +10,12 @@ try {
   const page=await browser.newPage({viewport:{width,height:844}});await page.goto(`${base}/kiddies-review.html`);
   await page.getByText('Review copy ready. Nothing has been imported or published.',{exact:true}).waitFor();
   assert.equal(await page.locator('#chapters article').count(),6);
+  await page.getByText('School material · provisional partial mappings · not curriculum verified',{exact:true}).waitFor();
+  assert.equal(await page.locator('#curriculumReview li').count(),7);
   await page.getByRole('button',{name:'Primary activity book',exact:true}).click();
   await page.getByRole('heading',{name:'Primary: Read, Explain and Solve',exact:true}).waitFor();
+  await page.getByText('School material · outcome mapping pending · not curriculum verified',{exact:true}).waitFor();
+  assert.equal(await page.locator('#curriculumReview li').count(),2);
   assert.equal(await page.locator('#courseModules li').count(),6);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
