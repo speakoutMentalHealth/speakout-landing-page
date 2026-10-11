@@ -113,7 +113,8 @@ byId("saveDefaultPlacement").addEventListener("click", async () => {
 byId("learningSearch").addEventListener("input", render);
 byId('classChoice').addEventListener('change',browseSelection);
 byId('contentTrackFilter').addEventListener('change',render);
-for (const kind of ["courses", "materials"]) byId(`${kind}Tab`).addEventListener("click", () => { tab = kind; render(); });
+for (const kind of ["courses", "materials"]) byId(`${kind}Tab`).addEventListener("click", () => { tab = kind; if (location.hash !== (kind === "materials" ? "#materials" : "#courses")) history.replaceState(null, "", location.pathname + location.search + (kind === "materials" ? "#materials" : "#courses")); render(); });
+window.addEventListener("hashchange", () => { const next = location.hash === "#materials" ? "materials" : "courses"; if (tab !== next) { tab = next; render(); } });
 
 requireRoles(["student", "teacher", "parent", "school_admin", "admin", "super_admin"], async (user, profile) => {
   currentUser = user; currentProfile = profile;
