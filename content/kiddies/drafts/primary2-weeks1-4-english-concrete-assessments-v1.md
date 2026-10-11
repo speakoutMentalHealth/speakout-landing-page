@@ -1,79 +1,103 @@
-# Primary 2 English studies — concrete weeks 1–4 tiered assessment items
+# Primary 2 English — weeks 1–4 concrete assessments
 
-**Provisional:** 4 topic slots, 12 complete prompts with model answers. The passages are original and fictional; official school scheme and NERDC mapping are unverified. Do not publish before qualified-teacher review.
+**Provisional:** 12 fully worded questions; school and NERDC mapping unverified.
 
 ## Week 1: Reading details
 
-**Foundation question:** R
+**Foundation question:** 'Zara walked to the clinic.' Where?
 
-**Expected answer:** e
+**Expected answer:** clinic
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** t
+**Application question:** 'Kemi carried two books.' How many?
 
-**Expected answer:** h
+**Expected answer:** two
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** 'Rain began after lunch.' When?
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** after lunch
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 2: Punctuation
 
-**Foundation question:** C
+**Foundation question:** Correct 'where is my book'.
 
-**Expected answer:** o
+**Expected answer:** Where is my book?
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** W
+**Application question:** Correct 'tunde is here'.
 
-**Expected answer:** h
+**Expected answer:** Tunde is here.
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Correct 'what a big tree'.
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** What a big tree!
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 3: Sequence
 
-**Foundation question:** R
+**Foundation question:** 'First we planted seeds, then watered them.' What first?
 
-**Expected answer:** e
+**Expected answer:** planting
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** p
+**Application question:** Order: rinse, soap, wet.
 
-**Expected answer:** l
+**Expected answer:** wet, soap, rinse
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** 'After packing her bag, Amina left.' What before?
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** packing bag
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 4: Description
 
-**Foundation question:** A
+**Foundation question:** Add adjective: 'The ___ basket is heavy'.
 
-**Expected answer:** d
+**Expected answer:** large or full
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** l
+**Application question:** Which clearer: 'tall brown tree' or 'a thing'?
 
-**Expected answer:** a
+**Expected answer:** tall brown tree
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Describe a fictional school garden.
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** The garden has green plants.
 
-## Release evidence
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-NERDC source/page **unverified**; school scheme **awaiting school**; teacher approval **not received**; pilot **not conducted**. Provide large print and read-aloud options.
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
+
+## Evidence gates
+
+NERDC **unverified**; school scheme **awaiting school**; teacher approval **not received**; pilot **not conducted**.
