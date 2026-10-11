@@ -1,79 +1,103 @@
-# Primary 1 English studies — concrete weeks 1–4 tiered assessment items
+# Primary 1 English — weeks 1–4 concrete assessments
 
-**Provisional:** 4 topic slots, 12 complete prompts with model answers. The passages are original and fictional; official school scheme and NERDC mapping are unverified. Do not publish before qualified-teacher review.
+**Provisional:** 12 fully worded questions; school and NERDC mapping unverified.
 
 ## Week 1: Read and identify
 
-**Foundation question:** R
+**Foundation question:** Read 'Ada has a red pen.' Who has the pen?
 
-**Expected answer:** e
+**Expected answer:** Ada
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** A
+**Application question:** Read 'Musa has a blue bag.' What colour?
 
-**Expected answer:** d
+**Expected answer:** blue
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Read 'Bola has three cups.' How many cups?
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** three
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 2: Capital letters
 
-**Foundation question:** C
+**Foundation question:** Correct 'ada runs'.
 
-**Expected answer:** o
+**Expected answer:** Ada runs.
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** A
+**Application question:** Correct 'musa reads'.
 
-**Expected answer:** d
+**Expected answer:** Musa reads.
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Correct 'tayo and ada sing'.
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** Tayo and Ada sing.
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 3: Sequence
 
-**Foundation question:** W
+**Foundation question:** Which first: wash hands or eat?
 
-**Expected answer:** h
+**Expected answer:** wash hands
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** w
+**Application question:** 'First Ayo swept. Then he sat.' What second?
 
-**Expected answer:** a
+**Expected answer:** He sat.
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Order: dry hands, wash hands.
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** wash hands, then dry hands
+
+**Marking:** 1 for correct answer, 1 for relevant explanation.
+
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
 
 ## Week 4: Description
 
-**Foundation question:** R
+**Foundation question:** 'The ball is round.' What shape?
 
-**Expected answer:** e
+**Expected answer:** round
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Application question:** r
+**Application question:** 'The mango is yellow.' What colour?
 
-**Expected answer:** o
+**Expected answer:** yellow
 
-**Marking:** 1 point for accurate answer; 1 for identifying relevant text evidence, editing convention or a clear explanation. Accept oral and pointing responses where appropriate.
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-**Reteach:** Read the example aloud, model one similar response, then use a different original sentence to reassess.
+**Transfer question:** Write sentence about a green leaf.
 
-**Progress check:** Give an unseen comparable sentence and ask for an explanation; do not collect names or public scores.
+**Expected answer:** The leaf is green.
 
-## Release evidence
+**Marking:** 1 for correct answer, 1 for relevant explanation.
 
-NERDC source/page **unverified**; school scheme **awaiting school**; teacher approval **not received**; pilot **not conducted**. Provide large print and read-aloud options.
+**Reteach:** Model a parallel sentence and invite a retry.
+
+**Progress check:** Use an unseen comparable sentence; no pupil identifiers.
+
+## Evidence gates
+
+NERDC **unverified**; school scheme **awaiting school**; teacher approval **not received**; pilot **not conducted**.
