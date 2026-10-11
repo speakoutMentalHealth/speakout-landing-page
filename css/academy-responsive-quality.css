@@ -1,0 +1,17 @@
+/* Responsive Academy quality layer, opt-in to .learning-shell. */
+.learning-shell{width:100%;min-width:0;overflow-wrap:anywhere}
+.learning-shell img,.learning-shell video,.learning-shell svg{max-width:100%;height:auto}
+.learning-shell .learning-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.learning-shell .learning-card{min-width:0;transition:border-color .15s,box-shadow .15s,transform .15s}
+.learning-shell .learning-card:hover{box-shadow:0 12px 30px rgba(12,45,80,.12);transform:translateY(-2px)}
+.learning-shell .learning-card:focus-visible{outline:4px solid #e7a42e;outline-offset:4px}
+.learning-shell .learning-button{max-width:100%;text-align:center;white-space:normal}
+.learning-shell :is(button,input,select,textarea){max-width:100%;font-size:1rem}
+.learning-shell :is(p,li){line-height:1.65}
+.learning-shell .learning-worksheet{overflow-wrap:anywhere}
+@media(max-width:767px){.learning-shell{padding:1rem}.learning-shell .learning-grid{grid-template-columns:1fr}.learning-shell .learning-card{min-height:110px;padding:1.2rem}.learning-shell .learning-hero{padding:1.35rem}.learning-shell .learning-button{width:100%}}
+@media(min-width:768px) and (max-width:1100px){.learning-shell .learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1101px){.learning-shell .learning-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.learning-shell *, .learning-shell *::before,.learning-shell *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.learning-shell .learning-card:hover{transform:none}}
+@media(prefers-contrast:more){.learning-shell .learning-card{border:3px solid #123b67}.learning-shell .learning-card span{color:#102f50}}
+@media print{.learning-shell .learning-card{box-shadow:none;transform:none}.learning-shell .learning-worksheet{break-inside:avoid}}
