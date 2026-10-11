@@ -63,6 +63,14 @@ function card(item) {
 function render() {
   byId("catalogue").hidden = !validBrowse(placement);
   if (!validBrowse(placement)) return;
+  const primaryPreview = byId("primaryDraftPreview");
+  primaryPreview.hidden = placement.educationStage !== "primary";
+  if (!primaryPreview.hidden) {
+    const supported = /^Primary [1-6]$/.test(placement.classLevel || "");
+    const link = byId("primaryDraftLink");
+    link.href = "pages/primary-learning-preview.html" + (supported ? "?class=" + encodeURIComponent(placement.classLevel.replace("Primary ", "")) : "");
+    link.textContent = supported ? "Try " + placement.classLevel + " practice preview" : "Choose a class in the practice preview";
+  }
   const label = stageFor(placement.educationStage).label;
   byId("learningTitle").textContent = `${["nursery", "primary"].includes(placement.educationStage) ? "Kiddies Corner · " : ""}${label} learning`;
   byId("placementLabel").textContent = placement.classLevel || "All classes / levels";
