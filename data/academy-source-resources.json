@@ -145,6 +145,51 @@
       "publicationStatus": "external-link-only",
       "provenance": "source-url",
       "sourceVerifiedAt": null
+    },
+    {
+      "title": "Technology, Vocational and Entrepreneurship resource collection",
+      "subject": "Welding & Fabrication",
+      "level": "SSS 3 and other levels",
+      "url": "https://elearn.education.gov.ng/fields-of-study/technology-vocational-entrepreneurship-draft/",
+      "type": "Subject-area collection",
+      "source": "eLearn",
+      "id": "federal-resource-011",
+      "contentKind": "resource-listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
+    },
+    {
+      "title": "eLearn sample: Physical and Health Education, Welding, and JSS English",
+      "subject": "Physical And Health Education",
+      "level": "Primary 3, Primary 6, JSS 3, SSS 3",
+      "url": "https://elearn.education.gov.ng/page/160/?e-page-714960a4=92",
+      "type": "Mixed resource listing",
+      "source": "eLearn",
+      "id": "federal-resource-012",
+      "contentKind": "resource-listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
+    },
+    {
+      "title": "eLearn sample: Biology, Mathematics, English and Welding",
+      "subject": "Biology",
+      "level": "SSS 1, SS 1, SSS 3",
+      "url": "https://elearn.education.gov.ng/page/779/?e-page-714960a4=722",
+      "type": "Mixed resource listing",
+      "source": "eLearn",
+      "id": "federal-resource-013",
+      "contentKind": "resource-listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     }
   ],
   "catalogueStatus": "partial-discovery"
