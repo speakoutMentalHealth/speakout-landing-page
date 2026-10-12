@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "original-draft-teacher-review-pending",
   "lessons": [
     {
@@ -160,6 +160,1867 @@
           "explanation": "Loam is a mixture of soil particle sizes."
         }
       ]
+    },
+    {
+      "id": "p2-maths-equal-shares",
+      "level": "Primary 2",
+      "subject": "Mathematics",
+      "title": "Equal shares: halves and quarters",
+      "objective": "Make halves and quarters of the same whole and explain why equal parts matter.",
+      "prerequisites": "Count to eight; recognise a whole object.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/2295/preview",
+        "topic": "Fractions",
+        "sourceLevel": "Primary 2",
+        "sourceSubject": "Mathematics",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Start with a whole",
+          "text": "Imagine a round paper model of a Nigerian flatbread. The whole is the complete model before anyone shares it. A fraction describes equal parts of a whole. Two pieces are not automatically halves: both must be equal in size. We use paper rather than food so everyone can join in without needing to bring a meal."
+        },
+        {
+          "heading": "Halves",
+          "text": "Fold a rectangle so that one side fits exactly over the other. Open it. The fold marks two equal parts. Each part is one half, written 1/2. The bottom number tells us that the whole has two equal parts; the top number says we are talking about one of them. Two halves put together make one whole."
+        },
+        {
+          "heading": "Quarters and a worked example",
+          "text": "Fold another same-sized rectangle in half and then in half again. Open it to see four equal parts. Each part is one quarter, written 1/4. Shade two quarters. They cover the same area as one half of the first rectangle, so 2/4 and 1/2 show the same amount of these equal-sized wholes."
+        },
+        {
+          "heading": "Check the size of the whole",
+          "text": "One quarter of a large paper sheet can be larger than one half of a tiny sheet. When comparing 1/2 and 1/4 in this lesson, use the same-sized whole. For the same whole, one half is larger because the whole is shared into fewer equal parts. A bigger bottom number does not mean a bigger piece."
+        }
+      ],
+      "activities": [
+        {
+          "title": "A paper sharing shop",
+          "materials": [
+            "Two equal-sized paper rectangles",
+            "Pencil or crayon"
+          ],
+          "steps": [
+            "Fold the first sheet into two equal parts and shade one.",
+            "Fold the second sheet into four equal parts and shade one.",
+            "Place the sheets beside each other and explain which shaded part is larger.",
+            "Shade a second quarter and compare again."
+          ],
+          "expectedResponse": "One half covers more than one quarter of the same whole. Two quarters cover the same amount as one half.",
+          "extension": "Draw a rectangle split into two unequal parts and explain why neither part is a half."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "A whole is cut into two unequal pieces. Are the pieces halves?",
+          "choices": [
+            "Yes, because there are two",
+            "No, halves must be equal",
+            "Only the larger one is a half"
+          ],
+          "answer": 1,
+          "explanation": "The number of pieces is not enough. Each half must be one of two equal parts."
+        },
+        {
+          "prompt": "How many quarters make one whole?",
+          "choices": [
+            "Two",
+            "Three",
+            "Four"
+          ],
+          "answer": 2,
+          "explanation": "Four equal quarter-pieces rebuild the complete whole."
+        },
+        {
+          "prompt": "Which is larger for the same-sized whole?",
+          "choices": [
+            "1/2",
+            "1/4",
+            "They are always equal"
+          ],
+          "answer": 0,
+          "explanation": "Sharing a whole into two equal parts gives larger pieces than sharing it into four."
+        },
+        {
+          "prompt": "Two quarters cover the same amount as…",
+          "choices": [
+            "One quarter",
+            "One half",
+            "Two wholes"
+          ],
+          "answer": 1,
+          "explanation": "Two of the four equal parts cover half of the whole: 2/4 = 1/2."
+        },
+        {
+          "prompt": "What must we check before comparing the shaded fractions on two sheets?",
+          "choices": [
+            "The sheets have the same colour",
+            "The pencil is new",
+            "The wholes are the same size"
+          ],
+          "answer": 2,
+          "explanation": "The size of the whole matters. Different-sized wholes can make a visual comparison misleading."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes recall, 10 reading/model, 10 paper activity, 10 questions, 5 explanation.",
+        "misconception": "Do not call any two pieces halves. Ask the learner to overlap the pieces to check equality.",
+        "support": "Use pre-folded paper or raised fold lines; accept pointing or spoken explanations.",
+        "challenge": "Ask why two quarters and one half can have different names but the same size.",
+        "reviewFocus": "Confirm the Primary 2 scope and language; watch the candidate fully before approving."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "Yw8azUV_vW8",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Look for equal-sized parts. Draw your own half and quarter afterwards; the reading and paper activity work without video.",
+        "title": "Fractions for kids - Mathematics for kids",
+        "creator": "Smile and Learn - English",
+        "creatorUrl": "https://www.youtube.com/@SmileandLearnEnglish",
+        "sourceUrl": "https://www.youtube.com/watch?v=Yw8azUV_vW8",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=Yw8azUV_vW8&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "p4-maths-naira-change",
+      "level": "Primary 4",
+      "subject": "Mathematics",
+      "title": "A market receipt: adding money and checking change",
+      "objective": "Add prices in naira, subtract a total from an amount paid, and check change using addition.",
+      "prerequisites": "Add and subtract three-digit numbers; recognise naira notation.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/5679/preview",
+        "topic": "Money",
+        "sourceLevel": "Primary 4",
+        "sourceSubject": "Mathematics",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Plan a small purchase",
+          "text": "A fictional stall in Ibadan sells a notebook for ₦350 and a pencil for ₦150. These are made-up classroom prices, not a claim about current market prices. A receipt records what was bought, its price and the total. Writing each amount with the naira symbol helps us remember the unit."
+        },
+        {
+          "heading": "Find the total",
+          "text": "To buy both items, add ₦350 + ₦150. Add the hundreds and tens carefully: 350 + 150 = 500, so the total is ₦500. Estimate first: 350 is between 300 and 400, so a total of ₦50 would be far too small. When prices include kobo, line up the decimal points; 100 kobo equals ₦1."
+        },
+        {
+          "heading": "Work out change",
+          "text": "If Amina pays ₦1,000 for the ₦500 purchase, change is amount paid minus total cost: ₦1,000 − ₦500 = ₦500. Check by adding the cost and change: ₦500 + ₦500 = ₦1,000. The checking step helps identify mistakes before a receipt is accepted."
+        },
+        {
+          "heading": "A second worked example",
+          "text": "A book costs ₦625 and an eraser costs ₦175. Their total is ₦800. Paying ₦1,000 gives ₦200 change. Paying ₦750 is not enough: another ₦50 is needed. A shortfall is different from change. Decide whether the payment is greater or smaller than the cost before subtracting."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Make and check a receipt",
+          "materials": [
+            "Paper",
+            "Pencil",
+            "Optional paper tokens"
+          ],
+          "steps": [
+            "Use these invented prices: ruler ₦250, exercise book ₦450, eraser ₦100.",
+            "Choose the ruler and book; write their total and the change from ₦1,000.",
+            "Swap receipts with a partner and check cost + change = amount paid.",
+            "Try buying all three with ₦750 and state the shortfall."
+          ],
+          "expectedResponse": "Ruler and book cost ₦700; change is ₦300. All three cost ₦800, so ₦750 leaves a ₦50 shortfall.",
+          "extension": "Create two different baskets that cost exactly ₦800, allowing repeated items."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "₦350 + ₦150 equals…",
+          "choices": [
+            "₦400",
+            "₦500",
+            "₦600"
+          ],
+          "answer": 1,
+          "explanation": "350 + 150 = 500. Add the values, keeping the naira unit."
+        },
+        {
+          "prompt": "Change from ₦1,000 after a ₦700 purchase is…",
+          "choices": [
+            "₦300",
+            "₦700",
+            "₦1,700"
+          ],
+          "answer": 0,
+          "explanation": "Change is payment minus cost: 1,000 − 700 = 300."
+        },
+        {
+          "prompt": "Which checks ₦200 change on an ₦800 purchase paid with ₦1,000?",
+          "choices": [
+            "800 − 200 = 600",
+            "1,000 + 800 = 1,800",
+            "800 + 200 = 1,000"
+          ],
+          "answer": 2,
+          "explanation": "The cost plus the returned change must equal the amount paid."
+        },
+        {
+          "prompt": "A basket costs ₦800, but the buyer has ₦750. What is needed?",
+          "choices": [
+            "₦50 more",
+            "₦50 change",
+            "₦1,550 more"
+          ],
+          "answer": 0,
+          "explanation": "The payment is less than the cost. The shortfall is 800 − 750 = 50."
+        },
+        {
+          "prompt": "₦2.50 + ₦1.25 equals…",
+          "choices": [
+            "₦3.25",
+            "₦3.75",
+            "₦4.75"
+          ],
+          "answer": 1,
+          "explanation": "Add naira and kobo in aligned columns: 2.50 + 1.25 = 3.75."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes money notation, 10 worked examples, 15 receipt activity, 10 feedback.",
+        "misconception": "Distinguish cost, payment and change with labelled columns; do not add payment to the cost.",
+        "support": "Use whole-naira amounts first and read receipts aloud. No real money or household spending disclosure is needed.",
+        "challenge": "Compare two possible payments and explain why the item cost stays the same.",
+        "reviewFocus": "Verify arithmetic, local currency notation, class scope and the candidate's complete content."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "SQF4GC8A7n0",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Watch how money amounts are represented, then check our fictional naira receipt with addition.",
+        "title": "Nigeria - Primary 4 - General Mathematics - Money",
+        "creator": "Lessonotes Video Teachings",
+        "creatorUrl": "https://www.youtube.com/@lessonotes",
+        "sourceUrl": "https://www.youtube.com/watch?v=SQF4GC8A7n0",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=SQF4GC8A7n0&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss2-maths-fractions-percent",
+      "level": "JSS 2",
+      "subject": "Mathematics",
+      "title": "Fractions, ratios and percentages in a school survey",
+      "objective": "Express a part of a group as a fraction, decimal, percentage and part-to-whole ratio.",
+      "prerequisites": "Equivalent fractions and division by ten or one hundred.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/214/preview",
+        "topic": "Fractions",
+        "sourceLevel": "JSS 2",
+        "sourceSubject": "Mathematics",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "One survey, several descriptions",
+          "text": "In an invented survey of 40 learners in Jos, 10 choose the library as their favourite quiet study space. The fraction choosing the library is 10/40, which simplifies to 1/4 by dividing both numbers by 10. We count each learner once, and the whole group stays 40."
+        },
+        {
+          "heading": "Decimals and percentages",
+          "text": "Divide 1 by 4 to get 0.25. A percentage means an amount out of 100, so 0.25 × 100 = 25%. The statements 1/4 of the group, 0.25 of the group and 25% of the group describe the same share. The percentage sign does not mean 25 learners; here it means 10 learners out of 40."
+        },
+        {
+          "heading": "Ratios need labels",
+          "text": "The ratio of library choices to all choices is 10:40, or 1:4. The ratio of library choices to other choices is 10:30, or 1:3. These ratios answer different questions. Always write what each side represents before simplifying. A part-to-part ratio cannot be read as a part-to-whole fraction without finding the total."
+        },
+        {
+          "heading": "Work backwards and check",
+          "text": "If 60% of 50 seedlings survive in a school garden, calculate 60/100 × 50 = 30 surviving seedlings. The other 20 are 40% of 50. Check that 30 + 20 = 50 and 60% + 40% = 100%. This example is a made-up count for practice, not a claim about a particular school's garden."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Represent one group four ways",
+          "materials": [
+            "Paper",
+            "Twenty drawn circles"
+          ],
+          "steps": [
+            "Shade 8 of 20 circles to represent an invented book-club choice.",
+            "Write shaded/total as a simplified fraction, decimal and percentage.",
+            "Write shaded:unshaded and shaded:total with labels.",
+            "Explain why the two ratios differ."
+          ],
+          "expectedResponse": "8/20 = 2/5 = 0.4 = 40%; shaded:unshaded is 8:12 = 2:3; shaded:total is 8:20 = 2:5.",
+          "extension": "Find how many of a group of 35 would represent 40%."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "10 out of 40 is what percentage?",
+          "choices": [
+            "10%",
+            "25%",
+            "40%"
+          ],
+          "answer": 1,
+          "explanation": "10/40 = 1/4 = 0.25, so the share is 25%, not the raw count 10."
+        },
+        {
+          "prompt": "0.4 expressed as a percentage is…",
+          "choices": [
+            "4%",
+            "0.4%",
+            "40%"
+          ],
+          "answer": 2,
+          "explanation": "Multiply the decimal by 100: 0.4 × 100 = 40."
+        },
+        {
+          "prompt": "If 8 of 20 circles are shaded, shaded:unshaded is…",
+          "choices": [
+            "2:3",
+            "2:5",
+            "3:2"
+          ],
+          "answer": 0,
+          "explanation": "There are 12 unshaded circles. 8:12 simplifies to 2:3."
+        },
+        {
+          "prompt": "60% of 50 is…",
+          "choices": [
+            "60",
+            "30",
+            "20"
+          ],
+          "answer": 1,
+          "explanation": "60/100 × 50 = 30. The answer must be less than 50 because 60% is less than a whole."
+        },
+        {
+          "prompt": "A survey has 12 yes and 18 no responses. The yes fraction is…",
+          "choices": [
+            "12/18",
+            "18/12",
+            "12/30"
+          ],
+          "answer": 2,
+          "explanation": "The whole is 12 + 18 = 30, so yes/total is 12/30."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes recall, 15 representations, 10 circles, 10 questions and discussion.",
+        "misconception": "Insist on labels for ratios; 1:3 part-to-part corresponds to 1/4 of the total.",
+        "support": "Use a hundred-square alongside twenty counters; permit a calculator after the reasoning is explained.",
+        "challenge": "Explain why 40% of 35 is 14 without using decimal multiplication.",
+        "reviewFocus": "Confirm fractions/ratio scope and check that the video supports percentages without implying Nigerian syllabus certification."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "JeVSmq1Nrpw",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Notice what 'per hundred' means. After viewing, convert the 8-of-20 example without relying on a video example.",
+        "title": "Math Antics - What Are Percentages?",
+        "creator": "mathantics",
+        "creatorUrl": "https://www.youtube.com/@mathantics",
+        "sourceUrl": "https://www.youtube.com/watch?v=JeVSmq1Nrpw",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=JeVSmq1Nrpw&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss1-english-main-ideas",
+      "level": "JSS 1",
+      "subject": "English Language",
+      "title": "Main ideas and evidence: a school transport passage",
+      "objective": "Distinguish a passage's main idea from supporting details and justify a summary with evidence.",
+      "prerequisites": "Read a short paragraph and identify complete sentences.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/736/preview",
+        "topic": "Reading for main and supporting ideas",
+        "sourceLevel": "JSS 1",
+        "sourceSubject": "English Language",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Read this original passage",
+          "text": "At a fictional school in Enugu, the transport club studied the morning arrival routine. It found that learners sometimes stood too close to moving vehicles at the gate. The club proposed a marked waiting area inside the school and a duty teacher to guide arrivals. It also suggested that drivers stop at an agreed point. These changes aimed to make arrival more orderly and safer."
+        },
+        {
+          "heading": "Find the main idea",
+          "text": "The topic is what the passage is about: school arrival. The main idea is what the writer says about that topic: the club proposed changes to improve arrival safety and order. 'Enugu' is a setting, not the main idea. A useful summary includes the central point without repeating every small detail."
+        },
+        {
+          "heading": "Use supporting evidence",
+          "text": "The marked waiting area, duty teacher and agreed stopping point support the central idea. They explain how the routine could improve. The passage says these were proposals; it does not say the changes were already tested or that every road accident would stop. Good readers separate what is stated from what they guess."
+        },
+        {
+          "heading": "Test a possible summary",
+          "text": "Compare 'A club in Enugu exists' with 'A school club proposed safer, more orderly arrival arrangements.' The second summary covers the whole passage. It is specific enough to show understanding, but it does not invent a result. A detail can be important without being the main idea; ask whether it covers most of the paragraph."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Evidence cards",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Write one sentence giving the main idea.",
+            "List two details that support it.",
+            "Write one claim the passage does not prove.",
+            "Swap with a partner and underline the words that support each answer."
+          ],
+          "expectedResponse": "Main idea: the club proposed safer arrival arrangements. Evidence: a waiting area and duty teacher. Unsupported claim: the plan has already prevented all accidents.",
+          "extension": "Write a new three-sentence paragraph about caring for library books, with one main idea and two supporting details."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the main idea?",
+          "choices": [
+            "Enugu has a school",
+            "The club proposed safer arrival arrangements",
+            "All learners travel by car"
+          ],
+          "answer": 1,
+          "explanation": "The proposals and their purpose connect the whole passage. The city alone is only a detail."
+        },
+        {
+          "prompt": "Which detail supports the main idea?",
+          "choices": [
+            "A marked waiting area",
+            "The club won a prize",
+            "Every family owns a bus"
+          ],
+          "answer": 0,
+          "explanation": "The waiting area is explicitly proposed as part of the improved routine; the other claims are absent."
+        },
+        {
+          "prompt": "Which claim goes beyond the passage?",
+          "choices": [
+            "Drivers should use an agreed stopping point",
+            "A duty teacher was proposed",
+            "The changes have stopped all accidents"
+          ],
+          "answer": 2,
+          "explanation": "The passage describes proposed changes, not measured results or a guarantee."
+        },
+        {
+          "prompt": "A topic differs from a main idea because…",
+          "choices": [
+            "A topic always gives every fact",
+            "The main idea states the writer's central point about the topic",
+            "They are always identical words"
+          ],
+          "answer": 1,
+          "explanation": "A topic names the subject; a main idea explains what the writer is saying about it."
+        },
+        {
+          "prompt": "Which summary is most accurate?",
+          "choices": [
+            "The school banned all vehicles",
+            "The club proposed several ways to improve arrival",
+            "The teachers built a new road"
+          ],
+          "answer": 1,
+          "explanation": "It captures the proposals without adding a ban or construction that the passage never mentions."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes vocabulary, 10 shared reading, 15 evidence cards, 10 questions.",
+        "misconception": "A first sentence is not automatically the main idea. Ask which statement covers the whole paragraph.",
+        "support": "Read aloud and allow oral or highlighted responses. Explain 'proposed' and 'routine'.",
+        "challenge": "Have learners defend two different accurate summaries using the same evidence.",
+        "reviewFocus": "Review reading difficulty, transport safeguarding language and full video suitability."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "42SJTk2XSi4",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Look for the difference between a main idea and a detail. Apply the strategy to our original Enugu passage.",
+        "title": "How to find the main idea and supporting details - reading skills for beginners",
+        "creator": "McGraw Hill PreK-12",
+        "creatorUrl": "https://www.youtube.com/@McGrawHillEducationSchool",
+        "sourceUrl": "https://www.youtube.com/watch?v=42SJTk2XSi4",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=42SJTk2XSi4&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss1-english-written-directions",
+      "level": "JSS 1",
+      "subject": "English Language",
+      "title": "Follow written directions: setting up a class reading corner",
+      "objective": "Follow a sequence of written instructions, recognise direction words and identify missing information.",
+      "prerequisites": "Read action verbs and common position words.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/823/preview",
+        "topic": "Reading to follow direction in written communication",
+        "sourceLevel": "JSS 1",
+        "sourceSubject": "English Language",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Read all the steps first",
+          "text": "Written directions tell a reader how to complete a task. Read the whole instruction before acting, check the materials and notice warnings. For this classroom task, use a paper plan rather than moving heavy furniture. Words such as first, next, before and finally show sequence; beside, above and opposite describe position."
+        },
+        {
+          "heading": "An original set of instructions",
+          "text": "Draw a rectangle to represent a classroom in Kaduna. First, mark a door on the left edge. Next, draw a window on the top edge. Place a reading mat below the window. Draw a book box to the right of the mat. Finally, draw a clear path from the door to the mat. Do not place a box on the path. This is a fictional floor plan, not directions for travelling outside school."
+        },
+        {
+          "heading": "Check the result against the text",
+          "text": "A correct plan has the door on the left, window above the mat and box to the mat's right. The route from the door remains clear. 'Right' is relative to the paper as you look at it. Rotating the page halfway through can cause confusion. Keep the page orientation fixed and check one instruction at a time."
+        },
+        {
+          "heading": "Make instructions clearer",
+          "text": "'Put it there' is vague because the object and location are missing. 'Draw the book box to the right of the mat' names both. If a direction is unclear, ask for clarification rather than guessing. A sketch can help, but it must agree with the written steps. Good instructions also make the task accessible to someone who needs them read aloud."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Draw, check, revise",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Draw the classroom from the directions above.",
+            "Tick each instruction only after checking the drawing.",
+            "Write three clear directions for adding a chair and a reading sign while keeping the path clear.",
+            "Ask a partner to follow your new directions, then revise any ambiguous wording."
+          ],
+          "expectedResponse": "The plan preserves the stated positions and clear path. New directions name the object, position and order rather than saying 'there'.",
+          "extension": "Describe the same plan orally so a partner can reproduce it without seeing yours."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which word signals the last step?",
+          "choices": [
+            "Beside",
+            "Finally",
+            "Above"
+          ],
+          "answer": 1,
+          "explanation": "Finally signals sequence; beside and above describe location."
+        },
+        {
+          "prompt": "Where should the book box go?",
+          "choices": [
+            "On the path",
+            "To the left of the door",
+            "To the right of the mat"
+          ],
+          "answer": 2,
+          "explanation": "The written instruction names the right side of the mat and says to keep the path clear."
+        },
+        {
+          "prompt": "What should you do before beginning?",
+          "choices": [
+            "Read the full instructions",
+            "Move heavy furniture alone",
+            "Ignore the materials"
+          ],
+          "answer": 0,
+          "explanation": "Reading all steps first reveals the order, materials and constraints."
+        },
+        {
+          "prompt": "Why is 'put it there' unclear?",
+          "choices": [
+            "It is too long",
+            "The object and location are not named",
+            "It contains a sequence word"
+          ],
+          "answer": 1,
+          "explanation": "The reader cannot reliably identify what 'it' and 'there' refer to."
+        },
+        {
+          "prompt": "If the sketch conflicts with a written step, what is best?",
+          "choices": [
+            "Guess quickly",
+            "Ignore the step",
+            "Check the discrepancy and ask for clarification"
+          ],
+          "answer": 2,
+          "explanation": "Clarifying a conflict is more reliable than silently guessing which instruction was intended."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes direction words, 10 reading, 15 drawing/revision, 10 questions.",
+        "misconception": "Distinguish position words from sequence words and keep the page orientation consistent.",
+        "support": "Offer a tactile rectangle or oral description and allow a partner to draw under the learner's direction.",
+        "challenge": "Ask learners to find and repair an intentionally ambiguous step.",
+        "reviewFocus": "Check accessibility and the candidate video's match to written rather than outdoor navigation."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "lXb8EIbppGw",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Identify action words and sequence signals, then follow the reading-corner directions independently.",
+        "title": "Reading to Follow Direction in Written Communication. | English | JSS1",
+        "creator": "Edufirst TV",
+        "creatorUrl": "https://www.youtube.com/@EdufirstTV",
+        "sourceUrl": "https://www.youtube.com/watch?v=lXb8EIbppGw",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=lXb8EIbppGw&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss1-agric-production-resources",
+      "level": "JSS 1",
+      "subject": "Agricultural Science",
+      "title": "Plan a school garden: resources for production",
+      "objective": "Identify resources used in agricultural production and explain how they work together in a garden plan.",
+      "prerequisites": "Identify a crop, a tool and a plant's need for water.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/3804/preview",
+        "topic": "Factors of Agricultural Production",
+        "sourceLevel": "JSS 1",
+        "sourceSubject": "Agricultural Science",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Production needs more than seeds",
+          "text": "A fictional school garden in Makurdi plans to grow okra. Agricultural production means using resources to raise crops or animals. Seeds alone are not enough: the crop needs suitable space, water, work, equipment and decisions. This lesson plans a garden on paper; it does not require learners to use sharp tools, pesticides or unfamiliar plants."
+        },
+        {
+          "heading": "Group the resources",
+          "text": "Land includes the growing space and its natural resources. Labour is people's physical and mental work. Capital includes produced tools and equipment used for production, such as a watering can; money helps obtain them. Management coordinates choices such as planting time, spending and who completes a task. Water is an essential resource whose supply must be planned."
+        },
+        {
+          "heading": "A worked garden plan",
+          "text": "The school has an approved plot and a safe water supply. An adult prepares the soil, a supervised group records observations, and a coordinator chooses suitable seed and organises watering. The plot is land; the work is labour; the watering can is capital; organising the schedule is management. One person may contribute both labour and management."
+        },
+        {
+          "heading": "Recognise a limiting resource",
+          "text": "If the class buys extra seed but has no reliable water, extra seed may not improve the harvest. Good planning identifies the missing resource first. Compare options using the same fictional budget and record why an option fits the garden. Soil, weather and crop needs also affect results, so a plan is not a guarantee of yield."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Resource planner",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Draw columns for land, labour, equipment, water and management.",
+            "Place a plot, watering can, adult soil preparation, safe water supply and watering timetable in suitable columns.",
+            "Suppose the timetable is missing; explain what could go wrong.",
+            "Choose one improvement and justify it without asking anyone for household income."
+          ],
+          "expectedResponse": "The timetable belongs to management. Without coordination, watering may be missed or repeated; assigning supervised roles addresses that problem.",
+          "extension": "Explain why money can buy equipment but is not itself the water or labour needed."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which is labour?",
+          "choices": [
+            "The plot",
+            "Preparing soil",
+            "A watering can"
+          ],
+          "answer": 1,
+          "explanation": "Labour is human work; the plot is land and the can is equipment."
+        },
+        {
+          "prompt": "A watering can used repeatedly is…",
+          "choices": [
+            "Capital equipment",
+            "A harvest",
+            "Rainfall"
+          ],
+          "answer": 0,
+          "explanation": "It is a produced tool used in further production."
+        },
+        {
+          "prompt": "Who is carrying out management?",
+          "choices": [
+            "A person only looking at a leaf",
+            "A seed in the soil",
+            "A coordinator arranging the watering schedule"
+          ],
+          "answer": 2,
+          "explanation": "Management organises decisions and resources so the work can be completed."
+        },
+        {
+          "prompt": "If water is unreliable, what is the best first planning response?",
+          "choices": [
+            "Buy unlimited seeds",
+            "Resolve a safe, suitable water supply",
+            "Ignore plant needs"
+          ],
+          "answer": 1,
+          "explanation": "Water is a limiting resource; more seed alone does not solve the shortage."
+        },
+        {
+          "prompt": "Can one person provide both labour and management?",
+          "choices": [
+            "Yes",
+            "No, never",
+            "Only if they own all the land"
+          ],
+          "answer": 0,
+          "explanation": "A person can perform work and also organise it; the categories describe roles and resources."
+        }
+      ],
+      "facilitator": {
+        "timing": "5 minutes starter, 10 resource explanation, 15 planner, 10 questions.",
+        "misconception": "Explain the distinction between money that finances production and the equipment, work and water actually used.",
+        "support": "Use picture cards and a paper-only plan. Avoid assumptions that every learner's family farms.",
+        "challenge": "Compare two garden plans with the same resources but different management.",
+        "reviewFocus": "Confirm the source's factor terminology and review the full video for safe, age-appropriate examples."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "6hv7h0VhLhs",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "List the production resources discussed, then connect each to the fictional okra garden.",
+        "title": "10 - Agricultural Science | J.S.S.1 | Factors of Production, Meanign, Types and Characteristics",
+        "creator": "Akada International",
+        "creatorUrl": "https://www.youtube.com/@akadainternational",
+        "sourceUrl": "https://www.youtube.com/watch?v=6hv7h0VhLhs",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=6hv7h0VhLhs&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "ss1-chemistry-substances",
+      "level": "SS 1",
+      "subject": "Chemistry",
+      "title": "Elements, compounds and mixtures in everyday materials",
+      "objective": "Classify simple substances as elements, compounds or mixtures and explain the classification using particles.",
+      "prerequisites": "Recognise matter as material that has mass and occupies space.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/9460/preview",
+        "topic": "Symbols, Formulae and Equations: Elements, compounds and mixtures (I)",
+        "sourceLevel": "SS 1",
+        "sourceSubject": "Chemistry",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Classify the material, not the container",
+          "text": "A sample can be described by what particles it contains. An element contains only one type of atom. A compound contains different elements chemically combined in a fixed ratio. A mixture contains two or more substances together without all of them becoming one new compound. These categories do not depend on whether a material is solid, liquid or gas."
+        },
+        {
+          "heading": "Elements and compounds",
+          "text": "Copper is an element. Pure water is a compound: each water molecule contains hydrogen and oxygen in the ratio shown by H₂O. Oxygen gas contains pairs of oxygen atoms, O₂, but it remains an element because there is only one type of atom. Not every molecule is a compound. Chemical bonding and composition matter, not simply the number of atoms."
+        },
+        {
+          "heading": "A Nigerian kitchen example",
+          "text": "A fictional cook in Ilorin stirs salt into water. The salt-water sample is a mixture because the amount of salt can vary. Dissolving makes the salt difficult to see but does not prove it has vanished. Pure sodium chloride is a compound; salt water is a mixture containing it. Commercial food products may contain several ingredients, so avoid declaring every labelled 'salt' sample perfectly pure."
+        },
+        {
+          "heading": "Use a particle model",
+          "text": "Draw identical circles for an element. Draw repeated joined pairs of two different circle types for a simple molecular compound. Draw two kinds of unjoined particles together for a mixture model. Models simplify real particles: circles are symbols, not photographs. A mixture can often be separated physically; separating a compound into its elements requires chemical change."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Particle cards",
+          "materials": [
+            "Paper",
+            "Two coloured pencils or two different shapes"
+          ],
+          "steps": [
+            "Draw an element with six identical particles.",
+            "Draw a compound model with three identical pairs, each pair containing two different atom types.",
+            "Draw a mixture containing two different particle types without joining them.",
+            "Label each and explain what would need to change to turn your mixture model into a compound model."
+          ],
+          "expectedResponse": "The element has one atom type; the compound repeats a fixed combination of different atom types; the mixture contains substances together without that uniform bonding.",
+          "extension": "Draw O₂ as an element and explain why two atoms per molecule do not make it a compound."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Pure copper is…",
+          "choices": [
+            "An element",
+            "A mixture",
+            "Always a compound"
+          ],
+          "answer": 0,
+          "explanation": "Copper contains one chemical element, rather than different elements combined."
+        },
+        {
+          "prompt": "O₂ is an element because…",
+          "choices": [
+            "It has only one atom in total",
+            "Both atoms are the same type",
+            "All gases are elements"
+          ],
+          "answer": 1,
+          "explanation": "An element can have molecules containing several atoms of the same element."
+        },
+        {
+          "prompt": "Why is salt water a mixture?",
+          "choices": [
+            "The cup is transparent",
+            "It contains no particles",
+            "Its substances are together in variable proportions"
+          ],
+          "answer": 2,
+          "explanation": "The salt-to-water proportion can vary; the sample is not a single compound with one fixed formula."
+        },
+        {
+          "prompt": "When salt dissolves, it…",
+          "choices": [
+            "Must become a new element",
+            "Remains in the solution even if unseen",
+            "Has no mass"
+          ],
+          "answer": 1,
+          "explanation": "Dissolved salt remains present; inability to see it is not evidence that it disappeared."
+        },
+        {
+          "prompt": "Which model best represents a molecular compound?",
+          "choices": [
+            "Identical bonded groups containing different atom types",
+            "Only one atom type everywhere",
+            "Unbonded pieces of two materials"
+          ],
+          "answer": 0,
+          "explanation": "A compound has different elements chemically combined in a fixed composition."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes concepts, 10 examples, 10 models, 10 feedback.",
+        "misconception": "O₂ is an element; a molecule is not automatically a compound. Avoid equating invisible with absent.",
+        "support": "Use shape differences as well as colour and allow verbal descriptions of particle arrangements.",
+        "challenge": "Explain why air is a mixture even when it looks uniform.",
+        "reviewFocus": "Review chemical accuracy, source outcome scope and the candidate's international syllabus language."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "jBDr0mHyc5M",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Compare the particle models with our salt-water example. The video is supplementary and is not evidence of Nigerian curriculum approval.",
+        "title": "GCSE Chemistry - Differences Between Compounds, Molecules & Mixtures",
+        "creator": "Cognito",
+        "creatorUrl": "https://www.youtube.com/@Cognitoedu",
+        "sourceUrl": "https://www.youtube.com/watch?v=jBDr0mHyc5M",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=jBDr0mHyc5M&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "ss1-chemistry-separation",
+      "level": "SS 1",
+      "subject": "Chemistry",
+      "title": "Choose a separation method: sand, salt and water",
+      "objective": "Choose filtration or evaporation using solubility and explain the sequence for separating sand and salt.",
+      "prerequisites": "Understand mixtures and the meaning of dissolving.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/10341/preview",
+        "topic": "Standard Separation Techniques for Mixtures",
+        "sourceLevel": "SS 1",
+        "sourceSubject": "Chemistry",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Begin with a property",
+          "text": "A separation method exploits a difference between substances. Sand does not dissolve appreciably in water, while ordinary table salt dissolves. A sieve separates particles by size; filter paper can retain an insoluble solid while a liquid passes. These methods are not interchangeable with removing a dissolved substance."
+        },
+        {
+          "heading": "Filtration",
+          "text": "Imagine a laboratory mixture of sand and water. Pouring it through suitable filter paper leaves sand as the residue and lets water pass as the filtrate. The names refer to where the material ends up. Filtering salty water through ordinary paper does not remove dissolved salt. Clear filtrate is not automatically safe drinking water."
+        },
+        {
+          "heading": "Evaporation and recovery",
+          "text": "If salt is dissolved in water, removing the water by evaporation can leave salt behind. Evaporation recovers the dissolved solid, not the water. Distillation adds a condensation step to collect the vapour as liquid. Heating and laboratory apparatus require a qualified adult and appropriate safety controls; learners in this lesson draw the process rather than perform it."
+        },
+        {
+          "heading": "A worked sequence",
+          "text": "For a dry mixture of sand and salt, first add water to dissolve the salt. Filter to retain sand while the salt solution passes through. Then remove water from the filtrate to recover salt. Reversing the steps can fail: filtering dry sand and salt through paper does not use their difference in solubility. Label each substance at every stage rather than memorising method names alone."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Design a separation flowchart",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Start with a box labelled 'sand + salt'.",
+            "Add arrows for adding water, filtering and evaporating the filtrate.",
+            "Label the sand residue, salt solution and recovered salt.",
+            "Add a note explaining why the liquid is not drinking water and why heating is not a learner task."
+          ],
+          "expectedResponse": "Water dissolves salt; filtration retains sand; evaporation removes water from the salt solution. Ordinary filtration alone does not establish drinking-water safety.",
+          "extension": "Explain what extra equipment/function is needed if the aim is to collect the water too."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Filtration is suitable for…",
+          "choices": [
+            "Dissolved salt alone",
+            "Insoluble sand in water",
+            "Separating oxygen atoms from water"
+          ],
+          "answer": 1,
+          "explanation": "Filter paper retains insoluble sand; dissolved salt passes through with water."
+        },
+        {
+          "prompt": "The solid retained on filter paper is the…",
+          "choices": [
+            "Filtrate",
+            "Vapour",
+            "Residue"
+          ],
+          "answer": 2,
+          "explanation": "Residue stays on the paper; filtrate is the liquid that passes through."
+        },
+        {
+          "prompt": "Which first step helps separate dry sand and salt?",
+          "choices": [
+            "Add water to dissolve the salt",
+            "Heat the empty funnel",
+            "Assume both dissolve equally"
+          ],
+          "answer": 0,
+          "explanation": "Adding water uses the difference in solubility so filtration can separate the sand."
+        },
+        {
+          "prompt": "Why does paper filtration not remove dissolved salt?",
+          "choices": [
+            "Salt is always a gas",
+            "Dissolved particles pass with the water",
+            "The paper creates more salt"
+          ],
+          "answer": 1,
+          "explanation": "Ordinary filter paper does not retain the dissolved salt particles."
+        },
+        {
+          "prompt": "Which method can recover the evaporated water as liquid?",
+          "choices": [
+            "Dry sieving",
+            "Picking by hand",
+            "Distillation with condensation"
+          ],
+          "answer": 2,
+          "explanation": "Distillation condenses vapour into a collected liquid; evaporation alone does not collect it."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes property discussion, 10 worked sequence, 10 flowchart, 10 questions.",
+        "misconception": "Filtering a clear liquid does not prove purity or safety. Soluble and insoluble solids need different methods.",
+        "support": "Provide labelled stage cards; require no equipment, flame or chemical handling.",
+        "challenge": "Ask how the method changes when the desired product is water rather than salt.",
+        "reviewFocus": "Check laboratory safety wording and the complete candidate; no unsupervised practical is authorised."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "29Rd-Lly-fw",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Identify what stays on the filter and what passes through. Use the reading to explain the sand-and-salt sequence.",
+        "title": "GCSE Chemistry - Separation Techniques - Filtration | Evaporation | Crystallisation",
+        "creator": "Cognito",
+        "creatorUrl": "https://www.youtube.com/@Cognitoedu",
+        "sourceUrl": "https://www.youtube.com/watch?v=29Rd-Lly-fw",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=29Rd-Lly-fw&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "ss1-economics-scarcity",
+      "level": "SS 1",
+      "subject": "Economics",
+      "title": "Scarcity and choices in a school club",
+      "objective": "Explain scarcity and build a scale of preference under a stated resource limit.",
+      "prerequisites": "Add simple costs and distinguish a resource from a wish.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/10402/preview",
+        "topic": "Meaning of Economics and related concepts",
+        "sourceLevel": "SS 1",
+        "sourceSubject": "Economics",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Scarcity means a limit",
+          "text": "Economics studies how people use limited resources among competing uses. A fictional school club in Kano has ₦6,000 and two hours for a project. It would like books, display materials and sports equipment, but cannot obtain everything at once. Both money and time can be scarce. Scarcity can affect a wealthy organisation as well as a small club."
+        },
+        {
+          "heading": "Separate wants from available resources",
+          "text": "The club lists its wishes before making a decision. In this classroom example, books cost ₦4,000, display materials ₦2,000 and a ball ₦3,000. Prices are invented for arithmetic. All three cost ₦9,000, more than the ₦6,000 budget. The club must choose, postpone an item or find additional resources; writing a longer wish list does not remove the limit."
+        },
+        {
+          "heading": "Build a scale of preference",
+          "text": "A scale of preference ranks wants by priority. If the club's agreed purpose is a reading exhibition, books may rank first, display materials second and a ball third. Another club with another purpose could rank them differently. Explain the reason for the ranking instead of assuming every group has identical priorities."
+        },
+        {
+          "heading": "Choose consistently",
+          "text": "Books plus display materials use exactly ₦6,000 and support the exhibition goal. Books plus a ball cost ₦7,000 and exceed the stated budget. A feasible option must fit the limit. Feasible does not automatically mean best: the club also considers usefulness and time. Discuss fictional choices without asking classmates to reveal family income or compare household wealth."
+        }
+      ],
+      "activities": [
+        {
+          "title": "A transparent club decision",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Rank books ₦4,000, display materials ₦2,000 and a ball ₦3,000 for a reading exhibition.",
+            "List two baskets that fit ₦6,000.",
+            "Choose one and state the reason.",
+            "Reduce the budget to ₦4,000 and reconsider without changing the fictional prices."
+          ],
+          "expectedResponse": "Books plus display materials fit ₦6,000. A ball plus display materials also fit at ₦5,000 but may fit the purpose less well. At ₦4,000, books alone are feasible.",
+          "extension": "Add a two-hour time limit and explain how a money-feasible plan could still be impractical."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which is a scarce resource in the example?",
+          "choices": [
+            "Only wishes",
+            "Money and available time",
+            "Nothing because the club exists"
+          ],
+          "answer": 1,
+          "explanation": "Both the stated budget and time limit restrict what the club can do."
+        },
+        {
+          "prompt": "A scale of preference is…",
+          "choices": [
+            "A ranking of wants",
+            "A list of every market price",
+            "A guarantee of unlimited resources"
+          ],
+          "answer": 0,
+          "explanation": "It orders wants by priority to help make choices."
+        },
+        {
+          "prompt": "Books and a ball cost…",
+          "choices": [
+            "₦5,000",
+            "₦6,000",
+            "₦7,000"
+          ],
+          "answer": 2,
+          "explanation": "₦4,000 + ₦3,000 = ₦7,000, which exceeds the original budget."
+        },
+        {
+          "prompt": "Why might two clubs rank wants differently?",
+          "choices": [
+            "One must be unable to count",
+            "They can have different purposes",
+            "Scarcity exists for only one club"
+          ],
+          "answer": 1,
+          "explanation": "Priorities depend on goals and circumstances, not merely arithmetic."
+        },
+        {
+          "prompt": "Does fitting the budget prove an option is the best?",
+          "choices": [
+            "Yes, always",
+            "Yes, regardless of purpose",
+            "No, usefulness and other limits also matter"
+          ],
+          "answer": 2,
+          "explanation": "Feasibility is necessary, but a reasoned choice also considers the goal and other constraints."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes definitions and example, 15 ranking exercise, 10 questions, 5 reflection.",
+        "misconception": "Scarcity is broader than poverty; time and resources remain limited even when money is available.",
+        "support": "Use cost cards and fictional budgets only; permit oral explanations of priorities.",
+        "challenge": "Find an option that fits the budget but fails a time constraint.",
+        "reviewFocus": "Check terminology and the fast-paced video's suitability; international examples require local discussion."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "3ez10ADR_gM",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Listen for scarcity and choice. Explain them using the Kano club rather than copying the video's examples.",
+        "title": "Intro to Economics: Crash Course Econ #1",
+        "creator": "CrashCourse",
+        "creatorUrl": "https://www.youtube.com/@crashcourse",
+        "sourceUrl": "https://www.youtube.com/watch?v=3ez10ADR_gM",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=3ez10ADR_gM&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "ss1-economics-opportunity-cost",
+      "level": "SS 1",
+      "subject": "Economics",
+      "title": "Opportunity cost: what is the next best alternative?",
+      "objective": "Identify the next best feasible alternative forgone when a choice is made.",
+      "prerequisites": "Understand scarcity and rank options by preference.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/10402/preview",
+        "topic": "Meaning of Economics and related concepts",
+        "sourceLevel": "SS 1",
+        "sourceSubject": "Economics",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "A cost beyond the price tag",
+          "text": "Opportunity cost is the value of the next best alternative forgone when choosing an option. It is not automatically the amount of money paid. If you spend a free hour on one activity, you cannot spend that same hour on another activity. Identify the feasible alternatives and your ranking before naming the opportunity cost."
+        },
+        {
+          "heading": "A worked time example",
+          "text": "A fictional learner in Benin City has one free hour after agreed responsibilities. Her options are reading for a club, practising a song or watching a programme. She ranks reading first, song practice second and the programme third. If she reads, song practice is the next best alternative forgone. The opportunity cost is not both rejected activities added together."
+        },
+        {
+          "heading": "A worked resource example",
+          "text": "A club can use its remaining funds for either a dictionary set or a display board, but not both. It prefers the dictionaries. Choosing them means giving up the benefit it would have gained from the display board. The purchase price tells us a money cost; identifying the alternative tells us the opportunity cost. The conclusion depends on the stated options and preferences."
+        },
+        {
+          "heading": "Explain the assumption",
+          "text": "If the learner's second choice changes, the opportunity cost changes too. An impossible option is not a genuine alternative: a three-hour event cannot fit a one-hour slot. Clear answers name the chosen option, the next best feasible alternative and the reason it was forgone. There may be several reasonable personal rankings, so assess the explanation rather than forcing one preference."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Decision table",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Invent three activities that each fit a single free hour.",
+            "Rank them and choose the first.",
+            "State the opportunity cost in one sentence.",
+            "Swap your second and third choices while keeping the first; explain what changes."
+          ],
+          "expectedResponse": "The opportunity cost is the newly second-ranked feasible activity after the swap, even though the chosen first activity stays the same.",
+          "extension": "Explain why adding an unavailable activity should not change the decision."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Opportunity cost is the…",
+          "choices": [
+            "Sum of every rejected option",
+            "Next best feasible alternative forgone",
+            "Price tag in every case"
+          ],
+          "answer": 1,
+          "explanation": "It concerns the best alternative that could actually have been chosen."
+        },
+        {
+          "prompt": "Reading ranks first, song practice second, television third. Choosing reading gives up…",
+          "choices": [
+            "Song practice as the next best alternative",
+            "Only the last-ranked option",
+            "All future free time"
+          ],
+          "answer": 0,
+          "explanation": "Song practice is the highest-ranked feasible alternative left unchosen."
+        },
+        {
+          "prompt": "Why exclude a three-hour event from a one-hour choice?",
+          "choices": [
+            "It is necessarily uninteresting",
+            "It has no value to anyone",
+            "It does not fit the stated limit"
+          ],
+          "answer": 2,
+          "explanation": "An alternative must be feasible under the decision's constraints."
+        },
+        {
+          "prompt": "If the second-ranked option changes, opportunity cost…",
+          "choices": [
+            "Can change",
+            "Must stay identical",
+            "Becomes zero automatically"
+          ],
+          "answer": 0,
+          "explanation": "Opportunity cost depends on the next best alternative, not only on the chosen action."
+        },
+        {
+          "prompt": "Which answer shows the reasoning best?",
+          "choices": [
+            "I chose it because I chose it",
+            "I chose dictionaries, giving up the display board's benefit",
+            "It cost money, so no alternative matters"
+          ],
+          "answer": 1,
+          "explanation": "It names the choice and the feasible benefit forgone."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes concept, 10 worked cases, 10 decision table, 10 feedback.",
+        "misconception": "Do not add together all rejected options or automatically substitute the money price.",
+        "support": "Use a picture ranking of three activities and sentence frames: 'I chose … instead of …'.",
+        "challenge": "Hold the chosen option fixed while changing the second-best alternative.",
+        "reviewFocus": "Confirm concept accuracy and accessible examples; the shared introductory video supports two distinct lessons."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "3ez10ADR_gM",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Focus on the opportunity-cost explanation, then identify the next best alternative in our one-hour example.",
+        "title": "Intro to Economics: Crash Course Econ #1",
+        "creator": "CrashCourse",
+        "creatorUrl": "https://www.youtube.com/@crashcourse",
+        "sourceUrl": "https://www.youtube.com/watch?v=3ez10ADR_gM",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=3ez10ADR_gM&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss2-civic-government-roles",
+      "level": "JSS 2",
+      "subject": "Civic Education",
+      "title": "Government roles: making, carrying out and interpreting laws",
+      "objective": "Distinguish the legislature, executive and judiciary and apply the distinction to a fictional public-service example.",
+      "prerequisites": "Understand that communities have shared rules and responsibilities.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/9698/preview",
+        "topic": "Government",
+        "sourceLevel": "JSS 2",
+        "sourceSubject": "Civic Education",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "What government does",
+          "text": "Government provides institutions through which public decisions are made and carried out. Learning its roles helps people ask informed questions about public services. In Nigeria, the familiar three arms are the legislature, executive and judiciary. These are different from the three tiers: federal, state and local. An arm describes a type of function; a tier describes a level of government."
+        },
+        {
+          "heading": "Three arms, different responsibilities",
+          "text": "The legislature makes laws through the relevant constitutional process and scrutinises government work. The executive implements laws and administers public services. The judiciary interprets and applies laws when deciding disputes. This is an introductory description; real procedures and powers have legal detail beyond this lesson. We use institutions rather than names of current officeholders."
+        },
+        {
+          "heading": "A fictional public-service example",
+          "text": "Imagine a state plans a public library service. Lawmakers debate the relevant law and public spending authorisation. The responsible executive bodies organise implementation within the law. If a legal dispute reaches a court, the judiciary determines it using the applicable law and process. One arm should not be described as performing every role. The example simplifies a process for learning rather than giving legal advice."
+        },
+        {
+          "heading": "Accountability and respectful participation",
+          "text": "People can ask questions and seek information through appropriate, peaceful channels. In a class discussion, give a reason for an answer and listen to a different view. A classroom role-play can model discussion but is not identical to national government. Criticise a decision with evidence rather than insulting a person, and do not ask learners to disclose a family's political affiliation."
+        }
+      ],
+      "activities": [
+        {
+          "title": "Library decision role cards",
+          "materials": [
+            "Paper",
+            "Three role cards"
+          ],
+          "steps": [
+            "Label cards legislature, executive and judiciary.",
+            "Match 'debates a proposed law', 'organises service delivery' and 'decides a legal dispute' to the cards.",
+            "Explain why federal/state/local is a different list.",
+            "Write one respectful question a fictional resident could ask about the proposed library."
+          ],
+          "expectedResponse": "Law-making maps to legislature, implementation to executive and adjudication to judiciary. Federal/state/local describes tiers, not arms.",
+          "extension": "Explain why a class monitor is only an analogy and does not have the same powers as a government institution."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which arm makes laws through the relevant process?",
+          "choices": [
+            "Executive",
+            "Legislature",
+            "Judiciary"
+          ],
+          "answer": 1,
+          "explanation": "The legislature has the law-making role; the other arms have different primary functions."
+        },
+        {
+          "prompt": "Which is primarily implementation?",
+          "choices": [
+            "Organising the public library service under the law",
+            "Judging a court dispute",
+            "Debating a bill as lawmakers"
+          ],
+          "answer": 0,
+          "explanation": "Administering the service is an executive function."
+        },
+        {
+          "prompt": "A court deciding a legal dispute represents the…",
+          "choices": [
+            "Local tier only",
+            "Legislature",
+            "Judiciary"
+          ],
+          "answer": 2,
+          "explanation": "The judiciary interprets and applies law in deciding cases."
+        },
+        {
+          "prompt": "Federal, state and local are…",
+          "choices": [
+            "The three arms",
+            "Tiers of government",
+            "Names of political parties"
+          ],
+          "answer": 1,
+          "explanation": "Tiers describe levels; legislature, executive and judiciary describe arms."
+        },
+        {
+          "prompt": "Which classroom response supports reasoned participation?",
+          "choices": [
+            "Insult anyone who disagrees",
+            "Demand a family's voting history",
+            "Explain a view with evidence and listen"
+          ],
+          "answer": 2,
+          "explanation": "Respectful, evidence-based discussion supports learning without requiring private political information."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes roles, 10 example, 10 cards, 10 discussion and questions.",
+        "misconception": "Do not mix arms with tiers or imply one institution has every function.",
+        "support": "Use action-word cards: make, carry out, interpret; accept spoken explanations.",
+        "challenge": "Ask learners to identify where a simple role analogy stops being accurate.",
+        "reviewFocus": "A civic educator should check institutional descriptions and the full video before approval; no officeholder claims are made."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "d-y0XUSsbIc",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Identify institutions and their roles. Compare them carefully with our three-arm model; the candidate covers a broader democracy topic.",
+        "title": "Democratic institutions & their functions | Civic Education | JSS2 | 2nd Term",
+        "creator": "Edufirst TV",
+        "creatorUrl": "https://www.youtube.com/@EdufirstTV",
+        "sourceUrl": "https://www.youtube.com/watch?v=d-y0XUSsbIc",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=d-y0XUSsbIc&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
+    },
+    {
+      "id": "jss3-science-digestion",
+      "level": "JSS 3",
+      "subject": "Basic Science",
+      "title": "Trace a meal: digestion and absorption",
+      "objective": "Trace food through the digestive tract and distinguish digestion from absorption.",
+      "prerequisites": "Identify major body organs and understand that food contains nutrients.",
+      "durationMinutes": 40,
+      "contentBatch": "nigeria-complete-lessons-2026-10",
+      "reviewStatus": "pending",
+      "publicationStatus": "review-preview",
+      "review": {
+        "status": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "version": null
+      },
+      "rights": {
+        "text": "original-speakout",
+        "media": "external-embed-only"
+      },
+      "curriculum": {
+        "source": "Federal Ministry of Education — Inspire",
+        "sourceUrl": "https://inspire.education.gov.ng/lessons/9668/preview",
+        "topic": "Digestive System",
+        "sourceLevel": "JSS 3",
+        "sourceSubject": "Basic Science",
+        "verifiedAt": "2026-10-12",
+        "verificationScope": "Official portal topic and class listing; not a verified curriculum edition or term scheme.",
+        "editionStatus": "unverified",
+        "outcomeStatus": "topic-mapped-educator-review-pending"
+      },
+      "sections": [
+        {
+          "heading": "Food changes on its journey",
+          "text": "Imagine an ordinary meal of rice and beans in a fictional Nigerian household. Different meals can provide different nutrients, but the digestive system follows the same broad process. Digestion breaks food down mechanically and chemically into forms the body can absorb. This is a science model, not a request to describe anyone's diet, symptoms or health history."
+        },
+        {
+          "heading": "Mouth, oesophagus and stomach",
+          "text": "Teeth break food into smaller pieces in mechanical digestion. Saliva moistens food and contains enzymes that begin chemical digestion of starch. Swallowed food moves along the oesophagus through coordinated muscle contractions, not simply by falling. In the stomach, churning mixes food with digestive secretions. The stomach is important, but digestion neither begins nor ends there."
+        },
+        {
+          "heading": "Small intestine and absorption",
+          "text": "Further digestion occurs in the small intestine, where most digested nutrients are absorbed through the intestinal lining. Absorption means movement from the gut into the body's transport systems. Digestion and absorption are connected but different: breaking a large food molecule down is not the same action as taking its products into the body."
+        },
+        {
+          "heading": "Large intestine and the remaining material",
+          "text": "The large intestine absorbs water from the remaining contents and helps form faeces. Undigested material is eliminated through the rectum and anus. Accessory organs such as the liver and pancreas help digestion through substances they supply, even though food does not travel through them in the same route. A route diagram should separate the food pathway from these supporting organs."
+        }
+      ],
+      "activities": [
+        {
+          "title": "A labelled journey",
+          "materials": [
+            "Paper",
+            "Pencil"
+          ],
+          "steps": [
+            "Draw a route from mouth to oesophagus, stomach, small intestine and large intestine, ending at rectum/anus.",
+            "Add one function beside each main stage.",
+            "Use a different arrow to show nutrients moving from the small intestine into the body.",
+            "Explain to a partner why that arrow represents absorption rather than chewing."
+          ],
+          "expectedResponse": "The food pathway is correctly ordered. Chewing is mechanical digestion; nutrient transfer from the intestine is absorption; water absorption occurs in the large intestine.",
+          "extension": "Add liver and pancreas as supporting organs without drawing food travelling through them."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Where does digestion begin?",
+          "choices": [
+            "Mouth",
+            "Large intestine",
+            "Only in the stomach"
+          ],
+          "answer": 0,
+          "explanation": "Chewing and the action of saliva begin processing food in the mouth."
+        },
+        {
+          "prompt": "Chewing is an example of…",
+          "choices": [
+            "Absorption",
+            "Mechanical digestion",
+            "Elimination"
+          ],
+          "answer": 1,
+          "explanation": "Teeth physically reduce food size; that is different from absorbing nutrient molecules."
+        },
+        {
+          "prompt": "Most digested nutrients are absorbed in the…",
+          "choices": [
+            "Oesophagus",
+            "Mouth",
+            "Small intestine"
+          ],
+          "answer": 2,
+          "explanation": "The small intestine is the principal site for absorption of digested nutrients."
+        },
+        {
+          "prompt": "How does swallowed food move along the oesophagus?",
+          "choices": [
+            "Only by gravity",
+            "Coordinated muscular contractions",
+            "By passing through the liver"
+          ],
+          "answer": 1,
+          "explanation": "Muscular contractions move food along the tract; it does not depend only on falling."
+        },
+        {
+          "prompt": "Which statement distinguishes two processes?",
+          "choices": [
+            "Digestion breaks food down; absorption transfers nutrients into the body",
+            "Digestion and absorption both mean chewing only",
+            "Absorption always occurs before any digestion"
+          ],
+          "answer": 0,
+          "explanation": "They are related stages with different functions, rather than two names for chewing."
+        }
+      ],
+      "facilitator": {
+        "timing": "10 minutes route, 10 process comparison, 10 diagram, 10 questions.",
+        "misconception": "Food does not pass through the liver or pancreas; distinguish supporting secretions from the food pathway.",
+        "support": "Provide movable organ labels and an oral alternative to drawing; avoid diet or body comparisons.",
+        "challenge": "Explain why a diagram needs different arrows for food movement and absorbed nutrients.",
+        "reviewFocus": "Science educator review must check anatomical accuracy and vocabulary. The candidate includes additional health content requiring full review."
+      },
+      "video": {
+        "provider": "youtube",
+        "id": "1UvuBYUbFk0",
+        "reviewStatus": "pending",
+        "reviewer": null,
+        "reviewedAt": null,
+        "evidenceUrl": null,
+        "watchPrompt": "Track the food pathway and notice the difference between mechanical digestion, chemical digestion and absorption.",
+        "title": "Digestive System",
+        "creator": "Amoeba Sisters",
+        "creatorUrl": "https://www.youtube.com/@AmoebaSisters",
+        "sourceUrl": "https://www.youtube.com/watch?v=1UvuBYUbFk0",
+        "verification": {
+          "status": "oembed-verified",
+          "checkedAt": "2026-10-12",
+          "evidenceUrl": "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=1UvuBYUbFk0&format=json",
+          "scope": "YouTube returned matching title, author and iframe metadata. Full playback, captions, age suitability and regional availability require educator review."
+        },
+        "review": {
+          "status": "pending",
+          "version": null,
+          "reviewer": null,
+          "reviewedAt": null,
+          "evidenceUrl": null
+        }
+      },
+      "contentVersion": 1
     }
   ]
 }
