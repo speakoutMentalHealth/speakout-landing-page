@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateFederalAsset,publishableFederalAssets} from '../js/content/academy-federal-asset-ingestion.js';
+const sample={id:'asset-1',source:'Inspire',title:'Example',level:'Primary 1',subject:'English',kind:'video',sourceUrl:'https://inspire.education.gov.ng/example',assetUrl:'https://inspire.education.gov.ng/video.mp4',attribution:'Federal Ministry of Education — Inspire',reviewStatus:'approved',permissionStatus:'authorized',publicationStatus:'native-published'};
+test('approved individually resolved asset passes ingestion gate',()=>assert.deepEqual(validateFederalAsset(sample),[]));
+test('unreviewed and unresolvable media cannot publish',()=>{assert.ok(validateFederalAsset({...sample,reviewStatus:'pending'}).length);assert.ok(validateFederalAsset({...sample,assetUrl:''}).length);assert.ok(validateFederalAsset({...sample,assetUrl:'javascript:alert(1)'}).length);assert.deepEqual(publishableFederalAssets([{...sample,reviewStatus:'pending'}]),[])});
+test('collection links alone are not a media import',()=>assert.ok(validateFederalAsset({...sample,assetUrl:null}).length));
