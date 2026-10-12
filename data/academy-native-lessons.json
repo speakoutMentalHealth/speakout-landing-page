@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "status": "original-draft-teacher-review-pending",
+  "lessons": [
+    {
+      "id": "p4-basic-science-hygiene",
+      "level": "Primary 4",
+      "subject": "Basic Science",
+      "title": "Keeping Our Water Safe",
+      "objective": "Identify ways to keep drinking water safe and explain why cleanliness matters.",
+      "sections": [
+        {
+          "heading": "Why clean water matters",
+          "text": "Water is important for drinking, cooking and washing. Water that looks clear may still contain germs. Germs can make people sick."
+        },
+        {
+          "heading": "Safe water habits",
+          "text": "Use water from a safe source. Where needed, a responsible adult can boil water and allow it to cool in a clean, covered container. Never handle boiling water without adult help. Keep cups and water containers clean."
+        },
+        {
+          "heading": "Try it",
+          "text": "Draw two water containers: one open and one covered. Explain which is safer for storing drinking water and why."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which container helps protect stored drinking water?",
+          "choices": [
+            "A clean covered container",
+            "An open dirty bucket",
+            "A broken cup"
+          ],
+          "answer": 0,
+          "explanation": "A clean cover helps prevent dirt and insects from entering stored water."
+        },
+        {
+          "prompt": "Can clear-looking water still contain germs?",
+          "choices": [
+            "No, never",
+            "Yes",
+            "Only at night"
+          ],
+          "answer": 1,
+          "explanation": "Some germs cannot be seen with the eyes."
+        },
+        {
+          "prompt": "Who should handle boiling water?",
+          "choices": [
+            "A young child alone",
+            "Anyone playing nearby",
+            "A responsible adult"
+          ],
+          "answer": 2,
+          "explanation": "Boiling water can cause serious burns."
+        }
+      ]
+    },
+    {
+      "id": "p5-civic-community",
+      "level": "Primary 5",
+      "subject": "Civic Education",
+      "title": "Helping Our Community",
+      "objective": "Describe responsible actions that make a community safer and kinder.",
+      "sections": [
+        {
+          "heading": "What is a community?",
+          "text": "A community is a group of people who live, learn or work together. A school, street and village can each be a community."
+        },
+        {
+          "heading": "Responsibility in action",
+          "text": "We can help by putting waste in bins, caring for shared spaces, listening respectfully and reporting unsafe situations to a trusted adult."
+        },
+        {
+          "heading": "Try it",
+          "text": "Write one problem in your school and two respectful ways classmates can work together to improve it."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which action helps a shared school space?",
+          "choices": [
+            "Littering",
+            "Putting waste in a bin",
+            "Breaking chairs"
+          ],
+          "answer": 1,
+          "explanation": "Proper waste disposal helps keep shared spaces clean."
+        },
+        {
+          "prompt": "Who should a child tell about an unsafe situation?",
+          "choices": [
+            "A trusted adult",
+            "Nobody",
+            "A stranger online"
+          ],
+          "answer": 0,
+          "explanation": "A trusted adult can help respond safely."
+        },
+        {
+          "prompt": "What is a community?",
+          "choices": [
+            "Only one person",
+            "Only a building",
+            "People who live, learn or work together"
+          ],
+          "answer": 2,
+          "explanation": "Communities are groups of people connected by place or activity."
+        }
+      ]
+    },
+    {
+      "id": "jss1-agric-soil",
+      "level": "JSS 1",
+      "subject": "Agricultural Science",
+      "title": "Soil and Plant Growth",
+      "objective": "Identify three basic soil types and explain how soil supports plants.",
+      "sections": [
+        {
+          "heading": "Why soil matters",
+          "text": "Soil supports plant roots and provides water and nutrients. Farmers study soil to understand which crops may grow well."
+        },
+        {
+          "heading": "Three common soil types",
+          "text": "Sandy soil has relatively large particles and drains quickly. Clay soil has fine particles and often holds more water. Loamy soil is a mixture that can support many crops when managed well."
+        },
+        {
+          "heading": "Try it",
+          "text": "With a teacher, compare dry samples of sandy and clay soil. Describe the texture and discuss why different crops may need different soil conditions."
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which soil usually drains water quickly?",
+          "choices": [
+            "Sandy soil",
+            "Clay soil",
+            "Solid rock"
+          ],
+          "answer": 0,
+          "explanation": "Larger sand particles leave spaces that let water drain more easily."
+        },
+        {
+          "prompt": "What do roots gain from soil?",
+          "choices": [
+            "Plastic",
+            "Water and nutrients",
+            "Electricity"
+          ],
+          "answer": 1,
+          "explanation": "Roots absorb water and mineral nutrients."
+        },
+        {
+          "prompt": "Which soil is often a mixture of sand, silt and clay?",
+          "choices": [
+            "Glass",
+            "Concrete",
+            "Loamy soil"
+          ],
+          "answer": 2,
+          "explanation": "Loam is a mixture of soil particle sizes."
+        }
+      ]
+    }
+  ]
+}
