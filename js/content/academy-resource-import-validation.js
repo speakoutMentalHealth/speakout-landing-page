@@ -1,7 +1,7 @@
 /** Academy partner resource import validation. No network calls or automatic publishing. */
 (function(root){'use strict';
 const SOURCES=new Set(['Inspire','Ignite','eLearn']);
-const KINDS=new Set(['facilitator-topic','resource-listing','catalogue','lesson','video','audio','ebook','worksheet','assessment','lesson-plan']);
+const KINDS=new Set(['facilitator-topic','resource-listing','catalogue','lesson','lesson-preview','video','audio','ebook','worksheet','assessment','lesson-plan']);
 const VALID_STATUS=new Set(['external-link-only','editorial-review','native-published']);
 function validate(record){const errors=[];if(!record||typeof record!=='object')return {valid:false,errors:['Record must be an object']};
 for(const field of ['id','title','subject','level','source','url','contentKind','publicationStatus'])if(typeof record[field]!=='string'||!record[field].trim())errors.push('Missing '+field);

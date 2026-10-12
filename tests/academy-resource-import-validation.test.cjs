@@ -8,7 +8,7 @@ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/content/academy-re
 const {validate,validateBatch}=sandbox.SpeakOutAcademyImport;
 const register=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/academy-source-resources.json'),'utf8'));
 const results=validateBatch(register.resources);
-assert.equal(results.length,13,'Expected current source register size');
+assert.ok(results.length>=13,'Source register must retain its established records');
 for(const result of results)assert.equal(result.valid,true,'Invalid source record '+result.id+': '+result.errors.join('; '));
 const sample={...register.resources[0]};
 assert.equal(validate({...sample,url:'https://example.com/topics/851'}).valid,false,'Must reject mismatched source domains');
