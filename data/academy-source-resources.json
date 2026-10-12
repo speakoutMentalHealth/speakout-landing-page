@@ -43,6 +43,38 @@
       "subject": "All",
       "level": "Primary",
       "url": "https://inspire.education.gov.ng/lessons/video/explore?level=primary"
+    },
+    {
+      "source": "Ignite",
+      "title": "Basic Science topic collection",
+      "subject": "Basic Science",
+      "level": "Multiple levels; check source",
+      "type": "Subject topic collection",
+      "url": "https://ignite.education.gov.ng/subjects/basic-science/topics"
+    },
+    {
+      "source": "eLearn",
+      "title": "Civic Education video resource collection",
+      "subject": "Civic Education",
+      "level": "Includes Primary 4",
+      "type": "Video resource listing",
+      "url": "https://elearn.education.gov.ng/resources/all-resources/video-resources/"
+    },
+    {
+      "source": "eLearn",
+      "title": "Primary Mathematics audio and book resources",
+      "subject": "Mathematics",
+      "level": "Primary",
+      "type": "Learner resource listing",
+      "url": "https://elearn.education.gov.ng/resources/learners/page/681/"
+    },
+    {
+      "source": "Inspire",
+      "title": "Inspire student learning library",
+      "subject": "Multiple subjects",
+      "level": "Multiple levels",
+      "type": "Portal",
+      "url": "https://inspire.education.gov.ng/"
     }
   ]
 }
