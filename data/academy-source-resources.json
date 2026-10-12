@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "external-link-only",
+  "resources": [
+    {
+      "source": "Ignite",
+      "title": "Whole Numbers 1",
+      "subject": "Mathematics",
+      "level": "JSS1",
+      "url": "https://ignite.education.gov.ng/topics/851"
+    },
+    {
+      "source": "Ignite",
+      "title": "Family Health",
+      "subject": "Basic Science",
+      "level": "JSS1",
+      "url": "https://ignite.education.gov.ng/topics/508"
+    },
+    {
+      "source": "Ignite",
+      "title": "Importance and Forms of Agriculture",
+      "subject": "Agriculture Science",
+      "level": "JSS1",
+      "url": "https://ignite.education.gov.ng/topics/1"
+    },
+    {
+      "source": "eLearn",
+      "title": "Primary Mathematics resources",
+      "subject": "Mathematics",
+      "level": "Primary",
+      "url": "https://elearn.education.gov.ng/level/primary/page/172/"
+    },
+    {
+      "source": "eLearn",
+      "title": "Primary English resources",
+      "subject": "English",
+      "level": "Primary",
+      "url": "https://elearn.education.gov.ng/level/primary/page/2/"
+    },
+    {
+      "source": "Inspire",
+      "title": "Primary video explorer",
+      "subject": "All",
+      "level": "Primary",
+      "url": "https://inspire.education.gov.ng/lessons/video/explore?level=primary"
+    }
+  ]
+}
