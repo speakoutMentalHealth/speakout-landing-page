@@ -99,6 +99,644 @@ service cloud.firestore {
       allow delete: if isSuperAdmin();
     }
 
+    // Informal Academy draft practice only. Not official course completion or grading.
+    match /users/{userId}/academyDraftPractice/{lessonId} {
+      allow read: if isApproved() && request.auth.uid == userId;
+      allow create, update: if isApproved() && request.auth.uid == userId &&
+        lessonId.matches('^[a-z0-9-]{1,80}
+      allow create: if isSuperAdmin();
+      allow read: if isApproved() &&
+        (isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId) ||
+          ((isTeacher() || isParent() || isStudent()) && userSchoolId() == schoolId));
+      allow update: if isSuperAdmin() || (isSchoolAdmin() && userSchoolId() == schoolId);
+      allow delete: if isSuperAdmin();
+    }
+
+    match /parentStudentLinks/{linkId} {
+      allow create: if isSuperAdmin() ||
+        (isApproved() && request.resource.data.schoolId == userSchoolId() &&
+          isUserInSchool(request.resource.data.studentId, userSchoolId()) &&
+          ((isSchoolAdmin() && isUserInSchool(request.resource.data.parentId, userSchoolId())) ||
+            (isParent() && request.resource.data.parentId == request.auth.uid)));
+      allow read: if isApproved() &&
+        (isSuperAdmin() || (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
+          resource.data.parentId == request.auth.uid || resource.data.studentId == request.auth.uid);
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId() &&
+          request.resource.data.parentId == resource.data.parentId &&
+          request.resource.data.studentId == resource.data.studentId);
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+    }
+
+    // Learning preferences personalise a catalogue; they never approve an
+    // account, change a school record or grant access to private school data.
+    match /learningPreferences/{userId} {
+      function validLearningPreference() {
+        let value = request.resource.data;
+        return value.keys().hasOnly(["educationStage", "classLevel", "updatedAt"]) &&
+          value.keys().hasAll(["educationStage", "classLevel", "updatedAt"]) &&
+          value.updatedAt == request.time &&
+          ((value.educationStage == "nursery" && value.classLevel in ["Nursery 1", "Nursery 2", "Nursery 3"]) ||
+           (value.educationStage == "primary" && value.classLevel in ["Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6"]) ||
+           (value.educationStage == "secondary" && value.classLevel in ["JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3"]) ||
+           (value.educationStage == "tertiary" && value.classLevel in ["100 Level", "200 Level", "300 Level", "400 Level", "500 Level", "600 Level", "ND 1", "ND 2", "HND 1", "HND 2", "NCE 1", "NCE 2", "NCE 3", "Postgraduate"]));
+      }
+      allow read: if isApproved() && request.auth.uid == userId;
+      allow create, update: if isStudent() && request.auth.uid == userId &&
+        userDoc().data.get("schoolId", "") == "" &&
+        userDoc().data.get("schoolCode", "") == "" && validLearningPreference();
+      allow delete: if isApproved() && request.auth.uid == userId;
+    }
+
+    match /books/{bookId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /bookSubmissions/{submissionId} {
+      allow create: if isSignedIn() &&
+        request.resource.data.submittedBy == request.auth.uid &&
+        request.resource.data.status == "pending";
+      allow read: if isSignedIn() &&
+        (resource.data.submittedBy == request.auth.uid || isSuperAdmin());
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /parentResources/{resourceId} {
+      allow read: if isApproved() && (isParent() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /teacherResources/{resourceId} {
+      allow read: if isApproved() && (isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /studentResources/{resourceId} {
+      allow read: if isApproved() && (isStudent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /schoolResources/{resourceId} {
+      allow read: if isApproved() &&
+        (isSuperAdmin() || (resource.data.schoolId == userSchoolId() &&
+          (isSchoolAdmin() || isTeacher() || isParent() || isStudent())));
+      allow create: if isSuperAdmin() ||
+        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId());
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+    }
+
+    match /workshops/{workshopId} {
+      allow read: if isApproved() &&
+        (isSuperAdmin() || (resource.data.schoolId == userSchoolId() &&
+          (isSchoolAdmin() || isTeacher() || isParent() || isStudent())));
+      allow create: if isSuperAdmin() ||
+        (isSchoolAdmin() && request.resource.data.schoolId == userSchoolId());
+      allow update: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId());
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+    }
+
+
+    function programmeData(programmeId) {
+      return get(/databases/$(database)/documents/programmes/$(programmeId)).data;
+    }
+
+    function programmeExists(programmeId) {
+      return exists(/databases/$(database)/documents/programmes/$(programmeId));
+    }
+
+    function sameProgrammeSchool(programmeId) {
+      return programmeExists(programmeId) &&
+        programmeData(programmeId).schoolId == userSchoolId();
+    }
+
+    function isProgrammeFacilitator(programmeId) {
+      return isTeacher() &&
+        sameProgrammeSchool(programmeId) &&
+        (
+          programmeData(programmeId).createdBy == request.auth.uid ||
+          (
+            programmeData(programmeId).keys().hasAny(["facilitatorIds"]) &&
+            request.auth.uid in programmeData(programmeId).facilitatorIds
+          )
+        );
+    }
+
+    function isProgrammeMember(programmeId) {
+      return isStudent() &&
+        exists(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + request.auth.uid)) &&
+        get(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + request.auth.uid)).data.status == "active";
+    }
+
+    function canManageProgramme(programmeId) {
+      return isSuperAdmin() ||
+        (isSchoolAdmin() && sameProgrammeSchool(programmeId)) ||
+        isProgrammeFacilitator(programmeId);
+    }
+
+    function studentBelongsToProgrammeSchool(programmeId, studentId) {
+      return sameProgrammeSchool(programmeId) &&
+        isUserInSchool(studentId, userSchoolId()) &&
+        get(/databases/$(database)/documents/users/$(studentId)).data.role == "student";
+    }
+
+    function programmeMembershipExists(programmeId, studentId) {
+      return exists(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + studentId)) &&
+        get(/databases/$(database)/documents/programmeMemberships/$(programmeId + "__" + studentId)).data.status == "active";
+    }
+
+    function sessionBelongsToProgramme(sessionId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeSessions/$(sessionId)) &&
+        get(/databases/$(database)/documents/programmeSessions/$(sessionId)).data.programmeId == programmeId;
+    }
+
+    function assignmentBelongsToProgramme(assignmentId, programmeId) {
+      return exists(/databases/$(database)/documents/programmeAssignments/$(assignmentId)) &&
+        get(/databases/$(database)/documents/programmeAssignments/$(assignmentId)).data.programmeId == programmeId;
+    }
+
+    match /programmes/{programmeId} {
+      allow create: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          request.resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isTeacher() &&
+          request.resource.data.schoolId == userSchoolId() &&
+          request.resource.data.createdBy == request.auth.uid &&
+          request.resource.data.status == "pending_approval" &&
+          request.resource.data.facilitatorIds is list &&
+          request.auth.uid in request.resource.data.facilitatorIds
+        );
+
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (
+            resource.data.schoolId == userSchoolId() &&
+            (
+              isSchoolAdmin() ||
+              isTeacher() ||
+              (isStudent() && resource.data.status == "active")
+            )
+          )
+        );
+
+      allow update: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isProgrammeFacilitator(programmeId) &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.createdBy == resource.data.createdBy &&
+          request.resource.data.status == resource.data.status &&
+          request.resource.data.facilitatorIds == resource.data.facilitatorIds &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "name", "type", "category", "source", "description", "objectives",
+            "expectedOutcomes", "scheduleDay", "scheduleTime", "frequency",
+            "venue", "membershipMode", "parentVisibility", "updatedAt"
+          ])
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId()
+        ) ||
+        (
+          isTeacher() &&
+          resource.data.schoolId == userSchoolId() &&
+          resource.data.createdBy == request.auth.uid &&
+          resource.data.status in ["draft", "pending_approval"]
+        );
+    }
+
+    match /programmeMemberships/{membershipId} {
+      allow read: if isApproved() &&
+        (
+          isSuperAdmin() ||
+          (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
+          isProgrammeFacilitator(resource.data.programmeId) ||
+          (isStudent() && resource.data.userId == request.auth.uid)
+        );
+
+      allow create: if
+        membershipId == request.resource.data.programmeId + "__" + request.resource.data.userId &&
+        (
+          isSuperAdmin() ||
+          (
+            isSchoolAdmin() &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isProgrammeFacilitator(request.resource.data.programmeId) &&
+            request.resource.data.schoolId == userSchoolId() &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.userId)
+          ) ||
+          (
+            isStudent() &&
+            request.resource.data.userId == request.auth.uid &&
+            request.resource.data.schoolId == userSchoolId() &&
+            sameProgrammeSchool(request.resource.data.programmeId) &&
+            programmeData(request.resource.data.programmeId).status == "active" &&
+            programmeData(request.resource.data.programmeId).membershipMode in ["open", "voluntary"] &&
+            request.resource.data.status == "active"
+          )
+        );
+
+      allow update: if isSuperAdmin() ||
+        (
+          isSchoolAdmin() &&
+          resource.data.schoolId == userSchoolId() &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.programmeId == resource.data.programmeId
+        ) ||
+        (
+          isProgrammeFacilitator(resource.data.programmeId) &&
+          request.resource.data.schoolId == resource.data.schoolId &&
+          request.resource.data.userId == resource.data.userId &&
+          request.resource.data.programmeId == resource.data.programmeId
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId()) ||
+        isProgrammeFacilitator(resource.data.programmeId);
+    }
+
+    match /programmeSessions/{sessionId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          isProgrammeMember(resource.data.programmeId)
+        );
+      allow create: if isApproved() &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId();
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeAttendance/{attendanceId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          (isStudent() && resource.data.studentId == request.auth.uid)
+        );
+      allow create: if isApproved() &&
+        attendanceId == request.resource.data.sessionId + "__" + request.resource.data.studentId &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId() &&
+        sessionBelongsToProgramme(request.resource.data.sessionId, request.resource.data.programmeId) &&
+        studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId);
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId &&
+        request.resource.data.studentId == resource.data.studentId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeAssignments/{assignmentId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          isProgrammeMember(resource.data.programmeId)
+        );
+      allow create: if isApproved() &&
+        canManageProgramme(request.resource.data.programmeId) &&
+        request.resource.data.schoolId == userSchoolId();
+      allow update: if isApproved() &&
+        canManageProgramme(resource.data.programmeId) &&
+        request.resource.data.programmeId == resource.data.programmeId &&
+        request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if isApproved() && canManageProgramme(resource.data.programmeId);
+    }
+
+    match /programmeSubmissions/{submissionId} {
+      allow read: if isApproved() &&
+        (
+          canManageProgramme(resource.data.programmeId) ||
+          (isStudent() && resource.data.studentId == request.auth.uid)
+        );
+
+      allow create: if isApproved() &&
+        submissionId == request.resource.data.assignmentId + "__" + request.resource.data.studentId &&
+        assignmentBelongsToProgramme(request.resource.data.assignmentId, request.resource.data.programmeId) &&
+        (
+          (
+            isStudent() &&
+            request.resource.data.studentId == request.auth.uid &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            request.resource.data.submittedOnBehalf == false &&
+            isProgrammeMember(request.resource.data.programmeId) &&
+            request.resource.data.status == "submitted" &&
+            request.resource.data.feedback == "" &&
+            request.resource.data.reviewedBy == ""
+          ) ||
+          (
+            canManageProgramme(request.resource.data.programmeId) &&
+            request.resource.data.schoolId == userSchoolId() &&
+            request.resource.data.submittedOnBehalf == true &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            studentBelongsToProgrammeSchool(request.resource.data.programmeId, request.resource.data.studentId) &&
+            programmeMembershipExists(request.resource.data.programmeId, request.resource.data.studentId)
+          )
+        );
+
+      allow update: if isApproved() &&
+        (
+          (
+            canManageProgramme(resource.data.programmeId) &&
+            request.resource.data.programmeId == resource.data.programmeId &&
+            request.resource.data.assignmentId == resource.data.assignmentId &&
+            request.resource.data.studentId == resource.data.studentId &&
+            request.resource.data.schoolId == resource.data.schoolId
+          ) ||
+          (
+            isStudent() &&
+            resource.data.studentId == request.auth.uid &&
+            request.resource.data.studentId == request.auth.uid &&
+            request.resource.data.programmeId == resource.data.programmeId &&
+            request.resource.data.assignmentId == resource.data.assignmentId &&
+            request.resource.data.schoolId == resource.data.schoolId &&
+            request.resource.data.submittedBy == request.auth.uid &&
+            request.resource.data.submittedOnBehalf == false &&
+            request.resource.data.status == "submitted" &&
+            request.resource.data.feedback == "" &&
+            request.resource.data.reviewedBy == "" &&
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              "submissionMethod", "responseText", "evidenceUrl", "status",
+              "feedback", "reviewedBy", "reviewedAt", "submittedAt", "updatedAt"
+            ])
+          )
+        );
+
+      allow delete: if isSuperAdmin() ||
+        (isSchoolAdmin() && resource.data.schoolId == userSchoolId());
+    }
+
+    match /courses/{courseId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /courseModules/{moduleId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /courseLessons/{lessonId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /courseAssessments/{assessmentId} {
+      allow read, write: if false;
+    }
+
+    match /userProgress/{progressId} {
+      allow read: if isApproved() &&
+        (resource.data.userId == request.auth.uid || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /readingProgress/{progressId} {
+      allow read: if isApproved() && resource.data.userId == request.auth.uid;
+      allow create: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.type in ["book", "kiddies"];
+      allow update: if isApproved() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.type in ["book", "kiddies"];
+      allow delete: if isApproved() && resource.data.userId == request.auth.uid;
+    }
+
+    match /certificates/{certificateId} {
+      allow read: if isSuperAdmin() ||
+        (isApproved() && resource.data.userId == request.auth.uid);
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /publicCertificateVerifications/{verificationCode} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /certificateTemplates/{templateId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    // Academic records are sensitive school records. All access is mediated by
+    // the authenticated Platform API so fee clearance, parent links, PIN state,
+    // versioning, rate limits and audit logging cannot be bypassed by clients.
+    match /academicResults/{resultId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultUnlocks/{unlockId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultPinAttempts/{attemptId} {
+      allow read, write: if false;
+    }
+
+    match /academicResultAuditLogs/{auditId} {
+      allow read, write: if false;
+    }
+
+    match /externalCredentials/{credentialId} {
+      // Manual provider credentials are authoritative verification records.
+      // All learner/admin access is mediated by the authenticated Platform API.
+      allow read, write: if false;
+    }
+
+    match /externalLearningRecords/{recordId} {
+      allow read: if isApproved() &&
+        (resource.data.userId == request.auth.uid || isSuperAdmin());
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /contributors/{contributorId} {
+      allow read: if isApproved();
+      allow write: if isSuperAdmin();
+    }
+
+    match /contributorApplications/{applicationId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /kiddiesResources/{resourceId} {
+      allow read: if isApproved() &&
+        (isStudent() || isParent() || isTeacher() || isSchoolAdmin() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+
+    match /homepageMedia/{mediaId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvEpisodes/{episodeId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvAudio/{audioId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvShows/{showId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    match /tvCuratorSources/{sourceId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    match /tvCuratorCandidates/{candidateId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    match /newsEvents/{eventId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow create: if isApproved() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == "pending";
+      allow read: if isSuperAdmin() ||
+        (isApproved() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isSuperAdmin();
+    }
+
+    match /donations/{donationId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /contactMessages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    match /schoolApplications/{applicationId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    function validOTM(applicationId) {
+      return request.resource.data.keys().hasAll([
+          "applicationId", "organizationName", "organizationType", "country", "state", "city",
+          "contactName", "contactRole", "email", "phone", "program", "audience", "ageRange",
+          "expectedReach", "reason", "needs", "venue", "logistics", "funding", "clubInterest",
+          "partnershipInterest", "declaration", "status", "source", "createdAt", "updatedAt"
+        ]) &&
+        request.resource.data.keys().hasOnly([
+          "applicationId", "organizationName", "organizationType", "website", "country", "state", "city",
+          "contactName", "contactRole", "email", "phone", "program", "audience", "ageRange",
+          "expectedReach", "reason", "needs", "preferredDate", "alternativeDate", "venue", "logistics",
+          "facilities", "funding", "clubInterest", "partnershipInterest", "declaration", "status", "source",
+          "createdAt", "updatedAt"
+        ]) &&
+        request.resource.data.applicationId == applicationId &&
+        applicationId.matches('SOM-[0-9]{8}-[A-F0-9]{8}') &&
+        request.resource.data.status == "new" &&
+        request.resource.data.source == "on-the-move-web" &&
+        request.resource.data.declaration == true &&
+        request.resource.data.organizationName is string &&
+        request.resource.data.organizationName.size() >= 2 && request.resource.data.organizationName.size() <= 120 &&
+        request.resource.data.email is string && request.resource.data.email.size() >= 5 && request.resource.data.email.size() <= 160 &&
+        request.resource.data.phone is string && request.resource.data.phone.size() >= 5 && request.resource.data.phone.size() <= 40 &&
+        request.resource.data.reason is string && request.resource.data.reason.size() >= 30 && request.resource.data.reason.size() <= 1500 &&
+        request.resource.data.needs is string && request.resource.data.needs.size() >= 20 && request.resource.data.needs.size() <= 1500 &&
+        request.resource.data.expectedReach is number && request.resource.data.expectedReach >= 5 && request.resource.data.expectedReach <= 100000;
+    }
+
+    match /onTheMoveApplications/{applicationId} {
+      allow create: if validOTM(applicationId);
+      allow read: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+    }
+
+    function validSponsor(enquiryId) {
+      return request.resource.data.keys().hasAll([
+          "enquiryId", "contactName", "organizationName", "contactRole", "email", "phone", "country",
+          "scope", "message", "declaration", "status", "source", "createdAt", "updatedAt"
+        ]) &&
+        request.resource.data.keys().hasOnly([
+          "enquiryId", "contactName", "organizationName", "contactRole", "email", "phone", "country",
+          "scope", "preferredArea", "message", "declaration", "status", "source", "createdAt", "updatedAt"
+        ]) &&
+        request.resource.data.enquiryId == enquiryId &&
+        enquiryId.matches('SOMS-[0-9]{8}-[A-F0-9]{8}') &&
+        request.resource.data.status == "new" &&
+        request.resource.data.source == "on-the-move-sponsor-web" &&
+        request.resource.data.declaration == true &&
+        request.resource.data.contactName is string && request.resource.data.contactName.size() >= 2 && request.resource.data.contactName.size() <= 120 &&
+        request.resource.data.organizationName is string && request.resource.data.organizationName.size() >= 2 && request.resource.data.organizationName.size() <= 120 &&
+        request.resource.data.email is string && request.resource.data.email.size() >= 5 && request.resource.data.email.size() <= 160 &&
+        request.resource.data.message is string && request.resource.data.message.size() >= 20 && request.resource.data.message.size() <= 1500;
+    }
+
+    match /onTheMoveSponsorEnquiries/{enquiryId} {
+      allow create: if validSponsor(enquiryId);
+      allow read: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+    }
+
+    // Session state is exclusively managed by the authenticated Worker.
+    match /{collection}/{document=**} {
+      allow read: if collection != "adminSupportSessions" && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && isSuperAdmin() &&
+        !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow update: if collection != "adminSupportSessions" && isSuperAdmin() &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+    }
+  }
+}
+) &&
+        request.resource.data.keys().hasOnly(['lessonId', 'score', 'total', 'updatedAt', 'kind']) &&
+        request.resource.data.keys().hasAll(['lessonId', 'score', 'total', 'updatedAt', 'kind']) &&
+        request.resource.data.lessonId == lessonId &&
+        request.resource.data.kind == 'unreviewed-draft-practice' &&
+        request.resource.data.score is int && request.resource.data.total is int &&
+        request.resource.data.total >= 1 && request.resource.data.total <= 50 &&
+        request.resource.data.score >= 0 && request.resource.data.score <= request.resource.data.total &&
+        request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
+
     match /schools/{schoolId} {
       allow create: if isSuperAdmin();
       allow read: if isApproved() &&
