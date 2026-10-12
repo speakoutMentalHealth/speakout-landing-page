@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "external-link-only",
   "resources": [
     {
@@ -7,42 +7,84 @@
       "title": "Whole Numbers 1",
       "subject": "Mathematics",
       "level": "JSS1",
-      "url": "https://ignite.education.gov.ng/topics/851"
+      "url": "https://ignite.education.gov.ng/topics/851",
+      "id": "federal-resource-001",
+      "contentKind": "facilitator-topic",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "Ignite",
       "title": "Family Health",
       "subject": "Basic Science",
       "level": "JSS1",
-      "url": "https://ignite.education.gov.ng/topics/508"
+      "url": "https://ignite.education.gov.ng/topics/508",
+      "id": "federal-resource-002",
+      "contentKind": "facilitator-topic",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "Ignite",
       "title": "Importance and Forms of Agriculture",
       "subject": "Agriculture Science",
       "level": "JSS1",
-      "url": "https://ignite.education.gov.ng/topics/1"
+      "url": "https://ignite.education.gov.ng/topics/1",
+      "id": "federal-resource-003",
+      "contentKind": "facilitator-topic",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "eLearn",
       "title": "Primary Mathematics resources",
       "subject": "Mathematics",
       "level": "Primary",
-      "url": "https://elearn.education.gov.ng/level/primary/page/172/"
+      "url": "https://elearn.education.gov.ng/level/primary/page/172/",
+      "id": "federal-resource-004",
+      "contentKind": "resource-listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "eLearn",
       "title": "Primary English resources",
       "subject": "English",
       "level": "Primary",
-      "url": "https://elearn.education.gov.ng/level/primary/page/2/"
+      "url": "https://elearn.education.gov.ng/level/primary/page/2/",
+      "id": "federal-resource-005",
+      "contentKind": "resource-listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "Inspire",
       "title": "Primary video explorer",
       "subject": "All",
       "level": "Primary",
-      "url": "https://inspire.education.gov.ng/lessons/video/explore?level=primary"
+      "url": "https://inspire.education.gov.ng/lessons/video/explore?level=primary",
+      "id": "federal-resource-006",
+      "contentKind": "catalogue",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "Ignite",
@@ -50,7 +92,14 @@
       "subject": "Basic Science",
       "level": "Multiple levels; check source",
       "type": "Subject topic collection",
-      "url": "https://ignite.education.gov.ng/subjects/basic-science/topics"
+      "url": "https://ignite.education.gov.ng/subjects/basic-science/topics",
+      "id": "federal-resource-007",
+      "contentKind": "Subject topic collection",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "eLearn",
@@ -58,7 +107,14 @@
       "subject": "Civic Education",
       "level": "Includes Primary 4",
       "type": "Video resource listing",
-      "url": "https://elearn.education.gov.ng/resources/all-resources/video-resources/"
+      "url": "https://elearn.education.gov.ng/resources/all-resources/video-resources/",
+      "id": "federal-resource-008",
+      "contentKind": "Video resource listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "eLearn",
@@ -66,7 +122,14 @@
       "subject": "Mathematics",
       "level": "Primary",
       "type": "Learner resource listing",
-      "url": "https://elearn.education.gov.ng/resources/learners/page/681/"
+      "url": "https://elearn.education.gov.ng/resources/learners/page/681/",
+      "id": "federal-resource-009",
+      "contentKind": "Learner resource listing",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     },
     {
       "source": "Inspire",
@@ -74,7 +137,15 @@
       "subject": "Multiple subjects",
       "level": "Multiple levels",
       "type": "Portal",
-      "url": "https://inspire.education.gov.ng/"
+      "url": "https://inspire.education.gov.ng/",
+      "id": "federal-resource-010",
+      "contentKind": "Portal",
+      "reviewStatus": "not-reviewed",
+      "rightsStatus": "not-cleared",
+      "publicationStatus": "external-link-only",
+      "provenance": "source-url",
+      "sourceVerifiedAt": null
     }
-  ]
+  ],
+  "catalogueStatus": "partial-discovery"
 }
