@@ -91,9 +91,10 @@
 <span class="label">Search the Hub</span>
 <h2>Find what you need faster.</h2>
 </div>
-<form class="resource-search">
-<input placeholder="Search topics like anxiety, stress, bullying, parenting, teachers..." type="search"/>
-<button class="btn primary" type="button">Search</button>
+<form class="resource-search" id="resourceSearch" role="search">
+<label class="sr-only" for="resourceQuery">Search resource topics</label>
+<input id="resourceQuery" placeholder="Search topics like anxiety, stress, bullying, parenting, teachers..." type="search" required/>
+<button class="btn primary" type="submit">Search</button>
 </form>
 </div>
 </div>
@@ -276,5 +277,6 @@
 </div>
 </footer>
 <script src="../js/main.js"></script>
+<script>document.getElementById("resourceSearch")?.addEventListener("submit",function(event){event.preventDefault();const query=document.getElementById("resourceQuery").value.trim().toLowerCase();if(!query)return;const cards=[...document.querySelectorAll("main article")];let first=null;for(const card of cards){const match=card.textContent.toLowerCase().includes(query);if(match&&!first)first=card;}if(first){first.scrollIntoView({behavior:"smooth",block:"center"});first.setAttribute("tabindex","-1");first.focus({preventScroll:true});}else{const input=document.getElementById("resourceQuery");input.setCustomValidity("No matching resource is listed on this page. Try another term or contact SpeakOut.");input.reportValidity();input.setCustomValidity("");}});</script>
 <div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="contact.html">Contact SpeakOut</a><a class="primary" href="donate.html">Support the Mission</a></div></body>
 </html>
