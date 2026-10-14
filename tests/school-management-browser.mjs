@@ -208,6 +208,36 @@ async function studentDashboardSmoke(browser, student) {
   }
 }
 
+async function schoolAdminDashboardSmoke(browser, schoolAdmin) {
+  const { context, page } = await login(browser, schoolAdmin, "school-dashboard.html");
+  try {
+    await page.locator("#teacherCount").waitFor({ timeout: 30000 });
+    await page.locator("#studentCount").waitFor({ timeout: 30000 });
+    await page.locator("#pendingCount").waitFor({ timeout: 30000 });
+    await page.getByText("School dashboard loaded.", { exact: true }).waitFor({ timeout: 45000 });
+    assert.equal(await page.locator("#infoSchoolCode").textContent().then(value => value.includes(schoolACode)), true,
+      "School A administrator dashboard did not show its own school code");
+  } finally {
+    await context.close();
+  }
+}
+
+async function teacherDashboardSmoke(browser, teacher) {
+  const { context, page } = await login(browser, teacher, "teacher-dashboard.html");
+  try {
+    await page.locator("#studentCount").waitFor({ timeout: 30000 });
+    await page.locator("#progressList").waitFor({ timeout: 30000 });
+    await page.locator("#certificateList").waitFor({ timeout: 30000 });
+    await page.getByText("Dashboard loaded.", { exact: true }).waitFor({ timeout: 45000 });
+    assert.equal(await page.locator("#progressList").getByText("Loading progress...").count(), 0,
+      "Teacher progress remained in loading state");
+    assert.equal(await page.locator("#certificateList").getByText("Loading certificates...").count(), 0,
+      "Teacher certificates remained in loading state");
+  } finally {
+    await context.close();
+  }
+}
+
 async function teacherCreatesProgramme(browser, teacher) {
   const { context, page } = await login(browser, teacher, "teacher-dashboard.html");
   try {
@@ -565,6 +595,8 @@ try {
   browser = await chromium.launch({ headless: true });
 
   await studentDashboardSmoke(browser, studentA);
+  await teacherDashboardSmoke(browser, teacherCreator);
+  await schoolAdminDashboardSmoke(browser, schoolAdminA);
 
   await teacherCreatesProgramme(browser, teacherCreator);
   await schoolAdminApprovesAndAssigns(browser, schoolAdminA, teacherFacilitator, studentA);
@@ -644,6 +676,8 @@ try {
   const summary = {
     ok: true,
     studentDashboardProgressAndCertificatesLoaded: true,
+    teacherDashboardProgressAndCertificatesLoaded: true,
+    schoolAdminDashboardOwnSchoolLoaded: true,
     schoolAdminOwnUserApproval: true,
     crossSchoolUserApprovalDenied: true,
     teacherProgrammeProposal: true,
