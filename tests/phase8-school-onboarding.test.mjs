@@ -114,7 +114,7 @@ test("student teacher and parent dashboards retain shared role gates and separat
 test("school admin invitations enforce expiry, email binding, approval and one-time use", () => {
   const worker = read("workers/platform-api/src/index.js");
   const start = worker.indexOf("async function activateSchoolAdmin(");
-  const end = worker.indexOf("\\nasync function route(", start);
+  const end = worker.indexOf("async function route(", start);
   assert.ok(start >= 0 && end > start, "activation handler must exist");
   const activation = worker.slice(start, end);
   assert.match(activation, /verifiedIdentity\(request, env\)/u);
