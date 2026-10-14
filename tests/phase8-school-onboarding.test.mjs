@@ -78,3 +78,35 @@ test("legacy school registration route points to the unified gateway", () => {
   const page = read("school-register.html");
   assert.match(page, /auth\.html#school/u);
 });
+
+test("school registration and administrator activation remain on the gated school panel", () => {
+  const page = read("auth.html");
+  const auth = read("js/auth.js");
+  const tabs = read("js/auth-access.js");
+  const legacy = read("school-register.html");
+  assert.match(page, /id="schoolRegisterForm"/u);
+  assert.match(page, /id="schoolAdminActivateForm"/u);
+  assert.match(page, /id="schoolAdminActivation"/u);
+  assert.match(tabs, /location\.hash === "#school"/u);
+  assert.match(auth, /onboardingApi\.registerSchool/u);
+  assert.match(auth, /onboardingApi\.activateSchoolAdmin/u);
+  assert.match(auth, /new URLSearchParams\(location\.search\)/u);
+  assert.match(auth, /schoolInvite/u);
+  assert.match(legacy, /target\.hash = "school"/u);
+});
+
+test("student teacher and parent dashboards retain shared role gates and separate loaders", () => {
+  for (const [role, filename, loader] of [
+    ["student", "student-dashboard", "loadStats"],
+    ["teacher", "teacher-dashboard", "loadDashboardData"],
+    ["parent", "parent-dashboard", "loadChildren"]
+  ]) {
+    const page = read(`${filename}.html`);
+    const module = read(`js/learner/${filename}.js`);
+    assert.match(page, new RegExp(`js/learner/${filename}\\.js`, "u"));
+    assert.match(module, /requireRoles\(/u);
+    assert.match(module, new RegExp(`\\["${role}"\\]`, "u"));
+    assert.match(module, new RegExp(`await ${loader}\\(`, "u"));
+    assert.match(module, /Dashboard data could not be loaded/u);
+  }
+});
