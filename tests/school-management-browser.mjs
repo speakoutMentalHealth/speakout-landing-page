@@ -193,6 +193,21 @@ async function login(browser, user, expectedPage) {
   return { context, page };
 }
 
+async function studentDashboardSmoke(browser, student) {
+  const { context, page } = await login(browser, student, "student-dashboard.html");
+  try {
+    await page.locator("#progressList").waitFor({ timeout: 30000 });
+    await page.locator("#certificateList").waitFor({ timeout: 30000 });
+    await page.getByText("Dashboard loaded.", { exact: true }).waitFor({ timeout: 45000 });
+    assert.equal(await page.locator("#progressList").getByText("Loading progress...").count(), 0,
+      "Student progress remained in loading state");
+    assert.equal(await page.locator("#certificateList").getByText("Loading certificates...").count(), 0,
+      "Student certificates remained in loading state");
+  } finally {
+    await context.close();
+  }
+}
+
 async function teacherCreatesProgramme(browser, teacher) {
   const { context, page } = await login(browser, teacher, "teacher-dashboard.html");
   try {
@@ -535,6 +550,8 @@ try {
 
   browser = await chromium.launch({ headless: true });
 
+  await studentDashboardSmoke(browser, studentA);
+
   await teacherCreatesProgramme(browser, teacherCreator);
   await schoolAdminApprovesAndAssigns(browser, schoolAdminA, teacherFacilitator, studentA);
   await facilitatorRunsProgramme(browser, teacherFacilitator, studentA);
@@ -611,6 +628,7 @@ try {
 
   const summary = {
     ok: true,
+    studentDashboardProgressAndCertificatesLoaded: true,
     schoolAdminOwnUserApproval: true,
     crossSchoolUserApprovalDenied: true,
     teacherProgrammeProposal: true,
