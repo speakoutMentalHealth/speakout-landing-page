@@ -211,6 +211,7 @@ async function studentDashboardSmoke(browser, student) {
 async function teacherDashboardSmoke(browser, teacher) {
   const { context, page } = await login(browser, teacher, "teacher-dashboard.html");
   try {
+    await page.locator("#studentCount").waitFor({ timeout: 30000 });
     await page.locator("#progressList").waitFor({ timeout: 30000 });
     await page.locator("#certificateList").waitFor({ timeout: 30000 });
     await page.getByText("Dashboard loaded.", { exact: true }).waitFor({ timeout: 45000 });
