@@ -354,6 +354,20 @@ async function parentRequestsLink(browser, parent, student) {
   assert.equal(link.data.studentId, student.localId);
 }
 
+async function parentDashboardSmoke(browser, parent) {
+  const { context, page } = await login(browser, parent, "parent-dashboard.html");
+  try {
+    await page.locator("#childrenBox").waitFor({ timeout: 30000 });
+    await page.locator("#parentProgressList").waitFor({ timeout: 30000 });
+    await page.locator("#certificateList").waitFor({ timeout: 30000 });
+    await page.getByText("Dashboard loaded.", { exact: true }).waitFor({ timeout: 45000 });
+    assert.equal(await page.locator("#statusBox").getByText("Dashboard data could not be loaded.", { exact: false }).count(), 0,
+      "Parent dashboard reported loading failure");
+  } finally {
+    await context.close();
+  }
+}
+
 async function parentVerifiesProgress(browser, parent, student) {
   const { context, page } = await login(browser, parent, "parent-dashboard.html");
   try {
@@ -578,6 +592,7 @@ try {
   const foreignStudentSearch = await worker("/v1/roles/parent-links/find-student", parentA, { search: studentBIdCode });
   assert.equal(foreignStudentSearch.response.status, 404, "Parent A could discover a student in School B");
 
+  await parentDashboardSmoke(browser, parentA);
   await parentVerifiesProgress(browser, parentA, studentA);
 
   const schoolBOverview = await worker("/v1/roles/overview", schoolAdminB, {});
@@ -640,6 +655,7 @@ try {
     offlineWorkRecordedOnBehalf: true,
     parentLinkRequestAndSchoolApproval: true,
     parentProgrammeVisibility: true,
+    parentDashboardLoads: true,
     crossSchoolParentLinkDenied: true,
     crossSchoolProgrammeReadDenied: true,
     schoolBOverviewIsolated: true,
