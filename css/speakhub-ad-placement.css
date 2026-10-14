@@ -1,0 +1,4 @@
+/* Inactive unless explicitly enabled following AdSense and safeguarding review. */
+#speakhub-sponsor-slot[hidden]{display:none!important}
+#speakhub-sponsor-slot{margin:24px auto 42px;padding:18px;border:1px solid #dbe4ef;border-radius:16px;background:#fff}
+.speakhub-sponsored-label{font:600 12px/1.5 Arial,sans-serif;color:#59677a;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
