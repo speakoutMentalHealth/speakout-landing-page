@@ -1,0 +1,66 @@
+name: Verify Public Website Publication
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "pages/schools.html"
+      - "pages/academy.html"
+      - "pages/resources.html"
+      - "auth.html"
+      - ".github/workflows/verify-public-website.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-public-website
+  cancel-in-progress: false
+
+jobs:
+  publication-check:
+    name: Compare live entry pages with release markers
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check public site publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import time
+          import urllib.error
+          import urllib.request
+
+          base = "https://speakoutmentalhealth.org"
+          checks = {
+              "/pages/schools.html": 'href="../auth.html#school"',
+              "/pages/academy.html": "Open Member Portal",
+              "/pages/resources.html": "These topic cards lead to the member portal",
+          }
+          failures = []
+          for path, marker in checks.items():
+              ok = False
+              for attempt in range(6):
+                  try:
+                      request = urllib.request.Request(base + path,
+                          headers={"User-Agent": "SpeakOut-release-verifier/1.0",
+                                   "Cache-Control": "no-cache"})
+                      with urllib.request.urlopen(request, timeout=20) as response:
+                          page = response.read().decode("utf-8", "replace")
+                          ok = response.status == 200 and marker in page
+                  except (urllib.error.URLError, TimeoutError) as error:
+                      print(f"{path}: request failed: {error}", flush=True)
+                  if ok:
+                      print(f"PASS {path}: live marker verified", flush=True)
+                      break
+                  if attempt < 5:
+                      time.sleep(30)
+              if not ok:
+                  failures.append(path)
+                  print(f"FAIL {path}: publication marker not verified", flush=True)
+          if failures:
+              raise SystemExit("Public site publication unverified for: " + ", ".join(failures))
+          PY
