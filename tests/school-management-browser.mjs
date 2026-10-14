@@ -457,6 +457,68 @@ try {
   ));
   await seed(`users/${superAdmin.localId}`, profile(superAdmin, "SpeakOut Super Admin", "super_admin", "", ""));
 
+  // Real staging new-school journey: public application -> authorized approval ->
+  // one-time email-bound admin activation. Every record is registered for cleanup.
+  const invitee = await signup("fresh-school-admin");
+  const wrongInvitee = await signup("wrong-school-invitee");
+  const registrationResponse = await fetch(`${workerBase}/v1/public/schools/register`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      schoolName: `Staging Registration ${suffix}`,
+      schoolType: "Secondary School",
+      address: "Test-only staging address",
+      state: "Nasarawa",
+      country: "Nigeria",
+      adminName: "Staging Invite Admin",
+      adminPosition: "Administrator",
+      adminEmail: invitee.email,
+      adminPhone: "+2348000000000",
+      interestArea: "Full Partnership"
+    })
+  });
+  const registration = await registrationResponse.json();
+  assert.equal(registrationResponse.ok, true, "Public staging school registration failed");
+  assert.equal(registration.status, "pending");
+  assert.ok(registration.applicationId);
+  cleanupPaths.add(`schools/${registration.applicationId}`);
+  const beforeApproval = await worker("/v1/onboarding/school-admin", invitee, {
+    inviteToken: "unissued-test-token", fullName: "Staging Invite Admin", position: "Administrator"
+  });
+  assert.equal(beforeApproval.response.ok, false, "Unissued school invite was accepted");
+  const approval = await worker("/v1/admin/schools/status", superAdmin, {
+    schoolId: registration.applicationId, status: "approved"
+  });
+  assert.equal(approval.response.ok, true, "Staging school approval failed");
+  assert.ok(approval.body.activationUrl, "Approval did not issue activation link");
+  const invitationToken = new URL(approval.body.activationUrl).searchParams.get("schoolInvite");
+  assert.ok(invitationToken, "Activation URL is missing invitation token");
+  cleanupPaths.add(`schoolAdminInvites/${invitationToken}`);
+  const wrongAccount = await worker("/v1/onboarding/school-admin", wrongInvitee, {
+    inviteToken: invitationToken, fullName: "Wrong Invitee", position: "Administrator"
+  });
+  assert.equal(wrongAccount.response.status, 403, "Wrong email activated school invitation");
+  const activation = await worker("/v1/onboarding/school-admin", invitee, {
+    inviteToken: invitationToken, fullName: "Staging Invite Admin", position: "Administrator"
+  });
+  assert.equal(activation.response.ok, true, "Invited staging school administrator could not activate");
+  assert.equal(activation.body.schoolId, registration.applicationId);
+  cleanupPaths.add(`users/${invitee.localId}`);
+  const replay = await worker("/v1/onboarding/school-admin", wrongInvitee, {
+    inviteToken: invitationToken, fullName: "Replay Attempt", position: "Administrator"
+  });
+  assert.equal(replay.response.ok, false, "Used school invitation could be replayed");
+
+  const expiredToken = `expired-${randomBytes(8).toString("hex")}`;
+  await seed(`schoolAdminInvites/${expiredToken}`, {
+    schoolId: registration.applicationId, email: wrongInvitee.email,
+    status: "active", expiresAt: new Date(Date.now() - 60000).toISOString()
+  });
+  const expiredActivation = await worker("/v1/onboarding/school-admin", wrongInvitee, {
+    inviteToken: expiredToken, fullName: "Expired Invitee", position: "Administrator"
+  });
+  assert.equal(expiredActivation.response.status, 410, "Expired school invitation was accepted");
+
   const crossSchoolApproval = await worker("/v1/roles/school/users/status", schoolAdminB, {
     userId: studentA.localId,
     status: "approved"
