@@ -110,3 +110,21 @@ test("student teacher and parent dashboards retain shared role gates and separat
     assert.match(module, /Dashboard data could not be loaded/u);
   }
 });
+
+test("school admin invitations enforce expiry, email binding, approval and one-time use", () => {
+  const worker = read("workers/platform-api/src/index.js");
+  const start = worker.indexOf("async function activateSchoolAdmin(");
+  const end = worker.indexOf("\\nasync function route(", start);
+  assert.ok(start >= 0 && end > start, "activation handler must exist");
+  const activation = worker.slice(start, end);
+  assert.match(activation, /verifiedIdentity\(request, env\)/u);
+  assert.match(activation, /normalized\(invite\.status\) !== "active"/u);
+  assert.match(activation, /new Date\(invite\.expiresAt\)\.getTime\(\) < Date\.now\(\)/u);
+  assert.match(activation, /normalized\(invite\.email\) !== identity\.email/u);
+  assert.match(activation, /\["approved", "active"\]\.includes\(normalized\(school\.status\)\)/u);
+  assert.match(activation, /const existing = await getDocument\(env, `users\/\$\{identity\.uid\}`\)/u);
+  assert.match(activation, /await runTransaction\(env, async tx =>/u);
+  assert.match(activation, /normalized\(currentInvite\.status\) !== "active"/u);
+  assert.match(activation, /status: "used"/u);
+  assert.match(activation, /schoolId: school\.id/u);
+});
