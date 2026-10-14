@@ -1293,13 +1293,18 @@ requireRoles(
     );
 
 
-    await loadDashboardData();
+    try {
+      await loadDashboardData();
 
 
     show(
       "Dashboard loaded.",
       "ok"
     );
+    } catch (error) {
+      console.error("Teacher dashboard failed to load:", error);
+      show("Dashboard data could not be loaded. Check your connection and reload to retry.", "bad");
+    }
 
   }
 );

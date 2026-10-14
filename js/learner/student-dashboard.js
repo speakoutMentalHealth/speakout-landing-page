@@ -1176,7 +1176,8 @@ requireRoles(
     }
 
 
-    await ensureStudentId(
+    try {
+      await ensureStudentId(
       user,
       p
     );
@@ -1195,6 +1196,10 @@ requireRoles(
       "Dashboard loaded.",
       "ok"
     );
+    } catch (error) {
+      console.error("Student dashboard failed to load:", error);
+      show("Dashboard data could not be loaded. Check your connection and reload to retry.", "bad");
+    }
 
   }
 );

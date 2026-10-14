@@ -1280,7 +1280,8 @@ requireRoles(
       data
     );
 
-    await loadChildren();
+    try {
+      await loadChildren();
 
     await Promise.all([
       loadCertificates(),
@@ -1293,6 +1294,10 @@ requireRoles(
       "Dashboard loaded.",
       "ok"
     );
+    } catch (error) {
+      console.error("Parent dashboard failed to load:", error);
+      show("Dashboard data could not be loaded. Check your connection and reload to retry.", "bad");
+    }
 
   }
 );
