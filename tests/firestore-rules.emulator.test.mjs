@@ -519,3 +519,29 @@ test("school-linked and unapproved learners cannot replace school placement with
     await assertFails(setDoc(doc(db, `learningPreferences/${uid}`), { educationStage: "tertiary", classLevel: "100 Level", updatedAt: serverTimestamp() }));
   }
 });
+
+test("school administrators cannot read or modify another school's records", async () => {
+  await seed("users/admin-a", profile("admin-a", "school_admin", "school-a"));
+  await seed("users/admin-b", profile("admin-b", "school_admin", "school-b"));
+  await seed("users/learner-a", profile("learner-a", "student", "school-a"));
+  await seed("users/learner-b", profile("learner-b", "student", "school-b"));
+  await seed("schools/school-a", { name: "School A", schoolCode: "A001" });
+  await seed("schools/school-b", { name: "School B", schoolCode: "B001" });
+  await seed("parentStudentLinks/link-a", { schoolId: "school-a", parentId: "admin-a", studentId: "learner-a", status: "pending" });
+  await seed("parentStudentLinks/link-b", { schoolId: "school-b", parentId: "admin-b", studentId: "learner-b", status: "pending" });
+
+  const a = testEnv.authenticatedContext("admin-a").firestore();
+  const b = testEnv.authenticatedContext("admin-b").firestore();
+  await assertSucceeds(getDoc(doc(a, "schools/school-a")));
+  await assertSucceeds(getDoc(doc(b, "schools/school-b")));
+  await assertSucceeds(getDoc(doc(a, "users/learner-a")));
+  await assertSucceeds(getDoc(doc(a, "parentStudentLinks/link-a")));
+
+  await assertFails(getDoc(doc(a, "schools/school-b")));
+  await assertFails(getDoc(doc(a, "users/learner-b")));
+  await assertFails(getDoc(doc(a, "parentStudentLinks/link-b")));
+  await assertFails(updateDoc(doc(a, "schools/school-b"), { name: "Unauthorized change" }));
+  await assertFails(updateDoc(doc(a, "users/learner-b"), { status: "approved" }));
+  await assertFails(updateDoc(doc(a, "parentStudentLinks/link-b"), { status: "approved" }));
+  await assertFails(deleteDoc(doc(a, "parentStudentLinks/link-b")));
+});
