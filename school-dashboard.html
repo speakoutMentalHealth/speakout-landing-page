@@ -1648,9 +1648,12 @@ requireRoles(
       "Dashboard"
     );
 
-    await loadSchoolDashboard(
-      profile
-    );
+    try {
+      await loadSchoolDashboard(profile);
+    } catch (error) {
+      console.error("School dashboard loading failed:", error);
+      show("School data could not be loaded. Check your connection and reload this page to try again.", "bad");
+    }
 
   }
 );
