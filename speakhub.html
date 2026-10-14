@@ -259,6 +259,8 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
   .modal-content h2{font-size:1.65rem}
 }
 </style>
+<link rel="stylesheet" href="css/speakhub-ad-placement.css">
+<script defer src="js/speakhub-ad-placement.js"></script>
 </head>
 
 <body>
@@ -478,6 +480,10 @@ h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:1.05;font-weight:900}
     <div class="grid g3 catalog-grid" id="courseGrid"></div>
   </div>
 </section>
+  <section class="container" id="speakhub-sponsor-slot" aria-label="Sponsored information" hidden>
+    <div class="speakhub-sponsored-label">Advertisement</div>
+    <div id="speakhub-sponsor-container"></div>
+  </section>
 </main>
 
 <div class="modal" id="courseModal">
