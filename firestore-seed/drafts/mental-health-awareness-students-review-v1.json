@@ -1,0 +1,263 @@
+{
+  "id": "mental-health-awareness-students",
+  "title": "Mental Health Awareness for Students",
+  "courseType": "internal",
+  "provider": "SpeakOut Mental Health",
+  "providerLogo": "",
+  "category": "mental-health",
+  "audience": [
+    "secondary",
+    "school"
+  ],
+  "difficulty": "beginner",
+  "duration": "Approximately 2–3 hours; verify against live lesson timings",
+  "description": "A foundational course helping students understand emotions, stress, peer pressure and when to seek support.",
+  "status": "draft",
+  "featured": false,
+  "free": true,
+  "certificateEligible": false,
+  "certificate": {
+    "available": false,
+    "type": "none"
+  },
+  "completionMethod": "internal",
+  "editorialStage": "adapted-existing-source-awaiting-independent-review",
+  "sourceCourseId": "student-wellbeing-foundations-v1",
+  "sourceReuseNote": "Adapted from existing SpeakOut Student Wellbeing Foundations source. Educational overlap must be reviewed to avoid publishing two near-identical courses.",
+  "modules": [
+    {
+      "id": "mh-awareness-module-1",
+      "title": "Knowing Yourself",
+      "learningObjective": "Understand and apply the key wellbeing concepts in knowing yourself using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-1-lesson-1",
+          "title": "Knowing Yourself: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Self-awareness is the ability to notice your own thoughts, feelings, values and patterns of behaviour — and to understand how they affect your choices. It is a skill, not a fixed personality trait, which means it can be practised and strengthened over time.</p><p>One useful starting point is identifying your strengths: the things you are naturally good at or that come easily to you. Strengths are not only academic or athletic — they include things like listening well, staying calm under pressure, being organised, or making others feel included.</p><p>Values are what matters most to you — honesty, fairness, family, creativity, achievement, and so on. When your daily choices line up with your values, you tend to feel more grounded; when there is a gap between what you value and how you are actually spending your time, that gap is often a source of stress worth noticing.</p><p>Self-awareness also includes recognising habits you would like to change. Growth does not require becoming a different person — it means noticing a pattern, understanding what triggers it, and choosing one small, realistic adjustment at a time.</p>"
+        },
+        {
+          "id": "mh-awareness-module-1-lesson-2",
+          "title": "Knowing Yourself: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What are three strengths you have?</li><li>What value matters most to you?</li><li>What is one habit you want to improve?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "What are three strengths you have?",
+        "What value matters most to you?",
+        "What is one habit you want to improve?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-2",
+      "title": "Understanding Emotions",
+      "learningObjective": "Understand and apply the key wellbeing concepts in understanding emotions using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-2-lesson-1",
+          "title": "Understanding Emotions: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Emotions are signals — they give you information about what is happening in your life and what you might need. All emotions, including uncomfortable ones like anger, sadness, jealousy or fear, are normal and serve a purpose. The goal is not to eliminate difficult emotions but to recognise, name and respond to them in healthy ways.</p><p>Naming an emotion accurately — for example, noticing that what feels like anger is actually hurt, or that anxiety is layered under excitement — tends to make it easier to manage. This is sometimes called “emotional vocabulary,” and it grows with practice, the same way any vocabulary does.</p><p>Accepting an emotion means acknowledging it is present without judging yourself for feeling it. This is different from acting on every emotional impulse. You can feel intense anger and still choose how you respond — the feeling and the action are two separate steps.</p><p>Healthy ways to manage strong emotions include pausing before reacting, physical movement, talking to someone you trust, writing your thoughts down, and slow breathing. What works varies from person to person, so it is worth trying a few approaches to find what genuinely helps you.</p>"
+        },
+        {
+          "id": "mh-awareness-module-2-lesson-2",
+          "title": "Understanding Emotions: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>Which emotion do you find hardest to express?</li><li>What helps you calm down safely?</li><li>How can you express anger without hurting yourself or others?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "Which emotion do you find hardest to express?",
+        "What helps you calm down safely?",
+        "How can you express anger without hurting yourself or others?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-3",
+      "title": "Managing Stress",
+      "learningObjective": "Understand and apply the key wellbeing concepts in managing stress using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-3-lesson-1",
+          "title": "Managing Stress: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Stress is your body and mind's response to pressure or demand — exams, deadlines, family responsibilities, or social situations. In small amounts, stress can be motivating and help you focus. Problems tend to arise when stress is constant, feels unmanageable, or has no outlet.</p><p>A useful first step in managing stress is identifying your specific triggers. Stress is easier to respond to once you can name what is actually causing it, rather than experiencing it as one large, vague weight.</p><p>Healthy coping strategies include breaking large tasks into smaller steps, planning your time realistically, physical activity, sufficient sleep, and talking to someone about what is on your mind. Coping strategies that provide short-term relief but add long-term harm — such as avoiding responsibilities entirely, or using substances to numb stress — tend to make the underlying pressure worse over time.</p><p>It is also worth noticing when a responsibility feels too big to face. Breaking it into smaller, concrete steps — the next single action rather than the whole task — usually makes it feel more manageable and reduces the urge to avoid it altogether.</p>"
+        },
+        {
+          "id": "mh-awareness-module-3-lesson-2",
+          "title": "Managing Stress: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What are your top three stress triggers?</li><li>What is one healthy coping skill you can practice this week?</li><li>What responsibility can you break into smaller steps?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "What are your top three stress triggers?",
+        "What is one healthy coping skill you can practice this week?",
+        "What responsibility can you break into smaller steps?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-4",
+      "title": "Anxiety and Worry",
+      "learningObjective": "Understand and apply the key wellbeing concepts in anxiety and worry using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-4-lesson-1",
+          "title": "Anxiety and Worry: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Anxiety is your body's alarm system — it prepares you to respond to a perceived threat, even when the “threat” is a test, a social situation, or an uncertain future rather than immediate physical danger. Occasional worry is a normal part of life. It becomes more difficult to manage when it is frequent, intense, or interferes with daily activities like sleeping, eating or attending school.</p><p>Anxiety often shows up physically — a racing heart, tight chest, upset stomach, or restlessness — before it is fully recognised as a thought. Learning to notice these body signals early can help you respond before worry escalates.</p><p>Grounding techniques help bring attention back to the present moment when worry feels overwhelming. Common examples include slow, deliberate breathing; naming five things you can see, four you can hear and three you can touch; or focusing on a single physical sensation, like your feet on the floor.</p><p>Occasional worry is manageable with these everyday tools. If anxiety is frequent, intense, or is stopping you from doing things you need or want to do, that is a signal worth taking seriously — it is appropriate and encouraged to speak with a trusted adult, school counsellor or qualified mental health professional.</p>"
+        },
+        {
+          "id": "mh-awareness-module-4-lesson-2",
+          "title": "Anxiety and Worry: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What does worry feel like in your body?</li><li>Which grounding technique can you try?</li><li>When should someone seek extra support for anxiety?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "What does worry feel like in your body?",
+        "Which grounding technique can you try?",
+        "When should someone seek extra support for anxiety?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-5",
+      "title": "Healthy Relationships",
+      "learningObjective": "Understand and apply the key wellbeing concepts in healthy relationships using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-5-lesson-1",
+          "title": "Healthy Relationships: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Healthy relationships — friendships, family relationships, and romantic relationships — share common features: mutual respect, honesty, trust, and the ability to disagree without the relationship being threatened. No relationship is conflict-free; what distinguishes a healthy one is how conflict is handled.</p><p>A boundary is a limit you set about what you are and are not comfortable with — how you want to be spoken to, how much time you can give, or what topics you are willing to discuss. Setting a boundary is not the same as rejecting a person; it is a normal, healthy part of any relationship, and people who respect you will generally respect your boundaries too.</p><p>Respectful communication includes listening without interrupting, using “I feel” statements instead of blame, and checking that you have understood the other person before responding. These skills reduce the chance that a disagreement escalates unnecessarily.</p><p>Warning signs of an unhealthy relationship include consistent disrespect, control over who you see or what you do, pressure to do things you are uncomfortable with, and refusal to accept a boundary once it has been clearly stated. If you notice these patterns in your own relationships, it is worth talking to a trusted adult.</p>"
+        },
+        {
+          "id": "mh-awareness-module-5-lesson-2",
+          "title": "Healthy Relationships: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What does respect look like in friendship?</li><li>What boundary do you need to set?</li><li>How can you handle conflict more calmly?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "What does respect look like in friendship?",
+        "What boundary do you need to set?",
+        "How can you handle conflict more calmly?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-6",
+      "title": "Digital Wellbeing",
+      "learningObjective": "Understand and apply the key wellbeing concepts in digital wellbeing using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-6-lesson-1",
+          "title": "Digital Wellbeing: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Digital wellbeing is about how technology and social media affect your mood, sleep, relationships and sense of self — and making intentional choices about your use, rather than using devices purely on autopilot.</p><p>Social media often shows a curated highlight reel rather than everyday reality. Comparing your ordinary day to someone else's best moments is an unfair comparison that can quietly affect mood and self-esteem over time, even when you know intellectually that it is not a complete picture.</p><p>Practical digital wellbeing habits include noticing how you feel during and after scrolling, setting boundaries around screen use before bed (screen light and stimulating content can interfere with sleep), being selective about who and what you follow, and taking deliberate breaks from platforms that consistently leave you feeling worse.</p><p>Online safety also matters: protecting personal information, being cautious about who you share images or details with, and recognising and reporting cyberbullying — whether it happens to you or someone you know — rather than assuming it must be dealt with alone.</p>"
+        },
+        {
+          "id": "mh-awareness-module-6-lesson-2",
+          "title": "Digital Wellbeing: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>How does social media affect your mood?</li><li>What digital habit do you want to change?</li><li>How can you protect yourself online?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "How does social media affect your mood?",
+        "What digital habit do you want to change?",
+        "How can you protect yourself online?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-7",
+      "title": "Helping a Friend",
+      "learningObjective": "Understand and apply the key wellbeing concepts in helping a friend using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-7-lesson-1",
+          "title": "Helping a Friend: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Being a supportive friend does not require having all the answers. Often, the most valuable thing you can offer is genuine listening — giving someone your full attention, not interrupting to fix or minimise what they are sharing, and letting them know you believe them and are glad they told you.</p><p>Supporting a friend is different from carrying their problem for them. You can care deeply about someone without taking full responsibility for solving what they are going through — especially situations that need adult or professional support, such as abuse, self-harm, or thoughts of suicide.</p><p>Some problems should never be kept secret, even if a friend asks you to promise not to tell anyone. If a friend's safety is at risk — for example, they mention self-harm, suicide, abuse, or another situation where someone could be seriously hurt — the caring and responsible response is to tell a trusted adult, even though it may feel like breaking their trust in the moment. A safe friend is not always a silent one.</p><p>If you are supporting a friend through something difficult, it is also important to look after your own wellbeing and talk to a trusted adult yourself — you do not have to carry it entirely alone either.</p>"
+        },
+        {
+          "id": "mh-awareness-module-7-lesson-2",
+          "title": "Helping a Friend: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>How can you listen better?</li><li>What problem should never be kept secret?</li><li>Who can help if a friend is unsafe?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "How can you listen better?",
+        "What problem should never be kept secret?",
+        "Who can help if a friend is unsafe?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    },
+    {
+      "id": "mh-awareness-module-8",
+      "title": "Asking for Help",
+      "learningObjective": "Understand and apply the key wellbeing concepts in asking for help using non-diagnostic examples.",
+      "lessons": [
+        {
+          "id": "mh-awareness-module-8-lesson-1",
+          "title": "Asking for Help: Core Lesson",
+          "type": "reading",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Asking for help is a sign of self-awareness and strength, not weakness — it means recognising a limit and taking a responsible step to address it, which is exactly what people with strong problem-solving skills do. The idea that people should always manage alone is a myth that stops many people from getting support earlier, when it is often easier to help.</p><p>Signs that someone may need extra support include noticeable changes in mood, sleep, appetite, or behaviour that last more than a couple of weeks; withdrawing from friends and activities they used to enjoy; a persistent sense of hopelessness; or, seriously, talking about wanting to harm themselves or not wanting to be here anymore. These signs apply both to noticing them in yourself and in others.</p><p>Common reasons students hesitate to ask for help include fear of being judged, not wanting to be a burden, not knowing who to ask, or believing the problem is not “serious enough.” None of these are good reasons to stay silent — support is available for a wide range of concerns, not only severe ones.</p><p>Trusted people to reach out to include a parent or guardian, a teacher or school counsellor, another trusted adult in your life, or a qualified mental health professional. If you or someone you know is in immediate danger, contact local emergency services right away.</p>"
+        },
+        {
+          "id": "mh-awareness-module-8-lesson-2",
+          "title": "Asking for Help: Reflection Activity",
+          "type": "activity",
+          "estimatedDuration": "10 minutes",
+          "content": "<p>Reflect honestly on these questions in your own words.</p><ol><li>What signs show someone may need help?</li><li>Who are your trusted support people?</li><li>What stops students from asking for help?</li></ol>",
+          "activity": "Private reflection; learners may skip sharing personal details."
+        }
+      ],
+      "formativeChecks": [
+        "What signs show someone may need help?",
+        "Who are your trusted support people?",
+        "What stops students from asking for help?"
+      ],
+      "quizStatus": "pending-secure-assessment-review"
+    }
+  ],
+  "lessonCount": 16,
+  "assessmentStatus": "pending",
+  "publicationGate": [
+    "Reconcile existing Firestore record by original ID; do not replace active record",
+    "Resolve content overlap with Student Wellbeing Foundations; consider a short awareness pathway instead of duplicate course",
+    "Independent mental health clinical/safeguarding review",
+    "Secure quiz development and private answer-key handling",
+    "Accessibility and age-appropriate school review",
+    "Staging authenticated progress and certificate regression tests"
+  ]
+}
