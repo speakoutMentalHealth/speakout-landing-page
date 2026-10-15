@@ -1,0 +1,56 @@
+name: Audit Live SpeakHub Courses (Read Only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: speakhub-read-only-course-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Compare Six Internal Courses
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check credentials are configured
+        shell: bash
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          if [[ -z "$SERVICE_ACCOUNT" ]]; then
+            echo "::error::Production Firebase service account secret is missing."
+            exit 1
+          fi
+
+      - name: Authenticate for read-only comparison
+        id: firebase_auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/datastore
+
+      - name: Compare source and live course metadata
+        shell: bash
+        env:
+          FIREBASE_TOKEN: ${{ steps.firebase_auth.outputs.access_token }}
+          FIREBASE_PROJECT_ID: speaakout-portal
+        run: |
+          node firestore-seed/audit-live-priority-courses.mjs > "$RUNNER_TEMP/speakhub-course-audit.json"
+          node --input-type=module -e '
+            import {readFileSync,appendFileSync} from "node:fs";
+            const d=JSON.parse(readFileSync(process.argv[1],"utf8"));
+            const lines=["## SpeakHub Production Course Audit","**Read-only comparison of "+d.checked+" internal courses**", "", "| Course ID | Result | Modules | Lessons | Issues |", "|---|---|---|---|---|"];
+            for(const r of d.results) lines.push("| "+r.id+" | "+r.state+" | "+(r.liveModules??"—")+"/"+r.expectedModules+" | "+(r.liveLessons??"—")+"/"+r.expectedLessons+" | "+(r.issues?.join(", ")||"None")+" |");
+            lines.push("","This audit does not change Firestore or verify secure private assessments and certificate issuance.");
+            appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join("\n")+"\n");
+            if(d.summary.missing||d.summary.needsReview) process.exitCode=1;
+          ' "$RUNNER_TEMP/speakhub-course-audit.json"
