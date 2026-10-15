@@ -1,0 +1,156 @@
+{
+  "id": "speakout-primary1-mathematics-development-v1",
+  "title": "Primary 1 Mathematics — Foundational Numbers and Shapes",
+  "status": "draft",
+  "reviewStatus": "pending-qualified-teacher-review",
+  "curriculumAlignment": "unverified",
+  "courseType": "internal",
+  "provider": "SpeakHub Academy",
+  "educationStages": [
+    "primary"
+  ],
+  "classLevels": [
+    "Primary 1"
+  ],
+  "subject": "Mathematics",
+  "category": "foundational-learning",
+  "accessType": "free",
+  "price": 0,
+  "currency": "NGN",
+  "certificateEligible": false,
+  "certificate": {
+    "available": false,
+    "type": "none"
+  },
+  "sourceType": "original-ai-assisted",
+  "editorialStage": "six-session-development-manuscript",
+  "description": "A six-lesson supplementary introductory mathematics sequence; not a full term, formal assessment or verified NERDC scheme.",
+  "prerequisites": [
+    "Facilitator checks appropriateness and provides large drawn objects or paper",
+    "Learners may explain by speech, pointing, drawing or a familiar language"
+  ],
+  "modules": [
+    {
+      "id": "p1-math-module-1",
+      "title": "Numbers Around Us",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-1",
+          "title": "Numbers Around Us",
+          "learningObjective": "Identify, read and represent whole numbers from 0 to 20.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Numbers Around Us</h2><p><strong>Learning objective:</strong> Identify, read and represent whole numbers from 0 to 20.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> Draw 4 books and 3 cups. Count each set, then count all objects.</p><p><strong>Check:</strong> How many objects altogether?</p><p><strong>Expected response:</strong> 7. Four plus three equals seven.</p><p><strong>Independent practice:</strong> Draw 5 windows and 2 doors; how many shapes in all?</p><p><strong>Practice guidance:</strong> 7.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "Draw 4 books and 3 cups. Count each set, then count all objects.",
+          "formativeQuestion": "How many objects altogether?",
+          "answerGuidance": "7. Four plus three equals seven.",
+          "independentPractice": "Draw 5 windows and 2 doors; how many shapes in all?",
+          "independentAnswerGuidance": "7.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-math-module-2",
+      "title": "Comparing Groups",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-2",
+          "title": "Comparing Groups",
+          "learningObjective": "Compare two sets using more, fewer, and equal.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Comparing Groups</h2><p><strong>Learning objective:</strong> Compare two sets using more, fewer, and equal.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> Draw seven large circles and five squares. Match them in pairs.</p><p><strong>Check:</strong> Which set has more and how many more?</p><p><strong>Expected response:</strong> Circles; two more.</p><p><strong>Independent practice:</strong> Draw 6 stars and 4 triangles. Compare.</p><p><strong>Practice guidance:</strong> Stars have two more.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "Draw seven large circles and five squares. Match them in pairs.",
+          "formativeQuestion": "Which set has more and how many more?",
+          "answerGuidance": "Circles; two more.",
+          "independentPractice": "Draw 6 stars and 4 triangles. Compare.",
+          "independentAnswerGuidance": "Stars have two more.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-math-module-3",
+      "title": "Adding With Pictures",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-3",
+          "title": "Adding With Pictures",
+          "learningObjective": "Model addition within 20 using pictures.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Adding With Pictures</h2><p><strong>Learning objective:</strong> Model addition within 20 using pictures.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> Draw six pencils, then draw four more. Count the combined group.</p><p><strong>Check:</strong> What is 6 + 4?</p><p><strong>Expected response:</strong> 10.</p><p><strong>Independent practice:</strong> Draw 8 leaves then 3 leaves; add.</p><p><strong>Practice guidance:</strong> 11.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "Draw six pencils, then draw four more. Count the combined group.",
+          "formativeQuestion": "What is 6 + 4?",
+          "answerGuidance": "10.",
+          "independentPractice": "Draw 8 leaves then 3 leaves; add.",
+          "independentAnswerGuidance": "11.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-math-module-4",
+      "title": "Taking Away",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-4",
+          "title": "Taking Away",
+          "learningObjective": "Model subtraction using crossed-out drawings.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Taking Away</h2><p><strong>Learning objective:</strong> Model subtraction using crossed-out drawings.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> Draw 9 balls, cross out 3, and count what remains.</p><p><strong>Check:</strong> What is 9 − 3?</p><p><strong>Expected response:</strong> 6.</p><p><strong>Independent practice:</strong> Draw 12 mango pictures, cross out 5.</p><p><strong>Practice guidance:</strong> 7 remain.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "Draw 9 balls, cross out 3, and count what remains.",
+          "formativeQuestion": "What is 9 − 3?",
+          "answerGuidance": "6.",
+          "independentPractice": "Draw 12 mango pictures, cross out 5.",
+          "independentAnswerGuidance": "7 remain.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-math-module-5",
+      "title": "Shapes in Everyday Life",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-5",
+          "title": "Shapes in Everyday Life",
+          "learningObjective": "Recognise basic two-dimensional shapes without needing formal measurements.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Shapes in Everyday Life</h2><p><strong>Learning objective:</strong> Recognise basic two-dimensional shapes without needing formal measurements.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> Draw a door, a plate and a roof outline; discuss their approximate shapes.</p><p><strong>Check:</strong> Which often resembles a rectangle, a door or a plate?</p><p><strong>Expected response:</strong> A door. A plate often resembles a circle.</p><p><strong>Independent practice:</strong> Draw one rectangle, circle and triangle and identify an object resembling each.</p><p><strong>Practice guidance:</strong> Responses vary; check shape features.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "Draw a door, a plate and a roof outline; discuss their approximate shapes.",
+          "formativeQuestion": "Which often resembles a rectangle, a door or a plate?",
+          "answerGuidance": "A door. A plate often resembles a circle.",
+          "independentPractice": "Draw one rectangle, circle and triangle and identify an object resembling each.",
+          "independentAnswerGuidance": "Responses vary; check shape features.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-math-module-6",
+      "title": "Checking Our Thinking",
+      "lessons": [
+        {
+          "id": "p1-math-lesson-6",
+          "title": "Checking Our Thinking",
+          "learningObjective": "Explain and check an addition or subtraction method using a drawing.",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<h2>Checking Our Thinking</h2><p><strong>Learning objective:</strong> Explain and check an addition or subtraction method using a drawing.</p><p><strong>Teacher models:</strong> Explain the idea with drawings, invite a learner to describe the process, then ask learners to attempt the guided task.</p><p><strong>Guided task:</strong> A class has 5 storybooks and adds 4; draw, count and confirm by recounting.</p><p><strong>Check:</strong> How many books? How can we check?</p><p><strong>Expected response:</strong> 9. Count all objects or start at five and count four more.</p><p><strong>Independent practice:</strong> Draw 10 books, give away 2 and explain the remainder.</p><p><strong>Practice guidance:</strong> 8.</p><p><strong>Facilitator note:</strong> Allow drawn, oral or pointed responses; adapt quantities to the learner's current skills without treating the task as a clinical or formal attainment test. Check understanding privately, avoid public rankings, and do not collect student identifiers or photographs.</p>",
+          "activity": "A class has 5 storybooks and adds 4; draw, count and confirm by recounting.",
+          "formativeQuestion": "How many books? How can we check?",
+          "answerGuidance": "9. Count all objects or start at five and count four more.",
+          "independentPractice": "Draw 10 books, give away 2 and explain the remainder.",
+          "independentAnswerGuidance": "8.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    }
+  ],
+  "lessonCount": 6,
+  "releaseGate": [
+    "School scheme and authoritative curriculum-outcome mapping",
+    "Qualified mathematics teacher signoff",
+    "Independent answer and developmental suitability review",
+    "Accessible and supervised learner pilot",
+    "No publication or certificate until gates are met"
+  ]
+}
