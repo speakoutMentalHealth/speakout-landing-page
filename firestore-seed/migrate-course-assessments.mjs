@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 
 const projectId = process.env.FIREBASE_PROJECT_ID || "speaakout-portal";
 const token = process.env.FIREBASE_TOKEN || "";
-const sourcePath = process.env.SOURCE_PACK || "firestore-seed/priority-courses.json";
+const sourcePath = process.env.SOURCE_PACK || "";
+if (!sourcePath) throw new Error("SOURCE_PACK must explicitly point to a reviewed private assessment source; the public priority-courses.json is unsafe.");
 if (!token) throw new Error("FIREBASE_TOKEN is required.");
 
 const toFirestore = value => {
@@ -17,6 +18,28 @@ const toFirestore = value => {
 const fields = data => Object.fromEntries(Object.entries(data).map(([key, value]) => [key, toFirestore(value)]));
 const documentName = path => `projects/${projectId}/databases/(default)/documents/${path}`;
 const courses = JSON.parse(await fs.readFile(sourcePath, "utf8"));
+// Refuse the public, sanitized catalogue: it stores question counts, not private questions.
+// Validation happens before any Firestore write so an incorrect SOURCE_PACK cannot erase quizzes.
+let validatedAssessments = 0;
+for (const course of courses) {
+  if (!Array.isArray(course.modules) || !course.modules.length) continue;
+  for (const [index, module] of course.modules.entries()) {
+    if (!module.quiz) continue;
+    const questions = module.quiz.questions;
+    if (!Array.isArray(questions) || questions.length === 0) {
+      throw new Error(`Unsafe SOURCE_PACK: ${course.id} module ${index + 1} has quiz metadata without answer-bearing questions. Use a securely prepared private source pack, never priority-courses.json.`);
+    }
+    validatedAssessments++;
+  }
+  const final = course.finalAssessment || course.finalQuiz;
+  if (final) {
+    if (!Array.isArray(final.questions) || final.questions.length === 0) {
+      throw new Error(`Unsafe SOURCE_PACK: ${course.id} final assessment has no answer-bearing questions. Refusing to overwrite protected assessments.`);
+    }
+    validatedAssessments++;
+  }
+}
+if (!validatedAssessments) throw new Error("SOURCE_PACK has no validated assessments; refusing migration.");
 const now = new Date().toISOString();
 const writes = [];
 let assessmentCount = 0;
