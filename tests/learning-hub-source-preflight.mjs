@@ -23,6 +23,15 @@ for(const file of files){
   checked++;
  }
 }
+const hub=await read('learning-hub.html');
+for(const [id,library] of [
+  ['student-wellbeing-guide-v1','student-library.html'],
+  ['teacher-wellbeing-safeguarding-guide-v1','teacher-library.html'],
+  ['parent-caregiver-wellbeing-guide-v1','my-library.html']
+]){
+  assert.ok(hub.includes('book-reader.html?id='+id),'Direct reader link missing for '+id);
+  assert.ok(hub.includes('href="'+library+'"'),'Fallback library link missing for '+id);
+}
 for(const file of ['firestore-seed/audience-guides.json']){
  const guides=JSON.parse(await read(file));
  for(const [id,minimum] of [['student-wellbeing-guide-v1',16],['teacher-wellbeing-safeguarding-guide-v1',12],['parent-caregiver-wellbeing-guide-v1',12]]){
@@ -30,6 +39,8 @@ for(const file of ['firestore-seed/audience-guides.json']){
   assert.ok(guide,'Missing guide '+id);
   assert.ok(guide.chapters?.length>=minimum,'Incomplete chapter index: '+id);
   assert.ok(guide.content?.length>1000,'Missing substantial guide content: '+id);
+  const headings=[...guide.content.matchAll(/<h2\b[^>]*>/gi)].length;
+  assert.ok(headings>=minimum,'Full reader body has fewer chapter headings than index: '+id+' ('+headings+' vs '+minimum+')');
   const readiness=bookReadiness(guide);
   assert.ok(readiness.ready,'Guide does not meet publication-readiness checks: '+id+' — '+readiness.reasons.join('; '));
  }
