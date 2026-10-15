@@ -1188,60 +1188,86 @@ function renderCertificate(record,docId,resolvedRecipient=""){
     document.getElementById("printButton");
 
 
-  // Embedded iOS browsers can silently ignore window.print().
-  // Offer a usable Safari path without changing the certificate or verification data.
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const printHelp = document.createElement("div");
-  printHelp.className = "no-print";
-  printHelp.setAttribute("role", "status");
-  printHelp.style.cssText = "margin-top:14px;padding:16px;background:#edf5ff;border:1px solid #c6daf5;border-radius:14px;line-height:1.6;font-size:.95rem;";
-  printHelp.hidden = true;
-  printButton.closest(".info-panel").appendChild(printHelp);
-
-  function showPrintInstructions(){
-    printHelp.hidden = false;
-    printHelp.innerHTML = isIOS
-      ? '<strong>Save on iPhone:</strong> Open this certificate in Safari using your app browser menu (or copy the link below). In Safari, tap Share → Print, then expand the print preview and choose Share → Save to Files. If Print does not appear, scroll the Share sheet actions.'
-      : '<strong>Print help:</strong> Open this certificate in a full browser such as Chrome, Safari, Firefox or Edge, then use the browser Print command and choose Save as PDF.';
-    if (!document.getElementById("copyCertificateUrl")){
-      const copyButton = document.createElement("button");
-      copyButton.type = "button";
-      copyButton.id = "copyCertificateUrl";
-      copyButton.className = "btn soft";
-      copyButton.style.marginTop = "10px";
-      copyButton.textContent = "Copy Certificate Link";
-      copyButton.addEventListener("click",async()=>{
-        try {
-          await navigator.clipboard.writeText(window.location.href);
-          copyButton.textContent = "Link Copied";
-        } catch(error) {
-          const url = window.prompt("Copy this certificate link to open in Safari:",window.location.href);
-          if(url) copyButton.textContent = "Use Link in Safari";
-        }
-      });
-      printHelp.appendChild(copyButton);
+  // Generate a real, self-contained landscape A4 PDF for mobile and desktop.
+  // Reuses the already verified certificate displayed on this page.
+  const pdfScriptUrl = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+  let pdfLoader = null;
+  function loadPdfGenerator(){
+    if(window.html2pdf) return Promise.resolve();
+    if(!pdfLoader){
+      pdfLoader = new Promise((resolve,reject)=>{
+        const script=document.createElement("script");
+        script.src=pdfScriptUrl;
+        script.onload=()=>window.html2pdf?resolve():reject(new Error("PDF library unavailable"));
+        script.onerror=()=>reject(new Error("PDF library could not load"));
+        document.head.appendChild(script);
+      }).catch(error=>{pdfLoader=null;throw error;});
     }
-    printHelp.scrollIntoView({behavior:"smooth",block:"nearest"});
+    return pdfLoader;
   }
-
-  printButton.addEventListener("click",()=>{
-    if (isIOS){
-      showPrintInstructions();
-      return;
-    }
-    try {
-      window.print();
-    } catch(error) {
-      showPrintInstructions();
+  const saveFeedback=document.createElement("p");
+  saveFeedback.className="no-print";
+  saveFeedback.setAttribute("role","status");
+  saveFeedback.setAttribute("aria-live","polite");
+  printButton.parentElement.appendChild(saveFeedback);
+  printButton.textContent="Download Certificate PDF";
+  printButton.addEventListener("click",async()=>{
+    const certificate=document.querySelector(".cert");
+    if(!certificate)return;
+    printButton.disabled=true;
+    printButton.textContent="Preparing PDF…";
+    saveFeedback.textContent="";
+    let mount;
+    try{
+      await loadPdfGenerator();
+      await document.fonts.ready;
+      // Render a desktop-size copy to avoid iPhone's narrow responsive certificate layout.
+      mount=document.createElement("div");
+      mount.style.cssText="position:fixed;left:-20000px;top:0;width:1123px;z-index:-1;pointer-events:none;";
+      const copy=certificate.cloneNode(true);
+      copy.style.cssText+=";width:1123px!important;height:794px!important;aspect-ratio:auto!important;box-shadow:none!important;border-radius:0!important;max-width:none!important;";
+      mount.appendChild(copy);
+      document.body.appendChild(mount);
+      await Promise.all([...copy.querySelectorAll("img")].map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;})));
+      const safeId=String(publicId).replace(/[^a-zA-Z0-9_-]/g,"-").slice(0,90)||"certificate";
+      const worker=window.html2pdf().set({
+        margin:0,filename:"SpeakOut-Certificate-"+safeId+".pdf",
+        image:{type:"jpeg",quality:0.98},
+        html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0,windowWidth:1200},
+        jsPDF:{unit:"mm",format:"a4",orientation:"landscape"},
+        pagebreak:{mode:["avoid-all","css","legacy"]}
+      }).from(copy).toPdf();
+      const pdf=await worker.get("pdf");
+      const blob=pdf.output("blob");
+      const fileUrl=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=fileUrl;
+      a.download="SpeakOut-Certificate-"+safeId+".pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      saveFeedback.textContent="PDF prepared. If your app did not download it, use the Open PDF link below.";
+      const fallback=document.createElement("a");
+      fallback.href=fileUrl;
+      fallback.target="_blank";
+      fallback.rel="noopener";
+      fallback.textContent="Open PDF";
+      fallback.className="btn soft";
+      fallback.style.marginTop="8px";
+      const prior=document.getElementById("certificatePdfFallback");
+      if(prior){URL.revokeObjectURL(prior.href);prior.remove();}
+      fallback.id="certificatePdfFallback";
+      saveFeedback.appendChild(document.createTextNode(" "));
+      saveFeedback.appendChild(fallback);
+    }catch(error){
+      console.error("Certificate PDF generation failed",error);
+      saveFeedback.textContent="PDF generation did not finish in this browser. Open the certificate in Safari, Chrome or Edge and try again.";
+    }finally{
+      mount?.remove();
+      printButton.disabled=false;
+      printButton.textContent="Download Certificate PDF";
     }
   });
-
-  if (isIOS){
-    printButton.textContent = "Save PDF on iPhone — How to";
-    showPrintInstructions();
-  }
-
 
   if(["verified","active","issued","approved"].includes(status)){
 
