@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile,access} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {bookReadiness} from '../js/content-visibility.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const files=['learning-hub.html','my-learning.html','my-library.html','pages/academy.html','pages/resources.html'];
@@ -29,6 +30,8 @@ for(const file of ['firestore-seed/audience-guides.json']){
   assert.ok(guide,'Missing guide '+id);
   assert.ok(guide.chapters?.length>=minimum,'Incomplete chapter index: '+id);
   assert.ok(guide.content?.length>1000,'Missing substantial guide content: '+id);
+  const readiness=bookReadiness(guide);
+  assert.ok(readiness.ready,'Guide does not meet publication-readiness checks: '+id+' — '+readiness.reasons.join('; '));
  }
 }
-console.log('Learning Hub source preflight passed: '+files.length+' HTML pages, '+checked+' local destinations, 3 guide source records. This does not verify deployment, Firestore imports, chapter renderability, or authentication.');
+console.log('Learning Hub source preflight passed: '+files.length+' HTML pages, '+checked+' local destinations, 3 guide source records including publication-readiness checks. This does not verify deployment, Firestore imports, chapter renderability, or authentication.');
