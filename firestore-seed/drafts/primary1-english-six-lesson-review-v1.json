@@ -1,0 +1,150 @@
+{
+  "id": "speakout-primary1-english-development-v1",
+  "title": "Primary 1 English Studies — Reading and Communication",
+  "status": "draft",
+  "reviewStatus": "pending-qualified-teacher-review",
+  "curriculumAlignment": "unverified",
+  "courseType": "internal",
+  "provider": "SpeakHub Academy",
+  "educationStages": [
+    "primary"
+  ],
+  "classLevels": [
+    "Primary 1"
+  ],
+  "subject": "English Studies",
+  "category": "foundational-learning",
+  "accessType": "free",
+  "price": 0,
+  "currency": "NGN",
+  "certificateEligible": false,
+  "certificate": {
+    "available": false,
+    "type": "none"
+  },
+  "sourceType": "original-ai-assisted",
+  "sourceDrafts": [
+    "content/kiddies/drafts/primary1-english-draft-01.md",
+    "content/kiddies/drafts/primary1-english-extended-draft.md"
+  ],
+  "editorialStage": "six-session-development-manuscript",
+  "description": "Six supplementary lessons on listening, describing, questions, reading, sentences and retelling. Not a complete term or verified curriculum scheme.",
+  "modules": [
+    {
+      "id": "p1-english-module-1",
+      "title": "Listening and Sequencing",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-1",
+          "title": "Listening and Sequencing",
+          "learningObjective": "Retell three events in their correct order",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Listening and Sequencing</h2><p><strong>Objective:</strong> Retell three events in their correct order</p><h3>Original short text</h3><p>Ada packed a book. Next, she put on her shoes. Finally, she waved goodbye.</p><h3>Facilitator demonstration</h3><p>Read the three sentences and use first, next and finally to describe the actions.</p><h3>Guided check</h3><p>What did Ada do just after packing her book?</p><p><strong>Expected response:</strong> She put on her shoes.</p><h3>Independent or supported practice</h3><p>Draw three boxes and show the events in order.</p><p><strong>Review guidance:</strong> Correct order: packed book, put on shoes, waved goodbye.</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Draw three boxes and show the events in order.",
+          "formativeQuestion": "What did Ada do just after packing her book?",
+          "answerGuidance": "She put on her shoes.",
+          "independentAnswerGuidance": "Correct order: packed book, put on shoes, waved goodbye.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-english-module-2",
+      "title": "Naming and Describing",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-2",
+          "title": "Naming and Describing",
+          "learningObjective": "Identify describing words in a sentence",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Naming and Describing</h2><p><strong>Objective:</strong> Identify describing words in a sentence</p><h3>Original short text</h3><p>A small brown goat stood near a tree.</p><h3>Facilitator demonstration</h3><p>Explain that 'small' tells us about size and 'brown' tells us about colour.</p><h3>Guided check</h3><p>Which two words describe the goat?</p><p><strong>Expected response:</strong> Small and brown.</p><h3>Independent or supported practice</h3><p>Draw a goat or another familiar animal and write or dictate two describing words.</p><p><strong>Review guidance:</strong> Accept sensible descriptions appropriate to the drawing.</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Draw a goat or another familiar animal and write or dictate two describing words.",
+          "formativeQuestion": "Which two words describe the goat?",
+          "answerGuidance": "Small and brown.",
+          "independentAnswerGuidance": "Accept sensible descriptions appropriate to the drawing.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-english-module-3",
+      "title": "Asking Polite Questions",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-3",
+          "title": "Asking Polite Questions",
+          "learningObjective": "Form a clear question using appropriate punctuation",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Asking Polite Questions</h2><p><strong>Objective:</strong> Form a clear question using appropriate punctuation</p><h3>Original short text</h3><p>Timi wants to know where the class library is.</p><h3>Facilitator demonstration</h3><p>Say 'Please, where is the class library?' and point out the question mark.</p><h3>Guided check</h3><p>What polite question could Timi ask?</p><p><strong>Expected response:</strong> Please, where is the class library?</p><h3>Independent or supported practice</h3><p>Rewrite 'where is my book' as a correctly punctuated question.</p><p><strong>Review guidance:</strong> Where is my book? Accept a polite version with 'please'.</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Rewrite 'where is my book' as a correctly punctuated question.",
+          "formativeQuestion": "What polite question could Timi ask?",
+          "answerGuidance": "Please, where is the class library?",
+          "independentAnswerGuidance": "Where is my book? Accept a polite version with 'please'.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-english-module-4",
+      "title": "Reading for Meaning",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-4",
+          "title": "Reading for Meaning",
+          "learningObjective": "Locate a stated fact in a short text",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Reading for Meaning</h2><p><strong>Objective:</strong> Locate a stated fact in a short text</p><h3>Original short text</h3><p>Ada sees a red bag. The bag is on a mat.</p><h3>Facilitator demonstration</h3><p>Read the text and show where the words 'red bag' appear.</p><h3>Guided check</h3><p>What colour is the bag?</p><p><strong>Expected response:</strong> Red.</p><h3>Independent or supported practice</h3><p>Where is the bag? Point to or copy the words that give the answer.</p><p><strong>Review guidance:</strong> On a mat; evidence 'The bag is on a mat.'</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Where is the bag? Point to or copy the words that give the answer.",
+          "formativeQuestion": "What colour is the bag?",
+          "answerGuidance": "Red.",
+          "independentAnswerGuidance": "On a mat; evidence 'The bag is on a mat.'",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-english-module-5",
+      "title": "Building and Writing Sentences",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-5",
+          "title": "Building and Writing Sentences",
+          "learningObjective": "Create meaningful sentences with capitals and end punctuation",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Building and Writing Sentences</h2><p><strong>Objective:</strong> Create meaningful sentences with capitals and end punctuation</p><h3>Original short text</h3><p>Musa has a blue pen. He puts it in his bag.</p><h3>Facilitator demonstration</h3><p>Model 'Musa has a pen.' and explain the capital letter, word spacing and full stop.</p><h3>Guided check</h3><p>What does Musa have?</p><p><strong>Expected response:</strong> A blue pen.</p><h3>Independent or supported practice</h3><p>Write or dictate two sentences about Musa's pen, including where he puts it.</p><p><strong>Review guidance:</strong> Example: Musa has a blue pen. He puts it in his bag. Accept accurate alternatives.</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Write or dictate two sentences about Musa's pen, including where he puts it.",
+          "formativeQuestion": "What does Musa have?",
+          "answerGuidance": "A blue pen.",
+          "independentAnswerGuidance": "Example: Musa has a blue pen. He puts it in his bag. Accept accurate alternatives.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    },
+    {
+      "id": "p1-english-module-6",
+      "title": "Speaking, Retelling and Editing",
+      "lessons": [
+        {
+          "id": "p1-english-lesson-6",
+          "title": "Speaking, Retelling and Editing",
+          "learningObjective": "Retell a simple event and make a sentence clearer",
+          "estimatedMinutes": "15–25 flexible minutes",
+          "content": "<section><h2>Speaking, Retelling and Editing</h2><p><strong>Objective:</strong> Retell a simple event and make a sentence clearer</p><h3>Original short text</h3><p>Zainab picks up a book. She reads it with her friend. They return it to the shelf.</p><h3>Facilitator demonstration</h3><p>Retell using 'first', 'next', and 'finally'. Show how adding 'to the shelf' makes 'They return it' clearer.</p><h3>Guided check</h3><p>What did Zainab and her friend do after reading?</p><p><strong>Expected response:</strong> They returned the book to the shelf.</p><h3>Independent or supported practice</h3><p>Retell all three events, then improve 'They put it back' with a useful detail.</p><p><strong>Review guidance:</strong> Accept 'They put the book back on the shelf' or another accurate improvement.</p><p>Read aloud on request and allow pointing, signing, dictation, typing, speaking or drawing. Use home-language explanation where helpful. Avoid timed rankings, public comparisons and collecting identifying learner information.</p></section>",
+          "activity": "Retell all three events, then improve 'They put it back' with a useful detail.",
+          "formativeQuestion": "What did Zainab and her friend do after reading?",
+          "answerGuidance": "They returned the book to the shelf.",
+          "independentAnswerGuidance": "Accept 'They put the book back on the shelf' or another accurate improvement.",
+          "assessmentType": "formative-ungraded"
+        }
+      ]
+    }
+  ],
+  "lessonCount": 6,
+  "releaseGate": [
+    "Verify exact school scheme and NERDC outcomes",
+    "Qualified Primary 1 English teacher signoff",
+    "Safeguarding and accessibility review",
+    "Supervised learner pilot and versioned correction",
+    "Do not seed or publish until release gates completed"
+  ]
+}
