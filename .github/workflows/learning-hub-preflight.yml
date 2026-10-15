@@ -1,0 +1,35 @@
+name: Learning Hub Source Preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'learning-hub.html'
+      - 'my-learning.html'
+      - 'my-library.html'
+      - 'pages/academy.html'
+      - 'pages/resources.html'
+      - 'firestore-seed/audience-guides.json'
+      - 'tests/learning-hub-source-preflight.mjs'
+      - '.github/workflows/learning-hub-preflight.yml'
+  pull_request:
+    paths:
+      - 'learning-hub.html'
+      - 'my-learning.html'
+      - 'my-library.html'
+      - 'pages/academy.html'
+      - 'pages/resources.html'
+      - 'firestore-seed/audience-guides.json'
+      - 'tests/learning-hub-source-preflight.mjs'
+permissions:
+  contents: read
+jobs:
+  source-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate learning hub links and guide sources
+        run: node tests/learning-hub-source-preflight.mjs
