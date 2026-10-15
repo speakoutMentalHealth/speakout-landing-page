@@ -1188,10 +1188,59 @@ function renderCertificate(record,docId,resolvedRecipient=""){
     document.getElementById("printButton");
 
 
-  printButton.addEventListener(
-    "click",
-    ()=>window.print()
-  );
+  // Embedded iOS browsers can silently ignore window.print().
+  // Offer a usable Safari path without changing the certificate or verification data.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const printHelp = document.createElement("div");
+  printHelp.className = "no-print";
+  printHelp.setAttribute("role", "status");
+  printHelp.style.cssText = "margin-top:14px;padding:16px;background:#edf5ff;border:1px solid #c6daf5;border-radius:14px;line-height:1.6;font-size:.95rem;";
+  printHelp.hidden = true;
+  printButton.closest(".info-panel").appendChild(printHelp);
+
+  function showPrintInstructions(){
+    printHelp.hidden = false;
+    printHelp.innerHTML = isIOS
+      ? '<strong>Save on iPhone:</strong> Open this certificate in Safari using your app browser menu (or copy the link below). In Safari, tap Share → Print, then expand the print preview and choose Share → Save to Files. If Print does not appear, scroll the Share sheet actions.'
+      : '<strong>Print help:</strong> Open this certificate in a full browser such as Chrome, Safari, Firefox or Edge, then use the browser Print command and choose Save as PDF.';
+    if (!document.getElementById("copyCertificateUrl")){
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.id = "copyCertificateUrl";
+      copyButton.className = "btn soft";
+      copyButton.style.marginTop = "10px";
+      copyButton.textContent = "Copy Certificate Link";
+      copyButton.addEventListener("click",async()=>{
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          copyButton.textContent = "Link Copied";
+        } catch(error) {
+          const url = window.prompt("Copy this certificate link to open in Safari:",window.location.href);
+          if(url) copyButton.textContent = "Use Link in Safari";
+        }
+      });
+      printHelp.appendChild(copyButton);
+    }
+    printHelp.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+
+  printButton.addEventListener("click",()=>{
+    if (isIOS){
+      showPrintInstructions();
+      return;
+    }
+    try {
+      window.print();
+    } catch(error) {
+      showPrintInstructions();
+    }
+  });
+
+  if (isIOS){
+    printButton.textContent = "Save PDF on iPhone — How to";
+    showPrintInstructions();
+  }
 
 
   if(["verified","active","issued","approved"].includes(status)){
