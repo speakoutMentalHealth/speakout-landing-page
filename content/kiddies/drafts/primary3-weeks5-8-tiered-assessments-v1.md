@@ -201,6 +201,68 @@
 
 **Progress check:** Learner attempts an unseen comparable item and explains their approach. Record anonymised class-level patterns only.
 
+## english studies
+
+**Editorial addition (16 October 2026):** These four formative checks correspond to the Primary 3 English Studies weeks 5–8 lesson drafts. Teacher approval and curriculum mapping are pending. The questions use original short examples, not personal learner disclosures.
+
+### Week 5: Cause and effect
+
+**Foundation question:** "The ground was wet because rain fell." What caused the ground to be wet?
+**Answer key:** Rain fell.
+
+**Application question:** "The bell rang, so the class went inside." What happened after the bell rang?
+**Answer key:** The class went inside.
+
+**Transfer question:** Join "Kola watered the plant" and "The leaves stayed fresh" using "so" to show a possible cause and effect.
+**Answer key:** "Kola watered the plant, so the leaves stayed fresh." Accept other logically linked wording without claiming that watering alone proves the cause.
+
+**Marking:** For each item, 1 point for a relevant accurate response and 1 for naming or demonstrating the cause/effect connection. Accept oral and dictated responses.
+**Reteach:** Use a picture showing a spill and a wet floor; distinguish the event from the result.
+
+### Week 6: Adverbs
+
+**Foundation question:** In "Ada walked slowly," which word tells how she walked?
+**Answer key:** slowly.
+
+**Application question:** Choose the adverb: "The pupils carefully carried the books."
+**Answer key:** carefully.
+
+**Transfer question:** Improve "The bird sang" by adding an adverb describing how it sang.
+**Answer key:** "The bird sang softly" or another meaningful adverb.
+
+**Marking:** Per item, 1 point correct adverb and 1 point for explaining how it modifies an action. Accept equivalent examples.
+**Reteach:** Compare "walk" and "walk quietly" and discuss the added information.
+
+### Week 7: Compare characters
+
+**Foundation question:** "Ngozi shares her crayons. Bello shares his pencils." What do they both do?
+**Answer key:** Both share materials.
+
+**Application question:** "Ngozi prefers drawing; Bello prefers reading." State one difference.
+**Answer key:** Ngozi prefers drawing while Bello prefers reading.
+
+**Transfer question:** Write two sentences comparing the characters using "both" and "but."
+**Answer key:** "Both children share. Ngozi likes drawing, but Bello likes reading," or equivalent.
+
+**Marking:** Per item, 1 point for a supported similarity/difference and 1 point for evidence from the example.
+**Reteach:** Make a simple similarities/differences table with the two short descriptions.
+
+### Week 8: Write a short report
+
+**Foundation question:** "Our class planted two trees on Monday." Identify when the event happened.
+**Answer key:** Monday.
+
+**Application question:** Combine these factual notes into a sentence: "Class 3; cleaned reading corner; Tuesday."
+**Answer key:** "Class 3 cleaned the reading corner on Tuesday."
+
+**Transfer question:** Use these facts to write a two-sentence report: "Six pupils arranged twelve books on Wednesday; the books were put on a shelf."
+**Answer key:** E.g., "On Wednesday, six pupils arranged twelve books. They put the books on a shelf." Accept accurate, clearly ordered alternatives without invented details.
+
+**Marking:** Per item, 1 point for accurate facts and 1 for clear report wording or identification of where/when/who; accessible oral/dictated responses accepted.
+**Reteach:** Use a who–what–when chart; organise the details into complete sentences.
+
+**Safeguarding and release gate:** Do not ask children to recount private events or collect identifiers. Teacher must independently check language, marking, applicable curriculum outcome and supervised pilot before release.
+
 ## basic science technology
 
 ### Week 5: Soil
