@@ -104,29 +104,33 @@
 
 ## english studies
 
-### Week 5: Reading details
+### Week 5: Read a short paragraph — revised formative draft
 
-**Foundation question:** Read 'Bola went to the farm.' Where did Bola go?
+**Lesson alignment:** Primary 2 English Studies week 5 requires reading a connected short paragraph, not only answering isolated-sentence questions.
 
-**Answer key:** the farm
+**Original reading passage:** "On Monday, Bola and her brother visited their grandmother. They carried a basket of oranges. Grandmother thanked them and shared a story before they returned home."
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Foundation question:** Who did Bola and her brother visit?
 
-**Application question:** Read 'The cup is yellow.' What colour is it?
+**Answer key:** Their grandmother.
 
-**Answer key:** yellow
+**Application question:** What did the children carry?
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Answer key:** A basket of oranges.
 
-**Transfer question:** Read 'Ada borrowed two books.' How many books?
+**Transfer question:** What happened after Grandmother thanked the children but before they returned home?
 
-**Answer key:** two
+**Answer key:** She shared a story.
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Marking:** Each item earns one point for an accurate text-based answer and one point for identifying or pointing to the supporting sentence. Accept oral, pointed, dictated or written evidence. Do not award reasoning marks for unsupported guesses.
 
-**Reteach:** Revisit reading details with visual modelling, worked example and a new parallel check; identify misconceptions privately.
+**Marking exemplars:** Full credit: "They visited their grandmother; the first sentence says so." Partial credit: "Their grandmother" without locating evidence. Incorrect: "Their teacher", unsupported by the passage.
 
-**Progress check:** Learner attempts an unseen comparable item and explains their approach. Record anonymised class-level patterns only.
+**Reteach:** Read the whole paragraph aloud, underline the time and action words and identify beginning, middle and end.
+
+**Progress check:** Give an original three-sentence paragraph about a classroom garden and ask for a detail supported by its second sentence.
+
+**Release gate:** Requires qualified-teacher confirmation of lesson fit, curriculum mapping, accessibility and supervised pilot. Formative draft only.
 
 ### Week 6: Plurals
 
