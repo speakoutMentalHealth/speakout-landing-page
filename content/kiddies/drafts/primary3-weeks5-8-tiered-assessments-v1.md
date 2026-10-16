@@ -78,31 +78,32 @@
 
 **Progress check:** Learner attempts an unseen comparable item and explains their approach. Record anonymised class-level patterns only.
 
-### Week 8: Fractions
+### Week 8: Fractions on a number line — revised draft
 
-**Foundation question:** What is half of 12?
+**Lesson alignment:** Fractions on a line. Use a clearly labelled line from 0 to 1 divided into four equal intervals (0, 1/4, 2/4, 3/4, 1). Pupils may draw or point instead of relying on a printed visual.
 
-**Answer key:** 6
+**Foundation question:** On the line described above, where is 2/4?
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Answer key:** At the second interval from zero (1/2).
 
-**Application question:** What is 3/4 of 20?
+**Application question:** Draw a number line from 0 to 1 in four equal intervals and mark 3/4.
 
-**Answer key:** 15
+**Answer key:** Third interval from zero.
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Transfer question:** On the same line, which is closer to 1: 1/4 or 3/4? Explain.
 
-**Transfer question:** A cake is split into 8 equal pieces. What fraction is 6 pieces?
+**Answer key:** 3/4, one quarter away from 1 rather than three quarters away.
 
-**Answer key:** 6/8 or 3/4
+**Rubric per item:** 1 point for correct position/comparison, 1 for valid equal-part reasoning, including spoken or pointed explanation.
 
-**Marking:** 1 point accurate answer + 1 point reasoning/representation; accept equivalent accessible responses.
+**Exemplars:** Full (2): marks second of four equal intervals and explains two quarters equal one half. Partial (1): identifies 1/2 without showing equally spaced parts. Incorrect (0): marks a third of the line instead.
 
-**Reteach:** Revisit fractions with visual modelling, worked example and a new parallel check; identify misconceptions privately.
+**Reteach:** Fold a paper strip into four equal sections; transfer the marks onto a drawn number line.
 
-**Progress check:** Learner attempts an unseen comparable item and explains their approach. Record anonymised class-level patterns only.
+**Progress check:** Mark 1/2 on a number line divided into eighths (4/8). Record only anonymous teaching patterns.
 
-## english studies
+**Release gate:** Provisional; check official outcome, school pacing, teacher sign-off and supervised pilot.
+
 
 ### Week 5: Cause and effect
 
