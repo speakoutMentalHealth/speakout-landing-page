@@ -44,7 +44,14 @@
           "formativeQuestion": "What did Ada do just after packing her book?",
           "answerGuidance": "She put on her shoes.",
           "independentAnswerGuidance": "Correct order: packed book, put on shoes, waved goodbye.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -62,7 +69,14 @@
           "formativeQuestion": "Which two words describe the goat?",
           "answerGuidance": "Small and brown.",
           "independentAnswerGuidance": "Accept sensible descriptions appropriate to the drawing.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -80,7 +94,14 @@
           "formativeQuestion": "What polite question could Timi ask?",
           "answerGuidance": "Please, where is the class library?",
           "independentAnswerGuidance": "Where is my book? Accept a polite version with 'please'.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -98,7 +119,14 @@
           "formativeQuestion": "What colour is the bag?",
           "answerGuidance": "Red.",
           "independentAnswerGuidance": "On a mat; evidence 'The bag is on a mat.'",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -116,7 +144,14 @@
           "formativeQuestion": "What does Musa have?",
           "answerGuidance": "A blue pen.",
           "independentAnswerGuidance": "Example: Musa has a blue pen. He puts it in his bag. Accept accurate alternatives.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -134,7 +169,14 @@
           "formativeQuestion": "What did Zainab and her friend do after reading?",
           "answerGuidance": "They returned the book to the shelf.",
           "independentAnswerGuidance": "Accept 'They put the book back on the shelf' or another accurate improvement.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     }
@@ -146,5 +188,25 @@
     "Safeguarding and accessibility review",
     "Supervised learner pilot and versioned correction",
     "Do not seed or publish until release gates completed"
-  ]
+  ],
+  "editorialReviewChecklist": [
+    "Qualified subject teacher verifies objective, worked examples and answer guidance",
+    "Map each unit to an approved Nigerian curriculum learning outcome",
+    "Trial with learners at the appropriate level, allowing accessible response formats",
+    "Check duration, home-language support and safeguarding; avoid recording identifiable child responses",
+    "Verify content and assessment remain formative until approval"
+  ],
+  "facilitatorGuide": {
+    "preparation": "Prepare paper, pencils and simple local materials; review expected responses and adapt reading level before class.",
+    "lessonFlow": [
+      "Introduce the learning objective in plain language",
+      "Demonstrate one worked example",
+      "Guide a similar example with questioning",
+      "Invite independent or supported practice",
+      "Use formative question to identify who needs another example",
+      "Record anonymous class-level feedback for reviewer"
+    ],
+    "inclusion": "Allow oral, drawing, pointing or dictated responses; do not require sharing children's personal details.",
+    "assessmentPolicy": "Formative only. Do not auto-issue certificates or show completion grades for these drafts."
+  }
 }
