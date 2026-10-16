@@ -30,29 +30,32 @@
 
 **Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
 
-### Week 6: Fractions
+### Week 6: Fraction multiplication — revised draft
 
-**Foundation question:** 1/3 of 18
+**Lesson alignment:** Fraction multiplication. Covers multiplying a fraction by a whole number and multiplying fractions, subject to school-scheme and teacher confirmation.
 
-**Answer key:** 6
+**Foundation question:** Calculate 2/3 × 6 and show six as three equal groups.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Answer key:** 4.
 
-**Application question:** 2/3 of 18
+**Application question:** Calculate 2/3 × 3/4.
 
-**Answer key:** 12
+**Answer key:** 6/12 = 1/2.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Transfer question:** A rectangular garden uses 3/4 of its area for planting; 2/3 of that planted area is vegetables. What fraction of the entire garden is vegetables?
 
-**Transfer question:** 2/3 of 24 pupils
+**Answer key:** 2/3 × 3/4 = 1/2.
 
-**Answer key:** 16
+**Rubric per item:** 1 point accurate result, 1 point for a valid diagram or method demonstrating the multiplication; equivalent accessible methods accepted.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Exemplars:** Full (2): 2/3 × 3/4 = 6/12 = 1/2 with numerator/denominator multiplication shown. Partial (1): correct 1/2 without method. Incorrect (0): 5/7 from adding numerators/denominators.
 
-**Reteach:** Model a fresh fractions example with visuals and worked reasoning, then invite a new attempt.
+**Reteach:** Shade 3/4 of a rectangle, divide shaded part into thirds and identify two thirds of the shaded region.
 
-**Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
+**Progress check:** Calculate 1/2 × 2/5 = 1/5. Record anonymous misconceptions.
+
+**Release gate:** Teacher must confirm whether fraction-by-fraction multiplication is in the applicable Primary 5 scheme; if not, retain this item in editorial review and adjust sequence explicitly.
+
 
 ### Week 7: Mean
 
