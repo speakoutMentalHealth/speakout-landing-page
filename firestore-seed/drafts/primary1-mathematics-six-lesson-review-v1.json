@@ -45,7 +45,14 @@
           "answerGuidance": "7. Four plus three equals seven.",
           "independentPractice": "Draw 5 windows and 2 doors; how many shapes in all?",
           "independentAnswerGuidance": "7.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -64,7 +71,14 @@
           "answerGuidance": "Circles; two more.",
           "independentPractice": "Draw 6 stars and 4 triangles. Compare.",
           "independentAnswerGuidance": "Stars have two more.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -83,7 +97,14 @@
           "answerGuidance": "10.",
           "independentPractice": "Draw 8 leaves then 3 leaves; add.",
           "independentAnswerGuidance": "11.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -102,7 +123,14 @@
           "answerGuidance": "6.",
           "independentPractice": "Draw 12 mango pictures, cross out 5.",
           "independentAnswerGuidance": "7 remain.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -121,7 +149,14 @@
           "answerGuidance": "A door. A plate often resembles a circle.",
           "independentPractice": "Draw one rectangle, circle and triangle and identify an object resembling each.",
           "independentAnswerGuidance": "Responses vary; check shape features.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     },
@@ -140,7 +175,14 @@
           "answerGuidance": "9. Count all objects or start at five and count four more.",
           "independentPractice": "Draw 10 books, give away 2 and explain the remainder.",
           "independentAnswerGuidance": "8.",
-          "assessmentType": "formative-ungraded"
+          "assessmentType": "formative-ungraded",
+          "exitTicket": "Ask the learner to explain or demonstrate today's objective in one simple example; accept accessible alternatives.",
+          "teacherObservationChecklist": [
+            "Learner attempted guided example",
+            "Learner can explain the key concept with or without prompts",
+            "Teacher notes what to reteach without recording identifying information"
+          ],
+          "reteachGuidance": "If understanding is incomplete, model a smaller concrete example, allow a partner demonstration and repeat the check without public ranking."
         }
       ]
     }
@@ -152,5 +194,25 @@
     "Independent answer and developmental suitability review",
     "Accessible and supervised learner pilot",
     "No publication or certificate until gates are met"
-  ]
+  ],
+  "editorialReviewChecklist": [
+    "Qualified subject teacher verifies objective, worked examples and answer guidance",
+    "Map each unit to an approved Nigerian curriculum learning outcome",
+    "Trial with learners at the appropriate level, allowing accessible response formats",
+    "Check duration, home-language support and safeguarding; avoid recording identifiable child responses",
+    "Verify content and assessment remain formative until approval"
+  ],
+  "facilitatorGuide": {
+    "preparation": "Prepare paper, pencils and simple local materials; review expected responses and adapt reading level before class.",
+    "lessonFlow": [
+      "Introduce the learning objective in plain language",
+      "Demonstrate one worked example",
+      "Guide a similar example with questioning",
+      "Invite independent or supported practice",
+      "Use formative question to identify who needs another example",
+      "Record anonymous class-level feedback for reviewer"
+    ],
+    "inclusion": "Allow oral, drawing, pointing or dictated responses; do not require sharing children's personal details.",
+    "assessmentPolicy": "Formative only. Do not auto-issue certificates or show completion grades for these drafts."
+  }
 }
