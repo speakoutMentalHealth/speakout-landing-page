@@ -6,29 +6,32 @@
 
 ## Mathematics
 
-### Week 5: Ratio
+### Week 5: Ratio tables — revised draft
 
-**Foundation question:** 2 pens cost ₦100; each?
+**Lesson alignment:** Ratio tables and constant multiplicative relationships.
 
-**Answer key:** ₦50
+**Foundation question:** Complete this table: notebooks: 1 | 2 | 3; cost (₦): 150 | 300 | __.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Answer key:** ₦450.
 
-**Application question:** 3 notebooks cost ₦450; each?
+**Application question:** Complete the table: red beads: 2 | 4 | 6; blue beads: 3 | 6 | __.
 
-**Answer key:** ₦150
+**Answer key:** 9 blue beads; the ratio is consistently 2:3.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Transfer question:** In the ratio table, bags: 2 | 4 | 6; oranges: 10 | 20 | __. Explain the multiplier and predict the final entry.
 
-**Transfer question:** 5 notebooks at ₦150?
+**Answer key:** 30 oranges; five oranges per bag, or multiply the first column by three.
 
-**Answer key:** ₦750
+**Rubric per item:** 1 point for the correct missing table value and 1 for a valid constant-ratio explanation or equivalent drawing.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Exemplars:** Full (2): for red 6, finds blue 9 and explains both columns multiply by three. Partial (1): writes 9 without a valid explanation. Incorrect (0): writes 8 because each entry is increased by two.
 
-**Reteach:** Model a fresh ratio example with visuals and worked reasoning, then invite a new attempt.
+**Reteach:** Build equivalent columns with counters; check both quantities change by the same multiplicative factor.
 
-**Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
+**Progress check:** Complete pens: 2 | 4 | 8; cost (₦): 100 | 200 | __ (₦400).
+
+**Release gate:** Align with the school's actual ratio-table objectives and obtain qualified-teacher review before release.
+
 
 ### Week 6: Division
 
