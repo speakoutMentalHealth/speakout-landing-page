@@ -32,6 +32,25 @@ for(const [id,library] of [
   assert.ok(hub.includes('book-reader.html?id='+id),'Direct reader link missing for '+id);
   assert.ok(hub.includes('href="'+library+'"'),'Fallback library link missing for '+id);
 }
+const priorityCourses=JSON.parse(await read('firestore-seed/priority-courses.json'));
+const expectedInternalIds=[
+ 'mental-health-awareness-students',
+ 'student-leadership-foundations',
+ 'digital-literacy-essentials',
+ 'teacher-mental-health-support-basics',
+ 'parent-communication-teen-support',
+ 'mental-health-club-coordinator-training'
+];
+for(const id of expectedInternalIds){
+ const matched=priorityCourses.filter(course=>course.id===id && course.courseType==='internal');
+ assert.equal(matched.length,1,'Expected exactly one canonical internal course: '+id);
+ const course=matched[0];
+ assert.equal(course.modules?.length,6,'Missing six modules: '+id);
+ assert.equal(course.modules.reduce((sum,module)=>sum+(module.lessons?.length||0),0),18,'Expected 18 lessons: '+id);
+ assert.ok(hub.includes('course-player.html?id='+id),'Missing Learning Hub pathway link: '+id);
+ assert.ok(course.finalAssessment?.questionCount>0,'Missing final assessment metadata: '+id);
+ assert.ok(!Array.isArray(course.finalAssessment?.questions),'Public source exposes assessment answers: '+id);
+}
 for(const file of ['firestore-seed/audience-guides.json']){
  const guides=JSON.parse(await read(file));
  for(const [id,minimum] of [['student-wellbeing-guide-v1',16],['teacher-wellbeing-safeguarding-guide-v1',12],['parent-caregiver-wellbeing-guide-v1',12]]){
