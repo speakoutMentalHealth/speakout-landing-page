@@ -30,29 +30,34 @@
 
 **Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
 
-### Week 6: Fractions
+### Week 6: Mixed numbers — aligned provisional assessment
 
-**Foundation question:** 2/4 simplified
+**Lesson alignment:** `primary4-term1-mathematics-weeks5-8-draft.md`, Week 6: Mixed numbers. Simplifying equivalent fractions is a **supporting skill**, not the primary lesson objective. This draft replacement resolves the known topic mismatch; teacher and school-scheme approval remain pending.
 
-**Answer key:** 1/2
+**Foundation question:** Draw one whole bar and two quarters of another bar. Write the mixed number in simplest form.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Answer key:** 1 1/2. Two quarters equals one half.
 
-**Application question:** 3/6 simplified
+**Application question:** A picture shows two fully shaded equal bars and three sixths of a third bar. Write the mixed number in simplest form.
 
-**Answer key:** 1/2
+**Answer key:** 2 1/2. Three sixths equals one half.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Transfer question:** A group measures 1 2/4 metres of ribbon and then adds another 1/4 metre. What mixed number describes the total length?
 
-**Transfer question:** 4 of 8 equal pieces as simplest fraction
+**Answer key:** 1 3/4 metres. The fractional parts add to three quarters.
 
-**Answer key:** 1/2
+**Formative marking per question (2 points):** 1 point for the mathematically accurate simplified mixed number, plus 1 point for a relevant representation or explanation showing whole(s), fractional parts and simplification where needed. Award the reasoning point only when the method is observable and valid; accept oral, drawn or written explanations.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Examples for foundation question:**
+- Full credit (2): "1 1/2, because 2 of the 4 equal pieces make one half."
+- Partial (1): "1 1/2" with no explanation or representation.
+- Incorrect (0): "3/4" with no valid model (does not account for the whole bar).
 
-**Reteach:** Model a fresh fractions example with visuals and worked reasoning, then invite a new attempt.
+**Reteach:** Draw a complete bar and a second bar divided into four equal sections; shade two sections. Compare 2/4 and 1/2 before combining with the whole.
 
-**Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
+**Progress check:** Show 3 complete bars and 2/4 of another and ask for a simplified mixed number (3 1/2). Record anonymised class-level misconceptions only.
+
+**Release gate:** This is a provisional correction. Confirm the applicable official outcome, partner-school sequence and teacher reviewer/date before adoption; do not deploy as an approved assessment.
 
 ### Week 7: Angles
 
