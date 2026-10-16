@@ -543,8 +543,8 @@ function renderLesson(){
  const isLastInModule=l.lessonIndex===m.lessons.length-1;
  if(!completedLessons.has(l.id)){
    nextButton.disabled=true;nextButton.textContent="Complete Lesson First";
- }else if(isLastInModule&&m.quiz&&!passedModuleQuizzes[l.moduleIndex]){
-   nextButton.disabled=false;nextButton.textContent="Take Module Quiz";
+ }else if(isLastInModule&&m.quiz){
+   nextButton.disabled=false;nextButton.textContent=passedModuleQuizzes[l.moduleIndex]?"Review Module Assessment":"Take Module Assessment";
  }else{
    const nextIdx=currentView.lessonIndex+1;
    nextButton.disabled=nextIdx>=lessons.length&&!finalUnlocked();
@@ -705,7 +705,7 @@ nextButton.onclick=()=>{
  const l=lessons[currentView.lessonIndex];
  if(!completedLessons.has(l.id))return;
  const m=modules[l.moduleIndex], last=l.lessonIndex===m.lessons.length-1;
- if(last&&m.quiz&&!passedModuleQuizzes[l.moduleIndex]){currentView={type:"moduleQuiz",moduleIndex:l.moduleIndex};renderCurrentView();focusLesson();return}
+ if(last&&m.quiz){currentView={type:"moduleQuiz",moduleIndex:l.moduleIndex};renderCurrentView();focusLesson();return}
  const nextIdx=currentView.lessonIndex+1;
  if(nextIdx<lessons.length&&lessonUnlocked(lessons[nextIdx])){currentView={type:"lesson",lessonIndex:nextIdx};renderCurrentView();focusLesson()}
  else if(finalUnlocked()){currentView={type:"final"};renderCurrentView();focusLesson()}
