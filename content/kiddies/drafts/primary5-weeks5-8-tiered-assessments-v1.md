@@ -107,29 +107,31 @@
 
 ## English studies
 
-### Week 5: Summary
+### Week 5: Summarise a report — revised formative draft
 
-**Foundation question:** What belongs in summary?
+**Lesson alignment:** Primary 5 English Studies week 5 asks pupils to summarise an actual short report. The previous assessment prompts lacked a complete passage for the summary task.
 
-**Answer key:** main idea
+**Original source report:** "On Thursday, pupils in Primary 5 organised a reading corner. They sorted forty books into storybooks and information books. Four volunteers labelled the shelves while other pupils cleaned the reading tables. The class teacher checked the arrangement before the corner opened on Friday."
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Foundation question:** State the main event in the report.
 
-**Application question:** Copy every sentence?
+**Answer key:** Primary 5 pupils organised a reading corner.
 
-**Answer key:** no
+**Application question:** Identify two important actions that supported the event.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Answer key:** Any two of sorting books, labelling shelves and cleaning reading tables.
 
-**Transfer question:** Summarise: pupils planted and watered seeds
+**Transfer question:** Summarise the report in one or two sentences without adding facts.
 
-**Answer key:** Pupils planted and cared for seeds
+**Answer key / exemplar:** "Primary 5 pupils prepared a reading corner by organising books, labelling shelves and cleaning the area. Their teacher checked it before it opened on Friday." Accept shorter accurate summaries retaining the main idea and at least one supporting detail.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Marking (2 points each):** 1 point for accurate main idea or key detail and 1 point for concise evidence-based phrasing. For the transfer question, full credit (2) requires accurate event and important detail in concise wording; partial credit (1) identifies the event but adds no essential detail; incorrect (0) invents an unsupported event.
 
-**Reteach:** Model a fresh summary example with visuals and worked reasoning, then invite a new attempt.
+**Reteach:** Mark the main event and separate essential actions from minor details. Model one sentence, then support a shorter learner-authored version.
 
-**Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
+**Progress check:** Present a different original classroom report and ask learners to explain which details are essential to its summary.
+
+**Release gate:** Qualified teacher must verify reading level, answer criteria, applicable curriculum outcome and supervised pilot before use. Draft only.
 
 ### Week 6: Relative clauses
 
