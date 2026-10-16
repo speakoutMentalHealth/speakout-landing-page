@@ -39,13 +39,13 @@
       "SpeakOut_Internship_Letter_Agreement_Friday_Akolo_Dauda.docx",
       "*.md",
       "INSTALLATION_GUIDE.txt",
-            "INSTALL_GUIDE.txt",
-            "PHASE-3-5-QA-REPORT.txt",
-            "PORTAL-REVAMP-NOTES.txt",
-            "README.txt",
-            "SPEAKHUB-V5-DEPLOYMENT.txt",
-            "firestore-rules.txt",
-            "js/AUTH-GUARD-PATCH.txt",
+      "INSTALL_GUIDE.txt",
+      "PHASE-3-5-QA-REPORT.txt",
+      "PORTAL-REVAMP-NOTES.txt",
+      "README.txt",
+      "SPEAKHUB-V5-DEPLOYMENT.txt",
+      "firestore-rules.txt",
+      "js/AUTH-GUARD-PATCH.txt",
       "books-seed.json",
       "courses-seed.json",
       "legal-elibrary-books.json",
@@ -54,22 +54,54 @@
       "seed-*.html",
       "seed-*.js",
       "cleanup-books.html",
-      "cleanup-books.js"
+      "cleanup-books.js",
+      "firestore-seed/drafts/**",
+      "firestore-seed/*-review*.json",
+      "firestore-seed/kiddies-course-completion-review-*.json"
     ],
     "redirects": [
-      { "source": "/portal/courses/**", "destination": "/my-courses.html", "type": 302 },
-      { "source": "/portal/library/**", "destination": "/my-library.html", "type": 302 },
-      { "source": "/portal/progress/**", "destination": "/progress.html", "type": 302 },
-      { "source": "/portal/certificates/**", "destination": "/certificates.html", "type": 302 },
-      { "source": "/portal/workshops/**", "destination": "/workshops.html", "type": 302 }
+      {
+        "source": "/portal/courses/**",
+        "destination": "/my-courses.html",
+        "type": 302
+      },
+      {
+        "source": "/portal/library/**",
+        "destination": "/my-library.html",
+        "type": 302
+      },
+      {
+        "source": "/portal/progress/**",
+        "destination": "/progress.html",
+        "type": 302
+      },
+      {
+        "source": "/portal/certificates/**",
+        "destination": "/certificates.html",
+        "type": 302
+      },
+      {
+        "source": "/portal/workshops/**",
+        "destination": "/workshops.html",
+        "type": 302
+      }
     ],
     "headers": [
       {
         "source": "**",
         "headers": [
-          { "key": "X-Content-Type-Options", "value": "nosniff" },
-          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=()"
+          }
         ]
       }
     ]
