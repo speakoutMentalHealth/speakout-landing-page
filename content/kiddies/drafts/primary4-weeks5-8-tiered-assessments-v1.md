@@ -231,29 +231,31 @@
 
 **Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
 
-### Week 6: Changes
+### Week 6: Changes in materials — revised formative assessment
 
-**Foundation question:** Is folding paper usually reversible?
+**Lesson alignment:** Observe and distinguish changes that can readily be reversed from those that cannot. Use drawings and teacher-provided descriptions; pupils must not burn materials.
 
-**Answer key:** yes
+**Foundation question:** A sheet of paper is folded and then unfolded. Can its shape be returned approximately to its earlier form?
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Answer key:** Yes, although a crease may remain; the folding is largely reversible.
 
-**Application question:** Is tearing paper easily reversible?
+**Application question:** A sheet of paper is torn into small pieces. Can it be returned to one intact sheet simply by reversing the tear?
 
-**Answer key:** no
+**Answer key:** No. The original sheet is not readily restored by undoing the action; joining pieces does not undo the tear.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Transfer question:** Ice melts into liquid water, while paper is burned into ash. Explain one difference in how readily these changes can be reversed.
 
-**Transfer question:** Compare melting ice and burning paper
+**Answer key:** Melted water can be frozen to make ice again, whereas burnt paper cannot simply be restored from its ash. Do not conduct burning experiments.
 
-**Answer key:** Melting is reversible; burning is not readily reversible
+**Marking (2 points each):** 1 point for a scientifically correct classification and 1 point for a relevant reason tied to the described change. Accept spoken, drawn or written evidence.
 
-**Marking:** 1 point for answer and 1 point for relevant reasoning or representation.
+**Exemplars:** Full credit (2): "Water can freeze again, but ashes cannot simply become the original paper." Partial (1): "Melting can be reversed" without explanation. Incorrect (0): "Both changes can be undone by cooling them."
 
-**Reteach:** Model a fresh changes example with visuals and worked reasoning, then invite a new attempt.
+**Reteach:** Compare a safely folded sheet of paper with a teacher-drawn picture of torn paper; discuss what "reversed" means. Use a picture sequence for melting and freezing.
 
-**Progress check:** Use an unseen analogous item; record only anonymised class-level misconceptions.
+**Progress check:** Ask whether stretching an elastic band slightly and allowing it to return is usually reversible; expected: yes, provided the band is not damaged.
+
+**Safety and release:** Adult-supervised paper activity only; do not burn, heat or use hazardous materials with pupils. Confirm the applicable curriculum outcome, factual review, accessibility and teacher sign-off before publication.
 
 ### Week 7: Sound
 
