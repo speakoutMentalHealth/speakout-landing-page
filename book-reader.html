@@ -97,6 +97,7 @@
 <button class="btn softBtn" id="printBtn" type="button">Print / Save PDF</button>
 <a class="btn softBtn" href="student-library.html" id="exitLink">Exit</a>
 </div>
+<p class="reader-status" id="sectionAnnouncement" role="status" aria-live="polite" aria-atomic="true"></p>
 <p aria-live="polite" class="reader-status" id="readerStatus"></p>
 </article>
 </div>
@@ -562,6 +563,7 @@ function renderSlide(){
   updateProgress();
   mobileSectionPosition.textContent=`Section ${currentIndex+1} of ${slides.length} • ${slideReadMinutes(slide)} min read`;
   mobileSectionTitle.textContent=slide.title||"Section";
+  document.getElementById("sectionAnnouncement").textContent=`Now reading section ${currentIndex+1} of ${slides.length}: ${slide.title||"Section"}`;
 
   prevBtn.disabled = currentIndex === 0;
   nextBtn.disabled = currentIndex === slides.length - 1;
@@ -726,6 +728,7 @@ window.addEventListener("beforeunload",()=>{if(speechSupported())window.speechSy
 
 document.addEventListener("keydown",event=>{
   if(event.key === "Escape" && readerSidebar.classList.contains("open")){closeReaderMenu({restoreFocus:true});return}
+  if(readerSidebar.classList.contains("open")) return;
   if(event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
   if(document.activeElement?.matches("input, textarea, select, [contenteditable='true']")) return;
   if(event.key === "ArrowLeft" && !prevBtn.disabled){
