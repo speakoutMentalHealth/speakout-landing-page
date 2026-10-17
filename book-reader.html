@@ -727,8 +727,18 @@ readerDrawerBackdrop.addEventListener("click",()=>closeReaderMenu({restoreFocus:
 window.addEventListener("beforeunload",()=>{if(speechSupported())window.speechSynthesis.cancel()});
 
 document.addEventListener("keydown",event=>{
-  if(event.key === "Escape" && readerSidebar.classList.contains("open")){closeReaderMenu({restoreFocus:true});return}
-  if(readerSidebar.classList.contains("open")) return;
+  if(event.key === "Escape" && readerSidebar.classList.contains("open")){event.preventDefault();closeReaderMenu({restoreFocus:true});return}
+  if(readerSidebar.classList.contains("open")){
+    if(event.key==="Tab"){
+      const controls=[...readerSidebar.querySelectorAll('button:not([disabled]), a[href], [tabindex="0"]')].filter(el=>el.getClientRects().length>0);
+      const first=controls[0],last=controls.at(-1);
+      if(first&&last){
+        if(event.shiftKey&&(document.activeElement===first||!readerSidebar.contains(document.activeElement))){event.preventDefault();last.focus()}
+        else if(!event.shiftKey&&(document.activeElement===last||!readerSidebar.contains(document.activeElement))){event.preventDefault();first.focus()}
+      }
+    }
+    return;
+  }
   if(event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
   if(document.activeElement?.matches("input, textarea, select, [contenteditable='true']")) return;
   if(event.key === "ArrowLeft" && !prevBtn.disabled){
