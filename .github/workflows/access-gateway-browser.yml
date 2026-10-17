@@ -11,6 +11,10 @@ on:
       - "production-ready.js"
       - "tests/access-gateway-browser.mjs"
       - "tests/google-auth-browser.mjs"
+      - "tests/account-controls-browser.mjs"
+      - "js/account-controls.js"
+      - "js/account-session.js"
+      - "css/account-controls.css"
       - ".github/workflows/access-gateway-browser.yml"
   push:
     branches: [main]
@@ -21,6 +25,10 @@ on:
       - "js/auth-access.js"
       - "tests/access-gateway-browser.mjs"
       - "tests/google-auth-browser.mjs"
+      - "tests/account-controls-browser.mjs"
+      - "js/account-controls.js"
+      - "js/account-session.js"
+      - "css/account-controls.css"
       - ".github/workflows/access-gateway-browser.yml"
   workflow_dispatch:
 permissions:
@@ -49,6 +57,8 @@ jobs:
         run: node tests/access-gateway-browser.mjs
       - name: Check Google profile and approval flows with Firebase mocks
         run: node tests/google-auth-browser.mjs
+      - name: Check account controls and logout across mobile and desktop sections
+        run: node tests/account-controls-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

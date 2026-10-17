@@ -43,4 +43,5 @@ window.createWorkshop = async function(profile){
  };
  await addDoc(collection(db,"workshops"),payload);
 }
-window.pageReady=async(user,profile)=>{await window.loadWorkshops(profile)};requireRoles(["student","parent","teacher","school_admin"], async (user, profile)=>{renderRoleNav(profile,"Workshops"); if(window.pageReady) window.pageReady(user,profile);});</script><div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="pages/contact.html">Contact SpeakOut</a><a class="primary" href="pages/donate.html">Support the Mission</a></div></body></html>
+window.pageReady=async(user,profile)=>{await window.loadWorkshops(profile)};requireRoles(["student","parent","teacher","school_admin"], async (user, profile)=>{renderRoleNav(profile,"Workshops"); if(window.pageReady) window.pageReady(user,profile);});</script><div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="pages/contact.html">Contact SpeakOut</a><a class="primary" href="pages/donate.html">Support the Mission</a></div><script type="module" src="js/account-controls.js"></script>
+</body></html>

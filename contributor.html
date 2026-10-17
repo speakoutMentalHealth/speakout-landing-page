@@ -281,14 +281,14 @@ function renderNav(profile){
   if(role === "teacher") dashboard = "teacher-dashboard.html";
   if(role === "parent") dashboard = "parent-dashboard.html";
   if(role === "student") dashboard = "student-dashboard.html";
-  if(role === "contributor") dashboard = "contributor-dashboard.html";
+  if(role === "contributor") dashboard = "contributor.html";
 
   roleNav.innerHTML = `
     <a class="btn softBtn" href="index.html">Home</a>
     <a class="btn softBtn" href="${dashboard}">Dashboard</a>
     <a class="btn softBtn" href="speakhub.html">SpeakHub</a>
     <a class="btn softBtn" href="certificate-center.html">Certificates</a>
-    <a class="btn dark" href="auth.html">Login</a>
+    ${currentUser ? '<button class="btn dark" type="button" data-logout>Logout</button>' : '<a class="btn dark" href="auth.html">Login</a>'}
   `;
 }
 
@@ -383,5 +383,6 @@ form.onsubmit = async e => {
 };
 </script>
 <script defer="" src="portal-ui.js"></script>
+<script type="module" src="js/account-controls.js"></script>
 </body>
 </html>

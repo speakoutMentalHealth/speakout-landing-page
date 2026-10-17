@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { spawnSync } from "node:child_process";
 
 const read = path => readFileSync(new URL("../"+path, import.meta.url), "utf8");
 const combined = (page,module) => read(page) + "\n" + read(module);
-const stripImports = source => source.replace(/^\s*import[\s\S]*?;\s*$/gmu,"");
 
 function moduleSources(file){
   const page=read(file);
@@ -139,7 +139,8 @@ test("credential unification browser modules remain syntactically valid", () => 
     const sources=moduleSources(file);
     assert.ok(sources.length>0,file+": module script missing");
     for(const source of sources){
-      assert.doesNotThrow(()=>new Function(stripImports(source)),file);
+      const result=spawnSync(process.execPath,["--check","--input-type=module"],{input:source,encoding:"utf8"});
+      assert.equal(result.status,0,`${file}: ${result.stderr}`);
     }
   }
 });
