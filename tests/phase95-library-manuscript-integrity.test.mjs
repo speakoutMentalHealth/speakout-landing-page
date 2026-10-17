@@ -17,7 +17,7 @@ test('Starter books separate readable manuscripts from catalogue-only references
   if(html){
    readable++;
    assert.ok(html.length>1000,'Substantial book body missing: '+book.id);
-   assert.match(html,/<h[1-3]\\b/i,'No navigable section headings: '+book.id);
+   assert.match(html,/<h[1-3]\b/i,'No navigable section headings: '+book.id);
    assert.ok(!/<script\\b/i.test(html),'Script inside source manuscript: '+book.id);
   }else{
    catalogue++;
