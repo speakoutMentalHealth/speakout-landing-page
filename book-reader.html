@@ -708,12 +708,26 @@ completeBtn.addEventListener("click",async()=>{
 
 // Reader-only accessibility preference; saved course and reading progress remain unchanged.
 const readerFontButton=document.getElementById("readerFontButton");
+const readerFontStorageKey="speakout-reader-text-size";
 let readerFontStep=0;
+try{
+ const stored=Number(localStorage.getItem(readerFontStorageKey));
+ if(Number.isInteger(stored)&&stored>=0&&stored<=2)readerFontStep=stored;
+}catch{ /* Private browsing can disable preference storage. */ }
+function applyReaderFontSize(){
+ const sizes=["1rem","1.125rem","1.25rem"];
+ stage.style.setProperty("--reader-text-size",sizes[readerFontStep]);
+ const nextLabels=["Text A+","Text A++","Text Reset"];
+ const nextDescriptions=["Increase reading text size","Increase reading text size again","Reset reading text size"];
+ readerFontButton.textContent=nextLabels[readerFontStep];
+ readerFontButton.setAttribute("aria-label",nextDescriptions[readerFontStep]);
+ readerFontButton.setAttribute("title",nextDescriptions[readerFontStep]);
+}
+applyReaderFontSize();
 readerFontButton.addEventListener("click",()=>{
  readerFontStep=(readerFontStep+1)%3;
- stage.style.setProperty("--reader-text-size",["1rem","1.125rem","1.25rem"][readerFontStep]);
- readerFontButton.textContent=["Text A+","Text A++","Text Reset"][readerFontStep];
- readerFontButton.setAttribute("aria-label",["Increase reading text size","Increase reading text size again","Reset reading text size"][readerFontStep]);
+ applyReaderFontSize();
+ try{localStorage.setItem(readerFontStorageKey,String(readerFontStep))}catch{ /* Preference remains available for this session. */ }
 });
 printBtn.addEventListener("click",()=>window.print());
 listenBtn.addEventListener("click",toggleListening);
