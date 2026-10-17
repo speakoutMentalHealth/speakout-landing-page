@@ -1,1 +1,6 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';test('Primary 4–6 weekly tiered assessments cover all 24 topics per grade',async()=>{for(let grade=4;grade<=6;grade++){const s=await readFile(new URL('../content/kiddies/drafts/primary'+grade+'-weeks5-8-tiered-assessments-v1.md',import.meta.url),'utf8');const topics=s.split(/^### Week [5-8]:/m).slice(1);assert.equal((s.match(/^## (?!Evidence)/gm)||[]).length,6);assert.equal(topics.length,24);for(const topic of topics){for(const key of ['**Foundation question:','**Application question:','**Transfer question:'])assert.equal(topic.split(key).length-1,1,key);assert.equal((topic.match(/^\*\*Answer key:/gm)||[]).length,3);assert.equal((topic.match(/^\*\*Marking:/gm)||[]).length,3);assert.equal((topic.match(/^\*\*Reteach:/gm)||[]).length,1);assert.equal((topic.match(/^\*\*Progress check:/gm)||[]).length,1);}assert.match(s,/unverified/);assert.match(s,/not received/);assert.match(s,/not conducted/);}});
+import test from 'node:test';
+import {validateTieredBank} from './tiered-bank-source-validator.mjs';
+
+test('Primary 4, 5, 6 weekly tiered banks have complete questions, answers and rubrics',async()=>{
+ for(const grade of [4,5,6])await validateTieredBank(grade);
+});
