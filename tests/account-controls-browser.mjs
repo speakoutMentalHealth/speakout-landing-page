@@ -24,7 +24,7 @@ async function fixture(user,fail=false){
 }
 try{
   for(const width of [320,390,1280]){
-    for(const path of ['contributor.html','my-learning.html','course-player.html','profile.html','student-dashboard.html','admin-dashboard.html','learning/index.html','pages/academy-native-lessons.html']){
+    for(const path of ['index.html','auth.html','contributor.html','my-learning.html','course-player.html','profile.html','student-dashboard.html','admin-dashboard.html','learning/index.html','pages/academy-native-lessons.html']){
       const context=await fixture({uid:'qa-contributor'}),page=await context.newPage();
       await page.setViewportSize({width,height:844});await page.goto(`${base}/${path}`);
       const account=page.getByRole('navigation',{name:'Account',exact:true});

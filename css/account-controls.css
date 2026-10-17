@@ -9,3 +9,5 @@
 .speakout-account-status{font-size:.85rem;line-height:1.5;max-width:100%;overflow-wrap:anywhere}
 .speakout-account-status:empty{display:none}
 @media(prefers-reduced-motion:reduce){.speakout-account .speakout-account-action{transition:none;transform:none}}
+
+header [data-account-login][hidden]{display:none!important}

@@ -36,11 +36,11 @@ function accountHarness(){
   let observer,listener,authError,finish;
   const login={},logout={},status={};
   const account={setAttribute(){},querySelector:s=>s==='a'?login:s==='button'?logout:status};
-  const header={insertAdjacentElement(position,element){assert.equal(position,'afterend');assert.equal(element,account);}};
+  const header={querySelectorAll:()=>[],insertAdjacentElement(position,element){assert.equal(position,'afterend');assert.equal(element,account);}};
   const document={head:{append(){}},querySelector:()=>header,createElement:tag=>tag==='nav'?account:{},addEventListener(type,handler,capture){assert.equal(type,'click');assert.equal(capture,true);listener=handler;}};
   const source=read('js/account-controls.js').replace(/^import .*;\n/gm,'').replaceAll('import.meta.url','"https://example.test/js/account-controls.js"');
   let calls=0;
-  new Function('auth','onAuthStateChanged','loginUrl','logoutSession','document','window',source)({},(_,cb,error)=>{observer=cb;authError=error;},'https://example.test/auth.html',()=>{calls++;return new Promise(r=>finish=r);},document,{});
+  new Function('auth','onAuthStateChanged','loginUrl','logoutSession','document','window','MutationObserver',source)({},(_,cb,error)=>{observer=cb;authError=error;},'https://example.test/auth.html',()=>{calls++;return new Promise(r=>finish=r);},document,{},class {observe(){}});
   return {login,logout,status,auth:user=>observer(user),error:()=>authError(),click:()=>listener({target:{closest:()=>logout},preventDefault(){},stopImmediatePropagation(){}}),finish:()=>finish(),get calls(){return calls;}};
 }
 test("account actions follow auth state without depending on role approval or profile reads",()=>{

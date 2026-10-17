@@ -19,6 +19,22 @@ if(header){
   const logout = account.querySelector("button");
   const status = account.querySelector("[role='status']");
   let busy = false;
+  let signedIn = false;
+  function updateHeaderActions(){
+    // Older pages rebuild role navigation after an asynchronous profile read.
+    // Keep those login links in sync too, without changing access/join CTAs.
+    header.querySelectorAll("a[href]").forEach(link=>{
+      if(!/^(log\s*in|sign\s*in)(\s*\/.*)?$/i.test(link.textContent.trim())) return;
+      const target = new URL(link.href, window.location.href);
+      if(target.origin !== window.location.origin || !/\/(auth|login)\.html$/.test(target.pathname)) return;
+      link.dataset.accountLogin = "";
+      link.hidden = signedIn;
+    });
+    header.querySelectorAll("[data-logout],#logoutBtn,#logoutButton,#logoutLink,.logout").forEach(control=>{
+      control.hidden = !signedIn;
+    });
+  }
+  new MutationObserver(updateHeaderActions).observe(header, {childList:true,subtree:true});
   const logoutSelector = "[data-logout],#logoutBtn,#logoutButton,#logoutLink,.logout";
 
   async function handleLogout(event){
@@ -44,7 +60,9 @@ if(header){
   window.speakoutLogout = logoutSession;
 
   onAuthStateChanged(auth, user=>{
-    login.hidden = Boolean(user);
+    signedIn = Boolean(user);
+    updateHeaderActions();
+    login.hidden = signedIn;
     logout.hidden = !user;
     if(!busy) status.textContent = "";
   }, ()=>{
