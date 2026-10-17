@@ -1,1 +1,6 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';test('Primary tiered banks reject missing and one-character question or answer fields',async()=>{for(let grade=1;grade<=6;grade++){const s=await readFile(new URL('../content/kiddies/drafts/primary'+grade+'-weeks5-8-tiered-assessments-v1.md',import.meta.url),'utf8');const stems=[...s.matchAll(/\*\*(?:Foundation|Application|Transfer) question:\*\* ([^\n]+)/g)].map(m=>m[1]);const answers=[...s.matchAll(/\*\*Answer key:\*\* ([^\n]+)/g)].map(m=>m[1]);assert.equal(stems.length,72);assert.equal(answers.length,72);for(const stem of stems)assert.ok(stem.trim().length>=2,'Malformed item in Primary '+grade+': '+stem);for(const answer of answers)assert.ok(answer.trim().length>=1,'Blank answer in Primary '+grade);}});
+import test from 'node:test';
+import {validateTieredBank} from './tiered-bank-source-validator.mjs';
+
+test('Primary 1, 2, 3, 4, 5, 6 weekly tiered banks have complete questions, answers and rubrics',async()=>{
+ for(const grade of [1,2,3,4,5,6])await validateTieredBank(grade);
+});
