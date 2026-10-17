@@ -92,6 +92,7 @@
 <div class="slide-actions">
 <button class="btn ghost" id="prevBtn" type="button">Previous</button>
 <button class="btn primary" id="nextBtn" type="button">Next</button>
+<button class="btn softBtn" id="readerFontButton" type="button" aria-label="Increase reading text size">Text A+</button>
 <button class="btn gold" id="completeBtn" type="button">Mark Section Complete</button>
 <button class="btn softBtn" id="printBtn" type="button">Print / Save PDF</button>
 <a class="btn softBtn" href="student-library.html" id="exitLink">Exit</a>
@@ -703,6 +704,15 @@ completeBtn.addEventListener("click",async()=>{
   }
 });
 
+// Reader-only accessibility preference; saved course and reading progress remain unchanged.
+const readerFontButton=document.getElementById("readerFontButton");
+let readerFontStep=0;
+readerFontButton.addEventListener("click",()=>{
+ readerFontStep=(readerFontStep+1)%3;
+ stage.style.setProperty("--reader-text-size",["1rem","1.125rem","1.25rem"][readerFontStep]);
+ readerFontButton.textContent=["Text A+","Text A++","Text Reset"][readerFontStep];
+ readerFontButton.setAttribute("aria-label",["Increase reading text size","Increase reading text size again","Reset reading text size"][readerFontStep]);
+});
 printBtn.addEventListener("click",()=>window.print());
 listenBtn.addEventListener("click",toggleListening);
 stopListenBtn.addEventListener("click",()=>stopListening());
