@@ -121,7 +121,7 @@
 **Answer key:** "Kola watered the plant, so the leaves stayed fresh." Accept other logically linked wording without claiming that watering alone proves the cause.
 
 **Marking:** For each item, 1 point for a relevant accurate response and 1 for naming or demonstrating the cause/effect connection. Accept oral and dictated responses.
-**Reteach:** Use a picture showing a spill and a wet floor; distinguish the event from the result.
+**Progress check:** Provide a fresh comparable prompt after feedback; note only anonymous teaching needs.\n\n**Reteach:** Use a picture showing a spill and a wet floor; distinguish the event from the result.
 
 ### Week 6: Adverbs
 
@@ -135,7 +135,7 @@
 **Answer key:** "The bird sang softly" or another meaningful adverb.
 
 **Marking:** Per item, 1 point correct adverb and 1 point for explaining how it modifies an action. Accept equivalent examples.
-**Reteach:** Compare "walk" and "walk quietly" and discuss the added information.
+**Progress check:** Provide a fresh comparable prompt after feedback; note only anonymous teaching needs.\n\n**Reteach:** Compare "walk" and "walk quietly" and discuss the added information.
 
 ### Week 7: Compare characters
 
@@ -149,7 +149,7 @@
 **Answer key:** "Both children share. Ngozi likes drawing, but Bello likes reading," or equivalent.
 
 **Marking:** Per item, 1 point for a supported similarity/difference and 1 point for evidence from the example.
-**Reteach:** Make a simple similarities/differences table with the two short descriptions.
+**Progress check:** Provide a fresh comparable prompt after feedback; note only anonymous teaching needs.\n\n**Reteach:** Make a simple similarities/differences table with the two short descriptions.
 
 ### Week 8: Write a short report
 
@@ -163,7 +163,7 @@
 **Answer key:** E.g., "On Wednesday, six pupils arranged twelve books. They put the books on a shelf." Accept accurate, clearly ordered alternatives without invented details.
 
 **Marking:** Per item, 1 point for accurate facts and 1 for clear report wording or identification of where/when/who; accessible oral/dictated responses accepted.
-**Reteach:** Use a who–what–when chart; organise the details into complete sentences.
+**Progress check:** Provide a fresh comparable prompt after feedback; note only anonymous teaching needs.\n\n**Reteach:** Use a who–what–when chart; organise the details into complete sentences.
 
 **Safeguarding and release gate:** Do not ask children to recount private events or collect identifiers. Teacher must independently check language, marking, applicable curriculum outcome and supervised pilot before release.
 
