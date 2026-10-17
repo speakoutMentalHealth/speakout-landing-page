@@ -13,4 +13,5 @@ import { collection, getDocs, query, where } from "https://www.gstatic.com/fireb
 function show(m,t=""){statusBox.textContent=m;statusBox.className="notice "+t;}
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return;}try{const snap=await getDocs(query(collection(db,"payments"),where("userId","==",user.uid)));let html="";snap.forEach(d=>{const p=d.data();html+=`<article class="card"><span class="pill ${p.status}">${p.status}</span><h3>${p.resourceTitle||"Premium Resource"}</h3><p><b>Type:</b> ${p.resourceType||"—"}</p><p><b>Amount:</b> ${p.amountPaid||p.amountExpected||"—"} ${p.currency||""}</p><p><b>Reference:</b> ${p.transactionRef||"—"}</p></article>`;});paymentGrid.innerHTML=html||"<div class='notice warn'>No payment request found.</div>";show("Payment history loaded.","ok");}catch(e){console.error(e);show("Could not load payment history.","bad");}});
 </script><script defer="" src="portal-ui.js"></script>
+<script type="module" src="js/account-controls.js"></script>
 </body></html>

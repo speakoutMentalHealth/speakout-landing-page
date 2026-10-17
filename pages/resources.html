@@ -280,5 +280,6 @@
 </footer>
 <script src="../js/main.js"></script>
 <script>document.getElementById("resourceSearch")?.addEventListener("submit",function(event){event.preventDefault();const query=document.getElementById("resourceQuery").value.trim().toLowerCase();if(!query)return;const cards=[...document.querySelectorAll("main article")];let first=null;for(const card of cards){const match=card.textContent.toLowerCase().includes(query);if(match&&!first)first=card;}if(first){first.scrollIntoView({behavior:"smooth",block:"center"});first.setAttribute("tabindex","-1");first.focus({preventScroll:true});}else{const input=document.getElementById("resourceQuery");input.setCustomValidity("No matching resource is listed on this page. Try another term or contact SpeakOut.");input.reportValidity();input.setCustomValidity("");}});</script>
-<div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="contact.html">Contact SpeakOut</a><a class="primary" href="donate.html">Support the Mission</a></div></body>
+<div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="contact.html">Contact SpeakOut</a><a class="primary" href="donate.html">Support the Mission</a></div><script type="module" src="../js/account-controls.js"></script>
+</body>
 </html>

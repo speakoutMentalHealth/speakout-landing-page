@@ -47,4 +47,5 @@ function card(i){
 async function load(){try{const snap=await getDocs(collection(db,"books"));books=[];snap.forEach(d=>{const i={id:d.id,...d.data()};if((i.status||"active")==="active")books.push(i)});loading.style.display="none";render()}catch(e){console.error(e);loading.textContent="Failed to load books. Check Firestore rules and collection name."}}
 function render(){const s=searchInput.value.toLowerCase().trim(),cat=categoryFilter.value,acc=accessFilter.value,sort=sortFilter.value;let f=books.filter(i=>{const x=`${i.title||""} ${i.author||""} ${i.category||""} ${i.tags||""} ${i.shortDescription||""}`.toLowerCase();return(!s||x.includes(s))&&(cat==="all"||i.category===cat)&&(acc==="all"||(i.accessType||"free")===acc)});if(sort==="featured")f.sort((a,b)=>(b.featured===true)-(a.featured===true)||(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(sort==="newest")f.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(sort==="title")f.sort((a,b)=>(a.title||"").localeCompare(b.title||""));grid.innerHTML=f.map(card).join("");emptyState.style.display=f.length?"none":"block"}
 [searchInput,categoryFilter,accessFilter,sortFilter].forEach(e=>{e.addEventListener("input",render);e.addEventListener("change",render)});load();
-</script></body></html>
+</script><script type="module" src="../js/account-controls.js"></script>
+</body></html>

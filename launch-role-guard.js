@@ -1,5 +1,6 @@
 // launch-role-guard.js
 
+import { logoutSession } from "./js/account-session.js";
 import { isApprovedProfile } from "./js/profile-approval.js";
 import { auth, db } from "./firebase-config.js";
 
@@ -39,7 +40,7 @@ const dashboardRoutes = {
 
   ambassador: "ambassador-dashboard.html",
 
-  contributor: "contributor-dashboard.html",
+  contributor: "contributor.html",
 
   volunteer: "student-dashboard.html"
 };
@@ -345,84 +346,12 @@ function startSharedDeviceIdleGuard(){
 
 
 export async function logoutUser(){
-
-  try{
-
-    /*
-      Mark this as an intentional logout.
-
-      auth.js checks this flag so auth.html will not
-      immediately redirect the user back to a dashboard.
-    */
-
-    sessionStorage.setItem(
-      "speakoutManualLogout",
-      "true"
-    );
-
-
-    /*
-      Remove old local SpeakOut session helpers.
-    */
-
-    localStorage.removeItem(
-      "speakoutRole"
-    );
-
-    localStorage.removeItem(
-      "speakoutUser"
-    );
-
-    localStorage.removeItem(
-      "speakoutSchoolCode"
-    );
-
-    localStorage.removeItem(
-      "speakoutSchoolName"
-    );
-
-    localStorage.removeItem(
-      "speakoutDeviceMode"
-    );
-
-    clearSupportContext();
-
-    sessionStorage.removeItem(
-      "speakoutDeviceMode"
-    );
-
-
-    /*
-      End Firebase authentication.
-    */
-
-    await signOut(auth);
-
-
-    /*
-      Use replace instead of href so the protected
-      dashboard is not kept as the immediate history page.
-    */
-
-    window.location.replace(
-      "auth.html?loggedOut=1"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Logout failed:",
-      error
-    );
-
-
-    alert(
-      "Logout failed. Please try again."
-    );
-
+  try {
+    await logoutSession();
+  } catch(error){
+    console.error("Logout failed:", error);
+    alert("Logout failed. Please try again.");
   }
-
 }
 
 
@@ -865,7 +794,7 @@ const linksByRole = {
   contributor: [
     [
       "Dashboard",
-      "contributor-dashboard.html"
+      "contributor.html"
     ],
     [
       "Courses",

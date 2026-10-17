@@ -15,4 +15,5 @@ resourceInfo.textContent=`Type: ${params.resourceType||"resource"} • Amount: $
 requireLogin(user=>{CURRENT_USER=user;payerEmail.value=user.email||"";show("Ready. Submit payment details after payment.","ok");});
 paymentForm.addEventListener("submit",async e=>{e.preventDefault();try{await submitPaymentRequest({userId:CURRENT_USER.uid,userEmail:CURRENT_USER.email||payerEmail.value,payerName:payerName.value.trim(),resourceId:params.resourceId,resourceType:params.resourceType,resourceTitle:params.title,amountExpected:params.amount,currency:params.currency,amountPaid:amountPaid.value.trim(),transactionRef:transactionRef.value.trim(),paymentMethod:paymentMethod.value,paymentDate:paymentDate.value,paymentNote:paymentNote.value.trim()});paymentForm.reset();show("Payment request submitted. Wait for admin approval.","ok");}catch(err){console.error(err);show(err.message||"Submission failed.","bad");}});
 </script><script defer="" src="portal-ui.js"></script>
+<script type="module" src="js/account-controls.js"></script>
 </body></html>

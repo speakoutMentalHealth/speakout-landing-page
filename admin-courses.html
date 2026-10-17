@@ -155,5 +155,6 @@ function exportCSV(){const rows=[["Course ID","Title","Category","Audience","Acc
 searchInput.addEventListener("input",renderCourses);statusFilter.addEventListener("change",renderCourses);categoryFilter.addEventListener("change",renderCourses);refreshBtn.addEventListener("click",startRealtime);document.getElementById("installVerifiedBtn").addEventListener("click",installVerifiedCatalogue);document.getElementById("installRichBtn").addEventListener("click",installRichInternalCourses);document.getElementById("installVerifiedBtnMobile").addEventListener("click",installVerifiedCatalogue);document.getElementById("installRichBtnMobile").addEventListener("click",installRichInternalCourses);exportBtn.addEventListener("click",exportCSV);closeModal.addEventListener("click",()=>courseModal.style.display="none");logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html"});
 requireRoles(["admin","super_admin"],activateAdminCourses);
 </script>
+<script type="module" src="js/account-controls.js"></script>
 </body>
 </html>

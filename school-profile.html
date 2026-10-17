@@ -39,4 +39,5 @@ function fill(s){schoolTitle.textContent=s.schoolName||"School Profile";schoolNa
 profileForm.addEventListener("submit",async e=>{e.preventDefault();await updateDoc(doc(db,"schools",school.id),{schoolName:schoolName.value,schoolType:schoolType.value,principalName:principalName.value,email:email.value,phone:phone.value,state:state.value,city:city.value,address:address.value,updatedAt:serverTimestamp()});show("School profile updated.","success");});
 requireSchoolAdmin(async (user,profile,s)=>{school=s;if(!school){show("No school profile found.","error");return;}fill(school);show("School profile loaded.","success");});
 </script><script defer="" src="portal-ui.js"></script>
+<script type="module" src="js/account-controls.js"></script>
 </body></html>

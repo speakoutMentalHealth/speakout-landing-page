@@ -22,4 +22,5 @@ function val(id,v){document.getElementById(id).value=v||""}
 onAuthStateChanged(auth,async user=>{if(!user){location.href="auth.html";return;}currentUser=user;const s=await getDoc(doc(db,"users",user.uid));if(!s.exists()){show("Profile not found. Contact admin.","bad");return;}const p=s.data();["firstName","lastName","phone","country","state","city","occupation","schoolCode","role","bio"].forEach(k=>val(k,p[k]));val("email",p.email||user.email);show("Profile loaded.","ok");});
 profileForm.addEventListener("submit",async e=>{e.preventDefault();await setDoc(doc(db,"users",currentUser.uid),{firstName:firstName.value,lastName:lastName.value,phone:phone.value,country:country.value,state:state.value,city:city.value,occupation:occupation.value,bio:bio.value,updatedAt:serverTimestamp()},{merge:true});show("Profile updated successfully.","ok");});
 </script><script defer="" src="portal-ui.js"></script>
+<script type="module" src="js/account-controls.js"></script>
 </body></html>
