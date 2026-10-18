@@ -5373,9 +5373,10 @@ export default {
     })().catch(error => console.error("TV curator scheduled sync:", error)));
   },
   async fetch(request, env) {
-    const headers = { ...corsHeaders(request, env), "cache-control": "private, no-store" };
+    const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     const path = new URL(request.url).pathname;
+    if (["/v1/admin/traffic/summary", "/v1/auth/sign-in"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
     const publicGetPaths = new Set(["/v1/catalog/courses","/v1/media/tv","/v1/media/audio"]);
     const isPublicGet = request.method === "GET" && publicGetPaths.has(path);
     if (request.method !== "POST" && !isPublicGet) return json({ error: "Method not allowed." }, 405, headers);

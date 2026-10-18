@@ -59,3 +59,12 @@ test('repeated verified authentication receipts write once',async()=>{
 test('private report responses cannot be cached by browsers or intermediaries',()=>{
  assert.match(source,/"cache-control": "private, no-store"/);
 });
+test('traffic responses disable caching while public catalog caching is preserved',async()=>{
+ const context={Response,Headers,URL,Set,corsHeaders:()=>({}),json:(body,status,headers)=>new Response(JSON.stringify(body),{status,headers}),route:async(_req,_env,path)=>path==='/v1/catalog/courses'?new Response('{}',{headers:{'cache-control':'public, max-age=60'}}):{visits:1},console};
+ vm.createContext(context);vm.runInContext('globalThis.worker={'+source.slice(source.lastIndexOf('  async fetch(request, env) {')),context);
+ const headers={'content-type':'application/json'};
+ const report=await context.worker.fetch(new Request('https://api.example/v1/admin/traffic/summary',{method:'POST',headers,body:'{}'}),{});
+ assert.equal(report.headers.get('cache-control'),'private, no-store');
+ const catalog=await context.worker.fetch(new Request('https://api.example/v1/catalog/courses'),{});
+ assert.equal(catalog.headers.get('cache-control'),'public, max-age=60');
+});
