@@ -49,6 +49,7 @@ const ACCESS_MAP = {
   "admin-courses.html": ADMIN_ONLY,
   "admin-contributors.html": ADMIN_ONLY,
   "admin-dashboard.html": ADMIN_ONLY,
+  "admin-traffic.html": ["admin", "super_admin"],
   "admin-users.html": ADMIN_ONLY
 };
 

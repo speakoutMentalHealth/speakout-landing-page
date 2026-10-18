@@ -12,6 +12,9 @@ on:
       - "tests/access-gateway-browser.mjs"
       - "tests/google-auth-browser.mjs"
       - "tests/account-controls-browser.mjs"
+      - "tests/admin-traffic-browser.mjs"
+      - "admin-traffic.html"
+      - "js/admin-traffic-ui.js"
       - "js/account-controls.js"
       - "js/account-session.js"
       - "css/account-controls.css"
@@ -26,6 +29,9 @@ on:
       - "tests/access-gateway-browser.mjs"
       - "tests/google-auth-browser.mjs"
       - "tests/account-controls-browser.mjs"
+      - "tests/admin-traffic-browser.mjs"
+      - "admin-traffic.html"
+      - "js/admin-traffic-ui.js"
       - "js/account-controls.js"
       - "js/account-session.js"
       - "css/account-controls.css"
@@ -59,6 +65,8 @@ jobs:
         run: node tests/google-auth-browser.mjs
       - name: Check account controls and logout across mobile and desktop sections
         run: node tests/account-controls-browser.mjs
+      - name: Check internal traffic reports and logout clearing
+        run: node tests/admin-traffic-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -1,3 +1,4 @@
+import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
 import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
 import { isApprovedProfile } from "../../../js/profile-approval.js";
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
@@ -577,7 +578,7 @@ async function verifiedIdentity(request, env) {
   const { payload } = await jwtVerify(token, jwks, { issuer, audience: env.FIREBASE_PROJECT_ID });
   const uid = clean(payload.sub);
   if (!uid) throw Object.assign(new Error("Invalid authenticated user."), { status: 401 });
-  return { uid, email: normalized(payload.email) };
+  return { uid, email: normalized(payload.email), authTime: Number(payload.auth_time) };
 }
 
 async function authenticatedUser(request, env) {
@@ -4122,7 +4123,50 @@ async function activateSchoolAdmin(request, env, data) {
   return { ok: true, schoolId: school.id, schoolName: clean(school.schoolName || school.name), schoolCode: clean(school.schoolCode) };
 }
 
+const trafficReportCache = new Map();
+async function queryTrafficLogins(env, window, limit=10001) {
+  const rows=await firestoreRequest(env, `${databaseUrl(env)}/documents:runQuery`, {
+    method:"POST", body:JSON.stringify({structuredQuery:{from:[{collectionId:"trafficSignIns"}],where:{compositeFilter:{op:"AND",filters:[
+      {fieldFilter:{field:{fieldPath:"authenticatedAt"},op:"GREATER_THAN_OR_EQUAL",value:{stringValue:window.start}}},
+      {fieldFilter:{field:{fieldPath:"authenticatedAt"},op:"LESS_THAN",value:{stringValue:window.end}}}
+    ]}},orderBy:[{field:{fieldPath:"authenticatedAt"},direction:"ASCENDING"}],limit}})
+  });
+  return rows.filter(row=>row.document).map(row=>decodeFields(row.document.fields));
+}
+async function recordTrafficSignIn(request,env) {
+  const identity=await verifiedIdentity(request,env);
+  const receipt=await signInReceipt(identity,Date.now(),env.FIREBASE_PROJECT_ID);
+  if(!receipt)return {recorded:false};
+  return runTransaction(env,async tx=>{
+    const path=`trafficSignIns/${receipt.id}`;
+    if(await tx.get(path))return {recorded:false};
+    tx.set(path,receipt.data);return {recorded:true};
+  });
+}
+async function adminTrafficReport(env,user,data) {
+  requireAdmin(user);
+  if(user.supportMode)throw Object.assign(new Error("Exit school support mode to view organisation traffic."),{status:403});
+  const window=trafficWindow(data.period||"day");
+  const key=env.FIREBASE_PROJECT_ID+":"+window.start+":"+window.end;
+  const cached=trafficReportCache.get(key);
+  if(cached&&cached.until>Date.now())return cached.report;
+  const [mindcheck,logins]=await Promise.all([
+    mindCheckSummary(env,window),
+    queryTrafficLogins(env,window).then(rows=>loginSummary(rows.slice(0,10000),rows.length>10000)).catch(()=>({status:"unavailable",signIns:null,accounts:null,daily:[]}))
+  ]);
+  const report={window,mindcheck,logins,updatedAt:new Date().toISOString()};
+  if(trafficReportCache.size>=20)trafficReportCache.clear();
+  trafficReportCache.set(key,{until:Date.now()+60000,report});return report;
+}
+async function cleanupTrafficLogins(env,now=Date.now()) {
+  const cutoff=new Date(now-31*86400000).toISOString();
+  const rows=await firestoreRequest(env,`${databaseUrl(env)}/documents:runQuery`,{method:"POST",body:JSON.stringify({structuredQuery:{from:[{collectionId:"trafficSignIns"}],where:{fieldFilter:{field:{fieldPath:"authenticatedAt"},op:"LESS_THAN",value:{stringValue:cutoff}}},limit:500}})});
+  const writes=rows.filter(row=>row.document).map(row=>({delete:row.document.name}));
+  if(writes.length)await firestoreRequest(env,`${databaseUrl(env)}/documents:commit`,{method:"POST",body:JSON.stringify({writes})});
+}
+
 async function route(request, env, path, data) {
+  if(path === "/v1/auth/sign-in") return recordTrafficSignIn(request,env);
   if (path === "/v1/catalog/courses") {
     const page = await listDocuments(env, "courses", 500);
     const courses = page.documents.filter(courseIsCatalogueReady).map(publicCourseMetadata)
@@ -4261,6 +4305,8 @@ async function route(request, env, path, data) {
   }
 
   user = await applySuperAdminSchoolContext(env, user, data);
+
+  if (path === "/v1/admin/traffic/summary") return adminTrafficReport(env,user,data);
 
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);
   if (path === "/v1/admin/schools/delete") return deleteSchoolPermanently(env, user, data);
@@ -5309,6 +5355,7 @@ async function route(request, env, path, data) {
 
 export default {
   async scheduled(controller, env, ctx) {
+    ctx.waitUntil(cleanupTrafficLogins(env).catch(()=>console.error("Traffic retention cleanup unavailable.")));
     ctx.waitUntil((async()=>{
       const scheduledTime = Number(controller?.scheduledTime) || Date.now();
       const hour = new Date(scheduledTime).getUTCHours();
@@ -5329,6 +5376,7 @@ export default {
     const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     const path = new URL(request.url).pathname;
+    if (["/v1/admin/traffic/summary", "/v1/auth/sign-in"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
     const publicGetPaths = new Set(["/v1/catalog/courses","/v1/media/tv","/v1/media/audio"]);
     const isPublicGet = request.method === "GET" && publicGetPaths.has(path);
     if (request.method !== "POST" && !isPublicGet) return json({ error: "Method not allowed." }, 405, headers);
