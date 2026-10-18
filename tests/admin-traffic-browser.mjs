@@ -12,12 +12,12 @@ for(const width of [320,390,1280]){
   if(url.pathname==='/launch-role-guard.js')return route.fulfill({contentType:'text/javascript',body:'export function requireRoles(roles,cb){if(!roles.includes("admin"))throw Error("guard");queueMicrotask(cb)}'});
   if(url.pathname==='/js/firebase-config.js')return route.fulfill({contentType:'text/javascript',body:'export const auth={currentUser:{uid:"fixture"}}'});
   if(url.hostname==='www.gstatic.com'&&url.pathname.endsWith('/firebase-auth.js'))return route.fulfill({contentType:'text/javascript',body:'export function onAuthStateChanged(auth,cb){queueMicrotask(()=>cb(auth.currentUser));globalThis.fixtureLogout=()=>{auth.currentUser=null;cb(null)};return ()=>{}}'});
-  if(url.pathname==='/js/platform-api.js')return route.fulfill({contentType:'text/javascript',body:`export const adminApi={trafficSummary:async period=>{globalThis.fixturePeriod=period;if(globalThis.fixtureError)throw Error('unavailable');return globalThis.fixtureMissing?{...${JSON.stringify(fixture)},mindcheck:{status:'not_configured',visits:null,pages:[]}}:${JSON.stringify(fixture)}}`});
+  if(url.pathname==='/js/platform-api.js')return route.fulfill({contentType:'text/javascript',body:`export const adminApi={trafficSummary:async period=>{globalThis.fixturePeriod=period;if(globalThis.fixtureError)throw Error('unavailable');return globalThis.fixtureMissing?{...${JSON.stringify(fixture)},mindcheck:{status:'not_configured',visits:null,pages:[]}}:${JSON.stringify(fixture)}}}`});
   if(url.pathname==='/js/account-controls.js')return route.fulfill({contentType:'text/javascript',body:''});
   if(url.origin!==base)return route.abort();return route.continue();
  });
  const page=await context.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
- await page.goto(base+'/admin-traffic.html');await page.locator('#report').waitFor({state:'visible'});
+ await page.goto(base+'/admin-traffic.html');try{await page.locator('#report').waitFor({state:'visible'})}catch(error){console.error({errors,status:await page.locator('#status').textContent(),body:await page.locator('body').innerText()});throw error}
  assert.equal(await page.locator('#visits').textContent(),'42');assert.equal(await page.locator('#signins').textContent(),'8');assert.equal(await page.locator('#accounts').textContent(),'5');
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
  await page.selectOption('#period','week');await page.waitForFunction(()=>globalThis.fixturePeriod==='week');

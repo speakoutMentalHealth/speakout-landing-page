@@ -2,9 +2,9 @@ import { adminApi } from './platform-api.js';
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 const el=id=>document.getElementById(id),format=n=>Number.isSafeInteger(n)?n.toLocaleString():'—';
-let allowed=false,generation=0;
+let allowed=false,generation=0,allowedUid=null;
 function clear(){generation++;el('report').hidden=true;for(const id of ['visits','signins','accounts'])el(id).textContent='—';el('pages').replaceChildren();el('activity').replaceChildren()}
-onAuthStateChanged(auth,()=>{allowed=false;clear();el('period').disabled=true;el('refresh').disabled=true});
+onAuthStateChanged(auth,user=>{if(allowed&&user?.uid===allowedUid)return;allowed=false;allowedUid=null;clear();el('period').disabled=true;el('refresh').disabled=true});
 async function load(){
  if(!allowed)return;
  const turn=++generation,user=auth.currentUser;
@@ -25,4 +25,4 @@ async function load(){
  finally{if(turn===generation&&allowed){el('refresh').disabled=false;el('period').disabled=false}}
 }
 el('period').addEventListener('change',load);el('refresh').addEventListener('click',load);
-export function startTrafficReport(){allowed=true;load()}
+export function startTrafficReport(){allowedUid=auth.currentUser?.uid;allowed=Boolean(allowedUid);load()}
