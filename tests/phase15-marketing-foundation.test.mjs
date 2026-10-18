@@ -44,7 +44,7 @@ test("AdSense publisher declaration and privacy notice match the hardened config
   const privacy=read("pages/privacy.html");
   assert.match(privacy,/request non-personalized ads/u);
   assert.match(privacy,/does not remove consent requirements/u);
-  assert.match(privacy,/Last updated:<\/strong> 27 September 2026/u);
+  assert.match(privacy,/Last updated:<\/strong> 18 October 2026/u);
 });
 
 
