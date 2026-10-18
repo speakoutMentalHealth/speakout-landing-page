@@ -220,6 +220,7 @@ export const onboardingApi = {
 };
 
 export const adminApi = {
+  trafficSummary: period => platformRequest("/v1/admin/traffic/summary", { period }),
   retrieveEvidence,
   startSchoolSupport: schoolId =>
     platformRequest("/v1/admin/support/school/start", { schoolId }),

@@ -61,6 +61,9 @@ if(header){
 
   onAuthStateChanged(auth, user=>{
     signedIn = Boolean(user);
+    if(user && typeof user.getIdTokenResult === "function") {
+      import("./sign-in-metrics.js").then(module=>module.recordSignIn(user)).catch(()=>{});
+    }
     updateHeaderActions();
     login.hidden = signedIn;
     logout.hidden = !user;

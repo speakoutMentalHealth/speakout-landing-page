@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Traffic & sign-ins · SpeakOut Admin</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="css/admin-traffic.css"></head>
+<body><a class="skip" href="#main-content">Skip to content</a><header><a class="brand" href="admin-dashboard.html"><img src="logo.png" alt="SpeakOut" width="42" height="42"> Admin</a><a class="button" href="admin-dashboard.html">← Command Centre</a></header>
+<main id="main-content"><p class="eyebrow">Your audience, at a glance</p><h1>Traffic & sign-ins</h1><p class="intro">See how people reach MindCheck and return to the SpeakOut portal.</p>
+<div class="toolbar"><label for="period">Reporting period <select id="period" disabled><option value="day">Today</option><option value="week">Last 7 days</option><option value="month">Last 30 days</option></select></label><button id="refresh" disabled>Refresh</button></div>
+<p id="status" role="status" aria-live="polite">Checking administrator access…</p>
+<div id="report" hidden><div class="metrics"><article><p>MindCheck visits</p><strong id="visits">—</strong><small>Estimated visits · not signed-in accounts</small></article><article><p>Successful portal sign-ins</p><strong id="signins">—</strong><small>New authenticated sessions</small></article><article><p>Accounts signed in</p><strong id="accounts">—</strong><small>Distinct accounts during this period</small></article></div>
+<p id="connection" class="notice" hidden></p><p id="login-status" class="notice" hidden></p>
+<div class="details"><section><h2>Popular MindCheck pages</h2><p>Visits to public pages in the selected period.</p><div class="table-scroll"><table><thead><tr><th scope="col">Page</th><th scope="col">Visits</th></tr></thead><tbody id="pages"></tbody></table></div><p id="pages-status"></p></section><section><h2>Portal sign-in activity</h2><p>Daily totals · West Africa Time</p><ol id="activity"></ol><p id="activity-status"></p></section></div>
+<p class="footnote">Periods use West Africa Time (UTC+1). Figures may take a minute to refresh. Portal sign-in recording starts with this update; earlier sign-ins are not included. Restoring an older session does not count as a new sign-in.</p><p class="footnote">These figures contain no names, mood entries, screening answers or private reports. Visits are estimates and can exclude people using privacy controls.</p>
+<details><summary>Connect MindCheck reporting</summary><p>One-time owner setup: create a GoatCounter API token with read-statistics permission only. Save it as the production API Worker secret <code>GOATCOUNTER_READ_TOKEN</code>. Once connected, your team can view the figures here. Never paste the token into this page or site files.</p></details></div></main>
+<script type="module">
+import { requireRoles } from "./launch-role-guard.js";
+import { startTrafficReport } from "./js/admin-traffic-ui.js";
+requireRoles(["admin", "super_admin"], startTrafficReport);
+</script><script type="module" src="js/account-controls.js"></script></body></html>

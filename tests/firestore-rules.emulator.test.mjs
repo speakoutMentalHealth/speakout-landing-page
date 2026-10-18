@@ -545,3 +545,20 @@ test("school administrators cannot read or modify another school's records", asy
   await assertFails(updateDoc(doc(a, "parentStudentLinks/link-b"), { status: "approved" }));
   await assertFails(deleteDoc(doc(a, "parentStudentLinks/link-b")));
 });
+
+test("traffic receipts are server-only, even for organisation admins", async () => {
+  await seed("trafficSignIns/receipt", { accountKey: "hashed", authenticatedAt: "2026-10-18T12:00:00.000Z", day: "2026-10-18" });
+  for (const role of ["student", "school_admin", "admin", "super_admin"]) {
+    const uid = `traffic-${role}`;
+    await seed(`users/${uid}`, profile(uid, role));
+    const db = testEnv.authenticatedContext(uid).firestore();
+    const ref = doc(db, "trafficSignIns/receipt");
+    await assertFails(getDoc(ref));
+    await assertFails(updateDoc(ref, { accountKey: "forged" }));
+    await assertFails(deleteDoc(ref));
+    await assertFails(setDoc(doc(db, `trafficSignIns/${uid}`), { accountKey: "forged" }));
+  }
+  const db = testEnv.unauthenticatedContext().firestore();
+  await assertFails(getDoc(doc(db, "trafficSignIns/receipt")));
+  await assertFails(setDoc(doc(db, "trafficSignIns/anonymous"), { accountKey: "forged" }));
+});
