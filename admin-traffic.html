@@ -11,6 +11,6 @@
 <details><summary>Connect MindCheck reporting</summary><p>One-time owner setup: create a GoatCounter API token with read-statistics permission only. Save it as the production API Worker secret <code>GOATCOUNTER_READ_TOKEN</code>. Once connected, your team can view the figures here. Never paste the token into this page or site files.</p></details></div></main>
 <script type="module">
 import { requireRoles } from "./launch-role-guard.js";
-import { startTrafficReport } from "./js/admin-traffic-ui.js";
+import { startTrafficReport } from "./js/admin-traffic-ui.js?v=20261019";
 requireRoles(["admin", "super_admin"], startTrafficReport);
 </script><script type="module" src="js/account-controls.js"></script></body></html>

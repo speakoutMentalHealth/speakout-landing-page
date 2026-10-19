@@ -23,7 +23,10 @@ async function authorizationHeader() {
 async function parseResponse(response) {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(body.error || body.message || "The secure service could not complete this request.");
+    const error = new Error(body.error || body.message || "The secure service could not complete this request.");
+    error.status = response.status;
+    error.responseType = response.headers.get("content-type") || "";
+    throw error;
   }
   return body;
 }
