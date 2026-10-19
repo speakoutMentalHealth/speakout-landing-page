@@ -31,7 +31,7 @@ test('missing analytics connection never produces a misleading zero',async()=>{
  assert.deepEqual(await mindCheckSummary({},trafficWindow(),()=>assert.fail('no request expected')),{status:'not_configured',visits:null,pages:[]});
 });
 test('provider reads use fixed HTTPS origin and project only safe public-page counts',async()=>{
- const calls=[],secret='private-token';const request=async(url,opts)=>{calls.push(url);assert.equal(opts.headers.Authorization,'Bearer '+secret);assert.equal(opts.redirect,'error');return {ok:true,json:async()=>url.includes('/total?')?{total:12}:{hits:[{path:'/index.html',count:12,title:'not returned'},{path:'/report.html?email=secret',count:1},{path:'/event.html',event:true,count:1}]}}};
+ const calls=[],secret='private-token';const request=async(url,opts)=>{calls.push(url);assert.equal(opts.headers.Authorization,'Bearer '+secret);assert.equal(opts.redirect,'manual');return {ok:true,json:async()=>url.includes('/total?')?{total:12}:{hits:[{path:'/index.html',count:12,title:'not returned'},{path:'/report.html?email=secret',count:1},{path:'/event.html',event:true,count:1}]}}};
  const data=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:secret},trafficWindow(),request);
  assert.deepEqual(data.pages,[{path:'/index.html',visits:12}]);assert.equal(data.visits,12);assert.equal(calls.length,2);
  assert.ok(calls.every(url=>url.startsWith('https://mindcheck.goatcounter.com/api/v0/stats/')));assert.doesNotMatch(JSON.stringify(data),/private-token|not returned|email/);

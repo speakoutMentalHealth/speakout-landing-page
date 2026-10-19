@@ -23,8 +23,8 @@ export function loginSummary(records,truncated=false){
 }
 export async function mindCheckSummary(env,window,request=fetch){
  if(!env.GOATCOUNTER_READ_TOKEN)return {status:'not_configured',visits:null,pages:[]};
- const options={headers:{Authorization:`Bearer ${env.GOATCOUNTER_READ_TOKEN}`,'Content-Type':'application/json'},redirect:'error',signal:AbortSignal.timeout(10000)};
  try{
+  const options={headers:{Authorization:`Bearer ${env.GOATCOUNTER_READ_TOKEN}`,'Content-Type':'application/json'},redirect:'manual',signal:AbortSignal.timeout(10000)};
   const query=new URLSearchParams({start:window.start,end:window.end});
   const origin='https://mindcheck.goatcounter.com/api/v0/stats/';
   const [totalResponse,pagesResponse]=await Promise.all([request(origin+'total?'+query,options),request(origin+'hits?'+query+'&limit=10',options)]);

@@ -37,6 +37,8 @@ jobs:
           cache-dependency-path: workers/platform-api/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Check provider integration in the actual Worker runtime
+        run: node test/admin-traffic-runtime.mjs
       - name: Production dry run
         run: npm run check:production
 
