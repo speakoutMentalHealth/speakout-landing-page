@@ -209,6 +209,40 @@ try {
     cleanupPaths.push(path);
   }
 
+  // Exercise the actual verified-JWT -> receipt -> Firestore -> admin response flow.
+  const authClaims = JSON.parse(Buffer.from(admin.idToken.split(".")[1], "base64url").toString("utf8"));
+  const accountKey = createHash("sha256").update(`${projectId}:${admin.localId}`).digest("hex");
+  const receiptId = createHash("sha256").update(`${accountKey}:${authClaims.auth_time}`).digest("hex");
+  cleanupPaths.push(`trafficSignIns/${receiptId}`);
+  const receipt = await worker("/v1/auth/sign-in", admin.idToken, {});
+  assert.equal(receipt.response.status, 200, `traffic receipt failed: ${JSON.stringify(receipt.body)}`);
+  assert.equal(receipt.body.recorded, true);
+  const duplicateReceipt = await worker("/v1/auth/sign-in", admin.idToken, {});
+  assert.equal(duplicateReceipt.response.status, 200);
+  assert.equal(duplicateReceipt.body.recorded, false);
+  const trafficOrigin = "https://speakout-portal-staging.web.app";
+  const preflight = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "OPTIONS", headers: { origin: trafficOrigin, "access-control-request-method": "POST", "access-control-request-headers": "authorization,content-type" } });
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("access-control-allow-origin"), trafficOrigin);
+  for (const period of ["day", "week", "month"]) {
+    const trafficResponse = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "POST", headers: { authorization: `Bearer ${admin.idToken}`, "content-type": "application/json", origin: trafficOrigin }, body: JSON.stringify({ period }) });
+    const traffic = await trafficResponse.json();
+    assert.equal(trafficResponse.status, 200, `traffic summary failed: ${JSON.stringify(traffic)}`);
+    assert.equal(trafficResponse.headers.get("cache-control"), "private, no-store");
+    assert.equal(trafficResponse.headers.get("access-control-allow-origin"), trafficOrigin);
+    assert.equal(traffic.window.period, period);
+    assert.equal(traffic.logins.status, "ready");
+    assert.ok(traffic.logins.signIns >= 1);
+    assert.ok(traffic.logins.accounts >= 1);
+    assert.ok(Array.isArray(traffic.mindcheck.pages));
+    assert.ok(!JSON.stringify(traffic).includes(admin.localId));
+  }
+  const deniedTraffic = await worker("/v1/admin/traffic/summary", learner.idToken, { period: "day" });
+  assert.equal(deniedTraffic.response.status, 403);
+  const browserReceipt = await firestore(`trafficSignIns/${receiptId}`, { token: admin.idToken });
+  assert.equal(browserReceipt.response.status, 403);
+  console.log("Authenticated traffic receipts, deduplication, three reporting periods, CORS and admin isolation passed.");
+
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64");
   const denied = await firestore(`certificates/forged-${suffix}`, { method: "PATCH", data: { userId: learner.localId, status: "active" }, token: learner.idToken });
   assert.equal(denied.response.status, 403, "learner certificate forgery was not denied by live rules");

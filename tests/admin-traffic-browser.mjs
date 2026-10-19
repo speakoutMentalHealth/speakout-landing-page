@@ -12,7 +12,7 @@ for(const width of [320,390,1280]){
   if(url.pathname==='/launch-role-guard.js')return route.fulfill({contentType:'text/javascript',body:'export function requireRoles(roles,cb){if(!roles.includes("admin"))throw Error("guard");queueMicrotask(cb)}'});
   if(url.pathname==='/js/firebase-config.js')return route.fulfill({contentType:'text/javascript',body:'export const auth={currentUser:{uid:"fixture"}}'});
   if(url.hostname==='www.gstatic.com'&&url.pathname.endsWith('/firebase-auth.js'))return route.fulfill({contentType:'text/javascript',body:'export function onAuthStateChanged(auth,cb){queueMicrotask(()=>cb(auth.currentUser));globalThis.fixtureLogout=()=>{auth.currentUser=null;cb(null)};return ()=>{}}'});
-  if(url.pathname==='/js/platform-api.js')return route.fulfill({contentType:'text/javascript',body:`export const adminApi={trafficSummary:async period=>{globalThis.fixturePeriod=period;if(globalThis.fixtureError)throw Error('unavailable');return globalThis.fixtureMissing?{...${JSON.stringify(fixture)},mindcheck:{status:'not_configured',visits:null,pages:[]}}:${JSON.stringify(fixture)}}}`});
+  if(url.pathname==='/js/platform-api.js')return route.fulfill({contentType:'text/javascript',body:`export const adminApi={trafficSummary:async period=>{globalThis.fixturePeriod=period;if(globalThis.fixtureError){const e=Error(globalThis.fixtureSupport?'Exit school support mode to view organisation traffic.':'unavailable');e.status=globalThis.fixtureStatus;throw e;}return globalThis.fixtureMissing?{...${JSON.stringify(fixture)},mindcheck:{status:'not_configured',visits:null,pages:[]}}:${JSON.stringify(fixture)}}}`});
   if(url.pathname==='/js/account-controls.js')return route.fulfill({contentType:'text/javascript',body:''});
   if(url.origin!==base)return route.abort();return route.continue();
  });
@@ -24,7 +24,9 @@ for(const width of [320,390,1280]){
  await page.selectOption('#period','month');await page.waitForFunction(()=>globalThis.fixturePeriod==='month');
  await page.evaluate(()=>{globalThis.fixtureMissing=true});await page.click('#refresh');await page.locator('#connection').waitFor({state:'visible'});assert.equal(await page.locator('#visits').textContent(),'—');assert.equal(await page.locator('#signins').textContent(),'8');
  await page.evaluate(()=>{globalThis.fixtureError=true});await page.click('#refresh');await page.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Unable'));assert.equal(await page.locator('#report').isVisible(),false);
- await page.evaluate(()=>{globalThis.fixtureError=false;globalThis.fixtureMissing=false});await page.click('#refresh');await page.locator('#report').waitFor({state:'visible'});
+ for(const [status,text] of [[401,'session needs'],[403,'administrator access'],[404,'endpoint is unavailable'],[500,'server error']]){await page.evaluate(status=>{globalThis.fixtureStatus=status},status);await page.click('#refresh');await page.waitForFunction(text=>document.querySelector('#status').textContent.includes(text),text)}
+ await page.evaluate(()=>{globalThis.fixtureSupport=true});await page.click('#refresh');await page.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Exit school support mode'));
+ await page.evaluate(()=>{globalThis.fixtureError=false;globalThis.fixtureSupport=false;globalThis.fixtureStatus=undefined;globalThis.fixtureMissing=false});await page.click('#refresh');await page.locator('#report').waitFor({state:'visible'});
  await page.evaluate(()=>globalThis.fixtureLogout());assert.equal(await page.locator('#report').isVisible(),false);assert.equal(await page.locator('#visits').textContent(),'—');assert.deepEqual(errors,[]);
  await context.close();console.log('Traffic UI passed at '+width+'px');
 }
