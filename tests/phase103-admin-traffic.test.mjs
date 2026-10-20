@@ -68,3 +68,22 @@ test('traffic responses disable caching while public catalog caching is preserve
  const catalog=await context.worker.fetch(new Request('https://api.example/v1/catalog/courses'),{});
  assert.equal(catalog.headers.get('cache-control'),'public, max-age=60');
 });
+
+test('provider failures expose fixed reasons without raw bodies or secret exception messages',async()=>{
+ for(const [status,reason] of [[400,'provider_bad_request'],[401,'provider_unauthorized'],[403,'provider_forbidden'],[429,'provider_rate_limited'],[302,'provider_redirect'],[503,'provider_http']]){
+  const result=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:'never-return-this'},trafficWindow(),async()=>({ok:false,status,json:()=>{throw Error('body must not be read')}}));assert.equal(result.reason,reason);assert.equal(result.providerStatus,status);assert.doesNotMatch(JSON.stringify(result),/never-return-this|body must/);
+ }
+ const blocked=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:'secret'},trafficWindow(),async()=>new Response('private provider error',{status:403,headers:{'content-type':'text/html'}}));assert.equal(blocked.reason,'provider_blocked');assert.doesNotMatch(JSON.stringify(blocked),/private provider error/);
+ for(const [name,reason] of [['TimeoutError','provider_timeout'],['AbortError','provider_timeout'],['TypeError','provider_network']]){const result=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:'secret'},trafficWindow(),async()=>{throw Object.assign(Error('never-return-this'),{name})});assert.equal(result.reason,reason);assert.doesNotMatch(JSON.stringify(result),/never-return-this/)}
+});
+test('valid total survives a pages failure and valid pages survive a total failure',async()=>{
+ const env={GOATCOUNTER_READ_TOKEN:'secret'},window=trafficWindow();
+ const partial=await mindCheckSummary(env,window,async url=>url.includes('/total?')?Response.json({total:12}):new Response('',{status:403,headers:{'content-type':'application/json'}}));assert.equal(partial.status,'partial');assert.equal(partial.visits,12);assert.equal(partial.pagesStatus,'unavailable');assert.equal(partial.reason,'provider_forbidden');
+ const pages=await mindCheckSummary(env,window,async url=>url.includes('/total?')?new Response('',{status:503}):Response.json({hits:[{path:'/index.html',count:4}],total:4}));assert.equal(pages.visits,null);assert.equal(pages.status,'unavailable');assert.equal(pages.pagesStatus,'ready');assert.deepEqual(pages.pages,[{path:'/index.html',visits:4}]);
+});
+test('empty nil hit lists require an explicit zero while malformed provider data never invents zero',async()=>{
+ for(const [body,expected] of [[{hits:null,total:0},'ready'],[{hits:[],total:0},'ready'],[{hits:null,total:4},'partial'],[{hits:null},'partial'],[{},'partial'],[{hits:'bad'},'partial']]){
+  const result=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:'secret'},trafficWindow(),async url=>Response.json(url.includes('/total?')?{total:0}:body));assert.equal(result.status,expected);assert.equal(result.visits,0);
+ }
+ const malformed=await mindCheckSummary({GOATCOUNTER_READ_TOKEN:'secret'},trafficWindow(),async()=>({ok:true,json:async()=>{throw Error('private-body')}}));assert.equal(malformed.visits,null);assert.equal(malformed.reason,'provider_response');assert.doesNotMatch(JSON.stringify(malformed),/private-body/);
+});
