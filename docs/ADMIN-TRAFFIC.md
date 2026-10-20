@@ -17,3 +17,11 @@ Only a project-scoped SHA-256 account key, verified authentication timestamp and
 ## Verification
 
 `node --test tests/phase103-admin-traffic.test.mjs` checks date boundaries, fresh auth receipts, uniqueness, safe provider projections/failure states, authorization before cache access, and transactional deduplication. `npm run test:rules` includes server-only receipt access regressions. After deployment, sign in with an approved admin, open Traffic & Sign-ins, choose all three periods, and confirm actual provider totals after the private connection. Test an ordinary account is denied and logout clears displayed counts. A provider token is required for a real provider-connected end-to-end check.
+
+## Provider diagnostics (20 October 2026)
+
+A supplied real-phone screenshot confirms the report loads and shows one portal authentication from one account for Today. MindCheck visits remain unavailable; this is separate from administrator authorization. No private provider response has been inspected.
+
+The Worker now returns only a fixed diagnostic category and an HTTP status, never provider response bodies, headers, tokens or raw exception messages. A rejected token (401), insufficient statistics/site access (403), invalid request, redirect, rate limit, response-format failure and timeout have distinct UI messages. The saved token remains a Cloudflare secret. An empty `hits: null` result is accepted only with an explicit returned-result `total: 0`; malformed data never becomes a fabricated zero. Totals and top pages are processed independently, so failure of one request does not discard valid data from the other.
+
+After deployment, refresh the report once after its 60-second server cache expires. The displayed diagnostic identifies the next owner action. Actual visitor totals are not signed off until the authenticated report displays a validated count. Use a Read statistics token scoped to the existing MindCheck site; do not grant broader permissions or publish the dashboard.
