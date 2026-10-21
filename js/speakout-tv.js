@@ -420,20 +420,20 @@ function renderLiveExperience(allEpisodes){
   $("#liveDescription").textContent=currentLive.description||"Join the conversation live on SpeakOut TV.";
   meta.innerHTML=liveMetaMarkup(currentLive);setFrame($("#livePlayer"),currentLive,false);
   share.hidden=false;calendar.hidden=!scheduleValue(currentLive);
-  const tik=tiktokLiveUrl(currentLive.tiktokUrl);tiktok.hidden=!tik;if(tik)tiktok.href=tik;
+  const tik=tiktokLiveUrl(currentLive.tiktokUrl)||"https://www.tiktok.com/@speaak_out";tiktok.hidden=false;tiktok.href=tik;
  }else{
   status.textContent=nextLive?"Upcoming":"Standby";status.classList.remove("is-live");
   stageTime.textContent=nextLive?"Next · "+formatSchedule(scheduleValue(nextLive)):"Waiting for the next session";
   $("#liveEyebrow").textContent="LIVE CHANNEL";
   $("#liveTitle").textContent="The next conversation starts here.";
   $("#liveDescription").textContent=nextLive?"A SpeakOut Live session is scheduled. The countdown and reminder are ready below.":"Interviews, youth conversations and special SpeakOut sessions will appear here when scheduled.";
-  meta.innerHTML="";share.hidden=true;calendar.hidden=true;tiktok.hidden=true;tiktok.removeAttribute("href");
+  meta.innerHTML="";share.hidden=true;calendar.hidden=true;tiktok.hidden=false;tiktok.href="https://www.tiktok.com/@speaak_out";
  }
  if(requestedReplay){
   status.textContent="Replay";status.classList.remove("is-live");stageTime.textContent="Previously live · "+formatSchedule(scheduleValue(requestedReplay));
   $("#liveEyebrow").textContent="PREVIOUSLY LIVE";$("#liveTitle").textContent=requestedReplay.title||"SpeakOut Live";
   $("#liveDescription").textContent=requestedReplay.description||"Watch this previous SpeakOut live conversation.";
-  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;tiktok.hidden=true;tiktok.removeAttribute("href");
+  meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;tiktok.hidden=false;tiktok.href="https://www.tiktok.com/@speaak_out";
  }
 
  const nextPanel=$("#nextLivePanel");
