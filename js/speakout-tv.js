@@ -428,6 +428,7 @@ function renderLiveExperience(allEpisodes){
   $("#liveTitle").textContent="The next conversation starts here.";
   $("#liveDescription").textContent=nextLive?"A SpeakOut Live session is scheduled. The countdown and reminder are ready below.":"Interviews, youth conversations and special SpeakOut sessions will appear here when scheduled.";
   meta.innerHTML="";share.hidden=true;calendar.hidden=true;tiktok.hidden=false;tiktok.href="https://www.tiktok.com/@speaak_out";
+  const offlinePlayer=$("#livePlayer");if(offlinePlayer){offlinePlayer.innerHTML='<div class="live-offline-state" style="padding:28px 20px;text-align:center"><span class="live-offline-kicker">TIKTOK BROADCAST</span><strong>Watch SpeakOut on TikTok</strong><small>Our TikTok broadcast opens in TikTok. A live video is not embedded here.</small><a href="https://www.tiktok.com/@speaak_out" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin:16px auto 0;padding:12px 20px;border-radius:12px;background:#fff;color:#071225;font-weight:800;text-decoration:none">Watch on TikTok ↗</a></div>';}
  }
  if(requestedReplay){
   status.textContent="Replay";status.classList.remove("is-live");stageTime.textContent="Previously live · "+formatSchedule(scheduleValue(requestedReplay));
