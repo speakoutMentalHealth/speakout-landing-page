@@ -242,7 +242,7 @@
 <section class="tv-container youth-section live-section live-v2 media-only-view live-only" id="live">
   
   <div class="youth-section-head live-section-head compact-media-head">
-    <div><span>SPEAKOUT TV LIVE · 22 OCTOBER 2026</span><h2 style="font-size:clamp(19px,4.5vw,28px);line-height:1.2">KPA Club Inauguration</h2></div>
+    <div class="live-program-heading"><span class="live-program-eyebrow">SPEAKOUT TV <span aria-hidden="true">·</span> 22 OCT 2026</span><h2>KPA Club Inauguration</h2></div>
     <span class="ios-status" id="liveStatus">Standby</span>
   </div>
 
@@ -251,8 +251,8 @@
       <div class="live-stage-top">
         <span class="live-channel-chip">SPEAKOUT TV</span>
         <span class="live-stage-time" id="liveStageTime">Offline</span>
-        <button type="button" id="liveTheaterButton" aria-pressed="false" class="live-view-control">Theater mode</button>
-        <button type="button" id="liveFullscreenButton" class="live-view-control">⛶ Expand video</button>
+        <button type="button" id="liveTheaterButton" aria-pressed="false" class="live-view-control">▣ Theater</button>
+        <button type="button" id="liveFullscreenButton" class="live-view-control live-expand-primary">⛶ Expand video</button>
       </div>
       <div class="ios-player live-v2-player" id="livePlayer">
         <iframe src="https://player.twitch.tv/?channel=speakoutmentalhealth&amp;parent=speakoutmentalhealth.org&amp;autoplay=false&amp;muted=true" title="SpeakOut TV live broadcast on Twitch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:260px;border:0;aspect-ratio:16/9"></iframe>
@@ -328,7 +328,50 @@
 #liveCinemaShell:fullscreen #livePlayer iframe{width:100%;height:100%;min-height:0;aspect-ratio:auto}
 #liveCinemaShell:fullscreen .live-info-card{display:none}
 
-/* Immersive video mode works on iPhone Safari without the Fullscreen API. */
+
+/* Compact premium live-channel layout, scoped to SpeakOut TV Live. */
+#live.live-v2{padding-top:12px!important}
+#live .live-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px!important;padding:0!important}
+#live .live-program-heading{min-width:0}
+#live .live-program-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;color:#9bbaf1;margin:0 0 5px}
+#live .live-program-heading h2{font-size:clamp(20px,4.4vw,28px);line-height:1.13;letter-spacing:-.035em;margin:0;color:#fff}
+#live #liveStatus{flex-shrink:0;font-size:10px;letter-spacing:.04em;padding:6px 9px;border-radius:999px}
+#live #liveCinemaShell:not(.tv-immersive){gap:10px}
+#live #liveCinemaShell:not(.tv-immersive) .live-stage{min-width:0;overflow:hidden;border:1px solid #29405f;border-radius:17px;background:#081321}
+#live #liveCinemaShell:not(.tv-immersive) .live-stage-top{display:flex;align-items:center;gap:7px;padding:9px 10px;background:#0c1b30}
+#live #liveCinemaShell:not(.tv-immersive) .live-channel-chip{font-size:10px;letter-spacing:.08em;white-space:nowrap}
+#live #liveCinemaShell:not(.tv-immersive) .live-stage-time{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#live #liveCinemaShell:not(.tv-immersive) .live-view-control{white-space:nowrap;min-height:36px;padding:7px 10px;font-size:12px;border-color:#405b7d}
+#live #liveCinemaShell:not(.tv-immersive) .live-expand-primary{background:#eaf2ff;color:#0b2140;border-color:#eaf2ff;font-weight:800}
+#live #liveCinemaShell:not(.tv-immersive) #livePlayer{width:100%;aspect-ratio:16/9;min-height:0!important;height:auto!important;overflow:hidden;border:0;border-radius:0;background:#000}
+#live #liveCinemaShell:not(.tv-immersive) #livePlayer iframe{display:block;width:100%!important;height:100%!important;min-height:0!important;aspect-ratio:16/9;border:0}
+#live #liveCinemaShell:not(.tv-immersive) .live-info-card{min-width:0;border-radius:16px;padding:14px}
+#live #liveCinemaShell:not(.tv-immersive) .live-info-card h3{font-size:17px;line-height:1.2;margin:4px 0}
+#live #liveCinemaShell:not(.tv-immersive) .live-info-card p{font-size:12px;line-height:1.45}
+@media(max-width:700px){
+ #live.live-v2{padding-top:6px!important}
+ #live .live-section-head{gap:8px;margin-bottom:9px!important}
+ #live .live-program-heading h2{font-size:21px}
+ #live .live-program-eyebrow{font-size:9px}
+ #live #liveCinemaShell:not(.tv-immersive){display:flex;flex-direction:column;gap:9px}
+ #live #liveCinemaShell:not(.tv-immersive) .live-stage-top{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;padding:8px}
+ #live #liveCinemaShell:not(.tv-immersive) .live-channel-chip{grid-column:1;grid-row:1}
+ #live #liveCinemaShell:not(.tv-immersive) .live-stage-time{display:none}
+ #live #liveCinemaShell:not(.tv-immersive) #liveTheaterButton{grid-column:2;grid-row:1}
+ #live #liveCinemaShell:not(.tv-immersive) #liveFullscreenButton{grid-column:3;grid-row:1}
+ #live #liveCinemaShell:not(.tv-immersive) .live-view-control{padding:7px 9px;font-size:11px}
+ #live #liveCinemaShell:not(.tv-immersive) .live-info-card{padding:12px 14px}
+ #live #liveCinemaShell:not(.tv-immersive) .live-info-card>div:first-child p{display:none}
+ #live #liveCinemaShell:not(.tv-immersive) .live-info-card h3{font-size:15px;margin:3px 0}
+}
+@media(max-width:375px){
+ #live #liveCinemaShell:not(.tv-immersive) .live-stage-top{grid-template-columns:1fr 1fr}
+ #live #liveCinemaShell:not(.tv-immersive) .live-channel-chip{grid-column:1/-1}
+ #live #liveCinemaShell:not(.tv-immersive) #liveTheaterButton{grid-column:1;grid-row:2}
+ #live #liveCinemaShell:not(.tv-immersive) #liveFullscreenButton{grid-column:2;grid-row:2}
+}
+
+/* Immersive video mode works on iPhone Chrome and Safari without the Fullscreen API. */
 html.tv-immersive-active,body.tv-immersive-active{overflow:hidden!important;overscroll-behavior:none}
 #liveCinemaShell.tv-immersive{position:fixed!important;inset:0!important;inset:0 0 0 0!important;z-index:2147483000!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;margin:0!important;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;flex-direction:column!important;box-sizing:border-box!important}
 #liveCinemaShell.tv-immersive .live-stage{flex:1!important;min-height:0!important;width:100%!important;max-width:none!important;display:flex!important;flex-direction:column!important;background:#000!important}
@@ -344,7 +387,7 @@ html.tv-immersive-active,body.tv-immersive-active{overflow:hidden!important;over
 (function(){
 const shell=document.getElementById("liveCinemaShell"),theater=document.getElementById("liveTheaterButton"),full=document.getElementById("liveFullscreenButton");
 if(!shell||!theater||!full)return;
-theater.addEventListener("click",()=>{const on=shell.classList.toggle("tv-theater");theater.setAttribute("aria-pressed",String(on));theater.textContent=on?"Exit theater":"Theater mode";});
+theater.addEventListener("click",()=>{const on=shell.classList.toggle("tv-theater");theater.setAttribute("aria-pressed",String(on));theater.textContent=on?"Exit theater":"▣ Theater";});
 let previousFocus=null;
 function setImmersive(on){
  shell.classList.toggle("tv-immersive",on);
