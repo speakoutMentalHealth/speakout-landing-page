@@ -437,6 +437,23 @@ function renderLiveExperience(allEpisodes){
   meta.innerHTML=liveMetaMarkup(requestedReplay);setFrame($("#livePlayer"),requestedReplay,false);share.hidden=false;calendar.hidden=true;tiktok.hidden=false;tiktok.href="https://www.tiktok.com/@speaak_out";
  }
 
+ // Twitch provides the embedded player; its own player indicates whether the channel is live.
+ const twitchHost=$("#livePlayer");
+ if(twitchHost){
+  const parent=location.hostname;
+  if(parent&&parent!=="localhost"){
+   const src="https://player.twitch.tv/?channel=speakoutmentalhealth&parent="+encodeURIComponent(parent)+"&autoplay=false&muted=true";
+   twitchHost.innerHTML='<iframe src="'+esc(src)+'" title="SpeakOut TV live broadcast on Twitch" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="width:100%;height:100%;min-height:260px;border:0;aspect-ratio:16/9"></iframe>';
+  }
+ }
+ if(!currentLive){
+  status.textContent="Twitch channel";
+  stageTime.textContent="Watch here when broadcasting";
+  $("#liveEyebrow").textContent="WATCH ON SPEAKOUT TV";
+  $("#liveTitle").textContent="SpeakOut TV Live";
+  $("#liveDescription").textContent="Watch our live video here when the SpeakOut Twitch channel is broadcasting. The player may show offline between events.";
+ }
+
  const nextPanel=$("#nextLivePanel");
  if(nextLive){
   nextPanel.hidden=false;$("#nextLiveTitle").textContent=nextLive.title||"Upcoming SpeakOut Live";$("#nextLiveDescription").textContent=nextLive.description||"Join the next SpeakOut conversation live.";
