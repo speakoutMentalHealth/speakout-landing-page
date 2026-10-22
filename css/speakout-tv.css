@@ -2060,3 +2060,22 @@ body.youth-tv[data-tv-view="live"] .live-countdown b{
 
 
 .youth-feature.feature-empty{display:none!important}
+
+
+/* Content-sized media cards: prevent grid/rail row stretching on all TV routes. */
+:is(.youth-content-card,.discovery-media-card,.discovery-series-card,.show-episode-card,.ios-series-card,.ios-audio-card,.ios-audio-episode,.audio-card,.listen-card,.card){
+  height:auto!important;
+  min-height:0!important;
+  align-self:start!important;
+}
+:is(.youth-content-card,.discovery-media-card,.discovery-series-card,.show-episode-card,.ios-series-card,.ios-audio-card,.ios-audio-episode,.audio-card,.listen-card,.card) :is(.card-body,.discovery-media-copy,.discovery-series-copy,.show-episode-copy,.ios-card-copy){
+  min-height:0;
+  height:auto;
+}
+:is(.episode-grid,.discovery-media-grid,.discovery-series-grid,.audio-grid,.listen-grid,.rail){
+  align-items:start;
+}
+.rail{grid-auto-rows:max-content}
+@media(max-width:850px){
+  :is(.youth-content-card,.discovery-media-card,.discovery-series-card,.show-episode-card,.ios-series-card,.ios-audio-card,.ios-audio-episode,.audio-card,.listen-card,.card){max-width:100%;min-width:0}
+}
