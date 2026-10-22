@@ -246,11 +246,13 @@
     <span class="ios-status" id="liveStatus">Standby</span>
   </div>
 
-  <div class="live-cinema-shell">
+  <div class="live-cinema-shell" id="liveCinemaShell">
     <div class="live-stage">
       <div class="live-stage-top">
         <span class="live-channel-chip">SPEAKOUT TV</span>
         <span class="live-stage-time" id="liveStageTime">Offline</span>
+        <button type="button" id="liveTheaterButton" aria-pressed="false" class="live-view-control">Theater mode</button>
+        <button type="button" id="liveFullscreenButton" class="live-view-control">⛶ Fullscreen</button>
       </div>
       <div class="ios-player live-v2-player" id="livePlayer">
         <iframe src="https://player.twitch.tv/?channel=speakoutmentalhealth&amp;parent=speakoutmentalhealth.org&amp;autoplay=false&amp;muted=true" title="SpeakOut TV live broadcast on Twitch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:260px;border:0;aspect-ratio:16/9"></iframe>
@@ -309,7 +311,33 @@
 <a href="#live" data-view="live"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M7.7 7.7a6 6 0 0 0 0 8.6M16.3 7.7a6 6 0 0 1 0 8.6"/><path d="M4.7 4.7a10.2 10.2 0 0 0 0 14.6M19.3 4.7a10.2 10.2 0 0 1 0 14.6"/></svg></span><small>Live</small></a>
 </nav>
 
+<style>
+.live-view-control{border:1px solid #61738e;background:#182842;color:#fff;border-radius:9px;padding:9px 12px;font:inherit;font-size:13px;cursor:pointer}
+.live-view-control:focus-visible{outline:3px solid #80b9ff;outline-offset:2px}
+.live-stage-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.live-stage-time{margin-right:auto}
+#liveCinemaShell.tv-theater{display:block;position:relative;max-width:none;width:100%}
+#liveCinemaShell.tv-theater .live-stage{width:100%;max-width:none}
+#liveCinemaShell.tv-theater #livePlayer{width:100%;max-width:none;aspect-ratio:16/9;height:auto}
+#liveCinemaShell.tv-theater #livePlayer iframe{width:100%;height:100%;min-height:0;aspect-ratio:16/9}
+#liveCinemaShell.tv-theater .live-info-card{margin-top:12px}
+#liveCinemaShell:fullscreen{background:#000;padding:0;display:flex;flex-direction:column;justify-content:center}
+#liveCinemaShell:fullscreen .live-stage{width:100%;height:100%;display:flex;flex-direction:column;justify-content:center}
+#liveCinemaShell:fullscreen .live-stage-top{padding:8px;background:#101827}
+#liveCinemaShell:fullscreen #livePlayer{flex:1;min-height:0;height:auto;aspect-ratio:auto;display:flex;align-items:center;justify-content:center}
+#liveCinemaShell:fullscreen #livePlayer iframe{width:100%;height:100%;min-height:0;aspect-ratio:auto}
+#liveCinemaShell:fullscreen .live-info-card{display:none}
+</style>
 <script type="module" src="js/speakout-tv.js"></script>
+<script>
+(function(){
+const shell=document.getElementById("liveCinemaShell"),theater=document.getElementById("liveTheaterButton"),full=document.getElementById("liveFullscreenButton");
+if(!shell||!theater||!full)return;
+theater.addEventListener("click",()=>{const on=shell.classList.toggle("tv-theater");theater.setAttribute("aria-pressed",String(on));theater.textContent=on?"Exit theater":"Theater mode";});
+full.addEventListener("click",async()=>{try{if(document.fullscreenElement){await document.exitFullscreen();return;}if(shell.requestFullscreen){await shell.requestFullscreen();return;}const frame=document.querySelector("#livePlayer iframe");if(frame&&frame.webkitEnterFullscreen){frame.webkitEnterFullscreen();return;}full.textContent="Use player fullscreen ↗";}catch(e){full.textContent="Use player fullscreen ↗";}});
+document.addEventListener("fullscreenchange",()=>{full.textContent=document.fullscreenElement?"Exit fullscreen":"⛶ Fullscreen";});
+})();
+</script>
 <script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
 <script type="module" src="js/account-controls.js"></script>
 </body></html>
