@@ -238,3 +238,11 @@ iframe{border:0}
 @media(prefers-contrast:more){
   :root{--tv-muted:#b7c5d3;--tv-muted-2:#98aabd;--tv-line:rgba(255,255,255,.18);--tv-line-strong:rgba(255,255,255,.28)}
 }
+
+/* Horizontal flex rails stretch every card to the tallest sibling by default.
+   Keep individual media cards content-sized instead. */
+.content-rail,.originals-rail,.ios-episode-strip,.ios-audio-strip,.listen-rail,.live-previous-rail{align-items:flex-start;align-content:flex-start}
+.content-rail>.youth-content-card,.content-rail>.ios-episode-card,
+.originals-rail>.original-card,.ios-episode-strip>.ios-episode-card,
+.ios-audio-strip>.ios-audio-episode,.listen-rail>.listen-card,
+.live-previous-rail>*{align-self:flex-start;height:auto;min-height:0}
