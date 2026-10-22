@@ -252,7 +252,7 @@
         <span class="live-channel-chip">SPEAKOUT TV</span>
         <span class="live-stage-time" id="liveStageTime">Offline</span>
         <button type="button" id="liveTheaterButton" aria-pressed="false" class="live-view-control">Theater mode</button>
-        <button type="button" id="liveFullscreenButton" class="live-view-control">⛶ Fullscreen</button>
+        <button type="button" id="liveFullscreenButton" class="live-view-control">⛶ Expand video</button>
       </div>
       <div class="ios-player live-v2-player" id="livePlayer">
         <iframe src="https://player.twitch.tv/?channel=speakoutmentalhealth&amp;parent=speakoutmentalhealth.org&amp;autoplay=false&amp;muted=true" title="SpeakOut TV live broadcast on Twitch" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:260px;border:0;aspect-ratio:16/9"></iframe>
@@ -327,6 +327,17 @@
 #liveCinemaShell:fullscreen #livePlayer{flex:1;min-height:0;height:auto;aspect-ratio:auto;display:flex;align-items:center;justify-content:center}
 #liveCinemaShell:fullscreen #livePlayer iframe{width:100%;height:100%;min-height:0;aspect-ratio:auto}
 #liveCinemaShell:fullscreen .live-info-card{display:none}
+
+/* Immersive video mode works on iPhone Safari without the Fullscreen API. */
+html.tv-immersive-active,body.tv-immersive-active{overflow:hidden!important;overscroll-behavior:none}
+#liveCinemaShell.tv-immersive{position:fixed!important;inset:0!important;inset:0 0 0 0!important;z-index:2147483000!important;width:100vw!important;max-width:none!important;height:100vh!important;height:100dvh!important;margin:0!important;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;flex-direction:column!important;box-sizing:border-box!important}
+#liveCinemaShell.tv-immersive .live-stage{flex:1!important;min-height:0!important;width:100%!important;max-width:none!important;display:flex!important;flex-direction:column!important;background:#000!important}
+#liveCinemaShell.tv-immersive .live-stage-top{flex:0 0 auto!important;min-height:48px!important;padding:6px 12px!important;background:#0b1220!important;justify-content:flex-end!important}
+#liveCinemaShell.tv-immersive .live-channel-chip,#liveCinemaShell.tv-immersive .live-stage-time,#liveCinemaShell.tv-immersive #liveTheaterButton{display:none!important}
+#liveCinemaShell.tv-immersive #liveFullscreenButton{background:#fff!important;color:#071225!important;border-color:#fff!important;min-height:40px!important;font-weight:700!important}
+#liveCinemaShell.tv-immersive #livePlayer{flex:1!important;min-height:0!important;max-height:none!important;width:100%!important;height:auto!important;aspect-ratio:auto!important;border:0!important;border-radius:0!important;background:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+#liveCinemaShell.tv-immersive #livePlayer iframe{display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;border:0!important}
+#liveCinemaShell.tv-immersive .live-info-card{display:none!important}
 </style>
 <script type="module" src="js/speakout-tv.js"></script>
 <script>
@@ -334,8 +345,20 @@
 const shell=document.getElementById("liveCinemaShell"),theater=document.getElementById("liveTheaterButton"),full=document.getElementById("liveFullscreenButton");
 if(!shell||!theater||!full)return;
 theater.addEventListener("click",()=>{const on=shell.classList.toggle("tv-theater");theater.setAttribute("aria-pressed",String(on));theater.textContent=on?"Exit theater":"Theater mode";});
-full.addEventListener("click",async()=>{try{if(document.fullscreenElement){await document.exitFullscreen();return;}if(shell.requestFullscreen){await shell.requestFullscreen();return;}const frame=document.querySelector("#livePlayer iframe");if(frame&&frame.webkitEnterFullscreen){frame.webkitEnterFullscreen();return;}full.textContent="Use player fullscreen ↗";}catch(e){full.textContent="Use player fullscreen ↗";}});
-document.addEventListener("fullscreenchange",()=>{full.textContent=document.fullscreenElement?"Exit fullscreen":"⛶ Fullscreen";});
+let previousFocus=null;
+function setImmersive(on){
+ shell.classList.toggle("tv-immersive",on);
+ document.documentElement.classList.toggle("tv-immersive-active",on);
+ document.body.classList.toggle("tv-immersive-active",on);
+ full.textContent=on?"✕ Close expanded video":"⛶ Expand video";
+ full.setAttribute("aria-pressed",String(on));
+ full.setAttribute("aria-label",on?"Close expanded video":"Expand live video");
+ if(on){previousFocus=document.activeElement;full.focus({preventScroll:true});}
+ else if(previousFocus&&typeof previousFocus.focus==="function"){previousFocus.focus({preventScroll:true});previousFocus=null;}
+}
+full.addEventListener("click",()=>setImmersive(!shell.classList.contains("tv-immersive")));
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&shell.classList.contains("tv-immersive"))setImmersive(false);});
+
 })();
 </script>
 <script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
