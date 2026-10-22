@@ -2079,3 +2079,13 @@ body.youth-tv[data-tv-view="live"] .live-countdown b{
 @media(max-width:850px){
   :is(.youth-content-card,.discovery-media-card,.discovery-series-card,.show-episode-card,.ios-series-card,.ios-audio-card,.ios-audio-episode,.audio-card,.listen-card,.card){max-width:100%;min-width:0}
 }
+
+/* TV card rails must size to their own content, not the tallest rail item. */
+.youth-tv .rail{align-items:start!important;grid-template-rows:max-content!important;grid-auto-rows:max-content!important;align-content:start!important}
+.youth-tv .rail>.card{height:max-content!important;min-height:0!important;align-self:start!important;display:block!important}
+.youth-tv .rail>.card .card-body{height:auto!important;min-height:0!important;display:block!important}
+.youth-tv .rail>.card .thumb{flex-shrink:0}
+@media(max-width:850px){
+  body.youth-tv #speakout-platform-switcher{position:fixed;top:calc(77px + env(safe-area-inset-top,0px));right:84px;z-index:1000}
+  body.youth-tv #speakout-platform-switcher button{font-size:11px;padding:9px 10px;min-height:40px;box-shadow:none}
+}
