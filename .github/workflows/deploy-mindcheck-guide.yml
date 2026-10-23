@@ -1,0 +1,91 @@
+name: Deploy MindCheck Guide
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/deploy-mindcheck-guide.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/deploy-mindcheck-guide.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mindcheck-guide-production
+  cancel-in-progress: false
+
+env:
+  # Deploy the reviewed MindCheck source, never a moving cross-repository ref.
+  MINDCHECK_SOURCE: ea2ba9b018c6dabdfe0a22006b79636304976074
+  WRANGLER_SEND_METRICS: "false"
+
+jobs:
+  validate:
+    name: Validate MindCheck guide
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: mindcheck/server/guide
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: speakoutMentalHealth/MindCheck
+          ref: ${{ env.MINDCHECK_SOURCE }}
+          path: mindcheck
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mindcheck/server/guide/package-lock.json
+      - run: npm ci
+      - name: Check private request contract and provider fallback
+        run: npm test
+      - name: Check production bundle without publishing
+        run: npm run build
+
+  deploy:
+    name: Deploy disabled guide server
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
+    defaults:
+      run:
+        working-directory: mindcheck/server/guide
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: speakoutMentalHealth/MindCheck
+          ref: ${{ env.MINDCHECK_SOURCE }}
+          path: mindcheck
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mindcheck/server/guide/package-lock.json
+      - name: Require existing Cloudflare deployment access
+        shell: bash
+        run: |
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
+            echo "::error::Cloudflare deployment access is missing. No guide server was published."
+            exit 1
+          fi
+      - run: npm ci
+      - name: Publish the separate disabled guide Worker
+        run: npx wrangler deploy
+      - name: Explain remaining activation step
+        shell: bash
+        run: |
+          echo "MindCheck guide server was deployed with GUIDE_ENABLED=false."
+          echo "No Gemini API key is supplied by this workflow. No live AI request was made."
+          echo "Add GEMINI_API_KEY as a Secret on the mindcheck-guide Worker, then perform controlled acceptance before enabling the public guide."
