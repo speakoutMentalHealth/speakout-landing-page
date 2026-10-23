@@ -83,6 +83,33 @@ jobs:
       - run: npm ci
       - name: Publish the separate disabled guide Worker
         run: npx wrangler deploy
+      - name: Check live disabled server without an AI request
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          const url = 'https://mindcheck-guide.speakout-platform-api.workers.dev/';
+          const origin = 'https://mindcheck.speakoutmentalhealth.org';
+          async function post(body) {
+            return fetch(url, {
+              method: 'POST',
+              headers: { Origin: origin, 'Content-Type': 'application/json' },
+              body: JSON.stringify(body),
+              signal: AbortSignal.timeout(15000)
+            });
+          }
+          const selection = { question: 'mood', language: 'en', adult: true };
+          const fallback = await post(selection);
+          assert.equal(fallback.status, 200, 'disabled server must return a prepared answer');
+          assert.equal(fallback.headers.get('Access-Control-Allow-Origin'), origin);
+          const data = await fallback.json();
+          assert.equal(data.source, 'prepared', 'no Gemini generation during this check');
+          assert.match(data.answer, /this browser/);
+          const invalid = await post({ ...selection, prompt: 'TEST_ONLY_PUBLIC_FIXTURE' });
+          assert.equal(invalid.status, 400, 'unexpected free-text fields must be rejected');
+          const method = await fetch(url, { headers: { Origin: origin }, signal: AbortSignal.timeout(15000) });
+          assert.equal(method.status, 405);
+          console.log('Live prepared fallback, CORS, fixed-field validation and method guard passed. No AI generation requested.');
+          NODE
       - name: Explain remaining activation step
         shell: bash
         run: |
