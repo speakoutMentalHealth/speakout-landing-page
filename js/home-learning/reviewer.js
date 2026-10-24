@@ -76,7 +76,7 @@ if (!hosts.has(location.hostname)) {
           area.append(card);
           continue;
         }
-        const existing = await getDoc(doc(db, "homeLearningReviewSubmissions", row.id));
+        const existing = await getDocFromServer(doc(db, "homeLearningReviewSubmissions", row.id));
         if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
         if (existing.exists()) {
           card.append(element("p", "Findings already submitted. They cannot be edited."));
