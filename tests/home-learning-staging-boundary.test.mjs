@@ -76,3 +76,8 @@ test("immutable submission recovery requires a server-authoritative read",()=>{
   assert.doesNotMatch(reviewer,/const saved = await getDoc\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
   assert.match(reviewer,/Submission status is unknown\. Reload to check before attempting again\./);
 });
+
+test("reviewer requires a live server read before offering an immutable submission form",()=>{
+  assert.match(reviewer,/const existing = await getDocFromServer\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
+  assert.doesNotMatch(reviewer,/const existing = await getDoc\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
+});
