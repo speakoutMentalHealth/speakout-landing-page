@@ -72,3 +72,13 @@ Do not permit student data in approval submissions or audit payloads. Store sign
 The code exports no Firestore write operation, no HTTP endpoint, no model integration and no publisher. Its output contains only whether the rehearsal passed, safe error labels and minimal resource identifiers. Six new synthetic tests cover a nominal read-only rehearsal, rejected client flags, nonstaging/non-authenticated snapshots, ID mismatches, replay/stale-version failures and provider errors.
 
 **Critical security limit:** The provider is an injected test contract, not a real authenticated backend. Its `authenticatedServerPrincipal`, `isolatedStaging` and `verified` values have no security significance when set by arbitrary code. Never expose the rehearsal to clients or activate approval writes based only on these booleans. The actual adapter needs independent credentials, reads within a real Firestore transaction, verified reviewer qualification and content snapshots, and audit/write authority isolated from the web application. Test results in GitHub Actions and Firebase Emulator still require confirmation.
+
+## Phase 31: CI trigger coverage and snapshot-provider callback safety
+
+The Firestore Emulator workflow now triggers on changes to the educator reviewer client, approval validators, proposal/commit guards, rehearsal, and their regression tests (in addition to rules changes). This prevents relevant approval-layer changes from silently skipping the dedicated security workflow.
+
+The read-only rehearsal now ignores any result manufactured by a snapshot adapter. It requires its internal validation callback to be invoked **exactly once**. A provider that skips or repeats the callback returns a rejected result. Two synthetic regression tests cover those cases.
+
+**Not a security authority:** An untrusted adapter can still fabricate a passing snapshot. No browser or arbitrary request may construct the provider, trusted flags, verified evidence or authorization identity. The rehearsal remains a non-deployable development aid. This change does not constitute verified staging isolation, server authentication, database transactions, educator approval, or AI release.
+
+**Verification limitation:** GitHub source files and workflow triggers have been confirmed via the connected repository. This environment could not check out the repo over the network and has not verified a passing Firebase Emulator or GitHub CI run. No production deployments or data modifications occurred.
