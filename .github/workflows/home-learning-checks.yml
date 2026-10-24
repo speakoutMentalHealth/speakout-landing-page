@@ -30,6 +30,8 @@ on:
       - 'tests/home-learning-catalog.test.py'
       - 'scripts/home-learning-approval-evidence.mjs'
       - 'tests/home-learning-approval-evidence.test.mjs'
+      - 'scripts/home-learning-approval-proposal.mjs'
+      - 'tests/home-learning-approval-proposal.test.mjs'
       - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
   pull_request:
@@ -60,6 +62,8 @@ on:
       - 'tests/home-learning-catalog.test.py'
       - 'scripts/home-learning-approval-evidence.mjs'
       - 'tests/home-learning-approval-evidence.test.mjs'
+      - 'scripts/home-learning-approval-proposal.mjs'
+      - 'tests/home-learning-approval-proposal.test.mjs'
       - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
 permissions:
@@ -79,4 +83,4 @@ jobs:
       - name: Validate reviewer client syntax
         run: node --check js/home-learning/reviewer.js
       - name: Validate approval evidence unit tests
-        run: node --test tests/home-learning-approval-evidence.test.mjs
+        run: node --test tests/home-learning-approval-evidence.test.mjs tests/home-learning-approval-proposal.test.mjs
