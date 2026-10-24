@@ -707,3 +707,32 @@ test("Home Learning: editorial approval records are server-only even for adminis
   await assertFails(updateDoc(doc(admin, path), { reviewStatus: "revoked" }));
   await assertFails(deleteDoc(doc(admin, path)));
 });
+
+test("Home Learning: reviewer applications require approved teacher and remain immutable", async () => {
+  await seed("users/teacher-app", profile("teacher-app", "teacher"));
+  await seed("users/parent-app", profile("parent-app", "parent"));
+  await seed("users/admin-app", profile("admin-app", "admin"));
+  const teacher = testEnv.authenticatedContext("teacher-app").firestore();
+  const parent = testEnv.authenticatedContext("parent-app").firestore();
+  const admin = testEnv.authenticatedContext("admin-app").firestore();
+  const visitor = testEnv.unauthenticatedContext().firestore();
+  const path = "homeLearningReviewerApplications/teacher-app";
+  const payload = {
+    applicantUid: "teacher-app", displayName: "Test Educator",
+    subjectExpertise: "Primary mathematics",
+    experience: "More than five years teaching mathematics at primary level.",
+    consentToContact: true, publicCreditOptIn: false,
+    status: "pending_review", submittedAt: serverTimestamp()
+  };
+  await assertFails(setDoc(doc(parent, path), payload));
+  await assertFails(setDoc(doc(visitor, path), payload));
+  await assertFails(setDoc(doc(teacher, path), {...payload, status: "approved"}));
+  await assertFails(setDoc(doc(teacher, path), {...payload, applicantUid: "someone-else"}));
+  await assertSucceeds(setDoc(doc(teacher, path), payload));
+  await assertSucceeds(getDoc(doc(teacher, path)));
+  await assertSucceeds(getDoc(doc(admin, path)));
+  await assertFails(getDoc(doc(parent, path)));
+  await assertFails(updateDoc(doc(teacher, path), {status:"approved"}));
+  await assertFails(deleteDoc(doc(teacher, path)));
+  await assertFails(updateDoc(doc(admin, path), {status:"approved"}));
+});
