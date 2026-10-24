@@ -23,7 +23,11 @@ function fixture() {
   const trustedState={transactional:true,resourceId:resource.id,resourceVersion:resource.version,
     contentSha256:resource.sha256,recordedApprovalKeys:[],
     activeApprovalExists:false,resourceIsRetired:false,auditHead:null};
-  return {isolatedStaging:true,authenticatedServerPrincipal:true,resource,assignment,submission,
+  const {id:assignmentId,...assignmentData}=assignment;
+  const {assignmentId:storedAssignmentId,...submissionData}=submission;
+  return {isolatedStaging:true,authenticatedServerPrincipal:true,resource,
+    assignmentDocument:{id:assignmentId,data:assignmentData},
+    submissionDocument:{id:storedAssignmentId,data:submissionData},
     decision,lessonContent,verified,actor:{uid:"approver-c",authorization:"editor"},
     approvedAt:"2026-10-24T12:00:00.000Z",trustedState};
 }
@@ -45,7 +49,7 @@ test("nonstaging or unauthenticated snapshots fail closed",async()=>{
   assert.equal((await rehearseApproval({request,adapter:adapter(y)})).ready,false);
 });
 test("snapshot identity mismatch is denied",async()=>{
-  const x=fixture();x.assignment.id="other-assignment";
+  const x=fixture();x.assignmentDocument.id="other-assignment";
   assert.equal((await rehearseApproval({request,adapter:adapter(x)})).ready,false);
 });
 test("replayed or obsolete versions fail",async()=>{
