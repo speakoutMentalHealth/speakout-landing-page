@@ -34,6 +34,7 @@ def main():
         if "<title>" not in html:errors.append(f"Missing title: {name}")
     catalogue=json.loads((ROOT/"data/home-learning-catalog.json").read_text(encoding="utf-8"))
     ids=set()
+    allowed_statuses={"unreviewed","in_review","changes_requested","approved","retired"}
     for item in catalogue["resources"]:
         ident=item["id"]
         if ident in ids:errors.append(f"Duplicate catalogue ID: {ident}")
@@ -41,8 +42,12 @@ def main():
         target=(ROOT/item["resource_url"]).resolve()
         if not target.is_relative_to(ROOT.resolve()) or not target.is_file():
             errors.append(f"Missing resource: {ident}")
+        if item.get("review_status") not in allowed_statuses:
+            errors.append(f"Invalid review status: {ident}")
         if item["review_status"]=="approved" and not (item.get("reviewer") and item.get("reviewed_at") and item.get("curriculum_reference")):
             errors.append(f"Approved without documented review: {ident}")
+    if not (ROOT/"docs/home-learning-school-roles-design.md").is_file():
+        errors.append("Missing school roles design document")
     if errors:
         print("\n".join(errors));raise SystemExit(1)
     print(f"Static checks passed: {len(PAGES)} pages, {len(ids)} catalogue groups. Browser, accessibility, educator and print reviews still required.")
