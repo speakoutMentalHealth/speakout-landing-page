@@ -728,7 +728,7 @@ service cloud.firestore {
     // Home Learning educator reviews: assignment is administrator-managed.
     // Client review submissions are immutable recommendations, never approvals.
     function isHomeLearningReviewCollection(collection) {
-      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions"];
+      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals"];
     }
 
     match /homeLearningReviewerAssignments/{assignmentId} {
@@ -766,6 +766,14 @@ service cloud.firestore {
         request.resource.data.findings.size() <= 4000 &&
         request.resource.data.submittedAt == request.time;
       allow update, delete: if false;
+    }
+
+    // Approval authority is deliberately server-only. Admin SDK bypasses
+    // client rules and must enforce signed-off reviews, content hashes,
+    // independent authorization and audit retention before writing here.
+    match /homeLearningEditorialApprovals/{approvalId} {
+      allow read: if isSuperAdmin();
+      allow create, update, delete: if false;
     }
 
     // Session state is exclusively managed by the authenticated Worker.
