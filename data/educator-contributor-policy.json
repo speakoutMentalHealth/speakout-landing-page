@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "programme": "SpeakOut Educator & Course Creator Programme",
+  "status": "proposal-only",
+  "public_attribution": {
+    "requires_accepted_review": true,
+    "requires_editorial_approval": true,
+    "requires_explicit_reviewer_consent": true,
+    "attribution_template": "Reviewed by {display_name}",
+    "allow_opt_out": true,
+    "no_unverified_credentials": true
+  },
+  "review_integrity": {
+    "self_review_allowed": false,
+    "creator_selects_own_reviewer": false,
+    "payment_for_positive_review_allowed": false,
+    "independent_editorial_approval_required": true,
+    "approved_catalogue_only_from_authorized_server_process": true
+  },
+  "creator_submissions": {
+    "status": "not-yet-enabled",
+    "copyright_ownership_declaration_required": true,
+    "safeguarding_review_required_for_minors": true,
+    "editorial_review_required": true,
+    "creator_agreement_required": true
+  },
+  "paid_courses": {
+    "status": "not-yet-enabled",
+    "revenue_share": "to-be-agreed",
+    "payout_provider": null,
+    "no_income_guarantee": true,
+    "tax_refund_and_fee_terms_required": true
+  }
+}
