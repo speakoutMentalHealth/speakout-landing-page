@@ -82,3 +82,11 @@ The read-only rehearsal now ignores any result manufactured by a snapshot adapte
 **Not a security authority:** An untrusted adapter can still fabricate a passing snapshot. No browser or arbitrary request may construct the provider, trusted flags, verified evidence or authorization identity. The rehearsal remains a non-deployable development aid. This change does not constitute verified staging isolation, server authentication, database transactions, educator approval, or AI release.
 
 **Verification limitation:** GitHub source files and workflow triggers have been confirmed via the connected repository. This environment could not check out the repo over the network and has not verified a passing Firebase Emulator or GitHub CI run. No production deployments or data modifications occurred.
+
+## Phase 32 — repeatable CI evidence and staging boundary regression
+
+Two GitHub Actions workflows can now be invoked manually on the development branch using **Actions > Home Learning Checks** or **Actions > Home Learning Firebase Rules Tests > Run workflow**. They also retain their automatic push/PR triggers. The former checks the staging-host restrictions, Firebase project selection and server-only editorial approval write rules; the latter captures Firebase Emulator output. Both upload short-lived (seven-day) diagnostic log artifacts even when tests fail.
+
+An observed **green GitHub run** with downloadable logs is required evidence for each workflow; a configured workflow, commit status without checks, or a successfully downloaded source file is not evidence of passing tests. In the event of a failed run, inspect the first failing assertion or Firestore rule compilation error and correct it on this branch before rerunning.
+
+These static staging-boundary checks catch accidental edits to the configured host and approval-rule restrictions, but do **not** prove production credentials cannot be reached by other application code, nor independently validate Firebase project IAM. Confirm staging authentication, Firestore isolation, security rules deployment and an end-to-end teacher review on staging before trusting the pilot. No production merge or deploy is authorized.
