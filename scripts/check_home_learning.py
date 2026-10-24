@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT=Path(__file__).resolve().parents[1]
-PAGES=["home-learning.html","learning-hub.html","learning-resource-catalog.html","parent-learning-planner.html","home-learning-progress.html","teacher-learning-toolkit.html","early-years-counting-pack.html","primary-home-learning-packs.html","upper-primary-home-learning-packs.html","junior-secondary-home-learning-packs.html","senior-secondary-home-learning-packs.html"]
+PAGES=["home-learning.html","learning-hub.html","learning-resource-catalog.html","parent-learning-planner.html","home-learning-progress.html","teacher-learning-toolkit.html","early-years-counting-pack.html","primary-home-learning-packs.html","upper-primary-home-learning-packs.html","junior-secondary-home-learning-packs.html","senior-secondary-home-learning-packs.html","secondary-science-home-learning-packs.html"]
 
 class Links(HTMLParser):
     def __init__(self):
@@ -46,6 +46,8 @@ def main():
             errors.append(f"Invalid review status: {ident}")
         if item["review_status"]=="approved" and not (item.get("reviewer") and item.get("reviewed_at") and item.get("curriculum_reference")):
             errors.append(f"Approved without documented review: {ident}")
+    if not (ROOT/"docs/home-learning-educator-review-template.md").is_file():
+        errors.append("Missing educator review template")
     if not (ROOT/"docs/home-learning-school-roles-design.md").is_file():
         errors.append("Missing school roles design document")
     if errors:
