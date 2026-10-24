@@ -5,8 +5,9 @@
 Firestore rules define three new collections:
 - `homeLearningReviewerAssignments/{assignmentId}`: approved platform administrators can create and delete immutable assignments. The assigned approved teacher and platform administrators may read the assignment. Assignment contains `reviewerUid`, `resourceId`, and server-verified `assignedAt`.
 - `homeLearningReviewSubmissions/{assignmentId}`: only an approved teacher with a matching assignment can create an immutable review submission. Submission contains `reviewerUid`, `resourceId`, `reviewStatus: submitted_for_verification`, a 10–4000 character `findings` field and server-verified `submittedAt`.
+- `homeLearningEditorialApprovals/{approvalId}`: only approved platform administrators may read final approval records. All client-side create, update and delete operations are denied, even to admins. A future trusted server may write through the Admin SDK only after independently validating the review evidence.
 
-- `homeLearningEditorialApprovals/{approvalId}`: only approved platform administrators may read final approval records. All client-side create, update and delete operations are denied, even to admins. A future trusted server may write through the Admin SDK only after independently validating the review evidence.\n\nAll other roles, all direct updates, and direct deletions of submissions are denied, including administrator client deletions. The generic administrator collection fallback explicitly excludes all three collections.
+All other roles, all direct updates, and direct deletions of submissions are denied, including administrator client deletions. The generic administrator collection fallback explicitly excludes all three collections.
 
 ## Limits and missing approval functionality
 
