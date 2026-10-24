@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
     "home-learning.html", "learning-hub.html", "learning-resource-catalog.html",
     "parent-learning-planner.html", "home-learning-progress.html",
-    "teacher-learning-toolkit.html", "educator-ai-readiness.html", "early-years-counting-pack.html",
+    "teacher-learning-toolkit.html", "educator-ai-readiness.html", "educator-resource-review-queue.html", "early-years-counting-pack.html",
     "primary-home-learning-packs.html", "upper-primary-home-learning-packs.html",
     "junior-secondary-home-learning-packs.html",
     "senior-secondary-home-learning-packs.html",
