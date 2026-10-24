@@ -1,4 +1,3 @@
-import { auth, db } from "../firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { doc, collection, query, where, getDoc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -25,6 +24,12 @@ function element(tag, value) {
 if (!hosts.has(location.hostname)) {
   status.textContent = "This workspace is disabled outside the designated staging portal.";
 } else {
+  // Do not initialize a Firebase app on any non-staging host.
+  const { app, auth, db } = await import("../firebase-config.js");
+  if (app.options.projectId !== "speakout-portal-staging") {
+    status.textContent = "Staging Firebase project verification failed. Reviews are disabled.";
+    throw new Error("Staging project mismatch");
+  }
   onAuthStateChanged(auth, async (user) => {
     const generation = ++authGeneration;
     area.hidden = true;
