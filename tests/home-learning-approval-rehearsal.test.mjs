@@ -8,10 +8,10 @@ function fixture() {
   const resource={id:"primary-1-3-maths",version:"draft-1",authorUid:"author-a",
     curriculumReference:"Synthetic source, not approval evidence",
     curriculumOutcome:"Synthetic outcome",sha256:hashLessonContent(lessonContent)};
-  const assignment={id:"assignment-1",reviewerUid:"reviewer-b",resourceId:resource.id,resourceVersion:resource.version};
+  const assignment={id:"assignment-1",reviewerUid:"reviewer-b",resourceId:resource.id,resourceVersion:resource.version,assignedAt:"2026-10-24T11:00:00.000Z"};
   const submission={assignmentId:assignment.id,reviewerUid:assignment.reviewerUid,
     resourceId:resource.id,resourceVersion:resource.version,
-    reviewStatus:"submitted_for_verification",findings:"Synthetic content checks completed."};
+    reviewStatus:"submitted_for_verification",findings:"Synthetic content checks completed.",submittedAt:"2026-10-24T11:30:00.000Z"};
   const decision={outcome:"approve",approverUid:"approver-c",rationale:"Synthetic review decision",
     contentSha256:resource.sha256,resourceVersion:resource.version,reviewerCredentialVerified:true,
     curriculumChecked:true,safeguardingChecked:true,accessibilityChecked:true,
