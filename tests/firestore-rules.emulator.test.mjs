@@ -631,6 +631,7 @@ test("Home Learning: assigned teacher can submit immutable findings, not approva
   const other = testEnv.authenticatedContext("other-hl").firestore();
   const admin = testEnv.authenticatedContext("admin-hl").firestore();
   const submission = { reviewerUid: "teacher-hl", resourceId: "jss-1-3-english", resourceVersion: "draft-v1", reviewStatus: "submitted_for_verification", findings: "Answer-key and curriculum evidence require specialist checks.", submittedAt: serverTimestamp() };
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), {...submission, resourceVersion: "draft-v2" }));
   await assertSucceeds(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), submission));
   await assertSucceeds(getDoc(doc(teacher, "homeLearningReviewSubmissions/review-a")));
   await assertSucceeds(getDoc(doc(admin, "homeLearningReviewSubmissions/review-a")));
@@ -640,7 +641,6 @@ test("Home Learning: assigned teacher can submit immutable findings, not approva
   await assertFails(setDoc(doc(other, "homeLearningReviewSubmissions/forged"), submission));
   await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/not-assigned"), submission));
   await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/forged-approval"), {...submission, reviewStatus: "approved" }));
-  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), {...submission, resourceVersion: "draft-v2" }));
 });
 
 test("Home Learning: parents, pending teachers and visitors cannot submit reviews", async () => {
