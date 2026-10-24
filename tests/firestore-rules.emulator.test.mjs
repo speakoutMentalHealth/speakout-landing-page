@@ -653,3 +653,32 @@ test("Home Learning: parents, pending teachers and visitors cannot submit review
     await assertFails(getDoc(doc(db, "homeLearningReviewerAssignments/review-pending")));
   }
 });
+
+
+test("Home Learning: assignments reject non-teachers, pending teachers and nonexistent accounts", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/parent-hl", profile("parent-hl", "parent"));
+  await seed("users/pending-teacher-hl", {
+    ...profile("pending-teacher-hl", "teacher"), status: "pending", approved: false
+  });
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  for (const uid of ["parent-hl", "pending-teacher-hl", "ghost-hl"]) {
+    await assertFails(setDoc(doc(admin, "homeLearningReviewerAssignments/invalid-" + uid), {
+      reviewerUid: uid,
+      resourceId: "primary-1-3-basic-science",
+      assignedAt: serverTimestamp()
+    }));
+  }
+});
+
+test("Home Learning: administrators cannot revise reviewer assignments after creation", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  await seed("homeLearningReviewerAssignments/locked-hl", {
+    reviewerUid: "teacher-hl", resourceId: "primary-1-3-maths", assignedAt: new Date()
+  });
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  await assertFails(updateDoc(doc(admin, "homeLearningReviewerAssignments/locked-hl"), {
+    resourceId: "ss-1-3-english"
+  }));
+});
