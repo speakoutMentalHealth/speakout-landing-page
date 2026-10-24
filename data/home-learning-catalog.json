@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "status": "development-preview",
+  "review_policy": "Do not mark approved without documented qualified educator review and curriculum source verification.",
+  "fields": [
+    "id",
+    "level",
+    "subject",
+    "topic",
+    "resource_url",
+    "curriculum_reference",
+    "review_status",
+    "reviewer",
+    "reviewed_at",
+    "license"
+  ],
+  "resources": [
+    {
+      "id": "nursery-counting",
+      "level": "Nursery",
+      "subject": "Numeracy",
+      "topic": "Counting one to five",
+      "resource_url": "early-years-counting-pack.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-1-3-maths",
+      "level": "Primary 1–3",
+      "subject": "Mathematics",
+      "topic": "Counting, place value and arithmetic",
+      "resource_url": "primary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-1-3-english",
+      "level": "Primary 1–3",
+      "subject": "English",
+      "topic": "Phonics, sentences and comprehension",
+      "resource_url": "primary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-4-6-maths",
+      "level": "Primary 4–6",
+      "subject": "Mathematics",
+      "topic": "Multiplication, fractions and percentages",
+      "resource_url": "upper-primary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-4-6-english",
+      "level": "Primary 4–6",
+      "subject": "English",
+      "topic": "Comprehension, writing and evidence",
+      "resource_url": "upper-primary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    }
+  ]
+}
