@@ -25,3 +25,14 @@ test("editorial decisions cannot be written through client rules", () => {
   assert.match(rules, /"homeLearningEditorialApprovals"/);
   assert.match(rules, /!isHomeLearningReviewCollection\(collection\)/);
 });
+
+
+test("assigned draft resource links stay on local HTML pages", () => {
+  assert.match(reviewer, /\^\[a-z0-9-\]\+\\\.html\$/);
+  assert.match(reviewer, /link\.href = draft\.resource_url/);
+  assert.match(reviewer, /link\.rel = "noopener noreferrer"/);
+});
+test("reviewer UI checks auth generation before rendering or submitting", () => {
+  assert.match(reviewer, /const generation = \+\+authGeneration/);
+  assert.match(reviewer, /generation !== authGeneration \|\| auth\.currentUser\?\.uid !== user\.uid/);
+});
