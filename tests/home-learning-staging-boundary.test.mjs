@@ -54,3 +54,11 @@ test("reviewer checks auth after profile and submission awaits", () => {
   assert.match(reviewer, /await setDoc\(doc\(db, "homeLearningReviewSubmissions", row\.id\), \{[\s\S]*?\}\);\s*if \(generation !== authGeneration/);
   assert.match(reviewer, /Submission could not be confirmed\. Reload and check/);
 });
+
+test("ambiguous review writes are read back before retry is allowed", () => {
+  assert.match(reviewer, /A network error can occur after Firestore has committed the write/);
+  assert.match(reviewer, /const saved = await getDoc\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
+  assert.match(reviewer, /if \(saved\.exists\(\)\)/);
+  assert.match(reviewer, /Submission status is unknown\. Reload to check before attempting again/);
+  assert.match(reviewer, /button\.disabled = true;/);
+});
