@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import {test} from "node:test";
 import {normalizeStoredReview} from "../scripts/home-learning-review-snapshot.mjs";
 const fixture=()=>({
-  assignmentDocument:{id:"assignment-1",path:"homeLearningReviewerAssignments/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",assignedAt:"test"}},
-  submissionDocument:{id:"assignment-1",path:"homeLearningReviewSubmissions/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",reviewStatus:"submitted_for_verification",findings:"Synthetic teaching review findings.",submittedAt:"test"}}
+  assignmentDocument:{id:"assignment-1",path:"homeLearningReviewerAssignments/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",assignedAt:"2026-10-24T11:00:00.000Z"}},
+  submissionDocument:{id:"assignment-1",path:"homeLearningReviewSubmissions/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",reviewStatus:"submitted_for_verification",findings:"Synthetic teaching review findings.",submittedAt:"2026-10-24T11:30:00.000Z"}}
 });
 test("derives approval review identity from matching Firestore document paths",()=>{
   const output=normalizeStoredReview(fixture());
@@ -46,4 +46,19 @@ test("rejects unexpected stored document fields",()=>{
   assert.equal(normalizeStoredReview(f).valid,false);
   const g=fixture();g.submissionDocument.data.unexpected="data";
   assert.equal(normalizeStoredReview(g).valid,false);
+});
+
+test("rejects malformed timestamps and short review findings",()=>{
+  const f=fixture();f.assignmentDocument.data.assignedAt="invalid timestamp";
+  assert.equal(normalizeStoredReview(f).valid,false);
+  const g=fixture();g.submissionDocument.data.submittedAt="invalid timestamp";
+  assert.equal(normalizeStoredReview(g).valid,false);
+  const h=fixture();h.submissionDocument.data.findings="short";
+  assert.equal(normalizeStoredReview(h).valid,false);
+});
+test("accepts Firestore-like Timestamp values",()=>{
+  const f=fixture();
+  f.assignmentDocument.data.assignedAt={toDate:()=>new Date("2026-10-24T11:00:00.000Z")};
+  f.submissionDocument.data.submittedAt={toDate:()=>new Date("2026-10-24T11:30:00.000Z")};
+  assert.equal(normalizeStoredReview(f).valid,true);
 });
