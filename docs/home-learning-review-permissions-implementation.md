@@ -54,3 +54,13 @@ The SHA-256 audit digest is a deterministic integrity identifier, **not** a digi
 
 ### Test and release blocker
 Repository commits and CI configuration are **not** proof of a successful test run. The complete Firestore Emulator run and staging acceptance tests have not been confirmed. Until they pass, all review-to-approval service integration remains disabled.
+
+## Transactional commit preflight (design-only)
+
+`scripts/home-learning-approval-commit-guard.mjs` inspects a proposed decision against a trusted resource snapshot, current audit-chain head, existing approval keys, current resource version and retirement state. The new unit tests in `tests/home-learning-approval-commit-guard.test.mjs` exercise rejection of replayed decisions, concurrent audit-head changes, tampered proposals, stale lessons, missing transaction state, retired resources and an already-active approval.
+
+This is **not** a database transaction, approval endpoint or authorization mechanism. The `trustedState.transactional` flag is a caller-provided development contract and must never be accepted from an external request. The eventual server adapter must read this state **within the same atomic transaction** used to write the approval and append-only audit event. A failed preflight must produce no writes; a lost race must retry or reject, never proceed with stale results. A SHA-256 digest detects changes relative to trusted stored state but is not, by itself, a tamper-evident audit log.
+
+Do not permit student data in approval submissions or audit payloads. Store signed reviewer evidence outside the public web root and enforce limited retention. Require separate human-reviewed paths for revocation and replacement of superseded teaching materials.
+
+**Release blocker:** Neither these pure-function tests nor Firebase Emulator tests are confirmed passing in GitHub CI yet; production merging, deployment, AI tutoring, content publication and live approval writes remain disabled.
