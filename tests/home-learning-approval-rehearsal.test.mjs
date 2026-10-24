@@ -60,3 +60,18 @@ test("provider outage fails closed without leaking details",async()=>{
   assert.equal(result.ready,false);
   assert.equal(JSON.stringify(result).includes("Private account information"),false);
 });
+
+
+test("provider cannot manufacture success without calling validation",async()=>{
+  const forged={withReadOnlySnapshot:async()=>({ready:true,approvalKey:"forged"})};
+  const result=await rehearseApproval({request,adapter:forged});
+  assert.equal(result.ready,false);
+});
+test("provider cannot invoke trusted validation callback twice",async()=>{
+  const repeated={withReadOnlySnapshot:async (_,read)=>{
+    await read(fixture());
+    return read(fixture());
+  }};
+  const result=await rehearseApproval({request,adapter:repeated});
+  assert.equal(result.ready,false);
+});
