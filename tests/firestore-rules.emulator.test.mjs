@@ -562,3 +562,148 @@ test("traffic receipts are server-only, even for organisation admins", async () 
   await assertFails(getDoc(doc(db, "trafficSignIns/receipt")));
   await assertFails(setDoc(doc(db, "trafficSignIns/anonymous"), { accountKey: "forged" }));
 });
+
+
+test("Home Learning: school resources stay isolated between schools", async () => {
+  await seed("users/teacher-a", profile("teacher-a", "teacher", "school-a"));
+  await seed("users/teacher-b", profile("teacher-b", "teacher", "school-b"));
+  await seed("users/school-admin-a", profile("school-admin-a", "school_admin", "school-a"));
+  await seed("schoolResources/resource-a", { schoolId: "school-a", title: "Synthetic lesson A" });
+  await seed("schoolResources/resource-b", { schoolId: "school-b", title: "Synthetic lesson B" });
+
+  const teacherA = testEnv.authenticatedContext("teacher-a").firestore();
+  const teacherB = testEnv.authenticatedContext("teacher-b").firestore();
+  const adminA = testEnv.authenticatedContext("school-admin-a").firestore();
+
+  await assertSucceeds(getDoc(doc(teacherA, "schoolResources/resource-a")));
+  await assertSucceeds(getDoc(doc(teacherB, "schoolResources/resource-b")));
+  await assertFails(getDoc(doc(teacherA, "schoolResources/resource-b")));
+  await assertFails(getDoc(doc(teacherB, "schoolResources/resource-a")));
+  await assertFails(getDoc(doc(adminA, "schoolResources/resource-b")));
+  await assertFails(setDoc(doc(teacherA, "schoolResources/teacher-forgery"), {
+    schoolId: "school-a", title: "Unauthorized write"
+  }));
+  await assertSucceeds(setDoc(doc(adminA, "schoolResources/new-a"), {
+    schoolId: "school-a", title: "School A resource"
+  }));
+  await assertFails(setDoc(doc(adminA, "schoolResources/new-b"), {
+    schoolId: "school-b", title: "Cross-school resource"
+  }));
+  await assertFails(updateDoc(doc(adminA, "schoolResources/resource-a"), {
+    schoolId: "school-b"
+  }));
+});
+
+test("Home Learning: public visitors and pending accounts cannot access school resources", async () => {
+  await seed("schoolResources/private-a", { schoolId: "school-a", title: "Internal resource" });
+  await seed("users/pending-a", {
+    ...profile("pending-a", "teacher", "school-a"), status: "pending", approved: false
+  });
+  const anonymous = testEnv.unauthenticatedContext().firestore();
+  const pending = testEnv.authenticatedContext("pending-a").firestore();
+  await assertFails(getDoc(doc(anonymous, "schoolResources/private-a")));
+  await assertFails(getDoc(doc(pending, "schoolResources/private-a")));
+  await assertFails(setDoc(doc(pending, "schoolResources/forged"), {
+    schoolId: "school-a", title: "Unauthorized"
+  }));
+});
+
+
+test("Home Learning: only administrators may assign a qualified teacher reviewer", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  await seed("users/other-hl", profile("other-hl", "teacher"));
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  const teacher = testEnv.authenticatedContext("teacher-hl").firestore();
+  const payload = { reviewerUid: "teacher-hl", resourceId: "primary-1-3-maths", resourceVersion: "draft-v1", assignedAt: serverTimestamp() };
+  await assertSucceeds(setDoc(doc(admin, "homeLearningReviewerAssignments/primary-maths-teacher"), payload));
+  await assertSucceeds(getDoc(doc(teacher, "homeLearningReviewerAssignments/primary-maths-teacher")));
+  await assertFails(getDoc(doc(testEnv.authenticatedContext("other-hl").firestore(), "homeLearningReviewerAssignments/primary-maths-teacher")));
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewerAssignments/forged-assignment"), payload));
+});
+
+test("Home Learning: assigned teacher can submit immutable findings, not approval", async () => {
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  await seed("users/other-hl", profile("other-hl", "teacher"));
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("homeLearningReviewerAssignments/review-a", { reviewerUid: "teacher-hl", resourceId: "jss-1-3-english", resourceVersion: "draft-v1", assignedAt: new Date() });
+  const teacher = testEnv.authenticatedContext("teacher-hl").firestore();
+  const other = testEnv.authenticatedContext("other-hl").firestore();
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  const submission = { reviewerUid: "teacher-hl", resourceId: "jss-1-3-english", resourceVersion: "draft-v1", reviewStatus: "submitted_for_verification", findings: "Answer-key and curriculum evidence require specialist checks.", submittedAt: serverTimestamp() };
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), {...submission, resourceVersion: "draft-v2" }));
+  await assertSucceeds(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), submission));
+  await assertSucceeds(getDoc(doc(teacher, "homeLearningReviewSubmissions/review-a")));
+  await assertSucceeds(getDoc(doc(admin, "homeLearningReviewSubmissions/review-a")));
+  await assertFails(getDoc(doc(other, "homeLearningReviewSubmissions/review-a")));
+  await assertFails(updateDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), { reviewStatus: "approved" }));
+  await assertFails(deleteDoc(doc(admin, "homeLearningReviewSubmissions/review-a")));
+  await assertFails(setDoc(doc(other, "homeLearningReviewSubmissions/forged"), submission));
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/not-assigned"), submission));
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/forged-approval"), {...submission, reviewStatus: "approved" }));
+});
+
+test("Home Learning: parents, pending teachers and visitors cannot submit reviews", async () => {
+  await seed("users/parent-hl", profile("parent-hl", "parent"));
+  await seed("users/pending-hl", {...profile("pending-hl", "teacher"), status: "pending", approved: false});
+  await seed("homeLearningReviewerAssignments/review-pending", { reviewerUid: "pending-hl", resourceId: "ss-1-3-english", resourceVersion: "draft-v1", assignedAt: new Date() });
+  const payload = { reviewerUid: "pending-hl", resourceId: "ss-1-3-english", resourceVersion: "draft-v1", reviewStatus: "submitted_for_verification", findings: "Draft evidence review prepared.", submittedAt: serverTimestamp() };
+  for (const context of [testEnv.unauthenticatedContext(), testEnv.authenticatedContext("parent-hl"), testEnv.authenticatedContext("pending-hl")]) {
+    const db = context.firestore();
+    await assertFails(setDoc(doc(db, "homeLearningReviewSubmissions/review-pending"), payload));
+    await assertFails(getDoc(doc(db, "homeLearningReviewerAssignments/review-pending")));
+  }
+});
+
+
+test("Home Learning: assignments reject non-teachers, pending teachers and nonexistent accounts", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/parent-hl", profile("parent-hl", "parent"));
+  await seed("users/pending-teacher-hl", {
+    ...profile("pending-teacher-hl", "teacher"), status: "pending", approved: false
+  });
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  for (const uid of ["parent-hl", "pending-teacher-hl", "ghost-hl"]) {
+    await assertFails(setDoc(doc(admin, "homeLearningReviewerAssignments/invalid-" + uid), {
+      reviewerUid: uid,
+      resourceId: "primary-1-3-basic-science",
+      resourceVersion: "draft-v1", assignedAt: serverTimestamp()
+    }));
+  }
+});
+
+test("Home Learning: administrators cannot revise reviewer assignments after creation", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  await seed("homeLearningReviewerAssignments/locked-hl", {
+    reviewerUid: "teacher-hl", resourceId: "primary-1-3-maths", resourceVersion: "draft-v1", assignedAt: new Date()
+  });
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  await assertFails(updateDoc(doc(admin, "homeLearningReviewerAssignments/locked-hl"), {
+    resourceId: "ss-1-3-english"
+  }));
+});
+
+
+test("Home Learning: editorial approval records are server-only even for administrators", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  const teacher = testEnv.authenticatedContext("teacher-hl").firestore();
+  const visitor = testEnv.unauthenticatedContext().firestore();
+  const path = "homeLearningEditorialApprovals/example-version-1";
+  const approval = {
+    resourceId: "primary-1-3-maths",
+    revisionHash: "example-hash-for-emulator-only",
+    reviewStatus: "approved"
+  };
+  await assertFails(setDoc(doc(admin, path), approval));
+  await assertFails(setDoc(doc(teacher, path), approval));
+  await assertFails(setDoc(doc(visitor, path), approval));
+  await seed(path, approval);
+  await assertSucceeds(getDoc(doc(admin, path)));
+  await assertFails(getDoc(doc(teacher, path)));
+  await assertFails(getDoc(doc(visitor, path)));
+  await assertFails(updateDoc(doc(admin, path), { reviewStatus: "revoked" }));
+  await assertFails(deleteDoc(doc(admin, path)));
+});

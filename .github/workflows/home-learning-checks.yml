@@ -1,0 +1,112 @@
+name: Home Learning Checks
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/home-learning-pathways
+    paths:
+      - 'home-learning.html'
+      - 'learning-hub.html'
+      - 'learning-resource-catalog.html'
+      - 'parent-learning-planner.html'
+      - 'parent-dashboard.html'
+      - 'teacher-dashboard.html'
+      - 'teacher-learning-toolkit.html'
+      - 'educator-ai-readiness.html'
+      - 'educator-resource-review-queue.html'
+      - 'educator-private-review.html'
+      - 'js/home-learning/reviewer.js'
+      - 'home-learning-progress.html'
+      - 'early-years-counting-pack.html'
+      - 'primary-home-learning-packs.html'
+      - 'upper-primary-home-learning-packs.html'
+      - 'junior-secondary-home-learning-packs.html'
+      - 'senior-secondary-home-learning-packs.html'
+      - 'secondary-science-home-learning-packs.html'
+      - 'primary-science-home-learning-packs.html'
+      - 'social-civic-home-learning-packs.html'
+      - 'docs/home-learning-educator-review-template.md'
+      - 'data/home-learning-catalog.json'
+      - 'scripts/check_home_learning.py'
+      - 'tests/home-learning-catalog.test.py'
+      - 'scripts/home-learning-approval-evidence.mjs'
+      - 'tests/home-learning-approval-evidence.test.mjs'
+      - 'scripts/home-learning-approval-proposal.mjs'
+      - 'tests/home-learning-approval-proposal.test.mjs'
+      - 'scripts/home-learning-approval-commit-guard.mjs'
+      - 'tests/home-learning-approval-commit-guard.test.mjs'
+      - 'scripts/home-learning-approval-rehearsal.mjs'
+      - 'tests/home-learning-approval-rehearsal.test.mjs'
+      - 'tests/home-learning-staging-boundary.test.mjs'
+      - 'scripts/home-learning-review-snapshot.mjs'
+      - 'tests/home-learning-review-snapshot.test.mjs'
+      - 'docs/home-learning-ai-tutor-safety-gate.md'
+      - '.github/workflows/home-learning-checks.yml'
+  pull_request:
+    paths:
+      - 'home-learning.html'
+      - 'learning-hub.html'
+      - 'learning-resource-catalog.html'
+      - 'parent-learning-planner.html'
+      - 'parent-dashboard.html'
+      - 'teacher-dashboard.html'
+      - 'teacher-learning-toolkit.html'
+      - 'educator-ai-readiness.html'
+      - 'educator-resource-review-queue.html'
+      - 'educator-private-review.html'
+      - 'js/home-learning/reviewer.js'
+      - 'home-learning-progress.html'
+      - 'early-years-counting-pack.html'
+      - 'primary-home-learning-packs.html'
+      - 'upper-primary-home-learning-packs.html'
+      - 'junior-secondary-home-learning-packs.html'
+      - 'senior-secondary-home-learning-packs.html'
+      - 'secondary-science-home-learning-packs.html'
+      - 'primary-science-home-learning-packs.html'
+      - 'social-civic-home-learning-packs.html'
+      - 'docs/home-learning-educator-review-template.md'
+      - 'data/home-learning-catalog.json'
+      - 'scripts/check_home_learning.py'
+      - 'tests/home-learning-catalog.test.py'
+      - 'scripts/home-learning-approval-evidence.mjs'
+      - 'tests/home-learning-approval-evidence.test.mjs'
+      - 'scripts/home-learning-approval-proposal.mjs'
+      - 'tests/home-learning-approval-proposal.test.mjs'
+      - 'scripts/home-learning-approval-commit-guard.mjs'
+      - 'tests/home-learning-approval-commit-guard.test.mjs'
+      - 'scripts/home-learning-approval-rehearsal.mjs'
+      - 'tests/home-learning-approval-rehearsal.test.mjs'
+      - 'tests/home-learning-staging-boundary.test.mjs'
+      - 'scripts/home-learning-review-snapshot.mjs'
+      - 'tests/home-learning-review-snapshot.test.mjs'
+      - 'docs/home-learning-ai-tutor-safety-gate.md'
+      - '.github/workflows/home-learning-checks.yml'
+permissions:
+  contents: read
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate catalogue regression scenarios
+        run: python -m unittest discover -s tests -p 'home-learning-catalog.test.py' -v
+      - name: Check local links and catalogue
+        run: python scripts/check_home_learning.py
+      - name: Validate reviewer client syntax
+        run: node --check js/home-learning/reviewer.js
+      - name: Approval validation and staging boundary regression tests
+        run: |
+          mkdir -p artifacts/home-learning-ci
+          set -o pipefail
+          node --test --test-reporter=tap tests/home-learning-approval-evidence.test.mjs tests/home-learning-approval-proposal.test.mjs tests/home-learning-approval-commit-guard.test.mjs tests/home-learning-approval-rehearsal.test.mjs tests/home-learning-staging-boundary.test.mjs tests/home-learning-review-snapshot.test.mjs 2>&1 | tee artifacts/home-learning-ci/unit-tests.tap
+      - name: Upload approval test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: home-learning-unit-test-evidence
+          path: artifacts/home-learning-ci/
+          retention-days: 7
+          if-no-files-found: warn

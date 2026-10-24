@@ -1,0 +1,45 @@
+// Trusted-server read-model adapter only: Firestore document IDs are authoritative.
+// Do not call this on untrusted HTTP payloads or browser-supplied objects.
+const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
+const docId = value => typeof value === "string" && /^[A-Za-z0-9_-]{1,120}$/.test(value);
+function validTimestamp(value) {
+  if (typeof value === "string") {
+    const date = new Date(value);
+    return !Number.isNaN(date.getTime()) && date.toISOString() === value;
+  }
+  if (value === null || typeof value !== "object" || typeof value.toDate !== "function") return false;
+  try {
+    const date = value.toDate();
+    return date instanceof Date && !Number.isNaN(date.getTime());
+  } catch {
+    return false;
+  }
+}
+export function normalizeStoredReview({ assignmentDocument, submissionDocument } = {}) {
+  if (!isObject(assignmentDocument) || !isObject(submissionDocument) ||
+      !docId(assignmentDocument.id) || assignmentDocument.id !== submissionDocument.id ||
+      assignmentDocument.path !== "homeLearningReviewerAssignments/" + assignmentDocument.id ||
+      submissionDocument.path !== "homeLearningReviewSubmissions/" + submissionDocument.id ||
+      !isObject(assignmentDocument.data) || !isObject(submissionDocument.data)) {
+    return {valid:false,error:"Review document identity mismatch",assignment:null,submission:null};
+  }
+  const id = assignmentDocument.id;
+  const assignment = assignmentDocument.data;
+  const submission = submissionDocument.data;
+  // IDs are Firestore document path identities, never editable document fields.
+  if (Object.hasOwn(assignment,"id") || Object.hasOwn(submission,"assignmentId") ||
+      Object.keys(assignment).some(key=>!["reviewerUid","resourceId","resourceVersion","assignedAt"].includes(key)) ||
+      Object.keys(submission).some(key=>!["reviewerUid","resourceId","resourceVersion","reviewStatus","findings","submittedAt"].includes(key)) ||
+      !["reviewerUid","resourceId","resourceVersion","assignedAt"].every(key=>Object.hasOwn(assignment,key)) ||
+      !["reviewerUid","resourceId","resourceVersion","reviewStatus","findings","submittedAt"].every(key=>Object.hasOwn(submission,key)) ||
+      submission.reviewerUid !== assignment.reviewerUid ||
+      submission.resourceId !== assignment.resourceId ||
+      submission.resourceVersion !== assignment.resourceVersion ||
+      submission.reviewStatus !== "submitted_for_verification" ||
+      !validTimestamp(assignment.assignedAt) || !validTimestamp(submission.submittedAt) ||
+      typeof submission.findings !== "string" || submission.findings.trim().length < 10 || submission.findings.length > 4000) {
+    return {valid:false,error:"Stored review evidence does not match assignment",assignment:null,submission:null};
+  }
+  return {valid:true,error:null,
+    assignment:{...assignment,id},submission:{...submission,assignmentId:id}};
+}

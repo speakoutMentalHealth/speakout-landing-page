@@ -725,13 +725,69 @@ service cloud.firestore {
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
 
+    // Home Learning educator reviews: assignment is administrator-managed.
+    // Client review submissions are immutable recommendations, never approvals.
+    function isHomeLearningReviewCollection(collection) {
+      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals"];
+    }
+
+    match /homeLearningReviewerAssignments/{assignmentId} {
+      allow read: if isSuperAdmin() ||
+        (isTeacher() && resource.data.reviewerUid == request.auth.uid);
+      allow create: if isSuperAdmin() &&
+        request.resource.data.keys().hasOnly(["reviewerUid", "resourceId", "resourceVersion", "assignedAt"]) &&
+        request.resource.data.keys().hasAll(["reviewerUid", "resourceId", "resourceVersion", "assignedAt"]) &&
+        request.resource.data.reviewerUid is string &&
+        request.resource.data.reviewerUid.size() > 0 &&
+        exists(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)) &&
+        get(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)).data.role == "teacher" &&
+        get(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)).data.status == "approved" &&
+        request.resource.data.resourceId is string &&
+        request.resource.data.resourceId.size() > 0 &&
+        request.resource.data.resourceVersion is string &&
+        request.resource.data.resourceVersion.size() >= 1 &&
+        request.resource.data.resourceVersion.size() <= 120 &&
+        request.resource.data.assignedAt == request.time;
+      allow update: if false;
+      allow delete: if isSuperAdmin();
+    }
+
+    match /homeLearningReviewSubmissions/{submissionId} {
+      allow read: if isSuperAdmin() ||
+        (isTeacher() && resource.data.reviewerUid == request.auth.uid);
+      allow create: if isTeacher() &&
+        exists(/databases/$(database)/documents/homeLearningReviewerAssignments/$(submissionId)) &&
+        get(/databases/$(database)/documents/homeLearningReviewerAssignments/$(submissionId)).data.reviewerUid == request.auth.uid &&
+        request.resource.data.keys().hasOnly(["reviewerUid", "resourceId", "resourceVersion", "reviewStatus", "findings", "submittedAt"]) &&
+        request.resource.data.keys().hasAll(["reviewerUid", "resourceId", "resourceVersion", "reviewStatus", "findings", "submittedAt"]) &&
+        request.resource.data.reviewerUid == request.auth.uid &&
+        request.resource.data.resourceId ==
+          get(/databases/$(database)/documents/homeLearningReviewerAssignments/$(submissionId)).data.resourceId &&
+        request.resource.data.resourceVersion ==
+          get(/databases/$(database)/documents/homeLearningReviewerAssignments/$(submissionId)).data.resourceVersion &&
+        request.resource.data.reviewStatus == "submitted_for_verification" &&
+        request.resource.data.findings is string &&
+        request.resource.data.findings.size() >= 10 &&
+        request.resource.data.findings.size() <= 4000 &&
+        request.resource.data.submittedAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // Approval authority is deliberately server-only. Admin SDK bypasses
+    // client rules and must enforce signed-off reviews, content hashes,
+    // independent authorization and audit retention before writing here.
+    match /homeLearningEditorialApprovals/{approvalId} {
+      allow read: if isSuperAdmin();
+      allow create, update, delete: if false;
+    }
+
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
