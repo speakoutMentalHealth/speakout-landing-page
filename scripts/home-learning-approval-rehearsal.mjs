@@ -3,6 +3,7 @@
 // identifiers only, and cannot supply decisions, flags or trusted database state.
 import { prepareApprovalProposal } from "./home-learning-approval-proposal.mjs";
 import { inspectApprovalCommit } from "./home-learning-approval-commit-guard.mjs";
+import { normalizeStoredReview } from "./home-learning-review-snapshot.mjs";
 
 const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const allowedKeys = ["resourceId", "assignmentId"];
@@ -27,12 +28,18 @@ export async function rehearseApproval({ request, adapter } = {}) {
       if (!snapshot || snapshot.isolatedStaging !== true ||
           snapshot.authenticatedServerPrincipal !== true ||
           snapshot.resource?.id !== request.resourceId ||
-          snapshot.assignment?.id !== request.assignmentId) {
+          snapshot.assignmentDocument?.id !== request.assignmentId ||
+          snapshot.submissionDocument?.id !== request.assignmentId) {
         return (validatedResult = {ready:false,errors:["Staging identity or snapshot mismatch"]});
       }
+      const stored = normalizeStoredReview({
+        assignmentDocument:snapshot.assignmentDocument,
+        submissionDocument:snapshot.submissionDocument
+      });
+      if (!stored.valid) return (validatedResult = {ready:false,errors:[stored.error]});
       const prepared = prepareApprovalProposal({
-        resource:snapshot.resource, assignment:snapshot.assignment,
-        submission:snapshot.submission, decision:snapshot.decision,
+        resource:snapshot.resource, assignment:stored.assignment,
+        submission:stored.submission, decision:snapshot.decision,
         lessonContent:snapshot.lessonContent, verified:snapshot.verified,
         actor:snapshot.actor, approvedAt:snapshot.approvedAt,
         previousAuditHash:snapshot.trustedState?.auditHead ?? null
