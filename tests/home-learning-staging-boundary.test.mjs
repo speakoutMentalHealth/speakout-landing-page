@@ -70,3 +70,9 @@ test("Auth and Firestore SDK modules load only inside staging gate", () => {
   const storeImport = reviewer.indexOf('import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")');
   assert.ok(gate >= 0 && authImport > gate && storeImport > gate);
 });
+
+test("immutable submission recovery requires a server-authoritative read",()=>{
+  assert.match(reviewer,/getDocFromServer\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
+  assert.doesNotMatch(reviewer,/const saved = await getDoc\(doc\(db, "homeLearningReviewSubmissions", row\.id\)\)/);
+  assert.match(reviewer,/Submission status is unknown\. Reload to check before attempting again\./);
+});
