@@ -90,3 +90,11 @@ Two GitHub Actions workflows can now be invoked manually on the development bran
 An observed **green GitHub run** with downloadable logs is required evidence for each workflow; a configured workflow, commit status without checks, or a successfully downloaded source file is not evidence of passing tests. In the event of a failed run, inspect the first failing assertion or Firestore rule compilation error and correct it on this branch before rerunning.
 
 These static staging-boundary checks catch accidental edits to the configured host and approval-rule restrictions, but do **not** prove production credentials cannot be reached by other application code, nor independently validate Firebase project IAM. Confirm staging authentication, Firestore isolation, security rules deployment and an end-to-end teacher review on staging before trusting the pilot. No production merge or deploy is authorized.
+
+## Phase 33 — stored review identity normalization
+
+Firestore reviewer submissions deliberately omit an editable `assignmentId` field because their security rules permit only the six review content fields. The trusted approval validator still needs the assignment identifier to prove correspondence. `scripts/home-learning-review-snapshot.mjs` now derives `assignment.id` and `submission.assignmentId` from the matching Firestore **document IDs** supplied by a future trusted server read, while rejecting document ID mismatches, conflicting inline identity fields, inconsistent resource IDs, version changes, and reviewer changes.
+
+The read-only rehearsal consumes `assignmentDocument: {id, data}` and `submissionDocument: {id, data}` instead of a fabricated client-supplied `assignmentId` in the submission body. Six regression test groups cover normalization success, malformed evidence and forgery. Both development workflows watch the updated adapter and tests.
+
+This adapter does not authenticate database paths or retrieve documents. The eventual trusted server must enforce the exact collection paths, use Firebase Admin credentials only in a protected runtime and verify that the records were read from staging. Never construct the documents from an HTTP request body. Firestore Emulator and GitHub Actions passing results are still required.
