@@ -1,0 +1,62 @@
+name: Firebase Hosting Production Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Validate and deploy SpeakOut Hosting
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Check out production branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SpeakOut tests
+        run: npm test
+
+      - name: Check Learning Hub sources
+        run: npm run test:learning-hub
+
+      - name: Validate Firebase credentials exist
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL repository/environment secret."
+            exit 1
+          fi
+
+      - name: Authenticate to Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          chmod 600 "$RUNNER_TEMP/firebase-service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
+
+      - name: Deploy Hosting only
+        run: npx --yes firebase-tools@14 deploy --only hosting --project speaakout-portal --non-interactive
+
+      - name: Remove temporary credential
+        if: always()
+        run: rm -f "$RUNNER_TEMP/firebase-service-account.json"
