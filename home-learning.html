@@ -17,4 +17,4 @@ university:[["University learning support","Explore study skills and independent
 const select=document.getElementById('level'),results=document.getElementById('results');
 function render(){results.replaceChildren();for(const [title,desc,url] of levels[select.value]||[]){const article=document.createElement('article');article.className='card';const h=document.createElement('h3');h.textContent=title;const p=document.createElement('p');p.textContent=desc;article.append(h,p);if(url){const a=document.createElement('a');a.href=url;a.textContent='Explore resources →';article.append(a)}results.append(article)}}
 select.addEventListener('change',render);
-</script></body></html>
+</script><script type="module" src="js/account-controls.js"></script></body></html>
