@@ -36,3 +36,11 @@ test("reviewer UI checks auth generation before rendering or submitting", () => 
   assert.match(reviewer, /const generation = \+\+authGeneration/);
   assert.match(reviewer, /generation !== authGeneration \|\| auth\.currentUser\?\.uid !== user\.uid/);
 });
+
+test("reviewer does not initialize Firebase on non-staging hosts", () => {
+  assert.doesNotMatch(reviewer, /^import\s*\{\s*auth\s*,\s*db\s*\}\s*from\s*["']\.\.\/firebase-config\.js["']/m);
+  const gate = reviewer.indexOf("if (!hosts.has(location.hostname))");
+  const dynamicImport = reviewer.indexOf('await import("../firebase-config.js")');
+  assert.ok(gate >= 0 && dynamicImport > gate);
+  assert.match(reviewer, /app\.options\.projectId !== "speakout-portal-staging"/);
+});
