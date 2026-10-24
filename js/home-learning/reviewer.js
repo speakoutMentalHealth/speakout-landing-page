@@ -40,6 +40,7 @@ if (!hosts.has(location.hostname)) {
     }
     try {
       const profile = await getDoc(doc(db, "users", user.uid));
+      if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
       if (!profile.exists() || profile.data().status !== "approved" || profile.data().role !== "teacher") {
         status.textContent = "An approved teacher account is required.";
         return;
@@ -67,6 +68,7 @@ if (!hosts.has(location.hostname)) {
           link.target = "_blank";
           link.rel = "noopener noreferrer";
           card.append(link);
+          card.append(element("p", "Preview only: this page is not an immutable, verified version. Confirm the assigned source revision with the administrator before submitting findings."));
         } else {
           card.append(element("p", "Draft content unavailable in catalogue; contact the assigning administrator."));
           area.append(card);
@@ -112,9 +114,11 @@ if (!hosts.has(location.hostname)) {
               findings,
               submittedAt: serverTimestamp()
             });
+            if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
             form.replaceWith(element("p", "Submitted for verification; no lesson has been approved."));
           } catch {
-            feedback.textContent = "Submission unavailable or denied. No changes were applied.";
+            if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
+            feedback.textContent = "Submission could not be confirmed. Reload and check whether findings were recorded before retrying.";
             button.disabled = false;
           }
         });
