@@ -742,10 +742,7 @@ service cloud.firestore {
         request.resource.data.resourceId is string &&
         request.resource.data.resourceId.size() > 0 &&
         request.resource.data.assignedAt == request.time;
-      allow update: if isSuperAdmin() &&
-        request.resource.data.reviewerUid == resource.data.reviewerUid &&
-        request.resource.data.resourceId == resource.data.resourceId &&
-        request.resource.data.assignedAt == resource.data.assignedAt;
+      allow update: if false;
       allow delete: if isSuperAdmin();
     }
 
