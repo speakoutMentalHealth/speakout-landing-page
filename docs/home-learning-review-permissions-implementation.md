@@ -120,3 +120,7 @@ These are UI safeguards, not transaction-level source integrity or authenticatio
 ## Phase 38 — review submission recovery
 
 When submission status is uncertain, the staging reviewer now reads the saved submission record before permitting another attempt. A confirmed existing record blocks retries; an unavailable verification requires reload. This does not replace Firestore security rules or end-to-end testing. No production release is authorized.
+
+## Phase 39 — stage-gated SDK imports
+
+The private reviewer no longer statically imports Firebase Auth or Firestore SDK modules before the staging hostname check. All three Firebase-related imports are now reached only inside the staging-host branch, with a subsequent project-ID verification before authentication starts. A static regression test checks that SDK imports stay behind this gate. These browser-level checks are defense-in-depth only: database rules must still enforce reviewer permissions. No passing GitHub Actions or Emulator run has been verified and no production deployment was performed.
