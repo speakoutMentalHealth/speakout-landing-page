@@ -3,8 +3,8 @@
 ## Implemented in this branch
 
 Firestore rules define three new collections:
-- `homeLearningReviewerAssignments/{assignmentId}`: approved platform administrators can create and delete immutable assignments. The assigned approved teacher and platform administrators may read the assignment. Assignment contains `reviewerUid`, `resourceId`, and server-verified `assignedAt`.
-- `homeLearningReviewSubmissions/{assignmentId}`: only an approved teacher with a matching assignment can create an immutable review submission. Submission contains `reviewerUid`, `resourceId`, `reviewStatus: submitted_for_verification`, a 10–4000 character `findings` field and server-verified `submittedAt`.
+- `homeLearningReviewerAssignments/{assignmentId}`: approved platform administrators can create and delete immutable assignments. The assigned approved teacher and platform administrators may read the assignment. Assignment contains `reviewerUid`, `resourceId`, an immutable `resourceVersion`, and server-verified `assignedAt`.
+- `homeLearningReviewSubmissions/{assignmentId}`: only an approved teacher with a matching assignment can create an immutable review submission. Submission contains `reviewerUid`, `resourceId`, matching `resourceVersion`, `reviewStatus: submitted_for_verification`, a 10–4000 character `findings` field and server-verified `submittedAt`.
 - `homeLearningEditorialApprovals/{approvalId}`: only approved platform administrators may read final approval records. All client-side create, update and delete operations are denied, even to admins. A future trusted server may write through the Admin SDK only after independently validating the review evidence.
 
 All other roles, all direct updates, and direct deletions of submissions are denied, including administrator client deletions. The generic administrator collection fallback explicitly excludes all three collections.
@@ -29,3 +29,7 @@ Do not add review findings containing child names, wellbeing information, person
 ## Test scope
 
 The emulator tests cover administrator assignment, assigned-teacher read, unassigned-teacher denial, immutable review submission, forged approval denial, wrong-user denial, denied parent/pending/anonymous access, and the server-only approval-record collection. These tests were written but not executed in this environment. They require the project's emulator and dependencies.
+
+## Version-pin migration note
+
+The development rules now require `resourceVersion` on new assignments and corresponding submissions. Any previous staging-only assignment documents without this field must be reissued by an authorised administrator using a new assignment ID; do not populate a guessed version. The review client hides legacy assignments lacking this field. Version labels alone do not prove an immutable file revision; the eventual trusted service must pair them with a verified SHA-256 digest and authoritative source snapshot. This is a pre-production schema change; no production migration has been performed.
