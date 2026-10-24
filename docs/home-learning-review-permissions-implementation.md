@@ -116,3 +116,7 @@ The staging host gate is a client-side safeguard, not an authorization boundary:
 The staging reviewer now checks the active Firebase user and auth callback generation immediately after the profile read and after a submission completes, preventing stale asynchronous UI callbacks from displaying success under a different session. An ambiguous submission failure no longer claims no write occurred; teachers are instructed to reload and verify the submission state before retrying. The review screen explicitly warns that linked HTML drafts are mutable previews, **not** verified immutable content snapshots, and tells teachers to confirm the assigned source revision with the administrator.
 
 These are UI safeguards, not transaction-level source integrity or authentication. The trusted approval service must verify a stored content digest, reviewer assignment, reviewer qualifications and actual content snapshot. No production merge or approval is enabled. The added regression tests are committed but their CI execution remains unconfirmed.
+
+## Phase 38 — review submission recovery
+
+When submission status is uncertain, the staging reviewer now reads the saved submission record before permitting another attempt. A confirmed existing record blocks retries; an unavailable verification requires reload. This does not replace Firestore security rules or end-to-end testing. No production release is authorized.
