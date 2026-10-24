@@ -16,3 +16,11 @@ body{font-family:Outfit,system-ui,-apple-system,Segoe UI,sans-serif!important;ba
 .learning-site-header .learning-links .learning-portal:focus-visible,.learning-site-header .learning-menu-toggle:focus-visible,.learning-site-header a:focus-visible{outline:3px solid #f4bd5c;outline-offset:3px}
 .learning-site-header + .hero{background:linear-gradient(125deg,#071b3a,#155d97)}
 @media(max-width:780px){.learning-site-header .learning-nav{flex-wrap:wrap}.learning-site-header .learning-menu-toggle{display:block}.learning-site-header .learning-links{display:none;flex-basis:100%;flex-direction:column;align-items:stretch;gap:0;padding:6px 0 10px}.learning-site-header .learning-links.is-open{display:flex}.learning-site-header .learning-links a{padding:12px 10px;border-top:1px solid #ffffff24}.learning-site-header .learning-links .learning-portal{margin-top:9px;text-align:center}}
+
+/* Override legacy page-level header rules so the same shell renders everywhere. */
+header.learning-site-header{padding:0!important;background:#071b3a!important;color:#fff!important}
+header.learning-site-header .learning-nav{box-sizing:border-box}
+header.learning-site-header .learning-brand,header.learning-site-header .learning-links a{color:#fff}
+header.learning-site-header .learning-links a[aria-current="page"]{color:#f4c775}
+header.learning-site-header .learning-links .learning-portal{color:#071b3a}
+@media print{header.learning-site-header{display:none!important}}
