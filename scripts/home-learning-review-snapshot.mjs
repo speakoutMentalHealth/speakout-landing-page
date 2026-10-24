@@ -5,6 +5,8 @@ const docId = value => typeof value === "string" && /^[A-Za-z0-9_-]{1,120}$/.tes
 export function normalizeStoredReview({ assignmentDocument, submissionDocument } = {}) {
   if (!isObject(assignmentDocument) || !isObject(submissionDocument) ||
       !docId(assignmentDocument.id) || assignmentDocument.id !== submissionDocument.id ||
+      assignmentDocument.path !== "homeLearningReviewerAssignments/" + assignmentDocument.id ||
+      submissionDocument.path !== "homeLearningReviewSubmissions/" + submissionDocument.id ||
       !isObject(assignmentDocument.data) || !isObject(submissionDocument.data)) {
     return {valid:false,error:"Review document identity mismatch",assignment:null,submission:null};
   }
@@ -13,6 +15,8 @@ export function normalizeStoredReview({ assignmentDocument, submissionDocument }
   const submission = submissionDocument.data;
   // IDs are Firestore document path identities, never editable document fields.
   if (Object.hasOwn(assignment,"id") || Object.hasOwn(submission,"assignmentId") ||
+      Object.keys(assignment).some(key=>!["reviewerUid","resourceId","resourceVersion","assignedAt"].includes(key)) ||
+      Object.keys(submission).some(key=>!["reviewerUid","resourceId","resourceVersion","reviewStatus","findings","submittedAt"].includes(key)) ||
       !["reviewerUid","resourceId","resourceVersion","assignedAt"].every(key=>Object.hasOwn(assignment,key)) ||
       !["reviewerUid","resourceId","resourceVersion","reviewStatus","findings","submittedAt"].every(key=>Object.hasOwn(submission,key)) ||
       submission.reviewerUid !== assignment.reviewerUid ||
