@@ -62,3 +62,11 @@ test("ambiguous review writes are read back before retry is allowed", () => {
   assert.match(reviewer, /Submission status is unknown\. Reload to check before attempting again/);
   assert.match(reviewer, /button\.disabled = true;/);
 });
+
+test("Auth and Firestore SDK modules load only inside staging gate", () => {
+  assert.doesNotMatch(reviewer, /^import\s+.*firebase-(?:auth|firestore)\.js/m);
+  const gate = reviewer.indexOf("if (!hosts.has(location.hostname))");
+  const authImport = reviewer.indexOf('import("https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js")');
+  const storeImport = reviewer.indexOf('import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")');
+  assert.ok(gate >= 0 && authImport > gate && storeImport > gate);
+});
