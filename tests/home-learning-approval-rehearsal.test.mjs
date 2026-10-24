@@ -25,9 +25,9 @@ function fixture() {
     activeApprovalExists:false,resourceIsRetired:false,auditHead:null};
   const {id:assignmentId,...assignmentData}=assignment;
   const {assignmentId:storedAssignmentId,...submissionData}=submission;
-  return {isolatedStaging:true,authenticatedServerPrincipal:true,resource,
-    assignmentDocument:{id:assignmentId,data:assignmentData},
-    submissionDocument:{id:storedAssignmentId,data:submissionData},
+  return {isolatedStaging:true,authenticatedServerPrincipal:true,projectId:"speakout-portal-staging",resource,
+    assignmentDocument:{id:assignmentId,path:"homeLearningReviewerAssignments/"+assignmentId,data:assignmentData},
+    submissionDocument:{id:storedAssignmentId,path:"homeLearningReviewSubmissions/"+storedAssignmentId,data:submissionData},
     decision,lessonContent,verified,actor:{uid:"approver-c",authorization:"editor"},
     approvedAt:"2026-10-24T12:00:00.000Z",trustedState};
 }
@@ -78,4 +78,13 @@ test("provider cannot invoke trusted validation callback twice",async()=>{
   }};
   const result=await rehearseApproval({request,adapter:repeated});
   assert.equal(result.ready,false);
+});
+
+test("production Firebase project identifier is rejected",async()=>{
+  const snapshot=fixture();snapshot.projectId="speaakout-portal";
+  assert.equal((await rehearseApproval({request,adapter:adapter(snapshot)})).ready,false);
+});
+test("staging snapshot rejects cross-collection document paths",async()=>{
+  const snapshot=fixture();snapshot.submissionDocument.path="users/assignment-1";
+  assert.equal((await rehearseApproval({request,adapter:adapter(snapshot)})).ready,false);
 });
