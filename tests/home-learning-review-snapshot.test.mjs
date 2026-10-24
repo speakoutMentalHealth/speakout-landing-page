@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import {test} from "node:test";
 import {normalizeStoredReview} from "../scripts/home-learning-review-snapshot.mjs";
 const fixture=()=>({
-  assignmentDocument:{id:"assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",assignedAt:"test"}},
-  submissionDocument:{id:"assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",reviewStatus:"submitted_for_verification",findings:"Synthetic teaching review findings.",submittedAt:"test"}}
+  assignmentDocument:{id:"assignment-1",path:"homeLearningReviewerAssignments/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",assignedAt:"test"}},
+  submissionDocument:{id:"assignment-1",path:"homeLearningReviewSubmissions/assignment-1",data:{reviewerUid:"teacher-a",resourceId:"primary-1-3-maths",resourceVersion:"draft-v1",reviewStatus:"submitted_for_verification",findings:"Synthetic teaching review findings.",submittedAt:"test"}}
 });
 test("derives approval review identity from matching Firestore document paths",()=>{
   const output=normalizeStoredReview(fixture());
@@ -33,4 +33,17 @@ test("denies absent, malformed or partial evidence",()=>{
   assert.equal(normalizeStoredReview({}).valid,false);
   const invalid=fixture();delete invalid.assignmentDocument.data.assignedAt;
   assert.equal(normalizeStoredReview(invalid).valid,false);
+});
+
+test("rejects cross-collection or mismatched review paths",()=>{
+  const f=fixture();f.assignmentDocument.path="users/assignment-1";
+  assert.equal(normalizeStoredReview(f).valid,false);
+  const g=fixture();g.submissionDocument.path="homeLearningReviewerAssignments/assignment-1";
+  assert.equal(normalizeStoredReview(g).valid,false);
+});
+test("rejects unexpected stored document fields",()=>{
+  const f=fixture();f.assignmentDocument.data.unexpected="data";
+  assert.equal(normalizeStoredReview(f).valid,false);
+  const g=fixture();g.submissionDocument.data.unexpected="data";
+  assert.equal(normalizeStoredReview(g).valid,false);
 });
