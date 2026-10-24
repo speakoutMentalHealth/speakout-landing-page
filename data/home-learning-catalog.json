@@ -98,6 +98,30 @@
       "reviewer": null,
       "reviewed_at": null,
       "license": "SpeakOut original draft"
+    },
+    {
+      "id": "ss-1-3-mathematics",
+      "level": "SS 1–3",
+      "subject": "Mathematics",
+      "topic": "Linear functions, quadratics and probability",
+      "resource_url": "senior-secondary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "ss-1-3-english",
+      "level": "SS 1–3",
+      "subject": "English",
+      "topic": "Coherent paragraphs, summary writing and argument",
+      "resource_url": "senior-secondary-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
     }
   ]
 }
