@@ -64,3 +64,11 @@ This is **not** a database transaction, approval endpoint or authorization mecha
 Do not permit student data in approval submissions or audit payloads. Store signed reviewer evidence outside the public web root and enforce limited retention. Require separate human-reviewed paths for revocation and replacement of superseded teaching materials.
 
 **Release blocker:** Neither these pure-function tests nor Firebase Emulator tests are confirmed passing in GitHub CI yet; production merging, deployment, AI tutoring, content publication and live approval writes remain disabled.
+
+## Read-only approval rehearsal — Phase 30
+
+`scripts/home-learning-approval-rehearsal.mjs` composes the existing evidence, proposal and commit guards through an injected, read-only snapshot provider. The caller's request may contain **only** a resource ID and assignment ID. The provider must independently authenticate an authorized server principal, establish staging isolation, load the current content and immutable review evidence, and supply the entire trusted snapshot; none of this can be inferred from the request.
+
+The code exports no Firestore write operation, no HTTP endpoint, no model integration and no publisher. Its output contains only whether the rehearsal passed, safe error labels and minimal resource identifiers. Six new synthetic tests cover a nominal read-only rehearsal, rejected client flags, nonstaging/non-authenticated snapshots, ID mismatches, replay/stale-version failures and provider errors.
+
+**Critical security limit:** The provider is an injected test contract, not a real authenticated backend. Its `authenticatedServerPrincipal`, `isolatedStaging` and `verified` values have no security significance when set by arbitrary code. Never expose the rehearsal to clients or activate approval writes based only on these booleans. The actual adapter needs independent credentials, reads within a real Firestore transaction, verified reviewer qualification and content snapshots, and audit/write authority isolated from the web application. Test results in GitHub Actions and Firebase Emulator still require confirmation.
