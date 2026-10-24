@@ -49,7 +49,7 @@ jobs:
         run: npm run build
 
   deploy:
-    name: Deploy disabled guide server
+    name: Deploy guide pilot server
     if: github.event_name != 'pull_request'
     needs: validate
     runs-on: ubuntu-latest
@@ -81,9 +81,17 @@ jobs:
             exit 1
           fi
       - run: npm ci
-      - name: Publish the separate disabled guide Worker
-        run: npx wrangler deploy
-      - name: Check live disabled server without an AI request
+      - name: Require the saved Gemini secret without reading its value
+        run: |
+          node --input-type=module <<'NODE'
+          import {execFileSync} from 'node:child_process';
+          const secrets = JSON.parse(execFileSync('npx', ['wrangler', 'secret', 'list'], {encoding:'utf8'}));
+          if (!secrets.some(item => item.name === 'GEMINI_API_KEY')) throw new Error('GEMINI_API_KEY is not configured on mindcheck-guide.');
+          console.log('GEMINI_API_KEY binding exists. Its value was not read or displayed.');
+          NODE
+      - name: Enable the separate Nigeria-only guide pilot
+        run: npx wrangler deploy --var GUIDE_ENABLED:true
+      - name: Check public contract from the CI region
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
@@ -99,20 +107,21 @@ jobs:
           }
           const selection = { question: 'mood', language: 'en', adult: true };
           const fallback = await post(selection);
-          assert.equal(fallback.status, 200, 'disabled server must return a prepared answer');
+          assert.equal(fallback.status, 200, 'server must return a valid answer');
           assert.equal(fallback.headers.get('Access-Control-Allow-Origin'), origin);
           const data = await fallback.json();
-          assert.equal(data.source, 'prepared', 'no Gemini generation during this check');
-          assert.match(data.answer, /this browser/);
+          assert(['prepared', 'gemini'].includes(data.source));
+          assert.equal(typeof data.answer, 'string');
+          assert(data.answer.length >= 10 && data.answer.length <= 900);
           const invalid = await post({ ...selection, prompt: 'TEST_ONLY_PUBLIC_FIXTURE' });
           assert.equal(invalid.status, 400, 'unexpected free-text fields must be rejected');
           const method = await fetch(url, { headers: { Origin: origin }, signal: AbortSignal.timeout(15000) });
           assert.equal(method.status, 405);
-          console.log('Live prepared fallback, CORS, fixed-field validation and method guard passed. No AI generation requested.');
+          console.log('Live answer contract, CORS, fixed-field validation and method guard passed. No country metadata was overridden.');
           NODE
       - name: Explain remaining activation step
         shell: bash
         run: |
-          echo "MindCheck guide server was deployed with GUIDE_ENABLED=false."
-          echo "No Gemini API key is supplied by this workflow. No live AI request was made."
-          echo "Add GEMINI_API_KEY as a Secret on the mindcheck-guide Worker, then perform controlled acceptance before enabling the public guide."
+          echo "MindCheck guide server was deployed with GUIDE_ENABLED=true; the Nigeria geographic restriction remains enforced."
+          echo "The existing server secret was retained without reading its value."
+          echo "Actual Gemini output still requires a permitted Nigeria-origin user test; CI success alone is not proof of generation."
