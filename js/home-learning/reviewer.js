@@ -34,6 +34,7 @@ if (!hosts.has(location.hostname)) {
     const generation = ++authGeneration;
     area.hidden = true;
     area.replaceChildren();
+    status.textContent = "Verifying staging teacher access…";
     if (!user) {
       status.textContent = "Sign in using an approved staging teacher account.";
       return;
@@ -118,8 +119,22 @@ if (!hosts.has(location.hostname)) {
             form.replaceWith(element("p", "Submitted for verification; no lesson has been approved."));
           } catch {
             if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
-            feedback.textContent = "Submission could not be confirmed. Reload and check whether findings were recorded before retrying.";
-            button.disabled = false;
+            // A network error can occur after Firestore has committed the write.
+            // Re-read before allowing another attempt at an immutable submission.
+            try {
+              const saved = await getDoc(doc(db, "homeLearningReviewSubmissions", row.id));
+              if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
+              if (saved.exists()) {
+                form.replaceWith(element("p", "A review submission is already recorded. No further submission is permitted."));
+                return;
+              }
+              feedback.textContent = "No saved submission was found. Check your connection before retrying.";
+              button.disabled = false;
+            } catch {
+              if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
+              feedback.textContent = "Submission status is unknown. Reload to check before attempting again.";
+              button.disabled = true;
+            }
           }
         });
         card.append(form);
