@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # Deploy the reviewed MindCheck source, never a moving cross-repository ref.
-  MINDCHECK_SOURCE: ea2ba9b018c6dabdfe0a22006b79636304976074
+  MINDCHECK_SOURCE: 60f9f7f0a012deb05027c7f700b6b5adf148ee15
   WRANGLER_SEND_METRICS: "false"
 
 jobs:
@@ -89,7 +89,7 @@ jobs:
           if (!secrets.some(item => item.name === 'GEMINI_API_KEY')) throw new Error('GEMINI_API_KEY is not configured on mindcheck-guide.');
           console.log('GEMINI_API_KEY binding exists. Its value was not read or displayed.');
           NODE
-      - name: Enable the separate Nigeria-only guide pilot
+      - name: Enable the separate Nigeria/US guide pilot
         run: npx wrangler deploy --var GUIDE_ENABLED:true
       - name: Check public contract from the CI region
         run: |
@@ -110,7 +110,8 @@ jobs:
           assert.equal(fallback.status, 200, 'server must return a valid answer');
           assert.equal(fallback.headers.get('Access-Control-Allow-Origin'), origin);
           const data = await fallback.json();
-          assert(['prepared', 'gemini'].includes(data.source));
+          console.log('Provider verification:', JSON.stringify({source:data.source,reason:data.reason||null}));
+          assert.equal(data.source, 'gemini', 'live provider generation must succeed in the permitted CI region');
           assert.equal(typeof data.answer, 'string');
           assert(data.answer.length >= 10 && data.answer.length <= 900);
           const invalid = await post({ ...selection, prompt: 'TEST_ONLY_PUBLIC_FIXTURE' });
