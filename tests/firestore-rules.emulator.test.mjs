@@ -640,6 +640,7 @@ test("Home Learning: assigned teacher can submit immutable findings, not approva
   await assertFails(setDoc(doc(other, "homeLearningReviewSubmissions/forged"), submission));
   await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/not-assigned"), submission));
   await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/forged-approval"), {...submission, reviewStatus: "approved" }));
+  await assertFails(setDoc(doc(teacher, "homeLearningReviewSubmissions/review-a"), {...submission, resourceVersion: "draft-v2" }));
 });
 
 test("Home Learning: parents, pending teachers and visitors cannot submit reviews", async () => {
