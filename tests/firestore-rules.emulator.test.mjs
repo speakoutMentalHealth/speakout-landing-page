@@ -682,3 +682,27 @@ test("Home Learning: administrators cannot revise reviewer assignments after cre
     resourceId: "ss-1-3-english"
   }));
 });
+
+
+test("Home Learning: editorial approval records are server-only even for administrators", async () => {
+  await seed("users/admin-hl", profile("admin-hl", "admin"));
+  await seed("users/teacher-hl", profile("teacher-hl", "teacher"));
+  const admin = testEnv.authenticatedContext("admin-hl").firestore();
+  const teacher = testEnv.authenticatedContext("teacher-hl").firestore();
+  const visitor = testEnv.unauthenticatedContext().firestore();
+  const path = "homeLearningEditorialApprovals/example-version-1";
+  const approval = {
+    resourceId: "primary-1-3-maths",
+    revisionHash: "example-hash-for-emulator-only",
+    reviewStatus: "approved"
+  };
+  await assertFails(setDoc(doc(admin, path), approval));
+  await assertFails(setDoc(doc(teacher, path), approval));
+  await assertFails(setDoc(doc(visitor, path), approval));
+  await seed(path, approval);
+  await assertSucceeds(getDoc(doc(admin, path)));
+  await assertFails(getDoc(doc(teacher, path)));
+  await assertFails(getDoc(doc(visitor, path)));
+  await assertFails(updateDoc(doc(admin, path), { reviewStatus: "revoked" }));
+  await assertFails(deleteDoc(doc(admin, path)));
+});
