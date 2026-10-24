@@ -62,3 +62,16 @@ test("accepts Firestore-like Timestamp values",()=>{
   f.submissionDocument.data.submittedAt={toDate:()=>new Date("2026-10-24T11:30:00.000Z")};
   assert.equal(normalizeStoredReview(f).valid,true);
 });
+
+test("timestamp objects that throw or return invalid dates fail closed",()=>{
+  const a=fixture();a.assignmentDocument.data.assignedAt={toDate:()=>{throw Error("malformed");}};
+  assert.equal(normalizeStoredReview(a).valid,false);
+  const b=fixture();b.submissionDocument.data.submittedAt={toDate:()=>new Date("invalid")};
+  assert.equal(normalizeStoredReview(b).valid,false);
+  const c=fixture();c.submissionDocument.data.submittedAt={toDate:()=>({getTime:()=>0})};
+  assert.equal(normalizeStoredReview(c).valid,false);
+});
+test("timestamps reject normalized but noncanonical strings",()=>{
+  const a=fixture();a.assignmentDocument.data.assignedAt="2026-10-24";
+  assert.equal(normalizeStoredReview(a).valid,false);
+});
