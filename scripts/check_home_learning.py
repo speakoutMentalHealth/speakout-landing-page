@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT=Path(__file__).resolve().parents[1]
-PAGES=["home-learning.html","learning-hub.html","learning-resource-catalog.html","parent-learning-planner.html","home-learning-progress.html","teacher-learning-toolkit.html","early-years-counting-pack.html","primary-home-learning-packs.html","upper-primary-home-learning-packs.html"]
+PAGES=["home-learning.html","learning-hub.html","learning-resource-catalog.html","parent-learning-planner.html","home-learning-progress.html","teacher-learning-toolkit.html","early-years-counting-pack.html","primary-home-learning-packs.html","upper-primary-home-learning-packs.html","junior-secondary-home-learning-packs.html"]
 
 class Links(HTMLParser):
     def __init__(self):
