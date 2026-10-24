@@ -27,6 +27,7 @@ export async function rehearseApproval({ request, adapter } = {}) {
       if (callbackCount !== 1) return {ready:false,errors:["Snapshot callback invoked more than once"]};
       if (!snapshot || snapshot.isolatedStaging !== true ||
           snapshot.authenticatedServerPrincipal !== true ||
+          snapshot.projectId !== "speakout-portal-staging" ||
           snapshot.resource?.id !== request.resourceId ||
           snapshot.assignmentDocument?.id !== request.assignmentId ||
           snapshot.submissionDocument?.id !== request.assignmentId) {
