@@ -7,4 +7,4 @@ document.getElementById('save').addEventListener('click',()=>{try{localStorage.s
 document.getElementById('clear').addEventListener('click',()=>{try{localStorage.removeItem(KEY)}catch{}level.selectedIndex=0;subject.selectedIndex=0;makeDays();message.textContent='Saved checklist erased from this browser, if present.'});
 document.getElementById('print').addEventListener('click',()=>window.print());
 makeDays();try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&saved.version===1&&Array.isArray(saved.done)&&saved.done.length===5){if([...level.options].some(x=>x.value===saved.level))level.value=saved.level;if([...subject.options].some(x=>x.value===saved.subject))subject.value=saved.subject;[...days.querySelectorAll('input')].forEach((x,i)=>x.checked=saved.done[i]===true);update();message.textContent='A saved checklist was found on this browser.'}}catch{message.textContent='Saved progress could not be read.'}
-</script></body></html>
+</script><script type="module" src="js/account-controls.js"></script></body></html>
