@@ -739,6 +739,9 @@ service cloud.firestore {
         request.resource.data.keys().hasAll(["reviewerUid", "resourceId", "assignedAt"]) &&
         request.resource.data.reviewerUid is string &&
         request.resource.data.reviewerUid.size() > 0 &&
+        exists(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)) &&
+        get(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)).data.role == "teacher" &&
+        get(/databases/$(database)/documents/users/$(request.resource.data.reviewerUid)).data.status == "approved" &&
         request.resource.data.resourceId is string &&
         request.resource.data.resourceId.size() > 0 &&
         request.resource.data.assignedAt == request.time;
