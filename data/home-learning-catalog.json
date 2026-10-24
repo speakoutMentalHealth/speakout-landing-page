@@ -170,6 +170,42 @@
       "reviewer": null,
       "reviewed_at": null,
       "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-1-3-social-studies",
+      "level": "Primary 1–3",
+      "subject": "Social Studies",
+      "topic": "Community helpers, responsibility and local services",
+      "resource_url": "social-civic-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "primary-4-6-social-studies",
+      "level": "Primary 4–6",
+      "subject": "Social Studies",
+      "topic": "Cooperation, environment and school participation",
+      "resource_url": "social-civic-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
+    },
+    {
+      "id": "jss-1-3-civic-education",
+      "level": "JSS 1–3",
+      "subject": "Civic Education",
+      "topic": "Respect, service and constructive communication",
+      "resource_url": "social-civic-home-learning-packs.html",
+      "curriculum_reference": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "license": "SpeakOut original draft"
     }
   ]
 }
