@@ -1,5 +1,6 @@
 name: Home Learning Firebase Rules Tests
 on:
+  workflow_dispatch:
   push:
     branches:
       - feature/home-learning-pathways
@@ -54,4 +55,15 @@ jobs:
       - name: Check emulator test syntax
         run: node --check tests/firestore-rules.emulator.test.mjs
       - name: Run Firestore security tests
-        run: npm run test:rules
+        run: |
+          mkdir -p artifacts/home-learning-firestore
+          set -o pipefail
+          npm run test:rules 2>&1 | tee artifacts/home-learning-firestore/emulator-tests.log
+      - name: Upload Firestore security test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: home-learning-firestore-test-evidence
+          path: artifacts/home-learning-firestore/
+          retention-days: 7
+          if-no-files-found: warn
