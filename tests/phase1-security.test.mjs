@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v14/u);
+  assert.match(sw, /speakout-tv-v15/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -569,7 +569,7 @@ test("SpeakOut TV section tabs switch every matching section and keep media view
   assert.match(script, /document\.body\.dataset\.tvView=chosen/u);
   assert.match(page, /id="episodes"[\s\S]*?<h2>Watch<\/h2>/u);
   assert.match(page, /id="audio"[\s\S]*?<h2>Audio<\/h2>/u);
-  assert.match(page, /id="live"[\s\S]*?<h2>Live<\/h2>/u);
+  assert.match(page, /id="live"[\s\S]*?class="live-program-heading"[\s\S]*?<h2>[^<]+<\/h2>/u);
   assert.match(radio, /listen-hero-compact/u);
   assert.match(base, /html\[data-tv-route="watch"\]/u);
   assert.match(base, /html\[data-tv-route="live"\]/u);
@@ -597,7 +597,7 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v14/u);
+  assert.match(sw, /speakout-tv-v15/u);
   for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
@@ -625,13 +625,16 @@ test("Watch remains a video-only viewing surface", () => {
   assert.match(watch,/id="relatedRail"/u);
 });
 
-test("Live is a single cinematic standby stage with only next-session information", () => {
+test("Live keeps a cinematic player, honest offline guidance and next-session information", () => {
   const page=read("tv.html");
   const script=read("js/speakout-tv.js");
   const styles=read("css/tv/media.css");
   assert.match(page,/class="live-cinema-shell"/u);
-  assert.match(page,/class="live-signal"/u);
-  assert.match(page,/No live session right now\./u);
+  assert.match(page,/id="livePlayer"[\s\S]*?https:\/\/player\.twitch\.tv\//u);
+  assert.match(page,/id="liveStatus">Standby<\/span>/u);
+  assert.match(script,/The player may show offline between events\./u);
+  assert.match(script,/encodeURIComponent\(parent\)/u);
+  assert.match(page,/allowfullscreen/u);
   assert.doesNotMatch(page,/id="liveScheduleSection"|id="livePreviousSection"/u);
   assert.doesNotMatch(script,/scheduleSection\.hidden|previousSection\.hidden/u);
   assert.match(script,/status\.textContent=nextLive\?"Upcoming":"Standby"/u);
