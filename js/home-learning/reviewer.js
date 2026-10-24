@@ -37,9 +37,9 @@ if (!hosts.has(location.hostname)) {
       }
       for (const row of assigned.docs) {
         const assignment = row.data();
-        if (typeof assignment.resourceId !== "string") continue;
+        if (typeof assignment.resourceId !== "string" || typeof assignment.resourceVersion !== "string") continue;
         const card = element("article", "");
-        card.append(element("h2", assignment.resourceId));
+        card.append(element("h2", assignment.resourceId), element("p", "Assigned version: " + assignment.resourceVersion));
         const existing = await getDoc(doc(db, "homeLearningReviewSubmissions", row.id));
         if (existing.exists()) {
           card.append(element("p", "Findings already submitted. They cannot be edited."));
@@ -70,6 +70,7 @@ if (!hosts.has(location.hostname)) {
             await setDoc(doc(db, "homeLearningReviewSubmissions", row.id), {
               reviewerUid: user.uid,
               resourceId: assignment.resourceId,
+              resourceVersion: assignment.resourceVersion,
               reviewStatus: "submitted_for_verification",
               findings,
               submittedAt: serverTimestamp()
