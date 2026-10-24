@@ -23,7 +23,7 @@ if (!hosts.has(location.hostname)) {
 } else {
   // Do not initialize a Firebase app on any non-staging host.
   const { app, auth, db } = await import("../firebase-config.js");
-  const [{ onAuthStateChanged }, { doc, collection, query, where, getDoc, getDocs, setDoc, serverTimestamp }] = await Promise.all([
+  const [{ onAuthStateChanged }, { doc, collection, query, where, getDoc, getDocFromServer, getDocs, setDoc, serverTimestamp }] = await Promise.all([
     import("https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js"),
     import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")
   ]);
@@ -123,13 +123,13 @@ if (!hosts.has(location.hostname)) {
             // A network error can occur after Firestore has committed the write.
             // Re-read before allowing another attempt at an immutable submission.
             try {
-              const saved = await getDoc(doc(db, "homeLearningReviewSubmissions", row.id));
+              const saved = await getDocFromServer(doc(db, "homeLearningReviewSubmissions", row.id));
               if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
               if (saved.exists()) {
                 form.replaceWith(element("p", "A review submission is already recorded. No further submission is permitted."));
                 return;
               }
-              feedback.textContent = "No saved submission was found. Check your connection before retrying.";
+              feedback.textContent = "The server confirmed no saved submission. You may retry if your connection is stable.";
               button.disabled = false;
             } catch {
               if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
