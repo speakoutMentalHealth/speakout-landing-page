@@ -562,3 +562,48 @@ test("traffic receipts are server-only, even for organisation admins", async () 
   await assertFails(getDoc(doc(db, "trafficSignIns/receipt")));
   await assertFails(setDoc(doc(db, "trafficSignIns/anonymous"), { accountKey: "forged" }));
 });
+
+
+test("Home Learning: school resources stay isolated between schools", async () => {
+  await seed("users/teacher-a", profile("teacher-a", "teacher", "school-a"));
+  await seed("users/teacher-b", profile("teacher-b", "teacher", "school-b"));
+  await seed("users/school-admin-a", profile("school-admin-a", "school_admin", "school-a"));
+  await seed("schoolResources/resource-a", { schoolId: "school-a", title: "Synthetic lesson A" });
+  await seed("schoolResources/resource-b", { schoolId: "school-b", title: "Synthetic lesson B" });
+
+  const teacherA = testEnv.authenticatedContext("teacher-a").firestore();
+  const teacherB = testEnv.authenticatedContext("teacher-b").firestore();
+  const adminA = testEnv.authenticatedContext("school-admin-a").firestore();
+
+  await assertSucceeds(getDoc(doc(teacherA, "schoolResources/resource-a")));
+  await assertSucceeds(getDoc(doc(teacherB, "schoolResources/resource-b")));
+  await assertFails(getDoc(doc(teacherA, "schoolResources/resource-b")));
+  await assertFails(getDoc(doc(teacherB, "schoolResources/resource-a")));
+  await assertFails(getDoc(doc(adminA, "schoolResources/resource-b")));
+  await assertFails(setDoc(doc(teacherA, "schoolResources/teacher-forgery"), {
+    schoolId: "school-a", title: "Unauthorized write"
+  }));
+  await assertSucceeds(setDoc(doc(adminA, "schoolResources/new-a"), {
+    schoolId: "school-a", title: "School A resource"
+  }));
+  await assertFails(setDoc(doc(adminA, "schoolResources/new-b"), {
+    schoolId: "school-b", title: "Cross-school resource"
+  }));
+  await assertFails(updateDoc(doc(adminA, "schoolResources/resource-a"), {
+    schoolId: "school-b"
+  }));
+});
+
+test("Home Learning: public visitors and pending accounts cannot access school resources", async () => {
+  await seed("schoolResources/private-a", { schoolId: "school-a", title: "Internal resource" });
+  await seed("users/pending-a", {
+    ...profile("pending-a", "teacher", "school-a"), status: "pending", approved: false
+  });
+  const anonymous = testEnv.unauthenticatedContext().firestore();
+  const pending = testEnv.authenticatedContext("pending-a").firestore();
+  await assertFails(getDoc(doc(anonymous, "schoolResources/private-a")));
+  await assertFails(getDoc(doc(pending, "schoolResources/private-a")));
+  await assertFails(setDoc(doc(pending, "schoolResources/forged"), {
+    schoolId: "school-a", title: "Unauthorized"
+  }));
+});
