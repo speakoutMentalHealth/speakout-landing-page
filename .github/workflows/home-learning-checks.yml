@@ -23,6 +23,8 @@ on:
       - 'docs/home-learning-educator-review-template.md'
       - 'data/home-learning-catalog.json'
       - 'scripts/check_home_learning.py'
+      - 'tests/home-learning-catalog.test.py'
+      - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
   pull_request:
     paths:
@@ -45,6 +47,8 @@ on:
       - 'docs/home-learning-educator-review-template.md'
       - 'data/home-learning-catalog.json'
       - 'scripts/check_home_learning.py'
+      - 'tests/home-learning-catalog.test.py'
+      - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
 permissions:
   contents: read
@@ -56,5 +60,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Validate catalogue regression scenarios
+        run: python -m unittest discover -s tests -p 'home-learning-catalog.test.py' -v
       - name: Check local links and catalogue
         run: python scripts/check_home_learning.py
