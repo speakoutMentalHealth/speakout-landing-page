@@ -1,5 +1,6 @@
 name: Home Learning Checks
 on:
+  workflow_dispatch:
   push:
     branches:
       - feature/home-learning-pathways
@@ -36,6 +37,7 @@ on:
       - 'tests/home-learning-approval-commit-guard.test.mjs'
       - 'scripts/home-learning-approval-rehearsal.mjs'
       - 'tests/home-learning-approval-rehearsal.test.mjs'
+      - 'tests/home-learning-staging-boundary.test.mjs'
       - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
   pull_request:
@@ -72,6 +74,7 @@ on:
       - 'tests/home-learning-approval-commit-guard.test.mjs'
       - 'scripts/home-learning-approval-rehearsal.mjs'
       - 'tests/home-learning-approval-rehearsal.test.mjs'
+      - 'tests/home-learning-staging-boundary.test.mjs'
       - 'docs/home-learning-ai-tutor-safety-gate.md'
       - '.github/workflows/home-learning-checks.yml'
 permissions:
@@ -90,5 +93,16 @@ jobs:
         run: python scripts/check_home_learning.py
       - name: Validate reviewer client syntax
         run: node --check js/home-learning/reviewer.js
-      - name: Validate approval evidence unit tests
-        run: node --test tests/home-learning-approval-evidence.test.mjs tests/home-learning-approval-proposal.test.mjs tests/home-learning-approval-commit-guard.test.mjs tests/home-learning-approval-rehearsal.test.mjs
+      - name: Approval validation and staging boundary regression tests
+        run: |
+          mkdir -p artifacts/home-learning-ci
+          set -o pipefail
+          node --test --test-reporter=tap tests/home-learning-approval-evidence.test.mjs tests/home-learning-approval-proposal.test.mjs tests/home-learning-approval-commit-guard.test.mjs tests/home-learning-approval-rehearsal.test.mjs tests/home-learning-staging-boundary.test.mjs 2>&1 | tee artifacts/home-learning-ci/unit-tests.tap
+      - name: Upload approval test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: home-learning-unit-test-evidence
+          path: artifacts/home-learning-ci/
+          retention-days: 7
+          if-no-files-found: warn
