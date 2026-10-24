@@ -1,0 +1,36 @@
+name: Home Learning Firebase Rules Tests
+on:
+  push:
+    branches:
+      - feature/home-learning-pathways
+    paths:
+      - 'firebase/firestore.rules'
+      - 'tests/firestore-rules.emulator.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/home-learning-firestore-tests.yml'
+  pull_request:
+    paths:
+      - 'firebase/firestore.rules'
+      - 'tests/firestore-rules.emulator.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/home-learning-firestore-tests.yml'
+permissions:
+  contents: read
+jobs:
+  firestore-emulator-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - run: npm ci
+      - run: npm run test:rules
