@@ -26,8 +26,8 @@ export function inspectApprovalCommit({ proposal, trustedState } = {}) {
     errors.push("Missing trusted transactional resource state");
   }
   if (proposal && hex.test(proposal.contentSha256 || "")) {
-    const key = hash(APPROVAL_PROTOCOL + "\\n" + proposal.resourceId + "\\n" +
-      proposal.resourceVersion + "\\n" + proposal.contentSha256);
+    const key = hash(APPROVAL_PROTOCOL + "\n" + proposal.resourceId + "\n" +
+      proposal.resourceVersion + "\n" + proposal.contentSha256);
     if (proposal.approvalKey !== key) errors.push("Proposal approval key mismatch");
   }
   if (proposal && hex.test(proposal.auditHash || "")) {
