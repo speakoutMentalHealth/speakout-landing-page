@@ -1,0 +1,18 @@
+/* Shared SpeakOut learning navigation and visual system. */
+:root{--learning-navy:#071b3a;--learning-blue:#155d97;--learning-gold:#e5ad42}
+body{font-family:Outfit,system-ui,-apple-system,Segoe UI,sans-serif!important;background:#f5f8fd}
+.learning-site-header{background:var(--learning-navy);color:#fff;position:relative;z-index:10}
+.learning-site-header .learning-nav{max-width:1120px;margin:auto;padding:14px 18px;display:flex;align-items:center;gap:18px;justify-content:space-between}
+.learning-site-header .learning-brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none;font-weight:800;line-height:1.15}
+.learning-site-header .learning-brand img{width:43px;height:43px;object-fit:contain;background:#fff;border-radius:9px;padding:3px}
+.learning-site-header .learning-brand small{display:block;font-size:.69rem;font-weight:500;color:#cbdcf2;margin-top:3px}
+.learning-site-header .learning-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.learning-site-header .learning-links a{color:#f5f8ff;text-decoration:none;font-size:.9rem;font-weight:600;padding:9px 4px}
+.learning-site-header .learning-links a[aria-current=page]{color:#f4c775}
+.learning-site-header .learning-links a:hover{text-decoration:underline}
+.learning-site-header .learning-menu-toggle{display:none;border:1px solid #6e86a4;background:transparent;color:white;border-radius:10px;padding:9px 13px;font:inherit;font-weight:700}
+.learning-site-header .learning-links .learning-portal{background:#f4bd5c;color:#071b3a;padding:10px 14px;border-radius:10px}
+.learning-site-header .learning-links .learning-portal:hover{text-decoration:none;background:#ffe0a4}
+.learning-site-header .learning-links .learning-portal:focus-visible,.learning-site-header .learning-menu-toggle:focus-visible,.learning-site-header a:focus-visible{outline:3px solid #f4bd5c;outline-offset:3px}
+.learning-site-header + .hero{background:linear-gradient(125deg,#071b3a,#155d97)}
+@media(max-width:780px){.learning-site-header .learning-nav{flex-wrap:wrap}.learning-site-header .learning-menu-toggle{display:block}.learning-site-header .learning-links{display:none;flex-basis:100%;flex-direction:column;align-items:stretch;gap:0;padding:6px 0 10px}.learning-site-header .learning-links.is-open{display:flex}.learning-site-header .learning-links a{padding:12px 10px;border-top:1px solid #ffffff24}.learning-site-header .learning-links .learning-portal{margin-top:9px;text-align:center}}
