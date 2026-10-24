@@ -56,6 +56,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
       - run: npm ci
+      - name: Install Firebase CLI for Firestore emulator
+        run: npm install --no-save --no-package-lock firebase-tools@14
       - name: Check emulator test syntax
         run: node --check tests/firestore-rules.emulator.test.mjs
       - name: Run Firestore security tests
