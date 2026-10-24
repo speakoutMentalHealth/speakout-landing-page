@@ -1,6 +1,3 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { doc, collection, query, where, getDoc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
 const hosts = new Set(["speakout-portal-staging.web.app", "speakout-portal-staging.firebaseapp.com"]);
 const status = document.getElementById("status");
 const area = document.getElementById("assignments");
@@ -26,6 +23,10 @@ if (!hosts.has(location.hostname)) {
 } else {
   // Do not initialize a Firebase app on any non-staging host.
   const { app, auth, db } = await import("../firebase-config.js");
+  const [{ onAuthStateChanged }, { doc, collection, query, where, getDoc, getDocs, setDoc, serverTimestamp }] = await Promise.all([
+    import("https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js"),
+    import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")
+  ]);
   if (app.options.projectId !== "speakout-portal-staging") {
     status.textContent = "Staging Firebase project verification failed. Reviews are disabled.";
     throw new Error("Staging project mismatch");
