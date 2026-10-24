@@ -2,6 +2,7 @@
 // Do not call this on untrusted HTTP payloads or browser-supplied objects.
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
 const docId = value => typeof value === "string" && /^[A-Za-z0-9_-]{1,120}$/.test(value);
+const validTimestamp = value => value && (typeof value === "object" && typeof value.toDate === "function" && !Number.isNaN(value.toDate()?.getTime()) || typeof value === "string" && !Number.isNaN(Date.parse(value)));
 export function normalizeStoredReview({ assignmentDocument, submissionDocument } = {}) {
   if (!isObject(assignmentDocument) || !isObject(submissionDocument) ||
       !docId(assignmentDocument.id) || assignmentDocument.id !== submissionDocument.id ||
@@ -22,7 +23,9 @@ export function normalizeStoredReview({ assignmentDocument, submissionDocument }
       submission.reviewerUid !== assignment.reviewerUid ||
       submission.resourceId !== assignment.resourceId ||
       submission.resourceVersion !== assignment.resourceVersion ||
-      submission.reviewStatus !== "submitted_for_verification") {
+      submission.reviewStatus !== "submitted_for_verification" ||
+      !validTimestamp(assignment.assignedAt) || !validTimestamp(submission.submittedAt) ||
+      typeof submission.findings !== "string" || submission.findings.trim().length < 10 || submission.findings.length > 4000) {
     return {valid:false,error:"Stored review evidence does not match assignment",assignment:null,submission:null};
   }
   return {valid:true,error:null,
