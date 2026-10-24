@@ -725,10 +725,41 @@ service cloud.firestore {
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
 
+    // Reviewer applications are immutable, owner-readable requests only.
+    // Approval, public attribution and creator monetization are never client-granted.
+    match /homeLearningReviewerApplications/{applicantUid} {
+      allow read: if isSuperAdmin() ||
+        (isSignedIn() && request.auth.uid == applicantUid);
+      allow create: if isTeacher() && request.auth.uid == applicantUid &&
+        request.resource.data.keys().hasOnly([
+          "applicantUid", "displayName", "subjectExpertise", "experience",
+          "consentToContact", "publicCreditOptIn", "status", "submittedAt"
+        ]) &&
+        request.resource.data.keys().hasAll([
+          "applicantUid", "displayName", "subjectExpertise", "experience",
+          "consentToContact", "publicCreditOptIn", "status", "submittedAt"
+        ]) &&
+        request.resource.data.applicantUid == applicantUid &&
+        request.resource.data.displayName is string &&
+        request.resource.data.displayName.size() >= 2 &&
+        request.resource.data.displayName.size() <= 100 &&
+        request.resource.data.subjectExpertise is string &&
+        request.resource.data.subjectExpertise.size() >= 3 &&
+        request.resource.data.subjectExpertise.size() <= 180 &&
+        request.resource.data.experience is string &&
+        request.resource.data.experience.size() >= 20 &&
+        request.resource.data.experience.size() <= 1500 &&
+        request.resource.data.consentToContact == true &&
+        request.resource.data.publicCreditOptIn is bool &&
+        request.resource.data.status == "pending_review" &&
+        request.resource.data.submittedAt == request.time;
+      allow update, delete: if false;
+    }
+
     // Home Learning educator reviews: assignment is administrator-managed.
     // Client review submissions are immutable recommendations, never approvals.
     function isHomeLearningReviewCollection(collection) {
-      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals"];
+      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals", "homeLearningReviewerApplications"];
     }
 
     match /homeLearningReviewerAssignments/{assignmentId} {
