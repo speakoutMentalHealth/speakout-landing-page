@@ -98,3 +98,9 @@ Firestore reviewer submissions deliberately omit an editable `assignmentId` fiel
 The read-only rehearsal consumes `assignmentDocument: {id, data}` and `submissionDocument: {id, data}` instead of a fabricated client-supplied `assignmentId` in the submission body. Six regression test groups cover normalization success, malformed evidence and forgery. Both development workflows watch the updated adapter and tests.
 
 This adapter does not authenticate database paths or retrieve documents. The eventual trusted server must enforce the exact collection paths, use Firebase Admin credentials only in a protected runtime and verify that the records were read from staging. Never construct the documents from an HTTP request body. Firestore Emulator and GitHub Actions passing results are still required.
+
+## Phase 34 — explicit source-path and staging-project checks
+
+The read-only rehearsal now rejects snapshots whose `projectId` is not exactly `speakout-portal-staging`. The stored-review normalizer also requires the assignment and submission snapshots to identify the canonical Firestore collections `homeLearningReviewerAssignments/{id}` and `homeLearningReviewSubmissions/{id}`, and it rejects unexpected fields in either stored document. New regression tests cover production-project identifiers, cross-collection paths and extra fields.
+
+**Boundary:** The project ID and path properties are still provided by an injected adapter, which is not yet a trusted backend. A future real adapter must derive project ID from the Firebase Admin app and document paths from Firestore references after validating the server service account; these values must never be copied from browser requests. No live Firestore writes, approvals, deployments or AI functions have been enabled. GitHub Actions and Firebase Emulator results remain unverified.
