@@ -72,3 +72,5 @@ jobs:
         run: python -m unittest discover -s tests -p 'home-learning-catalog.test.py' -v
       - name: Check local links and catalogue
         run: python scripts/check_home_learning.py
+      - name: Validate reviewer client syntax
+        run: node --check js/home-learning/reviewer.js
