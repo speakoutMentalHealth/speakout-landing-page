@@ -5,6 +5,18 @@ import { doc, collection, query, where, getDoc, getDocs, setDoc, serverTimestamp
 const hosts = new Set(["speakout-portal-staging.web.app", "speakout-portal-staging.firebaseapp.com"]);
 const status = document.getElementById("status");
 const area = document.getElementById("assignments");
+let authGeneration = 0;
+async function loadDraftCatalogue() {
+  const response = await fetch("data/home-learning-catalog.json", {cache:"no-store"});
+  if (!response.ok) throw new Error("Catalogue unavailable");
+  const data = await response.json();
+  if (!Array.isArray(data.resources)) throw new Error("Invalid catalogue");
+  return new Map(data.resources.filter(item =>
+    typeof item.id === "string" &&
+    typeof item.resource_url === "string" &&
+    /^[a-z0-9-]+\.html$/.test(item.resource_url)
+  ).map(item => [item.id, item]));
+}
 function element(tag, value) {
   const item = document.createElement(tag);
   item.textContent = value;
@@ -14,6 +26,7 @@ if (!hosts.has(location.hostname)) {
   status.textContent = "This workspace is disabled outside the designated staging portal.";
 } else {
   onAuthStateChanged(auth, async (user) => {
+    const generation = ++authGeneration;
     area.hidden = true;
     area.replaceChildren();
     if (!user) {
@@ -26,10 +39,12 @@ if (!hosts.has(location.hostname)) {
         status.textContent = "An approved teacher account is required.";
         return;
       }
+      const catalogue = await loadDraftCatalogue();
       const assigned = await getDocs(query(
         collection(db, "homeLearningReviewerAssignments"),
         where("reviewerUid", "==", user.uid)
       ));
+      if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
       status.textContent = "Verified teacher account. Review only assignments listed below.";
       area.hidden = false;
       if (assigned.empty) {
@@ -40,7 +55,20 @@ if (!hosts.has(location.hostname)) {
         if (typeof assignment.resourceId !== "string" || typeof assignment.resourceVersion !== "string") continue;
         const card = element("article", "");
         card.append(element("h2", assignment.resourceId), element("p", "Assigned version: " + assignment.resourceVersion));
+        const draft = catalogue.get(assignment.resourceId);
+        if (draft) {
+          const link = element("a", "Open draft learning resource (not approved)");
+          link.href = draft.resource_url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          card.append(link);
+        } else {
+          card.append(element("p", "Draft content unavailable in catalogue; contact the assigning administrator."));
+          area.append(card);
+          continue;
+        }
         const existing = await getDoc(doc(db, "homeLearningReviewSubmissions", row.id));
+        if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) return;
         if (existing.exists()) {
           card.append(element("p", "Findings already submitted. They cannot be edited."));
           area.append(card);
@@ -65,6 +93,10 @@ if (!hosts.has(location.hostname)) {
             feedback.textContent = "Please provide 10–4000 characters.";
             return;
           }
+          if (generation !== authGeneration || auth.currentUser?.uid !== user.uid) {
+            feedback.textContent = "Session changed. Reload to continue.";
+            return;
+          }
           button.disabled = true;
           try {
             await setDoc(doc(db, "homeLearningReviewSubmissions", row.id), {
@@ -85,6 +117,7 @@ if (!hosts.has(location.hostname)) {
         area.append(card);
       }
     } catch {
+      if (generation !== authGeneration) return;
       status.textContent = "Review access could not be verified.";
       area.hidden = true;
     }
