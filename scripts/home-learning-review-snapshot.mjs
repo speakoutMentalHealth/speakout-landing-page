@@ -2,7 +2,19 @@
 // Do not call this on untrusted HTTP payloads or browser-supplied objects.
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
 const docId = value => typeof value === "string" && /^[A-Za-z0-9_-]{1,120}$/.test(value);
-const validTimestamp = value => value && (typeof value === "object" && typeof value.toDate === "function" && !Number.isNaN(value.toDate()?.getTime()) || typeof value === "string" && !Number.isNaN(Date.parse(value)));
+function validTimestamp(value) {
+  if (typeof value === "string") {
+    const date = new Date(value);
+    return !Number.isNaN(date.getTime()) && date.toISOString() === value;
+  }
+  if (value === null || typeof value !== "object" || typeof value.toDate !== "function") return false;
+  try {
+    const date = value.toDate();
+    return date instanceof Date && !Number.isNaN(date.getTime());
+  } catch {
+    return false;
+  }
+}
 export function normalizeStoredReview({ assignmentDocument, submissionDocument } = {}) {
   if (!isObject(assignmentDocument) || !isObject(submissionDocument) ||
       !docId(assignmentDocument.id) || assignmentDocument.id !== submissionDocument.id ||
