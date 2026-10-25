@@ -1,0 +1,25 @@
+name: Home Learning integrity
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'data/home-learning-catalog.json'
+      - 'scripts/home-learning-resource-digests.mjs'
+      - '*home-learning-packs.html'
+      - 'early-years-counting-pack.html'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
+      - run: node --test tests/phase11*.test.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: home-learning-candidate-digests
+          path: candidate-digests.json
