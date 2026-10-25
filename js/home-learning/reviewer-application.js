@@ -1,6 +1,7 @@
 const status = document.getElementById("applicationStatus");
 const form = document.getElementById("reviewerApplication");
 const button = document.getElementById("applyButton");
+const accessChoices = document.getElementById("reviewerAccessChoices");
 let generation = 0;
 try {
   const [{ auth, db }, { onAuthStateChanged }, { doc, getDocFromServer, setDoc, serverTimestamp }] = await Promise.all([
@@ -11,6 +12,7 @@ try {
   onAuthStateChanged(auth, async (user) => {
     const current = ++generation;
     form.hidden = true;
+    if (accessChoices) accessChoices.hidden = Boolean(user);
     form.onsubmit = null;
     if (!user) {
       status.textContent = "Sign in with an approved SpeakOut teacher account to apply.";
@@ -21,7 +23,7 @@ try {
       const profile = await getDocFromServer(doc(db, "users", user.uid));
       if (current !== generation || auth.currentUser?.uid !== user.uid) return;
       if (!profile.exists() || profile.data().status !== "approved" || profile.data().role !== "teacher") {
-        status.textContent = "Applications currently require an approved SpeakOut teacher account.";
+        status.textContent = "Your account is not yet an approved teacher account. If you have recently registered, please wait for approval before applying.";
         return;
       }
       const application = doc(db, "homeLearningReviewerApplications", user.uid);
