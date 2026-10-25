@@ -160,23 +160,23 @@ jobs:
         run: node tests/approval-state-browser.mjs
 
       - name: Independent learner journey
-        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        if: ${{ success() && steps.credentials.outcome == 'success' }}
         run: node tests/independent-learner-browser.mjs
 
       - name: School management journey
-        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        if: ${{ success() && steps.credentials.outcome == 'success' }}
         run: node tests/school-management-browser.mjs
 
       - name: Admin publishing and rights
-        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        if: ${{ success() && steps.credentials.outcome == 'success' }}
         run: node tests/admin-publishing-staging.mjs
 
       - name: Academic results API acceptance
-        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        if: ${{ success() && steps.credentials.outcome == 'success' }}
         run: node tests/staging-live.integration.mjs
 
       - name: Academic results browser pilot
-        if: ${{ !cancelled() && steps.credentials.outcome == 'success' }}
+        if: ${{ success() && steps.credentials.outcome == 'success' }}
         run: node tests/kpa-results-browser-pilot.mjs
 
       - name: Record release result
