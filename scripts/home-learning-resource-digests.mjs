@@ -2,9 +2,10 @@
 // Read-only inventory: calculates digests from repository files.
 // This tool never marks resources trusted or writes to Firestore.
 import {readFileSync, writeFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {resolve, sep} from 'node:path';
-const root=resolve(import.meta.dirname,'..');
+const root=resolve(fileURLToPath(new URL('..', import.meta.url)));
 const catalogue=JSON.parse(readFileSync(resolve(root,'data/home-learning-catalog.json'),'utf8'));
 const result={schema:1,generatedAt:new Date().toISOString(),status:'candidate-unverified',resources:[]};
 for(const resource of catalogue.resources){
