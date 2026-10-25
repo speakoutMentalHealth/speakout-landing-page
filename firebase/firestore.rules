@@ -804,6 +804,12 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Trusted resource manifests must be written only by an audited backend.
+    // A browser administrator must not be able to substitute content hashes.
+    match /homeLearningTrustedResourceManifests/{manifestId} {
+      allow read, create, update, delete: if false;
+    }
+
     // Approval authority is deliberately server-only. Admin SDK bypasses
     // client rules and must enforce signed-off reviews, content hashes,
     // independent authorization and audit retention before writing here.
