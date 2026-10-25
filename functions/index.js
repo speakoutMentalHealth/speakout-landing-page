@@ -858,3 +858,75 @@ exports.reviewBookSubmission = onCall(async request => {
     };
   });
 });
+
+
+/**
+ * Home Learning independent editorial decisions.
+ * Records an immutable verification decision; never changes public catalogue.
+ * Publishing requires a separate reviewed GitHub change.
+ */
+exports.recordHomeLearningEditorialDecision = onCall(async request => {
+  const editorUid = requireAuth(request);
+  const editor = await approvedProfile(editorUid);
+  if (norm(editor.role) !== "super_admin") {
+    throw new HttpsError("permission-denied", "Super administrator required.");
+  }
+  const input = request.data || {};
+  const assignmentId = String(input.assignmentId || "").trim();
+  const outcome = String(input.outcome || "").trim();
+  const rationale = String(input.rationale || "").trim();
+  const curriculumReference = String(input.curriculumReference || "").trim();
+  const contentSha256 = String(input.contentSha256 || "").trim().toLowerCase();
+  const evidenceReferences = input.evidenceReferences;
+  if (!/^[a-zA-Z0-9_-]{3,900}$/.test(assignmentId) ||
+      !["request_changes", "reject", "verified_for_publication_review"].includes(outcome) ||
+      rationale.length < 20 || rationale.length > 4000 ||
+      curriculumReference.length < 10 || curriculumReference.length > 1000 ||
+      !/^[a-f0-9]{64}$/.test(contentSha256) ||
+      !Array.isArray(evidenceReferences) || evidenceReferences.length < 1 ||
+      evidenceReferences.length > 12 ||
+      !evidenceReferences.every(x => typeof x === "string" && x.trim().length >= 3 && x.length <= 500)) {
+    throw new HttpsError("invalid-argument", "Complete editorial evidence and content fingerprint are required.");
+  }
+  const assignmentRef = db.doc(`homeLearningReviewerAssignments/${assignmentId}`);
+  const submissionRef = db.doc(`homeLearningReviewSubmissions/${assignmentId}`);
+  const decisionRef = db.doc(`homeLearningEditorialApprovals/${assignmentId}`);
+  return db.runTransaction(async tx => {
+    const [assignmentSnap, submissionSnap, existingSnap] = await Promise.all([
+      tx.get(assignmentRef), tx.get(submissionRef), tx.get(decisionRef)
+    ]);
+    if (existingSnap.exists) throw new HttpsError("already-exists", "Decision already recorded for this assignment.");
+    if (!assignmentSnap.exists || !submissionSnap.exists) {
+      throw new HttpsError("failed-precondition", "Assignment and submitted review required.");
+    }
+    const assignment = assignmentSnap.data();
+    const submission = submissionSnap.data();
+    if (assignment.reviewerUid === editorUid ||
+        assignment.reviewerUid !== submission.reviewerUid ||
+        assignment.resourceId !== submission.resourceId ||
+        assignment.resourceVersion !== submission.resourceVersion ||
+        submission.reviewStatus !== "submitted_for_verification") {
+      throw new HttpsError("failed-precondition", "Independent matching review required.");
+    }
+    const reviewerSnap = await tx.get(db.doc(`users/${assignment.reviewerUid}`));
+    if (!reviewerSnap.exists || reviewerSnap.data().status !== "approved" ||
+        reviewerSnap.data().role !== "teacher") {
+      throw new HttpsError("failed-precondition", "Assigned teacher is not approved.");
+    }
+    tx.create(decisionRef, {
+      assignmentId,
+      reviewerUid: assignment.reviewerUid,
+      editorUid,
+      resourceId: assignment.resourceId,
+      resourceVersion: assignment.resourceVersion,
+      outcome,
+      rationale,
+      curriculumReference,
+      evidenceReferences,
+      contentSha256,
+      status: "editorial_record_only",
+      createdAt: FieldValue.serverTimestamp()
+    });
+    return { ok: true, status: "editorial_record_only", published: false };
+  });
+});
