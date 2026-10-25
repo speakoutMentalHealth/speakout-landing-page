@@ -118,7 +118,7 @@ const adminToken = await serviceAccessToken();
 
 // Check Firestore directly before creating test accounts or invoking the Worker.
 // A direct 429 identifies the upstream staging project as the source.
-const quotaProbe = await fetch(`${firestoreBase}/__release_quota_probe__?pageSize=1`, {
+const quotaProbe = await fetch(`${firestoreBase}/release_quota_probe?pageSize=1`, {
   headers: { authorization: `Bearer ${adminToken}` }
 });
 if (quotaProbe.status === 429) {
