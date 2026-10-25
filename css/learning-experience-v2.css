@@ -1,0 +1,34 @@
+/* Shared premium treatment for supplementary learning tools. */
+.learning-tool main{max-width:1050px;margin:auto;padding:clamp(16px,3vw,34px) 16px 70px}
+.learning-tool main>h1{font-size:clamp(2rem,4.8vw,3.1rem);line-height:1.13;letter-spacing:-.035em;margin:.5rem 0}
+.learning-tool main>p:not(.notice):not(.back){color:#516b82;max-width:72ch}
+.learning-tool main>section,.learning-tool .filters{box-shadow:0 10px 32px rgba(15,45,80,.055);border-radius:18px}
+.learning-tool .controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px;align-items:end}
+.learning-tool .controls>label{margin:0;align-self:end}
+.learning-tool .controls>label+input,.learning-tool .controls>label+select,.learning-tool .controls>label+textarea{grid-column:auto}
+.learning-tool .controls :is(input,select,textarea){min-width:0;max-width:none;background:#fff}
+.learning-tool .controls button{margin:0;min-height:46px;font-weight:700;transition:transform .15s,background .15s}
+.learning-tool .controls button:hover{background:#205e90;transform:translateY(-1px)}
+.learning-tool .controls button:active{transform:translateY(0)}
+.learning-tool #plan,.learning-tool #output{min-height:140px}
+.learning-tool .week{grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px}
+.learning-tool .day{background:#f8fbfe;border-color:#d6e5f0;border-radius:14px;padding:16px}
+.learning-tool .day h3{margin:.1rem 0 .5rem}
+.learning-tool .day:has(input:checked){border-color:#21836b;background:#f1faf6}
+.learning-tool .day label{cursor:pointer}
+.learning-tool .grid{gap:14px}
+.learning-tool .grid .card{border-radius:16px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.learning-tool .grid .card h2{margin:0;font-size:1.1rem}
+.learning-tool .grid .card p{margin:0;color:#546b7f}
+.learning-tool .grid .card a{margin-top:auto;padding-top:10px;font-weight:750}
+.learning-tool .tag{border-radius:999px}
+.learning-tool #status{font-weight:650;color:#385b77}
+.learning-tool .filters{gap:14px}
+.learning-tool .filters input,.learning-tool .filters select{background:#fff}
+.learning-tool .back a{text-decoration:none;font-weight:700}
+.learning-tool .notice{border-radius:12px}
+.learning-tool .print-note{color:#516b82;font-size:.9rem}
+@media(max-width:650px){.learning-tool .controls{grid-template-columns:1fr;gap:8px}.learning-tool .controls button{width:100%;margin-top:5px}.learning-tool main>section{padding:1.1rem}.learning-tool .filters{grid-template-columns:1fr}.learning-tool .week{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.learning-tool .week{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.learning-tool .controls button{transition:none}.learning-tool .controls button:hover{transform:none}}
+@media print{.learning-tool .controls,.learning-tool .filters,.learning-tool .back,.learning-tool .print-note,.learning-tool .learning-site-header,.learning-tool .notice{display:none!important}.learning-tool main{max-width:none;padding:0}.learning-tool main>section{box-shadow:none;border:0}.learning-tool .day{break-inside:avoid}}
