@@ -8,8 +8,8 @@ on:
       - '*home-learning-packs.html'
       - 'early-years-counting-pack.html'
       - 'functions/index.js'
-      - 'tests/phase120-manifest-assignment-binding.test.mjs
-      - 'tests/phase121-resource-digest-hardening.test.mjs''
+      - 'tests/phase120-manifest-assignment-binding.test.mjs'
+      - 'tests/phase121-resource-digest-hardening.test.mjs'
 permissions:
   contents: read
 jobs:
