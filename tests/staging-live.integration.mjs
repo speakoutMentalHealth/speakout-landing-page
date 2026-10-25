@@ -126,7 +126,7 @@ if (quotaProbe.status === 429) {
 }
 if (![200, 404].includes(quotaProbe.status)) {
   const details = await quotaProbe.json().catch(() => ({}));
-  throw new Error(`Staging Firestore preflight failed (HTTP ${quotaProbe.status}, status ${details?.error?.status || "unknown"}).`);
+  throw new Error(`Staging Firestore preflight failed (HTTP ${quotaProbe.status}, status ${details?.error?.status || "unknown"}, reason ${String(details?.error?.message || "not provided").slice(0, 240)}).`);
 }
 
 
