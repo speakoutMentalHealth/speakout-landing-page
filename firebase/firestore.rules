@@ -759,7 +759,7 @@ service cloud.firestore {
     // Home Learning educator reviews: assignment is administrator-managed.
     // Client review submissions are immutable recommendations, never approvals.
     function isHomeLearningReviewCollection(collection) {
-      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals", "homeLearningReviewerApplications"];
+      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals", "homeLearningReviewerApplications", "homeLearningTrustedResourceManifests"];
     }
 
     match /homeLearningReviewerAssignments/{assignmentId} {
