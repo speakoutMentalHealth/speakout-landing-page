@@ -11,4 +11,4 @@ function play(v){document.getElementById('playing-title').textContent=v.title;co
 document.getElementById('close').addEventListener('click',()=>{document.getElementById('embed').replaceChildren();document.getElementById('player').classList.add('hidden');});
 for(const el of [search,category,age])el.addEventListener(el===search?'input':'change',()=>{limit=12;render();});more.addEventListener('click',()=>{limit+=12;render();});
 fetch('data/kiddies-tv-approved.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catalogue unavailable');return r.json();}).then(data=>{approved=Array.isArray(data)?data.filter(valid):[];for(const name of [...new Set(approved.map(v=>v.category))].sort()){const o=document.createElement('option');o.value=name;o.textContent=name;category.append(o);}render();}).catch(()=>{approved=[];render();});
-</script></body></html>
+</script><script type="module" src="js/account-controls.js"></script></body></html>
