@@ -15,3 +15,10 @@ body{background:radial-gradient(circle at 4% 14%,#fff0cd 0,transparent 30%),radi
 @media print{.studio-launch{display:none!important}}
 .position-picture{display:grid;justify-items:center;gap:10px}.position-picture svg{display:block;width:100%;max-width:240px;height:auto}
 .number-picture{display:grid;gap:16px}.number-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}.number-step{display:inline-flex;align-items:center;gap:8px}.number-token{display:grid;place-items:center;min-width:28px;min-height:38px;padding:3px;border:2px solid #b2cde7;border-radius:8px;color:#184d82;background:#eaf3ff;font-weight:700}.start-number{border:3px solid #785000;background:#fff3d7;color:#674600}.number-arrow{color:#244363}
+
+/* Keep optional unit switching compact; the step-by-step lesson journey remains visible. */
+.unit-switcher{margin:0 0 24px;border:1px solid #cbdff1;border-radius:16px;background:#fff;padding:14px 18px}
+.unit-switcher>summary{cursor:pointer;font-weight:750;color:#184d82;line-height:1.5}
+.unit-switcher>summary:focus-visible{outline:3px solid #0a5fbf;outline-offset:3px}
+.unit-switcher .unit-sequence{margin:16px 0 0}
+@media print{.unit-switcher{display:none!important}}
