@@ -125,9 +125,11 @@ try {
         if(id.startsWith('primary'))assert.equal(await page.locator('#lessonContent p').filter({hasText:/^Task A[1-6]:/}).count(),6);
         await page.emulateMedia({media:'print'});assert.equal(await page.locator('#creativeStudio').isVisible(),false);assert.equal(await page.locator('#playPanel').isVisible(),false);await page.screenshot({path:`${evidence}/${id}-worksheet-${width}.png`,fullPage:true});await page.emulateMedia({media:'screen'});
       }
-      await page.getByRole('link',{name:/Unit 1:/}).click();
+      await page.locator('.unit-switcher > summary').click();
+       await page.getByRole('link',{name:/Unit 1:/}).click();
       await page.getByText(`0 of ${adventures.length} exploration stars`,{exact:true}).waitFor();
-      const second=page.getByRole('link',{name:new RegExp(`Unit ${unitNumber}:`)});await second.click();
+      await page.locator('.unit-switcher > summary').click();
+       const second=page.getByRole('link',{name:new RegExp(`Unit ${unitNumber}:`)});await second.click();
       await page.getByText(`${adventures.length} of ${adventures.length} exploration stars`,{exact:true}).waitFor();
     }
     assert.equal(await page.evaluate(()=>window.writes.length),0);await context.close();
