@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 // Read-only inventory: calculates digests from repository files.
 // This tool never marks resources trusted or writes to Firestore.
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync, writeFileSync, realpathSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {resolve, sep} from 'node:path';
 const root=resolve(fileURLToPath(new URL('..', import.meta.url)));
 const catalogue=JSON.parse(readFileSync(resolve(root,'data/home-learning-catalog.json'),'utf8'));
 const result={schema:1,generatedAt:new Date().toISOString(),status:'candidate-unverified',resources:[]};
+const seenIds=new Set();
 for(const resource of catalogue.resources){
+ if(typeof resource.id!=='string'||!resource.id.trim()||seenIds.has(resource.id))throw Error('Invalid or duplicate resource ID');
+ seenIds.add(resource.id);
  const path=resource.resource_url;
  if(typeof path!=='string'||!/^[-a-zA-Z0-9_/]+\.html$/.test(path)||path.includes('..'))throw Error('Unsafe resource path: '+resource.id);
  const full=resolve(root,path);
  if(!full.startsWith(root+sep))throw Error('Resource path escapes repository');
- const bytes=readFileSync(full);
+ const canonical=realpathSync(full);
+ if(!canonical.startsWith(realpathSync(root)+sep))throw Error('Resource symlink escapes repository');
+ const bytes=readFileSync(canonical);
  result.resources.push({resourceId:resource.id,resourceUrl:path,contentSha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,reviewStatus:resource.review_status});
 }
 const output=JSON.stringify(result,null,2)+'\n';
