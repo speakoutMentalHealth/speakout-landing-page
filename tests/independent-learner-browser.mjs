@@ -300,10 +300,32 @@ async function browserRegister(page) {
   await page.locator("#confirmPassword").fill(password);
   await page.locator("#terms").check();
   await page.locator("#registerForm button[type='submit']").click();
-  await page.locator("#regMsg").getByText(
-    "Account created successfully. Your application is now pending approval.",
-    { exact: true }
-  ).waitFor({ timeout: 30000 });
+  try {
+    await page.locator("#regMsg").getByText(
+      "Account created successfully. Your application is now pending approval.",
+      { exact: true }
+    ).waitFor({ timeout: 30000 });
+  } catch (error) {
+    // Never persist form values, credentials, raw provider responses or user identifiers.
+    const message = await page.locator("#regMsg").evaluate(element => ({
+      visible: getComputedStyle(element).display !== "none",
+      category: element.classList.contains("bad") ? "error"
+        : element.classList.contains("warn") ? "warning"
+        : element.classList.contains("ok") ? "success" : "other",
+      // Only allow known application messages into CI evidence.
+      knownMessage: [
+        "Account created successfully. Your application is now pending approval.",
+        "An account already exists with this email address.",
+        "Registration failed."
+      ].includes(element.textContent.trim()) ? element.textContent.trim() : "unrecognized"
+    })).catch(() => ({ visible: false, category: "unavailable", knownMessage: "unavailable" }));
+    await writeFile(`${artifactsDir}/registration-failure.json`, JSON.stringify({
+      step: "registration-confirmation",
+      message,
+      errorType: error.name === "TimeoutError" ? "timeout" : "other"
+    }, null, 2));
+    throw error;
+  }
 }
 
 async function browserLogin(page, accountPassword = password) {
