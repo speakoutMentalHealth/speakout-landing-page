@@ -7,6 +7,8 @@ on:
       - 'scripts/home-learning-resource-digests.mjs'
       - '*home-learning-packs.html'
       - 'early-years-counting-pack.html'
+      - 'functions/index.js'
+      - 'tests/phase120-manifest-assignment-binding.test.mjs'
 permissions:
   contents: read
 jobs:
@@ -18,7 +20,7 @@ jobs:
         with:
           node-version: '20'
       - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
-      - run: node --test tests/phase11*.test.mjs
+      - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs
       - name: Validate candidate digest report
         run: node --input-type=module -e "import fs from 'node:fs'; const d=JSON.parse(fs.readFileSync('candidate-digests.json','utf8')); if(d.status!=='candidate-unverified'||d.resources.length!==16||d.resources.some(x=>x.reviewStatus!=='unreviewed'||! /^[a-f0-9]{64}$/.test(x.contentSha256))) process.exit(1);"
       - uses: actions/upload-artifact@v4
