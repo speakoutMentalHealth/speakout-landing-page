@@ -266,7 +266,18 @@ try {
   for (const testCase of cases) {
     const apiResponse = await workerApprovalProbe(testCase.user, testCase.role);
     if (testCase.allowed) {
-      assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API (HTTP ${apiResponse.status})`);
+      const retryAfter = apiResponse.headers.get("retry-after");
+      const retryAfterSeconds = retryAfter && /^\\d{1,5}$/.test(retryAfter) ? Number(retryAfter) : null;
+      const diagnostic = {
+        scenario: testCase.label,
+        httpStatus: apiResponse.status,
+        retryAfterSeconds,
+        responseKind: apiResponse.headers.get("content-type")?.includes("application/json") ? "json" : "other"
+      };
+      if (!apiResponse.ok) {
+        await writeFile(`${artifactsDir}/api-approval-failure.json`, JSON.stringify(diagnostic, null, 2));
+      }
+      assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API (HTTP ${apiResponse.status}; retry-after: ${retryAfterSeconds ?? "not provided"}s)`);
     } else {
       assert.equal(apiResponse.status, 403, `${testCase.label} bypassed Platform API approval enforcement`);
     }
