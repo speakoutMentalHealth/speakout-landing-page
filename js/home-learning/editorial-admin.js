@@ -33,8 +33,8 @@ try{
   try{
    const profile=await getDocFromServer(doc(db,'users',user.uid));
    if(token!==generation||auth.currentUser?.uid!==user.uid)return;
-   const d=profile.data();
-   if(!profile.exists()||d.status!=='approved'||!['admin','super_admin'].includes(d.role)){status.textContent='Access restricted to approved administrators.';return}
+   const d=profile.exists()?profile.data():null;
+   if(!d||d.status!=='approved'||!['admin','super_admin'].includes(d.role)){status.textContent='Access restricted to approved administrators.';return}
    workspace.hidden=false;status.textContent='Administrator verified. Assignment and review oversight available.';await loadRecords(token);
   }catch{if(token===generation)status.textContent='Could not verify administrator access. Please retry later.'}
  });
@@ -46,13 +46,15 @@ try{
   button.disabled=true;formStatus.textContent='Verifying teacher and creating assignment…';
   try{
    const teacher=await getDocFromServer(doc(db,'users',teacherUid));
-   if(auth.currentUser?.uid!==activeUser)return;
+   if(auth.currentUser?.uid!==activeUser||workspace.hidden)return;
    if(!teacher.exists()||teacher.data().role!=='teacher'||teacher.data().status!=='approved'){formStatus.textContent='Teacher account is not approved or cannot be verified.';return}
-   const assignmentId=resourceId+'__'+teacherUid+'__'+resourceVersion.replace(/[^A-Za-z0-9_-]/g,'-');
-   if(assignmentId.length>500)throw Error('Assignment ID too long');
+   const versionKey=Array.from(new TextEncoder().encode(resourceVersion),byte=>byte.toString(16).padStart(2,'0')).join('');
+   const assignmentId=resourceId+'__'+teacherUid+'__'+versionKey;
+   if(assignmentId.length>900)throw Error('Assignment ID too long');
    const reference=doc(db,'homeLearningReviewerAssignments',assignmentId);
    const existing=await getDocFromServer(reference);
    if(existing.exists()){formStatus.textContent='An assignment for this teacher and resource version already exists.';return}
+   if(auth.currentUser?.uid!==activeUser||workspace.hidden)return;
    await setDoc(reference,{reviewerUid:teacherUid,resourceId,resourceVersion,assignedAt:serverTimestamp()});
    formStatus.textContent='Assignment created. The teacher may now submit findings; no content has been approved.';
    await loadRecords(generation);
