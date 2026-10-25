@@ -888,20 +888,13 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
       !evidenceReferences.every(x => typeof x === "string" && x.trim().length >= 3 && x.length <= 500)) {
     throw new HttpsError("invalid-argument", "Complete editorial evidence and content fingerprint are required.");
   }
-  // Fail closed: independently verify the content digest against a trusted
-  // manifest written by a separate audited ingestion process.
-  const manifestSnap = await db.doc(`homeLearningTrustedResourceManifests/${assignmentId}`).get();
-  if (!manifestSnap.exists ||
-      manifestSnap.data().contentSha256 !== contentSha256 ||
-      manifestSnap.data().status !== "trusted") {
-    throw new HttpsError("failed-precondition", "Trusted content verification unavailable.");
-  }
   const assignmentRef = db.doc(`homeLearningReviewerAssignments/${assignmentId}`);
   const submissionRef = db.doc(`homeLearningReviewSubmissions/${assignmentId}`);
   const decisionRef = db.doc(`homeLearningEditorialApprovals/${assignmentId}`);
+  const manifestRef = db.doc(`homeLearningTrustedResourceManifests/${assignmentId}`);
   return db.runTransaction(async tx => {
-    const [assignmentSnap, submissionSnap, existingSnap] = await Promise.all([
-      tx.get(assignmentRef), tx.get(submissionRef), tx.get(decisionRef)
+    const [assignmentSnap, submissionSnap, existingSnap, manifestSnap] = await Promise.all([
+      tx.get(assignmentRef), tx.get(submissionRef), tx.get(decisionRef), tx.get(manifestRef)
     ]);
     if (existingSnap.exists) throw new HttpsError("already-exists", "Decision already recorded for this assignment.");
     if (!assignmentSnap.exists || !submissionSnap.exists) {
@@ -909,6 +902,14 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
     }
     const assignment = assignmentSnap.data();
     const submission = submissionSnap.data();
+    const manifest = manifestSnap.exists ? manifestSnap.data() : null;
+    if (!manifest || manifest.status !== "trusted" ||
+        manifest.assignmentId !== assignmentId ||
+        manifest.resourceId !== assignment.resourceId ||
+        manifest.resourceVersion !== assignment.resourceVersion ||
+        manifest.contentSha256 !== contentSha256) {
+      throw new HttpsError("failed-precondition", "Trusted content verification unavailable or mismatched.");
+    }
     if (assignment.reviewerUid === editorUid ||
         assignment.reviewerUid !== submission.reviewerUid ||
         assignment.resourceId !== submission.resourceId ||
