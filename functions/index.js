@@ -888,6 +888,14 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
       !evidenceReferences.every(x => typeof x === "string" && x.trim().length >= 3 && x.length <= 500)) {
     throw new HttpsError("invalid-argument", "Complete editorial evidence and content fingerprint are required.");
   }
+  // Fail closed: independently verify the content digest against a trusted
+  // manifest written by a separate audited ingestion process.
+  const manifestSnap = await db.doc(`homeLearningTrustedResourceManifests/${assignmentId}`).get();
+  if (!manifestSnap.exists ||
+      manifestSnap.data().contentSha256 !== contentSha256 ||
+      manifestSnap.data().status !== "trusted") {
+    throw new HttpsError("failed-precondition", "Trusted content verification unavailable.");
+  }
   const assignmentRef = db.doc(`homeLearningReviewerAssignments/${assignmentId}`);
   const submissionRef = db.doc(`homeLearningReviewSubmissions/${assignmentId}`);
   const decisionRef = db.doc(`homeLearningEditorialApprovals/${assignmentId}`);
