@@ -118,15 +118,15 @@ const adminToken = await serviceAccessToken();
 
 // Check Firestore directly before creating test accounts or invoking the Worker.
 // A direct 429 identifies the upstream staging project as the source.
-const quotaProbe = await fetch(`${firestoreBase}/__release_quota_probe__/nonexistent`, {
+const quotaProbe = await fetch(`${firestoreBase}/release_quota_probe?pageSize=1`, {
   headers: { authorization: `Bearer ${adminToken}` }
 });
 if (quotaProbe.status === 429) {
   throw new Error("Staging Firestore returned HTTP 429 directly. Check quotas on project speakout-portal-staging; Worker retries will not fix this.");
 }
-if (![200, 404].includes(quotaProbe.status)) {
+if (!quotaProbe.ok) {
   const details = await quotaProbe.json().catch(() => ({}));
-  throw new Error(`Staging Firestore preflight failed (HTTP ${quotaProbe.status}, status ${details?.error?.status || "unknown"}).`);
+  throw new Error(`Staging Firestore preflight failed (HTTP ${quotaProbe.status}, status ${details?.error?.status || "unknown"}, message ${String(details?.error?.message || "unavailable").slice(0, 300)}).`);
 }
 
 
