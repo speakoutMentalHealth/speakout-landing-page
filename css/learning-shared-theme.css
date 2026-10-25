@@ -47,3 +47,6 @@ main .notice,main .note{line-height:1.6}
   main .home-section{scroll-margin-top:18px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}main .card,main .tool-link,main .pathway,main .access-choice,main .home-action,main .cta{transition:none!important}main a.tool-link:hover,main a.pathway:hover,main a.access-choice:hover,main .home-action:hover,main .cta:hover{transform:none}}
+
+/* Respect native hidden state even on flex/grid cards and forms. */
+main [hidden]{display:none!important}
