@@ -21,7 +21,7 @@
 .tool-link{display:flex;flex-direction:column;gap:.5rem;padding:1.2rem;background:white;border:1px solid #d5e2ee;border-radius:16px;text-decoration:none!important;color:#19344f!important}
 .tool-link strong{font-size:1.05rem}.tool-link span{color:#526a82;line-height:1.45}.tool-link b{color:#155a89;margin-top:auto}
 #level{max-width:100%;background:#fff}.level-picker{background:#eaf1f9;padding:1rem;border-radius:16px;margin-top:1rem}.level-picker label{margin:0 0 .5rem}
-#results:empty{display:none}.home-results-heading{margin:1.2rem 0 0}
+.pathway[aria-current="true"]{border-color:#155d97;background:#eaf4fc;box-shadow:0 0 0 2px #155d9730}.pathway[aria-current="true"] em{color:#0d4776}#results:empty{display:none}.home-results-heading{margin:1.2rem 0 0}
 .audience-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}.audience-grid .card{padding:1.1rem}.audience-grid .card h3{font-size:1.08rem}
 @media(max-width:720px){main{padding:1rem .9rem 3rem}.home-hero{grid-template-columns:1fr;gap:1rem}.home-hero-aside{display:none}.pathway-grid{grid-template-columns:1fr 1fr}.tool-grid,.audience-grid{grid-template-columns:1fr}.pathway{padding:1rem;min-height:122px}.pathway strong{font-size:1rem}.pathway span{font-size:.89rem}.home-section{margin:1.5rem 0}}
 @media(max-width:390px){.pathway-grid{grid-template-columns:1fr}.pathway[data-level="university"]{grid-column:auto}}
@@ -52,7 +52,7 @@ sss:[["SS 1–3 Biology drafts","Three printable biology topic packs; educator r
 university:[["University learning support","Explore study skills and independent courses; degree-level curriculum packs are not yet available.","speakhub.html"]]
 };
 const select=document.getElementById('level'),results=document.getElementById('results');
-function render(){results.replaceChildren();for(const [title,desc,url] of levels[select.value]||[]){const article=document.createElement('article');article.className='card';const h=document.createElement('h3');h.textContent=title;const p=document.createElement('p');p.textContent=desc;article.append(h,p);if(url){const a=document.createElement('a');a.href=url;a.textContent='Explore resources →';article.append(a)}results.append(article)}}
-select.addEventListener('change',render);
+function render(){document.querySelectorAll(".pathway[data-level]").forEach(link=>{if(link.dataset.level===select.value){link.setAttribute("aria-current","true")}else{link.removeAttribute("aria-current")}});results.replaceChildren();for(const [title,desc,url] of levels[select.value]||[]){const article=document.createElement('article');article.className='card';const h=document.createElement('h3');h.textContent=title;const p=document.createElement('p');p.textContent=desc;article.append(h,p);if(url){const a=document.createElement('a');a.href=url;a.textContent='Explore resources →';article.append(a)}results.append(article)}}
+select.addEventListener('change',()=>{render();if(select.value)results.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'})});
 document.querySelectorAll('.pathway[data-level]').forEach(link=>link.addEventListener('click',()=>{select.value=link.dataset.level;render()}));
 </script><script type="module" src="js/account-controls.js"></script></body></html>
