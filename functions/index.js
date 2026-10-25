@@ -905,7 +905,7 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
         assignment.reviewerUid !== submission.reviewerUid ||
         assignment.resourceId !== submission.resourceId ||
         assignment.resourceVersion !== submission.resourceVersion ||
-        submission.reviewStatus !== "submitted_for_verification") {
+        submission.reviewStatus !== "submitted_for_verification" || !submission.findings || typeof submission.findings !== "string") {
       throw new HttpsError("failed-precondition", "Independent matching review required.");
     }
     const reviewerSnap = await tx.get(db.doc(`users/${assignment.reviewerUid}`));
