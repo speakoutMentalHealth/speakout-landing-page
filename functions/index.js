@@ -879,7 +879,7 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
   const contentSha256 = String(input.contentSha256 || "").trim().toLowerCase();
   const evidenceReferences = input.evidenceReferences;
   if (!/^[a-zA-Z0-9_-]{3,900}$/.test(assignmentId) ||
-      !["request_changes", "reject", "verified_for_publication_review"].includes(outcome) ||
+      !["request_changes", "reject"].includes(outcome) ||
       rationale.length < 20 || rationale.length > 4000 ||
       curriculumReference.length < 10 || curriculumReference.length > 1000 ||
       !/^[a-f0-9]{64}$/.test(contentSha256) ||
