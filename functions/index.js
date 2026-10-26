@@ -939,3 +939,34 @@ exports.recordHomeLearningEditorialDecision = onCall(async request => {
     return { ok: true, status: "editorial_record_only", published: false };
   });
 });
+
+
+/**
+ * Home Learning candidate ingestion, OFF by default.
+ * Set HOME_LEARNING_CANDIDATE_INGESTION_ENABLED=true in an explicitly
+ * approved Firebase staging environment only after configuration review.
+ * This creates only candidate-unverified records; it never trusts or publishes.
+ */
+const {submitManifestCandidate,CandidateIngestionError} =
+  require("./home-learning-manifest-callable");
+const {createPinnedGitHubSourceLoader} =
+  require("./home-learning-pinned-source");
+
+exports.submitHomeLearningManifestCandidate = onCall(
+  {maxInstances:2,timeoutSeconds:30},
+  async request => {
+    try {
+      return await submitManifestCandidate(request,{
+        db,
+        enabled:process.env.HOME_LEARNING_CANDIDATE_INGESTION_ENABLED==="true",
+        loadSourceAtCommit:createPinnedGitHubSourceLoader()
+      });
+    } catch(err) {
+      if(err instanceof CandidateIngestionError) {
+        throw new HttpsError(err.code,err.message);
+      }
+      logger.error("Home Learning candidate ingestion failed.");
+      throw new HttpsError("internal","Candidate ingestion unavailable.");
+    }
+  }
+);
