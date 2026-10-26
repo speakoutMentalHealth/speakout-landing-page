@@ -759,7 +759,7 @@ service cloud.firestore {
     // Home Learning educator reviews: assignment is administrator-managed.
     // Client review submissions are immutable recommendations, never approvals.
     function isHomeLearningReviewCollection(collection) {
-      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals", "homeLearningReviewerApplications", "homeLearningTrustedResourceManifests"];
+      return collection in ["homeLearningReviewerAssignments", "homeLearningReviewSubmissions", "homeLearningEditorialApprovals", "homeLearningReviewerApplications", "homeLearningTrustedResourceManifests", "homeLearningManifestCandidates"];
     }
 
     match /homeLearningReviewerAssignments/{assignmentId} {
@@ -807,6 +807,11 @@ service cloud.firestore {
     // Trusted resource manifests must be written only by an audited backend.
     // A browser administrator must not be able to substitute content hashes.
     match /homeLearningTrustedResourceManifests/{manifestId} {
+      allow read, create, update, delete: if false;
+    }
+
+    // Candidate digests are backend-only too, including for super admins.
+    match /homeLearningManifestCandidates/{candidateId} {
       allow read, create, update, delete: if false;
     }
 
