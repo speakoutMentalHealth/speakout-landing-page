@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import {createRequire} from "node:module";
 const require=createRequire(import.meta.url);
 const {stagingIngestionEnabled,PRODUCTION_PROJECT}=
@@ -33,4 +34,10 @@ test("conflicting project environment variables fail closed",()=>{
   assert.equal(stagingIngestionEnabled({...base,GCP_PROJECT:"different-project"}),false);
   assert.equal(stagingIngestionEnabled({...base,GCLOUD_PROJECT:"",
     GOOGLE_CLOUD_PROJECT:"speakout-learning-staging"}),true);
+});
+
+test("deployed Firebase callable entrypoint uses the staging project guard",()=>{
+ const source=readFileSync(new URL("../functions/index.js",import.meta.url),"utf8");
+ assert.match(source,/enabled:stagingIngestionEnabled\(process\.env\)/);
+ assert.doesNotMatch(source,/enabled:process\.env\.HOME_LEARNING_CANDIDATE_INGESTION_ENABLED/);
 });
