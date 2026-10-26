@@ -951,6 +951,8 @@ const {submitManifestCandidate,CandidateIngestionError} =
   require("./home-learning-manifest-callable");
 const {createPinnedGitHubSourceLoader} =
   require("./home-learning-pinned-source");
+const {stagingIngestionEnabled} =
+  require("./home-learning-staging-gate");
 
 exports.submitHomeLearningManifestCandidate = onCall(
   {maxInstances:2,timeoutSeconds:30},
@@ -958,7 +960,7 @@ exports.submitHomeLearningManifestCandidate = onCall(
     try {
       return await submitManifestCandidate(request,{
         db,
-        enabled:process.env.HOME_LEARNING_CANDIDATE_INGESTION_ENABLED==="true",
+        enabled:stagingIngestionEnabled(process.env),
         loadSourceAtCommit:createPinnedGitHubSourceLoader()
       });
     } catch(err) {
