@@ -100,17 +100,26 @@ async function firestore(path, { method = "GET", data, token = adminToken } = {}
   return { response, body, data: decodedFields(body.fields) };
 }
 
-async function listCollection(name) {
-  const response = await fetch(`${firestoreBase}/${name}?pageSize=300`, {
-    headers: { authorization: `Bearer ${adminToken}` }
+async function queryCleanupRecords(name, field, value) {
+  const response = await fetch(`${firestoreBase}:runQuery`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ structuredQuery: {
+      from: [{ collectionId: name }],
+      where: { fieldFilter: { field: { fieldPath: field }, op: "EQUAL", value: { stringValue: value } } },
+      limit: 1000
+    } })
   });
-  assert.equal(response.ok, true, `Could not list ${name} for cleanup`);
-  const body = await response.json().catch(() => ({}));
-  return (body.documents || []).map(document => ({
-    path: document.name.split("/documents/")[1],
-    id: document.name.split("/").pop(),
-    ...decodedFields(document.fields)
+  assert.equal(response.ok, true, `Could not query ${name} for cleanup (HTTP ${response.status})`);
+  const rows = await response.json();
+  assert.ok(Array.isArray(rows), `Invalid cleanup query response for ${name}`);
+  const docs = rows.filter(row => row.document?.name).map(row => ({
+    path: row.document.name.split("/documents/")[1],
+    id: row.document.name.split("/").pop(),
+    ...decodedFields(row.document.fields)
   }));
+  assert.ok(docs.length < 1000, `Cleanup query limit reached for ${name}; manual inspection required`);
+  return docs;
 }
 
 async function seed(path, data) {
@@ -413,27 +422,22 @@ async function parentVerifiesProgress(browser, parent, student) {
 
 async function cleanupProgrammeData() {
   const collections = [
-    "programmeSubmissions",
-    "programmeAttendance",
-    "programmeAssignments",
-    "programmeSessions",
-    "programmeMemberships",
-    "programmes",
-    "parentStudentLinks",
-    "adminAuditLogs"
+    "programmeSubmissions", "programmeAttendance", "programmeAssignments",
+    "programmeSessions", "programmeMemberships", "programmes",
+    "parentStudentLinks", "adminAuditLogs"
   ];
   for (const name of collections) {
-    const docs = await listCollection(name);
-    for (const item of docs) {
-      const belongs =
-        item.schoolId === schoolAId ||
-        item.schoolId === schoolBId ||
-        item.programmeId === programmeId ||
-        item.id === parentLinkId ||
-        (name === "adminAuditLogs" && item.schoolId === schoolAId);
-      if (belongs) cleanupPaths.add(item.path);
+    const filters = [["schoolId", schoolAId], ["schoolId", schoolBId]];
+    if (programmeId && name !== "adminAuditLogs") filters.push(["programmeId", programmeId]);
+    for (const [field, value] of filters) {
+      const docs = await queryCleanupRecords(name, field, value);
+      for (const doc of docs) {
+        if (doc.schoolId === schoolAId || doc.schoolId === schoolBId ||
+            doc.programmeId === programmeId || doc.id === parentLinkId) cleanupPaths.add(doc.path);
+      }
     }
   }
+  if (parentLinkId) cleanupPaths.add(`parentStudentLinks/${parentLinkId}`);
 }
 
 await mkdir(artifactsDir, { recursive: true });
