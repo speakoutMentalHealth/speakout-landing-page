@@ -244,7 +244,25 @@ try {
     const trafficResponse = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "POST", headers: { authorization: `Bearer ${admin.idToken}`, "content-type": "application/json", origin: trafficOrigin }, body: JSON.stringify({ period }) });
     const traffic = await trafficResponse.json();
     if (trafficResponse.status === 429) {
-      throw new Error("Staging traffic summary returned HTTP 429 (quota exhausted/rate-limited). Check the Firebase/Firestore staging project capacity before rerunning the release matrix.");
+      // The Worker can return 429 from an upstream dependency; do not infer
+      // that the Firebase free-tier daily allowance has been consumed.
+      // Probe the same profile directly only on failure, using the staging
+      // service account. Never log the profile body or identifying fields.
+      let directStatus = "unavailable";
+      let providerCode = "unknown";
+      try {
+        const check = await firestore(`users/${admin.localId}`);
+        directStatus = String(check.response.status);
+        const knownCodes = new Set(["RESOURCE_EXHAUSTED", "UNAVAILABLE", "PERMISSION_DENIED", "DEADLINE_EXCEEDED"]);
+        const code = check.body?.error?.status;
+        if (knownCodes.has(code)) providerCode = code;
+      } catch {}
+      throw new Error(
+        "Staging Worker traffic summary returned HTTP 429; direct Firestore profile read HTTP " +
+        directStatus + " (code " + providerCode + "). " +
+        "This comparison distinguishes possible upstream throttling from a Worker-only or transient error; " +
+        "it does not prove daily free-tier exhaustion."
+      );
     }
     assert.equal(trafficResponse.status, 200, `traffic summary failed (HTTP ${trafficResponse.status}): ${JSON.stringify(traffic)}`);
     assert.equal(trafficResponse.headers.get("cache-control"), "private, no-store");
