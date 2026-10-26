@@ -454,7 +454,7 @@ try {
     dryRunWrites: inventory.body.writesPerformed
   }));
 } finally {
-  for (const path of [...cleanupPaths].reverse()) await firestore(path, { method: "DELETE" }).catch(() => null);
+  for (const path of [...cleanupPaths].reverse()) await firestore(path, { method: "DELETE" });
   if (evidencePublicId) {
     const timestamp = Math.floor(Date.now() / 1000);
     const signature = createHash("sha1").update(`public_id=${evidencePublicId}&timestamp=${timestamp}&type=authenticated${cloudinary.apiSecret}`).digest("hex");
