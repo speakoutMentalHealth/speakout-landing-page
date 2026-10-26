@@ -1,6 +1,23 @@
 name: Home Learning Firestore emulator
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'firebase/firestore.rules'
+      - 'firebase.json'
+      - 'tests/firestore-rules.emulator.test.mjs'
+      - 'tests/home-learning-backend.emulator.test.mjs'
+      - 'functions/home-learning-manifest-ingestion.js'
+      - 'functions/home-learning-manifest-callable.js'
+      - 'functions/home-learning-pinned-source.js'
+      - 'functions/index.js'
+      - 'functions/home-learning-manifest-candidate-store.js'
+      - 'functions/home-learning-manifest-validator.js'
+      - 'functions/package.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/home-learning-firestore-emulator.yml'
   pull_request:
     paths:
       - 'firebase/firestore.rules'
