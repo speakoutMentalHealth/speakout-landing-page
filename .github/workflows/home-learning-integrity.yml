@@ -7,6 +7,8 @@ on:
       - 'data/home-learning-catalog.json'
       - 'scripts/home-learning-resource-digests.mjs'
       - 'scripts/home-learning-verify-pinned-source.mjs'
+      - 'scripts/home-learning-staging-preflight.mjs'
+      - 'tests/phase129-staging-preflight.test.mjs'
       - '*home-learning-packs.html'
       - 'early-years-counting-pack.html'
       - 'functions/index.js'
@@ -72,7 +74,7 @@ jobs:
           node --check functions/home-learning-manifest-validator.js
           node --check functions/home-learning-pinned-source.js
       - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
-      - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs tests/phase123-manifest-candidate-rules.test.mjs tests/phase124-manifest-ingestion.test.mjs tests/phase125-pinned-source.test.mjs tests/phase126-manifest-duplicate-ingestion.test.mjs tests/phase127-manifest-callable-auth.test.mjs tests/phase128-staging-project-gate.test.mjs
+      - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs tests/phase123-manifest-candidate-rules.test.mjs tests/phase124-manifest-ingestion.test.mjs tests/phase125-pinned-source.test.mjs tests/phase126-manifest-duplicate-ingestion.test.mjs tests/phase127-manifest-callable-auth.test.mjs tests/phase128-staging-project-gate.test.mjs tests/phase129-staging-preflight.test.mjs
       - name: Verify real GitHub source bytes at pinned main commit
         if: github.event_name != 'pull_request'
         run: node scripts/home-learning-verify-pinned-source.mjs
