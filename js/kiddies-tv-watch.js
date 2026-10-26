@@ -14,7 +14,38 @@ title.textContent=video.title;desc.textContent=(video.description||video.categor
 const iframe=document.createElement('iframe');iframe.title=video.title;iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';iframe.allowFullscreen=true;iframe.setAttribute('webkitallowfullscreen','');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0&autoplay=0&playsinline=1';box.replaceChildren(iframe);
 full.disabled=false;land.disabled=false;status.textContent='Use Full screen for an immersive view, or rotate your device for landscape.';
 }).catch(fail);
-full.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen();return;}if(box.requestFullscreen){await box.requestFullscreen();return;}if(box.webkitEnterFullscreen){box.webkitEnterFullscreen();return;}status.textContent='Use the full-screen control inside the YouTube player on this browser.';}catch{status.textContent='This browser restricts page full screen. Use the video player’s full-screen button.';}});
-land.addEventListener('click',async()=>{try{if(!document.fullscreenElement&&box.requestFullscreen)await box.requestFullscreen();if(screen.orientation?.lock){await screen.orientation.lock('landscape');status.textContent='Landscape enabled. Exit full screen to return.';}else status.textContent='Rotate your device sideways. On iPhone or iPad, use the YouTube full-screen control if necessary.';}catch{status.textContent='Automatic rotation is not supported here. Turn off orientation lock, rotate the device, or use the player’s full-screen control.';}});
+let theatre=false;
+function setTheatre(enabled){
+  theatre=enabled;
+  document.body.classList.toggle('kiddies-landscape-active',enabled);
+  box.classList.toggle('landscape-theatre',enabled);
+  land.textContent=enabled?'Exit landscape view':'↻ Landscape view';
+  land.setAttribute('aria-pressed',String(enabled));
+  status.textContent=enabled?'Landscape viewing mode active. Tap Exit landscape view to return.':'Portrait viewing restored.';
+}
+full.addEventListener('click',async()=>{
+  if(theatre){setTheatre(false);return;}
+  try{
+    if(document.fullscreenElement){await document.exitFullscreen();return;}
+    if(box.requestFullscreen){await box.requestFullscreen();return;}
+    status.textContent='Use the full-screen control inside the YouTube player on this browser.';
+  }catch{status.textContent='This browser restricts page full screen. Use the video player’s full-screen button.';}
+});
+land.addEventListener('click',async()=>{
+  if(theatre){setTheatre(false);return;}
+  // iOS in-app browsers often refuse Screen Orientation API calls. Provide a real
+  // CSS landscape theatre mode instead of leaving the button apparently inert.
+  if(!screen.orientation?.lock){setTheatre(true);return;}
+  try{
+    if(!document.fullscreenElement&&box.requestFullscreen)await box.requestFullscreen();
+    await screen.orientation.lock('landscape');
+    status.textContent='Landscape enabled. Exit full screen to return.';
+  }catch{
+    if(document.fullscreenElement){try{await document.exitFullscreen();}catch{}}
+    setTheatre(true);
+  }
+});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&theatre)setTheatre(false);});
+
 document.addEventListener('fullscreenchange',()=>{full.textContent=document.fullscreenElement?'Exit full screen':'⛶ Full screen';if(!document.fullscreenElement&&screen.orientation?.unlock){try{screen.orientation.unlock();}catch{}}});
 })();
