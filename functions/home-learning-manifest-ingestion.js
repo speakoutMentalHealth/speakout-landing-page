@@ -4,6 +4,7 @@
 // must fetch exact bytes from an immutable commit and reject missing files.
 const {createHash}=require("node:crypto");
 const {recordManifestCandidate}=require("./home-learning-manifest-candidate-store");
+const {validateTrustedManifestCandidate}=require("./home-learning-manifest-validator");
 
 async function ingestManifestCandidate({db, actorUid, candidate, loadSourceAtCommit}) {
   if (!db || typeof db.doc!=="function" || typeof actorUid!=="string" ||
@@ -26,6 +27,8 @@ async function ingestManifestCandidate({db, actorUid, candidate, loadSourceAtCom
       assignment.resourceVersion!==candidate.resourceVersion) {
     throw new Error("Assignment mismatch");
   }
+  // Reject invalid candidate metadata before invoking any external source loader.
+  validateTrustedManifestCandidate(candidate,{...assignment,assignmentId:candidate.assignmentId});
   // The source adapter must enforce commit pinning and repository allowlisting.
   const bytes=await loadSourceAtCommit({
     sourceCommit:candidate.sourceCommit,
