@@ -17,7 +17,7 @@ async function recordManifestCandidate({db, candidate, assignment, actorUid, ver
   await ref.create({
     ...checked,
     recordedBy:actorUid,
-    recordedAt:require("firebase-admin/firestore").FieldValue.serverTimestamp()
+    recordedAt:new Date().toISOString()
   });
   return {ok:true,status:"candidate-unverified",trusted:false,published:false};
 }
