@@ -6,6 +6,7 @@ on:
     paths:
       - 'data/home-learning-catalog.json'
       - 'scripts/home-learning-resource-digests.mjs'
+      - 'scripts/home-learning-verify-pinned-source.mjs'
       - '*home-learning-packs.html'
       - 'early-years-counting-pack.html'
       - 'functions/index.js'
@@ -59,6 +60,9 @@ jobs:
           node-version: '20'
       - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
       - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs tests/phase123-manifest-candidate-rules.test.mjs tests/phase124-manifest-ingestion.test.mjs tests/phase125-pinned-source.test.mjs tests/phase126-manifest-duplicate-ingestion.test.mjs tests/phase127-manifest-callable-auth.test.mjs
+      - name: Verify real GitHub source bytes at pinned main commit
+        if: github.event_name != 'pull_request'
+        run: node scripts/home-learning-verify-pinned-source.mjs
       - name: Validate candidate digest report
         run: node --input-type=module -e "import fs from 'node:fs'; const d=JSON.parse(fs.readFileSync('candidate-digests.json','utf8')); if(d.status!=='candidate-unverified'||d.resources.length!==16||d.resources.some(x=>x.reviewStatus!=='unreviewed'||! /^[a-f0-9]{64}$/.test(x.contentSha256))) process.exit(1);"
       - uses: actions/upload-artifact@v4
