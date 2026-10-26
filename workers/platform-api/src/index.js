@@ -4167,6 +4167,20 @@ async function cleanupTrafficLogins(env,now=Date.now()) {
 
 // Public-only, short-lived per-isolate cache; never store private student data.
 const publicCourseCatalogCache = new Map();
+const publicMediaBundleCache = new Map();
+
+// Public media endpoints already advertise a 60-second browser cache.
+// Cache only completed public bundles, per project and media type.
+async function cachedPublicMediaBundle(env, kind, loader) {
+  const key = clean(env.FIREBASE_PROJECT_ID) + ":" + kind;
+  const cached = publicMediaBundleCache.get(key);
+  if (cached && cached.until > Date.now()) return cached.data;
+  publicMediaBundleCache.delete(key);
+  const data = await loader(env);
+  if (publicMediaBundleCache.size >= 20) publicMediaBundleCache.clear();
+  publicMediaBundleCache.set(key, { data, until: Date.now() + 60000 });
+  return data;
+}
 async function route(request, env, path, data) {
   if(path === "/v1/auth/sign-in") return recordTrafficSignIn(request,env);
   if (path === "/v1/catalog/courses") {
@@ -4191,13 +4205,13 @@ async function route(request, env, path, data) {
     });
   }
   if (path === "/v1/media/tv") {
-    return json(await publicTvBundle(env), 200, {
+    return json(await cachedPublicMediaBundle(env, "tv", publicTvBundle), 200, {
       "cache-control": "public, max-age=60, s-maxage=180",
       "x-content-type-options": "nosniff"
     });
   }
   if (path === "/v1/media/audio") {
-    return json(await publicAudioBundle(env), 200, {
+    return json(await cachedPublicMediaBundle(env, "audio", publicAudioBundle), 200, {
       "cache-control": "public, max-age=60, s-maxage=180",
       "x-content-type-options": "nosniff"
     });
