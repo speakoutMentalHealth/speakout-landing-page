@@ -118,8 +118,10 @@ const adminToken = await serviceAccessToken();
 
 // Check Firestore directly before creating test accounts or invoking the Worker.
 // A direct 429 identifies the upstream staging project as the source.
-const quotaProbe = await fetch(`${firestoreBase}/release_quota_probe?pageSize=1`, {
-  headers: { authorization: `Bearer ${adminToken}` }
+const quotaProbe = await fetch(`${firestoreBase}:runQuery`, {
+  method: "POST",
+  headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+  body: JSON.stringify({ structuredQuery: { from: [{ collectionId: "users" }], limit: 1 } })
 });
 if (quotaProbe.status === 429) {
   throw new Error("Staging Firestore returned HTTP 429 directly. Check quotas on project speakout-portal-staging; Worker retries will not fix this.");
@@ -241,7 +243,10 @@ try {
   for (const period of ["day", "week", "month"]) {
     const trafficResponse = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "POST", headers: { authorization: `Bearer ${admin.idToken}`, "content-type": "application/json", origin: trafficOrigin }, body: JSON.stringify({ period }) });
     const traffic = await trafficResponse.json();
-    assert.equal(trafficResponse.status, 200, `traffic summary failed: ${JSON.stringify(traffic)}`);
+    if (trafficResponse.status === 429) {
+      throw new Error("Staging traffic summary returned HTTP 429 (quota exhausted/rate-limited). Check the Firebase/Firestore staging project capacity before rerunning the release matrix.");
+    }
+    assert.equal(trafficResponse.status, 200, `traffic summary failed (HTTP ${trafficResponse.status}): ${JSON.stringify(traffic)}`);
     assert.equal(trafficResponse.headers.get("cache-control"), "private, no-store");
     assert.equal(trafficResponse.headers.get("access-control-allow-origin"), trafficOrigin);
     assert.equal(traffic.window.period, period);
