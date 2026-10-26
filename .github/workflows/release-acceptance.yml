@@ -126,6 +126,9 @@ jobs:
         working-directory: workers/platform-api
         run: npx wrangler deploy --config wrangler.staging.jsonc
 
+      - name: Check staging Firestore capacity before expensive browser tests
+        run: node tests/staging-capacity-preflight.mjs
+
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.56.1
