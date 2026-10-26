@@ -12,6 +12,7 @@ const commit=process.env.GITHUB_SHA;
 assert.match(commit||"",/^[a-f0-9]{40}$/,"A full immutable GITHUB_SHA is required");
 const load=createPinnedGitHubSourceLoader();
 for (const path of [
+  "data/home-learning-catalog.json",
   "early-years-counting-pack.html",
   "senior-secondary-home-learning-packs.html"
 ]) {
