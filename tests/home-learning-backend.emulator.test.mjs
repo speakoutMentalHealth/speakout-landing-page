@@ -11,6 +11,7 @@ const requireFunctions=createRequire(new URL("../functions/package.json",import.
 const {initializeApp,deleteApp}=requireFunctions("firebase-admin/app");
 const {getFirestore}=requireFunctions("firebase-admin/firestore");
 const {ingestManifestCandidate}=requireFunctions("./home-learning-manifest-ingestion.js");
+const {submitManifestCandidate}=requireFunctions("./home-learning-manifest-callable.js");
 const projectId="demo-speakout-rules";
 const adminUid="home-learning-int-admin";
 const bytes=Buffer.from("<html><body>Unreviewed learning draft</body></html>");
@@ -78,4 +79,25 @@ test("Tampered bytes and stale versions never create candidate manifests",async(
   }),/Assignment mismatch/);
   assert.equal(loaderCalled,false);
   assert.equal((await db.doc(`homeLearningManifestCandidates/${id}`).get()).exists,false);
+});
+
+test("Firebase-authenticated callable refuses impersonation and stays disabled by default",async()=>{
+  const id="manifest-emulator-auth-gate-128";
+  await prepare(id);
+  const input={...candidate(id),actorUid:adminUid};
+  const options={db,enabled:true,loadSourceAtCommit:async()=>bytes};
+  await assert.rejects(submitManifestCandidate({data:input},options),
+    err=>err.code==="unauthenticated");
+  await assert.rejects(submitManifestCandidate({auth:{uid:adminUid},data:input},
+    {...options,enabled:false}),err=>err.code==="failed-precondition");
+  const teacherUid="manifest-unprivileged-128";
+  await db.doc(`users/${teacherUid}`).set({role:"teacher",status:"approved"});
+  try {
+    await assert.rejects(submitManifestCandidate({
+      auth:{uid:teacherUid},data:input
+    },options),err=>err.code==="permission-denied");
+    assert.equal((await db.doc(`homeLearningManifestCandidates/${id}`).get()).exists,false);
+  } finally {
+    await db.doc(`users/${teacherUid}`).delete();
+  }
 });
