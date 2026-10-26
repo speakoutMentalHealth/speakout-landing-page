@@ -16,6 +16,10 @@ const projectId="demo-speakout-rules";
 const adminUid="home-learning-int-admin";
 const bytes=Buffer.from("<html><body>Unreviewed learning draft</body></html>");
 const hash=createHash("sha256").update(bytes).digest("hex");
+const catalogueBytes=Buffer.from(JSON.stringify({status:"development-preview",resources:[
+  {id:"resource_123",resource_url:"early-years-counting-pack.html",review_status:"unreviewed"}
+]}));
+const loadSource=async({resourceUrl})=>resourceUrl==="data/home-learning-catalog.json"?catalogueBytes:bytes;
 const app=initializeApp({projectId},"home-learning-manifest-emulator-tests");
 const db=getFirestore(app);
 const assigned=new Set();
@@ -35,7 +39,7 @@ function candidate(assignmentId) {
     status:"candidate-unverified"
   };
 }
-async function ingest(record,loadSourceAtCommit=async()=>bytes) {
+async function ingest(record,loadSourceAtCommit=loadSource) {
   return ingestManifestCandidate({db,actorUid:adminUid,candidate:record,loadSourceAtCommit});
 }
 after(async()=>{
@@ -72,7 +76,7 @@ test("Unauthorized administrator cannot create a candidate",async()=>{
 test("Tampered bytes and stale versions never create candidate manifests",async()=>{
   const id="manifest-emulator-mismatch-127";
   await prepare(id);
-  await assert.rejects(ingest(candidate(id),async()=>Buffer.from("tampered")) ,/Immutable source bytes do not match/);
+  await assert.rejects(ingest(candidate(id),async({resourceUrl})=>resourceUrl==="data/home-learning-catalog.json"?catalogueBytes:Buffer.from("tampered")) ,/Immutable source bytes do not match/);
   let loaderCalled=false;
   await assert.rejects(ingest({...candidate(id),resourceVersion:"v2"},async()=>{
     loaderCalled=true;return bytes;
@@ -85,7 +89,7 @@ test("Firebase-authenticated callable refuses impersonation and stays disabled b
   const id="manifest-emulator-auth-gate-128";
   await prepare(id);
   const input={...candidate(id),actorUid:adminUid};
-  const options={db,enabled:true,loadSourceAtCommit:async()=>bytes};
+  const options={db,enabled:true,loadSourceAtCommit:loadSource};
   await assert.rejects(submitManifestCandidate({data:input},options),
     err=>err.code==="unauthenticated");
   await assert.rejects(submitManifestCandidate({auth:{uid:adminUid},data:input},
