@@ -8,6 +8,9 @@ on:
       - '*home-learning-packs.html'
       - 'early-years-counting-pack.html'
       - 'functions/index.js'
+      - 'firebase/firestore.rules'
+      - 'functions/home-learning-manifest-candidate-store.js'
+      - 'tests/phase123-manifest-candidate-rules.test.mjs'
       - 'functions/home-learning-manifest-validator.js'
       - 'tests/phase122-manifest-candidate-validator.test.mjs'
       - 'tests/phase120-manifest-assignment-binding.test.mjs'
@@ -23,7 +26,7 @@ jobs:
         with:
           node-version: '20'
       - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
-      - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs
+      - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs tests/phase123-manifest-candidate-rules.test.mjs
       - name: Validate candidate digest report
         run: node --input-type=module -e "import fs from 'node:fs'; const d=JSON.parse(fs.readFileSync('candidate-digests.json','utf8')); if(d.status!=='candidate-unverified'||d.resources.length!==16||d.resources.some(x=>x.reviewStatus!=='unreviewed'||! /^[a-f0-9]{64}$/.test(x.contentSha256))) process.exit(1);"
       - uses: actions/upload-artifact@v4
