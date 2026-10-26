@@ -265,6 +265,9 @@ try {
 
   for (const testCase of cases) {
     const apiResponse = await workerApprovalProbe(testCase.user, testCase.role);
+    if (apiResponse.status === 429) {
+      throw new Error(`Staging Platform API returned HTTP 429 for ${testCase.label}; staging is rate-limited or out of capacity. Approval enforcement is unverified, not bypassed. Do not rerun until staging capacity is restored.`);
+    }
     if (testCase.allowed) {
       assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API (HTTP ${apiResponse.status})`);
     } else {
