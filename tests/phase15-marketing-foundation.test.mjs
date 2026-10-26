@@ -30,12 +30,12 @@ test("marketing foundation collects only safe campaign and conversion metadata",
   assert.match(source,/speakout:marketing-event/u);
 });
 
-test("existing AdSense inventory explicitly disables ad personalization",()=>{
+test("youth media and learning pages do not request AdSense before approval",()=>{
   for(const path of ["watch.html","radio.html","course-viewer.html","book-reader.html","course-player.html"]){
     const source=read(path);
-    assert.match(source,/requestNonPersonalizedAds\s*=\s*1/u,path);
-    assert.match(source,/data-privacy-treatments="disablePersonalization"/u,path);
-    assert.match(source,/ca-pub-9014764551074349/u,path);
+    assert.doesNotMatch(source,/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js/u,path);
+    assert.doesNotMatch(source,/requestNonPersonalizedAds/u,path);
+    assert.doesNotMatch(source,/ca-pub-9014764551074349/u,path);
   }
 });
 
