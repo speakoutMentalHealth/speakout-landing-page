@@ -12,12 +12,16 @@
 ## Separate Firebase staging project
 - [ ] Create or identify a nonproduction Firebase project with its own Auth and Firestore; **never use `speaakout-portal` or real student records**.
 - [ ] Record its project ID and appoint a person authorized to operate it.
-- [ ] Deploy only the candidate-ingestion callable to this staging project after reviewing its environment settings. The callable defaults to disabled via `HOME_LEARNING_CANDIDATE_INGESTION_ENABLED`.
+- [ ] Deploy only the candidate-ingestion callable to this staging project after reviewing its environment settings. The callable **remains disabled** unless all three settings are explicitly correct:
+  - `HOME_LEARNING_CANDIDATE_INGESTION_ENABLED=true`
+  - `HOME_LEARNING_APP_ENV=staging`
+  - `HOME_LEARNING_STAGING_PROJECT_ID=<exact-nonproduction-project-id>`
+  - The running Firebase project ID (from the server environment) must match the declared staging project. The hard-blocked production project `speaakout-portal` and `demo-` emulator IDs cannot enable ingestion. **Do not put these settings into production.**
 - [ ] Verify that the callable cannot ingest when disabled, even for an authenticated super administrator.
 - [ ] Enable ingestion **only in staging**, using approved configuration and an explicitly pinned Git commit.
 - [ ] Authenticate real staging test accounts: approved `super_admin`, teacher, ordinary user and logged-out user. Use synthetic identities; never copy production user data.
 - [ ] Confirm unauthorized calls are rejected and that a forged `data.actorUid` cannot impersonate the authenticated user.
-- [ ] Confirm the source is fetched from the approved Git repository at the immutable SHA, with exact SHA-256 and byte-length matches.
+- [ ] Confirm the source **and the canonical catalogue** are fetched from the approved Git repository at the **same immutable SHA**. The catalogue must uniquely bind the resource ID to its HTML file path, still marked unreviewed; the HTML bytes must pass exact SHA-256 and byte-length checks.
 - [ ] Confirm mismatched version/hash, missing assignment, oversized/unsafe paths and repeat submissions are rejected.
 - [ ] Confirm the only saved record is in `homeLearningManifestCandidates` with `status: candidate-unverified`; no document is created in `homeLearningTrustedResourceManifests`, `homeLearningEditorialApprovals` or published catalogue.
 - [ ] Review callable audit logs and verify no private credentials or student data appear.
