@@ -9,6 +9,19 @@
 - [ ] Confirm the test run SHA matches the exact commit intended for release.
 - [ ] Check results for skipped, flaky, or silently omitted tests; a green check alone is insufficient if a relevant job is missing.
 
+## Read-only staging project preflight
+
+After an actual nonproduction Firebase project has been created, an authorized operator can run:
+
+```bash
+HOME_LEARNING_STAGING_PROJECT_ID="<actual-staging-project-id>" \
+  node scripts/home-learning-staging-preflight.mjs --project "<actual-staging-project-id>"
+```
+
+This command checks **project-name separation only**; it does **not** contact Firebase, validate credentials, deploy functions or certify staging readiness. It rejects the production default project `speaakout-portal`. Never put Firebase secrets into GitHub or shell command arguments.
+
+**Current deployment blocker:** `firebase.json` configures Firestore and hosting but does not currently declare a Cloud Functions source. A separate, reviewed staging-only deployment configuration and staging Firebase access will be needed before executing real callable tests. Do not run a generic deploy against the default project.
+
 ## Separate Firebase staging project
 - [ ] Create or identify a nonproduction Firebase project with its own Auth and Firestore; **never use `speaakout-portal` or real student records**.
 - [ ] Record its project ID and appoint a person authorized to operate it.
