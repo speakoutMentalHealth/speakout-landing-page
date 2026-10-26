@@ -7,7 +7,8 @@ function createPinnedGitHubSourceLoader({fetchImpl=globalThis.fetch,repository="
   if(typeof fetchImpl!=="function") throw new Error("Fetch unavailable");
   return async function loadSourceAtCommit({sourceCommit,resourceUrl}) {
     if(typeof sourceCommit!=="string" || !/^[a-f0-9]{40}$/.test(sourceCommit)) throw new Error("Full commit SHA required");
-    if(typeof resourceUrl!=="string" || !/^[a-zA-Z0-9_/-]+\.html$/.test(resourceUrl) ||
+    if(typeof resourceUrl!=="string" ||
+      (!/^[a-zA-Z0-9_/-]+\.html$/.test(resourceUrl) && resourceUrl!=="data/home-learning-catalog.json") ||
       resourceUrl.includes("..") || resourceUrl.startsWith("/") || resourceUrl.includes("//")) {
       throw new Error("Invalid resource path");
     }
