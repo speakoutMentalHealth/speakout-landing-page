@@ -4165,13 +4165,27 @@ async function cleanupTrafficLogins(env,now=Date.now()) {
   if(writes.length)await firestoreRequest(env,`${databaseUrl(env)}/documents:commit`,{method:"POST",body:JSON.stringify({writes})});
 }
 
+// Public-only, short-lived per-isolate cache; never store private student data.
+const publicCourseCatalogCache = new Map();
 async function route(request, env, path, data) {
   if(path === "/v1/auth/sign-in") return recordTrafficSignIn(request,env);
   if (path === "/v1/catalog/courses") {
-    const page = await listDocuments(env, "courses", 500);
-    const courses = page.documents.filter(courseIsCatalogueReady).map(publicCourseMetadata)
-      .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || clean(a.title).localeCompare(clean(b.title)));
-    return json({ courses, truncated: page.truncated }, 200, {
+    // This endpoint is public and already permits a 120-second browser cache.
+    // Avoid fetching up to 500 Firestore documents for every uncached request
+    // arriving at the same warm Worker isolate. Do not cache authenticated
+    // data or failures; the cache is scoped to the Firebase project.
+    const cacheKey = clean(env.FIREBASE_PROJECT_ID);
+    const now = Date.now();
+    let cached = publicCourseCatalogCache.get(cacheKey);
+    if (!cached || cached.until <= now) {
+      publicCourseCatalogCache.delete(cacheKey);
+      const page = await listDocuments(env, "courses", 500);
+      const courses = page.documents.filter(courseIsCatalogueReady).map(publicCourseMetadata)
+        .sort((a, b) => Number(b.featured === true) - Number(a.featured === true) || clean(a.title).localeCompare(clean(b.title)));
+      cached = { until: Date.now() + 60000, data: { courses, truncated: page.truncated } };
+      publicCourseCatalogCache.set(cacheKey, cached);
+    }
+    return json(cached.data, 200, {
       "cache-control": "public, max-age=120, s-maxage=300",
       "x-content-type-options": "nosniff"
     });
