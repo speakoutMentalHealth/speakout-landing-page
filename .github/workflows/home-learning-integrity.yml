@@ -58,6 +58,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Check backend JavaScript syntax
+        run: |
+          node --check functions/index.js
+          node --check functions/home-learning-manifest-callable.js
+          node --check functions/home-learning-manifest-ingestion.js
+          node --check functions/home-learning-manifest-candidate-store.js
+          node --check functions/home-learning-manifest-validator.js
+          node --check functions/home-learning-pinned-source.js
       - run: node scripts/home-learning-resource-digests.mjs --output candidate-digests.json
       - run: node --test tests/phase11*.test.mjs tests/phase120-manifest-assignment-binding.test.mjs tests/phase121-resource-digest-hardening.test.mjs tests/phase122-manifest-candidate-validator.test.mjs tests/phase123-manifest-candidate-rules.test.mjs tests/phase124-manifest-ingestion.test.mjs tests/phase125-pinned-source.test.mjs tests/phase126-manifest-duplicate-ingestion.test.mjs tests/phase127-manifest-callable-auth.test.mjs
       - name: Verify real GitHub source bytes at pinned main commit
