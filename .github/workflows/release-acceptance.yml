@@ -59,6 +59,61 @@ on:
       - "workers/platform-api/src/support-session.js"
   push:
     branches: [main]
+    # Match the PR gate scope; unrelated static-only changes must not consume
+    # staging Firestore quota or trigger staging deployments.
+    paths:
+      - ".github/workflows/admin-publishing-staging.yml"
+      - ".github/workflows/approval-state-browser.yml"
+      - ".github/workflows/independent-learner-browser.yml"
+      - ".github/workflows/kpa-results-browser-pilot.yml"
+      - ".github/workflows/release-acceptance.yml"
+      - ".github/workflows/school-management-browser.yml"
+      - ".github/workflows/staging-academic-results.yml"
+      - "admin-books.html"
+      - "admin-courses.html"
+      - "admin-kiddies-review.html"
+      - "js/admin/kiddies-drafts.js"
+      - "js/kiddies-starter-pack.js"
+      - "firestore-seed/kiddies-starter-pack.json"
+      - "admin-tv.html"
+      - "auth.html"
+      - "auth/auth.html"
+      - "child-progress.html"
+      - "course-player.html"
+      - "firebase/firestore.rules"
+      - "js/admin-cms-ui.js"
+      - "js/auth-access.js"
+      - "js/auth.js"
+      - "js/content-visibility.js"
+      - "js/learner/course-details.js"
+      - "js/learner/parent-dashboard.js"
+      - "js/learner/student-dashboard.js"
+      - "js/platform-api.js"
+      - "js/profile-approval.js"
+      - "js/programmes/**"
+      - "js/school-dashboard.js"
+      - "launch-role-guard.js"
+      - "parent-child-link.html"
+      - "parent-dashboard.html"
+      - "parent-results.html"
+      - "programme-workspace.html"
+      - "programmes.html"
+      - "school-dashboard.html"
+      - "school-results.html"
+      - "speakhub.html"
+      - "student-dashboard.html"
+      - "teacher-dashboard.html"
+      - "tests/admin-publishing-staging.mjs"
+      - "tests/approval-state-browser.mjs"
+      - "tests/independent-learner-browser.mjs"
+      - "tests/kpa-results-browser-pilot.mjs"
+      - "tests/school-management-browser.mjs"
+      - "tests/staging-cleanup.mjs"
+      - "tests/staging-diagnostics.mjs"
+      - "tests/staging-live.integration.mjs"
+      - "verify-certificate.html"
+      - "workers/platform-api/**"
+      - "workers/platform-api/src/support-session.js"
 
 permissions:
   contents: read
@@ -115,6 +170,9 @@ jobs:
       - name: Install repository dependencies
         run: npm ci
 
+      - name: Check staging Firestore capacity before expensive browser tests
+        run: node tests/staging-capacity-preflight.mjs
+
       - name: Deploy branch Firestore rules to staging
         run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
 
@@ -126,8 +184,6 @@ jobs:
         working-directory: workers/platform-api
         run: npx wrangler deploy --config wrangler.staging.jsonc
 
-      - name: Check staging Firestore capacity before expensive browser tests
-        run: node tests/staging-capacity-preflight.mjs
 
       - name: Install Playwright
         run: |
