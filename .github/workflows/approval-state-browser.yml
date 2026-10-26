@@ -56,6 +56,10 @@ jobs:
       - name: Install repository dependencies
         run: npm ci
 
+      - name: Check staging Firestore capacity
+        # Fail before changing shared staging infrastructure when Firestore is rate-limited.
+        run: node tests/staging-capacity-preflight.mjs
+
       - name: Deploy branch Firestore rules to staging
         run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
 
