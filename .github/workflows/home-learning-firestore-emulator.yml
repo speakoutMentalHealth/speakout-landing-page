@@ -6,6 +6,11 @@ on:
       - 'firebase/firestore.rules'
       - 'firebase.json'
       - 'tests/firestore-rules.emulator.test.mjs'
+      - 'tests/home-learning-backend.emulator.test.mjs'
+      - 'functions/home-learning-manifest-ingestion.js'
+      - 'functions/home-learning-manifest-candidate-store.js'
+      - 'functions/home-learning-manifest-validator.js'
+      - 'functions/package.json'
       - 'package.json'
       - 'package-lock.json'
 permissions:
@@ -25,6 +30,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: npm ci
+      - name: Install Firebase Admin SDK for backend integration tests
+        run: npm install --prefix functions --no-package-lock --no-audit --no-fund
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@14
       - name: Verify Firebase CLI
