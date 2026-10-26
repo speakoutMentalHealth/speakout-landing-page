@@ -736,3 +736,16 @@ test("Home Learning: reviewer applications require approved teacher and remain i
   await assertFails(deleteDoc(doc(teacher, path)));
   await assertFails(updateDoc(doc(admin, path), {status:"approved"}));
 });
+
+test("manifest candidates deny all browser access even for super administrators",async()=>{
+ await seed("users/manifest-admin",profile("manifest-admin","super_admin"));
+ await seed("homeLearningManifestCandidates/assignment-1",{status:"candidate-unverified",resourceId:"resource-1"});
+ for(const context of [testEnv.unauthenticatedContext(),testEnv.authenticatedContext("manifest-admin"),testEnv.authenticatedContext("manifest-learner")]){
+  const db=context.firestore();
+  const ref=doc(db,"homeLearningManifestCandidates/assignment-1");
+  await assertFails(getDoc(ref));
+  await assertFails(setDoc(doc(db,"homeLearningManifestCandidates/new-assignment"),{status:"trusted"}));
+  await assertFails(updateDoc(ref,{status:"trusted"}));
+  await assertFails(deleteDoc(ref));
+ }
+});
