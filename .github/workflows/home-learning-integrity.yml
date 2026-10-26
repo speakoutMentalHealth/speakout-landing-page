@@ -1,6 +1,30 @@
 name: Home Learning integrity
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/home-learning-catalog.json'
+      - 'scripts/home-learning-resource-digests.mjs'
+      - '*home-learning-packs.html'
+      - 'early-years-counting-pack.html'
+      - 'functions/index.js'
+      - 'firebase/firestore.rules'
+      - 'functions/home-learning-manifest-candidate-store.js'
+      - 'functions/home-learning-manifest-ingestion.js'
+      - 'functions/home-learning-pinned-source.js'
+      - 'functions/home-learning-manifest-callable.js'
+      - 'tests/phase127-manifest-callable-auth.test.mjs'
+      - 'tests/phase125-pinned-source.test.mjs'
+      - 'tests/phase126-manifest-duplicate-ingestion.test.mjs'
+      - 'tests/firestore-rules.emulator.test.mjs'
+      - 'tests/phase124-manifest-ingestion.test.mjs'
+      - 'tests/phase123-manifest-candidate-rules.test.mjs'
+      - 'functions/home-learning-manifest-validator.js'
+      - 'tests/phase122-manifest-candidate-validator.test.mjs'
+      - 'tests/phase120-manifest-assignment-binding.test.mjs'
+      - 'tests/phase121-resource-digest-hardening.test.mjs'
+      - '.github/workflows/home-learning-integrity.yml'
   pull_request:
     paths:
       - 'data/home-learning-catalog.json'
