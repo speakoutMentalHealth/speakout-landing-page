@@ -179,16 +179,28 @@ async function login(page, user, expectedPage) {
 
 async function deleteAuditLogsForResult() {
   if (!resultId) return;
-  const response = await fetch(`${firestoreBase}/academicResultAuditLogs?pageSize=200`, {
-    headers: { authorization: `Bearer ${adminToken}` }
-  }).catch(() => null);
-  if (!response?.ok) return;
-  const body = await response.json().catch(() => ({}));
-  for (const document of body.documents || []) {
-    const data = decodedFields(document.fields);
-    if (data.resultId !== resultId) continue;
-    const relative = document.name.split("/documents/")[1];
-    if (relative) await firestore(relative, { method: "DELETE" }).catch(() => null);
+  const response = await fetch(`${firestoreBase}:runQuery`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ structuredQuery: {
+      from: [{ collectionId: "academicResultAuditLogs" }],
+      where: { fieldFilter: {
+        field: { fieldPath: "resultId" }, op: "EQUAL",
+        value: { stringValue: resultId }
+      } },
+      limit: 1000
+    } })
+  });
+  assert.equal(response.ok, true, `Could not query result audit logs for cleanup (HTTP ${response.status})`);
+  const rows = await response.json();
+  assert.ok(Array.isArray(rows), "Invalid result audit cleanup response");
+  const docs = rows.filter(row => row.document?.name);
+  assert.ok(docs.length < 1000, "Result audit cleanup query limit reached");
+  for (const row of docs) {
+    const relative = row.document.name.split("/documents/")[1];
+    assert.ok(relative?.startsWith("academicResultAuditLogs/"), "Unexpected result audit path");
+    const deleted = await firestore(relative, { method: "DELETE" });
+    assert.equal(deleted.response.ok, true, `Could not delete result audit record ${relative}`);
   }
 }
 
