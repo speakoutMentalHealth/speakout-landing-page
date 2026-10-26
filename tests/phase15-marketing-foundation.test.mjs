@@ -42,7 +42,9 @@ test("youth media and learning pages do not request AdSense before approval",()=
 test("AdSense publisher declaration and privacy notice match the hardened configuration",()=>{
   assert.equal(read("ads.txt").trim(),"google.com, pub-9014764551074349, DIRECT, f08c47fec0942fa0");
   const privacy=read("pages/privacy.html");
-  assert.match(privacy,/request non-personalized ads/u);
+  assert.match(privacy,/preparing a limited Google AdSense integration/u);
+  assert.match(privacy,/Advertising is not currently enabled through the site\x27s SpeakHub ad-placement feature/u);
+  assert.match(privacy,/not private wellbeing responses, protected learning records, sign-in pages or known child-directed experiences/u);
   assert.match(privacy,/does not remove consent requirements/u);
   assert.match(privacy,/Last updated:<\/strong> 18 October 2026/u);
 });
