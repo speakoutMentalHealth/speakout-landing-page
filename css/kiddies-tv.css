@@ -49,3 +49,9 @@ body{background:linear-gradient(180deg,#071225 0,#0c1d34 54%,#071225 100%);color
   .catalogue{padding-top:0}
   .rail-section{margin:16px 0 24px}
 }
+
+/* Account controls stylesheet is injected after page load: match its specificity. */
+body .speakout-account{background:#09172b;color:#eaf3ff;border-bottom:1px solid #213956;padding:5px max(12px,env(safe-area-inset-right));min-height:0}
+body .speakout-account .speakout-account-action{background:#152c49;border-color:#315071;color:#eaf3ff;min-height:34px;padding:5px 12px;font-size:.76rem}
+body .speakout-account .speakout-account-action:hover{background:#234568}
+@media(max-width:650px){body .speakout-account{padding-top:3px;padding-bottom:3px}}
