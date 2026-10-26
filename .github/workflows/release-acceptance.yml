@@ -112,6 +112,9 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
           echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/firebase-staging.json" >> "$GITHUB_ENV"
 
+      - name: Check staging Firestore service before staging deployment
+        run: node tests/staging-capacity-preflight.mjs
+
       - name: Install repository dependencies
         run: npm ci
 
@@ -125,9 +128,6 @@ jobs:
       - name: Deploy branch Worker to staging
         working-directory: workers/platform-api
         run: npx wrangler deploy --config wrangler.staging.jsonc
-
-      - name: Check staging Firestore capacity before expensive browser tests
-        run: node tests/staging-capacity-preflight.mjs
 
       - name: Install Playwright
         run: |

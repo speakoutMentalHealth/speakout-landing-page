@@ -53,8 +53,8 @@ const response = await fetch(url, {
 if (response.status === 429) {
   throw new Error(
     "Staging Firestore returned HTTP 429 on a one-record query. " +
-    "The staging project's quota/capacity is exhausted or rate-limited. " +
-    "Inspect Google Cloud Firestore quotas and billing; do not rerun the release suite until capacity is restored."
+    "The direct Firestore API is rejecting a bounded read (rate limit, temporary capacity or another project/API quota). " +
+    "Do not assume the daily Firebase free allowance has been exhausted. Review Firestore and Google Cloud API error metrics for speakout-portal-staging."
   );
 }
 if (!response.ok) {
