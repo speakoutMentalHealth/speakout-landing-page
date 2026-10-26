@@ -38,3 +38,14 @@ test('rejects untrusted source adapters and stale assignments',async()=>{
  await assert.rejects(ingestManifestCandidate({db,actorUid:'admin_123',candidate:{...candidate,resourceVersion:'v2'},loadSourceAtCommit:async()=>bytes}));
  assert.equal(writes.length,0);
 });
+
+test('invalid path is rejected before the source loader is called',async()=>{
+ const {db,writes}=fixture();
+ let called=false;
+ await assert.rejects(ingestManifestCandidate({
+  db,actorUid:'admin_123',candidate:{...candidate,resourceUrl:'../private.html'},
+  loadSourceAtCommit:async()=>{called=true;return bytes}
+ }));
+ assert.equal(called,false);
+ assert.equal(writes.length,0);
+});
