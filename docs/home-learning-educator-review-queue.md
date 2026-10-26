@@ -7,22 +7,22 @@
 
 | # | Resource ID | Level and subject | Source file | Current status | Assigned educator | Independent editor |
 |---|---|---|---|---|---|---|
-| 01 | `nursery-counting` | Nursery · Numeracy | [Draft](/early-years-counting-pack.html) | Unreviewed | — | — |
-| 02 | `primary-1-3-maths` | Primary 1–3 · Mathematics | [Draft](/primary-home-learning-packs.html) | Unreviewed | — | — |
-| 03 | `primary-1-3-english` | Primary 1–3 · English | [Draft](/primary-home-learning-packs.html) | Unreviewed | — | — |
-| 04 | `primary-4-6-maths` | Primary 4–6 · Mathematics | [Draft](/upper-primary-home-learning-packs.html) | Unreviewed | — | — |
-| 05 | `primary-4-6-english` | Primary 4–6 · English | [Draft](/upper-primary-home-learning-packs.html) | Unreviewed | — | — |
-| 06 | `jss-1-3-mathematics` | JSS 1–3 · Mathematics | [Draft](/junior-secondary-home-learning-packs.html) | Unreviewed | — | — |
-| 07 | `jss-1-3-english` | JSS 1–3 · English | [Draft](/junior-secondary-home-learning-packs.html) | Unreviewed | — | — |
-| 08 | `ss-1-3-mathematics` | SS 1–3 · Mathematics | [Draft](/senior-secondary-home-learning-packs.html) | Unreviewed | — | — |
-| 09 | `ss-1-3-english` | SS 1–3 · English | [Draft](/senior-secondary-home-learning-packs.html) | Unreviewed | — | — |
-| 10 | `jss-1-3-basic-science` | JSS 1–3 · Basic Science | [Draft](/secondary-science-home-learning-packs.html) | Unreviewed | — | — |
-| 11 | `ss-1-3-biology` | SS 1–3 · Biology | [Draft](/secondary-science-home-learning-packs.html) | Unreviewed | — | — |
-| 12 | `primary-1-3-basic-science` | Primary 1–3 · Basic Science | [Draft](/primary-science-home-learning-packs.html) | Unreviewed | — | — |
-| 13 | `primary-4-6-basic-science` | Primary 4–6 · Basic Science | [Draft](/primary-science-home-learning-packs.html) | Unreviewed | — | — |
-| 14 | `primary-1-3-social-studies` | Primary 1–3 · Social Studies | [Draft](/social-civic-home-learning-packs.html) | Unreviewed | — | — |
-| 15 | `primary-4-6-social-studies` | Primary 4–6 · Social Studies | [Draft](/social-civic-home-learning-packs.html) | Unreviewed | — | — |
-| 16 | `jss-1-3-civic-education` | JSS 1–3 · Civic Education | [Draft](/social-civic-home-learning-packs.html) | Unreviewed | — | — |
+| 01 | `nursery-counting` | Nursery · Numeracy | [Draft](../early-years-counting-pack.html) | Unreviewed | — | — |
+| 02 | `primary-1-3-maths` | Primary 1–3 · Mathematics | [Draft](../primary-home-learning-packs.html) | Unreviewed | — | — |
+| 03 | `primary-1-3-english` | Primary 1–3 · English | [Draft](../primary-home-learning-packs.html) | Unreviewed | — | — |
+| 04 | `primary-4-6-maths` | Primary 4–6 · Mathematics | [Draft](../upper-primary-home-learning-packs.html) | Unreviewed | — | — |
+| 05 | `primary-4-6-english` | Primary 4–6 · English | [Draft](../upper-primary-home-learning-packs.html) | Unreviewed | — | — |
+| 06 | `jss-1-3-mathematics` | JSS 1–3 · Mathematics | [Draft](../junior-secondary-home-learning-packs.html) | Unreviewed | — | — |
+| 07 | `jss-1-3-english` | JSS 1–3 · English | [Draft](../junior-secondary-home-learning-packs.html) | Unreviewed | — | — |
+| 08 | `ss-1-3-mathematics` | SS 1–3 · Mathematics | [Draft](../senior-secondary-home-learning-packs.html) | Unreviewed | — | — |
+| 09 | `ss-1-3-english` | SS 1–3 · English | [Draft](../senior-secondary-home-learning-packs.html) | Unreviewed | — | — |
+| 10 | `jss-1-3-basic-science` | JSS 1–3 · Basic Science | [Draft](../secondary-science-home-learning-packs.html) | Unreviewed | — | — |
+| 11 | `ss-1-3-biology` | SS 1–3 · Biology | [Draft](../secondary-science-home-learning-packs.html) | Unreviewed | — | — |
+| 12 | `primary-1-3-basic-science` | Primary 1–3 · Basic Science | [Draft](../primary-science-home-learning-packs.html) | Unreviewed | — | — |
+| 13 | `primary-4-6-basic-science` | Primary 4–6 · Basic Science | [Draft](../primary-science-home-learning-packs.html) | Unreviewed | — | — |
+| 14 | `primary-1-3-social-studies` | Primary 1–3 · Social Studies | [Draft](../social-civic-home-learning-packs.html) | Unreviewed | — | — |
+| 15 | `primary-4-6-social-studies` | Primary 4–6 · Social Studies | [Draft](../social-civic-home-learning-packs.html) | Unreviewed | — | — |
+| 16 | `jss-1-3-civic-education` | JSS 1–3 · Civic Education | [Draft](../social-civic-home-learning-packs.html) | Unreviewed | — | — |
 
 ## Evidence required for each entry
 
