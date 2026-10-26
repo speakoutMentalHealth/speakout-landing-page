@@ -55,3 +55,5 @@ body .speakout-account{background:#09172b;color:#eaf3ff;border-bottom:1px solid 
 body .speakout-account .speakout-account-action{background:#152c49;border-color:#315071;color:#eaf3ff;min-height:34px;padding:5px 12px;font-size:.76rem}
 body .speakout-account .speakout-account-action:hover{background:#234568}
 @media(max-width:650px){body .speakout-account{padding-top:3px;padding-bottom:3px}}
+
+.player[hidden]{display:none}.player:not([hidden]){display:block;margin:24px auto;max-height:none;scroll-margin-top:90px}.player-frame iframe{width:100%;height:100%}
