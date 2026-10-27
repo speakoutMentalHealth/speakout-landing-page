@@ -174,7 +174,9 @@ async function login(page, user, expectedPage) {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
 
-  throw new Error(`Login did not reach ${expectedPage}. Current URL: ${page.url()}`);
+  const diagnostic = await page.locator("#loginMsg").evaluate(el => ({ category: el.classList.contains("bad") ? "error" : el.classList.contains("warn") ? "warning" : el.classList.contains("ok") ? "success" : "other", hasMessage: Boolean(el.textContent.trim()) })).catch(() => ({ category: "unavailable", hasMessage: false }));
+  console.error("Login diagnostic:", JSON.stringify(diagnostic));
+  throw new Error(`Login did not reach ${expectedPage}.`);
 }
 
 async function deleteAuditLogsForResult() {
