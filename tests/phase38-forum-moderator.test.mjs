@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {spawnSync} from "node:child_process";
 const read = p => readFileSync(new URL("../"+p,import.meta.url),"utf8");
 test("delegated moderator workspace has private-account and per-room protections",()=>{
  const html=read("forum-moderator.html"),script=read("js/forum-moderator.js");
@@ -32,4 +33,10 @@ test("forum links to moderator workspace but room publication remains separately
  assert.match(rules,/match \/forumReleaseControls\/\{releaseId\}/);
  assert.match(rules,/allow list, create, update, delete: if false/);
  assert.match(read("js/forum-moderator.js"),/room\.data\(\)\.published !== true/);
+});
+
+test("delegated moderator browser module parses as valid JavaScript",()=>{
+ const filename=new URL("../js/forum-moderator.js",import.meta.url).pathname;
+ const result=spawnSync(process.execPath,["--check",filename],{encoding:"utf8",timeout:10000});
+ assert.equal(result.status,0,result.stderr);
 });
