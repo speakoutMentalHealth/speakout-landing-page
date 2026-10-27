@@ -9,6 +9,20 @@ let actor = null;
 let adultGrant = false;
 let room = null;
 let currentRoomId = null;
+function filterRooms() {
+  const search = ($("roomSearch")?.value || "").trim().toLocaleLowerCase();
+  document.querySelectorAll("#rooms .room-button").forEach(button => {
+    button.hidden = Boolean(search) && !button.textContent.toLocaleLowerCase().includes(search);
+  });
+}
+function filterTopics() {
+  const search = ($("topicSearch")?.value || "").trim().toLocaleLowerCase();
+  document.querySelectorAll("#topics .post.topic-post").forEach(post => {
+    post.hidden = Boolean(search) && !post.dataset.searchText.includes(search);
+  });
+}
+$("roomSearch")?.addEventListener("input", filterRooms);
+$("topicSearch")?.addEventListener("input", filterTopics);
 function notice(message, error = false) {
   $("status").textContent = message;
   $("status").classList.toggle("error", Boolean(error));
@@ -54,6 +68,8 @@ async function loadRooms() {
   if (!available.length) {
     container.append(txt("p", "No rooms have been published for your account."));
     $("discussion").hidden = true;
+    $("communityEmpty").hidden = false;
+    container.querySelector("p")?.classList.add("no-rooms");
     notice("Forum launch is pending. No discussions are open.");
     return;
   }
@@ -61,10 +77,13 @@ async function loadRooms() {
     const button = document.createElement("button");
     button.className = "room-button";
     button.type = "button";
-    button.textContent = item.title;
+    button.dataset.roomId = item.id;
+    button.setAttribute("aria-current", "false");
+    button.append(txt("span", item.title));
     button.addEventListener("click", () => showRoom(item));
     container.append(button);
   }
+  filterRooms();
   notice(adultGrant ? "Verified adult forum access active." : "You can view public approved discussions. Adult approval is required to post.");
   const requested = new URLSearchParams(location.search).get("room");
   await showRoom(available.find(x => x.id === requested) || available[0]);
@@ -73,6 +92,11 @@ async function showRoom(item) {
   room = item;
   currentRoomId = item.id;
   $("discussion").hidden = false;
+  $("communityEmpty").hidden = true;
+  document.querySelectorAll("#rooms .room-button").forEach(button => {
+    button.setAttribute("aria-current", String(button.dataset.roomId === item.id));
+  });
+  $("topicSearch").value = "";
   $("roomTitle").textContent = item.title;
   $("roomDescription").textContent = item.description;
   $("newTopic").hidden = !adultGrant || item.status !== "open";
@@ -88,7 +112,8 @@ async function showRoom(item) {
     result.forEach(record => {
       const topic = record.data();
       const post = document.createElement("article");
-      post.className = "post";
+      post.className = "post topic-post";
+      post.dataset.searchText = (String(topic.title || "") + " " + String(topic.body || "")).toLocaleLowerCase();
       post.append(txt("h3", topic.title), txt("p", topic.body));
       post.lastChild.className = "post-body";
       post.append(txt("small", "Shared by a community member. Replies are moderated."));
@@ -162,6 +187,7 @@ async function showRoom(item) {
       }
       list.append(post);
     });
+    filterTopics();
   } catch {
     list.replaceChildren(txt("p", "Discussions are not available. Access may have changed."));
   }
