@@ -3,3 +3,12 @@
 
 .stage-groups{display:grid;grid-template-columns:1fr 1fr;gap:20px}.stage-group h3{margin:0 0 12px;font-size:1.05rem}.stage-group .stage-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.education-label{font-weight:700!important;color:#17488b;margin:0 0 10px}.placement-row{flex-wrap:wrap}@media(max-width:600px){.stage-groups{grid-template-columns:1fr}}
 .adventure-catalogue-card{background:linear-gradient(155deg,#fff,#edf6ff);border:2px solid #cbdff1;border-radius:26px}.catalogue-art{display:grid;place-items:center;min-height:120px;border-radius:20px;background:linear-gradient(120deg,#fff0cd,#e2f2ff);font-size:2rem;font-weight:800;color:#0a5fbf;margin-bottom:20px}.card-mapping{margin:0 0 20px}.card-mapping summary{font-weight:700;cursor:pointer;color:#244363;line-height:1.5}.card-mapping p{margin-bottom:0}.adventure-catalogue-card .btn{min-height:48px}
+
+/* Compact, consistent mobile shortcuts and optional curriculum guidance. */
+.learning-shortcuts{display:flex;flex-wrap:wrap;gap:8px;padding:12px max(4%,calc((100% - 1160px)/2));background:#eaf3fc;border-bottom:1px solid #d5e4f4}
+.learning-shortcuts a{display:inline-flex;align-items:center;min-height:44px;padding:9px 13px;border-radius:12px;background:#fff;color:#184d82;font-weight:700;text-decoration:none}
+.learning-shortcuts a:focus-visible{outline:3px solid #f4a21c;outline-offset:3px}
+.curriculum-explainer{margin:12px 0 18px;padding:12px 16px;background:#f7faff;border:1px solid #d5e4f4;border-radius:14px}
+.curriculum-explainer summary{cursor:pointer;font-weight:700;color:#184d82}
+.curriculum-explainer summary:focus-visible{outline:3px solid #f4a21c;outline-offset:3px}
+@media(max-width:550px){.learning-shortcuts{padding:10px 4%;gap:6px}.learning-shortcuts a{font-size:.88rem;padding:8px 10px}}
