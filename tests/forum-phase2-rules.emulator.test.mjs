@@ -159,10 +159,10 @@ test("approved participants may report content, but cannot edit or delete report
     authorUid: "admin-one", moderationStatus: "approved", moderationAuditId: "none",
     createdAt: new Date(), updatedAt: new Date()
   });
-  const user = ctx("adult-two");
-  await assertSucceeds(setDoc(doc(ctx("adult-one"), "forumReports/adult-one__topic__published-topic"), {
+  const user = ctx("adult-one");
+  await assertSucceeds(setDoc(doc(user, "forumReports/adult-one__topic__published-topic"), {
     roomId: "staff-room", targetType: "topic", targetId: "published-topic",
-    reporterUid: "adult-two", reason: "spam", createdAt: serverTimestamp()
+    reporterUid: "adult-one", reason: "spam", createdAt: serverTimestamp()
   }));
   await assertFails(updateDoc(doc(ctx("adult-one"), "forumReports/adult-one__topic__published-topic"), { reason: "other" }));
   await assertFails(setDoc(doc(ctx("teen-one"), "forumReports/teen-one__topic__published-topic"), {
