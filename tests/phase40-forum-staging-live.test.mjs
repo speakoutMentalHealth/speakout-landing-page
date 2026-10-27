@@ -36,6 +36,9 @@ test("staging workflow is opt-in, serialized, checks capacity before writes, and
  assert.doesNotMatch(w,/^\s+pull_request:/m);
  assert.match(w,/group: speakout-shared-staging/);
  assert.match(w,/environment: staging/);
+ assert.match(w,/run_pilot:/);
+ assert.match(w,/if: inputs\.run_pilot == true/);
+ assert.match(w,/default: false/);
  assert.match(w,/tests\/staging-capacity-preflight\.mjs/);
  assert.match(w,/forum-indexes-additive\.mjs/);
  assert.match(w,/--mode=inspect --project=speakout-portal-staging/);
