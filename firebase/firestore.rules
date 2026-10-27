@@ -1124,12 +1124,25 @@ service cloud.firestore {
           getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.moderationStatus == request.resource.data.nextStatus));
       allow update, delete: if false;
     }
+    function forumReportTargetValid(report) {
+      return (report.targetType == "topic" &&
+        exists(/databases/$(database)/documents/forumTopics/$(report.targetId)) &&
+        get(/databases/$(database)/documents/forumTopics/$(report.targetId)).data.roomId == report.roomId &&
+        get(/databases/$(database)/documents/forumTopics/$(report.targetId)).data.moderationStatus == "approved") ||
+        (report.targetType == "reply" &&
+        exists(/databases/$(database)/documents/forumReplies/$(report.targetId)) &&
+        get(/databases/$(database)/documents/forumReplies/$(report.targetId)).data.roomId == report.roomId &&
+        get(/databases/$(database)/documents/forumReplies/$(report.targetId)).data.moderationStatus == "approved");
+    }
     match /forumReports/{reportId} {
       allow read: if isSuperAdmin() ||
         (forumMayReadRoom(resource.data.roomId) &&
          (forumModerator(resource.data.roomId) || resource.data.reporterUid == request.auth.uid));
+      // One immutable report per member and target. Reject forged target IDs.
       allow create: if forumApprovedAdult() &&
         forumMayReadRoom(request.resource.data.roomId) &&
+        reportId == request.auth.uid + "__" + request.resource.data.targetType + "__" + request.resource.data.targetId &&
+        forumReportTargetValid(request.resource.data) &&
         request.resource.data.keys().hasOnly([
           "roomId", "targetType", "targetId", "reporterUid", "reason", "createdAt"
         ]) &&
