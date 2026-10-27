@@ -942,13 +942,13 @@ service cloud.firestore {
       return forumApprovedAdult() && roomId in forumGrant().privateRoomIds;
     }
     function forumMayReadRoom(roomId) {
-      return isSuperAdmin() || forumModerator(roomId) ||
-        (exists(forumRoomPath(roomId)) &&
-        get(forumRoomPath(roomId)).data.published == true &&
-        get(forumRoomPath(roomId)).data.status != "locked" &&
-        (get(forumRoomPath(roomId)).data.visibility == "public" ||
-          (forumApprovedAdult() && get(forumRoomPath(roomId)).data.visibility == "members_only") ||
-          (forumPrivateMember(roomId) && get(forumRoomPath(roomId)).data.visibility == "private")));
+      return isSuperAdmin() ||
+        (forumApprovedAdult() && exists(forumRoomPath(roomId)) &&
+         forumPilotAuthorized(roomId) &&
+         get(forumRoomPath(roomId)).data.published == true &&
+         get(forumRoomPath(roomId)).data.status != "locked" &&
+         get(forumRoomPath(roomId)).data.visibility == "private" &&
+         (forumPrivateMember(roomId) || forumModerator(roomId)));
     }
     function forumCanPost(roomId) {
       return forumApprovedAdult() && forumMayReadRoom(roomId) &&
@@ -1066,7 +1066,7 @@ service cloud.firestore {
         getAfter(path).data.changedAt == request.time;
     }
     function validModerationChange(kind, itemId) {
-      return (isSuperAdmin() || forumModerator(resource.data.roomId)) &&
+      return (isSuperAdmin() || (forumModerator(resource.data.roomId) && forumMayReadRoom(resource.data.roomId))) &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           "moderationStatus", "moderationAuditId", "updatedAt"
         ]) &&
@@ -1077,16 +1077,18 @@ service cloud.firestore {
         forumModerationPair(kind, itemId);
     }
     match /forumTopics/{topicId} {
-      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
-        (resource.data.moderationStatus == "approved" && forumMayReadRoom(resource.data.roomId));
+      allow read: if isSuperAdmin() ||
+        (forumMayReadRoom(resource.data.roomId) &&
+         (resource.data.moderationStatus == "approved" || forumModerator(resource.data.roomId)));
       allow create: if forumCanPost(request.resource.data.roomId) &&
         validForumContribution("topic");
       allow update: if validModerationChange("topic", topicId);
       allow delete: if false;
     }
     match /forumReplies/{replyId} {
-      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
-        (resource.data.moderationStatus == "approved" && forumMayReadRoom(resource.data.roomId));
+      allow read: if isSuperAdmin() ||
+        (forumMayReadRoom(resource.data.roomId) &&
+         (resource.data.moderationStatus == "approved" || forumModerator(resource.data.roomId)));
       allow create: if forumCanPost(request.resource.data.roomId) &&
         validForumContribution("reply");
       allow update: if validModerationChange("reply", replyId);
@@ -1096,7 +1098,7 @@ service cloud.firestore {
       allow read: if isSuperAdmin();
       // The event's target, reason, timestamps and status must match the batch.
       // Enforce this for administrators as well: no forged or orphan actions.
-      allow create: if (isSuperAdmin() || forumModerator(request.resource.data.roomId)) &&
+      allow create: if (isSuperAdmin() || (forumModerator(request.resource.data.roomId) && forumMayReadRoom(request.resource.data.roomId))) &&
         request.resource.data.keys().hasOnly([
           "kind", "itemId", "roomId", "actorUid", "previousStatus",
           "nextStatus", "changedAt", "reason"
@@ -1123,8 +1125,9 @@ service cloud.firestore {
       allow update, delete: if false;
     }
     match /forumReports/{reportId} {
-      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
-        (forumApprovedAdult() && resource.data.reporterUid == request.auth.uid);
+      allow read: if isSuperAdmin() ||
+        (forumMayReadRoom(resource.data.roomId) &&
+         (forumModerator(resource.data.roomId) || resource.data.reporterUid == request.auth.uid));
       allow create: if forumApprovedAdult() &&
         forumMayReadRoom(request.resource.data.roomId) &&
         request.resource.data.keys().hasOnly([
@@ -1147,11 +1150,11 @@ service cloud.firestore {
 
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
