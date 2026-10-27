@@ -856,7 +856,7 @@ service cloud.firestore {
 
     match /forumRooms/{roomId} {
       allow get: if forumMayReadRoom(roomId);
-      allow list: if isSuperAdmin() || (resource.data.published == true && resource.data.status in ["open", "read_only"] && (resource.data.visibility == "public" || (resource.data.visibility == "members_only" && forumApprovedAdult())));
+      allow list: if isSuperAdmin() || (forumApprovedAdult() && resource.data.published == true && resource.data.status in ["open", "read_only"] && resource.data.visibility in ["public", "members_only"]);
       allow create: if isSuperAdmin() &&
         roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
         forumRoomValid() && request.resource.data.createdAt == request.time &&
@@ -921,7 +921,7 @@ service cloud.firestore {
         (exists(forumRoomPath(roomId)) &&
         get(forumRoomPath(roomId)).data.published == true &&
         get(forumRoomPath(roomId)).data.status != "locked" &&
-        (get(forumRoomPath(roomId)).data.visibility == "public" ||
+        ((forumApprovedAdult() && get(forumRoomPath(roomId)).data.visibility == "public") ||
           (forumApprovedAdult() && get(forumRoomPath(roomId)).data.visibility == "members_only") ||
           (forumPrivateMember(roomId) && get(forumRoomPath(roomId)).data.visibility == "private")));
     }
