@@ -244,7 +244,14 @@ try {
     const trafficResponse = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "POST", headers: { authorization: `Bearer ${admin.idToken}`, "content-type": "application/json", origin: trafficOrigin }, body: JSON.stringify({ period }) });
     const traffic = await trafficResponse.json();
     if (trafficResponse.status === 429) {
-      throw new Error("Staging traffic summary returned HTTP 429 (quota exhausted/rate-limited). Check the Firebase/Firestore staging project capacity before rerunning the release matrix.");
+      let directStatus = "unavailable", providerCode = "unknown";
+      try {
+        const check = await firestore(`users/${admin.localId}`);
+        directStatus = String(check.response.status);
+        const knownCodes = new Set(["RESOURCE_EXHAUSTED", "UNAVAILABLE", "PERMISSION_DENIED", "DEADLINE_EXCEEDED"]);
+        if (knownCodes.has(check.body?.error?.status)) providerCode = check.body.error.status;
+      } catch {}
+      throw new Error(`Staging Worker traffic summary returned HTTP 429; direct Firestore profile read HTTP ${directStatus} (code ${providerCode}). Investigate service and project limits; this does not establish daily quota exhaustion.`);
     }
     assert.equal(trafficResponse.status, 200, `traffic summary failed (HTTP ${trafficResponse.status}): ${JSON.stringify(traffic)}`);
     assert.equal(trafficResponse.headers.get("cache-control"), "private, no-store");
