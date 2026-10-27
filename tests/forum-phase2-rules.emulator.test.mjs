@@ -44,9 +44,10 @@ beforeEach(async () => {
 });
 after(async () => env.cleanup());
 
-test("public room is browsable, private/member/locked rooms are isolated", async () => {
+test("verified adults can browse public rooms; other rooms are isolated", async () => {
   const guest = env.unauthenticatedContext().firestore();
-  await assertSucceeds(getDoc(doc(guest, "forumRooms/public-room")));
+  await assertFails(getDoc(doc(guest, "forumRooms/public-room")));
+  await assertSucceeds(getDoc(doc(ctx("adult-two"), "forumRooms/public-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/staff-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/members-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/locked-room")));
