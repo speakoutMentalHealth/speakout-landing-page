@@ -41,7 +41,7 @@ test("admin page and module are gated; no public posting UI", () => {
   assert.match(module, /Reopen room/);
   assert.doesNotMatch(page, /contenteditable/);
 });
-test("Firestorm collection rules require admin and paired immutable audit before room changes", () => {
+test("Firestore collection rules require admin and paired immutable audit before room changes", () => {
   const rules = read("firebase/firestore.rules");
   const dashboard = read("admin-dashboard.html");
   assert.match(rules, /match \/forumRooms\/\{roomId\}/);
@@ -51,7 +51,10 @@ test("Firestorm collection rules require admin and paired immutable audit before
   assert.match(rules, /getAfter\(path\)/);
   assert.match(rules, /r\.published == false/);
   assert.match(rules, /allow update, delete: if false/);
-  assert.match(rules, /match \/forumTopics\/\{topicId\} \{ allow read, write: if false/);
-  assert.match(rules, /collection in \["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"\]/);
+  // Phase 2 prepares gated posting, but room publication is still impossible.
+  assert.match(rules, /r.published == false/);
+  assert.match(rules, /match \/forumTopics\/\{topicId\}/);
+  assert.match(rules, /forumCanPost\(request.resource.data.roomId\)/);
+  assert.match(rules, /collection in \["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants"/);
   assert.match(dashboard, /href="admin-forum.html"/);
 });
