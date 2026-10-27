@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#071b39">
+<title>SpeakOut Community — Room Administration</title>
+<link rel="icon" href="logo.png">
+<style>
+:root{color-scheme:light;--navy:#0b2446;--blue:#1254ab;--ink:#142338;--muted:#52657e;--line:#dce6f1;--surface:#fff;--bg:#f4f7fb;--soft:#eaf2ff;--danger:#a92f3d}
+*{box-sizing:border-box}body{font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
+header{background:var(--navy);color:white;padding:18px max(18px,calc((100vw - 1100px)/2))}
+header a{color:white;text-decoration:none}main{max-width:1100px;margin:auto;padding:26px 18px 60px}
+h1{font-size:clamp(1.7rem,4.8vw,2.5rem);margin:14px 0 8px}h2{font-size:1.3rem;margin:0 0 8px}
+p{margin:8px 0 14px}.muted{color:var(--muted)}.eyebrow{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 5px 25px #0b244610}
+.warn{background:#fff9e8;border:1px solid #eac76e;border-radius:12px;padding:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.room-list{display:grid;gap:12px}.room{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fff}.room-head{display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap}
+.pill{display:inline-flex;font-size:.76rem;font-weight:750;border-radius:99px;background:var(--soft);color:var(--blue);padding:4px 10px}
+label{font-size:.87rem;font-weight:750;display:block;margin-bottom:6px}input,select,textarea{border:1px solid #a7bad0;border-radius:10px;padding:11px;font:inherit;width:100%;background:white;color:var(--ink)}
+textarea{min-height:78px;resize:vertical}button,.button{appearance:none;border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:white;font:inherit;font-weight:750;cursor:pointer;text-decoration:none;display:inline-block}
+button:disabled{opacity:.56;cursor:not-allowed}.outline{background:white;color:var(--blue);border:1px solid var(--blue)}.danger{background:var(--danger)}.actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.room-title{margin:0;font-size:1.1rem}small{display:block;color:var(--muted)}
+:focus-visible{outline:3px solid #ffa62b;outline-offset:3px}#status{padding:14px;background:var(--soft);border-radius:12px;margin:12px 0}#status.error{color:#8c1626;background:#ffeded}
+[hidden]{display:none!important}@media(max-width:650px){.grid{grid-template-columns:1fr}.actions>*{flex:1 1 auto}.room-head{display:block}.pill{margin-top:6px}}
+</style>
+</head>
+<body>
+<header><a href="admin-dashboard.html">← SpeakOut Admin Command Centre</a></header>
+<main>
+<div class="eyebrow">SpeakOut Community · Admin-only setup</div>
+<h1>Forum Room Management</h1>
+<p class="muted">Create rooms, choose who they are intended for, and independently open, set read-only or lock each room.</p>
+<div class="warn"><strong>Closed development phase:</strong> Every room is stored as <code>published: false</code>. Visibility and open status are configuration settings, not an invitation to members. No discussion posting, member access or public forum is enabled in this phase.</div>
+<p id="status" role="status" aria-live="polite">Checking your administrator access…</p>
+<div id="adminUI" hidden>
+<section class="card">
+<h2>Create a room</h2>
+<form id="newRoomForm">
+<div class="grid"><div><label for="newTitle">Room name</label><input id="newTitle" maxlength="80" minlength="3" required placeholder="Example: Community Opportunities"></div><div><label for="newVisibility">Visibility</label><select id="newVisibility"><option value="public">Public (planned)</option><option value="members_only">Members only (planned)</option><option value="private">Private (planned)</option></select></div></div>
+<p><label for="newDescription">Purpose</label><textarea id="newDescription" maxlength="240" placeholder="What should members discuss?"></textarea></p>
+<label for="newStatus">Interaction status</label><select id="newStatus"><option value="locked">Locked</option><option value="read_only">Read-only</option><option value="open">Open (when activated later)</option></select>
+<div class="actions"><button type="submit" id="createRoom">Create unpublished room</button><button id="seedRooms" type="button" class="outline">Create missing starter rooms</button></div>
+</form>
+</section>
+<section class="card">
+<h2>Room controls</h2>
+<p class="muted">Changing a room's visibility never changes its lock state, and reopening never publishes or exposes a private room.</p>
+<div id="roomList" class="room-list"><p>No rooms created yet.</p></div>
+</section>
+<p><a href="admin-dashboard.html">Back to Admin Dashboard</a></p>
+</div>
+</main>
+<script type="module" src="launch-role-guard.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+<script type="module" src="js/forum-admin.js"></script>
+</body>
+</html>

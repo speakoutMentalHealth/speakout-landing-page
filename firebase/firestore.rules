@@ -823,13 +823,85 @@ service cloud.firestore {
       allow create, update, delete: if false;
     }
 
+
+    // SpeakOut Community phase 1: controls only. No published rooms or posts.
+    function forumRoomValid() {
+      let r = request.resource.data;
+      return r.keys().hasOnly(["title", "description", "visibility", "status", "published", "createdAt", "updatedAt", "updatedBy", "version", "auditId"]) &&
+        r.keys().hasAll(["title", "description", "visibility", "status", "published", "createdAt", "updatedAt", "updatedBy", "version", "auditId"]) &&
+        r.title is string && r.title.size() >= 3 && r.title.size() <= 80 &&
+        r.description is string && r.description.size() <= 240 &&
+        r.visibility in ["public", "members_only", "private"] &&
+        r.status in ["open", "read_only", "locked"] &&
+        r.published == false &&
+        r.createdAt is timestamp && r.updatedAt == request.time &&
+        r.updatedBy == request.auth.uid &&
+        r.version is int && r.version >= 1 && r.version <= 100000 &&
+        r.auditId is string && r.auditId.size() >= 10 && r.auditId.size() <= 128;
+    }
+
+    function forumAuditPaired(roomId, previousVisibility, previousStatus) {
+      let r = request.resource.data;
+      let path = /databases/$(database)/documents/forumRoomAudits/$(r.auditId);
+      return !exists(path) &&
+        getAfter(path).data.roomId == roomId &&
+        getAfter(path).data.actorUid == request.auth.uid &&
+        getAfter(path).data.previousVisibility == previousVisibility &&
+        getAfter(path).data.previousStatus == previousStatus &&
+        getAfter(path).data.nextVisibility == r.visibility &&
+        getAfter(path).data.nextStatus == r.status &&
+        getAfter(path).data.revision == r.version &&
+        getAfter(path).data.changedAt == request.time;
+    }
+
+    match /forumRooms/{roomId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin() &&
+        roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
+        forumRoomValid() && request.resource.data.createdAt == request.time &&
+        request.resource.data.version == 1 &&
+        forumAuditPaired(roomId, "none", "none");
+      allow update: if isSuperAdmin() && forumRoomValid() &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.version == resource.data.version + 1 &&
+        request.resource.data.auditId != resource.data.auditId &&
+        forumAuditPaired(roomId, resource.data.visibility, resource.data.status);
+      allow delete: if false;
+    }
+
+    match /forumRoomAudits/{auditId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin() &&
+        request.resource.data.keys().hasOnly(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "revision", "reason", "changedAt"]) &&
+        request.resource.data.keys().hasAll(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "revision", "reason", "changedAt"]) &&
+        request.resource.data.roomId is string &&
+        request.resource.data.actorUid == request.auth.uid &&
+        request.resource.data.previousVisibility in ["none", "public", "members_only", "private"] &&
+        request.resource.data.nextVisibility in ["public", "members_only", "private"] &&
+        request.resource.data.previousStatus in ["none", "open", "read_only", "locked"] &&
+        request.resource.data.nextStatus in ["open", "read_only", "locked"] &&
+        request.resource.data.revision is int &&
+        request.resource.data.reason is string && request.resource.data.reason.size() >= 8 && request.resource.data.reason.size() <= 160 &&
+        request.resource.data.changedAt == request.time &&
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.auditId == auditId &&
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.version == request.resource.data.revision &&
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.visibility == request.resource.data.nextVisibility &&
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.status == request.resource.data.nextStatus;
+      allow update, delete: if false;
+    }
+
+    // Until moderation/age gates are approved, no user-generated discussions.
+    match /forumTopics/{topicId} { allow read, write: if false; }
+    match /forumReplies/{replyId} { allow read, write: if false; }
+    match /forumRoomMembers/{memberId} { allow read, write: if false; }
+
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
