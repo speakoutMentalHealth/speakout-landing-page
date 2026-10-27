@@ -1,5 +1,4 @@
 import { auth, db } from "../firebase-config.js";
-import { STARTER_ROOMS } from "./forum-room-state.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, query, where, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -36,19 +35,24 @@ async function isEligibleAdult(user) {
 async function loadRooms() {
   const grant = await isEligibleAdult(actor);
   adultGrant = grant.allowed;
-  const possible = new Set(STARTER_ROOMS.map(r => r.id));
-  for (const id of grant.privateRooms) if (SAFE_ID.test(id)) possible.add(id);
-  const available = [];
-  for (const id of possible) {
-    try {
-      const snap = await getDoc(doc(db, "forumRooms", id));
-      if (snap.exists() && snap.data().published === true && snap.data().status !== "locked") {
-        available.push({ id, ...snap.data() });
-      }
-    } catch {
-      // No room details shown on denied lookups.
+  const found = new Map();
+  // Exact constraints let Firestore enforce visibility for every returned room.
+  for (const visibility of (adultGrant ? ["public", "members_only"] : ["public"])) {
+    for (const status of ["open", "read_only"]) {
+      const q = query(collection(db, "forumRooms"), where("published", "==", true), where("visibility", "==", visibility), where("status", "==", status), limit(100));
+      const snapshot = await getDocs(q);
+      snapshot.forEach(record => found.set(record.id, { id: record.id, ...record.data() }));
     }
   }
+  // Private rooms are never listed: look up only explicit grants.
+  for (const id of grant.privateRooms) {
+    if (!SAFE_ID.test(id)) continue;
+    try {
+      const snap = await getDoc(doc(db, "forumRooms", id));
+      if (snap.exists() && snap.data().published === true && snap.data().status !== "locked") found.set(id, { id, ...snap.data() });
+    } catch { /* revoked access remains hidden */ }
+  }
+  const available = [...found.values()];
   const container = $("rooms");
   container.replaceChildren();
   if (!available.length) {
