@@ -926,9 +926,10 @@ service cloud.firestore {
           (forumPrivateMember(roomId) && get(forumRoomPath(roomId)).data.visibility == "private")));
     }
     function forumCanPost(roomId) {
-      return forumApprovedAdult() && forumMayReadRoom(roomId) &&
-        get(forumRoomPath(roomId)).data.published == true &&
-        get(forumRoomPath(roomId)).data.status == "open";
+      let room = get(forumRoomPath(roomId)).data;
+      return forumApprovedAdult() && room.published == true && room.status == "open" &&
+        (room.visibility in ["public", "members_only"] ||
+          (room.visibility == "private" && roomId in forumGrant().privateRoomIds));
     }
     function validForumGrant(uid) {
       let g = request.resource.data;
