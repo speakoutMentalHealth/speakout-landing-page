@@ -1108,6 +1108,13 @@ service cloud.firestore {
       allow update: if validModerationChange("reply", replyId);
       allow delete: if false;
     }
+    function forumModerationTarget() {
+      let a = request.resource.data;
+      let path = a.kind == "topic"
+        ? /databases/$(database)/documents/forumTopics/$(a.itemId)
+        : /databases/$(database)/documents/forumReplies/$(a.itemId);
+      return getAfter(path).data;
+    }
     match /forumModerationAudits/{eventId} {
       allow read: if isSuperAdmin();
       // The event's target, reason, timestamps and status must match the batch.
@@ -1130,14 +1137,9 @@ service cloud.firestore {
         request.resource.data.reason.size() >= 8 &&
         request.resource.data.reason.size() <= 240 &&
         request.resource.data.changedAt == request.time &&
-        ((request.resource.data.kind == "topic" &&
-          getAfter(/databases/$(database)/documents/forumTopics/$(request.resource.data.itemId)).data.moderationAuditId == eventId &&
-          getAfter(/databases/$(database)/documents/forumTopics/$(request.resource.data.itemId)).data.roomId == request.resource.data.roomId &&
-          getAfter(/databases/$(database)/documents/forumTopics/$(request.resource.data.itemId)).data.moderationStatus == request.resource.data.nextStatus) ||
-         (request.resource.data.kind == "reply" &&
-          getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.moderationAuditId == eventId &&
-          getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.roomId == request.resource.data.roomId &&
-          getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.moderationStatus == request.resource.data.nextStatus));
+        forumModerationTarget().moderationAuditId == eventId &&
+        forumModerationTarget().roomId == request.resource.data.roomId &&
+        forumModerationTarget().moderationStatus == request.resource.data.nextStatus;
       allow update, delete: if false;
     }
     function forumReportTargetValid(report) {
