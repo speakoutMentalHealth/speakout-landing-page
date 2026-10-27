@@ -2,7 +2,7 @@ import { after, before, beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { assertFails, assertSucceeds, initializeTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, updateDoc, writeBatch, serverTimestamp } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where, setDoc, updateDoc, writeBatch, serverTimestamp } from "firebase/firestore";
 
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
 let env;
@@ -75,6 +75,12 @@ test("private pilot requires approved adult grant and active gate; rejects publi
   await assertSucceeds(getDoc(path(client("adult-pilot"),"forumRooms","test-private")));
   await assertSucceeds(getDoc(path(client("mod-pilot"),"forumRooms","test-private")));
   await assertSucceeds(getDoc(path(client("adult-pilot"),"forumTopics","sample-topic")));
+  // This is the actual Firestore compound query used by forum-community.js.
+  const adultTopics = await assertSucceeds(getDocs(query(
+    collection(client("adult-pilot"),"forumTopics"),
+    where("roomId","==","test-private"),where("moderationStatus","==","approved")
+  )));
+  assert.equal(adultTopics.docs.length,1);
   for(const db of [client("outsider"),client("teen-pilot"),env.unauthenticatedContext().firestore()]){
     await assertFails(getDoc(path(db,"forumRooms","test-private")));
     await assertFails(getDoc(path(db,"forumTopics","sample-topic")));
