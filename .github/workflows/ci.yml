@@ -1,8 +1,8 @@
 name: SpeakOut CI
 
 on:
+  # Run tests for stacked feature PRs as well as PRs targeting main.
   pull_request:
-    branches: [main]
   push:
     branches: [main, feature/speakout-on-the-move]
 
