@@ -824,7 +824,27 @@ service cloud.firestore {
     }
 
 
-    // SpeakOut Community phase 1: controls only. No published rooms or posts.
+    // Pilot control is only provisioned by a trusted Firebase administrative process.
+    function forumPilotAuthorized(roomId) {
+      let gate = /databases/$(database)/documents/forumReleaseControls/pilot;
+      return exists(gate) && get(gate).data.enabled == true &&
+        get(gate).data.mode == "private_pilot" &&
+        get(gate).data.expiresAt > request.time &&
+        roomId in get(gate).data.roomIds;
+    }
+    function forumPilotWriteAllowed(roomId) {
+      return request.resource.data.published == false ||
+        (request.resource.data.published == true &&
+         resource.data.visibility == "private" &&
+         request.resource.data.visibility == "private" &&
+         request.resource.data.status in ["open", "read_only"] &&
+         forumPilotAuthorized(roomId));
+    }
+    match /forumReleaseControls/{releaseId} {
+      allow get: if isSuperAdmin();
+      allow list, create, update, delete: if false;
+    }
+    // Trusted and expiring private pilot authorization is required to publish.
     function forumRoomValid() {
       let r = request.resource.data;
       return r.keys().hasOnly(["title", "description", "visibility", "status", "published", "createdAt", "updatedAt", "updatedBy", "version", "auditId"]) &&
@@ -833,14 +853,14 @@ service cloud.firestore {
         r.description is string && r.description.size() <= 240 &&
         r.visibility in ["public", "members_only", "private"] &&
         r.status in ["open", "read_only", "locked"] &&
-        r.published == false &&
+        (r.published == false || r.published == true) &&
         r.createdAt is timestamp && r.updatedAt == request.time &&
         r.updatedBy == request.auth.uid &&
         r.version is int && r.version >= 1 && r.version <= 100000 &&
         r.auditId is string && r.auditId.size() >= 10 && r.auditId.size() <= 128;
     }
 
-    function forumAuditPaired(roomId, previousVisibility, previousStatus) {
+    function forumAuditPaired(roomId, previousVisibility, previousStatus, previousPublished) {
       let r = request.resource.data;
       let path = /databases/$(database)/documents/forumRoomAudits/$(r.auditId);
       return !exists(path) &&
@@ -848,6 +868,8 @@ service cloud.firestore {
         getAfter(path).data.actorUid == request.auth.uid &&
         getAfter(path).data.previousVisibility == previousVisibility &&
         getAfter(path).data.previousStatus == previousStatus &&
+        getAfter(path).data.previousPublished == previousPublished &&
+        getAfter(path).data.nextPublished == r.published &&
         getAfter(path).data.nextVisibility == r.visibility &&
         getAfter(path).data.nextStatus == r.status &&
         getAfter(path).data.revision == r.version &&
@@ -859,35 +881,38 @@ service cloud.firestore {
       allow list: if isSuperAdmin();
       allow create: if isSuperAdmin() &&
         roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
-        forumRoomValid() && request.resource.data.createdAt == request.time &&
+        forumRoomValid() && request.resource.data.published == false && request.resource.data.createdAt == request.time &&
         request.resource.data.version == 1 &&
-        forumAuditPaired(roomId, "none", "none");
+        forumAuditPaired(roomId, "none", "none", false);
       allow update: if isSuperAdmin() && forumRoomValid() &&
+        forumPilotWriteAllowed(roomId) &&
         request.resource.data.createdAt == resource.data.createdAt &&
         request.resource.data.version == resource.data.version + 1 &&
         request.resource.data.auditId != resource.data.auditId &&
-        forumAuditPaired(roomId, resource.data.visibility, resource.data.status);
+        forumAuditPaired(roomId, resource.data.visibility, resource.data.status, resource.data.published);
       allow delete: if false;
     }
 
     match /forumRoomAudits/{auditId} {
       allow read: if isSuperAdmin();
       allow create: if isSuperAdmin() &&
-        request.resource.data.keys().hasOnly(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "revision", "reason", "changedAt"]) &&
-        request.resource.data.keys().hasAll(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "revision", "reason", "changedAt"]) &&
+        request.resource.data.keys().hasOnly(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "previousPublished", "nextPublished", "revision", "reason", "changedAt"]) &&
+        request.resource.data.keys().hasAll(["roomId", "actorUid", "previousVisibility", "nextVisibility", "previousStatus", "nextStatus", "previousPublished", "nextPublished", "revision", "reason", "changedAt"]) &&
         request.resource.data.roomId is string &&
         request.resource.data.actorUid == request.auth.uid &&
         request.resource.data.previousVisibility in ["none", "public", "members_only", "private"] &&
         request.resource.data.nextVisibility in ["public", "members_only", "private"] &&
         request.resource.data.previousStatus in ["none", "open", "read_only", "locked"] &&
         request.resource.data.nextStatus in ["open", "read_only", "locked"] &&
+        request.resource.data.previousPublished is bool && request.resource.data.nextPublished is bool &&
         request.resource.data.revision is int &&
         request.resource.data.reason is string && request.resource.data.reason.size() >= 8 && request.resource.data.reason.size() <= 160 &&
         request.resource.data.changedAt == request.time &&
         getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.auditId == auditId &&
         getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.version == request.resource.data.revision &&
         getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.visibility == request.resource.data.nextVisibility &&
-        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.status == request.resource.data.nextStatus;
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.status == request.resource.data.nextStatus &&
+        getAfter(/databases/$(database)/documents/forumRooms/$(request.resource.data.roomId)).data.published == request.resource.data.nextPublished;
       allow update, delete: if false;
     }
 
