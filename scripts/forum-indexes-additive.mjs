@@ -6,7 +6,6 @@
  */
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
 
 function arg(name, fallback="") {
   const entry=process.argv.find(x=>x.startsWith("--"+name+"="));
@@ -82,6 +81,7 @@ for(const group of new Set(proposed.map(x=>x.collectionGroup)))byGroup.set(group
 const missing=[];
 for(const item of proposed){
   const existing=byGroup.get(item.collectionGroup).find(x=>signature(x)===signature(item));
+  if(existing?.state==="ERROR")throw Error("Existing index has ERROR state: "+reference(item)+". Operator intervention required.");
   logResult({collection:item.collectionGroup,signature:reference(item),
     status:existing ? (existing.state||"EXISTS") : "MISSING",
     mode:mode.toUpperCase()});
