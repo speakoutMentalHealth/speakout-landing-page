@@ -856,7 +856,7 @@ service cloud.firestore {
 
     match /forumRooms/{roomId} {
       allow get: if forumMayReadRoom(roomId);
-      allow list: if isSuperAdmin();
+      allow list: if isSuperAdmin() || (resource.data.published == true && resource.data.status in ["open", "read_only"] && (resource.data.visibility == "public" || (resource.data.visibility == "members_only" && forumApprovedAdult())));
       allow create: if isSuperAdmin() &&
         roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
         forumRoomValid() && request.resource.data.createdAt == request.time &&
