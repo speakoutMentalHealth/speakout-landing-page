@@ -32,7 +32,7 @@ button:disabled{opacity:.56;cursor:not-allowed}.outline{background:white;color:v
 <div class="eyebrow">SpeakOut Community · Admin-only setup</div>
 <h1>Forum Room Management</h1>
 <p class="muted">Create rooms, choose who they are intended for, and independently open, set read-only or lock each room.</p>
-<div class="warn"><strong>Closed development phase:</strong> Every room is stored as <code>published: false</code>. Visibility and open status are configuration settings, not an invitation to members. No discussion posting, member access or public forum is enabled in this phase.</div>
+<div class="warn"><strong>Closed development phase by default:</strong> Rooms start as <code>published: false</code>. Only a trusted, expiring private-pilot release gate plus a separately audited administrator action can open a selected room to approved adults. Without the gate, all member posting remains unavailable. See the private pilot runbook before authorizing any release.</div>
 <p id="status" role="status" aria-live="polite">Checking your administrator access…</p>
 <div id="adminUI" hidden>
 <section class="card">
