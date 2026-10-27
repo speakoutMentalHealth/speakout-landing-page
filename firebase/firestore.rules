@@ -1115,6 +1115,12 @@ service cloud.firestore {
         : /databases/$(database)/documents/forumReplies/$(a.itemId);
       return getAfter(path).data;
     }
+    function forumModerationTargetPaired(eventId) {
+      let item = forumModerationTarget();
+      return item.moderationAuditId == eventId &&
+        item.roomId == request.resource.data.roomId &&
+        item.moderationStatus == request.resource.data.nextStatus;
+    }
     match /forumModerationAudits/{eventId} {
       allow read: if isSuperAdmin();
       // The event's target, reason, timestamps and status must match the batch.
@@ -1137,9 +1143,7 @@ service cloud.firestore {
         request.resource.data.reason.size() >= 8 &&
         request.resource.data.reason.size() <= 240 &&
         request.resource.data.changedAt == request.time &&
-        forumModerationTarget().moderationAuditId == eventId &&
-        forumModerationTarget().roomId == request.resource.data.roomId &&
-        forumModerationTarget().moderationStatus == request.resource.data.nextStatus;
+        forumModerationTargetPaired(eventId);
       allow update, delete: if false;
     }
     function forumReportTargetValid(report) {
