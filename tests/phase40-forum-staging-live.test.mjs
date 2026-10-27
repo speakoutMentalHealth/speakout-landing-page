@@ -27,11 +27,11 @@ test("real pilot uses staging only, synthetic accounts and read/write permission
  assert.match(s,/await close\.commit\(\)/);
  assert.match(s,/finally\{\s*try\{await cleanup\(\)/);
  assert.match(s,/STAGING CLEANUP PASS/);
- assert.match(s,/currentDocument\\.updateTime/);
- assert.match(s,/currentDocument\\.exists=false/);
- assert.match(s,/adminGate\\(gateData,gate\\.updateTime\\)/);
- assert.match(s,/adminGate\\(priorGate,current\\.updateTime\\)/);
- assert.match(s,/runTag!==suffix/);
+ assert(s.includes("currentDocument.updateTime"));
+ assert(s.includes("currentDocument.exists=false"));
+ assert(s.includes("adminGate(gateData,gate.updateTime)"));
+ assert(s.includes("adminGate(priorGate,current.updateTime)"));
+ assert(s.includes("runTag!==suffix"));
  assert.match(s,/process\.exitCode=1/);
 });
 test("staging workflow is opt-in, serialized, checks capacity before writes, and never targets production",()=>{
