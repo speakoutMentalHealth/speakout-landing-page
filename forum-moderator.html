@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f5faf7">
+<title>Moderation workspace · SpeakOut Community</title>
+<style>
+*{box-sizing:border-box}
+:root{font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#f5f8f6;color:#193e31}
+body{margin:0;min-width:0}
+a{color:#196046}
+header{background:#164b39;color:white}
+header div{max-width:1120px;margin:auto;padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header a{color:white;font-weight:750;text-decoration:none}
+main{max-width:1120px;margin:auto;padding:23px 20px 56px}
+h1{font-size:clamp(1.5rem,4.5vw,2.2rem);letter-spacing:-.04em;margin:0 0 6px}
+h2{font-size:1.1rem;margin:0 0 13px;letter-spacing:-.02em}
+p{color:#486657}
+.intro{margin:0 0 19px}
+.panel{border-radius:17px;border:1px solid #dce7de;background:white;padding:19px;margin-bottom:17px;box-shadow:0 5px 22px #193a2910}
+button,select{font:inherit}
+button,select{min-height:44px}
+button{cursor:pointer;border:1px solid #cde1d3;border-radius:11px;padding:9px 13px;font-weight:750;color:#15543b;background:#edf7f0}
+button.primary{color:#fff;background:#176044;border-color:#176044}
+button.danger{color:#912e34;background:#fff1f2;border-color:#edc8cd}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid #14865d;outline-offset:3px}
+[hidden]{display:none!important}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+label{font-weight:730;font-size:.86rem}
+select{max-width:100%;background:#fff;color:#153e2d;border:1px solid #b9d3c0;border-radius:11px;padding:8px 12px}
+#status{border-radius:12px;background:#e6f3e9;padding:12px 14px;color:#205a3a;font-weight:670}
+#status.error{background:#fff0f0;color:#8c2626}
+.stack{display:grid;gap:11px}
+.record{border:1px solid #e1ebe4;border-radius:12px;padding:16px;min-width:0}
+.record h3{font-size:1.02rem;margin:0 0 5px;overflow-wrap:anywhere}
+.record p{font-size:.89rem;white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0 12px}
+.record small{color:#4f6c5b;display:block}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.warning{background:#fff8e9;color:#745721;border:1px solid #edddb4;padding:12px 14px;border-radius:12px;font-size:.84rem}
+.muted{color:#577061;font-size:.86rem}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+footer{font-size:.77rem;color:#55705f;text-align:center}
+@media(max-width:700px){main{padding:17px 14px 35px}.panel{padding:15px}.cols{grid-template-columns:1fr}.record{padding:13px}header div{padding:13px 14px}}
+</style></head><body>
+<header><div><a href="forum.html">← SpeakOut Community</a><strong>Adult moderation workspace</strong></div></header>
+<main>
+<h1>Review community discussions</h1>
+<p class="intro">Restricted to individually approved adult moderators for their assigned private pilot rooms. Every decision is recorded in an immutable review audit.</p>
+<p id="status" role="status" aria-live="polite">Checking your account and assigned rooms…</p>
+<div id="workspace" hidden>
+<section class="panel"><div class="warning"><strong>Safeguarding:</strong> Approvals publish content only to verified members of the authorised private room. Do not include personal health data in public-facing reasons. For immediate danger, follow SpeakOut’s escalation procedure.</div>
+<div class="controls" style="margin-top:15px">
+<label for="roomChoice">Assigned pilot room</label>
+<select id="roomChoice" aria-label="Choose your assigned private room"></select>
+<button type="button" id="refresh" class="primary">Refresh queue</button>
+</div>
+<p class="muted" id="roomStatus"></p></section>
+<div class="cols">
+<section class="panel"><h2>Pending discussions</h2><div id="topics" class="stack" aria-live="polite"></div></section>
+<section class="panel"><h2>Pending replies</h2><div id="replies" class="stack" aria-live="polite"></div></section>
+</div>
+<section class="panel"><h2>Member safety reports</h2><p class="muted">Reports may be reviewed without exposing reporter identities in this workspace. Reported material can be removed after human review.</p><div id="reports" class="stack"></div></section>
+</div>
+<footer>Only an approved adult moderator with an active, assigned, published and unlocked room can access this workspace. Room closure or release-gate expiry revokes access.</footer>
+</main>
+<script type="module" src="js/account-controls.js"></script>
+<script type="module" src="js/forum-moderator.js"></script>
+</body></html>
