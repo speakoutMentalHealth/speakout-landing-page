@@ -61,3 +61,17 @@ For `speaakout-portal` production, additionally supply `--actor=OWNER_ID --produ
 **Indexes may be creating rather than READY after an API creation response.** Re-run `--mode=inspect` and verify every required composite is READY before declaring production forum discussion queries operational. The script refuses to proceed when an existing matching index is in ERROR state.
 
 No indexing operation is run automatically by the script or PR. A distinct staging Firebase project and appropriate operator credentials remain prerequisites to real end-to-end testing.
+
+## Run the real, synthetic adult forum staging acceptance
+
+This repository already uses the separate Firebase project `speakout-portal-staging` and GitHub secret `STAGING_FIREBASE_SERVICE_ACCOUNT_JSON`. There is **no need to create a new staging project**. Do not attempt this against `speaakout-portal` or use production credentials.
+
+1. Go to **GitHub Actions → Forum Real Firebase Staging Pilot → Run workflow** on `main`.
+2. Enter `SYNTHETIC_STAGING_ONLY` in the **acceptance** field. The workflow rejects any other value.
+3. Leave **create_missing_indexes** unchecked initially. This runs the staging-capacity preflight and safely inspects the three necessary forum composite indexes. If any is missing, the job stops **without** running the pilot.
+4. After reviewing staging database permissions, select **create_missing_indexes** once to create only missing *staging* indexes. No existing indexes are deleted. Because building is asynchronous, the job can stop until they become READY; rerun inspection after they finish. Do not repeatedly launch the pilot on capacity/quota errors.
+5. After all indexes read READY, the workflow deploys only Firestore rules to **staging**. It then creates five synthetic staging Auth identities, an isolated randomly named private room and a 12-minute trusted gate. It tests real Firestore client writes, adult access/denials, audit-paired publication/approval, pending and approved discussion/reply queries, report access and room lock/revocation.
+6. The test must report **STAGING CLEANUP PASS**: all its synthetic profiles, grants, content, audits and Firebase Auth users removed, and the previous disabled staging gate restored. Cleanup failure is a release blocker.
+7. Record the exact GitHub Actions job URL, commit SHA and tested index/rules state. **Only one successful staging acceptance is enough.** Do not launch repeated runs unless a material issue was fixed.
+
+The workflow uses the **existing** `speakout-shared-staging` concurrency group and performs no automatic runs on PRs or merges. It does not activate production or authorize real members. Release remains gated by real adult-verification procedures, moderator coverage, safety and privacy review, and an explicitly approved production-pilot decision.
