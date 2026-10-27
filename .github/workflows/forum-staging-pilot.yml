@@ -12,6 +12,11 @@ on:
         required: true
         type: boolean
         default: false
+      run_pilot:
+        description: "Actually deploy staging rules and run synthetic real-user forum acceptance"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -92,7 +97,14 @@ jobs:
           node scripts/forum-indexes-additive.mjs \
             --mode=inspect --project=speakout-portal-staging
 
+      - name: Record inspect-only readiness
+        if: inputs.run_pilot == false && success()
+        run: |
+          echo "### Forum staging preparation: index inspection passed" >> "$GITHUB_STEP_SUMMARY"
+          echo "No rules deployed, no staging accounts created and no room or gate modified." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Deploy only current Firestore rules to staging
+        if: inputs.run_pilot == true
         shell: bash
         run: |
           set -euo pipefail
@@ -101,10 +113,11 @@ jobs:
             --project speakout-portal-staging --non-interactive
 
       - name: Run one genuine Firebase pilot and clean up test data
+        if: inputs.run_pilot == true
         run: node tests/forum-staging-live-pilot.mjs
 
       - name: Record staging-only acceptance
-        if: success()
+        if: inputs.run_pilot == true && success()
         run: |
           echo "### Forum staging pilot: PASS" >> "$GITHUB_STEP_SUMMARY"
           echo "Real staging Firestore and synthetic Auth accounts: private publication, adult access, pending review, approved topic/reply, reporting, lock/revocation, and cleanup." >> "$GITHUB_STEP_SUMMARY"
