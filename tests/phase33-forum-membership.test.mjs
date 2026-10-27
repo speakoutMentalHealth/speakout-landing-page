@@ -42,5 +42,5 @@ test("Phase 2 forum collections excluded from legacy catchall and guarded by aud
   assert.match(rules, /forumCanPost\(roomId\)/);
   assert.match(rules, /pairedForumGrantAudit\(/);
   assert.match(rules, /forumModerationPair\(/);
-  assert.match(rules, /"forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls"/);
+  assert.match(rules, /"forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"/);
 });
