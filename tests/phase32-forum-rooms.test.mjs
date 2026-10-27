@@ -51,8 +51,10 @@ test("Firestore collection rules require admin and paired immutable audit before
   assert.match(rules, /getAfter\(path\)/);
   assert.match(rules, /r\.published == false/);
   assert.match(rules, /allow update, delete: if false/);
-  // Phase 2 prepares gated posting, but room publication is still impossible.
-  assert.match(rules, /r.published == false/);
+  // Phase 3 supports an explicit trusted, expiring private-room release gate.
+  assert.match(rules, /forumPilotWriteAllowed\(roomId\)/);
+  assert.match(rules, /forumPilotAuthorized\(roomId\)/);
+  assert.match(rules, /match \/forumReleaseControls\/\{releaseId\}/);
   assert.match(rules, /match \/forumTopics\/\{topicId\}/);
   assert.match(rules, /forumCanPost\(request.resource.data.roomId\)/);
   assert.match(rules, /collection in \["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants"/);
