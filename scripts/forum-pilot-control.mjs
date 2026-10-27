@@ -62,6 +62,11 @@ try{
   if(action === "enable" && !["open","read_only"].includes(room.get("status")))throw new Error("Room must be open or read-only before pilot gate.");
   const gateRef=db.collection("forumReleaseControls").doc("pilot");
   const previous=await gateRef.get();
+  if(action === "disable" &&
+     previous.exists && previous.get("enabled") === true &&
+     !(previous.get("roomIds") || []).includes(roomId)) {
+    throw new Error("Active release controls a different room. Refusing unintended cross-room shutdown.");
+  }
   if(action === "enable") {
     if(previous.exists && previous.get("enabled") === true) {
       throw new Error("An active pilot gate already exists; disable the old gate and audit first.");
@@ -100,5 +105,5 @@ try{
   console.log("Trusted private pilot control "+action+" completed; audit "+auditRef.id);
   if(action==="enable")console.log("Room is still unpublished. An approved admin must separately use admin-forum.html to publish the authorized private room.");
 }finally{
-  await app.delete();
+  await appSdk.deleteApp(app);
 }
