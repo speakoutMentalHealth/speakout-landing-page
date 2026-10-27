@@ -79,6 +79,7 @@ async function currentIndexes(group) {
 const byGroup=new Map();
 for(const group of new Set(proposed.map(x=>x.collectionGroup)))byGroup.set(group,await currentIndexes(group));
 const missing=[];
+const notReady=[];
 for(const item of proposed){
   const existing=byGroup.get(item.collectionGroup).find(x=>signature(x)===signature(item));
   if(existing?.state==="ERROR")throw Error("Existing index has ERROR state: "+reference(item)+". Operator intervention required.");
@@ -86,11 +87,12 @@ for(const item of proposed){
     status:existing ? (existing.state||"EXISTS") : "MISSING",
     mode:mode.toUpperCase()});
   if(!existing)missing.push(item);
+  else if(existing.state!=="READY")notReady.push(item);
 }
 if(mode==="inspect"){
-  logResult({mode:"READ_ONLY_INSPECTION",project,missing:missing.length,total:proposed.length,
-    message:"No indexes created, modified or deleted. READY is required before real forum queries."});
-  process.exit(missing.length?3:0);
+  logResult({mode:"READ_ONLY_INSPECTION",project,missing:missing.length,notReady:notReady.length,total:proposed.length,
+    message:"No indexes created, modified or deleted. Every composite must be READY before forum acceptance."});
+  process.exit(missing.length||notReady.length?3:0);
 }
 for(const item of missing){
   const url=base+encodeURIComponent(item.collectionGroup)+"/indexes";
