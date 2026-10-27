@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0b2446"><title>SpeakOut Community — Preview</title>
+<link rel="icon" href="logo.png">
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,sans-serif;background:#f4f7fc;color:#17293e}
+header{background:#0c274a;color:white;padding:18px max(18px,calc((100vw - 1060px)/2))}header a{color:white;text-decoration:none}
+main{max-width:1060px;padding:25px 18px 70px;margin:auto}h1{font-size:clamp(1.9rem,5vw,2.8rem);margin:6px 0}h2{font-size:1.25rem}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px}
+.card{border:1px solid #d7e4f2;background:#fff;padding:18px;border-radius:16px;margin-bottom:16px}
+.muted{color:#576b80}.notice{background:#fff7e3;border:1px solid #efd092;padding:15px;border-radius:12px;margin:15px 0}
+button{font:inherit;font-weight:700;padding:11px 15px;border-radius:9px;border:0;background:#1b5db0;color:white;cursor:pointer}
+button:disabled{opacity:.6}.room-button{width:100%;text-align:left;background:#e9f2ff;color:#11355f;margin-bottom:9px}
+label{display:block;font-weight:700;margin:9px 0 5px}input,textarea,select{width:100%;font:inherit;padding:10px;border:1px solid #a7b8c8;border-radius:9px}
+textarea{min-height:85px;resize:vertical}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.post{border:1px solid #e0e7ef;border-radius:12px;padding:15px;margin:12px 0}.post-body{white-space:pre-wrap;overflow-wrap:anywhere}
+#status{padding:13px;background:#eaf2ff;border-radius:10px}#status.error{background:#ffe7e7;color:#a01821}
+[hidden]{display:none!important}:focus-visible{outline:3px solid #f9a92c;outline-offset:3px}
+@media(max-width:780px){.layout{grid-template-columns:1fr}}
+</style></head><body>
+<header><a href="https://speakoutmentalhealth.org/">SpeakOut</a> · Community Preview</header>
+<main><p class="muted">Connect · Learn · Grow</p><h1>SpeakOut Community</h1>
+<p>Discover opportunities, share learning and connect responsibly through moderated discussions.</p>
+<div class="notice"><strong>Preview — not launched.</strong> No rooms are published, and there are no public discussions. Posting will require an approved adult account and moderator review. This is not a counselling or emergency service.</div>
+<p id="status" role="status" aria-live="polite">Checking community access…</p>
+<div class="layout"><aside class="card">
+<h2>Available rooms</h2><div id="rooms">No published rooms available yet.</div>
+<p><a href="auth.html">SpeakOut portal sign in</a></p>
+</aside><section id="discussion" class="card" hidden>
+<h2 id="roomTitle">Room discussion</h2><p id="roomDescription" class="muted"></p>
+<div id="topics"></div>
+<form id="newTopic" hidden>
+<h3>Start a discussion</h3>
+<label for="topicTitle">Title</label><input id="topicTitle" maxlength="140" minlength="5" required>
+<label for="topicBody">Message</label><textarea id="topicBody" maxlength="4000" minlength="5" required></textarea>
+<div class="actions"><button type="submit">Submit for moderator review</button></div>
+</form>
+</section></div>
+</main>
+<script type="module" src="js/account-controls.js"></script>
+<script type="module" src="js/forum-community.js"></script>
+</body></html>
