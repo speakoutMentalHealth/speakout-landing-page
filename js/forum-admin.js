@@ -172,7 +172,7 @@ async function updateRoom(room, next, reason) {
   const batch = writeBatch(db);
   const revision = room.version + 1;
   // Changes to privacy/locked state automatically end the pilot.
-  const nextPublished = next.published === true && safe.visibility === "private" &&
+  const nextPublished = (next.published === undefined ? room.published : next.published) === true && safe.visibility === "private" &&
     safe.status !== "locked";
   const auditId = writeAudit(batch, roomRef, room, { ...safe, published: nextPublished }, revision, reason);
   batch.update(roomRef, {
