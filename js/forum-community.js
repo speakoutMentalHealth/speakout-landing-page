@@ -37,7 +37,7 @@ async function loadRooms() {
   adultGrant = grant.allowed;
   const found = new Map();
   // Exact constraints let Firestore enforce visibility for every returned room.
-  for (const visibility of (adultGrant ? ["public", "members_only"] : ["public"])) {
+  for (const visibility of (adultGrant ? ["public", "members_only"] : [])) {
     for (const status of ["open", "read_only"]) {
       const q = query(collection(db, "forumRooms"), where("published", "==", true), where("visibility", "==", visibility), where("status", "==", status), limit(100));
       const snapshot = await getDocs(q);
@@ -58,7 +58,7 @@ async function loadRooms() {
   if (!available.length) {
     container.append(txt("p", "No rooms have been published for your account."));
     $("discussion").hidden = true;
-    notice("Forum launch is pending. No discussions are open.");
+    notice(adultGrant ? "No rooms are currently available." : "Sign in and obtain verified adult access to view the community.");
     return;
   }
   for (const item of available) {
@@ -69,7 +69,7 @@ async function loadRooms() {
     button.addEventListener("click", () => showRoom(item));
     container.append(button);
   }
-  notice(adultGrant ? "Verified adult forum access active." : "You can view public approved discussions. Adult approval is required to post.");
+  notice("Verified adult forum access active.");
   const requested = new URLSearchParams(location.search).get("room");
   await showRoom(available.find(x => x.id === requested) || available[0]);
 }
