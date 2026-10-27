@@ -96,13 +96,19 @@ async function decide(kind, itemId, data, decision) {
   });
   setBusy(true);
   notice("Saving moderated decision and immutable audit…");
+  let saved = false;
   try {
     await batch.commit();
-    notice("Moderation decision recorded in the assigned room.");
-    await refreshQueue();
-  } catch (err) {
+    saved = true;
+  } catch {
     notice("Could not save decision. Your assignment or pilot may have expired. Refresh and try again.", true);
   } finally { setBusy(false); }
+  if (saved) {
+    await refreshQueue();
+    if (!$("status").classList.contains("error")) {
+      notice("Moderation decision recorded in the assigned room.");
+    }
+  }
 }
 function showPending(kind, snap, container) {
   if (snap.empty) {
