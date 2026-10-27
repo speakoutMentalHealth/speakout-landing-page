@@ -825,14 +825,15 @@ service cloud.firestore {
 
 
     // Pilot control is only provisioned by a trusted Firebase administrative process.
+    function forumPilotGateIsActive(roomId) {
+      let gate = get(/databases/$(database)/documents/forumReleaseControls/pilot).data;
+      return gate.enabled == true && gate.mode == "private_pilot" &&
+        gate.expiresAt is timestamp && gate.expiresAt > request.time &&
+        gate.roomIds is list && roomId in gate.roomIds;
+    }
     function forumPilotAuthorized(roomId) {
-      let gate = /databases/$(database)/documents/forumReleaseControls/pilot;
-      return exists(gate) && get(gate).data.enabled == true &&
-        get(gate).data.mode == "private_pilot" &&
-        get(gate).data.expiresAt is timestamp &&
-        get(gate).data.expiresAt > request.time &&
-        get(gate).data.roomIds is list &&
-        roomId in get(gate).data.roomIds;
+      return exists(/databases/$(database)/documents/forumReleaseControls/pilot) &&
+        forumPilotGateIsActive(roomId);
     }
     function forumPilotWriteAllowed(roomId) {
       return request.resource.data.published == false ||
@@ -1061,15 +1062,15 @@ service cloud.firestore {
     function forumModerationPair(kind, itemId) {
       let c = request.resource.data;
       let path = /databases/$(database)/documents/forumModerationAudits/$(c.moderationAuditId);
+      let audit = getAfter(path).data;
       return c.moderationAuditId != resource.data.moderationAuditId &&
         !exists(path) &&
-        getAfter(path).data.kind == kind &&
-        getAfter(path).data.itemId == itemId &&
-        getAfter(path).data.roomId == resource.data.roomId &&
-        getAfter(path).data.actorUid == request.auth.uid &&
-        getAfter(path).data.previousStatus == resource.data.moderationStatus &&
-        getAfter(path).data.nextStatus == c.moderationStatus &&
-        getAfter(path).data.changedAt == request.time;
+        audit.kind == kind && audit.itemId == itemId &&
+        audit.roomId == resource.data.roomId &&
+        audit.actorUid == request.auth.uid &&
+        audit.previousStatus == resource.data.moderationStatus &&
+        audit.nextStatus == c.moderationStatus &&
+        audit.changedAt == request.time;
     }
     function validModerationChange(kind, itemId) {
       return (isSuperAdmin() || (forumModerator(resource.data.roomId) && forumMayReadRoom(resource.data.roomId))) &&
