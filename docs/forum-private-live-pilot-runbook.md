@@ -37,3 +37,27 @@ All six existing MindCheck room demos remain simulations; they do not verify rea
 ### Known future work
 
 Robust protection against high-volume reports, moderator shift handoff and dashboards for delegated moderators, content retention/removal lifecycle, age-proof verification integration, accessible multilingual copy, notification privacy, rate limits and production observability. A successful staging test is required before accepting real user content.
+
+## Add-only index operations — no destructive Firebase CLI sync
+
+The forum needs composite indexes for approved topics, approved replies and pending moderator replies. The repository's `firebase/forum-firestore.indexes.json` contains only forum indexes, not every index used by the existing school and learning portal. **Do not blindly deploy this file with `firebase deploy --only firestore:indexes` in production**, because it could delete or alter unrelated remote index definitions.
+
+The additive helper uses the official Firestore Admin REST API. It never sends DELETE, PATCH or an index replacement request.
+
+```bash
+# Safe offline plan: needs neither credentials nor network
+node scripts/forum-indexes-additive.mjs
+
+# Read-only comparison on the SEPARATE staging project (requires gcloud authentication)
+node scripts/forum-indexes-additive.mjs --mode=inspect --project=YOUR_STAGING_PROJECT
+
+# Privileged, explicitly approved staging add-only creation of missing indexes
+export FORUM_INDEX_CONFIRM_PROJECT=YOUR_STAGING_PROJECT
+node scripts/forum-indexes-additive.mjs --mode=apply --project=YOUR_STAGING_PROJECT --ack=ADD_ONLY
+```
+
+For `speaakout-portal` production, additionally supply `--actor=OWNER_ID --production-ack=PRODUCTION_INDEXES_APPROVED` and set `FORUM_INDEX_PRODUCTION_APPROVER=OWNER_ID`. These controls are necessary but do not replace organizational release approval. Use a credential limited to the intended project and never commit or echo service-account secrets.
+
+**Indexes may be creating rather than READY after an API creation response.** Re-run `--mode=inspect` and verify every required composite is READY before declaring production forum discussion queries operational. The script refuses to proceed when an existing matching index is in ERROR state.
+
+No indexing operation is run automatically by the script or PR. A distinct staging Firebase project and appropriate operator credentials remain prerequisites to real end-to-end testing.
