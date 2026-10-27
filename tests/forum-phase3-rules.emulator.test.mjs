@@ -165,3 +165,53 @@ test("a locked or unpublished pilot room hides its content even from delegated m
   await assertFails(getDoc(path(client("adult-pilot"),"forumTopics","sample-topic")));
   await assertFails(getDoc(path(client("mod-pilot"),"forumTopics","sample-topic")));
 });
+
+
+test("delegated adult moderator can query only own private room pending topics, replies and reports",async()=>{
+  await gate();
+  await assertSucceeds(publish(client("admin-pilot")));
+  const member=client("adult-pilot");
+  await assertSucceeds(setDoc(path(member,"forumTopics","awaiting-topic"),{
+    roomId:"test-private",title:"Community workshop for adults",
+    body:"Please review the ICT workshop programme.",
+    authorUid:"adult-pilot",moderationStatus:"pending",
+    moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+  }));
+  await assertSucceeds(setDoc(path(member,"forumReplies","awaiting-reply"),{
+    roomId:"test-private",topicId:"sample-topic",
+    body:"An example reply that needs approval.",
+    authorUid:"adult-pilot",moderationStatus:"pending",
+    moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+  }));
+  const mod=client("mod-pilot");
+  const pendingTopics=await assertSucceeds(getDocs(query(collection(mod,"forumTopics"),
+    where("roomId","==","test-private"),where("moderationStatus","==","pending"))));
+  assert.equal(pendingTopics.docs.length,1);
+  const pendingReplies=await assertSucceeds(getDocs(query(collection(mod,"forumReplies"),
+    where("roomId","==","test-private"),where("moderationStatus","==","pending"))));
+  assert.equal(pendingReplies.docs.length,1);
+  await assertFails(getDocs(query(collection(member,"forumTopics"),
+    where("roomId","==","test-private"),where("moderationStatus","==","pending"))));
+  await assertFails(getDocs(query(collection(client("outsider"),"forumReplies"),
+    where("roomId","==","test-private"),where("moderationStatus","==","pending"))));
+  await assertSucceeds(setDoc(path(member,"forumReports","adult-pilot__topic__sample-topic"),{
+    roomId:"test-private",targetType:"topic",targetId:"sample-topic",
+    reporterUid:"adult-pilot",reason:"privacy",createdAt:serverTimestamp()
+  }));
+  const reports=await assertSucceeds(getDocs(query(collection(mod,"forumReports"),
+    where("roomId","==","test-private"))));
+  assert.equal(reports.docs.length,1);
+  // Moderation must change the content and create its immutable paired audit atomically.
+  const batch=writeBatch(mod);
+  batch.update(path(mod,"forumReplies","awaiting-reply"),{
+    moderationStatus:"approved",moderationAuditId:"review-reply-1",
+    updatedAt:serverTimestamp()
+  });
+  batch.set(path(mod,"forumModerationAudits","review-reply-1"),{
+    kind:"reply",itemId:"awaiting-reply",roomId:"test-private",
+    actorUid:"mod-pilot",previousStatus:"pending",nextStatus:"approved",
+    changedAt:serverTimestamp(),reason:"Safe moderated reply approved"
+  });
+  await assertSucceeds(batch.commit());
+  await assertSucceeds(getDoc(path(member,"forumReplies","awaiting-reply")));
+});
