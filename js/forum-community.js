@@ -1,5 +1,4 @@
 import { auth, db } from "../firebase-config.js";
-import { STARTER_ROOMS } from "./forum-room-state.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, query, where, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -36,25 +35,30 @@ async function isEligibleAdult(user) {
 async function loadRooms() {
   const grant = await isEligibleAdult(actor);
   adultGrant = grant.allowed;
-  const possible = new Set(STARTER_ROOMS.map(r => r.id));
-  for (const id of grant.privateRooms) if (SAFE_ID.test(id)) possible.add(id);
-  const available = [];
-  for (const id of possible) {
-    try {
-      const snap = await getDoc(doc(db, "forumRooms", id));
-      if (snap.exists() && snap.data().published === true && snap.data().status !== "locked") {
-        available.push({ id, ...snap.data() });
-      }
-    } catch {
-      // No room details shown on denied lookups.
+  const found = new Map();
+  // Exact constraints let Firestore enforce visibility for every returned room.
+  for (const visibility of (adultGrant ? ["public", "members_only"] : [])) {
+    for (const status of ["open", "read_only"]) {
+      const q = query(collection(db, "forumRooms"), where("published", "==", true), where("visibility", "==", visibility), where("status", "==", status), limit(100));
+      const snapshot = await getDocs(q);
+      snapshot.forEach(record => found.set(record.id, { id: record.id, ...record.data() }));
     }
   }
+  // Private rooms are never listed: look up only explicit grants.
+  for (const id of grant.privateRooms) {
+    if (!SAFE_ID.test(id)) continue;
+    try {
+      const snap = await getDoc(doc(db, "forumRooms", id));
+      if (snap.exists() && snap.data().published === true && snap.data().status !== "locked") found.set(id, { id, ...snap.data() });
+    } catch { /* revoked access remains hidden */ }
+  }
+  const available = [...found.values()];
   const container = $("rooms");
   container.replaceChildren();
   if (!available.length) {
     container.append(txt("p", "No rooms have been published for your account."));
     $("discussion").hidden = true;
-    notice("Forum launch is pending. No discussions are open.");
+    notice(adultGrant ? "No rooms are currently available." : "Sign in and obtain verified adult access to view the community.");
     return;
   }
   for (const item of available) {
@@ -65,7 +69,7 @@ async function loadRooms() {
     button.addEventListener("click", () => showRoom(item));
     container.append(button);
   }
-  notice(adultGrant ? "Verified adult forum access active." : "You can view public approved discussions. Adult approval is required to post.");
+  notice("Verified adult forum access active.");
   const requested = new URLSearchParams(location.search).get("room");
   await showRoom(available.find(x => x.id === requested) || available[0]);
 }

@@ -1,7 +1,7 @@
 import { before, beforeEach, after, test } from "node:test";
 import { readFileSync } from "node:fs";
 import { assertFails, assertSucceeds, initializeTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, setDoc, getDoc, updateDoc, writeBatch, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, getDocs, collection, query, where, updateDoc, writeBatch, serverTimestamp } from "firebase/firestore";
 
 const projectId = "demo-speakout-rules";
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
@@ -103,4 +103,27 @@ test("admin may lock/reopen without changing visibility, only with immutable pai
   await assertFails(setDoc(doc(db, "forumRoomMembers/member-a"), { roomId: "mentor-room" }));
   const teacher = env.authenticatedContext("teacher-a").firestore();
   await assertFails(getDoc(doc(teacher, "forumRooms/mentor-room")));
+});
+
+
+test("room discovery only lists permitted published unlocked audiences", async () => {
+  await seed("forumRooms/public-open", {title:"Public", published:true, visibility:"public", status:"open"});
+  await seed("forumRooms/public-locked", {title:"Locked", published:true, visibility:"public", status:"locked"});
+  await seed("forumRooms/private-open", {title:"Private", published:true, visibility:"private", status:"open"});
+  await seed("forumRooms/unpublished", {title:"Unpublished", published:false, visibility:"public", status:"open"});
+  await seed("forumRooms/member-open", {title:"Member", published:true, visibility:"members_only", status:"open"});
+  await seed("forumAccessGrants/teacher-a", {active:true, adultVerified:true, memberRole:"member", privateRoomIds:[], moderatedRoomIds:[]});
+  const guest=env.unauthenticatedContext().firestore(), adult=env.authenticatedContext("teacher-a").firestore();
+  const list=(db,visibility,status)=>getDocs(query(collection(db,"forumRooms"),where("published","==",true),where("visibility","==",visibility),where("status","==",status)));
+  await assertFails(list(guest,"public","open"));
+  const publicRooms=await assertSucceeds(list(adult,"public","open"));
+  if(publicRooms.size!==1 || publicRooms.docs[0].id!=="public-open") throw Error("Unexpected public room exposure");
+  await assertFails(list(guest,"members_only","open"));
+  await assertFails(list(guest,"private","open"));
+  await assertFails(list(guest,"public","locked"));
+  await assertFails(getDocs(collection(guest,"forumRooms")));
+  const members=await assertSucceeds(list(adult,"members_only","open"));
+  if(members.size!==1 || members.docs[0].id!=="member-open") throw Error("Member room missing");
+  await assertFails(list(adult,"private","open"));
+  await assertFails(getDoc(doc(adult,"forumRooms/unpublished")));
 });
