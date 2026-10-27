@@ -145,7 +145,8 @@ async function showRoom(item) {
         const send = document.createElement("button");
         send.type = "submit";
         send.textContent = "Submit reply for review";
-        form.append(label, input, send);
+        label.append(input);
+        form.append(label, send);
         form.addEventListener("submit", async event => {
           event.preventDefault();
           const body = input.value.trim();
