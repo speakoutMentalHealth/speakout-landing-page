@@ -1,0 +1,130 @@
+name: Forum Real Firebase Staging Pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      acceptance:
+        description: "Type SYNTHETIC_STAGING_ONLY to confirm; refuses all other values"
+        required: true
+        type: string
+      create_missing_indexes:
+        description: "Only additive staging forum indexes; does not modify other indexes"
+        required: true
+        type: boolean
+        default: false
+      run_pilot:
+        description: "Actually deploy staging rules and run synthetic real-user forum acceptance"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Honor the other SpeakOut staging tests, avoiding competing rule/index
+# deployments and unnecessary Firestore quota consumption.
+concurrency:
+  group: speakout-shared-staging
+  cancel-in-progress: false
+
+jobs:
+  real-staging-forum:
+    name: Verified adult synthetic private-room pilot (STAGING ONLY)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    env:
+      STAGING_FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FORUM_STAGING_PILOT_ACK: ${{ inputs.acceptance }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Confirm staging-only credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" ]]; then
+            echo "::error::STAGING_FIREBASE_SERVICE_ACCOUNT_JSON is required."
+            exit 1
+          fi
+          if [[ "$FORUM_STAGING_PILOT_ACK" != "SYNTHETIC_STAGING_ONLY" ]]; then
+            echo "::error::Explicit staging-only confirmation is required."
+            exit 1
+          fi
+          printf '%s' "$STAGING_FIREBASE_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/forum-staging-sa.json"
+          chmod 600 "$RUNNER_TEMP/forum-staging-sa.json"
+          echo "FIREBASE_SERVICE_ACCOUNT_FILE=$RUNNER_TEMP/forum-staging-sa.json" >> "$GITHUB_ENV"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/forum-staging-sa.json" >> "$GITHUB_ENV"
+          node --input-type=module -e '
+            import {readFileSync} from "node:fs";
+            const a=JSON.parse(readFileSync(process.env.RUNNER_TEMP+"/forum-staging-sa.json","utf8"));
+            if(a.project_id!=="speakout-portal-staging")throw Error("PRODUCTION ACCOUNT REFUSED");
+            console.log("Verified staging service account project only.");
+          '
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install repository dependencies
+        run: npm ci
+
+      - name: Staging Firestore capacity admission check
+        run: node tests/staging-capacity-preflight.mjs
+
+      - name: Authenticate gcloud to staging (never production)
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.STAGING_FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+      - name: Install Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Inspect or add only missing staging forum indexes
+        shell: bash
+        env:
+          CREATE_MISSING: ${{ inputs.create_missing_indexes }}
+          FORUM_INDEX_CONFIRM_PROJECT: speakout-portal-staging
+        run: |
+          set -euo pipefail
+          if [[ "$CREATE_MISSING" == "true" ]]; then
+            node scripts/forum-indexes-additive.mjs \
+              --mode=apply --project=speakout-portal-staging --ack=ADD_ONLY
+          fi
+          # This must fail if a required index is missing or still BUILDING.
+          node scripts/forum-indexes-additive.mjs \
+            --mode=inspect --project=speakout-portal-staging
+
+      - name: Record inspect-only readiness
+        if: inputs.run_pilot == false && success()
+        run: |
+          echo "### Forum staging preparation: index inspection passed" >> "$GITHUB_STEP_SUMMARY"
+          echo "No rules deployed, no staging accounts created and no room or gate modified." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy only current Firestore rules to staging
+        if: inputs.run_pilot == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes firebase-tools@latest deploy \
+            --only firestore:rules \
+            --project speakout-portal-staging --non-interactive
+
+      - name: Run one genuine Firebase pilot and clean up test data
+        if: inputs.run_pilot == true
+        run: node tests/forum-staging-live-pilot.mjs
+
+      - name: Record staging-only acceptance
+        if: inputs.run_pilot == true && success()
+        run: |
+          echo "### Forum staging pilot: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "Real staging Firestore and synthetic Auth accounts: private publication, adult access, pending review, approved topic/reply, reporting, lock/revocation, and cleanup." >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow did NOT activate the production release gate, enroll real members, or enable the MindCheck link." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Redact local staging service account
+        if: always()
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/forum-staging-sa.json"
