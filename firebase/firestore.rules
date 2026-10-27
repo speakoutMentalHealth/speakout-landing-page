@@ -855,7 +855,8 @@ service cloud.firestore {
     }
 
     match /forumRooms/{roomId} {
-      allow read: if isSuperAdmin();
+      allow get: if forumMayReadRoom(roomId);
+      allow list: if isSuperAdmin();
       allow create: if isSuperAdmin() &&
         roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
         forumRoomValid() && request.resource.data.createdAt == request.time &&
@@ -890,18 +891,242 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // Until moderation/age gates are approved, no user-generated discussions.
-    match /forumTopics/{topicId} { allow read, write: if false; }
-    match /forumReplies/{replyId} { allow read, write: if false; }
+    // Phase 2: adult-verified membership and moderated conversations.
+    // The publication flag remains false for all room client writes above.
+    // This code prepares access policy for a future separately authorized release.
+    function forumGrantPath(uid) {
+      return /databases/$(database)/documents/forumAccessGrants/$(uid);
+    }
+    function forumGrant() {
+      return get(forumGrantPath(request.auth.uid)).data;
+    }
+    function forumApprovedAdult() {
+      return isApproved() && userRole() != "student" &&
+        exists(forumGrantPath(request.auth.uid)) &&
+        forumGrant().active == true &&
+        forumGrant().adultVerified == true;
+    }
+    function forumModerator(roomId) {
+      return forumApprovedAdult() && forumGrant().memberRole == "moderator" &&
+        roomId in forumGrant().moderatedRoomIds;
+    }
+    function forumRoomPath(roomId) {
+      return /databases/$(database)/documents/forumRooms/$(roomId);
+    }
+    function forumPrivateMember(roomId) {
+      return forumApprovedAdult() && roomId in forumGrant().privateRoomIds;
+    }
+    function forumMayReadRoom(roomId) {
+      return isSuperAdmin() || forumModerator(roomId) ||
+        (exists(forumRoomPath(roomId)) &&
+        get(forumRoomPath(roomId)).data.published == true &&
+        get(forumRoomPath(roomId)).data.status != "locked" &&
+        (get(forumRoomPath(roomId)).data.visibility == "public" ||
+          (forumApprovedAdult() && get(forumRoomPath(roomId)).data.visibility == "members_only") ||
+          (forumPrivateMember(roomId) && get(forumRoomPath(roomId)).data.visibility == "private")));
+    }
+    function forumCanPost(roomId) {
+      return forumApprovedAdult() && forumMayReadRoom(roomId) &&
+        get(forumRoomPath(roomId)).data.published == true &&
+        get(forumRoomPath(roomId)).data.status == "open";
+    }
+    function validForumGrant(uid) {
+      let g = request.resource.data;
+      return g.keys().hasOnly([
+        "uid", "active", "adultVerified", "memberRole", "privateRoomIds",
+        "moderatedRoomIds", "createdAt", "reviewedAt", "reviewedBy",
+        "version", "auditId", "reason"
+      ]) && g.keys().hasAll([
+        "uid", "active", "adultVerified", "memberRole", "privateRoomIds",
+        "moderatedRoomIds", "createdAt", "reviewedAt", "reviewedBy",
+        "version", "auditId", "reason"
+      ]) &&
+      g.uid == uid && uid.size() >= 5 && uid.size() <= 128 &&
+      exists(/databases/$(database)/documents/users/$(uid)) &&
+      get(/databases/$(database)/documents/users/$(uid)).data.status == "approved" &&
+      get(/databases/$(database)/documents/users/$(uid)).data.role != "student" &&
+      g.active is bool && g.adultVerified == true &&
+      g.memberRole in ["member", "moderator"] &&
+      g.privateRoomIds is list && g.privateRoomIds.size() <= 20 &&
+      g.moderatedRoomIds is list && g.moderatedRoomIds.size() <= 20 &&
+      g.createdAt is timestamp && g.reviewedAt == request.time &&
+      g.reviewedBy == request.auth.uid &&
+      g.version is int && g.version >= 1 && g.version <= 100000 &&
+      g.auditId is string && g.auditId.size() >= 10 && g.auditId.size() <= 128 &&
+      g.reason is string && g.reason.size() >= 8 && g.reason.size() <= 160;
+    }
+    function pairedForumGrantAudit(uid, oldActive) {
+      let g = request.resource.data;
+      let path = /databases/$(database)/documents/forumGrantAudits/$(g.auditId);
+      return !exists(path) &&
+        getAfter(path).data.uid == uid &&
+        getAfter(path).data.actorUid == request.auth.uid &&
+        getAfter(path).data.previousActive == oldActive &&
+        getAfter(path).data.nextActive == g.active &&
+        getAfter(path).data.version == g.version &&
+        getAfter(path).data.changedAt == request.time;
+    }
+    match /forumAccessGrants/{uid} {
+      allow get: if isSuperAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isSuperAdmin();
+      allow create: if isSuperAdmin() && validForumGrant(uid) &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.version == 1 &&
+        pairedForumGrantAudit(uid, false);
+      allow update: if isSuperAdmin() && validForumGrant(uid) &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.version == resource.data.version + 1 &&
+        request.resource.data.auditId != resource.data.auditId &&
+        pairedForumGrantAudit(uid, resource.data.active);
+      allow delete: if false;
+    }
+    match /forumGrantAudits/{eventId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin() &&
+        request.resource.data.keys().hasOnly([
+          "uid", "actorUid", "previousActive", "nextActive", "version", "changedAt", "reason"
+        ]) && request.resource.data.keys().hasAll([
+          "uid", "actorUid", "previousActive", "nextActive", "version", "changedAt", "reason"
+        ]) &&
+        request.resource.data.actorUid == request.auth.uid &&
+        request.resource.data.previousActive is bool &&
+        request.resource.data.nextActive is bool &&
+        request.resource.data.version is int &&
+        request.resource.data.reason is string &&
+        request.resource.data.reason.size() >= 8 &&
+        request.resource.data.reason.size() <= 160 &&
+        request.resource.data.changedAt == request.time &&
+        getAfter(forumGrantPath(request.resource.data.uid)).data.auditId == eventId &&
+        getAfter(forumGrantPath(request.resource.data.uid)).data.active == request.resource.data.nextActive &&
+        getAfter(forumGrantPath(request.resource.data.uid)).data.version == request.resource.data.version;
+      allow update, delete: if false;
+    }
+
+    function validForumContribution(kind) {
+      let c = request.resource.data;
+      return c.keys().hasOnly([
+        "roomId", "topicId", "title", "body", "authorUid",
+        "moderationStatus", "moderationAuditId", "createdAt", "updatedAt"
+      ]) &&
+      c.keys().hasAll([
+        "roomId", "title", "body", "authorUid",
+        "moderationStatus", "moderationAuditId", "createdAt", "updatedAt"
+      ]) &&
+      c.roomId is string &&
+      c.authorUid == request.auth.uid &&
+      c.body is string && c.body.size() >= 5 && c.body.size() <= 4000 &&
+      c.moderationStatus == "pending" &&
+      c.moderationAuditId == "none" &&
+      c.createdAt == request.time && c.updatedAt == request.time &&
+      ((kind == "topic" &&
+        !("topicId" in c) && c.title is string && c.title.size() >= 5 && c.title.size() <= 140) ||
+       (kind == "reply" &&
+        "topicId" in c && c.topicId is string &&
+        !("title" in c) &&
+        exists(/databases/$(database)/documents/forumTopics/$(c.topicId)) &&
+        get(/databases/$(database)/documents/forumTopics/$(c.topicId)).data.roomId == c.roomId &&
+        get(/databases/$(database)/documents/forumTopics/$(c.topicId)).data.moderationStatus == "approved"));
+    }
+    function forumModerationPair(kind, itemId) {
+      let c = request.resource.data;
+      let path = /databases/$(database)/documents/forumModerationAudits/$(c.moderationAuditId);
+      return c.moderationAuditId != resource.data.moderationAuditId &&
+        !exists(path) &&
+        getAfter(path).data.kind == kind &&
+        getAfter(path).data.itemId == itemId &&
+        getAfter(path).data.roomId == resource.data.roomId &&
+        getAfter(path).data.actorUid == request.auth.uid &&
+        getAfter(path).data.previousStatus == resource.data.moderationStatus &&
+        getAfter(path).data.nextStatus == c.moderationStatus &&
+        getAfter(path).data.changedAt == request.time;
+    }
+    function validModerationChange(kind, itemId) {
+      return (isSuperAdmin() || forumModerator(resource.data.roomId)) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "moderationStatus", "moderationAuditId", "updatedAt"
+        ]) &&
+        resource.data.moderationStatus in ["pending", "approved", "removed"] &&
+        request.resource.data.moderationStatus in ["approved", "removed"] &&
+        resource.data.moderationStatus != request.resource.data.moderationStatus &&
+        request.resource.data.updatedAt == request.time &&
+        forumModerationPair(kind, itemId);
+    }
+    match /forumTopics/{topicId} {
+      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
+        (resource.data.moderationStatus == "approved" && forumMayReadRoom(resource.data.roomId));
+      allow create: if forumCanPost(request.resource.data.roomId) &&
+        validForumContribution("topic");
+      allow update: if validModerationChange("topic", topicId);
+      allow delete: if false;
+    }
+    match /forumReplies/{replyId} {
+      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
+        (resource.data.moderationStatus == "approved" && forumMayReadRoom(resource.data.roomId));
+      allow create: if forumCanPost(request.resource.data.roomId) &&
+        validForumContribution("reply");
+      allow update: if validModerationChange("reply", replyId);
+      allow delete: if false;
+    }
+    match /forumModerationAudits/{eventId} {
+      allow read: if isSuperAdmin();
+      // The event's target, reason, timestamps and status must match the batch.
+      // Enforce this for administrators as well: no forged or orphan actions.
+      allow create: if (isSuperAdmin() || forumModerator(request.resource.data.roomId)) &&
+        request.resource.data.keys().hasOnly([
+          "kind", "itemId", "roomId", "actorUid", "previousStatus",
+          "nextStatus", "changedAt", "reason"
+        ]) &&
+        request.resource.data.keys().hasAll([
+          "kind", "itemId", "roomId", "actorUid", "previousStatus",
+          "nextStatus", "changedAt", "reason"
+        ]) &&
+        request.resource.data.kind in ["topic", "reply"] &&
+        request.resource.data.actorUid == request.auth.uid &&
+        request.resource.data.previousStatus in ["pending", "approved", "removed"] &&
+        request.resource.data.nextStatus in ["approved", "removed"] &&
+        request.resource.data.previousStatus != request.resource.data.nextStatus &&
+        request.resource.data.reason is string &&
+        request.resource.data.reason.size() >= 8 &&
+        request.resource.data.reason.size() <= 240 &&
+        request.resource.data.changedAt == request.time &&
+        ((request.resource.data.kind == "topic" &&
+          getAfter(/databases/$(database)/documents/forumTopics/$(request.resource.data.itemId)).data.moderationAuditId == eventId &&
+          getAfter(/databases/$(database)/documents/forumTopics/$(request.resource.data.itemId)).data.moderationStatus == request.resource.data.nextStatus) ||
+         (request.resource.data.kind == "reply" &&
+          getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.moderationAuditId == eventId &&
+          getAfter(/databases/$(database)/documents/forumReplies/$(request.resource.data.itemId)).data.moderationStatus == request.resource.data.nextStatus));
+      allow update, delete: if false;
+    }
+    match /forumReports/{reportId} {
+      allow read: if isSuperAdmin() || forumModerator(resource.data.roomId) ||
+        (forumApprovedAdult() && resource.data.reporterUid == request.auth.uid);
+      allow create: if forumApprovedAdult() &&
+        forumMayReadRoom(request.resource.data.roomId) &&
+        request.resource.data.keys().hasOnly([
+          "roomId", "targetType", "targetId", "reporterUid", "reason", "createdAt"
+        ]) &&
+        request.resource.data.keys().hasAll([
+          "roomId", "targetType", "targetId", "reporterUid", "reason", "createdAt"
+        ]) &&
+        request.resource.data.reporterUid == request.auth.uid &&
+        request.resource.data.targetType in ["topic", "reply"] &&
+        request.resource.data.targetId is string &&
+        request.resource.data.reason in ["spam", "harassment", "privacy", "unsafe", "other"] &&
+        request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // Group ids are membership grant attributes, not a separate writable roster.
+    // Old marker remains denied if any legacy /forumRoomMembers documents exist.
     match /forumRoomMembers/{memberId} { allow read, write: if false; }
 
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
