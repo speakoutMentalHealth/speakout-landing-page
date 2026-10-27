@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>SpeakOut Community — Content Review</title>
+<style>*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,sans-serif;background:#f3f7fc;color:#172a42}
+header{background:#102c51;color:white;padding:18px max(18px,calc((100vw - 1050px)/2))}header a{color:white;text-decoration:none}
+main{max-width:1050px;margin:auto;padding:24px 18px 60px}.card{border:1px solid #dae5f0;border-radius:16px;background:#fff;padding:19px;margin:16px 0}
+h1{font-size:clamp(1.6rem,5vw,2.5rem)}h2{font-size:1.2rem}.muted{color:#52667c}
+button{border:0;background:#174f9a;color:white;padding:11px 15px;border-radius:9px;cursor:pointer;font:inherit;font-weight:700}
+button:disabled{opacity:.55}.danger{background:#a83244}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+label{display:block;font-weight:700}select,textarea{font:inherit;border:1px solid #a8bbc9;border-radius:8px;padding:10px;width:100%}
+#status{padding:12px;background:#eaf2ff;border-radius:10px}#status.error{background:#ffe7e7;color:#981c1c}
+.content{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#52667c}
+[hidden]{display:none!important}:focus-visible{outline:3px solid #ffae26;outline-offset:3px}
+</style></head><body>
+<header><a href="admin-forum.html">← Forum Administration</a></header>
+<main><h1>Forum Content Review</h1>
+<p class="muted">Internal admin queue. All new topics and replies remain pending until reviewed. No public rooms or posts are enabled in this phase.</p>
+<p id="status" role="status" aria-live="polite">Checking access…</p>
+<div id="adminUI" hidden>
+<div class="card"><div class="actions"><button type="button" id="refresh">Refresh review queue</button></div>
+<p><a href="admin-forum-access.html">Member permissions</a> · <a href="admin-forum.html">Room settings</a></p></div>
+<section><h2>Pending topics and replies</h2><div id="pending"></div></section>
+<section><h2>Safety reports</h2><p class="muted">Reports contain identifiers and categories, not duplicated personal stories.</p><div id="reports"></div></section>
+</div></main>
+<script type="module" src="launch-role-guard.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+<script type="module" src="js/forum-review-admin.js"></script>
+</body></html>
