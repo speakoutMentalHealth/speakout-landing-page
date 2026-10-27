@@ -36,7 +36,7 @@ function createRoomBatch(db, roomId, actorUid = "admin-a") {
   });
   batch.set(auditRef, {
     roomId, actorUid, previousVisibility: "none", nextVisibility: "private",
-    previousStatus: "none", nextStatus: "locked", revision: 1,
+    previousStatus: "none", nextStatus: "locked", previousPublished: false, nextPublished: false, revision: 1,
     reason: "Initial room setup", changedAt: serverTimestamp()
   });
   return batch;
@@ -75,7 +75,7 @@ test("an admin cannot bypass paired audit or publish any room", async () => {
   bad.set(doc(db, "forumRoomAudits/private-room-audit-publish"), {
     roomId: "private-room", actorUid: "admin-a",
     previousVisibility: "private", nextVisibility: "public",
-    previousStatus: "locked", nextStatus: "locked",
+    previousStatus: "locked", nextStatus: "locked", previousPublished: false, nextPublished: true,
     revision: 2, reason: "Unsafe public change", changedAt: serverTimestamp()
   });
   await assertFails(bad.commit());
@@ -93,7 +93,7 @@ test("admin may lock/reopen without changing visibility, only with immutable pai
   batch.set(auditRef, {
     roomId: "mentor-room", actorUid: "admin-a",
     previousVisibility: "private", nextVisibility: "private",
-    previousStatus: "locked", nextStatus: "open",
+    previousStatus: "locked", nextStatus: "open", previousPublished: false, nextPublished: false,
     revision: 2, reason: "Approved temporary reopening",
     changedAt: serverTimestamp()
   });

@@ -1,6 +1,6 @@
 import { db } from "../firebase-config.js";
 import { requireRoles } from "../launch-role-guard.js";
-import { collection, doc, getDocs, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { normalizedSlug, privacyWarning, roomState, STARTER_ROOMS, VISIBILITIES, STATUSES } from "./forum-room-state.js";
 
 const statusBox = document.getElementById("status");
@@ -11,6 +11,7 @@ const seedButton = document.getElementById("seedRooms");
 let activeUser = null;
 let rooms = new Map();
 let busy = false;
+let pilot = null;
 
 function notice(message, error = false) {
   statusBox.textContent = message;
@@ -45,8 +46,12 @@ function button(label, action, className = "") {
   return element;
 }
 async function refresh() {
-  // This reads only unpublished configuration for approved admin/super_admin.
-  const snapshot = await getDocs(collection(db, "forumRooms"));
+  // The server-signed pilot gate is not writable from this browser.
+  const [snapshot, gate] = await Promise.all([
+    getDocs(collection(db, "forumRooms")),
+    getDoc(doc(db, "forumReleaseControls", "pilot"))
+  ]);
+  pilot = gate.exists() ? gate.data() : null;
   rooms = new Map(snapshot.docs.map(record => [record.id, { ...record.data(), id: record.id }]));
   renderRooms();
 }
@@ -68,7 +73,7 @@ function renderRooms() {
     name.textContent = room.title;
     const badge = document.createElement("span");
     badge.className = "pill";
-    badge.textContent = "Not published · " + room.id;
+    badge.textContent = (room.published ? "PILOT ACTIVE · " : "Unpublished · ") + room.id;
     heading.append(name, badge);
     const summary = document.createElement("p");
     summary.className = "muted";
@@ -98,8 +103,30 @@ function renderRooms() {
         await handleAction(async () => updateRoom(room, { ...room, status }, reason));
       }, room.status === "locked" ? "outline" : "danger")
     );
+    const releaseAllowed = Boolean(pilot?.enabled === true &&
+      pilot?.mode === "private_pilot" &&
+      pilot?.roomIds?.includes(room.id) &&
+      pilot?.expiresAt?.toMillis?.() > Date.now());
+    if (room.published || (releaseAllowed && room.visibility === "private" && room.status !== "locked")) {
+      actions.append(button(room.published ? "End pilot for this room" : "Publish private pilot room", async () => {
+        if (busy) return;
+        if (!room.published && (!releaseAllowed || room.visibility !== "private" || room.status === "locked")) {
+          notice("Trusted release approval is missing. Publication is blocked.", true); return;
+        }
+        const promptText = room.published ? "STOP " + room.id : "PUBLISH " + room.id;
+        const typed = window.prompt("Restricted adult pilot. Type " + promptText +
+          " to confirm. Room changes are immutable-audited and access expires with the gate.");
+        if (typed !== promptText) return;
+        const publish = !room.published;
+        await handleAction(async () => updateRoom(room, {
+          ...room, published: publish
+        }, publish ? "Approved private adult pilot published" : "Private adult pilot closed"));
+      }, room.published ? "danger" : "outline"));
+    }
     const note = document.createElement("small");
-    note.textContent = "All access remains admin-only until the safeguarding release gate. Reopening does not change visibility.";
+    note.textContent = room.published
+      ? "Live only for specifically granted adults while the trusted release gate remains valid. Locking ends the pilot."
+      : "Publication requires an expiring trusted release grant, private visibility and explicit audited confirmation.";
     article.append(heading, summary, controls, actions, note);
     list.append(article);
   }
@@ -113,6 +140,8 @@ function writeAudit(batch, roomRef, before, after, revision, reason) {
     nextVisibility: after.visibility,
     previousStatus: before?.status ?? "none",
     nextStatus: after.status,
+    previousPublished: before?.published === true,
+    nextPublished: after.published === true,
     revision,
     reason,
     changedAt: serverTimestamp()
@@ -125,7 +154,7 @@ async function createRoom(data, id = normalizedSlug(data.title), reason = "Admin
   if (rooms.has(id)) throw new Error("A room already uses this address.");
   const roomRef = doc(db, "forumRooms", id);
   const batch = writeBatch(db);
-  const auditId = writeAudit(batch, roomRef, null, safe, 1, reason);
+  const auditId = writeAudit(batch, roomRef, null, { ...safe, published: false }, 1, reason);
   batch.set(roomRef, {
     ...safe,
     published: false,
@@ -142,10 +171,13 @@ async function updateRoom(room, next, reason) {
   const roomRef = doc(db, "forumRooms", room.id);
   const batch = writeBatch(db);
   const revision = room.version + 1;
-  const auditId = writeAudit(batch, roomRef, room, safe, revision, reason);
+  // Changes to privacy/locked state automatically end the pilot.
+  const nextPublished = (next.published === undefined ? room.published : next.published) === true && safe.visibility === "private" &&
+    safe.status !== "locked";
+  const auditId = writeAudit(batch, roomRef, room, { ...safe, published: nextPublished }, revision, reason);
   batch.update(roomRef, {
     ...safe,
-    published: false,
+    published: nextPublished,
     updatedAt: serverTimestamp(),
     updatedBy: activeUser.uid,
     version: revision,
@@ -159,7 +191,7 @@ async function handleAction(action) {
   try {
     await action();
     await refresh();
-    notice("Room controls saved. The room remains unpublished.");
+    notice("Room controls saved with an immutable audit record. Check its current publication status.");
   } catch (error) {
     notice("Could not save: " + (error?.message || "Please retry."), true);
   } finally {
@@ -195,7 +227,7 @@ requireRoles(["admin", "super_admin"], async user => {
   adminUI.hidden = false;
   try {
     await refresh();
-    notice("Admin access confirmed. Forum rooms are in closed setup mode.");
+    notice(pilot?.enabled === true ? "Restricted private pilot release gate is configured. Review expiry and access before publishing." : "Pilot release control is not enabled. All rooms remain unpublished.");
   } catch (error) {
     notice("Unable to load rooms. Check database access before continuing: " + (error?.message || "Unknown error."), true);
   }

@@ -1,0 +1,39 @@
+# SpeakOut Community — private live pilot release runbook
+
+**Release state:** code and rules under review in PR #374. **Not activated.** The production control document `forumReleaseControls/pilot` has not been created by this change. No room is published and no real member has been enrolled by this PR.
+
+## Security model
+
+- The live forum is for **individually verified 18+ adults**, including rooms labelled public. The MindCheck DOB selection is a navigation convenience and **is not** eligibility evidence.
+- All released pilot rooms must be **private**; only specifically assigned, approved portal users with active `forumAccessGrants` can view or post. Scoped moderator grants permit review only in their authorized private room when published and unlocked.
+- Browser/client Firebase rules **cannot create or edit** `forumReleaseControls/pilot` or immutable control audits. A trusted, privileged Firebase Admin SDK operator must activate a named room, expiring in **1–72 hours**, before a portal admin can explicitly publish it.
+- Pilot gate expiry revokes all non-admin room/topics/replies access immediately, even if a room still has `published:true`. An administrator must explicitly unpublish and audit. Locking a room also unpublishes it.
+- Room updates use immutable paired room audits that record previous and next visibility, status **and publication state**; member grants and moderation decisions also use paired audits.
+- New reports are one immutable record per reporter/content, and the target must be a real approved topic or reply in the given room. A future rate-limit policy is still recommended.
+
+## Rollout checklist — staging first
+
+1. Establish a **distinct staging Firebase project** and deploy the proposed Firestore rules **there first**. Never point staging user sessions at the production database.
+2. **Review and merge indexes** before deploying: `firebase/forum-firestore.indexes.json` is now the configured index file in `firebase.json`. Firebase CLI index deployment may delete indexes not listed, so export or inspect all existing *remote* indexes first, merge existing ones into the config, and review the resulting diff. Do **not** blindly deploy the two-index draft to production.
+3. Create the single private test room, e.g. `adult-pilot`, with status `open` and `published:false` in `admin-forum.html`.
+4. Confirm adult eligibility outside of the public forum (reliable identity/age verification per approved organizational procedure). On `admin-forum-access.html`, approve a small roster of adults, plus an approved moderator with `moderatedRoomIds` for exactly this room. Do not put sensitive proof documents into grants or free-text audit reasons.
+5. Confirm a named moderator **and backup**, moderation hours, 24-hour safety escalation/referral contact, privacy notice, abuse-report review/retention and an emergency shutdown owner. These are **operational** gates, not automated by the GitHub merge.
+6. Install `firebase-admin` only in a privileged operator shell (`npm install --no-save --package-lock=false firebase-admin`) and use tightly scoped Google ADC credentials. Review IAM access, backend audit logging and staging project ID.
+7. Dry-run:
+   ```bash
+   node scripts/forum-pilot-control.mjs --project=YOUR_STAGING_PROJECT --room=adult-pilot --action=enable --hours=24 --actor=OWNER_ID --reason="Reviewed private adult pilot with moderator coverage"
+   ```
+8. After an independent release review, set `FORUM_PILOT_CONFIRM_PROJECT` and `FORUM_PILOT_CONFIRM_ROOM` to the exact intended values; execute the command with `--apply`. The operator checks private room visibility, approved adult member and assigned moderator, then records an immutable admin-side control audit. For the **production** project (`speaakout-portal`), an extra `--production-ack=PRIVATE_PILOT_ONLY` and matching `FORUM_PILOT_PRODUCTION_APPROVER` are required.
+9. As an approved portal administrator, navigate to `admin-forum.html`. The **Publish private pilot room** action becomes available only for approved named room(s) while the release gate is valid. Type the exact room confirmation. Firestore enforces the trusted gate, version and paired immutable publication audit.
+10. Test as an approved adult, another approved adult without private membership, an assigned adult moderator, a student/under-18 profile, an anonymous browser and an expired member. Check topics remain **pending** until moderator approval, replies, reporting, room lock, and restart.
+11. End pilot with **End pilot for this room** (and a privileged `--action=disable --apply` revocation). Verify no non-admin can see the room, content or reports. Retain audit logs according to the privacy policy.
+
+### Production restrictions
+
+**Do not** set the MindCheck `js/community-config.js` switch to `enabled:true` until the controlled pilot passes staging and production smoke checks, the live URL and indexes are verified, moderator coverage is real, and a verified adult can post/reply through the real backend.
+
+All six existing MindCheck room demos remain simulations; they do not verify real Firestore posting. The production forum UI will show live private-room discussions only to approved members while an active trusted release gate exists.
+
+### Known future work
+
+Robust protection against high-volume reports, moderator shift handoff and dashboards for delegated moderators, content retention/removal lifecycle, age-proof verification integration, accessible multilingual copy, notification privacy, rate limits and production observability. A successful staging test is required before accepting real user content.

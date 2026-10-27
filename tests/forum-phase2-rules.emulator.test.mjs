@@ -36,6 +36,11 @@ beforeEach(async () => {
   await seed("forumAccessGrants/teen-one", grant("teen-one"));
   await seed("forumAccessGrants/pending-one", grant("pending-one"));
   await seed("forumAccessGrants/moderator-one", grant("moderator-one", { memberRole: "moderator", moderatedRoomIds: ["staff-room"] }));
+  await seed("forumReleaseControls/pilot", {
+    enabled: true, mode: "private_pilot",
+    roomIds: ["staff-room"],
+    expiresAt: new Date(Date.now() + 60 * 60 * 1000)
+  });
   await seed("forumRooms/public-room", room("public"));
   await seed("forumRooms/staff-room", room("private"));
   await seed("forumRooms/members-room", room("members_only"));
@@ -46,14 +51,14 @@ after(async () => env.cleanup());
 
 test("public room is browsable, private/member/locked rooms are isolated", async () => {
   const guest = env.unauthenticatedContext().firestore();
-  await assertSucceeds(getDoc(doc(guest, "forumRooms/public-room")));
+  await assertFails(getDoc(doc(guest, "forumRooms/public-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/staff-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/members-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/locked-room")));
   await assertFails(getDoc(doc(guest, "forumRooms/unpublished-room")));
   await assertSucceeds(getDoc(doc(ctx("adult-one"), "forumRooms/staff-room")));
   await assertFails(getDoc(doc(ctx("adult-two"), "forumRooms/staff-room")));
-  await assertSucceeds(getDoc(doc(ctx("adult-two"), "forumRooms/members-room")));
+  await assertFails(getDoc(doc(ctx("adult-two"), "forumRooms/members-room")));
   await assertFails(getDoc(doc(ctx("teen-one"), "forumRooms/members-room")));
   await assertFails(getDoc(doc(ctx("pending-one"), "forumRooms/members-room")));
   await assertSucceeds(getDoc(doc(ctx("moderator-one"), "forumRooms/staff-room")));
@@ -150,18 +155,18 @@ test("moderator review requires assigned room plus paired audit and redacts unap
 
 test("approved participants may report content, but cannot edit or delete reports", async () => {
   await seed("forumTopics/published-topic", {
-    roomId: "public-room", title: "Welcome message", body: "Be respectful and follow community rules.",
+    roomId: "staff-room", title: "Welcome message", body: "Be respectful and follow community rules.",
     authorUid: "admin-one", moderationStatus: "approved", moderationAuditId: "none",
     createdAt: new Date(), updatedAt: new Date()
   });
-  const user = ctx("adult-two");
-  await assertSucceeds(setDoc(doc(user, "forumReports/report-a"), {
-    roomId: "public-room", targetType: "topic", targetId: "published-topic",
-    reporterUid: "adult-two", reason: "spam", createdAt: serverTimestamp()
+  const user = ctx("adult-one");
+  await assertSucceeds(setDoc(doc(user, "forumReports/adult-one__topic__published-topic"), {
+    roomId: "staff-room", targetType: "topic", targetId: "published-topic",
+    reporterUid: "adult-one", reason: "spam", createdAt: serverTimestamp()
   }));
-  await assertFails(updateDoc(doc(user, "forumReports/report-a"), { reason: "other" }));
-  await assertFails(setDoc(doc(ctx("teen-one"), "forumReports/teen-report"), {
-    roomId: "public-room", targetType: "topic", targetId: "published-topic",
+  await assertFails(updateDoc(doc(ctx("adult-one"), "forumReports/adult-one__topic__published-topic"), { reason: "other" }));
+  await assertFails(setDoc(doc(ctx("teen-one"), "forumReports/teen-one__topic__published-topic"), {
+    roomId: "staff-room", targetType: "topic", targetId: "published-topic",
     reporterUid: "teen-one", reason: "spam", createdAt: serverTimestamp()
   }));
 });

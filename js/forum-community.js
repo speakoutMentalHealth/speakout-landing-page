@@ -1,7 +1,7 @@
 import { auth, db } from "../firebase-config.js";
 import { STARTER_ROOMS } from "./forum-room-state.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, query, where, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, query, where, limit, addDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
 const SAFE_ID = /^[a-z][a-z0-9-]{2,55}$/;
@@ -42,7 +42,7 @@ async function isEligibleAdult(user) {
     const valid = profile.exists() && profile.data().status === "approved" &&
       profile.data().role !== "student" && grant.exists() &&
       grant.data().active === true && grant.data().adultVerified === true;
-    return { allowed: valid, privateRooms: valid ? grant.data().privateRoomIds || [] : [] };
+    return { allowed: valid, privateRooms: valid ? [...(grant.data().privateRoomIds || []), ...(grant.data().memberRole === "moderator" ? grant.data().moderatedRoomIds || [] : [])] : [] };
   } catch {
     return { allowed: false, privateRooms: [] };
   }
@@ -201,7 +201,7 @@ async function fileReport(kind, targetId, roomId) {
     notice("Please choose one of the listed report reasons.", true); return;
   }
   try {
-    await addDoc(collection(db, "forumReports"), {
+    await setDoc(doc(db, "forumReports", actor.uid + "__" + kind + "__" + targetId), {
       roomId, targetType: kind, targetId, reason: selected,
       reporterUid: actor.uid, createdAt: serverTimestamp()
     });
