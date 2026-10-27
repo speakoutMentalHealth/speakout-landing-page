@@ -16,7 +16,7 @@ import { initializeApp, deleteApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import {
   getFirestore, collection, doc, getDoc, getDocs, query, where,
-  setDoc, updateDoc, writeBatch, serverTimestamp
+  setDoc, writeBatch, serverTimestamp
 } from "firebase/firestore";
 
 const project="speakout-portal-staging";
@@ -44,7 +44,6 @@ const paths=new Set();
 let serviceToken="",priorGate=null,hasPriorGate=false,gateOwned=false;
 let completed=false;
 
-function sleepNever(){throw Error("No capacity retry permitted");}
 const asBase64=value=>Buffer.from(JSON.stringify(value)).toString("base64url");
 async function tokenForService() {
   const now=Math.floor(Date.now()/1000);
@@ -158,18 +157,6 @@ async function adminGate(data) {
   const response=await adminRequest(path,"PATCH",data);
   if(!response.ok)throw Error("Could not update staging private pilot gate");
   return response;
-}
-async function recordBatchAdmin(db,id,oldStatus,nextStatus,oldPublished,nextPublished) {
-  const roomRef=doc(db,"forumRooms",roomId);
-  const eventRef=doc(db,"forumRoomAudits",id);
-  const batch=writeBatch(db);
-  batch.update(roomRef,{
-    published:nextPublished,status:nextStatus,
-    version:oldPublished?3:2,auditId:id,
-    updatedAt:serverTimestamp(),updatedBy:db.app?.options?.name||""
-  });
-  // The caller supplies the real authenticated admin UID as updatedBy in runTest below.
-  return {batch,roomRef,eventRef,id,oldStatus,nextStatus,oldPublished,nextPublished};
 }
 async function runTest(){
   serviceToken=await tokenForService();
