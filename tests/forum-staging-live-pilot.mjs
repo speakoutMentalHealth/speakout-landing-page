@@ -101,7 +101,7 @@ async function adminRequest(path,method="GET",data=null) {
   if(!response.ok&&!(method==="GET"&&response.status===404)) {
     throw Error("Staging Firestore admin "+method+" HTTP "+response.status+" for "+path);
   }
-  return {ok:response.ok,status:response.status,data:decodeFields(result.fields)};
+  return {ok:response.ok,status:response.status,data:decodeFields(result.fields),updateTime:result.updateTime || ""};
 }
 async function put(path,data) {
   paths.add(path);
@@ -152,10 +152,15 @@ async function expectDenied(promise,label) {
   }
   assert(denied,label+" unexpectedly allowed");
 }
-async function adminGate(data) {
-  const path="forumReleaseControls/pilot";
+// A Firestore CAS (compare-and-swap) condition prevents clobbering a gate
+// modified by another operator between inspection, activation and cleanup.
+async function adminGate(data, expectedVersion) {
+  const condition=expectedVersion
+    ? "?currentDocument.updateTime="+encodeURIComponent(expectedVersion)
+    : "?currentDocument.exists=false";
+  const path="forumReleaseControls/pilot"+condition;
   const response=await adminRequest(path,"PATCH",data);
-  if(!response.ok)throw Error("Could not update staging private pilot gate");
+  if(!response.ok)throw Error("Staging release gate changed concurrently; operation refused.");
   return response;
 }
 async function runTest(){
@@ -183,7 +188,7 @@ async function runTest(){
     expiresAt:new Date(Date.now()+12*60*1000),runTag:suffix};
   // The release gate is created only by the privileged staging service token;
   // browser accounts cannot provision or alter it under the real rules.
-  await adminGate(gateData);gateOwned=true;
+  await adminGate(gateData,gate.updateTime);gateOwned=true;
   await expectDenied(setDoc(doc(adult.db,"forumReleaseControls","pilot"),gateData),
     "Adult client gate tampering");
   const publish=writeBatch(admin.db);
@@ -312,7 +317,7 @@ async function cleanup(){
       const existing=await adminRequest("forumReleaseControls/pilot");
       if(existing.ok && existing.data.runTag!==suffix)
         throw Error("Release gate ownership changed; do not overwrite another operator.");
-      if(existing.ok)await adminGate({...existing.data,enabled:false,roomIds:[],expiresAt:new Date()});
+      if(existing.ok)await adminGate({...existing.data,enabled:false,roomIds:[],expiresAt:new Date()},existing.updateTime);
     });
   }
   // Delete only exact synthetic ID paths created in this run. No collection
@@ -331,9 +336,9 @@ async function cleanup(){
         const current=await adminRequest("forumReleaseControls/pilot");
         if(!current.ok||current.data.runTag!==suffix)
           throw Error("Current gate ownership changed; manual cleanup needed.");
-        if(hasPriorGate)await adminGate(priorGate);
+        if(hasPriorGate)await adminGate(priorGate,current.updateTime);
         else {
-          const result=await fetch(base+"/forumReleaseControls/pilot",{
+          const result=await fetch(base+"/forumReleaseControls/pilot?currentDocument.updateTime="+encodeURIComponent(current.updateTime),{
             method:"DELETE",headers:{authorization:"Bearer "+serviceToken},signal:AbortSignal.timeout(15000)});
           if(!result.ok&&result.status!==404)throw Error("HTTP "+result.status);
         }
