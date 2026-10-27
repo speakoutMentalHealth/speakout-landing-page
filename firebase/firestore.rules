@@ -948,14 +948,21 @@ service cloud.firestore {
     function forumPrivateMember(roomId) {
       return forumApprovedAdult() && roomId in forumGrant().privateRoomIds;
     }
+    function forumLivePrivateRoom(roomId) {
+      let room = get(forumRoomPath(roomId)).data;
+      return forumPilotAuthorized(roomId) &&
+        room.published == true &&
+        room.status != "locked" &&
+        room.visibility == "private";
+    }
     function forumMayReadRoom(roomId) {
       return isSuperAdmin() ||
-        (forumApprovedAdult() && exists(forumRoomPath(roomId)) &&
-         forumPilotAuthorized(roomId) &&
-         get(forumRoomPath(roomId)).data.published == true &&
-         get(forumRoomPath(roomId)).data.status != "locked" &&
-         get(forumRoomPath(roomId)).data.visibility == "private" &&
-         (forumPrivateMember(roomId) || forumModerator(roomId)));
+        (forumApprovedAdult() && forumLivePrivateRoom(roomId) &&
+          (roomId in forumGrant().privateRoomIds ||
+            (forumGrant().memberRole == "moderator" && roomId in forumGrant().moderatedRoomIds)));
+    }
+    function forumMayModerate(roomId) {
+      return forumModerator(roomId) && forumLivePrivateRoom(roomId);
     }
     function forumCanPost(roomId) {
       return forumApprovedAdult() && forumMayReadRoom(roomId) &&
@@ -1073,7 +1080,7 @@ service cloud.firestore {
         audit.changedAt == request.time;
     }
     function validModerationChange(kind, itemId) {
-      return (isSuperAdmin() || (forumModerator(resource.data.roomId) && forumMayReadRoom(resource.data.roomId))) &&
+      return (isSuperAdmin() || forumMayModerate(resource.data.roomId)) &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           "moderationStatus", "moderationAuditId", "updatedAt"
         ]) &&
@@ -1105,7 +1112,7 @@ service cloud.firestore {
       allow read: if isSuperAdmin();
       // The event's target, reason, timestamps and status must match the batch.
       // Enforce this for administrators as well: no forged or orphan actions.
-      allow create: if (isSuperAdmin() || (forumModerator(request.resource.data.roomId) && forumMayReadRoom(request.resource.data.roomId))) &&
+      allow create: if (isSuperAdmin() || forumMayModerate(request.resource.data.roomId)) &&
         request.resource.data.keys().hasOnly([
           "kind", "itemId", "roomId", "actorUid", "previousStatus",
           "nextStatus", "changedAt", "reason"
