@@ -115,7 +115,8 @@ test("room discovery only lists permitted published unlocked audiences", async (
   await seed("forumAccessGrants/teacher-a", {active:true, adultVerified:true, memberRole:"member", privateRoomIds:[], moderatedRoomIds:[]});
   const guest=env.unauthenticatedContext().firestore(), adult=env.authenticatedContext("teacher-a").firestore();
   const list=(db,visibility,status)=>getDocs(query(collection(db,"forumRooms"),where("published","==",true),where("visibility","==",visibility),where("status","==",status)));
-  const publicRooms=await assertSucceeds(list(guest,"public","open"));
+  await assertFails(list(guest,"public","open"));
+  const publicRooms=await assertSucceeds(list(adult,"public","open"));
   if(publicRooms.size!==1 || publicRooms.docs[0].id!=="public-open") throw Error("Unexpected public room exposure");
   await assertFails(list(guest,"members_only","open"));
   await assertFails(list(guest,"private","open"));
