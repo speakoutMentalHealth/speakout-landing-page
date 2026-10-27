@@ -266,6 +266,7 @@ try {
   for (const testCase of cases) {
     const apiResponse = await workerApprovalProbe(testCase.user, testCase.role);
     if (testCase.allowed) {
+      if (!apiResponse.ok) await writeFile(`${artifactsDir}/approval-http-failure.json`, JSON.stringify({ scenario: testCase.label, httpStatus: apiResponse.status, contentType: apiResponse.headers.get("content-type")?.includes("json") ? "json" : "other" }, null, 2));
       assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API (HTTP ${apiResponse.status})`);
     } else {
       assert.equal(apiResponse.status, 403, `${testCase.label} bypassed Platform API approval enforcement`);
