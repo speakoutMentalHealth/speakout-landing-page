@@ -82,6 +82,17 @@ export function getRoleAccess(role) {
       ]
     },
 
+    volunteer: {
+      label: "Volunteer Hub",
+      welcome: "Follow your volunteer learning, assessment, safeguarding review and official updates.",
+      cards: [
+        { icon: "🎓", title: "Volunteer Hub", description: "Your next steps and programme information.", href: "volunteer-dashboard.html", access: "Approved" },
+        { icon: "📖", title: "Volunteer Training", description: "Complete the free foundation learning programme.", href: "https://mindcheck.speakoutmentalhealth.org/training-hub.html", access: "External" },
+        { icon: "📢", title: "News & Events", description: "Public outreach and training announcements.", href: "pages/news.html", access: "Public" },
+        { icon: "🏅", title: "Certificates", description: "View verified credentials available to you.", href: "certificates.html", access: "Approved" }
+      ]
+    },
+
     ambassador: {
       label: "Ambassador Portal",
       welcome: "Access ambassador resources, training, reports, learning tools and certificates.",
