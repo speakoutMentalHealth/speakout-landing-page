@@ -1047,8 +1047,10 @@ service cloud.firestore {
         "roomId", "topicId", "title", "body", "authorUid",
         "moderationStatus", "moderationAuditId", "createdAt", "updatedAt"
       ]) &&
+      // Only topics have a title. Replies have topicId instead, and the
+      // kind-specific branch below enforces that mutually exclusive shape.
       c.keys().hasAll([
-        "roomId", "title", "body", "authorUid",
+        "roomId", "body", "authorUid",
         "moderationStatus", "moderationAuditId", "createdAt", "updatedAt"
       ]) &&
       c.roomId is string &&
