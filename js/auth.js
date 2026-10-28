@@ -70,7 +70,7 @@ function beginGoogleProfile(user){
   if(!value("firstName")) byId("firstName").value=names[0]||"";
   if(!value("lastName")) byId("lastName").value=names.slice(1).join(" ");
   selectPanel("joinPanel");
-  showRegister("Google account connected. Confirm your details, choose your role and accept the terms to submit your application.");
+  showRegister("Google sign-in succeeded, but this email has no SpeakOut member profile yet. Complete your application below; forum access will require manual approval before you can enter.");
   byId("firstName")?.focus();
 }
 
