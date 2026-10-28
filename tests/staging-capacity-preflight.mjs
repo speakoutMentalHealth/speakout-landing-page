@@ -10,6 +10,12 @@ if (!credentialsFile) throw new Error("Staging Firestore preflight needs FIREBAS
 
 const account = JSON.parse(await readFile(credentialsFile, "utf8"));
 assert.equal(account.project_id, projectId, "The release workflow must never test against production Firestore.");
+assert.match(account.client_email || "", /^[a-zA-Z0-9._-]+@speakout-portal-staging\\.iam\\.gserviceaccount\\.com$/, "Credential identity must be a staging service account.");
+// Service-account email is an IAM principal identifier, not a secret.
+// Print this (never the private key or token) so the operator can inspect the
+// exact principal in IAM rather than guessing from a service-account name.
+console.log("Staging Firestore preflight principal:", account.client_email);
+console.log("Staging Firestore preflight project:", projectId);
 
 const base64url = value => Buffer.from(JSON.stringify(value)).toString("base64url");
 const now = Math.floor(Date.now() / 1000);
@@ -58,7 +64,20 @@ if (response.status === 429) {
   );
 }
 if (!response.ok) {
-  throw new Error("Staging Firestore preflight returned HTTP " + response.status + "; see project service health and IAM.");
+  // Report the structured Google API error without echoing credentials,
+  // authorization headers, Firestore documents or the raw response body.
+  const body = await response.json().catch(() => ({}));
+  const status = String(body?.error?.status || "UNKNOWN").replace(/[^A-Z_]/g, "").slice(0, 40);
+  const detail = String(body?.error?.message || "No Google API error message returned")
+    .replace(/[\\r\\n\\t]/g, " ").slice(0, 240);
+  const guidance = response.status === 403
+    ? " Check that the IAM policy for THIS service-account principal grants " +
+      "datastore.entities.list (for example, Cloud Datastore Viewer or User), " +
+      "that no IAM Deny or conditional binding blocks it, and that the Firestore API is enabled. " +
+      "Do not add roles to a different principal or rerun without investigating."
+    : " Inspect the API status and staging service health before retrying.";
+  throw new Error("Staging Firestore preflight HTTP " + response.status + " [" + status +
+    "] for " + account.client_email + " in " + projectId + ": " + detail + "." + guidance);
 }
 const rows = await response.json();
 if (!Array.isArray(rows)) throw new Error("Staging Firestore preflight returned an unexpected query response.");
