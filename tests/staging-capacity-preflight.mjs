@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import { createSign } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { firestoreQuotaSummary } from "./staging-quota-diagnostics.mjs";
 
 const projectId = "speakout-portal-staging";
 const credentialsFile = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
@@ -57,10 +58,14 @@ const response = await fetch(url, {
   signal: AbortSignal.timeout(15000)
 });
 if (response.status === 429) {
+  // Preserve the release block, but report allowlisted Google RPC quota
+  // fields instead of guessing that the daily free-tier allowance was used.
+  const details = await response.json().catch(() => ({}));
   throw new Error(
     "Staging Firestore returned HTTP 429 on a one-record query. " +
-    "The staging project's quota/capacity is exhausted or rate-limited. " +
-    "Inspect Google Cloud Firestore quotas and billing; do not rerun the release suite until capacity is restored."
+    firestoreQuotaSummary(details) + ". " +
+    "Daily quota exhaustion, regional capacity and request-rate limits remain possible; " +
+    "inspect this project's usage and request metrics. Do not rerun the release suite until the limit is identified."
   );
 }
 if (!response.ok) {
