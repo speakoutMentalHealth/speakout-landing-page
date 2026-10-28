@@ -1,0 +1,115 @@
+name: Forum Production Private Pilot Control
+
+# Authorized maintainers only. Never called automatically on pushes or PRs.
+# The existing trusted script checks a real private room, at least one approved
+# verified adult member, an assigned moderator and an unexpired safety gate.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Enable or disable the time-limited private pilot"
+        required: true
+        type: choice
+        options:
+          - enable
+          - disable
+      room_id:
+        description: "Exact unpublished private forum room ID (e.g. adult-pilot)"
+        required: true
+        type: string
+      actor_uid:
+        description: "Exact production Firebase UID of the responsible admin"
+        required: true
+        type: string
+      hours:
+        description: "Pilot window, 1–72 hours (default 24)"
+        default: "24"
+        required: true
+        type: string
+      reason:
+        description: "Auditable reason (15–160 characters; no personal information)"
+        required: true
+        type: string
+      confirmed_safeguards:
+        description: "Type MODERATOR_BACKUP_AND_ADULT_GRANTS_CONFIRMED after checking the roster and escalation coverage"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forum-production-trusted-pilot
+  cancel-in-progress: false
+
+jobs:
+  operate:
+    name: Trusted production gate — room remains unpublished until admin publishes
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    steps:
+      - name: Validate explicit pilot controls
+        env:
+          ACTION: ${{ inputs.action }}
+          ROOM: ${{ inputs.room_id }}
+          ACTOR: ${{ inputs.actor_uid }}
+          HOURS: ${{ inputs.hours }}
+          REASON: ${{ inputs.reason }}
+          SAFEGUARDS: ${{ inputs.confirmed_safeguards }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$ACTION" == "enable" || "$ACTION" == "disable" ]] || exit 2
+          [[ "$ROOM" =~ ^[a-z][a-z0-9-]{2,55}$ ]] || exit 2
+          [[ "$ACTOR" =~ ^[A-Za-z0-9_-]{5,80}$ ]] || exit 2
+          [[ "$HOURS" =~ ^[0-9]+$ ]] && (( HOURS >= 1 && HOURS <= 72 )) || exit 2
+          (( ${#REASON} >= 15 && ${#REASON} <= 160 )) || exit 2
+          [[ "$SAFEGUARDS" == "MODERATOR_BACKUP_AND_ADULT_GRANTS_CONFIRMED" ]] || {
+            echo "::error::Confirm adult verification, a named moderator and backup, emergency escalation and room membership first."
+            exit 2
+          }
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install privileged operator SDK
+        run: npm install --no-save --package-lock=false firebase-admin
+      - name: Prepare restricted production credential
+        shell: bash
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$SERVICE_ACCOUNT" ]]; then
+            echo "::error::Production Firebase credential is unavailable."
+            exit 1
+          fi
+          printf "%s" "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/forum-pilot-credentials.json"
+          chmod 600 "$RUNNER_TEMP/forum-pilot-credentials.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/forum-pilot-credentials.json" >> "$GITHUB_ENV"
+      - name: Apply trusted expiring release control with immutable audit
+        env:
+          FORUM_PILOT_CONFIRM_PROJECT: speaakout-portal
+          FORUM_PILOT_CONFIRM_ROOM: ${{ inputs.room_id }}
+          FORUM_PILOT_PRODUCTION_APPROVER: ${{ inputs.actor_uid }}
+          PROJECT: speaakout-portal
+          ROOM: ${{ inputs.room_id }}
+          ACTOR: ${{ inputs.actor_uid }}
+          HOURS: ${{ inputs.hours }}
+          REASON: ${{ inputs.reason }}
+          ACTION: ${{ inputs.action }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/forum-pilot-control.mjs \
+            --project="$PROJECT" --room="$ROOM" \
+            --actor="$ACTOR" --hours="$HOURS" \
+            --reason="$REASON" --action="$ACTION" \
+            --production-ack=PRIVATE_PILOT_ONLY --apply
+      - name: Remove restricted credential from runner
+        if: always()
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/forum-pilot-credentials.json"
