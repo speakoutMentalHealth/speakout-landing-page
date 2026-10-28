@@ -1,0 +1,49 @@
+name: Forum Volunteer Private Pilot Inventory
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/forum-pilot-readiness.mjs'
+      - '.github/workflows/forum-volunteer-pilot-inventory.yml'
+      - '.github/workflows/forum-production-private-pilot.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forum-production-trusted-pilot
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    name: Read-only approved adult room and trusted gate inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Firebase Admin SDK for read-only inspection
+        run: npm install --no-save --package-lock=false firebase-admin
+      - name: Set up production identity
+        shell: bash
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          set -euo pipefail
+          [[ -n "$SERVICE_ACCOUNT" ]] || { echo "::error::Production Firebase credential not configured"; exit 1; }
+          printf "%s" "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/forum-readiness-credentials.json"
+          chmod 600 "$RUNNER_TEMP/forum-readiness-credentials.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/forum-readiness-credentials.json" >> "$GITHUB_ENV"
+      - name: Inspect production membership and release gate without reading posts
+        run: node scripts/forum-pilot-readiness.mjs
+      - name: Clean up service account
+        if: always()
+        run: rm -f "$RUNNER_TEMP/forum-readiness-credentials.json"
