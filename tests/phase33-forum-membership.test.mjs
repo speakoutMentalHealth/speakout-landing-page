@@ -7,7 +7,7 @@ test("unpublished forum preview does not expose rooms or diagnose participants",
   const page = read("forum.html");
   const ui = read("js/forum-community.js");
   const rules = read("firebase/firestore.rules");
-  assert.match(page, /not launched/);
+  assert.match(page, /Restricted pilot community/);
   assert.match(page, /noindex,nofollow/);
   assert.match(page, /js\/account-controls.js/);
   assert.match(ui, /forumAccessGrants/);

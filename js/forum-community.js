@@ -255,7 +255,9 @@ onAuthStateChanged(auth, async user => {
       return profile.exists() ? profile.data() : null;
     });
     if (revision !== accessRevision) return;
-    $("entryMessage").textContent = entry.message;
+    $("entryMessage").textContent = !user && new URLSearchParams(location.search).get("application") === "pending"
+      ? "Your SpeakOut application was submitted. Your account must be approved before you can sign in and access the private pilot. You will return here after a successful approved login."
+      : entry.message;
     if (!entry.allowed) return;
     actor = user;
     $("forumEntry").hidden = true;

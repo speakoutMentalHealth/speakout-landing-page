@@ -97,6 +97,27 @@ textarea{display:block;width:100%;padding:12px;border:1px solid #ccdfd1;border-r
 .number{flex:none;display:grid;place-items:center;background:#ecf5ee;width:24px;height:24px;border-radius:8px;color:#27654d;font-size:.7rem;font-weight:800}
 .panel .service-note{margin:12px 0 0;padding-top:10px;border-top:1px solid #edf2ed;font-size:.75rem}
 .community-footer{color:#849288;text-align:center;margin:22px 0 0;font-size:.74rem}
+/* Cohesive premium entry treatment for invited adult members. */
+body{background:radial-gradient(circle at 8% 8%,#e9f3ed 0,transparent 38%),#f6f9f7}
+.hero{padding:30px 32px;background:linear-gradient(125deg,#10382f 0%,#135843 65%,#1e7254 100%);border:1px solid #256b53;border-radius:24px;box-shadow:0 20px 44px rgba(13,62,44,.12)}
+.hero .eyebrow{color:#bce7ce}
+.hero h1{color:#fff;font-size:clamp(2.15rem,4.6vw,3rem)}
+.hero p{color:#e0f1e7}
+.hero-pill{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff}
+.hero-pill:before{background:#f5c36b}
+.surface{box-shadow:0 10px 34px rgba(18,60,42,.06)}
+#forumEntry{padding:clamp(22px,4vw,38px);max-width:790px;margin:0 auto 26px;border-radius:22px}
+#forumEntry h2{font-size:clamp(1.35rem,2.7vw,1.9rem);letter-spacing:-.035em;line-height:1.15;color:#153e31;margin:0 0 14px}
+#forumEntry p{font-size:.94rem;line-height:1.6;color:#536c5c;margin:0 0 13px}
+#forumEntry #entryMessage{padding:14px 16px;border:1px solid #d3e8d9;border-radius:12px;background:#f1f8f3;color:#285c41}
+#forumEntry .actions{margin-top:22px}
+#forumEntry .actions a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 21px;border-radius:12px;text-decoration:none;font-weight:800;transition:background-color .18s ease,transform .18s ease}
+#forumEntry .actions a:first-child{background:#176346;border:1px solid #176346;color:#fff}
+#forumEntry .actions a:first-child:hover{background:#0d4c33}
+#forumEntry .actions a:last-child{background:#fff;border:1px solid #abcdb7;color:#17583e}
+#forumEntry .actions a:last-child:hover{background:#edf7ef}
+@media(max-width:700px){.hero{padding:23px 20px;border-radius:19px}#forumEntry .actions a{flex:1 1 140px}}
+@media(prefers-reduced-motion:reduce){#forumEntry .actions a{transition:none}}
 @media(max-width:1050px){.layout{grid-template-columns:225px minmax(0,1fr)}.rightcol{grid-column:1 / -1;grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){
  .topbar-inner{padding:0 16px;min-height:60px}
@@ -127,7 +148,7 @@ textarea{display:block;width:100%;padding:12px;border:1px solid #ccdfd1;border-r
 </div></header>
 <main class="outer">
 <p class="breadcrumbs"><a href="https://speakoutmentalhealth.org/">SpeakOut</a> <span aria-hidden="true">/</span> Community</p>
-<section class="hero"><div><div class="eyebrow">Connect · Learn · Grow</div><h1>Community discussions</h1><p>Explore thoughtfully moderated spaces to learn, share opportunities and connect with fellow adults.</p></div><span class="hero-pill">Invitation-only pilot · not launched</span></section>
+<section class="hero"><div><div class="eyebrow">Connect · Learn · Grow</div><h1>Community discussions</h1><p>Explore thoughtfully moderated spaces to learn, share opportunities and connect with fellow adults.</p></div><span class="hero-pill">Private pilot · approved adults only</span></section>
 <section id="forumEntry" class="surface panel" aria-labelledby="entryHeading">
 <h2 id="entryHeading">Sign in to SpeakOut Community</h2>
 <p id="entryMessage" role="status" aria-live="polite">Use your existing SpeakOut login. New members must sign up and wait for account approval before entering the forum.</p>
@@ -143,9 +164,9 @@ textarea{display:block;width:100%;padding:12px;border:1px solid #ccdfd1;border-r
 </aside>
 <section class="surface feed" aria-label="Community discussion feed">
 <div class="feed-head"><div><h2>Discussions</h2><p>Approved conversations, organised by space.</p></div><span class="feed-tab">Moderated</span></div>
-<div class="notice"><strong>Preview — not launched.</strong> Rooms and discussions are not open to the public. Verified adult membership and moderator approval will be required. This forum is not an emergency or counselling service.</div>
+<div class="notice"><strong>Restricted pilot community.</strong> Only individually approved adult accounts assigned to a published room can participate while its private pilot is active. New posts and replies require moderation. This forum is not an emergency or counselling service.</div>
 <p id="status" role="status" aria-live="polite">Checking community access…</p>
-<div id="communityEmpty" class="empty-feed"><span class="empty-symbol" aria-hidden="true">☷</span><h3>The conversation starts here</h3><p>Community spaces will appear as soon as they are approved for the adult pilot. No discussions are currently available.</p><a href="https://mindcheck.speakoutmentalhealth.org/community.html">Explore community spaces ↗</a></div>
+<div id="communityEmpty" class="empty-feed"><span class="empty-symbol" aria-hidden="true">☷</span><h3>Your approved spaces will appear here</h3><p>If no rooms are visible, either the private pilot is not active or your account has not been granted a room invitation. This page never displays simulated conversations.</p><a href="https://mindcheck.speakoutmentalhealth.org/community.html">Explore community spaces ↗</a></div>
 <div id="discussion" class="discussion" hidden>
 <div class="discussion-title"><div><h2 id="roomTitle">Room discussion</h2><p id="roomDescription"></p></div></div>
 <label class="sr-only" for="topicSearch">Search approved topics in this space</label><div class="topic-search"><input id="topicSearch" type="search" placeholder="Search conversations in this space…" autocomplete="off"></div>

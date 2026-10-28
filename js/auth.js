@@ -70,7 +70,7 @@ function beginGoogleProfile(user){
   if(!value("firstName")) byId("firstName").value=names[0]||"";
   if(!value("lastName")) byId("lastName").value=names.slice(1).join(" ");
   selectPanel("joinPanel");
-  showRegister("Google account connected. Confirm your details, choose your role and accept the terms to submit your application.");
+  showRegister("Google sign-in succeeded, but this email has no SpeakOut member profile yet. Complete your application below; forum access will require manual approval before you can enter.");
   byId("firstName")?.focus();
 }
 
@@ -179,8 +179,10 @@ async function redirectByUserRole(user){
 
 async function handleLogin(event){
   event.preventDefault();
+  if(authActionInProgress) return;
   const email=value("loginEmail"), password=value("loginPassword");
   if(!email||!password){showLogin("Enter your email and password.","error");return;}
+  authActionInProgress=true;
   try{
     sessionStorage.removeItem("speakoutManualLogout");
     const privateDevice=await applyDevicePersistence();
@@ -190,6 +192,8 @@ async function handleLogin(event){
   }catch(error){
     console.error("Login error:",error);
     showLogin(error?.code==="auth/invalid-credential"?"Incorrect email or password.":"Login failed. Please check your details and try again.","error");
+  }finally{
+    authActionInProgress=false;
   }
 }
 
@@ -350,6 +354,10 @@ async function handleRegister(event){
     byId("registerForm")?.reset();
     setGoogleProfileMode(null);
     clearResolvedSchool();
+    // Return to the official forum entry with a clear pending state, never grant access automatically.
+    if(new URLSearchParams(location.search).get("next")==="forum") {
+      window.location.replace(projectUrl("forum.html?application=pending"));
+    }
   }catch(error){
     console.error("Registration error:",error);
     if(credential?.user&&!profileCreated&&!usingGoogle){

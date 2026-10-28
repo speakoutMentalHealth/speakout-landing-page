@@ -8,8 +8,8 @@ test("forum professional layout preserves real member interaction hooks and laun
     assert.match(page,new RegExp('id="'+id+'"'),"missing forum UI hook "+id);
   }
   assert.match(page,/noindex,nofollow/);
-  assert.match(page,/not launched/i);
-  assert.match(page,/Verified adult membership/i);
+  assert.match(page,/Restricted pilot community/i);
+  assert.match(page,/approved adult accounts/i);
   assert.match(page,/js\/forum-community\.js/);
   assert.match(page,/js\/account-controls\.js/);
   assert.match(page,/@media\(max-width:700px\)/);
