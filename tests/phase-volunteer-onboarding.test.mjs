@@ -12,8 +12,9 @@ test("Volunteer role has its own role-guarded destination", () => {
   assert.match(auth, /volunteer:\s*"volunteer-dashboard\.html"/);
   assert.match(guard, /volunteer:\s*"volunteer-dashboard\.html"/);
   assert.match(map, /"volunteer-dashboard\.html":\s*\[[^\]]*"volunteer"/);
-  assert.match(page, /requireRoles\(\["volunteer"\]/);
-  assert.match(page, /renderRoleNav\(profile,"dashboard"\)/);
+  const runtime = read("js/volunteer-onboarding.js");
+  assert.match(runtime, /requireRoles\(\["volunteer"\]/);
+  assert.match(runtime, /renderRoleNav\(profile, "dashboard"\)/);
   assert.match(page, /results are not yet synced automatically/i);
 });
 
