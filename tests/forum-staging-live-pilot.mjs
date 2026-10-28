@@ -274,11 +274,11 @@ async function runTest(){
   const replyId="stage-reply-"+suffix;
   const replyRef=doc(adult.db,"forumReplies",replyId);
   paths.add("forumReplies/"+replyId);
-  await setDoc(replyRef,{
+  await checkedStage("member-submit-reply",()=>setDoc(replyRef,{
     roomId,topicId,body:"Synthetic reply awaiting review.",
     authorUid:adult.uid,moderationStatus:"pending",
     moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-  });
+  }));
   await expectDenied(getDoc(replyRef),"Adult pending reply read");
   const pendingReplies=await getDocs(query(collection(mod.db,"forumReplies"),
     where("roomId","==",roomId),where("moderationStatus","==","pending")));
@@ -304,10 +304,10 @@ async function runTest(){
   assert.equal(replies.docs.length,1,"Member-approved-reply query failed");
   const reportId=adult.uid+"__topic__"+topicId;
   paths.add("forumReports/"+reportId);
-  await setDoc(doc(adult.db,"forumReports",reportId),{
+  await checkedStage("member-submit-report",()=>setDoc(doc(adult.db,"forumReports",reportId),{
     roomId,targetType:"topic",targetId:topicId,
     reporterUid:adult.uid,reason:"privacy",createdAt:serverTimestamp()
-  });
+  }));
   const reports=await getDocs(query(collection(mod.db,"forumReports"),
     where("roomId","==",roomId)));
   assert.equal(reports.docs.length,1,"Moderator room report queue failed");
