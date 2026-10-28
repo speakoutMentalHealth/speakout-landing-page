@@ -85,6 +85,10 @@ async function renderOne(application) {
       message.textContent = "Eligible status requires verified assessment and safeguarding clearance.";
       return;
     }
+    if (placement.value === "assigned" && stage.value !== "active") {
+      message.textContent = "Only an active, verified and safeguarded volunteer may have an assignment.";
+      return;
+    }
     if (stage.value === "declined" && placement.value === "assigned") {
       message.textContent = "A declined volunteer cannot remain assigned.";
       return;
