@@ -35,18 +35,22 @@ test("failed sign-out does not claim success and allows retry",async()=>{
 function accountHarness(){
   let observer,listener,authError,finish;
   const login={},logout={},status={};
+  const forumLinks=[{},{}];
   const account={setAttribute(){},querySelector:s=>s==='a'?login:s==='button'?logout:status};
   const header={querySelectorAll:()=>[],insertAdjacentElement(position,element){assert.equal(position,'afterend');assert.equal(element,account);}};
-  const document={head:{append(){}},querySelector:()=>header,createElement:tag=>tag==='nav'?account:{},addEventListener(type,handler,capture){assert.equal(type,'click');assert.equal(capture,true);listener=handler;}};
+  const document={querySelectorAll:selector=>{assert.equal(selector,"[data-account-login]");return forumLinks;},head:{append(){}},querySelector:()=>header,createElement:tag=>tag==='nav'?account:{},addEventListener(type,handler,capture){assert.equal(type,'click');assert.equal(capture,true);listener=handler;}};
   const source=read('js/account-controls.js').replace(/^import .*;\n/gm,'').replaceAll('import.meta.url','"https://example.test/js/account-controls.js"');
   let calls=0;
   new Function('auth','onAuthStateChanged','loginUrl','logoutSession','document','window','MutationObserver',source)({},(_,cb,error)=>{observer=cb;authError=error;},'https://example.test/auth.html',()=>{calls++;return new Promise(r=>finish=r);},document,{},class {observe(){}});
-  return {login,logout,status,auth:user=>observer(user),error:()=>authError(),click:()=>listener({target:{closest:()=>logout},preventDefault(){},stopImmediatePropagation(){}}),finish:()=>finish(),get calls(){return calls;}};
+  return {login,logout,status,forumLinks,auth:user=>observer(user),error:()=>authError(),click:()=>listener({target:{closest:()=>logout},preventDefault(){},stopImmediatePropagation(){}}),finish:()=>finish(),get calls(){return calls;}};
 }
 test("account actions follow auth state without depending on role approval or profile reads",()=>{
   const h=accountHarness();h.auth(null);assert.equal(h.login.hidden,false);assert.equal(h.logout.hidden,true);
   h.auth({uid:'pending-contributor'});assert.equal(h.login.hidden,true);assert.equal(h.logout.hidden,false);
   h.auth(null);assert.equal(h.logout.hidden,true);
+  assert.ok(h.forumLinks.every(link=>link.hidden===false));
+  h.auth({uid:'forum-member'});assert.ok(h.forumLinks.every(link=>link.hidden===true));
+  h.auth(null);assert.ok(h.forumLinks.every(link=>link.hidden===false));
 });
 test("legacy logout clicks are captured, repeated taps deduplicated and progress announced",async()=>{
   const h=accountHarness();h.auth({uid:'contributor'});const click=h.click();await h.click();assert.equal(h.calls,1);assert.equal(h.logout.disabled,true);assert.match(h.status.textContent,/Logging out/);h.finish();await click;
