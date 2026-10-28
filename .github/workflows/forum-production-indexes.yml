@@ -1,0 +1,84 @@
+name: Forum Production Indexes (Add Only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type ADD_ONLY_FORUM_INDEXES to create only the three reviewed production forum indexes'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firestore-rules-production
+  cancel-in-progress: false
+
+jobs:
+  add-missing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - name: Confirm explicit add-only production action
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: test "$CONFIRM" = ADD_ONLY_FORUM_INDEXES
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Refuse index definitions beyond the three reviewed composites
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          actual = json.loads(Path('firebase/forum-firestore.indexes.json').read_text())['indexes']
+          expected = [
+              ('forumTopics', ['roomId', 'moderationStatus']),
+              ('forumReplies', ['roomId', 'topicId', 'moderationStatus']),
+              ('forumReplies', ['roomId', 'moderationStatus']),
+          ]
+          normalized = []
+          for item in actual:
+              assert item['queryScope'] == 'COLLECTION'
+              assert set(item) == {'collectionGroup', 'queryScope', 'fields'}
+              assert all(set(f) == {'fieldPath', 'order'} and f['order'] == 'ASCENDING' for f in item['fields'])
+              normalized.append((item['collectionGroup'], [f['fieldPath'] for f in item['fields']]))
+          assert sorted(normalized) == sorted(expected), 'Unreviewed index definitions refused'
+          print('Verified exact three forum composites; no unrelated definitions.')
+          PY
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Create only missing production forum indexes once
+        env:
+          FORUM_INDEX_CONFIRM_PROJECT: speaakout-portal
+          FORUM_INDEX_PRODUCTION_APPROVER: ${{ github.actor }}
+          OPERATOR: ${{ github.actor }}
+        run: |
+          node scripts/forum-indexes-additive.mjs --mode=apply --project=speaakout-portal \
+            --ack=ADD_ONLY --production-ack=PRODUCTION_INDEXES_APPROVED --actor="$OPERATOR"
+      - name: Wait for all three indexes to become READY
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in {1..12}; do
+            status=0
+            node scripts/forum-indexes-additive.mjs --mode=inspect --project=speaakout-portal || status=$?
+            if [[ "$status" == "0" ]]; then
+              echo '### All three production forum indexes READY' >> "$GITHUB_STEP_SUMMARY"
+              echo 'No indexes deleted or updated. No rules deployed, members enrolled or pilot gate activated.' >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            # Only missing/building state is retried; IAM/API errors stop immediately.
+            if [[ "$status" != "3" ]]; then exit "$status"; fi
+            if [[ "$attempt" != "12" ]]; then sleep 15; fi
+          done
+          echo 'Indexes are not all READY yet. Run Forum Production Readiness (Read Only) later; do not repeat creation.' >> "$GITHUB_STEP_SUMMARY"
+          exit 3
