@@ -21,6 +21,10 @@ if(header){
   let busy = false;
   let signedIn = false;
   function updateHeaderActions(){
+    // Explicit login-only links can also live outside the header (forum sidebar).
+    document.querySelectorAll("[data-account-login]").forEach(link=>{
+      link.hidden = signedIn;
+    });
     // Older pages rebuild role navigation after an asynchronous profile read.
     // Keep those login links in sync too, without changing access/join CTAs.
     header.querySelectorAll("a[href]").forEach(link=>{
