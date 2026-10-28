@@ -9,13 +9,18 @@
 - Identified routing defect: `volunteer` pointed to `student-dashboard.html` while access policy only allowed students there.
 - There is no verified, role-specific, persisted onboarding checklist in the SpeakOut dashboard.
 
-## Scope of this PR (safe foundation)
+## Implemented on the draft branch (not yet deployed)
 
-- Route approved volunteers to a dedicated, role-guarded `volunteer-dashboard.html`.
-- Place free training, assessment instructions, available news, and email/WhatsApp support in one location.
-- Direct public volunteer calls to action to SpeakOut signup first.
-- Show only confirmed account access, and clearly distinguish external training from verified portal records.
-- Do not grant safeguarding, counselling or assignment permissions automatically.
+- Corrected volunteer role routing to a dedicated role-guarded `volunteer-dashboard.html`.
+- Added a self-service intake form with city/state, work preferences, weekday availability, weekly hours, languages, interests, experience, safeguarding acknowledgement and optional email/WhatsApp updates.
+- Intake is owned by the approved volunteer UID, with authoritative review stage/assessment/safeguarding/placement statuses readable but not writable by the volunteer.
+- `firebase/firestore.rules` validates intake data and protects review decisions. The generic catch-all is explicitly excluded from the volunteer collection.
+- Added `admin-volunteers.html` and `js/admin-volunteers.js` for administrators to review intakes and manually record independently verified milestones. Account approval stays in the existing admin area.
+- Added `tests/volunteer-rules.emulator.test.mjs` and package scripts to verify owner-only intake, rejection of forged clearance and basic admin review rules.
+- Public volunteer CTAs link to account registration before the training journey.
+- The volunteer dashboard is explicit about unlinked MindCheck training records and manual messaging.
+
+This is a staged MVP; **do not merge until all permission, regression, browser and operational gates pass.**
 
 ## Required backend work before describing onboarding as fully automated
 
@@ -30,4 +35,4 @@
 
 ## Current limits
 
-This PR does **not** implement intake data persistence, assessment-to-account synchronization, automated notification dispatch, placement automation, or production deployment. These require separate backend-reviewed changes and tests. Do not describe the experience as fully automated until those gates pass.
+This PR **does** implement volunteer intake persistence and a manually managed, server-authoritative review dashboard. It does **not** implement MindCheck assessment-to-account verification, automatic email/WhatsApp dispatch, automated placement scheduling, review-action audit history, a pending-applicant self-service status page or production deployment. Validate these before advertising fully automated onboarding.
