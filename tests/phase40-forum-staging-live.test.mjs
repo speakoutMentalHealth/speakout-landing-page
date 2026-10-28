@@ -21,10 +21,10 @@ test("real pilot uses staging only, synthetic accounts and read/write permission
  assert.match(s,/forumReleaseControls\/pilot/);
  assert.match(s,/suffix=randomBytes/);
  assert.match(s,/await expectDenied\(getDoc\(topicRef\)/);
- assert.match(s,/await approval\.commit\(\)/);
- assert.match(s,/await approveReply\.commit\(\)/);
+ assert(s.includes("()=>approval.commit()"));
+ assert(s.includes("()=>approveReply.commit()"));
  assert.match(s,/const reports=await getDocs/);
- assert.match(s,/await close\.commit\(\)/);
+ assert(s.includes("()=>close.commit()"));
  assert.match(s,/finally\{\s*try\{await cleanup\(\)/);
  assert.match(s,/STAGING CLEANUP PASS/);
  for(const stage of [
