@@ -205,7 +205,10 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumRoomAudits/"+auditId);
-  await publish.commit();
+  console.log("FORUM_STAGING_CHECKPOINT publish_room_with_audit START");
+  try { await publish.commit(); }
+  catch (error) { throw Error("Stage publish_room_with_audit failed: "+(error?.code||error?.message||error)); }
+  console.log("FORUM_STAGING_CHECKPOINT publish_room_with_audit PASS");
   assert((await getDoc(doc(adult.db,"forumRooms",roomId))).exists());
   assert((await getDoc(doc(mod.db,"forumRooms",roomId))).exists());
   for(const [who,actorDb] of [["outsider",outsider.db],["student",teen.db]]) {
