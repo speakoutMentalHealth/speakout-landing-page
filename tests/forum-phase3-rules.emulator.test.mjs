@@ -215,3 +215,49 @@ test("delegated adult moderator can query only own private room pending topics, 
   await assertSucceeds(batch.commit());
   await assertSucceeds(getDoc(path(member,"forumReplies","awaiting-reply")));
 });
+
+test("approved newly created topics accept title-free replies but reject forged reply shapes",async()=>{
+  await gate();
+  await assertSucceeds(publish(client("admin-pilot")));
+  const adult=client("adult-pilot"),moderator=client("mod-pilot");
+  const topic=path(adult,"forumTopics","fresh-reply-parent");
+  await assertSucceeds(setDoc(topic,{
+    roomId:"test-private",title:"New discussion awaiting approval",
+    body:"Please review this new adult discussion.",
+    authorUid:"adult-pilot",moderationStatus:"pending",moderationAuditId:"none",
+    createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+  }));
+  const reply=(id,overrides={})=>setDoc(path(adult,"forumReplies",id),{
+    roomId:"test-private",topicId:"fresh-reply-parent",
+    body:"This response follows the verified adult discussion.",
+    authorUid:"adult-pilot",moderationStatus:"pending",moderationAuditId:"none",
+    createdAt:serverTimestamp(),updatedAt:serverTimestamp(),
+    ...overrides
+  });
+  await assertFails(reply("reply-before-parent-approval"));
+  const batch=writeBatch(moderator);
+  batch.update(path(moderator,"forumTopics","fresh-reply-parent"),{
+    moderationStatus:"approved",moderationAuditId:"review-fresh-parent",
+    updatedAt:serverTimestamp()
+  });
+  batch.set(path(moderator,"forumModerationAudits","review-fresh-parent"),{
+    kind:"topic",itemId:"fresh-reply-parent",roomId:"test-private",
+    actorUid:"mod-pilot",previousStatus:"pending",nextStatus:"approved",
+    reason:"Adult discussion approved for reply testing",changedAt:serverTimestamp()
+  });
+  await assertSucceeds(batch.commit());
+  // This is precisely the real staging client payload, with NO title field.
+  await assertSucceeds(reply("reply-to-approved-parent"));
+  await assertFails(getDoc(path(adult,"forumReplies","reply-to-approved-parent")));
+  await assertSucceeds(getDoc(path(moderator,"forumReplies","reply-to-approved-parent")));
+  await assertFails(reply("forged-reply-title",{title:"Replies may not have titles"}));
+  await assertFails(reply("forged-topic-id",{topicId:"missing-parent"}));
+  await assertFails(reply("forged-room-id",{roomId:"wrong-room"}));
+  await assertFails(reply("forged-author",{authorUid:"outsider"}));
+  await assertFails(reply("forged-status",{moderationStatus:"approved"}));
+  await assertFails(setDoc(path(adult,"forumTopics","topic-without-title"),{
+    roomId:"test-private",body:"Topic must still have a title.",
+    authorUid:"adult-pilot",moderationStatus:"pending",moderationAuditId:"none",
+    createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+  }));
+});
