@@ -164,6 +164,7 @@ async function expectDenied(promise,label) {
     }
   }
   assert(denied,label+" unexpectedly allowed");
+  console.log("FORUM_STAGING_EXPECTED_DENIAL "+label);
 }
 // A Firestore CAS (compare-and-swap) condition prevents clobbering a gate
 // modified by another operator between inspection, activation and cleanup.
