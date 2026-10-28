@@ -17,6 +17,7 @@ const ACCESS_MAP = {
   // Main dashboards
   "portal.html": ALL_APPROVED_USERS,
   "student-dashboard.html": ["admin", "student"],
+  "volunteer-dashboard.html": ["admin", "super_admin", "volunteer"],
   "school-dashboard.html": ["admin", "school", "school_admin", "contributor", "volunteer"],
   "teacher-dashboard.html": ["admin", "teacher"],
   "parent-dashboard.html": ["admin", "parent"],
