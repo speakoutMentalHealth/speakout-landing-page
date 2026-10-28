@@ -27,6 +27,19 @@ test("real pilot uses staging only, synthetic accounts and read/write permission
  assert.match(s,/await close\.commit\(\)/);
  assert.match(s,/finally\{\s*try\{await cleanup\(\)/);
  assert.match(s,/STAGING CLEANUP PASS/);
+ for(const stage of [
+   "verify-admin-profile-and-gate-read",
+   "admin-publish-audited-private-room",
+   "member-submit-topic",
+   "moderator-approve-topic",
+   "member-submit-reply",
+   "moderator-approve-reply",
+   "member-submit-report",
+   "admin-lock-room"
+ ])assert(s.includes(stage),"Missing safe phase diagnosis: "+stage);
+ assert(s.includes("FORUM_STAGING_EXPECTED_DENIAL"));
+ assert(s.includes("FORUM_STAGING_STAGE_FAILED"));
+ assert(s.includes("STAGING FORUM ACCEPTANCE FAILED during"));
  assert(s.includes("currentDocument.updateTime"));
  assert(s.includes("currentDocument.exists=false"));
  assert(s.includes("adminGate(gateData,gate.updateTime)"));
