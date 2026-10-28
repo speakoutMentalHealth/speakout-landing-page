@@ -1,3 +1,4 @@
+import { forumReturn } from "./forum-entry.js";
 import { selectPanel } from "./auth-access.js";
 import { isApprovedProfile } from "./profile-approval.js";
 import { auth, db } from "./firebase-config.js";
@@ -172,7 +173,8 @@ async function redirectByUserRole(user){
     await signOut(auth);
     return;
   }
-  window.location.replace(dashboardForRole(profile.role));
+  const forumDestination = forumReturn(location.search, profile);
+  window.location.replace(forumDestination ? projectUrl(forumDestination) : dashboardForRole(profile.role));
 }
 
 async function handleLogin(event){

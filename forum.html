@@ -123,17 +123,23 @@ textarea{display:block;width:100%;padding:12px;border:1px solid #ccdfd1;border-r
 <body>
 <header class="topbar"><div class="topbar-inner">
 <a class="logo-lockup" href="https://speakoutmentalhealth.org/"><span class="logo-mark" aria-hidden="true">✦</span><span>SpeakOut <b>Community</b></span></a>
-<nav class="topnav" aria-label="Site navigation"><a href="https://speakoutmentalhealth.org/">SpeakOut Home</a><a href="https://mindcheck.speakoutmentalhealth.org/community.html">MindCheck 18+</a><a href="auth.html" data-account-login>Member sign in</a></nav>
+<nav class="topnav" aria-label="Site navigation"><a href="https://speakoutmentalhealth.org/">SpeakOut Home</a><a href="https://mindcheck.speakoutmentalhealth.org/community.html">MindCheck 18+</a><a href="auth.html?next=forum#login" data-account-login>Member sign in</a></nav>
 </div></header>
 <main class="outer">
 <p class="breadcrumbs"><a href="https://speakoutmentalhealth.org/">SpeakOut</a> <span aria-hidden="true">/</span> Community</p>
 <section class="hero"><div><div class="eyebrow">Connect · Learn · Grow</div><h1>Community discussions</h1><p>Explore thoughtfully moderated spaces to learn, share opportunities and connect with fellow adults.</p></div><span class="hero-pill">Invitation-only pilot · not launched</span></section>
-<div class="layout">
+<section id="forumEntry" class="surface panel" aria-labelledby="entryHeading">
+<h2 id="entryHeading">Sign in to SpeakOut Community</h2>
+<p id="entryMessage" role="status" aria-live="polite">Use your existing SpeakOut login. New members must sign up and wait for account approval before entering the forum.</p>
+<p>Entering your date of birth in MindCheck does not sign you into the forum.</p>
+<div class="actions"><a href="auth.html?next=forum#login">Sign in</a><a href="auth.html?next=forum#join">Sign up</a></div>
+</section>
+<div id="forumContent" class="layout" hidden>
 <aside class="surface sidebar" aria-label="Forum rooms">
 <div class="sidebar-head"><h2>Spaces</h2><span class="sidebar-tag">18+</span></div>
 <label class="sr-only" for="roomSearch">Search available spaces</label><div class="search-field"><span aria-hidden="true">⌕</span><input id="roomSearch" type="search" placeholder="Find a space" autocomplete="off"></div>
 <div id="rooms"><p class="no-rooms">Checking available spaces…</p></div>
-<div class="sidebar-bottom"><a href="auth.html" data-account-login>Member sign in ↗</a> · <a href="forum-moderator.html">Moderator workspace</a></div>
+<div class="sidebar-bottom"><a href="auth.html?next=forum#login" data-account-login>Member sign in ↗</a> · <a href="forum-moderator.html">Moderator workspace</a></div>
 </aside>
 <section class="surface feed" aria-label="Community discussion feed">
 <div class="feed-head"><div><h2>Discussions</h2><p>Approved conversations, organised by space.</p></div><span class="feed-tab">Moderated</span></div>
@@ -154,8 +160,8 @@ textarea{display:block;width:100%;padding:12px;border:1px solid #ccdfd1;border-r
 </section>
 <aside class="rightcol" aria-label="Community guidelines">
 <section class="surface panel"><h2>How it works</h2><ul>
-<li><span class="number">1</span><span>Apply for a verified adult forum account.</span></li>
-<li><span class="number">2</span><span>Join approved spaces and start meaningful discussions.</span></li>
+<li><span class="number">1</span><span>Sign in with your SpeakOut account, or sign up and wait for approval.</span></li>
+<li><span class="number">2</span><span>After approval, join spaces available to your account. Private rooms require membership.</span></li>
 <li><span class="number">3</span><span>Every topic and reply is reviewed before publication.</span></li>
 </ul></section>
 <section class="surface panel"><h2>Community principles</h2><p>Be respectful, protect others’ privacy and flag content that needs moderator attention.</p><p class="service-note">Your MindCheck mood history, assessments and other private wellness information are not sent to this forum.</p></section>

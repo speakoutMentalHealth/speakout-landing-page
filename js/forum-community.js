@@ -1,4 +1,5 @@
 import { auth, db } from "../firebase-config.js";
+import { forumEntry } from "./forum-entry.js";
 import { STARTER_ROOMS } from "./forum-room-state.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, query, where, limit, addDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -9,6 +10,7 @@ let actor = null;
 let adultGrant = false;
 let room = null;
 let currentRoomId = null;
+let accessRevision = 0;
 function filterRooms() {
   const search = ($("roomSearch")?.value || "").trim().toLocaleLowerCase();
   document.querySelectorAll("#rooms .room-button").forEach(button => {
@@ -47,8 +49,9 @@ async function isEligibleAdult(user) {
     return { allowed: false, privateRooms: [] };
   }
 }
-async function loadRooms() {
+async function loadRooms(revision) {
   const grant = await isEligibleAdult(actor);
+  if (revision !== accessRevision) return;
   adultGrant = grant.allowed;
   const possible = new Set(STARTER_ROOMS.map(r => r.id));
   for (const id of grant.privateRooms) if (SAFE_ID.test(id)) possible.add(id);
@@ -56,6 +59,7 @@ async function loadRooms() {
   for (const id of possible) {
     try {
       const snap = await getDoc(doc(db, "forumRooms", id));
+      if (revision !== accessRevision) return;
       if (snap.exists() && snap.data().published === true && snap.data().status !== "locked") {
         available.push({ id, ...snap.data() });
       }
@@ -63,6 +67,7 @@ async function loadRooms() {
       // No room details shown on denied lookups.
     }
   }
+  if (revision !== accessRevision) return;
   const container = $("rooms");
   container.replaceChildren();
   if (!available.length) {
@@ -70,7 +75,7 @@ async function loadRooms() {
     $("discussion").hidden = true;
     $("communityEmpty").hidden = false;
     container.querySelector("p")?.classList.add("no-rooms");
-    notice("Forum launch is pending. No discussions are open.");
+    notice("Your account is approved. No pilot rooms are currently available for your account.");
     return;
   }
   for (const item of available) {
@@ -84,7 +89,7 @@ async function loadRooms() {
     container.append(button);
   }
   filterRooms();
-  notice(adultGrant ? "Verified adult forum access active." : "You can view public approved discussions. Adult approval is required to post.");
+  notice(adultGrant ? "Verified adult forum access active." : "Account approved. Room eligibility and private membership determine discussion access.");
   const requested = new URLSearchParams(location.search).get("room");
   await showRoom(available.find(x => x.id === requested) || available[0]);
 }
@@ -232,7 +237,32 @@ $("newTopic").addEventListener("submit", async event => {
   } finally { submit.disabled = false; }
 });
 onAuthStateChanged(auth, async user => {
-  actor = user;
-  try { await loadRooms(); }
-  catch { notice("Community preview unavailable.", true); }
+  const revision = ++accessRevision;
+  actor = null;
+  adultGrant = false;
+  room = null;
+  currentRoomId = null;
+  $("rooms").replaceChildren();
+  $("topics").replaceChildren();
+  $("newTopic").hidden = true;
+  $("discussion").hidden = true;
+  $("forumContent").hidden = true;
+  $("forumEntry").hidden = false;
+  $("entryMessage").textContent = "Checking your account approval…";
+  try {
+    const entry = await forumEntry(user, async uid => {
+      const profile = await getDoc(doc(db, "users", uid));
+      return profile.exists() ? profile.data() : null;
+    });
+    if (revision !== accessRevision) return;
+    $("entryMessage").textContent = entry.message;
+    if (!entry.allowed) return;
+    actor = user;
+    $("forumEntry").hidden = true;
+    $("forumContent").hidden = false;
+    await loadRooms(revision);
+  } catch {
+    if (revision !== accessRevision) return;
+    $("entryMessage").textContent = "We could not verify your account approval. Refresh to try again.";
+  }
 });
