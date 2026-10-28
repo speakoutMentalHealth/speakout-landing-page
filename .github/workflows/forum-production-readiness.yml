@@ -1,0 +1,95 @@
+name: Forum Production Readiness (Read Only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firestore-rules-production
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      # Never execute an unreviewed dispatch branch with production credentials.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Authenticate existing production operator
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Record read-only scope
+        run: |
+          echo '### Production forum readiness — read only' >> "$GITHUB_STEP_SUMMARY"
+          echo "Reviewed main commit: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Project: speaakout-portal. No deployments, index changes, membership changes or pilot activation.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Inspect production forum indexes
+        id: indexes
+        run: node scripts/forum-indexes-additive.mjs --mode=inspect --project=speaakout-portal
+      - name: Inspect production pilot gate without member or content reads
+        if: ${{ !cancelled() && steps.indexes.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import datetime
+          import json
+          import os
+          import subprocess
+          import urllib.error
+          import urllib.request
+
+          token = subprocess.check_output(
+              ['gcloud', 'auth', 'print-access-token'], text=True, timeout=15
+          ).strip()
+          url = 'https://firestore.googleapis.com/v1/projects/speaakout-portal/databases/(default)/documents/forumReleaseControls/pilot'
+          request = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + token}, method='GET')
+          try:
+              with urllib.request.urlopen(request, timeout=25) as response:
+                  data = json.load(response)
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise SystemExit('Production pilot gate inspection failed: HTTP ' + str(error.code) + '. No readiness inferred.')
+              data = None
+
+          if data is None:
+              state = 'ABSENT — no trusted pilot gate exists'
+              closed = True
+          else:
+              fields = data.get('fields', {})
+              enabled = fields.get('enabled', {}).get('booleanValue')
+              raw_expiry = fields.get('expiresAt', {}).get('timestampValue')
+              expired = False
+              if isinstance(raw_expiry, str):
+                  try:
+                      expiry = datetime.datetime.fromisoformat(raw_expiry.replace('Z', '+00:00'))
+                      expired = expiry <= datetime.datetime.now(datetime.timezone.utc)
+                  except (ValueError, TypeError):
+                      pass
+              closed = enabled is False or (enabled is True and expired)
+              state = 'DISABLED' if enabled is False else 'EXPIRED' if closed else 'ACTIVE OR UNVERIFIED — operator review required'
+
+          print('Production trusted pilot gate: ' + state)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('\nTrusted pilot gate: ' + state + '\n')
+              summary.write('\nThis check does not verify moderator coverage, adult eligibility, room publication, live posting or safeguarding approval.\n')
+          if not closed:
+              raise SystemExit('Expected closed production pilot is not confirmed. No changes made.')
+          PY
+      - name: Record index result
+        if: always()
+        env:
+          INDEX_RESULT: ${{ steps.indexes.outcome }}
+        run: |
+          echo "Forum index inspection: $INDEX_RESULT. Only success confirms all required indexes READY." >> "$GITHUB_STEP_SUMMARY"
+          echo 'Passing this workflow is not authorization to open a production pilot.' >> "$GITHUB_STEP_SUMMARY"
