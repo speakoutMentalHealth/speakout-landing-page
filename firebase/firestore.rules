@@ -164,6 +164,7 @@ service cloud.firestore {
              a.placementStatus == "assigned")) &&
           ((a.reviewStage != "eligible") ||
             (a.assessmentStatus == "passed" && a.safeguardingStatus == "cleared")) &&
+          (a.placementStatus != "assigned" || (a.reviewStage == "active" && a.assessmentStatus == "passed" && a.safeguardingStatus == "cleared")) &&
           (a.reviewStage != "declined" || a.placementStatus != "assigned");
       }
       // An applicant cannot override clearance, verified assessment or placement.
