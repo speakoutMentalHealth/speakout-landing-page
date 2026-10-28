@@ -201,7 +201,20 @@ async function runTest(){
     expiresAt:new Date(Date.now()+12*60*1000),runTag:suffix};
   // The release gate is created only by the privileged staging service token;
   // browser accounts cannot provision or alter it under the real rules.
-  await adminGate(gateData,gate.updateTime);gateOwned=true;
+  await checkedStage("activate-trusted-staging-gate",()=>adminGate(gateData,gate.updateTime));
+  gateOwned=true;
+  await checkedStage("verify-admin-profile-and-gate-read",async()=>{
+    const [profile,room,control]=await Promise.all([
+      getDoc(doc(admin.db,"users",admin.uid)),
+      getDoc(doc(admin.db,"forumRooms",roomId)),
+      getDoc(doc(admin.db,"forumReleaseControls","pilot"))
+    ]);
+    assert.equal(profile.data()?.role,"admin");
+    assert.equal(profile.data()?.status,"approved");
+    assert.equal(room.data()?.published,false);
+    assert.equal(control.data()?.enabled,true);
+    assert(control.data()?.roomIds?.includes(roomId));
+  });
   await expectDenied(setDoc(doc(adult.db,"forumReleaseControls","pilot"),gateData),
     "Adult client gate tampering");
   const publish=writeBatch(admin.db);
@@ -230,12 +243,12 @@ async function runTest(){
   const topicId="stage-topic-"+suffix;
   const topicRef=doc(adult.db,"forumTopics",topicId);
   paths.add("forumTopics/"+topicId);
-  await setDoc(topicRef,{
+  await checkedStage("member-submit-topic",()=>setDoc(topicRef,{
     roomId,title:"Synthetic forum pilot test",
     body:"A safe fictional example requiring moderator review.",
     authorUid:adult.uid,moderationStatus:"pending",
     moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-  });
+  }));
   await expectDenied(getDoc(topicRef),"Adult pending discussion read");
   const pending=await getDocs(query(collection(mod.db,"forumTopics"),
     where("roomId","==",roomId),where("moderationStatus","==","pending")));
