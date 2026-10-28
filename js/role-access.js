@@ -17,6 +17,7 @@ const ACCESS_MAP = {
   // Main dashboards
   "portal.html": ALL_APPROVED_USERS,
   "student-dashboard.html": ["admin", "student"],
+  "volunteer-dashboard.html": ["admin", "super_admin", "volunteer"],
   "school-dashboard.html": ["admin", "school", "school_admin", "contributor", "volunteer"],
   "teacher-dashboard.html": ["admin", "teacher"],
   "parent-dashboard.html": ["admin", "parent"],
@@ -78,6 +79,17 @@ export function getRoleAccess(role) {
         { icon: "🎓", title: "SpeakHub", description: "Take free and premium learning courses.", href: "speakhub.html", access: "Approved" },
         { icon: "🧒", title: "Kiddies Corner", description: "Explore age-appropriate learning resources.", href: "kiddies.html", access: "Approved" },
         { icon: "🏅", title: "Certificates", description: "View your certificates and progress.", href: "certificates.html", access: "Approved" }
+      ]
+    },
+
+    volunteer: {
+      label: "Volunteer Hub",
+      welcome: "Follow your volunteer learning, assessment, safeguarding review and official updates.",
+      cards: [
+        { icon: "🎓", title: "Volunteer Hub", description: "Your next steps and programme information.", href: "volunteer-dashboard.html", access: "Approved" },
+        { icon: "📖", title: "Volunteer Training", description: "Complete the free foundation learning programme.", href: "https://mindcheck.speakoutmentalhealth.org/training-hub.html", access: "External" },
+        { icon: "📢", title: "News & Events", description: "Public outreach and training announcements.", href: "pages/news.html", access: "Public" },
+        { icon: "🏅", title: "Certificates", description: "View verified credentials available to you.", href: "certificates.html", access: "Approved" }
       ]
     },
 
