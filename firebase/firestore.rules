@@ -99,6 +99,75 @@ service cloud.firestore {
       allow delete: if isSuperAdmin();
     }
 
+    // Volunteer applications are linked to an approved volunteer UID.
+    // Browser users can edit only their own intake fields, never review decisions.
+    match /volunteerApplications/{volunteerId} {
+      function isOwnApprovedVolunteer() {
+        return isApproved() &&
+          request.auth.uid == volunteerId &&
+          userRole() == "volunteer";
+      }
+      function intakeFields() {
+        return [
+          "userId", "city", "state", "availabilityDays", "weeklyHours",
+          "participationMode", "focusAreas", "languages", "experience",
+          "emailUpdates", "whatsAppUpdates", "safeguardingAcknowledged",
+          "submittedAt", "updatedAt", "reviewStage", "assessmentStatus",
+          "safeguardingStatus", "placementStatus"
+        ];
+      }
+      function editableIntakeFields() {
+        return [
+          "city", "state", "availabilityDays", "weeklyHours",
+          "participationMode", "focusAreas", "languages", "experience",
+          "emailUpdates", "whatsAppUpdates", "safeguardingAcknowledged",
+          "updatedAt"
+        ];
+      }
+      function validVolunteerIntake() {
+        let a = request.resource.data;
+        return a.keys().hasOnly(intakeFields()) &&
+          a.keys().hasAll(intakeFields()) &&
+          a.userId == volunteerId &&
+          a.city is string && a.city.size() >= 2 && a.city.size() <= 80 &&
+          a.state is string && a.state.size() >= 2 && a.state.size() <= 80 &&
+          a.availabilityDays is list && a.availabilityDays.size() >= 1 &&
+          a.availabilityDays.size() <= 7 &&
+          a.availabilityDays.hasOnly(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]) &&
+          a.weeklyHours in ["1-3", "4-8", "9-12", "13+"] &&
+          a.participationMode in ["remote", "in_person", "hybrid"] &&
+          a.focusAreas is list && a.focusAreas.size() >= 1 &&
+          a.focusAreas.size() <= 7 &&
+          a.focusAreas.hasOnly(["mental_health_education", "research", "outreach", "programme_support", "technology", "media", "fundraising"]) &&
+          a.languages is string && a.languages.size() >= 2 && a.languages.size() <= 160 &&
+          a.experience is string && a.experience.size() <= 800 &&
+          a.emailUpdates is bool && a.whatsAppUpdates is bool &&
+          a.safeguardingAcknowledged == true &&
+          a.submittedAt is timestamp && a.updatedAt is timestamp &&
+          a.reviewStage in ["intake_received", "orientation", "assessment_review", "safeguarding_review", "eligible", "active", "paused", "declined"] &&
+          a.assessmentStatus in ["not_verified", "passed", "failed"] &&
+          a.safeguardingStatus in ["pending", "cleared", "blocked"] &&
+          a.placementStatus in ["not_assigned", "assigned", "paused"];
+      }
+      // An applicant cannot override clearance, verified assessment or placement.
+      allow read: if isSuperAdmin() || isOwnApprovedVolunteer();
+      allow create: if isOwnApprovedVolunteer() &&
+        validVolunteerIntake() &&
+        request.resource.data.reviewStage == "intake_received" &&
+        request.resource.data.assessmentStatus == "not_verified" &&
+        request.resource.data.safeguardingStatus == "pending" &&
+        request.resource.data.placementStatus == "not_assigned" &&
+        request.resource.data.submittedAt == request.time &&
+        request.resource.data.updatedAt == request.time;
+      allow update: if isSuperAdmin() ||
+        (isOwnApprovedVolunteer() &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(editableIntakeFields()) &&
+          request.resource.data.submittedAt == resource.data.submittedAt &&
+          request.resource.data.updatedAt == request.time &&
+          validVolunteerIntake());
+      allow delete: if false;
+    }
+
     match /users/{userId}/academyDraftPractice/{lessonId} {
       allow read: if isApproved() && request.auth.uid == userId;
       allow create, update: if isApproved() && request.auth.uid == userId &&
