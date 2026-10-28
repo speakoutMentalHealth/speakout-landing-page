@@ -43,6 +43,19 @@ const apps=[];
 const paths=new Set();
 let serviceToken="",priorGate=null,hasPriorGate=false,gateOwned=false;
 let completed=false;
+let stage="setup";
+async function checkedStage(label,action){
+  stage=label;
+  console.log("FORUM_STAGING_STAGE_BEGIN "+label);
+  try{
+    const value=await action();
+    console.log("FORUM_STAGING_STAGE_PASS "+label);
+    return value;
+  }catch(error){
+    console.error("FORUM_STAGING_STAGE_FAILED "+label+": "+String(error?.code||error?.message||error).slice(0,180));
+    throw error;
+  }
+}
 
 const asBase64=value=>Buffer.from(JSON.stringify(value)).toString("base64url");
 async function tokenForService() {
@@ -151,6 +164,7 @@ async function expectDenied(promise,label) {
     }
   }
   assert(denied,label+" unexpectedly allowed");
+  console.log("FORUM_STAGING_EXPECTED_DENIAL "+label);
 }
 // A Firestore CAS (compare-and-swap) condition prevents clobbering a gate
 // modified by another operator between inspection, activation and cleanup.
@@ -188,7 +202,20 @@ async function runTest(){
     expiresAt:new Date(Date.now()+12*60*1000),runTag:suffix};
   // The release gate is created only by the privileged staging service token;
   // browser accounts cannot provision or alter it under the real rules.
-  await adminGate(gateData,gate.updateTime);gateOwned=true;
+  await checkedStage("activate-trusted-staging-gate",()=>adminGate(gateData,gate.updateTime));
+  gateOwned=true;
+  await checkedStage("verify-admin-profile-and-gate-read",async()=>{
+    const [profile,room,control]=await Promise.all([
+      getDoc(doc(admin.db,"users",admin.uid)),
+      getDoc(doc(admin.db,"forumRooms",roomId)),
+      getDoc(doc(admin.db,"forumReleaseControls","pilot"))
+    ]);
+    assert.equal(profile.data()?.role,"admin");
+    assert.equal(profile.data()?.status,"approved");
+    assert.equal(room.data()?.published,false);
+    assert.equal(control.data()?.enabled,true);
+    assert(control.data()?.roomIds?.includes(roomId));
+  });
   await expectDenied(setDoc(doc(adult.db,"forumReleaseControls","pilot"),gateData),
     "Adult client gate tampering");
   const publish=writeBatch(admin.db);
@@ -205,7 +232,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumRoomAudits/"+auditId);
-  await publish.commit();
+  await checkedStage("admin-publish-audited-private-room",()=>publish.commit());
   assert((await getDoc(doc(adult.db,"forumRooms",roomId))).exists());
   assert((await getDoc(doc(mod.db,"forumRooms",roomId))).exists());
   for(const [who,actorDb] of [["outsider",outsider.db],["student",teen.db]]) {
@@ -214,12 +241,12 @@ async function runTest(){
   const topicId="stage-topic-"+suffix;
   const topicRef=doc(adult.db,"forumTopics",topicId);
   paths.add("forumTopics/"+topicId);
-  await setDoc(topicRef,{
+  await checkedStage("member-submit-topic",()=>setDoc(topicRef,{
     roomId,title:"Synthetic forum pilot test",
     body:"A safe fictional example requiring moderator review.",
     authorUid:adult.uid,moderationStatus:"pending",
     moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-  });
+  }));
   await expectDenied(getDoc(topicRef),"Adult pending discussion read");
   const pending=await getDocs(query(collection(mod.db,"forumTopics"),
     where("roomId","==",roomId),where("moderationStatus","==","pending")));
@@ -237,7 +264,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumModerationAudits/"+reviewId);
-  await approval.commit();
+  await checkedStage("moderator-approve-topic",()=>approval.commit());
   assert.equal((await getDoc(topicRef)).data().moderationStatus,"approved");
   const approved=await getDocs(query(collection(adult.db,"forumTopics"),
     where("roomId","==",roomId),where("moderationStatus","==","approved")));
@@ -245,11 +272,11 @@ async function runTest(){
   const replyId="stage-reply-"+suffix;
   const replyRef=doc(adult.db,"forumReplies",replyId);
   paths.add("forumReplies/"+replyId);
-  await setDoc(replyRef,{
+  await checkedStage("member-submit-reply",()=>setDoc(replyRef,{
     roomId,topicId,body:"Synthetic reply awaiting review.",
     authorUid:adult.uid,moderationStatus:"pending",
     moderationAuditId:"none",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
-  });
+  }));
   await expectDenied(getDoc(replyRef),"Adult pending reply read");
   const pendingReplies=await getDocs(query(collection(mod.db,"forumReplies"),
     where("roomId","==",roomId),where("moderationStatus","==","pending")));
@@ -267,7 +294,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumModerationAudits/"+approvalReply);
-  await approveReply.commit();
+  await checkedStage("moderator-approve-reply",()=>approveReply.commit());
   assert.equal((await getDoc(replyRef)).data().moderationStatus,"approved");
   const replies=await getDocs(query(collection(adult.db,"forumReplies"),
     where("roomId","==",roomId),where("topicId","==",topicId),
@@ -275,10 +302,10 @@ async function runTest(){
   assert.equal(replies.docs.length,1,"Member-approved-reply query failed");
   const reportId=adult.uid+"__topic__"+topicId;
   paths.add("forumReports/"+reportId);
-  await setDoc(doc(adult.db,"forumReports",reportId),{
+  await checkedStage("member-submit-report",()=>setDoc(doc(adult.db,"forumReports",reportId),{
     roomId,targetType:"topic",targetId:topicId,
     reporterUid:adult.uid,reason:"privacy",createdAt:serverTimestamp()
-  });
+  }));
   const reports=await getDocs(query(collection(mod.db,"forumReports"),
     where("roomId","==",roomId)));
   assert.equal(reports.docs.length,1,"Moderator room report queue failed");
@@ -296,7 +323,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumRoomAudits/"+lockId);
-  await close.commit();
+  await checkedStage("admin-lock-room",()=>close.commit());
   await expectDenied(getDoc(topicRef),"Room lock must revoke member topic read");
   await expectDenied(getDoc(doc(mod.db,"forumRooms",roomId)),
     "Room lock must revoke moderator access");
@@ -365,7 +392,7 @@ try {
   await runTest();
 }catch(error){
   failure=error;
-  console.error("STAGING FORUM ACCEPTANCE FAILED:",error?.message||error);
+  console.error("STAGING FORUM ACCEPTANCE FAILED during "+stage+":",error?.code||error?.message||error);
 }finally{
   try{await cleanup();}catch(error){
     console.error("STAGING CLEANUP FAILED:",error?.message||error);

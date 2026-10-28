@@ -21,12 +21,25 @@ test("real pilot uses staging only, synthetic accounts and read/write permission
  assert.match(s,/forumReleaseControls\/pilot/);
  assert.match(s,/suffix=randomBytes/);
  assert.match(s,/await expectDenied\(getDoc\(topicRef\)/);
- assert.match(s,/await approval\.commit\(\)/);
- assert.match(s,/await approveReply\.commit\(\)/);
+ assert(s.includes("()=>approval.commit()"));
+ assert(s.includes("()=>approveReply.commit()"));
  assert.match(s,/const reports=await getDocs/);
- assert.match(s,/await close\.commit\(\)/);
+ assert(s.includes("()=>close.commit()"));
  assert.match(s,/finally\{\s*try\{await cleanup\(\)/);
  assert.match(s,/STAGING CLEANUP PASS/);
+ for(const stage of [
+   "verify-admin-profile-and-gate-read",
+   "admin-publish-audited-private-room",
+   "member-submit-topic",
+   "moderator-approve-topic",
+   "member-submit-reply",
+   "moderator-approve-reply",
+   "member-submit-report",
+   "admin-lock-room"
+ ])assert(s.includes(stage),"Missing safe phase diagnosis: "+stage);
+ assert(s.includes("FORUM_STAGING_EXPECTED_DENIAL"));
+ assert(s.includes("FORUM_STAGING_STAGE_FAILED"));
+ assert(s.includes("STAGING FORUM ACCEPTANCE FAILED during"));
  assert(s.includes("currentDocument.updateTime"));
  assert(s.includes("currentDocument.exists=false"));
  assert(s.includes("adminGate(gateData,gate.updateTime)"));
