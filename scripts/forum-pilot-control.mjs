@@ -56,6 +56,16 @@ const app=appSdk.initializeApp({
 }, "forum-pilot-operator-"+randomUUID());
 const db=storeSdk.getFirestore(app);
 try{
+  // A workflow caller cannot substitute an arbitrary UID in the immutable release audit.
+  // The responsible actor must be an approved administrator in the target project.
+  if(project === "speaakout-portal") {
+    const actorProfile = await db.collection("users").doc(actor).get();
+    const role = actorProfile.exists ? actorProfile.get("role") : "";
+    if(!actorProfile.exists || actorProfile.get("status") !== "approved" ||
+       !["admin","super_admin"].includes(role)) {
+      throw new Error("Production pilot operator must be an approved forum administrator.");
+    }
+  }
   const room = await db.collection("forumRooms").doc(roomId).get();
   if(!room.exists)throw new Error("Room does not exist; create it unpublished through admin-forum.html.");
   if(room.get("visibility") !== "private")throw new Error("Pilot room must have PRIVATE visibility.");
