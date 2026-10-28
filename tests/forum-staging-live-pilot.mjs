@@ -43,6 +43,19 @@ const apps=[];
 const paths=new Set();
 let serviceToken="",priorGate=null,hasPriorGate=false,gateOwned=false;
 let completed=false;
+let stage="setup";
+async function checkedStage(label,action){
+  stage=label;
+  console.log("FORUM_STAGING_STAGE_BEGIN "+label);
+  try{
+    const value=await action();
+    console.log("FORUM_STAGING_STAGE_PASS "+label);
+    return value;
+  }catch(error){
+    console.error("FORUM_STAGING_STAGE_FAILED "+label+": "+String(error?.code||error?.message||error).slice(0,180));
+    throw error;
+  }
+}
 
 const asBase64=value=>Buffer.from(JSON.stringify(value)).toString("base64url");
 async function tokenForService() {
@@ -240,7 +253,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumModerationAudits/"+reviewId);
-  await approval.commit();
+  await checkedStage("moderator-approve-topic",()=>approval.commit());
   assert.equal((await getDoc(topicRef)).data().moderationStatus,"approved");
   const approved=await getDocs(query(collection(adult.db,"forumTopics"),
     where("roomId","==",roomId),where("moderationStatus","==","approved")));
@@ -270,7 +283,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumModerationAudits/"+approvalReply);
-  await approveReply.commit();
+  await checkedStage("moderator-approve-reply",()=>approveReply.commit());
   assert.equal((await getDoc(replyRef)).data().moderationStatus,"approved");
   const replies=await getDocs(query(collection(adult.db,"forumReplies"),
     where("roomId","==",roomId),where("topicId","==",topicId),
@@ -299,7 +312,7 @@ async function runTest(){
     changedAt:serverTimestamp()
   });
   paths.add("forumRoomAudits/"+lockId);
-  await close.commit();
+  await checkedStage("admin-lock-room",()=>close.commit());
   await expectDenied(getDoc(topicRef),"Room lock must revoke member topic read");
   await expectDenied(getDoc(doc(mod.db,"forumRooms",roomId)),
     "Room lock must revoke moderator access");
@@ -368,7 +381,7 @@ try {
   await runTest();
 }catch(error){
   failure=error;
-  console.error("STAGING FORUM ACCEPTANCE FAILED:",error?.message||error);
+  console.error("STAGING FORUM ACCEPTANCE FAILED during "+stage+":",error?.code||error?.message||error);
 }finally{
   try{await cleanup();}catch(error){
     console.error("STAGING CLEANUP FAILED:",error?.message||error);
