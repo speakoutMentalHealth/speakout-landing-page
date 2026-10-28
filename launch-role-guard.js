@@ -42,7 +42,7 @@ const dashboardRoutes = {
 
   contributor: "contributor.html",
 
-  volunteer: "student-dashboard.html"
+  volunteer: "volunteer-dashboard.html"
 };
 
 
