@@ -5,6 +5,12 @@ on:
       - 'tests/volunteer-browser-journey.mjs'
       - 'volunteer-dashboard.html'
       - 'js/volunteer-onboarding.js'
+      - 'js/volunteer-inbox.js'
+      - 'js/admin-volunteers.js'
+      - 'admin-volunteers.html'
+      - 'firebase/firestore.rules'
+      - 'launch-role-guard.js'
+      - 'firebase-config.js'
       - '.github/workflows/volunteer-browser-journey.yml'
   workflow_dispatch:
 permissions:
