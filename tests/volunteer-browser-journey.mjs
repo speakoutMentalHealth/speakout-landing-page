@@ -4,16 +4,18 @@ import {readFile} from "node:fs/promises";
 import {chromium} from "playwright";
 const html=await readFile(new URL("../volunteer-dashboard.html",import.meta.url),"utf8");
 const app=await readFile(new URL("../js/volunteer-onboarding.js",import.meta.url),"utf8");
+const credentialApp=await readFile(new URL("../js/volunteer-credential.js",import.meta.url),"utf8");
+const nextActions=await readFile(new URL("../js/volunteer-next-actions.js",import.meta.url),"utf8");
 const inboxApp=await readFile(new URL("../js/volunteer-inbox.js",import.meta.url),"utf8");
-const fixture={status:"approved",record:null,assignment:null,writes:0,notifications:[{id:"notice-1",title:"Welcome to SpeakOut",body:"Please check your next volunteer steps.",category:"onboarding",readAt:null}]};
+const fixture={status:"approved",record:null,assignment:null,credential:null,writes:0,notifications:[{id:"notice-1",title:"Welcome to SpeakOut",body:"Please check your next volunteer steps.",category:"onboarding",readAt:null}]};
 const roleMock=[`export function renderRoleNav(){}`,`export async function requireRoles(roles,cb){const p=await (await fetch("/profile")).json();if(p.status!=="approved"){document.body.dataset.access="denied";document.querySelector("#intakeForm").remove();return;}document.body.dataset.access="approved";await cb({uid:"synthetic-volunteer"},{firstName:"Synthetic",role:"volunteer"});}`].join("\n");
 const firestoreMock=[
 `export const doc=(_db,...parts)=>parts.join("/");`,
 `export const collection=(_db,...parts)=>parts.join("/");`,
 `export const orderBy=()=>null;export const limit=()=>null;export const query=(ref)=>ref;`,
 `export const serverTimestamp=()=> "synthetic-time";`,
-`export async function getDoc(id){const data=await (await fetch(String(id).startsWith("volunteerAssignments/")?"/assignment":"/record")).json();return {exists:()=>!!data,data:()=>data};}`,
-`export async function setDoc(_id,data){const response=await fetch("/write",{method:"POST",body:JSON.stringify(data)});if(!response.ok)throw Error("Denied");}`,
+`export async function getDoc(id){const path=String(id);const endpoint=path.startsWith("volunteerAssignments/")?"/assignment":path.startsWith("volunteerCredentialClaims/")?"/credential":"/record";const data=await (await fetch(endpoint)).json();return {exists:()=>!!data,data:()=>data};}`,
+`export async function setDoc(id,data){const response=await fetch(String(id).startsWith("volunteerCredentialClaims/")?"/credential-write":"/write",{method:"POST",body:JSON.stringify(data)});if(!response.ok)throw Error("Denied");}`,
 `let listener=null;export const onSnapshot=(_q,onData)=>{listener=onData;emit();return ()=>{listener=null};};`,
 `async function emit(){if(!listener)return;const rows=await(await fetch("/notices")).json();listener({empty:rows.length===0,forEach(cb){rows.forEach(x=>cb({id:x.id,data:()=>x}));}});}`,
 `export async function updateDoc(id,data){if(String(id).includes("volunteerNotifications/")){const response=await fetch("/mark-read",{method:"POST",body:JSON.stringify({id:String(id).split("/").at(-1)})});if(!response.ok)throw Error("Denied");await emit();return;}return setDoc(id,data);}`
@@ -22,12 +24,16 @@ const server=createServer((req,res)=>{
  const send=(type,data)=>{res.writeHead(200,{"content-type":type});res.end(data);};
  if(req.url==="/volunteer-dashboard.html")return send("text/html",html);
  if(req.url==="/js/volunteer-onboarding.js")return send("text/javascript",app);
+ if(req.url==="/js/volunteer-credential.js")return send("text/javascript",credentialApp);
+ if(req.url==="/js/volunteer-next-actions.js")return send("text/javascript",nextActions);
  if(req.url==="/js/volunteer-inbox.js")return send("text/javascript",inboxApp);
  if(req.url==="/firebase-config.js")return send("text/javascript","export const auth={};export const db={};");
  if(req.url==="/launch-role-guard.js")return send("text/javascript",roleMock);
  if(req.url==="/profile")return send("application/json",JSON.stringify({status:fixture.status}));
  if(req.url==="/record")return send("application/json",JSON.stringify(fixture.record));
  if(req.url==="/assignment")return send("application/json",JSON.stringify(fixture.assignment));
+ if(req.url==="/credential")return send("application/json",JSON.stringify(fixture.credential));
+ if(req.url==="/credential-write"&&req.method==="POST"){let body="";req.on("data",chunk=>body+=chunk);req.on("end",()=>{if(fixture.status!=="approved"){res.writeHead(403);res.end();return;}fixture.credential={...fixture.credential,...JSON.parse(body)};send("application/json",JSON.stringify(fixture.credential));});return;}
  if(req.url==="/notices")return send("application/json",JSON.stringify(fixture.notifications));
  if(req.url==="/mark-read"&&req.method==="POST"){
    let body="";req.on("data",chunk=>body+=chunk);req.on("end",()=>{
@@ -68,6 +74,12 @@ try {
  assert.equal(fixture.writes,1);assert.equal(fixture.record.reviewStage,"intake_received");assert.equal(fixture.record.assessmentStatus,"not_verified");
  assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after save");
  await page.locator("#profileSummary").getByText("Keffi, Nasarawa").waitFor();
+ await page.locator("#journeySteps").getByText("Already have a certificate?").waitFor();
+ await page.locator("#certificateReference").fill("MC-CERT-20261029-ABCD");
+ await page.locator("#submitCredential").click();
+ await page.locator("#credentialFeedback").getByText("Certificate reference received.",{exact:false}).waitFor();
+ await page.locator("#journeySteps").getByText("Certificate submitted — awaiting verification").waitFor();
+ assert.equal(fixture.credential.reviewStatus,"pending");
  await page.locator("#profileSummary").getByText("Research").waitFor();
  await page.locator("#intakeToggle").click();
  assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),true,"Edit profile must reopen the form");
