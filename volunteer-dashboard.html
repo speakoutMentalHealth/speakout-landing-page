@@ -79,6 +79,22 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 .notice-read{background:white;color:var(--blue);border:1px solid #9ebbd3;border-radius:9px;padding:8px 12px;cursor:pointer;min-height:42px;font-weight:700}
 .notice-read:disabled{opacity:.55}
 #notificationsCard{scroll-margin-top:18px}
+
+/* Certificate review and personally relevant next actions */
+#credentialCard[hidden],#credentialDisclosure[hidden]{display:none!important}
+#credentialCard .credential-note{background:#f2f7fc;border:1px solid var(--line);padding:12px 15px;border-radius:11px;margin:12px 0}
+#credentialForm{display:grid;gap:13px;margin:15px 0}
+#credentialForm label{font-weight:700;display:grid;gap:6px}
+#credentialForm input{width:100%;font:inherit;border:1px solid #91aaba;border-radius:10px;padding:12px;min-height:48px}
+#credentialForm button{font:inherit;border:0;cursor:pointer;min-height:46px}
+#credentialForm button:disabled{opacity:.55;cursor:wait}
+#credentialDisclosure{border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+#credentialDisclosure summary{font-weight:750;color:var(--blue);cursor:pointer}
+#credentialFeedback{font-weight:650;color:#145b49}
+#journeySteps{list-style:none;padding:0;display:grid;gap:13px}
+#journeySteps li{background:#f2f7fc;border:1px solid var(--line);border-radius:12px;padding:15px}
+#journeySteps li p{margin:6px 0 12px}
+
 </style>
 </head>
 <body class="volunteer-auth-pending">
@@ -141,6 +157,21 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 </form>
 </details>
 </section>
+<section id="credentialCard" class="card" aria-labelledby="credentialHeading">
+<h2 id="credentialHeading">Existing training certificate</h2>
+<p id="credentialStatus" role="status" aria-live="polite">Checking your certificate record…</p>
+<p class="credential-note">If you already completed the assessment and received a certificate, you do <strong>not</strong> need to repeat it. Submit the printed certificate ID so SpeakOut can verify your existing result. Submitting an ID does not automatically grant assessment clearance.</p>
+<details id="credentialDisclosure" hidden>
+<summary>Submit an existing certificate ID</summary>
+<p id="credentialGuidance">Only the certificate reference is required; do not enter medical records or personal identification documents.</p>
+<form id="credentialForm">
+<label for="certificateReference">Certificate ID<input id="certificateReference" required autocomplete="off" autocapitalize="characters" spellcheck="false" minlength="8" maxlength="80" placeholder="e.g. MC-CERT-20261029-ABCD"></label>
+<button id="submitCredential" type="submit" class="btn-link">Submit for verification</button>
+<p id="credentialFeedback" role="status" aria-live="polite"></p>
+</form>
+</details>
+<p class="small">If your older certificate has no ID, contact your coordinator privately for manual review. This form does not upload PDF files.</p>
+</section>
 <section id="notificationsCard" class="card" aria-labelledby="notificationsHeading">
 <h2 id="notificationsHeading">Notifications <span id="notificationUnread" hidden aria-label="Unread notifications">0</span></h2>
 <p>Updates from SpeakOut appear here while you are signed in. This is an in-app inbox, not a phone push notification or an automated email.</p>
@@ -166,14 +197,10 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
   <div><strong>Placement</strong><p id="placementStatus">Loading…</p></div>
 </div>
 </section>
-<section class="card" aria-labelledby="next-title"><h2 id="next-title">What happens next?</h2>
-<ol>
-<li><strong>Account approval</strong><p>Your SpeakOut account has been approved for access to this volunteer hub. This is not yet approval to work independently with beneficiaries.</p></li>
-<li><strong>Complete your free volunteer learning</strong><p>Read the five foundation lessons on safe listening, recognising risk, boundaries, privacy and cultural sensitivity.</p><a class="btn-link" href="https://mindcheck.speakoutmentalhealth.org/training-hub.html" target="_blank" rel="noopener noreferrer">Open volunteer training</a></li>
-<li><strong>Take the qualifying assessment</strong><p>After the lessons, follow the official assessment link inside the training centre. Keep your certificate reference for subsequent verification.</p></li>
-<li><strong>Safeguarding and role review</strong><p>SpeakOut will check your suitability for the specific role, confirm boundaries, supervision, location and availability before assigning activities.</p></li>
-<li><strong>Begin approved assignments</strong><p>Once the team confirms your placement, use official email and WhatsApp communication to receive assignment details and reporting instructions.</p></li>
-</ol>
+<section class="card" aria-labelledby="next-title">
+<h2 id="next-title">Your next steps</h2>
+<p id="journeyIntro">Loading your personalised next actions…</p>
+<ol id="journeySteps" aria-live="polite"></ol>
 </section>
 <section class="grid" aria-label="Volunteer resources">
 <div class="card"><h2>Learning &amp; certificate</h2><p>Explore the programme overview, training and certificate verification. Training is free; a certificate does not give professional counselling authority.</p>
