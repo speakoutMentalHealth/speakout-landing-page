@@ -3,6 +3,11 @@ on:
   pull_request:
     paths:
       - 'tests/volunteer-browser-journey.mjs'
+      - 'tests/forum-people-browser.mjs'
+      - 'js/forum-people-admin.js'
+      - 'js/forum-account-approval.js'
+      - 'admin-forum-access.html'
+      - 'admin-users.html'
       - 'volunteer-dashboard.html'
       - 'js/volunteer-onboarding.js'
       - 'js/volunteer-inbox.js'
@@ -30,3 +35,5 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run synthetic volunteer browser journey
         run: node tests/volunteer-browser-journey.mjs
+      - name: Run synthetic room selection and account approval
+        run: node tests/forum-people-browser.mjs
