@@ -60,6 +60,11 @@ export function subscribeVolunteerInbox(db, volunteerUid) {
     });
     unread.textContent = String(pending);
     unread.hidden = pending === 0;
+    const shortcutCount = document.getElementById("notificationNavCount");
+    if (shortcutCount) {
+      shortcutCount.textContent = String(pending);
+      shortcutCount.hidden = pending === 0;
+    }
     state.textContent = snapshot.empty
       ? "No notifications yet. SpeakOut will post your next updates here."
       : pending
