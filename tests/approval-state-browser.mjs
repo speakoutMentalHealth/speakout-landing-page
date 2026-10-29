@@ -132,7 +132,7 @@ async function seedProfile(user, { label, role, status, approved }) {
 }
 
 async function workerApprovalProbe(user, role) {
-  const path = role === "student" ? "/v1/learning/dashboard" : "/v1/roles/overview";
+  const path = "/v1/auth/approval-check";
   const response = await fetch(`${workerBase}${path}`, {
     method: "POST",
     headers: {
@@ -265,7 +265,17 @@ try {
 
   for (const testCase of cases) {
     const apiResponse = await workerApprovalProbe(testCase.user, testCase.role);
+    if(apiResponse.status===429){
+      const body=await apiResponse.json().catch(()=>({}));
+      const p=body?.providerFailure||{};
+      const safe=value=>typeof value==='string'&&/^[A-Za-z0-9_./:-]{1,110}$/.test(value)?value:'unavailable';
+      const capacity={httpStatus:429,service:safe(p.service),status:safe(p.status),reason:safe(p.reason),quotaMetric:safe(p.quotaMetric),quotaLimit:safe(p.quotaLimit)};
+      await writeFile(`${artifactsDir}/approval-capacity-failure.json`,JSON.stringify(capacity,null,2));
+      throw Error("Staging capacity blocked approval checks (HTTP 429): "+JSON.stringify(capacity)+". Approval is unverified. Inspect quota and request metrics before rerunning; no automatic retry.");
+    }
     if (testCase.allowed) {
+      const approvedBody=apiResponse.ok?await apiResponse.clone().json():null;
+      if(apiResponse.ok){assert.equal(approvedBody.approved,true);assert.equal(approvedBody.role,testCase.role);}
       if (!apiResponse.ok) await writeFile(`${artifactsDir}/approval-http-failure.json`, JSON.stringify({ scenario: testCase.label, httpStatus: apiResponse.status, contentType: apiResponse.headers.get("content-type")?.includes("json") ? "json" : "other" }, null, 2));
       assert.equal(apiResponse.ok, true, `${testCase.label} was denied by the staging Platform API (HTTP ${apiResponse.status})`);
     } else {
