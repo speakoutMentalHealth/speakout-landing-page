@@ -6,7 +6,7 @@
 <style>
 :root{--navy:#082b50;--ink:#12324c;--line:#d9e5ef;--blue:#155c98}
 *{box-sizing:border-box}body{margin:0;background:#f4f8fc;color:var(--ink);font:16px/1.5 system-ui,sans-serif}
-a{color:var(--blue)}a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #dfa125;outline-offset:3px}
+a{color:var(--blue)}a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #dfa125;outline-offset:3px}
 .container{width:min(1180px,94%);margin:auto}header{background:var(--navy);color:white;padding:24px 0}
 header a{color:white}header nav{display:flex;gap:16px;flex-wrap:wrap}
 h1{margin:12px 0 4px;font-size:clamp(1.6rem,4vw,2.3rem)}
@@ -19,7 +19,16 @@ main{padding:24px 0}.notice,.application{padding:18px;background:white;border:1p
 select{padding:10px;background:white;border:1px solid #b1c5d6;border-radius:9px;color:var(--ink);font:inherit}
 button{padding:11px 16px;color:white;background:var(--blue);border:0;border-radius:9px;font-weight:700;cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}
-@media(max-width:700px){.data{grid-template-columns:1fr}.actions{display:grid}}
+.assignment-editor{margin-top:20px;padding:18px;background:#f2f7fc;border:1px solid var(--line);border-radius:12px}
+.assignment-editor summary{font-weight:750;cursor:pointer;font-size:1.05rem}
+.assignment-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding-top:18px}
+.assignment-form label{display:grid;gap:6px;font-weight:650;min-width:0}
+.assignment-form .wide{grid-column:1/-1}
+.assignment-form input,.assignment-form textarea{font:inherit;padding:10px;border:1px solid #a4bdcf;border-radius:8px;width:100%;color:var(--ink)}
+.assignment-form textarea{min-height:84px}
+.assignment-form button{justify-self:start}
+@media(max-width:700px){.assignment-form{grid-template-columns:1fr}
+{.data{grid-template-columns:1fr}.actions{display:grid}}
 </style></head><body>
 <header><div class="container"><nav><a href="admin-dashboard.html">Admin Dashboard</a><a href="admin-users.html">Account Approval</a><a href="portal.html">Portal</a></nav><h1>Volunteer applications</h1><p>Review submitted profiles and record verified onboarding decisions. Account approval is handled separately.</p></div></header>
 <main class="container"><p class="notice" id="notice" role="status" aria-live="polite">Checking administrator access…</p><div id="applications" aria-live="polite"></div>
