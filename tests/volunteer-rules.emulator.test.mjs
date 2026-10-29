@@ -84,3 +84,59 @@ test("assignment and clearance changes cannot bypass coordinator gates",async()=
   await assertFails(updateDoc(doc(adb,"volunteerApplications","volunteer-a"),{reviewStage:"active",placementStatus:"assigned",updatedAt:serverTimestamp()}));
   await assertFails(updateDoc(doc(adb,"volunteerApplications","volunteer-a"),{reviewStage:"intake_received",placementStatus:"assigned",updatedAt:serverTimestamp()}));
 });
+
+
+test("revocation blocks previously approved volunteers from reading or editing intake", async () => {
+  await seed("volunteer-a", "volunteer");
+  const db = env.authenticatedContext("volunteer-a").firestore();
+  const record = doc(db, "volunteerApplications", "volunteer-a");
+  await assertSucceeds(setDoc(record, intake("volunteer-a")));
+  await env.withSecurityRulesDisabled(async ctx => {
+    await updateDoc(doc(ctx.firestore(), "users", "volunteer-a"), {status:"revoked", approved:false});
+  });
+  await assertFails(getDoc(record));
+  await assertFails(updateDoc(record, {weeklyHours:"9-12", updatedAt:serverTimestamp()}));
+  await assertFails(setDoc(record, intake("volunteer-a")));
+});
+
+test("pending, rejected and suspended accounts cannot read existing intake", async () => {
+  await seed("volunteer-a", "volunteer");
+  const approved = env.authenticatedContext("volunteer-a").firestore();
+  const record = doc(approved, "volunteerApplications", "volunteer-a");
+  await assertSucceeds(setDoc(record, intake("volunteer-a")));
+  for (const status of ["pending", "rejected", "suspended"]) {
+    await env.withSecurityRulesDisabled(async ctx => {
+      await updateDoc(doc(ctx.firestore(), "users", "volunteer-a"), {status, approved:false});
+    });
+    await assertFails(getDoc(record));
+    await assertFails(updateDoc(record, {weeklyHours:"9-12", updatedAt:serverTimestamp()}));
+  }
+});
+
+test("unauthenticated applicants cannot read, create or edit volunteer intake", async () => {
+  await seed("volunteer-a", "volunteer");
+  const approved = env.authenticatedContext("volunteer-a").firestore();
+  await assertSucceeds(setDoc(doc(approved, "volunteerApplications", "volunteer-a"), intake("volunteer-a")));
+  const anonymous = env.unauthenticatedContext().firestore();
+  const record = doc(anonymous, "volunteerApplications", "volunteer-a");
+  await assertFails(getDoc(record));
+  await assertFails(setDoc(record, intake("volunteer-a")));
+  await assertFails(updateDoc(record, {weeklyHours:"9-12", updatedAt:serverTimestamp()}));
+});
+
+test("coordinator cannot assign a volunteer with failed assessment or blocked safeguarding", async () => {
+  await seed("volunteer-a", "volunteer");
+  await seed("admin-a", "admin");
+  const vdb = env.authenticatedContext("volunteer-a").firestore();
+  const adb = env.authenticatedContext("admin-a").firestore();
+  await assertSucceeds(setDoc(doc(vdb, "volunteerApplications", "volunteer-a"), intake("volunteer-a")));
+  const record = doc(adb, "volunteerApplications", "volunteer-a");
+  await assertFails(updateDoc(record, {
+    reviewStage:"active", assessmentStatus:"failed", safeguardingStatus:"cleared",
+    placementStatus:"assigned", updatedAt:serverTimestamp()
+  }));
+  await assertFails(updateDoc(record, {
+    reviewStage:"active", assessmentStatus:"passed", safeguardingStatus:"blocked",
+    placementStatus:"assigned", updatedAt:serverTimestamp()
+  }));
+});
