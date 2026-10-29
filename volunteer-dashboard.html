@@ -65,6 +65,8 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 @media(max-width:650px){.profile-summary{grid-template-columns:1fr}}
 
 /* Volunteer notification centre */
+.hero-notifications{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#0a3159;padding:10px 15px;border-radius:11px;text-decoration:none;font-weight:750;min-height:44px}.hero-notifications:hover{background:#e8f3fc}#notificationNavCount{background:#b33426;color:white;padding:2px 8px;border-radius:30px;font-size:.85rem}#notificationNavCount[hidden]{display:none}
+
 #notificationUnread{font-size:.8rem;color:#fff;background:#b33426;padding:3px 9px;border-radius:30px;margin-left:9px}
 #notificationUnread[hidden]{display:none}
 #notificationList{display:grid;gap:12px;margin-top:15px}
@@ -89,6 +91,7 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 <div class="hero"><div class="container"><span class="eyebrow">Approved volunteer account</span>
 <h1 id="welcome">Your volunteer journey starts here</h1>
 <p>This is your starting point for training, assessment, programme information and communication with SpeakOut. You do not need to wait for individual instructions to begin your free learning pathway.</p>
+<a class="hero-notifications" href="#notificationsCard">View notifications <span id="notificationNavCount" hidden>0</span></a>
 </div></div>
 <main id="main-content" class="container">
 <section class="card" aria-labelledby="form-heading">
