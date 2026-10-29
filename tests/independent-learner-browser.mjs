@@ -461,7 +461,7 @@ async function completeCourse(page) {
     const state = await page.evaluate(() => {
       const value = id => document.getElementById(id);
       const lessonTitle = value("lessonTitle")?.textContent?.trim();
-      const errorText = document.querySelector("#assessmentArea .notice.error")?.textContent?.trim() || "";
+      const errorText = document.querySelector("#assessmentArea.notice.error, #assessmentArea .notice.error")?.textContent?.trim() || "";
       const category = /429|rate.limit|quota|capacity/i.test(errorText) ? "rate_limit"
         : /Complete all course requirements/i.test(errorText) ? "not_unlocked"
         : /unavailable|not found/i.test(errorText) ? "assessment_unavailable"
