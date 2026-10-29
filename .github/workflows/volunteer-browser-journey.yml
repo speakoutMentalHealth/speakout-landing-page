@@ -1,0 +1,26 @@
+name: Volunteer synthetic browser journey
+on:
+  pull_request:
+    paths:
+      - 'tests/volunteer-browser-journey.mjs'
+      - 'volunteer-dashboard.html'
+      - 'js/volunteer-onboarding.js'
+      - '.github/workflows/volunteer-browser-journey.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-volunteer-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright runner
+        run: npm install --no-save --ignore-scripts playwright@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run synthetic volunteer browser journey
+        run: node tests/volunteer-browser-journey.mjs
