@@ -20,8 +20,10 @@ const firestoreMock=[
 `async function emit(){if(!listener)return;const rows=await(await fetch("/notices")).json();listener({empty:rows.length===0,forEach(cb){rows.forEach(x=>cb({id:x.id,data:()=>x}));}});}`,
 `export async function updateDoc(id,data){if(String(id).includes("volunteerNotifications/")){const response=await fetch("/mark-read",{method:"POST",body:JSON.stringify({id:String(id).split("/").at(-1)})});if(!response.ok)throw Error("Denied");await emit();return;}return setDoc(id,data);}`
 ].join("\n");
-const server=createServer((req,res)=>{
+const server=createServer(async (req,res)=>{
  const send=(type,data)=>{res.writeHead(200,{"content-type":type});res.end(data);};
+ if(req.url==="/images/logo.png")return send("image/png",await readFile(new URL("../images/logo.png",import.meta.url)));
+ if(req.url==="/css/production-ready.css")return send("text/css",await readFile(new URL("../css/production-ready.css",import.meta.url)));
  if(req.url==="/volunteer-dashboard.html")return send("text/html",html);
  if(req.url==="/js/volunteer-onboarding.js")return send("text/javascript",app);
  if(req.url==="/js/volunteer-credential.js")return send("text/javascript",credentialApp);
@@ -58,6 +60,7 @@ try {
  const url="http://127.0.0.1:"+server.address().port+"/volunteer-dashboard.html";
  await page.goto(url);
  await page.waitForFunction(()=>document.body.dataset.access==="approved");
+ assert.equal(await page.locator("#journeyAction").textContent(),"Complete profile");
  await page.locator("#notificationList").getByText("Welcome to SpeakOut").waitFor();
  assert.equal(await page.locator("#notificationUnread").textContent(),"1");
  await page.locator(".notice-read").click();
@@ -75,11 +78,13 @@ try {
  assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after save");
  await page.locator("#profileSummary").getByText("Keffi, Nasarawa").waitFor();
  await page.locator("#journeySteps").getByText("Already have a certificate?").waitFor();
+ assert.equal(await page.locator("#journeyAction").textContent(),"Submit certificate");
  await page.locator("#credentialDisclosure summary").click();
  await page.locator("#certificateReference").fill("MC-CERT-20261029-ABCD");
  await page.locator("#submitCredential").click();
  await page.locator("#credentialFeedback").getByText("Certificate reference received.",{exact:false}).waitFor();
  await page.locator("#journeySteps").getByText("Certificate submitted — awaiting verification").waitFor();
+ assert.equal(await page.locator("#journeyAction").textContent(),"View certificate status");
  assert.equal(fixture.credential.reviewStatus,"pending");
  await page.locator("#profileSummary").getByText("Research").waitFor();
  await page.locator("#intakeToggle").click();
@@ -114,6 +119,20 @@ try {
  await page.locator("#assignmentDetails").getByText("Community Education Volunteer").waitFor();
  await page.locator("#assignmentEmail").waitFor({state:"visible"});
  assert.match(await page.locator("#assignmentEmail").getAttribute("href"),/coordinator%40example.test/);
+ assert.equal(await page.locator("#journeyAction").getAttribute("href"),"#assignmentCard");
+ for(const width of [375,390,768,1280]){
+   await page.setViewportSize({width,height:844});
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),"No horizontal overflow at "+width);
+ }
+ fixture.record={...fixture.record,reviewStage:"paused",placementStatus:"paused"};
+ await page.reload();
+ await page.waitForFunction(()=>document.body.dataset.access==="approved");
+ await page.locator("#journeyAction").getByText("Contact team",{exact:true}).waitFor();
+ assert.equal(await page.locator("#assignmentCard").isVisible(),false);
+ await page.context().setOffline(true);
+ await page.locator("#connectionStatus").waitFor({state:"visible"});
+ await page.context().setOffline(false);
+ await page.locator("#connectionStatus").waitFor({state:"hidden"});
  for(const status of ["revoked","pending"]){fixture.status=status;await page.reload();await page.waitForFunction(()=>document.body.dataset.access==="denied");assert.equal(await page.locator("#intakeForm").count(),0);}
  console.log("PASS: synthetic volunteer intake, collapsed save, bio summary, edit, persistence and access checks");
 } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}
