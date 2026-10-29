@@ -12,7 +12,9 @@ test("every administrative screen uses the centralized role gate", () => {
   assert.ok(adminPages.length >= 19);
   for (const file of adminPages) {
     const page = read(file);
-    assert.match(page, /launch-role-guard\.js|admin-cms-ui\.js/u, file);
+    const linkedModules = [...page.matchAll(/<script\s+type="module"\s+src="(js\/[^"]+\.js)"\s*><\/script>/gu)]
+      .map(match => read(match[1])).join("\n");
+    assert.match(page + linkedModules, /launch-role-guard\.js|admin-cms-ui\.js/u, file);
     assert.doesNotMatch(page, /onAuthStateChanged\(auth/u, file);
   }
 });
