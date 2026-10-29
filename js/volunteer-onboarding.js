@@ -139,7 +139,7 @@ async function presentAssignment(application, uid) {
     details.hidden = false;
     message.textContent = "Your assigned coordinator and reporting details are below.";
     const email = String(assignment.coordinatorEmail || "");
-    if (/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
+    if (email.includes("@") && email.split("@")[1]?.includes(".") && !email.includes(" ") && !email.includes("\\n")) {
       emailLink.href = "mailto:" + encodeURIComponent(email) + "?subject=SpeakOut%20Volunteer%20Assignment";
       emailLink.textContent = "Email " + (assignment.coordinatorName || "my coordinator");
       emailLink.hidden = false;
