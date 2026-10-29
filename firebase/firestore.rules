@@ -99,6 +99,47 @@ service cloud.firestore {
       allow delete: if isSuperAdmin();
     }
 
+    // Administrators publish one named supervisor record per active placement.
+    match /volunteerAssignments/{volunteerId} {
+      function activePlacement() {
+        return exists(/databases/$(database)/documents/volunteerApplications/$(volunteerId)) &&
+          get(/databases/$(database)/documents/volunteerApplications/$(volunteerId)).data.reviewStage == "active" &&
+          get(/databases/$(database)/documents/volunteerApplications/$(volunteerId)).data.assessmentStatus == "passed" &&
+          get(/databases/$(database)/documents/volunteerApplications/$(volunteerId)).data.safeguardingStatus == "cleared" &&
+          get(/databases/$(database)/documents/volunteerApplications/$(volunteerId)).data.placementStatus == "assigned";
+      }
+      function approvedVolunteerAccount() {
+        return exists(/databases/$(database)/documents/users/$(volunteerId)) &&
+          get(/databases/$(database)/documents/users/$(volunteerId)).data.status == "approved" &&
+          get(/databases/$(database)/documents/users/$(volunteerId)).data.role == "volunteer";
+      }
+      function validAssignment() {
+        let a = request.resource.data;
+        return a.keys().hasOnly([
+            "volunteerId", "roleTitle", "coordinatorName", "coordinatorEmail",
+            "scope", "reportingInstructions", "updatedAt"
+          ]) &&
+          a.keys().hasAll([
+            "volunteerId", "roleTitle", "coordinatorName", "coordinatorEmail",
+            "scope", "reportingInstructions", "updatedAt"
+          ]) &&
+          a.volunteerId == volunteerId &&
+          a.roleTitle is string && a.roleTitle.size() >= 3 && a.roleTitle.size() <= 100 &&
+          a.coordinatorName is string && a.coordinatorName.size() >= 2 && a.coordinatorName.size() <= 120 &&
+          a.coordinatorEmail is string && a.coordinatorEmail.size() >= 6 && a.coordinatorEmail.size() <= 160 &&
+          a.coordinatorEmail.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$') &&
+          a.scope is string && a.scope.size() >= 6 && a.scope.size() <= 700 &&
+          a.reportingInstructions is string && a.reportingInstructions.size() <= 700 &&
+          a.updatedAt is timestamp && a.updatedAt == request.time;
+      }
+      allow read: if isSuperAdmin() ||
+        (isApproved() && userRole() == "volunteer" &&
+         request.auth.uid == volunteerId && activePlacement());
+      allow create, update: if isSuperAdmin() &&
+        approvedVolunteerAccount() && activePlacement() && validAssignment();
+      allow delete: if isSuperAdmin();
+    }
+
     // Volunteer applications are linked to an approved volunteer UID.
     // Browser users can edit only their own intake fields, never review decisions.
     match /volunteerApplications/{volunteerId} {
@@ -1274,11 +1315,11 @@ service cloud.firestore {
 
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }

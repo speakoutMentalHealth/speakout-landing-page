@@ -140,3 +140,63 @@ test("coordinator cannot assign a volunteer with failed assessment or blocked sa
     placementStatus:"assigned", updatedAt:serverTimestamp()
   }));
 });
+
+const assignment = uid => ({
+  volunteerId:uid,roleTitle:"Community Education Volunteer",
+  coordinatorName:"Synthetic Coordinator",
+  coordinatorEmail:"coordinator@example.test",
+  scope:"Support community education under direct supervision only.",
+  reportingInstructions:"Send weekly updates by official email.",
+  updatedAt:serverTimestamp()
+});
+
+test("coordinator is published only by admins after verified active placement", async()=>{
+  for(const [uid,role] of [["volunteer-a","volunteer"],["volunteer-b","volunteer"],["admin-a","admin"]])
+    await seed(uid,role);
+  const owner = env.authenticatedContext("volunteer-a").firestore();
+  const other = env.authenticatedContext("volunteer-b").firestore();
+  const admin = env.authenticatedContext("admin-a").firestore();
+  const intakeDoc = doc(owner,"volunteerApplications","volunteer-a");
+  const assignedDoc = doc(owner,"volunteerAssignments","volunteer-a");
+  await assertSucceeds(setDoc(intakeDoc,intake("volunteer-a")));
+  await assertFails(setDoc(assignedDoc,assignment("volunteer-a")));
+  await assertFails(setDoc(doc(other,"volunteerAssignments","volunteer-a"),assignment("volunteer-a")));
+  await assertFails(setDoc(doc(admin,"volunteerAssignments","volunteer-a"),assignment("volunteer-a")));
+  await assertFails(getDoc(assignedDoc));
+  await assertSucceeds(updateDoc(doc(admin,"volunteerApplications","volunteer-a"), {
+    reviewStage:"active",assessmentStatus:"passed",safeguardingStatus:"cleared",
+    placementStatus:"assigned",updatedAt:serverTimestamp()
+  }));
+  await assertSucceeds(setDoc(doc(admin,"volunteerAssignments","volunteer-a"),assignment("volunteer-a")));
+  await assertSucceeds(getDoc(assignedDoc));
+  await assertFails(getDoc(doc(other,"volunteerAssignments","volunteer-a")));
+  await assertFails(updateDoc(assignedDoc,{coordinatorName:"Volunteer impersonator",updatedAt:serverTimestamp()}));
+  await assertFails(setDoc(doc(admin,"volunteerAssignments","volunteer-b"),assignment("volunteer-b")));
+  await assertFails(setDoc(doc(admin,"volunteerAssignments","volunteer-a"),{...assignment("volunteer-a"), patientNotes:"unsafe"}));
+  await assertFails(setDoc(doc(admin,"volunteerAssignments","volunteer-a"),{...assignment("volunteer-a"), coordinatorEmail:"not-an-email"}));
+});
+
+test("revoked or paused volunteers cannot read an old coordinator assignment",async()=>{
+  await seed("volunteer-a","volunteer");await seed("admin-a","admin");
+  const owner = env.authenticatedContext("volunteer-a").firestore();
+  const admin = env.authenticatedContext("admin-a").firestore();
+  await assertSucceeds(setDoc(doc(owner,"volunteerApplications","volunteer-a"),intake("volunteer-a")));
+  await assertSucceeds(updateDoc(doc(admin,"volunteerApplications","volunteer-a"),{
+    reviewStage:"active",assessmentStatus:"passed",safeguardingStatus:"cleared",
+    placementStatus:"assigned",updatedAt:serverTimestamp()
+  }));
+  const assignedDoc=doc(owner,"volunteerAssignments","volunteer-a");
+  await assertSucceeds(setDoc(doc(admin,"volunteerAssignments","volunteer-a"),assignment("volunteer-a")));
+  await assertSucceeds(getDoc(assignedDoc));
+  await assertSucceeds(updateDoc(doc(admin,"volunteerApplications","volunteer-a"),{
+    reviewStage:"paused",placementStatus:"paused",updatedAt:serverTimestamp()
+  }));
+  await assertFails(getDoc(assignedDoc));
+  await assertSucceeds(updateDoc(doc(admin,"volunteerApplications","volunteer-a"),{
+    reviewStage:"active",placementStatus:"assigned",updatedAt:serverTimestamp()
+  }));
+  await env.withSecurityRulesDisabled(async ctx=>{
+    await updateDoc(doc(ctx.firestore(),"users","volunteer-a"),{status:"revoked",approved:false});
+  });
+  await assertFails(getDoc(assignedDoc));
+});

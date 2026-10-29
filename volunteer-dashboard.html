@@ -30,7 +30,8 @@ main section{margin:30px auto}.grid{display:grid;grid-template-columns:repeat(2,
 .card ol{margin:0;padding-left:24px}.card li{padding:8px 0}.card li+li{border-top:1px solid var(--line)}
 .card li p{margin:4px 0}
 .btn-link{display:inline-block;border-radius:10px;background:var(--blue);padding:10px 15px;color:#fff;text-decoration:none;font-weight:700;max-width:100%}
-.btn-link:hover{background:#0c4577}.secondary{background:#eaf2fa;color:var(--navy)}
+.btn-link:hover{background:#0c4577}
+#assignmentCard [hidden], #assignmentCard[hidden]{display:none!important}.secondary{background:#eaf2fa;color:var(--navy)}
 .callout{border-left:4px solid #d19421;background:#fff9e9;padding:12px 15px;border-radius:8px;color:#523c0f}
 .links{display:flex;flex-wrap:wrap;gap:10px}.small{font-size:.92rem}
 footer{padding:26px 0 38px;color:var(--muted)}
@@ -122,6 +123,14 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 <button type="submit" id="saveIntake" class="btn-link">Save volunteer information</button>
 </form>
 </details>
+</section>
+<section id="assignmentCard" class="card" aria-labelledby="assignment-heading" hidden>
+<h2 id="assignment-heading">My assigned coordinator &amp; role</h2>
+<p id="assignmentMessage" role="status">Checking your placement details…</p>
+<dl id="assignmentDetails" class="profile-summary" hidden></dl>
+<a id="assignmentEmail" class="btn-link" href="mailto:speaaakout@gmail.com?subject=Volunteer%20Coordinator%20Details" hidden>Contact my coordinator</a>
+<a id="assignmentFallback" class="btn-link secondary" href="mailto:speaaakout@gmail.com?subject=Please%20confirm%20my%20volunteer%20coordinator" hidden>Ask SpeakOut who my coordinator is</a>
+<p class="small">Only your approved assignment details are shown here. Follow your authorised responsibilities and safeguarding boundaries.</p>
 </section>
 <section class="card" aria-labelledby="intake-heading">
 <h2 id="intake-heading">Your volunteer onboarding record</h2>

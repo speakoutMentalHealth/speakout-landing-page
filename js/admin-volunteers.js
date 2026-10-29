@@ -1,5 +1,5 @@
 import { db } from "../firebase-config.js";
-import { collection, doc, getDoc, getDocs, query, limit, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, query, limit, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "../launch-role-guard.js";
 
 const $ = id => document.getElementById(id);
@@ -33,6 +33,90 @@ function labelledSelect(group, label, values, selected) {
   group.append(container);
   return select;
 }
+function assignmentEditor(uid, application) {
+  const details = document.createElement("details");
+  details.className = "assignment-editor";
+  const summary = document.createElement("summary");
+  summary.textContent = "Assign coordinator and role";
+  details.append(summary);
+  const form = document.createElement("form");
+  form.className = "assignment-form";
+  const inputs = {};
+  function fieldInput(id, label, hint, length, multiline = false) {
+    const wrapper = document.createElement("label");
+    wrapper.textContent = label;
+    const input = document.createElement(multiline ? "textarea" : "input");
+    input.name = id;
+    input.id = id + "-" + uid;
+    input.required = !["reportingInstructions"].includes(id);
+    input.maxLength = length;
+    input.placeholder = hint;
+    if (!multiline) input.type = id === "coordinatorEmail" ? "email" : "text";
+    else wrapper.className = "wide";
+    wrapper.append(input);
+    form.append(wrapper);
+    inputs[id] = input;
+  }
+  fieldInput("roleTitle", "Assigned volunteer role", "e.g. Mental Health Education Volunteer", 100);
+  fieldInput("coordinatorName", "Coordinator / supervisor name", "Enter the appointed person's full name", 120);
+  fieldInput("coordinatorEmail", "Approved work contact email", "Use an official contact email", 160);
+  fieldInput("scope", "Approved duties and boundaries", "Describe what the volunteer may do, without beneficiary details", 700, true);
+  fieldInput("reportingInstructions", "Reporting instructions (optional)", "e.g. Weekly updates to coordinator by email", 700, true);
+  const button = document.createElement("button");
+  button.type = "submit";
+  button.textContent = "Save coordinator assignment";
+  const status = document.createElement("p");
+  status.className = "wide";
+  status.setAttribute("role", "status");
+  const guidance = document.createElement("p");
+  guidance.className = "wide";
+  guidance.textContent = "Publish only an authorised coordinator's work contact. No private beneficiary data or personal phone numbers. The volunteer sees this only while their account and placement remain active.";
+  form.append(guidance, button, status);
+  details.append(form);
+  let loaded = false;
+  details.addEventListener("toggle", async () => {
+    if (!details.open || loaded) return;
+    status.textContent = "Loading saved assignment…";
+    try {
+      const saved = await getDoc(doc(db, "volunteerAssignments", uid));
+      if (saved.exists()) {
+        const a = saved.data();
+        for (const key of Object.keys(inputs)) inputs[key].value = a[key] || "";
+      }
+      loaded = true;
+      status.textContent = saved.exists() ? "Saved assignment loaded." : "No coordinator details have been published yet.";
+    } catch {
+      status.textContent = "Unable to load assignment. Please try again.";
+    }
+  });
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!loaded) {status.textContent = "Please open this panel and load the assignment first.";return;}
+    if (application.reviewStage !== "active" || application.assessmentStatus !== "passed" ||
+        application.safeguardingStatus !== "cleared" || application.placementStatus !== "assigned") {
+      status.textContent = "Save Active, Passed, Cleared and Assigned review decisions before publishing coordinator details.";
+      return;
+    }
+    const values = Object.fromEntries(Object.entries(inputs).map(([key,node]) => [key,node.value.trim()]));
+    if (values.roleTitle.length < 3 || values.coordinatorName.length < 2 ||
+        values.scope.length < 6 || !inputs.coordinatorEmail.checkValidity()) {
+      status.textContent = "Complete the role, coordinator, approved email and duties before publishing.";
+      return;
+    }
+    button.disabled = true;
+    status.textContent = "Publishing coordinator details…";
+    try {
+      await setDoc(doc(db,"volunteerAssignments",uid),{
+        volunteerId:uid, ...values, updatedAt:serverTimestamp()
+      });
+      status.textContent = "Coordinator assignment saved. The volunteer can now view these details in their hub.";
+    } catch {
+      status.textContent = "Unable to publish. Verify the volunteer is still active and try again.";
+    } finally {button.disabled = false;}
+  });
+  return details;
+}
+
 async function renderOne(application) {
   const uid = application.id;
   const a = application.data();
@@ -101,6 +185,10 @@ async function renderOne(application) {
         safeguardingStatus:safety.value, placementStatus:placement.value,
         updatedAt:serverTimestamp()
       });
+      Object.assign(a, {
+        reviewStage: stage.value, assessmentStatus: exam.value,
+        safeguardingStatus: safety.value, placementStatus: placement.value
+      });
       message.textContent = "Saved. This is a review decision, not an automated notification.";
     } catch {
       message.textContent = "Could not save review. Check permissions and try again.";
@@ -108,6 +196,7 @@ async function renderOne(application) {
   });
   controls.append(save,message);
   article.append(controls);
+  article.append(assignmentEditor(uid, a));
   return article;
 }
 async function loadApplications() {
