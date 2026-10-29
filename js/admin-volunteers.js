@@ -227,7 +227,12 @@ async function renderOne(application) {
   field(info, "Experience", a.experience || "Not provided");
   field(info, "Optional email updates", a.emailUpdates ? "Yes" : "No");
   field(info, "Optional WhatsApp updates", a.whatsAppUpdates ? "Yes" : "No");
-  article.append(info);
+  const profilePanel = document.createElement("details");
+  profilePanel.className = "profile-info";
+  const profileToggle = document.createElement("summary");
+  profileToggle.textContent = "View volunteer profile and availability";
+  profilePanel.append(profileToggle, info);
+  article.append(profilePanel);
   const controls = document.createElement("div");
   controls.className = "actions";
   const stage = labelledSelect(controls, "Review stage", reviewStages, a.reviewStage);
