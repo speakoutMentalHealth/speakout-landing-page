@@ -18,8 +18,10 @@ const firestoreMock=[
 `async function emit(){if(!listener)return;const rows=await(await fetch("/notices")).json();listener({empty:rows.length===0,forEach(cb){rows.forEach(x=>cb({id:x.id,data:()=>x}));}});}`,
 `export async function updateDoc(id,data){if(String(id).includes("volunteerNotifications/")){const response=await fetch("/mark-read",{method:"POST",body:JSON.stringify({id:String(id).split("/").at(-1)})});if(!response.ok)throw Error("Denied");await emit();return;}return setDoc(id,data);}`
 ].join("\n");
-const server=createServer((req,res)=>{
+const server=createServer(async (req,res)=>{
  const send=(type,data)=>{res.writeHead(200,{"content-type":type});res.end(data);};
+ if(req.url==="/images/logo.png")return send("image/png",await readFile(new URL("../images/logo.png",import.meta.url)));
+ if(req.url==="/css/production-ready.css")return send("text/css",await readFile(new URL("../css/production-ready.css",import.meta.url)));
  if(req.url==="/volunteer-dashboard.html")return send("text/html",html);
  if(req.url==="/js/volunteer-onboarding.js")return send("text/javascript",app);
  if(req.url==="/js/volunteer-inbox.js")return send("text/javascript",inboxApp);
@@ -52,6 +54,7 @@ try {
  const url="http://127.0.0.1:"+server.address().port+"/volunteer-dashboard.html";
  await page.goto(url);
  await page.waitForFunction(()=>document.body.dataset.access==="approved");
+ assert.equal(await page.locator("#journeyAction").textContent(),"Complete my profile");
  await page.locator("#notificationList").getByText("Welcome to SpeakOut").waitFor();
  assert.equal(await page.locator("#notificationUnread").textContent(),"1");
  await page.locator(".notice-read").click();
@@ -65,6 +68,7 @@ try {
  await page.locator("#safeguardingAcknowledged").check();
  await page.locator("#saveIntake").click();
  await page.locator("#formMessage").getByText("Volunteer information saved.",{exact:false}).waitFor();
+ assert.equal(await page.locator("#journeyAction").textContent(),"Open training and assessment");
  assert.equal(fixture.writes,1);assert.equal(fixture.record.reviewStage,"intake_received");assert.equal(fixture.record.assessmentStatus,"not_verified");
  assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after save");
  await page.locator("#profileSummary").getByText("Keffi, Nasarawa").waitFor();
@@ -101,6 +105,24 @@ try {
  await page.locator("#assignmentDetails").getByText("Community Education Volunteer").waitFor();
  await page.locator("#assignmentEmail").waitFor({state:"visible"});
  assert.match(await page.locator("#assignmentEmail").getAttribute("href"),/coordinator%40example.test/);
+ // Stage guidance must not invite paused volunteers to begin assignments.
+ assert.equal(await page.locator("#journeyAction").getAttribute("href"),"#assignmentCard");
+ for (const width of [375, 390, 768, 1280]) {
+   await page.setViewportSize({width,height:844});
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),"No horizontal overflow at "+width);
+   if(process.env.VOLUNTEER_SCREENSHOT_DIR) await page.screenshot({path:process.env.VOLUNTEER_SCREENSHOT_DIR+"/volunteer-"+width+".png",fullPage:true});
+ }
+ fixture.record={...fixture.record,reviewStage:"paused",placementStatus:"paused"};
+ await page.reload();
+ await page.locator("#journeyAction").getByText("Contact SpeakOut",{exact:true}).waitFor();
+ assert.equal(await page.locator("#assignmentCard").isVisible(),false);
+ fixture.record={...fixture.record,reviewStage:"safeguarding_review",placementStatus:"not_assigned"};
+ await page.reload();
+ await page.locator("#journeyAction").getByText("View my review status",{exact:true}).waitFor();
+ await page.context().setOffline(true);
+ await page.locator("#connectionStatus").waitFor({state:"visible"});
+ await page.context().setOffline(false);
+ await page.locator("#connectionStatus").waitFor({state:"hidden"});
  for(const status of ["revoked","pending"]){fixture.status=status;await page.reload();await page.waitForFunction(()=>document.body.dataset.access==="denied");assert.equal(await page.locator("#intakeForm").count(),0);}
  console.log("PASS: synthetic volunteer intake, collapsed save, bio summary, edit, persistence and access checks");
 } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}
