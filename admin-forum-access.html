@@ -29,8 +29,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <p class="warning"><strong>Safeguarding:</strong> Only manually verified adults may be given a forum grant. Do not approve school pupils, unverified ages, or pending portal accounts. This does not publish any room. Never upload proof-of-age documents here.</p>
 <p id="status" role="status" aria-live="polite">Checking access…</p>
 <div id="adminUI" hidden>
+<section class="card" aria-labelledby="peopleHeading">
+<h2 id="peopleHeading">Add people to a private room</h2>
+<p>Select approved people by name, email or role. Existing adult verification is required; this does not publish a room or appoint moderators.</p>
+<label for="peopleSearch">Search name or email</label><input id="peopleSearch" type="search" autocomplete="off">
+<label for="peopleRole">Role</label><select id="peopleRole"><option value="">All roles</option><option>volunteer</option><option>teacher</option><option>parent</option><option>ambassador</option><option>contributor</option></select>
+<label for="peopleRoom">Private room</label><select id="peopleRoom"><option value="">Choose a room</option></select>
+<div class="actions"><button id="selectVisible" type="button">Select eligible results</button><button id="clearPeople" type="button">Clear selection</button></div>
+<p id="peopleCount" role="status" aria-live="polite"></p><div id="peopleList"></div>
+<button id="addPeople" type="button">Add selected people</button><p id="peopleResult" role="status" aria-live="polite"></p>
+</section>
 <section class="card">
-<h2>Find a portal user</h2>
+<h2>Individual access review</h2>
 <form id="lookup">
 <label for="userId">Firebase account UID</label><input required id="userId" minlength="5" maxlength="128" autocomplete="off" placeholder="Exact user UID">
 <div class="actions"><button type="submit">Load user</button><a href="admin-users.html">Review portal users</a></div>
@@ -64,4 +74,5 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <script type="module" src="launch-role-guard.js"></script>
 <script type="module" src="js/account-controls.js"></script>
 <script type="module" src="js/forum-access-admin.js"></script>
+<script type="module" src="js/forum-people-admin.js"></script>
 </body></html>
