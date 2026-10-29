@@ -140,3 +140,28 @@ test("coordinator cannot assign a volunteer with failed assessment or blocked sa
     placementStatus:"assigned", updatedAt:serverTimestamp()
   }));
 });
+
+test("synthetic coordinator lifecycle: review, clearance, assignment, pause and suspension", async () => {
+  await seed("volunteer-lifecycle", "volunteer", "pending");
+  await seed("admin-lifecycle", "admin");
+  const applicant = env.authenticatedContext("volunteer-lifecycle").firestore();
+  const admin = env.authenticatedContext("admin-lifecycle").firestore();
+  const record = doc(applicant, "volunteerApplications", "volunteer-lifecycle");
+  const adminRecord = doc(admin, "volunteerApplications", "volunteer-lifecycle");
+  await assertFails(setDoc(record, intake("volunteer-lifecycle")));
+  await assertSucceeds(updateDoc(doc(admin, "users", "volunteer-lifecycle"), {status:"approved",approved:true}));
+  await assertSucceeds(setDoc(record, intake("volunteer-lifecycle")));
+  await assertSucceeds(updateDoc(adminRecord, {reviewStage:"orientation",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(adminRecord, {reviewStage:"assessment_review",updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(adminRecord, {reviewStage:"eligible",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(adminRecord, {assessmentStatus:"passed",reviewStage:"safeguarding_review",updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(adminRecord, {reviewStage:"active",placementStatus:"assigned",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(adminRecord, {safeguardingStatus:"cleared",reviewStage:"eligible",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(adminRecord, {reviewStage:"active",placementStatus:"assigned",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(adminRecord, {reviewStage:"paused",placementStatus:"paused",updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(adminRecord, {reviewStage:"active",placementStatus:"assigned",safeguardingStatus:"blocked",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(doc(admin, "users", "volunteer-lifecycle"), {status:"suspended",approved:false}));
+  await assertFails(getDoc(record));
+  await assertFails(updateDoc(record, {weeklyHours:"9-12",updatedAt:serverTimestamp()}));
+  await assertSucceeds(getDoc(adminRecord));
+});
