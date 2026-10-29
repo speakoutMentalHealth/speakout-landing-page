@@ -185,7 +185,7 @@ function notificationEditor(uid, email) {
       await addDoc(notificationCollection(uid), newNotification(uid, category.value, subject, message));
       status.textContent = "In-app notification sent. It will appear in this volunteer's dashboard inbox.";
       form.reset();
-      if (email && /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
+      if (email && email.includes("@") && email.split("@")[1]?.includes(".") && !email.includes(" ")) {
         emailLink.href = "mailto:" + encodeURIComponent(email) + "?subject=" +
           encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
         emailLink.hidden = false;
