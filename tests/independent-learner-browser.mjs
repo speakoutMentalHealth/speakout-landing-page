@@ -441,9 +441,56 @@ async function completeCourse(page) {
   await page.locator('input[name="q-0"][value="0"]').check();
   await page.locator("#submitAssessmentBtn").click();
   await page.locator("#quizResult").getByText("Passed successfully.", { exact: false }).waitFor({ timeout: 30000 });
-  await page.locator("#openFinalBtn").click();
 
-  await page.locator("#lessonTitle").getByText("Final Check", { exact: true }).waitFor({ timeout: 30000 });
+  // Distinguish an unlock/progress mismatch from a denied or throttled final API
+  // request. Never persist user identifiers, token-bearing URLs or raw responses.
+  const finalResponses = [];
+  const observeFinalResponse = response => {
+    try {
+      if (new URL(response.url()).pathname.endsWith("/v1/learning/assessments/get") && finalResponses.length < 8) {
+        finalResponses.push({ operation: "final-assessment-get", httpStatus: response.status() });
+      }
+    } catch {}
+  };
+  page.on("response", observeFinalResponse);
+  try {
+    await page.locator("#openFinalBtn").click();
+    await page.locator("#lessonTitle").getByText("Final Check", { exact: true }).waitFor({ timeout: 30000 });
+    await page.locator("#submitAssessmentBtn").waitFor({ timeout: 30000 });
+  } catch (error) {
+    const state = await page.evaluate(() => {
+      const value = id => document.getElementById(id);
+      const lessonTitle = value("lessonTitle")?.textContent?.trim();
+      const errorText = document.querySelector("#assessmentArea .notice.error")?.textContent?.trim() || "";
+      const category = /429|rate.limit|quota|capacity/i.test(errorText) ? "rate_limit"
+        : /Complete all course requirements/i.test(errorText) ? "not_unlocked"
+        : /unavailable|not found/i.test(errorText) ? "assessment_unavailable"
+        : /permission|unauthori|forbidden/i.test(errorText) ? "access_denied"
+        : errorText ? "other_api_error" : "none";
+      const progress = value("progressText")?.textContent?.trim() || "";
+      const finalMenu = value("finalAssessmentMenuItem");
+      return {
+        titleState: ["Final Check","Module Check","Course Completed"].includes(lessonTitle) ? lessonTitle : "other",
+        progressLabel: /^\\d{1,3}% Complete$/.test(progress) ? progress : "unavailable",
+        finalMenuPresent: !!finalMenu,
+        finalMenuDisabled: finalMenu?.disabled ?? null,
+        finalMenuLocked: finalMenu?.classList.contains("locked") ?? null,
+        assessmentErrorCategory: category,
+        finalAnswerVisible: !!document.querySelector('#assessmentArea input[name="q-0"]'),
+        continueButtonVisible: !!value("openFinalBtn"),
+      };
+    }).catch(() => ({ unavailable: true }));
+    const diagnostic = {
+      phase: "final-assessment-transition",
+      cause: error.name === "TimeoutError" ? "timeout" : "interaction_failure",
+      state, finalResponses
+    };
+    await writeFile(`${artifactsDir}/final-assessment-transition-failure.json`, JSON.stringify(diagnostic, null, 2));
+    await page.screenshot({ path: `${artifactsDir}/final-assessment-transition-failure.png`, fullPage: true }).catch(() => null);
+    throw new Error("Staging final assessment did not open; see redacted final-assessment-transition-failure.json");
+  } finally {
+    page.off("response", observeFinalResponse);
+  }
   await page.locator('input[name="q-0"][value="0"]').check();
   await page.locator("#submitAssessmentBtn").click();
   await page.locator("#lessonTitle").getByText("Course Completed", { exact: true }).waitFor({ timeout: 30000 });
