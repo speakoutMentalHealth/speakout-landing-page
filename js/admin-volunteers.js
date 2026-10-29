@@ -185,6 +185,10 @@ async function renderOne(application) {
         safeguardingStatus:safety.value, placementStatus:placement.value,
         updatedAt:serverTimestamp()
       });
+      Object.assign(a, {
+        reviewStage: stage.value, assessmentStatus: exam.value,
+        safeguardingStatus: safety.value, placementStatus: placement.value
+      });
       message.textContent = "Saved. This is a review decision, not an automated notification.";
     } catch {
       message.textContent = "Could not save review. Check permissions and try again.";
