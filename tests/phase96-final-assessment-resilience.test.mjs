@@ -29,5 +29,5 @@ test("independent learner browser records redacted diagnostics at final transiti
     browser.indexOf('page.on("response", observeFinalResponse);')
   );
   assert.ok(observed.includes("response.status()"));
-  assert.doesNotMatch(observed, /response\\.(?:text|json)\\(\\)/);
+  assert.doesNotMatch(observed, /response\.(?:text|json)\(\)/);
 });
