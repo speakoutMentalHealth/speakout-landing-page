@@ -30,7 +30,7 @@ test("admin page and module are gated; no public posting UI", () => {
   const module = read("js/forum-admin.js");
   assert.match(page, /id="adminUI" hidden/);
   assert.match(page, /noindex,nofollow/);
-  assert.match(page, /Closed development phase/);
+  assert.match(page, /Rooms start unpublished/);
   assert.match(module, /requireRoles\(\["admin", "super_admin"\]/);
   assert.match(module, /published:\s*false/);
   assert.match(module, /writeBatch\(db\)/);
