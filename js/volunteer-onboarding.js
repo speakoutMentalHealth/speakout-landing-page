@@ -2,6 +2,7 @@ import { auth, db } from "../firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles, renderRoleNav } from "../launch-role-guard.js";
 import { subscribeVolunteerInbox } from "./volunteer-inbox.js";
+import { setupVolunteerCredentials, refreshVolunteerJourney } from "./volunteer-credential.js";
 
 const $ = (id) => document.getElementById(id);
 const path = (id) => doc(db, "volunteerApplications", id);
@@ -186,6 +187,7 @@ requireRoles(["volunteer"], async (user, profile) => {
     if (existing) fillForm(existing);
     present(existing);
     await presentAssignment(existing, user.uid);
+    await setupVolunteerCredentials(db, user.uid, existing, !$("assignmentDetails").hidden);
     $("intakeDisclosure").open = !existing;
     document.body.classList.remove("volunteer-auth-pending");
     subscribeVolunteerInbox(db, user.uid);
@@ -216,6 +218,7 @@ requireRoles(["volunteer"], async (user, profile) => {
       existing = refreshed.data();
       present(existing);
       await presentAssignment(existing, user.uid);
+      refreshVolunteerJourney(existing, !$("assignmentDetails").hidden);
       $("intakeDisclosure").open = false;
       show("Volunteer information saved. Your saved profile is shown below.");
       $("intakeToggle").focus();
