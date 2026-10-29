@@ -254,3 +254,76 @@ test("revoked volunteers lose inbox access without deleting message history",asy
   await assertFails(getDoc(doc(owner,"volunteerNotifications","volunteer-a","messages","m1")));
   await assertFails(updateDoc(doc(owner,"volunteerNotifications","volunteer-a","messages","m1"),{readAt:serverTimestamp()}));
 });
+
+const certificateClaim=uid=>({
+  volunteerId:uid,certificateId:"MC-CERT-20261029-ABCD",
+  reviewStatus:"pending",submittedAt:serverTimestamp(),updatedAt:serverTimestamp(),
+  verifierUid:"",reviewedAt:null,reviewNote:""
+});
+
+test("volunteer certificate claim is private and never self-authorizes assessment",async()=>{
+  await seed("volunteer-a","volunteer");await seed("volunteer-b","volunteer");
+  await seed("admin-a","admin");
+  const volunteer=env.authenticatedContext("volunteer-a").firestore();
+  const other=env.authenticatedContext("volunteer-b").firestore();
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const claim=doc(volunteer,"volunteerCredentialClaims","volunteer-a");
+  await assertFails(setDoc(claim,certificateClaim("volunteer-a")));
+  await assertSucceeds(setDoc(doc(volunteer,"volunteerApplications","volunteer-a"),intake("volunteer-a")));
+  await assertFails(setDoc(doc(other,"volunteerCredentialClaims","volunteer-a"),certificateClaim("volunteer-a")));
+  await assertFails(setDoc(claim,{...certificateClaim("volunteer-a"),reviewStatus:"verified"}));
+  await assertFails(setDoc(claim,{...certificateClaim("volunteer-a"),medicalHistory:"private"}));
+  await assertFails(setDoc(claim,{...certificateClaim("volunteer-a"),certificateId:"<script>"}));
+  await assertSucceeds(setDoc(claim,certificateClaim("volunteer-a")));
+  await assertSucceeds(getDoc(claim));
+  await assertSucceeds(getDoc(doc(admin,"volunteerCredentialClaims","volunteer-a")));
+  await assertFails(getDoc(doc(other,"volunteerCredentialClaims","volunteer-a")));
+  await assertFails(updateDoc(claim,{reviewStatus:"verified",updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(claim,{certificateId:"MC-CERT-20261029-OTHER",updatedAt:serverTimestamp()}));
+  await assertFails(deleteDoc(claim));
+});
+test("admin verifies existing certificate after independent review; rejected references allow resubmission only",async()=>{
+  await seed("volunteer-a","volunteer");await seed("admin-a","admin");
+  const v=env.authenticatedContext("volunteer-a").firestore();
+  const a=env.authenticatedContext("admin-a").firestore();
+  await assertSucceeds(setDoc(doc(v,"volunteerApplications","volunteer-a"),intake("volunteer-a")));
+  const owner=doc(v,"volunteerCredentialClaims","volunteer-a");
+  const reviewer=doc(a,"volunteerCredentialClaims","volunteer-a");
+  await assertSucceeds(setDoc(owner,certificateClaim("volunteer-a")));
+  await assertFails(updateDoc(reviewer,{reviewStatus:"verified",verifierUid:"other-admin",
+    reviewedAt:serverTimestamp(),updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(reviewer,{reviewStatus:"verified",certificateId:"MC-CERT-CHANGED",
+    verifierUid:"admin-a",reviewedAt:serverTimestamp(),updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(reviewer,{
+    reviewStatus:"rejected",verifierUid:"admin-a",reviewedAt:serverTimestamp(),
+    updatedAt:serverTimestamp(),reviewNote:"Certificate ID not found"
+  }));
+  await assertFails(updateDoc(owner,{
+    reviewStatus:"pending",certificateId:"MC-CERT-20261029-ABCD",verifierUid:"",
+    reviewedAt:null,reviewNote:"",updatedAt:serverTimestamp()
+  }));
+  await assertSucceeds(updateDoc(owner,{
+    reviewStatus:"pending",certificateId:"MC-CERT-20261029-OTHER",verifierUid:"",
+    reviewedAt:null,reviewNote:"",updatedAt:serverTimestamp()
+  }));
+  await assertSucceeds(updateDoc(reviewer,{
+    reviewStatus:"verified",verifierUid:"admin-a",reviewedAt:serverTimestamp(),
+    updatedAt:serverTimestamp(),reviewNote:""
+  }));
+  await assertFails(updateDoc(owner,{
+    reviewStatus:"pending",certificateId:"MC-CERT-20261029-AGAIN",verifierUid:"",
+    reviewedAt:null,reviewNote:"",updatedAt:serverTimestamp()
+  }));
+});
+test("revoked volunteers cannot see their certificate claims",async()=>{
+  await seed("volunteer-a","volunteer");
+  const db=env.authenticatedContext("volunteer-a").firestore();
+  await assertSucceeds(setDoc(doc(db,"volunteerApplications","volunteer-a"),intake("volunteer-a")));
+  const path=doc(db,"volunteerCredentialClaims","volunteer-a");
+  await assertSucceeds(setDoc(path,certificateClaim("volunteer-a")));
+  await env.withSecurityRulesDisabled(async ctx=>
+    updateDoc(doc(ctx.firestore(),"users","volunteer-a"),{status:"revoked",approved:false})
+  );
+  await assertFails(getDoc(path));
+  await assertFails(updateDoc(path,{certificateId:"MC-CERT-NEWCODE",updatedAt:serverTimestamp()}));
+});
