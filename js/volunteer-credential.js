@@ -11,6 +11,7 @@ function renderChecklist() {
   const target = byId("journeySteps");
   target.replaceChildren();
   const actions = volunteerNextActions(intake,credentialClaim,published);
+  if(byId("nextStep")) byId("nextStep").textContent=actions[0]?.title || "Review your current status.";
   byId("journeyIntro").textContent = actions.length === 1
     ? "Your next step is below. Completed stages stay in your onboarding record."
     : "Choose the step that applies to you. No need to repeat a completed assessment.";
