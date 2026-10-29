@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Volunteer Applications | SpeakOut Admin</title>
+<link rel="icon" href="images/logo.png">
+<style>
+:root{--navy:#082b50;--ink:#12324c;--line:#d9e5ef;--blue:#155c98}
+*{box-sizing:border-box}body{margin:0;background:#f4f8fc;color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+a{color:var(--blue)}a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #dfa125;outline-offset:3px}
+.container{width:min(1180px,94%);margin:auto}header{background:var(--navy);color:white;padding:24px 0}
+header a{color:white}header nav{display:flex;gap:16px;flex-wrap:wrap}
+h1{margin:12px 0 4px;font-size:clamp(1.6rem,4vw,2.3rem)}
+main{padding:24px 0}.notice,.application{padding:18px;background:white;border:1px solid var(--line);border-radius:15px;margin:15px 0;box-shadow:0 10px 25px #082b5008}
+.application h2{font-size:1.18rem;margin:0 0 6px}.application p{margin:6px 0 12px}
+.data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 18px}
+.data dt{font-weight:700}.data dd{margin:0 0 8px;overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;align-items:end;gap:12px;padding-top:14px;border-top:1px solid var(--line)}
+.actions label{display:grid;gap:5px;font-weight:700}
+select{padding:10px;background:white;border:1px solid #b1c5d6;border-radius:9px;color:var(--ink);font:inherit}
+button{padding:11px 16px;color:white;background:var(--blue);border:0;border-radius:9px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+@media(max-width:700px){.data{grid-template-columns:1fr}.actions{display:grid}}
+</style></head><body>
+<header><div class="container"><nav><a href="admin-dashboard.html">Admin Dashboard</a><a href="admin-users.html">Account Approval</a><a href="portal.html">Portal</a></nav><h1>Volunteer applications</h1><p>Review submitted profiles and record verified onboarding decisions. Account approval is handled separately.</p></div></header>
+<main class="container"><p class="notice" id="notice" role="status" aria-live="polite">Checking administrator access…</p><div id="applications" aria-live="polite"></div>
+<p>Only authorised SpeakOut coordinators should record assessment results after independent verification. Clearance and placement must be confirmed before assigning volunteers to beneficiaries.</p>
+</main><script type="module" src="js/admin-volunteers.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+</body></html>

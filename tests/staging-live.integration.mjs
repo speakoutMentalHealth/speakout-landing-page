@@ -244,7 +244,32 @@ try {
     const trafficResponse = await fetch(`${workerBase}/v1/admin/traffic/summary`, { method: "POST", headers: { authorization: `Bearer ${admin.idToken}`, "content-type": "application/json", origin: trafficOrigin }, body: JSON.stringify({ period }) });
     const traffic = await trafficResponse.json();
     if (trafficResponse.status === 429) {
-      throw new Error("Staging traffic summary returned HTTP 429 (quota exhausted/rate-limited). Check the Firebase/Firestore staging project capacity before rerunning the release matrix.");
+      // HTTP 429 from the Worker does not establish that the Firebase free
+      // daily quota is exhausted. A Worker request also loads the admin profile
+      // from Firestore; a separate upstream rate/throughput limit is possible.
+      // One bounded direct profile read distinguishes an immediate project-side
+      // failure from a Worker-path failure without making further test writes.
+      let directStatus = "unavailable";
+      let firestoreError = "UNKNOWN";
+      try {
+        const direct = await firestore(adminProfile);
+        directStatus = String(direct.response.status);
+        const suppliedStatus = String(direct.body?.error?.status || "UNKNOWN");
+        firestoreError = /^[A-Z_]{1,40}$/.test(suppliedStatus) ? suppliedStatus : "UNKNOWN";
+      } catch {
+        directStatus = "network_error";
+      }
+      // Classify, never print raw provider response, user content or tokens.
+      const workerError = String(traffic?.error || "");
+      const workerClass = /resource[_ -]?exhausted|quota/i.test(workerError) ? "quota_related"
+        : /rate[_ -]?limit|too many requests/i.test(workerError) ? "rate_limit_related"
+        : "unclassified";
+      throw new Error(
+        `Staging traffic summary HTTP 429 (period=${period}); direct Firestore admin-profile GET=${directStatus} ` +
+        `(Google status=${firestoreError}); Worker error class=${workerClass}. ` +
+        "429 does not alone establish daily Firebase quota exhaustion. Check staging Worker logs and " +
+        "the same project's Firestore quota/usage/rate metrics before rerunning the release matrix."
+      );
     }
     assert.equal(trafficResponse.status, 200, `traffic summary failed (HTTP ${trafficResponse.status}): ${JSON.stringify(traffic)}`);
     assert.equal(trafficResponse.headers.get("cache-control"), "private, no-store");
