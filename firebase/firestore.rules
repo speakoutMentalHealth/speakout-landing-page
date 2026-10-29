@@ -1059,6 +1059,7 @@ service cloud.firestore {
         forumAuditPaired(roomId, "none", "none", false);
       allow update: if isSuperAdmin() && forumRoomValid() &&
         forumPilotWriteAllowed(roomId) &&
+        (resource.data.visibility != "private" || request.resource.data.visibility == "private") &&
         request.resource.data.createdAt == resource.data.createdAt &&
         request.resource.data.version == resource.data.version + 1 &&
         request.resource.data.auditId != resource.data.auditId &&
