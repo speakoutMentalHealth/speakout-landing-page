@@ -1,8 +1,19 @@
 import { db } from "../firebase-config.js";
-import { collection, doc, getDoc, getDocs, query, limit, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, query, limit, updateDoc, setDoc, serverTimestamp, writeBatch, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "../launch-role-guard.js";
 
 const $ = id => document.getElementById(id);
+let actingAdminUid = "";
+function newNotification(uid, category, title, body) {
+  return {
+    recipientUid: uid, senderUid: actingAdminUid, category, title, body,
+    createdAt: serverTimestamp(), readAt: null
+  };
+}
+function notificationCollection(uid) {
+  return collection(db, "volunteerNotifications", uid, "messages");
+}
+
 const reviewStages = ["intake_received", "orientation", "assessment_review", "safeguarding_review", "eligible", "active", "paused", "declined"];
 const assessments = ["not_verified", "passed", "failed"];
 const safeguarding = ["pending", "cleared", "blocked"];
@@ -106,13 +117,82 @@ function assignmentEditor(uid, application) {
     button.disabled = true;
     status.textContent = "Publishing coordinator details…";
     try {
-      await setDoc(doc(db,"volunteerAssignments",uid),{
+      const batch = writeBatch(db);
+      batch.set(doc(db, "volunteerAssignments", uid), {
         volunteerId:uid, ...values, updatedAt:serverTimestamp()
       });
+      batch.set(doc(notificationCollection(uid)), newNotification(
+        uid, "assignment", "Your coordinator details are available",
+        "SpeakOut has published your approved coordinator and role details. Open your Volunteer Hub to read your responsibilities and reporting instructions."
+      ));
+      await batch.commit();
       status.textContent = "Coordinator assignment saved. The volunteer can now view these details in their hub.";
     } catch {
       status.textContent = "Unable to publish. Verify the volunteer is still active and try again.";
     } finally {button.disabled = false;}
+  });
+  return details;
+}
+
+function notificationEditor(uid, email) {
+  const details = document.createElement("details");
+  details.className = "assignment-editor";
+  const summary = document.createElement("summary");
+  summary.textContent = "Send an in-app notification";
+  details.append(summary);
+  const form = document.createElement("form");
+  form.className = "assignment-form";
+  const categoryWrap = document.createElement("label");
+  categoryWrap.textContent = "Message category";
+  const category = optionSelect(["general", "onboarding", "assignment", "programme"], "general");
+  categoryWrap.append(category);
+  const titleWrap = document.createElement("label");
+  titleWrap.textContent = "Subject (4–90 characters)";
+  const title = document.createElement("input");
+  title.required = true; title.minLength = 4; title.maxLength = 90;
+  title.placeholder = "e.g. Your SpeakOut volunteer update";
+  titleWrap.append(title);
+  const messageWrap = document.createElement("label");
+  messageWrap.className = "wide";
+  messageWrap.textContent = "Message (6–450 characters)";
+  const body = document.createElement("textarea");
+  body.required = true;body.minLength = 6;body.maxLength = 450;body.rows = 4;
+  body.placeholder = "Please check your dashboard for your next approved activity.";
+  messageWrap.append(body);
+  const help = document.createElement("p");
+  help.className = "wide";
+  help.textContent = "Keep this message non-sensitive. No names of beneficiaries, clinical information, private case details or passwords. It appears in this volunteer's inbox; it is not automatically sent as email, WhatsApp or a phone push.";
+  const send = document.createElement("button");
+  send.type = "submit";send.textContent = "Send in-app notification";
+  const status = document.createElement("p");
+  status.className = "wide";status.setAttribute("role", "status");
+  const emailLink = document.createElement("a");
+  emailLink.className = "wide";
+  emailLink.textContent = "Prepare optional email in your mail app (manual send)";
+  emailLink.hidden = true;
+  form.append(categoryWrap,titleWrap,messageWrap,help,send,status,emailLink);
+  details.append(form);
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const subject = title.value.trim();
+    const message = body.value.trim();
+    if(subject.length < 4 || subject.length > 90 || message.length < 6 || message.length > 450) {
+      status.textContent = "Check the message length before sending.";return;
+    }
+    send.disabled = true;
+    status.textContent = "Sending securely…";
+    try {
+      await addDoc(notificationCollection(uid), newNotification(uid, category.value, subject, message));
+      status.textContent = "In-app notification sent. It will appear in this volunteer's dashboard inbox.";
+      form.reset();
+      if (email && /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
+        emailLink.href = "mailto:" + encodeURIComponent(email) + "?subject=" +
+          encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
+        emailLink.hidden = false;
+      }
+    } catch {
+      status.textContent = "Unable to send. Confirm the volunteer's account is approved and try again.";
+    } finally {send.disabled = false;}
   });
   return details;
 }
@@ -180,11 +260,19 @@ async function renderOne(application) {
     save.disabled = true;
     message.textContent = "Saving review…";
     try {
-      await updateDoc(doc(db,"volunteerApplications",uid), {
+      const changed = a.reviewStage !== stage.value || a.assessmentStatus !== exam.value ||
+        a.safeguardingStatus !== safety.value || a.placementStatus !== placement.value;
+      const batch = writeBatch(db);
+      batch.update(doc(db,"volunteerApplications",uid), {
         reviewStage:stage.value, assessmentStatus:exam.value,
         safeguardingStatus:safety.value, placementStatus:placement.value,
         updatedAt:serverTimestamp()
       });
+      if (changed) batch.set(doc(notificationCollection(uid)), newNotification(
+        uid, "onboarding", "Your volunteer status has been updated",
+        "SpeakOut updated your onboarding record. Sign in to your Volunteer Hub to check your current status and next steps."
+      ));
+      await batch.commit();
       Object.assign(a, {
         reviewStage: stage.value, assessmentStatus: exam.value,
         safeguardingStatus: safety.value, placementStatus: placement.value
@@ -197,6 +285,7 @@ async function renderOne(application) {
   controls.append(save,message);
   article.append(controls);
   article.append(assignmentEditor(uid, a));
+  article.append(notificationEditor(uid, email));
   return article;
 }
 async function loadApplications() {
@@ -214,4 +303,7 @@ async function loadApplications() {
     $("notice").textContent = "Unable to load volunteer applications. Check your permissions.";
   }
 }
-requireRoles(["admin","super_admin"], loadApplications);
+requireRoles(["admin","super_admin"], async user => {
+  actingAdminUid = user.uid;
+  await loadApplications();
+});
