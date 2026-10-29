@@ -31,7 +31,7 @@ test("Public volunteer entry points lead to signup before training", () => {
 test("Volunteer hub provides instructions, contact and training without promising placement", () => {
   const page = read("volunteer-dashboard.html");
   const steps = read("js/volunteer-next-actions.js");
-  assert.match(steps, /mindcheck\\.speakoutmentalhealth\\.org\\/training-hub\\.html/);
+  assert.ok(steps.includes("https://mindcheck.speakoutmentalhealth.org/training-hub.html"));
   assert.match(page, /mindcheck\.speakoutmentalhealth\.org\/volunteers\.html/);
   assert.match(page, /mailto:speaaakout@gmail\.com/);
   assert.match(page, /wa\.me\/2348118103510/);
