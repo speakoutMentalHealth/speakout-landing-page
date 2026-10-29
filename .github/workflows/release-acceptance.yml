@@ -117,6 +117,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: speakout-shared-staging
@@ -136,6 +137,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Reject superseded PR before staging access
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node tests/staging-pr-head-guard.mjs
 
       - name: Check staging credentials
         shell: bash
@@ -172,6 +180,13 @@ jobs:
 
       - name: Check staging Firestore capacity before expensive browser tests
         run: node tests/staging-capacity-preflight.mjs
+
+      - name: Recheck current PR before shared staging deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node tests/staging-pr-head-guard.mjs
 
       - name: Deploy branch Firestore rules to staging
         run: npx --yes firebase-tools@latest deploy --only firestore:rules --project speakout-portal-staging --non-interactive
