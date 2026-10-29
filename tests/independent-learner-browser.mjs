@@ -1,5 +1,6 @@
 import { runCleanup } from "./staging-cleanup.mjs";
 import { observeCatalogue, profileDiagnostic } from "./staging-diagnostics.mjs";
+import { registrationService, registrationEvent, registrationCodes } from "./registration-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -49,7 +50,7 @@ async function deleteAuthFixture(localId) {
   }
   if (!found.users?.length) return { ok: true };
   assert.equal(found.users.length, 1);
-  assert.match(found.users[0].email || "", /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  assert.equal(found.users[0].email, email, "Refusing deletion of an unrelated Firebase Auth account");
   const response = await fetch(adminAuthUrl("delete"), {
     method: "POST", headers, body: JSON.stringify({ localId })
   });
@@ -59,6 +60,30 @@ async function deleteAuthFixture(localId) {
     throw new Error(`Staging Auth cleanup HTTP ${response.status}: ${code}`);
   }
   return response;
+}
+
+async function cleanupRegistrationFixture() {
+  // Registration may create an Auth user and then fail before userSession is set.
+  // The random, exact-match test email is the authoritative cleanup selector.
+  assert.match(email, /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  const response = await fetch(adminAuthUrl("lookup"), {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ email: [email] })
+  });
+  const body = await response.json().catch(() => ({}));
+  if (response.status === 404 || ["EMAIL_NOT_FOUND", "USER_NOT_FOUND"].includes(body?.error?.message)) return { ok: true };
+  if (!response.ok) throw new Error(`Staging Auth fixture lookup failed (HTTP ${response.status}).`);
+  const accounts = Array.isArray(body.users) ? body.users : [];
+  if (!accounts.length) return { ok: true };
+  assert.equal(accounts.length, 1, "Unexpected number of test fixture accounts");
+  assert.equal(accounts[0].email, email, "Account email differs from the current synthetic fixture");
+  assert.match(accounts[0].localId || "", /^[A-Za-z0-9_-]{1,128}$/);
+  const profile = await firestore(`users/${accounts[0].localId}`, { method: "DELETE" });
+  if (!profile.response.ok && profile.response.status !== 404) {
+    throw new Error(`Staging synthetic profile cleanup failed (HTTP ${profile.response.status}).`);
+  }
+  return deleteAuthFixture(accounts[0].localId);
 }
 
 function base64Url(value) {
@@ -299,12 +324,27 @@ async function browserRegister(page) {
   await page.locator("#password").fill(password);
   await page.locator("#confirmPassword").fill(password);
   await page.locator("#terms").check();
+  const httpEvents = [];
+  const observeResponse = response => {
+    const event = registrationEvent(registrationService(response.url(), new URL(baseUrl).origin), response.status());
+    if (event && httpEvents.length < 20) httpEvents.push(event);
+  };
+  const observeConsole = message => {
+    if (message.type() !== "error") return;
+    const codes = registrationCodes(message.text());
+    if (codes.length && httpEvents.length < 20) httpEvents.push({ kind: "sdk", codes });
+  };
+  page.on("response", observeResponse);
+  page.on("console", observeConsole);
   await page.locator("#registerForm button[type='submit']").click();
   try {
-    await page.locator("#regMsg").getByText(
-      "Account created successfully. Your application is now pending approval.",
-      { exact: true }
-    ).waitFor({ timeout: 30000 });
+    await page.waitForFunction(() => {
+      const message = document.getElementById("regMsg");
+      return message && (message.classList.contains("bad") ||
+        message.textContent.trim() === "Account created successfully. Your application is now pending approval.");
+    }, null, { timeout: 30000 });
+    const failed = await page.locator("#regMsg").evaluate(element => element.classList.contains("bad"));
+    if (failed) throw new Error("Registration reported an error.");
   } catch (error) {
     // Never persist form values, credentials, raw provider responses or user identifiers.
     const message = await page.locator("#regMsg").evaluate(element => ({
@@ -322,9 +362,13 @@ async function browserRegister(page) {
     await writeFile(`${artifactsDir}/registration-failure.json`, JSON.stringify({
       step: "registration-confirmation",
       message,
-      errorType: error.name === "TimeoutError" ? "timeout" : "other"
+      httpEvents,
+      errorType: error.name === "TimeoutError" ? "timeout" : "application_error"
     }, null, 2));
-    throw error;
+    throw new Error("Staging registration failed; see redacted registration-failure.json.");
+  } finally {
+    page.off("response", observeResponse);
+    page.off("console", observeConsole);
   }
 }
 
@@ -505,8 +549,6 @@ async function logoutAndRecover(page) {
 
 await mkdir(artifactsDir, { recursive: true });
 adminToken = await serviceAccessToken();
-// Remove the single disposable Auth fixture left by the initial failed recovery run.
-await deleteAuthFixture("DZMBfUKjn1PDpcvkjGR5y7smxvE2");
 await seedCourse();
 
 let browser = null;
@@ -535,7 +577,6 @@ try {
     approved: true
   });
   assert.equal(approval.response.ok, true, "trusted staging approval failed");
-  cleanupPaths.push(`users/${userSession.localId}`);
 
   await browserLogin(page);
   await page.screenshot({ path: `${artifactsDir}/independent-learner-dashboard.png`, fullPage: true });
@@ -586,10 +627,7 @@ try {
   if (browser) await browser.close().catch(() => null);
   const tasks = [];
   for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
-  for (const user of [userSession]) {
-    if (!user?.localId) continue;
-    tasks.push({ label: `Auth user ${user.localId}`, run: () => deleteAuthFixture(user.localId) });
-  }
+  tasks.push({ label: "Current synthetic learner Auth and profile", run: cleanupRegistrationFixture });
   try { await runCleanup(tasks, artifactsDir); } catch (cleanupFailure) {
     if (journeyFailure) throw new AggregateError([journeyFailure, cleanupFailure], "Learner journey and cleanup failed");
     throw cleanupFailure;
