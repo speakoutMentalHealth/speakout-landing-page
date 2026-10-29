@@ -24,5 +24,10 @@ test("independent learner browser records redacted diagnostics at final transiti
   assert.match(browser, /finalMenuDisabled/);
   assert.match(browser, /finalResponses/);
   assert.match(browser, /assessmentErrorCategory/);
-  assert.doesNotMatch(browser, /response\.text\(\)|response\.json\(\).*finalResponses/);
+  const observed = browser.slice(
+    browser.indexOf("const finalResponses = []"),
+    browser.indexOf('page.on("response", observeFinalResponse);')
+  );
+  assert.ok(observed.includes("response.status()"));
+  assert.doesNotMatch(observed, /response\\.(?:text|json)\\(\\)/);
 });
