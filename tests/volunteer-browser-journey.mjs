@@ -4,18 +4,42 @@ import {readFile} from "node:fs/promises";
 import {chromium} from "playwright";
 const html=await readFile(new URL("../volunteer-dashboard.html",import.meta.url),"utf8");
 const app=await readFile(new URL("../js/volunteer-onboarding.js",import.meta.url),"utf8");
-const fixture={status:"approved",record:null,assignment:null,writes:0};
+const inboxApp=await readFile(new URL("../js/volunteer-inbox.js",import.meta.url),"utf8");
+const fixture={status:"approved",record:null,assignment:null,writes:0,notifications:[{id:"notice-1",title:"Welcome to SpeakOut",body:"Please check your next volunteer steps.",category:"onboarding",readAt:null}]};
 const roleMock=[`export function renderRoleNav(){}`,`export async function requireRoles(roles,cb){const p=await (await fetch("/profile")).json();if(p.status!=="approved"){document.body.dataset.access="denied";document.querySelector("#intakeForm").remove();return;}document.body.dataset.access="approved";await cb({uid:"synthetic-volunteer"},{firstName:"Synthetic",role:"volunteer"});}`].join("\n");
-const firestoreMock=[`export const doc=(_db,collection,id)=>collection+"/"+id;`,`export const serverTimestamp=()=> "synthetic-time";`,`export async function getDoc(id){const data=await (await fetch(String(id).startsWith("volunteerAssignments/")?"/assignment":"/record")).json();return {exists:()=>!!data,data:()=>data};}`,`export async function setDoc(_id,data){const response=await fetch("/write",{method:"POST",body:JSON.stringify(data)});if(!response.ok)throw Error("Denied");}`,`export const updateDoc=setDoc;`].join("\n");
+const firestoreMock=[
+`export const doc=(_db,...parts)=>parts.join("/");`,
+`export const collection=(_db,...parts)=>parts.join("/");`,
+`export const orderBy=()=>null;export const limit=()=>null;export const query=(ref)=>ref;`,
+`export const serverTimestamp=()=> "synthetic-time";`,
+`export async function getDoc(id){const data=await (await fetch(String(id).startsWith("volunteerAssignments/")?"/assignment":"/record")).json();return {exists:()=>!!data,data:()=>data};}`,
+`export async function setDoc(_id,data){const response=await fetch("/write",{method:"POST",body:JSON.stringify(data)});if(!response.ok)throw Error("Denied");}`,
+`let listener=null;export const onSnapshot=(_q,onData)=>{listener=onData;emit();return ()=>{listener=null};};`,
+`async function emit(){if(!listener)return;const rows=await(await fetch("/notices")).json();listener({empty:rows.length===0,forEach(cb){rows.forEach(x=>cb({id:x.id,data:()=>x}));}});}`,
+`export async function updateDoc(id,data){if(String(id).includes("volunteerNotifications/")){const response=await fetch("/mark-read",{method:"POST",body:JSON.stringify({id:String(id).split("/").at(-1)})});if(!response.ok)throw Error("Denied");await emit();return;}return setDoc(id,data);}`
+].join("\n");
 const server=createServer((req,res)=>{
  const send=(type,data)=>{res.writeHead(200,{"content-type":type});res.end(data);};
  if(req.url==="/volunteer-dashboard.html")return send("text/html",html);
  if(req.url==="/js/volunteer-onboarding.js")return send("text/javascript",app);
+ if(req.url==="/js/volunteer-inbox.js")return send("text/javascript",inboxApp);
  if(req.url==="/firebase-config.js")return send("text/javascript","export const auth={};export const db={};");
  if(req.url==="/launch-role-guard.js")return send("text/javascript",roleMock);
  if(req.url==="/profile")return send("application/json",JSON.stringify({status:fixture.status}));
  if(req.url==="/record")return send("application/json",JSON.stringify(fixture.record));
  if(req.url==="/assignment")return send("application/json",JSON.stringify(fixture.assignment));
+ if(req.url==="/notices")return send("application/json",JSON.stringify(fixture.notifications));
+ if(req.url==="/mark-read"&&req.method==="POST"){
+   let body="";req.on("data",chunk=>body+=chunk);req.on("end",()=>{
+     if(fixture.status!=="approved"){res.writeHead(403);res.end();return;}
+     const {id}=JSON.parse(body);
+     const item=fixture.notifications.find(x=>x.id===id);
+     if(!item||item.readAt){res.writeHead(403);res.end();return;}
+     item.readAt="synthetic-time";
+     send("application/json",JSON.stringify({ok:true}));
+   });return;
+ }
+
  if(req.url==="/write"&&req.method==="POST"){let body="";req.on("data",x=>body+=x);req.on("end",()=>{if(fixture.status!=="approved"){res.writeHead(403);res.end();return;}const data=JSON.parse(body);fixture.record={...fixture.record,...data};fixture.writes++;send("application/json",JSON.stringify(fixture.record));});return;}
  res.writeHead(404);res.end("Not found");
 });
@@ -28,6 +52,11 @@ try {
  const url="http://127.0.0.1:"+server.address().port+"/volunteer-dashboard.html";
  await page.goto(url);
  await page.waitForFunction(()=>document.body.dataset.access==="approved");
+ await page.locator("#notificationList").getByText("Welcome to SpeakOut").waitFor();
+ assert.equal(await page.locator("#notificationUnread").textContent(),"1");
+ await page.locator(".notice-read").click();
+ await page.locator("#notificationState").getByText("You're up to date.").waitFor();
+ assert.equal(fixture.notifications[0].readAt,"synthetic-time");
  await page.locator("#city").fill("Keffi");
  await page.locator("#state").fill("Nasarawa");
  await page.locator("#languages").fill("English, Hausa");

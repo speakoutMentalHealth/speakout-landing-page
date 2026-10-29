@@ -63,6 +63,22 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 #formMessage:empty{display:none}
 #formMessage{font-weight:650}
 @media(max-width:650px){.profile-summary{grid-template-columns:1fr}}
+
+/* Volunteer notification centre */
+.hero-notifications{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#0a3159;padding:10px 15px;border-radius:11px;text-decoration:none;font-weight:750;min-height:44px}.hero-notifications:hover{background:#e8f3fc}#notificationNavCount{background:#b33426;color:white;padding:2px 8px;border-radius:30px;font-size:.85rem}#notificationNavCount[hidden]{display:none}
+
+#notificationUnread{font-size:.8rem;color:#fff;background:#b33426;padding:3px 9px;border-radius:30px;margin-left:9px}
+#notificationUnread[hidden]{display:none}
+#notificationList{display:grid;gap:12px;margin-top:15px}
+.notice-item{padding:17px;border:1px solid var(--line);border-radius:13px;background:#f7fafd}
+.notice-item.is-unread{border-left:4px solid var(--blue);background:#eff6fc}
+.notice-item-header{display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.notice-category{color:#385877;background:#e0edf9;border-radius:40px;padding:4px 11px;font-size:.77rem;font-weight:750}
+.notice-item p{margin:9px 0 11px;white-space:pre-wrap;overflow-wrap:anywhere}
+.notice-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.87rem}
+.notice-read{background:white;color:var(--blue);border:1px solid #9ebbd3;border-radius:9px;padding:8px 12px;cursor:pointer;min-height:42px;font-weight:700}
+.notice-read:disabled{opacity:.55}
+#notificationsCard{scroll-margin-top:18px}
 </style>
 </head>
 <body class="volunteer-auth-pending">
@@ -75,6 +91,7 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 <div class="hero"><div class="container"><span class="eyebrow">Approved volunteer account</span>
 <h1 id="welcome">Your volunteer journey starts here</h1>
 <p>This is your starting point for training, assessment, programme information and communication with SpeakOut. You do not need to wait for individual instructions to begin your free learning pathway.</p>
+<a class="hero-notifications" href="#notificationsCard">View notifications <span id="notificationNavCount" hidden>0</span></a>
 </div></div>
 <main id="main-content" class="container">
 <section class="card" aria-labelledby="form-heading">
@@ -123,6 +140,12 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 <button type="submit" id="saveIntake" class="btn-link">Save volunteer information</button>
 </form>
 </details>
+</section>
+<section id="notificationsCard" class="card" aria-labelledby="notificationsHeading">
+<h2 id="notificationsHeading">Notifications <span id="notificationUnread" hidden aria-label="Unread notifications">0</span></h2>
+<p>Updates from SpeakOut appear here while you are signed in. This is an in-app inbox, not a phone push notification or an automated email.</p>
+<p id="notificationState" role="status" aria-live="polite">Checking your messages…</p>
+<div id="notificationList" aria-label="Your recent messages"></div>
 </section>
 <section id="assignmentCard" class="card" aria-labelledby="assignment-heading" hidden>
 <h2 id="assignment-heading">My assigned coordinator &amp; role</h2>

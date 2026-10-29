@@ -1,6 +1,7 @@
 import { auth, db } from "../firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles, renderRoleNav } from "../launch-role-guard.js";
+import { subscribeVolunteerInbox } from "./volunteer-inbox.js";
 
 const $ = (id) => document.getElementById(id);
 const path = (id) => doc(db, "volunteerApplications", id);
@@ -187,6 +188,7 @@ requireRoles(["volunteer"], async (user, profile) => {
     await presentAssignment(existing, user.uid);
     $("intakeDisclosure").open = !existing;
     document.body.classList.remove("volunteer-auth-pending");
+    subscribeVolunteerInbox(db, user.uid);
   } catch (error) {
     document.body.classList.remove("volunteer-auth-pending");
     show("We could not load your volunteer record. Please retry or contact SpeakOut.", true);
