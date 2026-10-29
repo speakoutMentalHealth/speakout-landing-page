@@ -179,7 +179,7 @@ requireRoles(["volunteer"], async (user, profile) => {
   // The global account controls supply the single Logout action.
   document.getElementById("logoutBtn")?.remove();
   const name = String(profile.firstName || profile.fullName || "").trim().split(" ")[0];
-  if (name) $("welcome").textContent = "Welcome, " + name + ". Your volunteer journey starts here.";
+  if (name) $("welcome").textContent = "Welcome, " + name + ".";
   let existing = null;
   try {
     const snapshot = await getDoc(path(user.uid));
@@ -197,8 +197,17 @@ requireRoles(["volunteer"], async (user, profile) => {
     $("saveIntake").disabled = true;
     return;
   }
+  let dirty = false;
+  $("intakeForm").addEventListener("input", () => {dirty = true;});
+  window.addEventListener("beforeunload", event => {if(!dirty)return;event.preventDefault();event.returnValue = "";});
+  const connection=$("connectionStatus");
+  const updateConnection=()=>{if(connection)connection.hidden=navigator.onLine;};
+  window.addEventListener("online", updateConnection);
+  window.addEventListener("offline", updateConnection);
+  updateConnection();
   $("intakeForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+    if(!navigator.onLine){show("You are offline. Reconnect, then save again. Your entries are still here.",true);return;}
     let data;
     try { data = input(); } catch (error) { show(error.message, true); return; }
     const save = $("saveIntake");
@@ -214,6 +223,7 @@ requireRoles(["volunteer"], async (user, profile) => {
           placementStatus: "not_assigned", submittedAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
       }
+      dirty = false;
       const refreshed = await getDoc(path(user.uid));
       existing = refreshed.data();
       present(existing);
@@ -222,7 +232,7 @@ requireRoles(["volunteer"], async (user, profile) => {
       $("intakeDisclosure").open = false;
       show("Volunteer information saved. Your saved profile is shown below.");
       $("intakeToggle").focus();
-      $("form-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("form-heading").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     } catch (error) {
       show("Unable to save your information. Please check your connection and try again.", true);
     } finally {
