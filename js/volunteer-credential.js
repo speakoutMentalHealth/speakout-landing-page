@@ -11,6 +11,19 @@ function renderChecklist() {
   const target = byId("journeySteps");
   target.replaceChildren();
   const actions = volunteerNextActions(intake,credentialClaim,published);
+  const first=actions[0];
+  const guidance=byId("journeyGuidance");
+  const primaryAction=byId("journeyAction");
+  if(guidance && first) guidance.textContent=first.description;
+  if(primaryAction && first){
+    primaryAction.textContent=first.label || first.title;
+    primaryAction.hidden=!first.href;
+    if(first.href){
+      primaryAction.href=first.href;
+      if(first.href.startsWith("https://")){primaryAction.target="_blank";primaryAction.rel="noopener noreferrer";}
+      else {primaryAction.removeAttribute("target");primaryAction.removeAttribute("rel");}
+    }
+  }
   if(byId("nextStep")) byId("nextStep").textContent=actions[0]?.title || "Review your current status.";
   byId("journeyIntro").textContent = actions.length === 1
     ? "Your next step is below. Completed stages stay in your onboarding record."
