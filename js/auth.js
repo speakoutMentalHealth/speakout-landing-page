@@ -32,7 +32,7 @@ const ROLE_DASHBOARDS={
   super_admin:"admin-dashboard.html",
   ambassador:"ambassador-dashboard.html",
   contributor:"contributor.html",
-  volunteer:"student-dashboard.html"
+  volunteer:"volunteer-dashboard.html"
 };
 
 const clean=value=>String(value||"").trim();
