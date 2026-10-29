@@ -75,6 +75,7 @@ try {
  assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after save");
  await page.locator("#profileSummary").getByText("Keffi, Nasarawa").waitFor();
  await page.locator("#journeySteps").getByText("Already have a certificate?").waitFor();
+ await page.locator("#credentialDisclosure summary").click();
  await page.locator("#certificateReference").fill("MC-CERT-20261029-ABCD");
  await page.locator("#submitCredential").click();
  await page.locator("#credentialFeedback").getByText("Certificate reference received.",{exact:false}).waitFor();
