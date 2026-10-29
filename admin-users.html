@@ -115,6 +115,9 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 <div class="actions" style="margin-top:14px">
 <button class="btn gold" id="exportBtn">Export CSV</button>
 <button class="btn soft" id="refreshBtn">Refresh</button>
+<button class="btn soft" id="selectAccounts">Select visible accounts</button><button class="btn soft" id="clearAccounts">Clear selection</button><button class="btn success" id="approveAccounts">Approve selected accounts</button>
+<a class="btn soft" href="admin-forum-access.html">Manage private room members</a>
+<p id="accountSelection" role="status" aria-live="polite">0 selected</p>
 </div>
 </div>
 <div class="panel" style="margin-top:18px">
@@ -143,11 +146,15 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 </div>
 <footer class="footer"><div class="container">SpeakOut Admin Command Center</div></footer>
 <script type="module">
+import { approveAccount } from "./js/forum-account-approval.js";
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "./launch-role-guard.js";
 
+let adminActorUid = "";
+let selectedAccounts=new Set();
+let bulkBusy=false;
 let ITEMS = [];
 let unsubscribeUsers = null;
 
@@ -193,7 +200,7 @@ function render(){
 
     return `
       <tr class="row">
-        <td>${safe(name)}</td>
+        <td><label><input type="checkbox" data-select-account="${safe(item.id)}" ${selectedAccounts.has(item.id)?"checked":""} ${bulkBusy?"disabled":""}> ${safe(name)}</label></td>
         <td>${safe(item.email)}</td>
         <td>${safe(item.role)}</td>
         <td>${safe(school)}</td>
@@ -212,13 +219,23 @@ function render(){
     `;
   }).join("") || "<tr><td colspan='7'>No records found.</td></tr>";
 
+  rows.querySelectorAll("[data-select-account]").forEach(box=>box.onchange=()=>{box.checked?selectedAccounts.add(box.dataset.selectAccount):selectedAccounts.delete(box.dataset.selectAccount);document.getElementById("accountSelection").textContent=selectedAccounts.size+" selected";});
+  if(bulkBusy) rows.querySelectorAll("button").forEach(btn=>btn.disabled=true);
   rows.querySelectorAll("button[data-id]").forEach(btn=>{
     btn.onclick = async ()=>{
-      await updateDoc(doc(db,"users",btn.dataset.id),{
-        status:btn.dataset.status,
-        updatedAt:serverTimestamp()
-      });
-      show("User status updated.","ok");
+      if (btn.disabled) return;
+      btn.disabled=true;
+      try {
+        if(btn.dataset.status==="approved"){
+          if(!confirm("Approve this account?"))return;
+          const adult=confirm("Have you verified this person is 18 or older? OK: approve account with adult forum access. Cancel: approve account only; existing forum eligibility is unchanged.");
+          await approveAccount(btn.dataset.id,adminActorUid,adult);
+        } else {
+          await updateDoc(doc(db,"users",btn.dataset.id),{status:btn.dataset.status,updatedAt:serverTimestamp()});
+        }
+        show("Account decision saved. Adult forum eligibility follows the recorded review; private rooms require membership.","ok");
+      }catch{show("Could not save the account decision. No partial approval or forum grant was committed. Try again.","bad");}
+      finally{btn.disabled=false;}
     };
   });
 
@@ -293,12 +310,26 @@ function exportCSV(){
 }
 
 async function requireAdmin(){
-  return requireRoles(["admin","super_admin"],startRealtime);
+  return requireRoles(["admin","super_admin"],user=>{adminActorUid=user.uid;startRealtime();});
 }
 
-searchInput.addEventListener("input",render);
-statusFilter.addEventListener("change",render);
-roleFilter.addEventListener("change",render);
+document.getElementById("selectAccounts").onclick=()=>{if(bulkBusy)return;filteredItems().forEach(p=>selectedAccounts.add(p.id));render();document.getElementById("accountSelection").textContent=selectedAccounts.size+" selected";};
+document.getElementById("clearAccounts").onclick=()=>{if(bulkBusy)return;selectedAccounts.clear();render();document.getElementById("accountSelection").textContent="0 selected";};
+document.getElementById("approveAccounts").onclick=async()=>{
+ if(bulkBusy||!selectedAccounts.size)return;
+ const ids=[...selectedAccounts];
+ if(!confirm("Approve "+ids.length+" selected accounts? Review the selected names before continuing."))return;
+ const adult=confirm("Have you independently verified EVERY selected person is 18 or older? OK: approve accounts with adult forum access. Cancel: approve accounts ONLY; adult forum access remains unchanged.");
+ bulkBusy=true;
+ const controls=[searchInput,statusFilter,roleFilter,document.getElementById("selectAccounts"),document.getElementById("clearAccounts"),document.getElementById("approveAccounts")];controls.forEach(x=>x.disabled=true);render();
+ let done=0,failed=0;
+ try{for(const uid of ids){try{await approveAccount(uid,adminActorUid,adult);done++;selectedAccounts.delete(uid);}catch{failed++;}document.getElementById("accountSelection").textContent=done+" approved · "+failed+" failed";}}
+ finally{bulkBusy=false;controls.forEach(x=>x.disabled=false);render();show(done+" accounts approved; "+failed+" failed. Failed selections remain selected for retry.",failed?"bad":"ok");}
+};
+function clearFilteredSelection(){if(bulkBusy)return;selectedAccounts.clear();document.getElementById("accountSelection").textContent="0 selected";render();}
+searchInput.addEventListener("input",clearFilteredSelection);
+statusFilter.addEventListener("change",clearFilteredSelection);
+roleFilter.addEventListener("change",clearFilteredSelection);
 refreshBtn.addEventListener("click",startRealtime);
 exportBtn.addEventListener("click",exportCSV);
 closeModal.addEventListener("click",()=>userModal.style.display="none");
