@@ -217,3 +217,11 @@ test("admin publishes general room with paired audit but cannot reveal private d
  await assertSucceeds(getDoc(doc(ctx("adult-two"),"forumRooms/unpublished-room")));
  await assertFails(getDoc(doc(ctx("teen-one"),"forumRooms/unpublished-room")));
 });
+
+
+test("even an audited unpublish cannot downgrade private discussion history", async () => {
+ const db=ctx("admin-one"),auditId="private-history-downgrade-0001",batch=writeBatch(db);
+ batch.update(doc(db,"forumRooms/staff-room"),{visibility:"public",published:false,version:2,updatedAt:serverTimestamp(),updatedBy:"admin-one",auditId});
+ batch.set(doc(db,"forumRoomAudits",auditId),{roomId:"staff-room",actorUid:"admin-one",previousVisibility:"private",nextVisibility:"public",previousStatus:"open",nextStatus:"open",previousPublished:true,nextPublished:false,revision:2,reason:"Attempt audience change",changedAt:serverTimestamp()});
+ await assertFails(batch.commit());
+});
