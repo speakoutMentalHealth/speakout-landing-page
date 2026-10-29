@@ -37,7 +37,51 @@ function fillForm(application) {
   $("whatsAppUpdates").checked = Boolean(application.whatsAppUpdates);
   $("safeguardingAcknowledged").checked = Boolean(application.safeguardingAcknowledged);
 }
+const interestLabels = {
+  mental_health_education: "Mental health education",
+  research: "Research", outreach: "Community outreach",
+  programme_support: "Programme coordination", technology: "Technology",
+  media: "Media", fundraising: "Fundraising"
+};
+const participationLabels = {
+  remote: "Remote", hybrid: "Remote and planned in-person", in_person: "In-person"
+};
+function presentProfile(application) {
+  const summary = $("profileSummary");
+  summary.replaceChildren();
+  if (!application) {
+    summary.hidden = true;
+    $("profileIntro").textContent = "Complete the volunteer form below to create your profile.";
+    $("intakeToggle").textContent = "Complete your volunteer information";
+    return;
+  }
+  const fields = [
+    ["Location", [application.city, application.state].filter(Boolean).join(", ")],
+    ["Weekly availability", (application.weeklyHours || "Not specified") + " hours · " +
+      (application.availabilityDays || []).join(", ")],
+    ["Participation preference", participationLabels[application.participationMode] || "Not specified"],
+    ["Areas of interest", (application.focusAreas || []).map(area => interestLabels[area] || area).join(", ")],
+    ["Languages", application.languages || "Not specified"],
+    ["Bio and experience", application.experience || "Not added"],
+    ["Email updates", application.emailUpdates ? "Opted in" : "Not opted in"],
+    ["WhatsApp updates", application.whatsAppUpdates ? "Opted in" : "Not opted in"]
+  ];
+  for (const [label, value] of fields) {
+    const field = document.createElement("div");
+    field.className = "profile-field";
+    const name = document.createElement("dt");
+    name.textContent = label;
+    const description = document.createElement("dd");
+    description.textContent = value;
+    field.append(name, description);
+    summary.append(field);
+  }
+  summary.hidden = false;
+  $("profileIntro").textContent = "Your saved volunteer information. Use Edit volunteer information to make changes.";
+  $("intakeToggle").textContent = "Edit volunteer information";
+}
 function present(application) {
+  presentProfile(application);
   $("intakeStatus").textContent = application ? "Submitted — you can update your contact preferences and availability." : "Not yet submitted";
   $("reviewStatus").textContent = application ? (statusLabels[application.reviewStage] || "Under review") : "Complete your application first";
   $("assessmentStatus").textContent = application?.assessmentStatus === "passed" ? "Verified passed" : application?.assessmentStatus === "failed" ? "Not passed" : "Not independently verified";
@@ -74,6 +118,8 @@ function input() {
 }
 requireRoles(["volunteer"], async (user, profile) => {
   renderRoleNav(profile, "dashboard");
+  // The global account controls supply the single Logout action.
+  document.getElementById("logoutBtn")?.remove();
   const name = String(profile.firstName || profile.fullName || "").trim().split(" ")[0];
   if (name) $("welcome").textContent = "Welcome, " + name + ". Your volunteer journey starts here.";
   let existing = null;
@@ -82,7 +128,10 @@ requireRoles(["volunteer"], async (user, profile) => {
     existing = snapshot.exists() ? snapshot.data() : null;
     if (existing) fillForm(existing);
     present(existing);
+    $("intakeDisclosure").open = !existing;
+    document.body.classList.remove("volunteer-auth-pending");
   } catch (error) {
+    document.body.classList.remove("volunteer-auth-pending");
     show("We could not load your volunteer record. Please retry or contact SpeakOut.", true);
     $("saveIntake").disabled = true;
     return;
@@ -107,7 +156,10 @@ requireRoles(["volunteer"], async (user, profile) => {
       const refreshed = await getDoc(path(user.uid));
       existing = refreshed.data();
       present(existing);
-      show("Volunteer information saved. Your next step is shown above.");
+      $("intakeDisclosure").open = false;
+      show("Volunteer information saved. Your saved profile is shown below.");
+      $("intakeToggle").focus();
+      $("form-heading").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (error) {
       show("Unable to save your information. Please check your connection and try again.", true);
     } finally {

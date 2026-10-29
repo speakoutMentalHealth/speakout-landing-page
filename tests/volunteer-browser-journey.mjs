@@ -36,9 +36,22 @@ try {
  await page.locator("#saveIntake").click();
  await page.locator("#formMessage").getByText("Volunteer information saved.",{exact:false}).waitFor();
  assert.equal(fixture.writes,1);assert.equal(fixture.record.reviewStage,"intake_received");assert.equal(fixture.record.assessmentStatus,"not_verified");
- await page.locator("#weeklyHours").selectOption("9-12");await page.locator("#saveIntake").click();
+ assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after save");
+ await page.locator("#profileSummary").getByText("Keffi, Nasarawa").waitFor();
+ await page.locator("#profileSummary").getByText("Research").waitFor();
+ await page.locator("#intakeToggle").click();
+ assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),true,"Edit profile must reopen the form");
+ await page.locator("#weeklyHours").selectOption("9-12");
+ await page.locator("#experience").fill("Community research and volunteer education");
+ await page.locator("#saveIntake").click();
  await page.locator("#formMessage").getByText("Volunteer information saved.",{exact:false}).waitFor();
  assert.equal(fixture.writes,2);assert.equal(fixture.record.weeklyHours,"9-12");
+ assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Editor must close after profile update");
+ await page.locator("#profileSummary").getByText("Community research and volunteer education").waitFor();
+ await page.reload();
+ await page.waitForFunction(()=>document.body.dataset.access==="approved");
+ await page.locator("#profileSummary").getByText("Community research and volunteer education").waitFor();
+ assert.equal(await page.locator("#intakeDisclosure").evaluate(node=>node.open),false,"Saved profile should load collapsed");
  for(const status of ["revoked","pending"]){fixture.status=status;await page.reload();await page.waitForFunction(()=>document.body.dataset.access==="denied");assert.equal(await page.locator("#intakeForm").count(),0);}
- console.log("PASS: synthetic volunteer intake, edit and status access checks");
+ console.log("PASS: synthetic volunteer intake, collapsed save, bio summary, edit, persistence and access checks");
 } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}
