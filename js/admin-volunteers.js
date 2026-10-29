@@ -134,7 +134,7 @@ function assignmentEditor(uid, application) {
   return details;
 }
 
-function notificationEditor(uid, email) {
+function notificationEditor(uid, email, allowEmailUpdates) {
   const details = document.createElement("details");
   details.className = "assignment-editor";
   const summary = document.createElement("summary");
@@ -185,7 +185,7 @@ function notificationEditor(uid, email) {
       await addDoc(notificationCollection(uid), newNotification(uid, category.value, subject, message));
       status.textContent = "In-app notification sent. It will appear in this volunteer's dashboard inbox.";
       form.reset();
-      if (email && email.includes("@") && email.split("@")[1]?.includes(".") && !email.includes(" ")) {
+      if (allowEmailUpdates && email && email.includes("@") && email.split("@")[1]?.includes(".") && !email.includes(" ")) {
         emailLink.href = "mailto:" + encodeURIComponent(email) + "?subject=" +
           encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
         emailLink.hidden = false;
@@ -290,7 +290,7 @@ async function renderOne(application) {
   controls.append(save,message);
   article.append(controls);
   article.append(assignmentEditor(uid, a));
-  article.append(notificationEditor(uid, email));
+  article.append(notificationEditor(uid, email, a.emailUpdates));
   return article;
 }
 async function loadApplications() {
