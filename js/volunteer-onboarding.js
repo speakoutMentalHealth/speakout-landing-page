@@ -95,6 +95,62 @@ function present(application) {
     application.safeguardingStatus !== "cleared" ? "Await the safeguarding and role review before participating in activities." :
     "Your intake is on record. Wait for your coordinator to confirm the next assignment.";
 }
+async function presentAssignment(application, uid) {
+  const card = $("assignmentCard");
+  const active = application?.reviewStage === "active" &&
+    application?.assessmentStatus === "passed" &&
+    application?.safeguardingStatus === "cleared" &&
+    application?.placementStatus === "assigned";
+  card.hidden = !active;
+  if (!active) return;
+  const details = $("assignmentDetails");
+  const emailLink = $("assignmentEmail");
+  const fallback = $("assignmentFallback");
+  const message = $("assignmentMessage");
+  details.hidden = true;
+  emailLink.hidden = true;
+  fallback.hidden = true;
+  message.textContent = "Loading your coordinator information…";
+  try {
+    const snapshot = await getDoc(doc(db, "volunteerAssignments", uid));
+    if (!snapshot.exists()) {
+      message.textContent = "Your placement is marked Assigned, but the coordinator's name and contact have not yet been published. Contact SpeakOut to request these details before starting new activities.";
+      fallback.hidden = false;
+      return;
+    }
+    const assignment = snapshot.data();
+    details.replaceChildren();
+    const fields = [
+      ["Assigned role", assignment.roleTitle],
+      ["Your coordinator / supervisor", assignment.coordinatorName],
+      ["Approved duties", assignment.scope],
+      ["Reporting instructions", assignment.reportingInstructions || "Contact your coordinator to confirm reporting arrangements"]
+    ];
+    for (const [label, value] of fields) {
+      const field = document.createElement("div");
+      field.className = "profile-field";
+      const dt = document.createElement("dt");
+      dt.textContent = label;
+      const dd = document.createElement("dd");
+      dd.textContent = value || "Not specified";
+      field.append(dt, dd);
+      details.append(field);
+    }
+    details.hidden = false;
+    message.textContent = "Your assigned coordinator and reporting details are below.";
+    const email = String(assignment.coordinatorEmail || "");
+    if (/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
+      emailLink.href = "mailto:" + encodeURIComponent(email) + "?subject=SpeakOut%20Volunteer%20Assignment";
+      emailLink.textContent = "Email " + (assignment.coordinatorName || "my coordinator");
+      emailLink.hidden = false;
+    } else {
+      fallback.hidden = false;
+    }
+  } catch {
+    message.textContent = "Coordinator details could not be loaded. Please use the official SpeakOut contact channel for assistance.";
+    fallback.hidden = false;
+  }
+}
 function input() {
   const city = $("city").value.trim();
   const state = $("state").value.trim();
@@ -128,6 +184,7 @@ requireRoles(["volunteer"], async (user, profile) => {
     existing = snapshot.exists() ? snapshot.data() : null;
     if (existing) fillForm(existing);
     present(existing);
+    await presentAssignment(existing, user.uid);
     $("intakeDisclosure").open = !existing;
     document.body.classList.remove("volunteer-auth-pending");
   } catch (error) {
@@ -156,6 +213,7 @@ requireRoles(["volunteer"], async (user, profile) => {
       const refreshed = await getDoc(path(user.uid));
       existing = refreshed.data();
       present(existing);
+      await presentAssignment(existing, user.uid);
       $("intakeDisclosure").open = false;
       show("Volunteer information saved. Your saved profile is shown below.");
       $("intakeToggle").focus();
