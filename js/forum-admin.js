@@ -92,8 +92,9 @@ function renderRooms() {
         if (next.visibility === room.visibility && next.status === room.status) {
           notice("There are no changes to save."); return;
         }
-        if (privacyWarning(room.visibility, next.visibility) &&
-          !window.confirm("This room is currently private. This changes its intended audience, but no existing private discussions will be published. Continue?")) return;
+        if (privacyWarning(room.visibility, next.visibility)) {
+          notice("Private discussion history cannot become general. Create a separate general room instead.", true); return;
+        }
         await handleAction(async () => updateRoom(room, next, "Administrator changed room controls"));
       }),
       button(room.status === "locked" ? "Reopen room" : "Lock room", async () => {
