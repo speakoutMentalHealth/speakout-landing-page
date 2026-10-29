@@ -200,3 +200,57 @@ test("revoked or paused volunteers cannot read an old coordinator assignment",as
   });
   await assertFails(getDoc(assignedDoc));
 });
+
+const message = (uid, senderUid="admin-a") => ({
+  recipientUid:uid, senderUid, category:"onboarding",
+  title:"Your next volunteer steps", body:"Sign in to review your next steps.",
+  createdAt:serverTimestamp(), readAt:null
+});
+test("admin may send notification only to an approved volunteer; volunteers cannot forge messages",async()=>{
+  await seed("volunteer-a","volunteer");
+  await seed("volunteer-b","volunteer");
+  await seed("pending-v","volunteer","pending");
+  await seed("admin-a","admin");
+  const a=env.authenticatedContext("volunteer-a").firestore();
+  const b=env.authenticatedContext("volunteer-b").firestore();
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const pathA=doc(admin,"volunteerNotifications","volunteer-a","messages","message-1");
+  await assertFails(setDoc(doc(a,"volunteerNotifications","volunteer-a","messages","forged"),message("volunteer-a","volunteer-a")));
+  await assertFails(setDoc(doc(b,"volunteerNotifications","volunteer-a","messages","forged"),message("volunteer-a","volunteer-b")));
+  await assertFails(setDoc(doc(admin,"volunteerNotifications","pending-v","messages","m1"),message("pending-v")));
+  await assertFails(setDoc(pathA,{...message("volunteer-a"),patientHistory:"never"}));
+  await assertFails(setDoc(pathA,{...message("volunteer-a"),senderUid:"someone-else"}));
+  await assertFails(setDoc(pathA,{...message("volunteer-a"),body:"too"}));
+  await assertSucceeds(setDoc(pathA,message("volunteer-a")));
+  await assertSucceeds(getDoc(doc(a,"volunteerNotifications","volunteer-a","messages","message-1")));
+  await assertFails(getDoc(doc(b,"volunteerNotifications","volunteer-a","messages","message-1")));
+  await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(),"volunteerNotifications","volunteer-a","messages","message-1")));
+  await assertFails(deleteDoc(pathA));
+  await assertFails(updateDoc(pathA,{body:"Edited after sending",updatedAt:serverTimestamp()}));
+});
+test("owner can mark one notice read, cannot edit message or clear unread status",async()=>{
+  await seed("volunteer-a","volunteer");
+  await seed("admin-a","admin");
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const owner=env.authenticatedContext("volunteer-a").firestore();
+  const pathAdmin=doc(admin,"volunteerNotifications","volunteer-a","messages","m1");
+  const pathOwner=doc(owner,"volunteerNotifications","volunteer-a","messages","m1");
+  await assertSucceeds(setDoc(pathAdmin,message("volunteer-a")));
+  await assertFails(updateDoc(pathOwner,{title:"Change sender message",readAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(pathOwner,{readAt:serverTimestamp()}));
+  await assertFails(updateDoc(pathOwner,{readAt:null}));
+  await assertFails(updateDoc(pathOwner,{readAt:serverTimestamp()}));
+  await assertFails(deleteDoc(pathOwner));
+});
+test("revoked volunteers lose inbox access without deleting message history",async()=>{
+  await seed("volunteer-a","volunteer");
+  await seed("admin-a","admin");
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const owner=env.authenticatedContext("volunteer-a").firestore();
+  await assertSucceeds(setDoc(doc(admin,"volunteerNotifications","volunteer-a","messages","m1"),message("volunteer-a")));
+  await env.withSecurityRulesDisabled(async ctx=>{
+    await updateDoc(doc(ctx.firestore(),"users","volunteer-a"),{status:"revoked",approved:false});
+  });
+  await assertFails(getDoc(doc(owner,"volunteerNotifications","volunteer-a","messages","m1")));
+  await assertFails(updateDoc(doc(owner,"volunteerNotifications","volunteer-a","messages","m1"),{readAt:serverTimestamp()}));
+});
