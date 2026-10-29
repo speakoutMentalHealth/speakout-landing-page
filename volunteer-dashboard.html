@@ -95,6 +95,28 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 #journeySteps li{background:#f2f7fc;border:1px solid var(--line);border-radius:12px;padding:15px}
 #journeySteps li p{margin:6px 0 12px}
 
+/* Calm, consistent blue-and-gold surfaces with mobile-sized controls. */
+:root{--blue:#075dcc;--navy:#08357a;--paper:#f3f6fc;--line:#dce5f3}
+.resource-disclosure{margin-block:28px}.resource-disclosure summary{font-weight:750;color:var(--navy);cursor:pointer;min-height:44px;padding-block:8px}.resource-disclosure h2{margin-top:16px}html{scroll-padding-top:24px}body{overflow-wrap:break-word}
+.brand small{display:block;font-size:.76rem;font-weight:600;color:var(--muted)}
+.hero{background:radial-gradient(ellipse at top right,#1675d8 0,transparent 65%),linear-gradient(120deg,#082e70,#064ba6)}
+.hero p{max-width:630px}.card{border-radius:22px;box-shadow:0 8px 30px #123a7010}
+.card h2{letter-spacing:-.025em}.btn-link,.hero-notifications{min-height:46px;line-height:1.4;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+button,a,input,textarea,select,summary{touch-action:manipulation}
+input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #e9a31b;outline-offset:3px}
+#intakeForm fieldset{min-width:0}#intakeForm fieldset label{padding:8px;border-radius:8px;min-height:44px}
+#intakeForm fieldset label:has(input:checked){background:#edf4ff;color:#08357a}
+#intakeForm input[type=checkbox]{accent-color:var(--blue);flex-shrink:0}
+#intakeForm textarea{resize:vertical}#intakeForm button{justify-self:start}
+#formMessage:not(:empty){padding:12px 15px;background:#f1f7fc;border-radius:10px}
+#intakeForm :disabled{cursor:wait}.journey-start{border-top:4px solid #efad19}
+.journey-start>p{max-width:720px}.journey-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.journey-actions .secondary{border:1px solid #c9d9ed}.journey-note{margin-top:16px!important;font-size:.92rem}
+#connectionStatus{background:#fff3d5;color:#533b00;padding:12px 4%;text-align:center;margin:0}
+#connectionStatus[hidden]{display:none}#intakeForm{scroll-margin-top:24px}
+@media(max-width:480px){.container{width:calc(100% - 28px)}.brand{font-size:.95rem}.hero h1{font-size:2rem}.card{padding:20px 17px}.journey-actions{display:grid}.journey-actions .btn-link{width:100%}#intakeDisclosure{padding:12px}#roleNav .btn{min-height:44px}.links .btn-link{flex:1 1 150px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body class="volunteer-auth-pending">
@@ -106,10 +128,22 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 <p id="volunteerAccessStatus" role="status">Checking your volunteer access…</p>
 <div class="hero"><div class="container"><span class="eyebrow">Approved volunteer account</span>
 <h1 id="welcome">Your volunteer journey starts here</h1>
-<p>This is your starting point for training, assessment, programme information and communication with SpeakOut. You do not need to wait for individual instructions to begin your free learning pathway.</p>
+<p>Your profile, next steps and messages—all in one place.</p>
 <a class="hero-notifications" href="#notificationsCard">View notifications <span id="notificationNavCount" hidden>0</span></a>
 </div></div>
 <main id="main-content" class="container">
+<p id="connectionStatus" role="status" aria-live="polite" hidden>You are offline. Reconnect before saving your profile or checking new messages.</p>
+<section class="card journey-start" aria-labelledby="start-heading">
+<span class="small">YOUR NEXT STEP</span>
+<h2 id="start-heading">One step at a time</h2>
+<p id="journeyGuidance">First, complete your volunteer profile below. You can then continue your learning or submit your existing certificate.</p>
+<div class="journey-actions">
+<a class="btn-link" href="#form-heading" id="journeyAction">Complete my profile</a>
+<a class="btn-link secondary" href="https://wa.me/2348118103510" target="_blank" rel="noopener noreferrer">Ask SpeakOut for help</a>
+</div>
+<p class="journey-note">Already have your volunteer certificate? Do not repeat the assessment. After saving your volunteer profile, submit the printed certificate ID below for independent SpeakOut verification.</p>
+</section>
+
 <section class="card" aria-labelledby="form-heading">
 <h2 id="form-heading">Your volunteer profile</h2>
 <p id="profileIntro">Loading your saved volunteer information…</p>
