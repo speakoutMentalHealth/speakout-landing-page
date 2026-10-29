@@ -1,5 +1,6 @@
 import { runCleanup } from "./staging-cleanup.mjs";
 import { observeCatalogue, profileDiagnostic } from "./staging-diagnostics.mjs";
+import { registrationService, registrationEvent, registrationCodes } from "./registration-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -299,12 +300,27 @@ async function browserRegister(page) {
   await page.locator("#password").fill(password);
   await page.locator("#confirmPassword").fill(password);
   await page.locator("#terms").check();
+  const httpEvents = [];
+  const observeResponse = response => {
+    const event = registrationEvent(registrationService(response.url(), new URL(baseUrl).origin), response.status());
+    if (event && httpEvents.length < 20) httpEvents.push(event);
+  };
+  const observeConsole = message => {
+    if (message.type() !== "error") return;
+    const codes = registrationCodes(message.text());
+    if (codes.length && httpEvents.length < 20) httpEvents.push({ kind: "sdk", codes });
+  };
+  page.on("response", observeResponse);
+  page.on("console", observeConsole);
   await page.locator("#registerForm button[type='submit']").click();
   try {
-    await page.locator("#regMsg").getByText(
-      "Account created successfully. Your application is now pending approval.",
-      { exact: true }
-    ).waitFor({ timeout: 30000 });
+    await page.waitForFunction(() => {
+      const message = document.getElementById("regMsg");
+      return message && (message.classList.contains("bad") ||
+        message.textContent.trim() === "Account created successfully. Your application is now pending approval.");
+    }, null, { timeout: 30000 });
+    const failed = await page.locator("#regMsg").evaluate(element => element.classList.contains("bad"));
+    if (failed) throw new Error("Registration reported an error.");
   } catch (error) {
     // Never persist form values, credentials, raw provider responses or user identifiers.
     const message = await page.locator("#regMsg").evaluate(element => ({
@@ -322,9 +338,13 @@ async function browserRegister(page) {
     await writeFile(`${artifactsDir}/registration-failure.json`, JSON.stringify({
       step: "registration-confirmation",
       message,
-      errorType: error.name === "TimeoutError" ? "timeout" : "other"
+      httpEvents,
+      errorType: error.name === "TimeoutError" ? "timeout" : "application_error"
     }, null, 2));
-    throw error;
+    throw new Error("Staging registration failed; see redacted registration-failure.json.");
+  } finally {
+    page.off("response", observeResponse);
+    page.off("console", observeConsole);
   }
 }
 
