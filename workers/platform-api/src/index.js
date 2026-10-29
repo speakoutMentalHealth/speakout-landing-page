@@ -1,3 +1,4 @@
+import { firestoreFailure } from "./firestore-error.js";
 import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
 import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
 import { isApprovedProfile } from "../../../js/profile-approval.js";
@@ -429,6 +430,7 @@ async function firestoreRequest(env, url, init = {}) {
   if (!response.ok) {
     const error = new Error(body?.error?.message || "Firestore request failed.");
     error.firestoreStatus = body?.error?.status;
+    error.providerFailure = firestoreFailure(body);
     error.status = response.status;
     throw error;
   }
@@ -4255,6 +4257,8 @@ async function route(request, env, path, data) {
   }
 
   let user = await authenticatedUser(request, env);
+  // Same canonical approval guard as all protected routes; no dashboard queries.
+  if (path === "/v1/auth/approval-check") return {approved:true,role:clean(user.profile.role)};
   if (path === "/v1/admin/support/school/start") {
     if (!isSuperAdminUser(user)) {
       throw Object.assign(new Error("Super Admin access required."), { status: 403 });
@@ -5390,7 +5394,7 @@ export default {
     const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     const path = new URL(request.url).pathname;
-    if (["/v1/admin/traffic/summary", "/v1/auth/sign-in"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
+    if (["/v1/admin/traffic/summary", "/v1/auth/sign-in", "/v1/auth/approval-check"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
     const publicGetPaths = new Set(["/v1/catalog/courses","/v1/media/tv","/v1/media/audio"]);
     const isPublicGet = request.method === "GET" && publicGetPaths.has(path);
     if (request.method !== "POST" && !isPublicGet) return json({ error: "Method not allowed." }, 405, headers);
@@ -5413,7 +5417,7 @@ export default {
       return json(result, 200, headers);
     } catch (error) {
       console.error(error);
-      return json({ error: error.message || "Request failed." }, error.status || 500, headers);
+      return json({ error: error.message || "Request failed.", ...(error.providerFailure ? {providerFailure:error.providerFailure} : {}) }, error.status || 500, headers);
     }
   }
 };
