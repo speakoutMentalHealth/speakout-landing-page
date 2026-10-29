@@ -50,7 +50,7 @@ async function deleteAuthFixture(localId) {
   }
   if (!found.users?.length) return { ok: true };
   assert.equal(found.users.length, 1);
-  assert.match(found.users[0].email || "", /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  assert.equal(found.users[0].email, email, "Refusing deletion of an unrelated Firebase Auth account");
   const response = await fetch(adminAuthUrl("delete"), {
     method: "POST", headers, body: JSON.stringify({ localId })
   });
@@ -60,6 +60,30 @@ async function deleteAuthFixture(localId) {
     throw new Error(`Staging Auth cleanup HTTP ${response.status}: ${code}`);
   }
   return response;
+}
+
+async function cleanupRegistrationFixture() {
+  // Registration may create an Auth user and then fail before userSession is set.
+  // The random, exact-match test email is the authoritative cleanup selector.
+  assert.match(email, /^independent-learner-[0-9]+-[a-f0-9]+@example\.test$/);
+  const response = await fetch(adminAuthUrl("lookup"), {
+    method: "POST",
+    headers: { authorization: `Bearer ${adminToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ email: [email] })
+  });
+  const body = await response.json().catch(() => ({}));
+  if (response.status === 404 || ["EMAIL_NOT_FOUND", "USER_NOT_FOUND"].includes(body?.error?.message)) return { ok: true };
+  if (!response.ok) throw new Error(`Staging Auth fixture lookup failed (HTTP ${response.status}).`);
+  const accounts = Array.isArray(body.users) ? body.users : [];
+  if (!accounts.length) return { ok: true };
+  assert.equal(accounts.length, 1, "Unexpected number of test fixture accounts");
+  assert.equal(accounts[0].email, email, "Account email differs from the current synthetic fixture");
+  assert.match(accounts[0].localId || "", /^[A-Za-z0-9_-]{1,128}$/);
+  const profile = await firestore(`users/${accounts[0].localId}`, { method: "DELETE" });
+  if (!profile.response.ok && profile.response.status !== 404) {
+    throw new Error(`Staging synthetic profile cleanup failed (HTTP ${profile.response.status}).`);
+  }
+  return deleteAuthFixture(accounts[0].localId);
 }
 
 function base64Url(value) {
@@ -525,8 +549,6 @@ async function logoutAndRecover(page) {
 
 await mkdir(artifactsDir, { recursive: true });
 adminToken = await serviceAccessToken();
-// Remove the single disposable Auth fixture left by the initial failed recovery run.
-await deleteAuthFixture("DZMBfUKjn1PDpcvkjGR5y7smxvE2");
 await seedCourse();
 
 let browser = null;
@@ -555,7 +577,6 @@ try {
     approved: true
   });
   assert.equal(approval.response.ok, true, "trusted staging approval failed");
-  cleanupPaths.push(`users/${userSession.localId}`);
 
   await browserLogin(page);
   await page.screenshot({ path: `${artifactsDir}/independent-learner-dashboard.png`, fullPage: true });
@@ -606,10 +627,7 @@ try {
   if (browser) await browser.close().catch(() => null);
   const tasks = [];
   for (const path of [...cleanupPaths].reverse()) tasks.push({ label: path, run: () => firestore(path, { method: "DELETE" }) });
-  for (const user of [userSession]) {
-    if (!user?.localId) continue;
-    tasks.push({ label: `Auth user ${user.localId}`, run: () => deleteAuthFixture(user.localId) });
-  }
+  tasks.push({ label: "Current synthetic learner Auth and profile", run: cleanupRegistrationFixture });
   try { await runCleanup(tasks, artifactsDir); } catch (cleanupFailure) {
     if (journeyFailure) throw new AggregateError([journeyFailure, cleanupFailure], "Learner journey and cleanup failed");
     throw cleanupFailure;
