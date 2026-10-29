@@ -2,7 +2,7 @@ import { after, before, beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { assertFails, assertSucceeds, initializeTestEnvironment } from "@firebase/rules-unit-testing";
-import { doc, setDoc, getDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp, collection, query, where, getDocs } from "firebase/firestore";
 const projectId = "demo-speakout-rules";
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
 let env;
@@ -58,7 +58,7 @@ test("public room is browsable, private/member/locked rooms are isolated", async
   await assertFails(getDoc(doc(guest, "forumRooms/unpublished-room")));
   await assertSucceeds(getDoc(doc(ctx("adult-one"), "forumRooms/staff-room")));
   await assertFails(getDoc(doc(ctx("adult-two"), "forumRooms/staff-room")));
-  await assertFails(getDoc(doc(ctx("adult-two"), "forumRooms/members-room")));
+  await assertSucceeds(getDoc(doc(ctx("adult-two"), "forumRooms/members-room")));
   await assertFails(getDoc(doc(ctx("teen-one"), "forumRooms/members-room")));
   await assertFails(getDoc(doc(ctx("pending-one"), "forumRooms/members-room")));
   await assertSucceeds(getDoc(doc(ctx("moderator-one"), "forumRooms/staff-room")));
@@ -169,4 +169,51 @@ test("approved participants may report content, but cannot edit or delete report
     roomId: "staff-room", targetType: "topic", targetId: "published-topic",
     reporterUid: "teen-one", reason: "spam", createdAt: serverTimestamp()
   }));
+});
+
+
+test("adult students need explicit adult-student confirmation; revoked and unverified remain denied", async () => {
+  await seed("users/adult-student", profile("adult-student", "student"));
+  await seed("forumAccessGrants/adult-student", grant("adult-student", {adultStudentVerified:true}));
+  await assertSucceeds(getDoc(doc(ctx("adult-student"),"forumRooms/members-room")));
+  await assertFails(getDoc(doc(ctx("teen-one"),"forumRooms/members-room")));
+  await assertFails(getDoc(doc(ctx("adult-student"),"forumRooms/staff-room")));
+  await seed("forumAccessGrants/adult-student",grant("adult-student",{adultStudentVerified:true,active:false}));
+  await assertFails(getDoc(doc(ctx("adult-student"),"forumRooms/members-room")));
+  await assertFails(updateDoc(doc(ctx("adult-one"),"forumAccessGrants/adult-one"),{adultStudentVerified:true}));
+});
+
+
+test("single approval atomically provisions adult access and suspension removes access", async () => {
+ const db=ctx("admin-one"),uid="pending-one",auditId="account-approval-pending-0001";
+ const batch=writeBatch(db);
+ batch.update(doc(db,"users",uid),{status:"approved"});
+ // Existing seeded grant is replaced under the admin SDK for a fresh-account scenario.
+ await env.withSecurityRulesDisabled(async c=>deleteDoc(doc(c.firestore(),"forumAccessGrants",uid)));
+ batch.set(doc(db,"forumAccessGrants",uid),{uid,active:true,adultVerified:true,adultStudentVerified:false,memberRole:"member",privateRoomIds:[],moderatedRoomIds:[],createdAt:serverTimestamp(),reviewedAt:serverTimestamp(),reviewedBy:"admin-one",version:1,auditId,reason:"Adult verified during account approval"});
+ batch.set(doc(db,"forumGrantAudits",auditId),{uid,actorUid:"admin-one",previousActive:false,nextActive:true,version:1,changedAt:serverTimestamp(),reason:"Adult verified during account approval"});
+ await assertSucceeds(batch.commit());
+ await assertSucceeds(getDoc(doc(ctx(uid),"forumRooms/members-room")));
+ await assertFails(getDoc(doc(ctx(uid),"forumRooms/staff-room")));
+ await updateDoc(doc(db,"users",uid),{status:"suspended"});
+ await assertFails(getDoc(doc(ctx(uid),"forumRooms/members-room")));
+});
+
+
+test("approved adults discover only published general rooms through constrained queries", async () => {
+ const q=db=>query(collection(db,"forumRooms"),where("published","==",true),where("visibility","in",["public","members_only"]),where("status","in",["open","read_only"]));
+ const found=await assertSucceeds(getDocs(q(ctx("adult-two"))));
+ assert.deepEqual(found.docs.map(d=>d.id).sort(),["members-room","public-room"]);
+ await assertFails(getDocs(q(ctx("teen-one"))));
+ await assertFails(getDocs(collection(ctx("adult-two"),"forumRooms")));
+});
+
+test("admin publishes general room with paired audit but cannot reveal private discussions", async () => {
+ const db=ctx("admin-one"),auditId="general-room-release-0001";
+ const batch=writeBatch(db);
+ batch.update(doc(db,"forumRooms/unpublished-room"),{published:true,version:2,updatedAt:serverTimestamp(),updatedBy:"admin-one",auditId});
+ batch.set(doc(db,"forumRoomAudits",auditId),{roomId:"unpublished-room",actorUid:"admin-one",previousVisibility:"public",nextVisibility:"public",previousStatus:"open",nextStatus:"open",previousPublished:false,nextPublished:true,revision:2,reason:"Release general adult community",changedAt:serverTimestamp()});
+ await assertSucceeds(batch.commit());
+ await assertSucceeds(getDoc(doc(ctx("adult-two"),"forumRooms/unpublished-room")));
+ await assertFails(getDoc(doc(ctx("teen-one"),"forumRooms/unpublished-room")));
 });
