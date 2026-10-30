@@ -2,6 +2,7 @@ import { auth, db } from "../firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles, renderRoleNav } from "../launch-role-guard.js";
 import { subscribeVolunteerInbox } from "./volunteer-inbox.js";
+import { setupVolunteerCredentials, refreshVolunteerJourney } from "./volunteer-credential.js";
 
 const $ = (id) => document.getElementById(id);
 const path = (id) => doc(db, "volunteerApplications", id);
@@ -81,42 +82,20 @@ function presentProfile(application) {
   $("profileIntro").textContent = "Your saved volunteer information. Use Edit volunteer information to make changes.";
   $("intakeToggle").textContent = "Edit volunteer information";
 }
-function presentJourney(application) {
-  const guidance = $("journeyGuidance");
-  const action = $("journeyAction");
-  if (!guidance || !action) return;
-  const stage = application?.reviewStage;
-  const paused = stage === "paused" || application?.placementStatus === "paused";
-  let message = "First, complete your volunteer profile below.";
-  let label = "Complete my profile", href = "#form-heading";
-  if (application) {
-    message = "Your profile is saved. Complete the free training and assessment. If you already have your certificate, submit it privately to an admin instead of repeating the assessment.";
-    label = "Open training and assessment";
-    href = "https://mindcheck.speakoutmentalhealth.org/training-hub.html";
-    if (application.assessmentStatus === "passed") {
-      message = "Your assessment is verified. Wait for the team to complete your safeguarding and placement review before starting activities.";
-      label = "View my review status"; href = "#intake-heading";
-    }
-    if (stage === "active" && application.assessmentStatus === "passed" && application.safeguardingStatus === "cleared" && application.placementStatus === "assigned") {
-      message = "Your placement is active. Read your assigned role, coordinator and reporting instructions before starting work.";
-      label = "View my coordinator and role"; href = "#assignmentCard";
-    }
-    if (paused || stage === "declined") {
-      message = paused ? "Your placement is paused. Contact SpeakOut before resuming activities." : "Your application is closed. Contact SpeakOut if you need clarification.";
-      label = "Contact SpeakOut"; href = "mailto:speaaakout@gmail.com?subject=Volunteer%20onboarding%20support";
-    }
-  }
-  guidance.textContent = message; action.textContent = label; action.href = href;
-}
 function present(application) {
-  presentJourney(application);
   presentProfile(application);
   $("intakeStatus").textContent = application ? "Submitted — you can update your contact preferences and availability." : "Not yet submitted";
   $("reviewStatus").textContent = application ? (statusLabels[application.reviewStage] || "Under review") : "Complete your application first";
   $("assessmentStatus").textContent = application?.assessmentStatus === "passed" ? "Verified passed" : application?.assessmentStatus === "failed" ? "Not passed" : "Not independently verified";
   $("safeguardingStatus").textContent = application?.safeguardingStatus === "cleared" ? "Cleared" : application?.safeguardingStatus === "blocked" ? "Not cleared" : "Pending review";
   $("placementStatus").textContent = application?.placementStatus === "assigned" ? "Assigned — consult the coordinator" : application?.placementStatus === "paused" ? "Paused" : "Not assigned";
-  $("nextStep").textContent = $("journeyGuidance")?.textContent || "Contact SpeakOut for your next step.";
+  $("nextStep").textContent = !application ? "Complete your volunteer information below." :
+    application.reviewStage === "declined" ? "Contact SpeakOut if you need clarification." :
+    application.reviewStage === "active" ? "Follow your supervisor's approved instructions." :
+    application.reviewStage === "eligible" ? "Await a placement invitation from your coordinator." :
+    application.assessmentStatus === "not_verified" ? "Start the five free MindCheck lessons and complete the assessment; SpeakOut will verify the result before placement." :
+    application.safeguardingStatus !== "cleared" ? "Await the safeguarding and role review before participating in activities." :
+    "Your intake is on record. Wait for your coordinator to confirm the next assignment.";
 }
 async function presentAssignment(application, uid) {
   const card = $("assignmentCard");
@@ -208,6 +187,7 @@ requireRoles(["volunteer"], async (user, profile) => {
     if (existing) fillForm(existing);
     present(existing);
     await presentAssignment(existing, user.uid);
+    await setupVolunteerCredentials(db, user.uid, existing, !$("assignmentDetails").hidden);
     $("intakeDisclosure").open = !existing;
     document.body.classList.remove("volunteer-auth-pending");
     subscribeVolunteerInbox(db, user.uid);
@@ -218,19 +198,16 @@ requireRoles(["volunteer"], async (user, profile) => {
     return;
   }
   let dirty = false;
-  $("intakeForm").addEventListener("input", () => { dirty = true; });
-  window.addEventListener("beforeunload", event => {
-    if (!dirty) return;
-    event.preventDefault(); event.returnValue = "";
-  });
-  const connection = $("connectionStatus");
-  function updateConnection() { if (connection) connection.hidden = navigator.onLine; }
+  $("intakeForm").addEventListener("input", () => {dirty = true;});
+  window.addEventListener("beforeunload", event => {if(!dirty)return;event.preventDefault();event.returnValue = "";});
+  const connection=$("connectionStatus");
+  const updateConnection=()=>{if(connection)connection.hidden=navigator.onLine;};
   window.addEventListener("online", updateConnection);
   window.addEventListener("offline", updateConnection);
   updateConnection();
   $("intakeForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!navigator.onLine) { show("You are offline. Reconnect, then save again. Your entries are still here.", true); return; }
+    if(!navigator.onLine){show("You are offline. Reconnect, then save again. Your entries are still here.",true);return;}
     let data;
     try { data = input(); } catch (error) { show(error.message, true); return; }
     const save = $("saveIntake");
@@ -251,6 +228,7 @@ requireRoles(["volunteer"], async (user, profile) => {
       existing = refreshed.data();
       present(existing);
       await presentAssignment(existing, user.uid);
+      refreshVolunteerJourney(existing, !$("assignmentDetails").hidden);
       $("intakeDisclosure").open = false;
       show("Volunteer information saved. Your saved profile is shown below.");
       $("intakeToggle").focus();

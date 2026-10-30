@@ -197,6 +197,124 @@ function notificationEditor(uid, email, allowEmailUpdates) {
   return details;
 }
 
+function credentialReviewPanel(uid, application, assessmentSelect) {
+  const box=document.createElement("details");
+  box.className="assignment-editor";
+  const heading=document.createElement("summary");
+  heading.textContent="Review submitted training certificate";
+  box.append(heading);
+  const content=document.createElement("div");
+  content.className="assignment-form";
+  box.append(content);
+  let loaded=false;
+  let claim=null;
+  const status=document.createElement("p");
+  status.className="wide";
+  status.setAttribute("role","status");
+  const load=async()=>{
+    content.replaceChildren();
+    content.append(status);
+    status.textContent="Checking submitted certificate reference…";
+    try {
+      const record=await getDoc(doc(db,"volunteerCredentialClaims",uid));
+      claim=record.exists()?record.data():null;
+      loaded=true;
+    } catch {
+      loaded=false;
+      status.textContent="Could not load the certificate record. Try reopening this panel.";
+      return;
+    }
+    if(!claim) {
+      status.textContent="No certificate reference has been submitted. The volunteer can submit a printed certificate ID from their dashboard.";
+      return;
+    }
+    const reference=document.createElement("p");
+    reference.className="wide";
+    reference.textContent="Certificate ID submitted: "+claim.certificateId;
+    const instruction=document.createElement("p");
+    instruction.className="wide";
+    instruction.textContent="Check the issuing authority, exact certificate ID, recipient identity, assessment result and current validity using the official MindCheck verification service. A typed ID or client-side result is NOT sufficient proof.";
+    const verify=document.createElement("a");
+    verify.href="https://mindcheck.speakoutmentalhealth.org/verify.html";
+    verify.target="_blank";verify.rel="noopener noreferrer";
+    verify.className="wide";verify.textContent="Open official MindCheck certificate verification";
+    content.append(reference,instruction,verify);
+    if(claim.reviewStatus!=="pending") {
+      status.textContent=claim.reviewStatus==="verified"?"Already verified by SpeakOut.":"Reference rejected. Volunteer may submit a different ID.";
+      return;
+    }
+    const checked=document.createElement("label");
+    checked.className="wide";
+    const checkbox=document.createElement("input");
+    checkbox.type="checkbox";
+    checkbox.required=true;
+    checked.append(checkbox,document.createTextNode(" I independently checked the certificate with the issuer and matched its recipient to this volunteer's SpeakOut account. It is valid and meets the required assessment standard."));
+    const reason=document.createElement("label");
+    reason.className="wide";
+    reason.textContent="Reason if rejecting (no personal or medical information)";
+    const note=document.createElement("textarea");
+    note.maxLength=240;note.rows=2;
+    note.placeholder="e.g. The code was not found in the approved certificate register.";
+    reason.append(note);
+    const buttons=document.createElement("div");
+    buttons.className="wide links";
+    const approve=document.createElement("button");
+    approve.type="button";approve.textContent="Verify certificate and record assessment pass";
+    const reject=document.createElement("button");
+    reject.type="button";reject.textContent="Reject reference";
+    reject.className="secondary-review";
+    buttons.append(approve,reject);
+    content.append(checked,reason,buttons);
+    status.textContent="Pending independent verification.";
+    const save=async verdict=>{
+      if(!loaded || claim.reviewStatus!=="pending") return;
+      if(verdict==="verified" && !checkbox.checked) {
+        status.textContent="Verify the actual issuer, recipient and passing assessment before approving.";
+        return;
+      }
+      if(verdict==="rejected" && note.value.trim().length<6) {
+        status.textContent="Enter a brief reason (at least six characters) for the volunteer.";
+        return;
+      }
+      approve.disabled=true;reject.disabled=true;
+      status.textContent="Recording administrator verification…";
+      try {
+        const batch=writeBatch(db);
+        batch.update(doc(db,"volunteerCredentialClaims",uid),{
+          reviewStatus:verdict,verifierUid:actingAdminUid,reviewedAt:serverTimestamp(),
+          updatedAt:serverTimestamp(),reviewNote:verdict==="rejected"?note.value.trim():""
+        });
+        if(verdict==="verified" && application.assessmentStatus!=="passed") {
+          batch.update(doc(db,"volunteerApplications",uid),{
+            assessmentStatus:"passed",updatedAt:serverTimestamp()
+          });
+        }
+        batch.set(doc(notificationCollection(uid)),newNotification(
+          uid,"onboarding",verdict==="verified"?"Certificate verification completed":"Certificate review needs attention",
+          verdict==="verified"
+            ?"SpeakOut verified your existing certificate. Open the Volunteer Hub to see your updated assessment and safeguarding steps."
+            :"Your submitted certificate reference could not be verified. Open your Volunteer Hub to see the next steps."
+        ));
+        await batch.commit();
+        if(verdict==="verified") {
+          application.assessmentStatus="passed";
+          assessmentSelect.value="passed";
+        }
+        claim.reviewStatus=verdict;
+        status.textContent=verdict==="verified"?"Verified. Assessment marked Passed; safeguarding and placement still require separate approval.":"Reference rejected. Volunteer can resubmit a different code.";
+        checked.remove();reason.remove();buttons.remove();
+      } catch {
+        status.textContent="Save failed. Check verification permissions and try again; no approval has been recorded.";
+        approve.disabled=false;reject.disabled=false;
+      }
+    };
+    approve.addEventListener("click",()=>save("verified"));
+    reject.addEventListener("click",()=>save("rejected"));
+  };
+  box.addEventListener("toggle",()=>{if(box.open&&!loaded)load();});
+  return box;
+}
+
 async function renderOne(application) {
   const uid = application.id;
   const a = application.data();
@@ -289,6 +407,7 @@ async function renderOne(application) {
   });
   controls.append(save,message);
   article.append(controls);
+  article.append(credentialReviewPanel(uid, a, exam));
   article.append(assignmentEditor(uid, a));
   article.append(notificationEditor(uid, email, a.emailUpdates));
   return article;

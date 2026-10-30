@@ -99,6 +99,67 @@ service cloud.firestore {
       allow delete: if isSuperAdmin();
     }
 
+    // An uploaded reference alone is not certification. Human verification required.
+    match /volunteerCredentialClaims/{volunteerId} {
+      function approvedOwner() {
+        return isApproved() && request.auth.uid == volunteerId && userRole() == "volunteer";
+      }
+      function validClaim() {
+        let c = request.resource.data;
+        return c.keys().hasOnly([
+          "volunteerId","certificateId","reviewStatus","submittedAt","updatedAt",
+          "verifierUid","reviewedAt","reviewNote"
+        ]) && c.keys().hasAll([
+          "volunteerId","certificateId","reviewStatus","submittedAt","updatedAt",
+          "verifierUid","reviewedAt","reviewNote"
+        ]) &&
+          c.volunteerId == volunteerId &&
+          c.certificateId is string && c.certificateId.size() >= 8 &&
+          c.certificateId.size() <= 80 && c.certificateId.matches('^[A-Z0-9-]+$') &&
+          c.reviewStatus in ["pending","verified","rejected"] &&
+          c.submittedAt is timestamp && c.updatedAt is timestamp &&
+          c.verifierUid is string && c.verifierUid.size() <= 128 &&
+          (c.reviewedAt == null || c.reviewedAt is timestamp) &&
+          c.reviewNote is string && c.reviewNote.size() <= 240;
+      }
+      allow read: if isSuperAdmin() || approvedOwner();
+      allow create: if approvedOwner() &&
+        exists(/databases/$(database)/documents/volunteerApplications/$(volunteerId)) &&
+        validClaim() &&
+        request.resource.data.reviewStatus == "pending" &&
+        request.resource.data.verifierUid == "" &&
+        request.resource.data.reviewedAt == null &&
+        request.resource.data.reviewNote == "" &&
+        request.resource.data.submittedAt == request.time &&
+        request.resource.data.updatedAt == request.time;
+      allow update: if (
+        approvedOwner() && resource.data.reviewStatus == "rejected" &&
+        validClaim() && request.resource.data.certificateId != resource.data.certificateId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "certificateId","reviewStatus","verifierUid","reviewedAt","reviewNote","updatedAt"
+        ]) &&
+        request.resource.data.submittedAt == resource.data.submittedAt &&
+        request.resource.data.reviewStatus == "pending" &&
+        request.resource.data.verifierUid == "" &&
+        request.resource.data.reviewedAt == null &&
+        request.resource.data.reviewNote == "" &&
+        request.resource.data.updatedAt == request.time
+      ) || (
+        isSuperAdmin() && resource.data.reviewStatus == "pending" &&
+        validClaim() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "reviewStatus","verifierUid","reviewedAt","reviewNote","updatedAt"
+        ]) &&
+        request.resource.data.certificateId == resource.data.certificateId &&
+        request.resource.data.submittedAt == resource.data.submittedAt &&
+        request.resource.data.reviewStatus in ["verified","rejected"] &&
+        request.resource.data.verifierUid == request.auth.uid &&
+        request.resource.data.reviewedAt == request.time &&
+        request.resource.data.updatedAt == request.time
+      );
+      allow delete: if false;
+    }
+
     // One-way, privacy-limited volunteer message inbox. Not a clinical chat.
     // Users cannot send to one another or forge sender, read, or delivery status.
     match /volunteerNotifications/{volunteerId} {
@@ -1350,11 +1411,11 @@ service cloud.firestore {
 
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
