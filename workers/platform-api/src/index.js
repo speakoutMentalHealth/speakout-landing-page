@@ -342,6 +342,7 @@ async function deterministicVerificationCode(value) {
 }
 
 function toFirestore(value) {
+  if (value instanceof Date) return { timestampValue: value.toISOString() };
   if (value === null || value === undefined) return { nullValue: null };
   if (typeof value === "boolean") return { booleanValue: value };
   if (typeof value === "number") return Number.isInteger(value)
@@ -4301,11 +4302,11 @@ async function volunteerApproveAI(env,user,data) {
       volunteerId,coordinatorId:draft.coordinatorId,
       coordinatorName:c.name,coordinatorEmail:c.email,roleTitle:draft.roleTitle,
       scope:draft.scope,reportingInstructions:draft.reportingInstructions,
-      updatedAt:now,approvedBy:user.uid,draftId
+      updatedAt:new Date(),approvedBy:user.uid,draftId
     };
     const eventId="allocation_"+crypto.randomUUID().replaceAll("-","");
     tx.set("volunteerAssignments/"+volunteerId,allocation);
-    tx.patch("volunteerApplications/"+volunteerId,{reviewStage:"active",placementStatus:"assigned",updatedAt:now});
+    tx.patch("volunteerApplications/"+volunteerId,{reviewStage:"active",placementStatus:"assigned",updatedAt:new Date()});
     tx.patch("volunteerCoordinators/"+draft.coordinatorId,{assignedCount:Number(c.assignedCount)+1,updatedAt:now});
     tx.patch("volunteerAllocationDrafts/"+volunteerId,{status:"approved",reviewedAt:now,reviewedBy:user.uid});
     tx.set("volunteerAllocationAudits/"+eventId,{event:"approved",volunteerId,coordinatorId:draft.coordinatorId,draftId,actorUid:user.uid,createdAt:now});
@@ -4313,7 +4314,7 @@ async function volunteerApproveAI(env,user,data) {
       recipientUid:volunteerId,senderUid:user.uid,category:"assignment",
       title:"Your approved coordinator and duties are ready",
       body:"Your SpeakOut assignment was approved. Open your Volunteer Hub for your coordinator, approved duties and reporting steps.",
-      createdAt:now,readAt:null
+      createdAt:new Date(),readAt:null
     });
     return {ok:true,volunteerId,coordinatorId:draft.coordinatorId,approvedAt:now};
   });
