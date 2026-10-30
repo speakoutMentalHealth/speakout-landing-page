@@ -231,9 +231,16 @@ service cloud.firestore {
       allow read: if isSuperAdmin() ||
         (isApproved() && userRole() == "volunteer" &&
          request.auth.uid == volunteerId && activePlacement());
-      allow create, update: if isSuperAdmin() &&
+      // AI assignments carry a coordinatorId/draftId and are reserved through
+      // a server transaction. Browser updates or deletes would bypass capacity
+      // accounting, so only legacy (manually created) records are editable here.
+      allow create: if isSuperAdmin() &&
         approvedVolunteerAccount() && activePlacement() && validAssignment();
-      allow delete: if isSuperAdmin();
+      allow update: if isSuperAdmin() &&
+        !resource.data.keys().hasAny(["coordinatorId", "draftId"]) &&
+        approvedVolunteerAccount() && activePlacement() && validAssignment();
+      allow delete: if isSuperAdmin() &&
+        !resource.data.keys().hasAny(["coordinatorId", "draftId"]);
     }
 
     // Volunteer applications are linked to an approved volunteer UID.
@@ -304,6 +311,16 @@ service cloud.firestore {
           (a.placementStatus != "assigned" || (a.reviewStage == "active" && a.assessmentStatus == "passed" && a.safeguardingStatus == "cleared")) &&
           (a.reviewStage != "declined" || a.placementStatus != "assigned");
       }
+      function aiAssignmentIsManaged() {
+        return exists(/databases/$(database)/documents/volunteerAssignments/$(volunteerId)) &&
+          get(/databases/$(database)/documents/volunteerAssignments/$(volunteerId))
+            .data.keys().hasAny(["coordinatorId", "draftId"]);
+      }
+      function aiManagementFlagsUnchanged() {
+        return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          "reviewStage", "assessmentStatus", "safeguardingStatus", "placementStatus"
+        ]);
+      }
       // An applicant cannot override clearance, verified assessment or placement.
       allow read: if isSuperAdmin() || isOwnApprovedVolunteer();
       allow create: if isOwnApprovedVolunteer() &&
@@ -314,7 +331,8 @@ service cloud.firestore {
         request.resource.data.placementStatus == "not_assigned" &&
         request.resource.data.submittedAt == request.time &&
         request.resource.data.updatedAt == request.time;
-      allow update: if (isSuperAdmin() && validCoordinatorUpdate()) ||
+      allow update: if (isSuperAdmin() && validCoordinatorUpdate() &&
+        (!aiAssignmentIsManaged() || aiManagementFlagsUnchanged())) ||
         (isOwnApprovedVolunteer() &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(editableIntakeFields()) &&
           request.resource.data.submittedAt == resource.data.submittedAt &&

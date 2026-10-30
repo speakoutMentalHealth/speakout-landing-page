@@ -76,13 +76,16 @@ export function aiAssignmentPanel(volunteerId,application) {
   const preview=el("div","ai-preview");
   const approve=el("button","","Approve and publish");approve.type="button";approve.hidden=true;
   const revise=el("button","","Request revision");revise.type="button";revise.hidden=true;
+  const pause=el("button","","Pause assignment & release coordinator slot");pause.type="button";pause.hidden=true;pause.className="secondary-review";
   const reason=document.createElement("input");reason.type="text";reason.maxLength=180;reason.placeholder="Reason for revision";reason.hidden=true;
-  body.append(generate,msg,preview,approve,revise,reason);panel.append(body);
+  body.append(generate,msg,preview,approve,revise,reason,pause);panel.append(body);
   let draft=null,loaded=false;
   const render=data=>{
     draft=data;preview.replaceChildren();
     const pending=data?.status==="pending";
     approve.hidden=!pending;revise.hidden=!pending;reason.hidden=!pending;
+    pause.hidden=data?.status!=="approved";
+    generate.hidden=data?.status==="approved";
     if(!data){msg.textContent="No draft yet. Generate a recommended assignment.";return;}
     const rows=[
       ["Volunteer role",data.roleTitle],["Selected coordinator",data.coordinatorName],
@@ -134,6 +137,27 @@ export function aiAssignmentPanel(volunteerId,application) {
       generate.click();
     }catch(e){msg.textContent=e.message||"Could not request revision.";}
     finally{revise.disabled=false;}
+  });
+  pause.addEventListener("click",async()=>{
+    if(!draft||draft.status!=="approved")return;
+    const explanation=window.prompt("Reason for pausing this placement (minimum 8 characters):");
+    if(explanation===null)return;
+    const reason=explanation.trim();
+    if(reason.length<8||reason.length>180){
+      msg.textContent="Enter a reason between 8 and 180 characters. No assignment has been changed.";
+      return;
+    }
+    if(!window.confirm("Pause this volunteer's assignment and release the coordinator slot? The volunteer will be notified."))return;
+    pause.disabled=true;
+    msg.textContent="Pausing assignment and reconciling coordinator capacity…";
+    try{
+      await platformRequest("/v1/admin/volunteers/ai/pause",{volunteerId,reason});
+      render({...draft,status:"paused"});
+      application.reviewStage="paused";application.placementStatus="paused";
+      msg.textContent="Placement paused, coordinator slot released and volunteer notified. Reconfirm eligibility before generating a new assignment.";
+      panel.dispatchEvent(new CustomEvent("volunteerAIPaused",{bubbles:true,detail:{volunteerId}}));
+    }catch(e){msg.textContent=e.message||"Unable to pause assignment. Nothing was changed.";}
+    finally{pause.disabled=false;}
   });
   return panel;
 }

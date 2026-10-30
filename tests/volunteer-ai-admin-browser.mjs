@@ -29,6 +29,7 @@ export async function platformRequest(path,body={}){
  };return {ok:true,draft};}
  if(path.endsWith("ai/approve")){if(body.draftId!=="draft-synthetic")throw Error("invalid draft");return {ok:true};}
  if(path.endsWith("ai/revise"))return {ok:true};
+ if(path.endsWith("ai/pause")){if(!body.reason||body.reason.length<8)throw Error("Missing reason");draft={...draft,status:"paused"};return {ok:true,remainingAllocated:0};}
  throw Error("Unexpected API request "+path);
 }`;
 const server=createServer((req,res)=>{
@@ -64,6 +65,13 @@ try{
  await page.locator(".ai-assignment button").getByText("Approve and publish").click();
  await page.locator(".ai-status").getByText("Approved. Assignment published",{exact:false}).waitFor();
  assert.equal(await page.locator(".ai-assignment button").getByText("Approve and publish").isVisible(),false);
+ page.on("dialog",async dialog=>{
+   if(dialog.type()==="prompt")await dialog.accept("Volunteer moved to another programme");
+   else await dialog.accept();
+ });
+ await page.locator(".ai-assignment button").getByText("Pause assignment & release coordinator slot").click();
+ await page.locator(".ai-status").getByText("Placement paused",{exact:false}).waitFor();
+ assert.equal(await page.locator(".ai-assignment button").getByText("Pause assignment & release coordinator slot").isVisible(),false);
  assert.deepEqual(errors,[]);
  console.log("PASS: coordinator registration, automatic Gemini draft fill and administrator-only approval.");
 }finally{
