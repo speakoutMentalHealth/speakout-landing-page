@@ -341,3 +341,34 @@ test("Gemini drafts, coordinator directory and allocation audit are server-only"
     await assertFails(setDoc(doc(volunteer,path),{status:"approved",name:"Synthetic"}));
   }
 });
+
+
+test("AI-managed assignment cannot be overwritten, deleted or paused via legacy browser controls",async()=>{
+  await seed("admin-a","admin");
+  await seed("volunteer-a","volunteer");
+  const volunteer=env.authenticatedContext("volunteer-a").firestore();
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const application=doc(admin,"volunteerApplications","volunteer-a");
+  const assignment=doc(admin,"volunteerAssignments","volunteer-a");
+  await assertSucceeds(setDoc(doc(volunteer,"volunteerApplications","volunteer-a"),intake("volunteer-a")));
+  await assertSucceeds(updateDoc(application,{
+    reviewStage:"active",assessmentStatus:"passed",safeguardingStatus:"cleared",
+    placementStatus:"assigned",updatedAt:serverTimestamp()
+  }));
+  await env.withSecurityRulesDisabled(async ctx=>{
+    await setDoc(doc(ctx.firestore(),"volunteerAssignments","volunteer-a"),{
+      volunteerId:"volunteer-a",coordinatorId:"coord-a",draftId:"draft-a",
+      approvedBy:"admin-a",coordinatorName:"Synthetic Coordinator",
+      coordinatorEmail:"work@example.test",roleTitle:"Outreach Volunteer",
+      scope:"Approved supervised community outreach",reportingInstructions:"Weekly report",
+      updatedAt:serverTimestamp()
+    });
+  });
+  await assertFails(updateDoc(assignment,{roleTitle:"Manually overwritten",updatedAt:serverTimestamp()}));
+  await assertFails(deleteDoc(assignment));
+  await assertFails(updateDoc(application,{reviewStage:"paused",placementStatus:"paused",updatedAt:serverTimestamp()}));
+  await assertFails(updateDoc(application,{assessmentStatus:"failed",updatedAt:serverTimestamp()}));
+  await assertSucceeds(updateDoc(doc(volunteer,"volunteerApplications","volunteer-a"),{
+    weeklyHours:"9-12",updatedAt:serverTimestamp()
+  }));
+});
