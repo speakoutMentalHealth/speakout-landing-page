@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'tests/volunteer-browser-journey.mjs'
+      - 'tests/volunteer-admin-accordion-browser.mjs'
       - 'volunteer-dashboard.html'
       - 'js/volunteer-onboarding.js'
       - 'js/volunteer-inbox.js'
@@ -30,3 +31,5 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run synthetic volunteer browser journey
         run: node tests/volunteer-browser-journey.mjs
+      - name: Run volunteer admin accordion mobile journey
+        run: node tests/volunteer-admin-accordion-browser.mjs
