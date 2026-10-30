@@ -6,6 +6,7 @@ import {chromium} from "playwright";
 const pageHtml=await readFile(new URL("../admin-volunteers.html",import.meta.url),"utf8");
 const adminScript=await readFile(new URL("../js/admin-volunteers.js",import.meta.url),"utf8");
 const authMock=`export async function requireRoles(_roles,fn){await fn({uid:"synthetic-admin"});}`;
+const aiMock=`export function setupCoordinatorDirectory(){};export function aiAssignmentPanel(){const p=document.createElement("details");p.className="assignment-editor ai-assignment";const s=document.createElement("summary");s.textContent="Gemini proposed role and coordinator";p.append(s);return p;}`;
 const dbMock=`export const db={};`;
 const firestoreMock=`
 const people=[
@@ -45,6 +46,7 @@ const server=createServer((req,res)=>{
   const send=(type,data)=>{res.writeHead(200,{"content-type":type});res.end(data);};
   if(req.url==="/admin-volunteers.html")return send("text/html",pageHtml);
   if(req.url==="/js/admin-volunteers.js")return send("text/javascript",adminScript);
+  if(req.url==="/js/admin-volunteer-ai.js")return send("text/javascript",aiMock);
   if(req.url==="/firebase-config.js")return send("text/javascript",dbMock);
   if(req.url==="/launch-role-guard.js")return send("text/javascript",authMock);
   res.writeHead(404);res.end("not found");
@@ -63,7 +65,7 @@ try{
   await page.locator(".application-accordion > summary").first().click();
   assert.equal(await page.locator(".application-accordion[open]").count(),1);
   assert.equal(await page.locator(".application-content > details").first().count(),1);
-  assert.equal(await page.locator(".application-content > details").count(),10,"each volunteer has five nested sections");
+  assert.equal(await page.locator(".application-content > details").count(),12,"each volunteer has six nested sections including Gemini review");
   assert.equal(await page.locator(".application-content > details[open]").count(),0,"all inner sections start collapsed");
   await page.locator(".review-editor > summary").first().click();
   assert.equal(await page.locator(".review-editor[open]").count(),1);
