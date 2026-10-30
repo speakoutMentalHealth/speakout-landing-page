@@ -4349,9 +4349,10 @@ async function volunteerPauseAI(env,user,data) {
   const reason=clean(data.reason);
   if(reason.length<8||reason.length>180)throw Object.assign(new Error("Explain the reason for pausing this placement (8–180 characters)."),{status:400});
   return runTransaction(env,async tx=>{
-    const [assignment,application]=await Promise.all([
+    const [assignment,application,draft]=await Promise.all([
       tx.get("volunteerAssignments/"+volunteerId),
-      tx.get("volunteerApplications/"+volunteerId)
+      tx.get("volunteerApplications/"+volunteerId),
+      tx.get("volunteerAllocationDrafts/"+volunteerId)
     ]);
     if(!assignment || !assignment.coordinatorId || !assignment.draftId || !application) {
       throw Object.assign(new Error("No active AI-managed placement found; no coordinator capacity was changed."),{status:409});
@@ -4364,6 +4365,7 @@ async function volunteerPauseAI(env,user,data) {
     const now=new Date();
     const eventId="allocation_"+crypto.randomUUID().replaceAll("-","");
     tx.delete("volunteerAssignments/"+volunteerId);
+    if(draft && draft.draftId===assignment.draftId) tx.patch("volunteerAllocationDrafts/"+volunteerId,{status:"paused",reviewedAt:now.toISOString(),reviewedBy:user.uid});
     tx.patch("volunteerApplications/"+volunteerId,{reviewStage:"paused",placementStatus:"paused",updatedAt:now});
     tx.patch("volunteerCoordinators/"+coordinatorId,{
       assignedCount:Number(coordinator.assignedCount)-1,updatedAt:now
