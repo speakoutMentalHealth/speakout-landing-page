@@ -94,6 +94,13 @@ function assignmentEditor(uid, application) {
       if (saved.exists()) {
         const a = saved.data();
         for (const key of Object.keys(inputs)) inputs[key].value = a[key] || "";
+        if (a.coordinatorId && a.draftId) {
+          for(const input of Object.values(inputs)) input.readOnly=true;
+          button.disabled=true;
+          loaded=true;
+          status.textContent="AI-managed assignment: review or pause it using the Gemini panel above. Manual edits would bypass coordinator capacity limits.";
+          return;
+        }
       }
       loaded = true;
       status.textContent = saved.exists() ? "Saved assignment loaded." : "No coordinator details have been published yet.";
@@ -440,6 +447,16 @@ async function renderOne(application) {
       message.textContent = "Could not save review. Check permissions and try again.";
     } finally {save.disabled = false;}
   });
+  reviewPanel.addEventListener("toggle", async () => {
+    if(!reviewPanel.open)return;
+    try{
+      const saved=await getDoc(doc(db,"volunteerAssignments",uid));
+      if(saved.exists() && saved.data().coordinatorId && saved.data().draftId){
+        save.disabled=true;
+        message.textContent="This volunteer has an AI-managed placement. Use the Gemini panel to pause it and release the coordinator's slot before changing clearance or placement.";
+      }
+    }catch{ /* The server and Firestore rules still enforce the guard. */ }
+  });
   controls.append(save,message);
   reviewPanel.append(controls);
   body.append(reviewPanel);
@@ -450,6 +467,15 @@ async function renderOne(application) {
     placement.value = "assigned";
     article.dataset.reviewStage = "active";
     stageBadge.textContent = "Review: active";
+    applyApplicationFilters();
+  });
+  recommendation.addEventListener("volunteerAIPaused", () => {
+    stage.value = "paused";
+    placement.value = "paused";
+    article.dataset.reviewStage = "paused";
+    stageBadge.textContent = "Review: paused";
+    save.disabled=false;
+    message.textContent="Placement paused. You may review eligibility again before generating a new assignment.";
     applyApplicationFilters();
   });
   body.append(recommendation);
