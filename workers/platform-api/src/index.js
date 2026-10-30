@@ -1,4 +1,5 @@
 import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
+import { validateCoordinator, fairCandidates, modelInput, validateModelDraft } from "./volunteer-allocation.js";
 import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
 import { isApprovedProfile } from "../../../js/profile-approval.js";
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "jose";
@@ -341,6 +342,7 @@ async function deterministicVerificationCode(value) {
 }
 
 function toFirestore(value) {
+  if (value instanceof Date) return { timestampValue: value.toISOString() };
   if (value === null || value === undefined) return { nullValue: null };
   if (typeof value === "boolean") return { booleanValue: value };
   if (typeof value === "number") return Number.isInteger(value)
@@ -4165,6 +4167,176 @@ async function cleanupTrafficLogins(env,now=Date.now()) {
   if(writes.length)await firestoreRequest(env,`${databaseUrl(env)}/documents:commit`,{method:"POST",body:JSON.stringify({writes})});
 }
 
+// Admin-only volunteer workflow. Firestore IAM access is server-side; clients
+// cannot write coordinator loads, draft approvals or assignment audit records.
+function volunteerAdmin(user) {
+  requireAdmin(user);
+  if(!isSuperAdminUser(user) && normalized(user.profile.status)!=="approved") {
+    throw Object.assign(new Error("Approved administrator required."),{status:403});
+  }
+}
+async function volunteerCoordinatorList(env,user) {
+  volunteerAdmin(user);
+  const result=await listDocuments(env,"volunteerCoordinators",100);
+  if(result.truncated)throw Object.assign(new Error("Coordinator directory exceeds the supported pilot limit."),{status:409});
+  return {coordinators:result.documents.map(x=>({
+    id:x.id,name:clean(x.name),email:clean(x.email),
+    active:x.active===true,capacity:x.capacity,baselineLoad:x.baselineLoad,
+    assignedCount:x.assignedCount,focusAreas:x.focusAreas,availabilityDays:x.availabilityDays,
+    participationModes:x.participationModes,city:x.city,state:x.state
+  }))};
+}
+async function volunteerCoordinatorSave(env,user,data) {
+  volunteerAdmin(user);
+  const id=data.coordinatorId?safeId(data.coordinatorId,"coordinator identifier"):"vc_"+crypto.randomUUID().replaceAll("-","");
+  return runTransaction(env,async tx=>{
+    const existing=await tx.get("volunteerCoordinators/"+id);
+    // Never accept allocated count from the browser. A legacy assigned load
+    // may be entered only as a deliberate administrator baseline.
+    const c=validateCoordinator({...data.coordinator,assignedCount:existing?.assignedCount??0});
+    if(existing && c.baselineLoad+c.assignedCount>c.capacity)throw Object.assign(new Error("Capacity is below existing commitments."),{status:409});
+    tx.set("volunteerCoordinators/"+id,{
+      ...c,createdAt:existing?.createdAt||new Date().toISOString(),
+      updatedAt:new Date().toISOString(),updatedBy:user.uid
+    });
+    return {ok:true,id};
+  });
+}
+async function volunteerGeminiDraft(env,user,data) {
+  volunteerAdmin(user);
+  if(!env.GEMINI_API_KEY)throw Object.assign(new Error("Gemini is not configured. Add the Worker GEMINI_API_KEY secret before generating AI drafts."),{status:503});
+  const volunteerId=safeId(data.volunteerId,"volunteer identifier");
+  const [application,profile,existing,dir]=await Promise.all([
+    getDocument(env,"volunteerApplications/"+volunteerId),
+    getDocument(env,"users/"+volunteerId),
+    getDocument(env,"volunteerAssignments/"+volunteerId),
+    volunteerCoordinatorList(env,user)
+  ]);
+  if(!application || !profile || normalized(profile.role)!=="volunteer" || !isApprovedProfile(profile)) {
+    throw Object.assign(new Error("Approved volunteer application not found."),{status:404});
+  }
+  if(existing)throw Object.assign(new Error("An assignment already exists. Resolve it before suggesting a new one."),{status:409});
+  if(["declined","paused"].includes(application.reviewStage)||application.safeguardingStatus==="blocked") {
+    throw Object.assign(new Error("No assignment can be suggested for a declined or paused application."),{status:409});
+  }
+  const shortlist=fairCandidates(application,dir.coordinators);
+  if(!shortlist.length)return {ok:true,waitlisted:true,message:"No eligible coordinator has matching availability, expertise and capacity. Keep the volunteer unassigned."};
+  const model=String(env.VOLUNTEER_GEMINI_MODEL||"gemini-2.5-flash");
+  if(!/^gemini-[a-z0-9.-]{3,60}$/u.test(model))throw Object.assign(new Error("Configured Gemini model name is invalid."),{status:503});
+  const redacted=modelInput(application,shortlist);
+  const response=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent",{
+    method:"POST",
+    headers:{"x-goog-api-key":String(env.GEMINI_API_KEY),"content-type":"application/json"},
+    body:JSON.stringify({
+      systemInstruction:{parts:[{text:"You prepare brief nonclinical SpeakOut volunteer assignments. Use only the supplied categories and eligible coordinator IDs. Choose one listed coordinatorId. Do not invent people or contact details, claim credentials or clearance, include beneficiary information, diagnosis, counselling or treatment. Responsibilities must be supervised and suitable for a general community volunteer. Write professional actionable reporting instructions. Return only the required JSON fields."}]},
+      contents:[{role:"user",parts:[{text:JSON.stringify(redacted)}]}],
+      generationConfig:{
+        temperature:0.2,responseMimeType:"application/json",
+        responseSchema:{type:"OBJECT",properties:{
+          coordinatorId:{type:"STRING"},roleTitle:{type:"STRING"},
+          scope:{type:"STRING"},reportingInstructions:{type:"STRING"}
+        },required:["coordinatorId","roleTitle","scope","reportingInstructions"]}
+      }
+    }),
+    signal:AbortSignal.timeout(15000)
+  }).catch(()=>{throw Object.assign(new Error("Gemini is temporarily unavailable. No assignment was created."),{status:503});});
+  if(!response.ok)throw Object.assign(new Error("Gemini could not prepare a draft. No assignment was created."),{status:503});
+  const json=await response.json();
+  const generated=json.candidates?.[0]?.content?.parts?.map(x=>x.text||"").join("")||"";
+  let suggestion;
+  try{suggestion=validateModelDraft(JSON.parse(generated),shortlist);}
+  catch{throw Object.assign(new Error("The AI suggestion did not pass role or coordinator validation. Nothing was published."),{status:422});}
+  const coordinator=shortlist.find(x=>x.id===suggestion.coordinatorId);
+  const now=Date.now();
+  const draftId="draft_"+crypto.randomUUID().replaceAll("-","");
+  const record={
+    volunteerId,coordinatorId:coordinator.id,roleTitle:suggestion.roleTitle,
+    scope:suggestion.scope,reportingInstructions:suggestion.reportingInstructions,
+    status:"pending",draftId,model,generatedAt:new Date(now).toISOString(),
+    expiresAt:new Date(now+24*3600000).toISOString(),createdBy:user.uid
+  };
+  await transactionalSet(env,"volunteerAllocationDrafts/"+volunteerId,record);
+  return {ok:true,waitlisted:false,draft:{
+    ...record,coordinatorName:coordinator.name,coordinatorEmail:coordinator.email,
+    coordinatorLoad:coordinator.load,coordinatorCapacity:coordinator.capacity,
+    eligibility:"Await independent verification of assessment and safeguarding, then administrator approval."
+  }};
+}
+async function volunteerDraftStatus(env,user,data) {
+  volunteerAdmin(user);
+  const volunteerId=safeId(data.volunteerId,"volunteer identifier");
+  const draft=await getDocument(env,"volunteerAllocationDrafts/"+volunteerId);
+  if(!draft)return {draft:null};
+  const c=await getDocument(env,"volunteerCoordinators/"+draft.coordinatorId);
+  return {draft:{...draft,coordinatorName:clean(c?.name),coordinatorEmail:clean(c?.email),coordinatorLoad:Number(c?.baselineLoad||0)+Number(c?.assignedCount||0),coordinatorCapacity:c?.capacity}};
+}
+async function volunteerApproveAI(env,user,data) {
+  volunteerAdmin(user);
+  const volunteerId=safeId(data.volunteerId,"volunteer identifier");
+  const draftId=safeId(data.draftId,"draft identifier");
+  return runTransaction(env,async tx=>{
+    const [draft,application,profile,assignment]=await Promise.all([
+      tx.get("volunteerAllocationDrafts/"+volunteerId),
+      tx.get("volunteerApplications/"+volunteerId),
+      tx.get("users/"+volunteerId),
+      tx.get("volunteerAssignments/"+volunteerId)
+    ]);
+    if(!draft || draft.draftId!==draftId || draft.status!=="pending"||Date.parse(draft.expiresAt)<=Date.now()) {
+      throw Object.assign(new Error("This AI draft is no longer pending. Generate a fresh recommendation."),{status:409});
+    }
+    if(!application||!profile||!isApprovedProfile(profile)||normalized(profile.role)!=="volunteer" ||
+       !["eligible","active"].includes(application.reviewStage) ||
+       application.assessmentStatus!=="passed"||application.safeguardingStatus!=="cleared"||
+       application.placementStatus!=="not_assigned"||assignment) {
+      throw Object.assign(new Error("Assessment, safeguarding and eligibility must be independently approved before publishing."),{status:409});
+    }
+    const c=await tx.get("volunteerCoordinators/"+draft.coordinatorId);
+    if(!c||!c.active||Number(c.baselineLoad)+Number(c.assignedCount)>=Number(c.capacity)) {
+      throw Object.assign(new Error("The selected coordinator is no longer available. Generate a fresh recommendation."),{status:409});
+    }
+    // Fresh revalidation before publication (the model never controls these).
+    const available=fairCandidates(application,[{id:draft.coordinatorId,...c}]);
+    if(!available.length)throw Object.assign(new Error("The selected coordinator no longer matches availability and skills."),{status:409});
+    const now=new Date().toISOString();
+    const allocation={
+      volunteerId,coordinatorId:draft.coordinatorId,
+      coordinatorName:c.name,coordinatorEmail:c.email,roleTitle:draft.roleTitle,
+      scope:draft.scope,reportingInstructions:draft.reportingInstructions,
+      updatedAt:new Date(),approvedBy:user.uid,draftId
+    };
+    const eventId="allocation_"+crypto.randomUUID().replaceAll("-","");
+    tx.set("volunteerAssignments/"+volunteerId,allocation);
+    tx.patch("volunteerApplications/"+volunteerId,{reviewStage:"active",placementStatus:"assigned",updatedAt:new Date()});
+    tx.patch("volunteerCoordinators/"+draft.coordinatorId,{assignedCount:Number(c.assignedCount)+1,updatedAt:now});
+    tx.patch("volunteerAllocationDrafts/"+volunteerId,{status:"approved",reviewedAt:now,reviewedBy:user.uid});
+    tx.set("volunteerAllocationAudits/"+eventId,{event:"approved",volunteerId,coordinatorId:draft.coordinatorId,draftId,actorUid:user.uid,createdAt:now});
+    tx.set("volunteerNotifications/"+volunteerId+"/messages/"+eventId,{
+      recipientUid:volunteerId,senderUid:user.uid,category:"assignment",
+      title:"Your approved coordinator and duties are ready",
+      body:"Your SpeakOut assignment was approved. Open your Volunteer Hub for your coordinator, approved duties and reporting steps.",
+      createdAt:new Date(),readAt:null
+    });
+    return {ok:true,volunteerId,coordinatorId:draft.coordinatorId,approvedAt:now};
+  });
+}
+async function volunteerRejectAI(env,user,data) {
+  volunteerAdmin(user);
+  const volunteerId=safeId(data.volunteerId,"volunteer identifier");
+  const draftId=safeId(data.draftId,"draft identifier");
+  const reason=clean(data.reason).slice(0,180);
+  if(reason.length<8)throw Object.assign(new Error("Enter a brief revision reason."),{status:400});
+  return runTransaction(env,async tx=>{
+    const draft=await tx.get("volunteerAllocationDrafts/"+volunteerId);
+    if(!draft||draft.status!=="pending"||draft.draftId!==draftId)throw Object.assign(new Error("Draft not pending."),{status:409});
+    const now=new Date().toISOString();
+    tx.patch("volunteerAllocationDrafts/"+volunteerId,{status:"revision_requested",reviewedBy:user.uid,reviewedAt:now});
+    tx.set("volunteerAllocationAudits/"+"allocation_"+crypto.randomUUID().replaceAll("-"),{
+      event:"revision_requested",volunteerId,coordinatorId:draft.coordinatorId,draftId,actorUid:user.uid,reason,createdAt:now
+    });
+    return {ok:true};
+  });
+}
+
 // Public-only, short-lived per-isolate cache; never store private student data.
 const publicCourseCatalogCache = new Map();
 async function route(request, env, path, data) {
@@ -4320,6 +4492,12 @@ async function route(request, env, path, data) {
 
   user = await applySuperAdminSchoolContext(env, user, data);
 
+  if (path === "/v1/admin/volunteers/coordinators/list") return volunteerCoordinatorList(env,user);
+  if (path === "/v1/admin/volunteers/coordinators/save") return volunteerCoordinatorSave(env,user,data);
+  if (path === "/v1/admin/volunteers/ai/suggest") return volunteerGeminiDraft(env,user,data);
+  if (path === "/v1/admin/volunteers/ai/draft") return volunteerDraftStatus(env,user,data);
+  if (path === "/v1/admin/volunteers/ai/approve") return volunteerApproveAI(env,user,data);
+  if (path === "/v1/admin/volunteers/ai/revise") return volunteerRejectAI(env,user,data);
   if (path === "/v1/admin/traffic/summary") return adminTrafficReport(env,user,data);
 
   if (path === "/v1/admin/schools/status") return updateSchoolStatus(request, env, user, data);

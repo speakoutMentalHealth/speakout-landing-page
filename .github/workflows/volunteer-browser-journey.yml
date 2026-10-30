@@ -4,6 +4,7 @@ on:
     paths:
       - 'tests/volunteer-browser-journey.mjs'
       - 'tests/volunteer-admin-accordion-browser.mjs'
+      - 'tests/volunteer-ai-admin-browser.mjs'
       - 'volunteer-dashboard.html'
       - 'js/volunteer-onboarding.js'
       - 'js/volunteer-inbox.js'
@@ -33,3 +34,5 @@ jobs:
         run: node tests/volunteer-browser-journey.mjs
       - name: Run volunteer admin accordion mobile journey
         run: node tests/volunteer-admin-accordion-browser.mjs
+      - name: Gemini volunteer admin recommendation browser journey
+        run: node tests/volunteer-ai-admin-browser.mjs

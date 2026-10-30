@@ -327,3 +327,17 @@ test("revoked volunteers cannot see their certificate claims",async()=>{
   await assertFails(getDoc(path));
   await assertFails(updateDoc(path,{certificateId:"MC-CERT-NEWCODE",updatedAt:serverTimestamp()}));
 });
+
+test("Gemini drafts, coordinator directory and allocation audit are server-only",async()=>{
+  await seed("admin-a","admin");
+  await seed("volunteer-a","volunteer");
+  const admin=env.authenticatedContext("admin-a").firestore();
+  const volunteer=env.authenticatedContext("volunteer-a").firestore();
+  const paths=["volunteerCoordinators/coordinator-a","volunteerAllocationDrafts/volunteer-a","volunteerAllocationAudits/audit-a"];
+  for(const path of paths){
+    await assertFails(getDoc(doc(admin,path)));
+    await assertFails(setDoc(doc(admin,path),{status:"approved",name:"Synthetic"}));
+    await assertFails(getDoc(doc(volunteer,path)));
+    await assertFails(setDoc(doc(volunteer,path),{status:"approved",name:"Synthetic"}));
+  }
+});

@@ -1,6 +1,7 @@
 import { db } from "../firebase-config.js";
 import { collection, doc, getDoc, getDocs, query, limit, updateDoc, setDoc, serverTimestamp, writeBatch, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "../launch-role-guard.js";
+import { setupCoordinatorDirectory, aiAssignmentPanel } from "./admin-volunteer-ai.js";
 
 const $ = id => document.getElementById(id);
 let actingAdminUid = "";
@@ -443,6 +444,15 @@ async function renderOne(application) {
   reviewPanel.append(controls);
   body.append(reviewPanel);
   body.append(credentialReviewPanel(uid, a, exam));
+  const recommendation = aiAssignmentPanel(uid, a);
+  recommendation.addEventListener("volunteerAIApproved", () => {
+    stage.value = "active";
+    placement.value = "assigned";
+    article.dataset.reviewStage = "active";
+    stageBadge.textContent = "Review: active";
+    applyApplicationFilters();
+  });
+  body.append(recommendation);
   body.append(assignmentEditor(uid, a));
   body.append(notificationEditor(uid, email, a.emailUpdates));
   return article;
@@ -484,5 +494,6 @@ async function loadApplications() {
 }
 requireRoles(["admin","super_admin"], async user => {
   actingAdminUid = user.uid;
+  setupCoordinatorDirectory();
   await loadApplications();
 });
