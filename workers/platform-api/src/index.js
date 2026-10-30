@@ -4337,6 +4337,51 @@ async function volunteerRejectAI(env,user,data) {
   });
 }
 
+
+/**
+ * Remove an AI-managed assignment and release exactly one reserved coordinator
+ * slot as a single authenticated transaction. Never let the legacy browser
+ * review form change AI-managed assignment state without adjusting workload.
+ */
+async function volunteerPauseAI(env,user,data) {
+  volunteerAdmin(user);
+  const volunteerId=safeId(data.volunteerId,"volunteer identifier");
+  const reason=clean(data.reason);
+  if(reason.length<8||reason.length>180)throw Object.assign(new Error("Explain the reason for pausing this placement (8–180 characters)."),{status:400});
+  return runTransaction(env,async tx=>{
+    const [assignment,application]=await Promise.all([
+      tx.get("volunteerAssignments/"+volunteerId),
+      tx.get("volunteerApplications/"+volunteerId)
+    ]);
+    if(!assignment || !assignment.coordinatorId || !assignment.draftId || !application) {
+      throw Object.assign(new Error("No active AI-managed placement found; no coordinator capacity was changed."),{status:409});
+    }
+    const coordinatorId=safeId(assignment.coordinatorId,"coordinator identifier");
+    const coordinator=await tx.get("volunteerCoordinators/"+coordinatorId);
+    if(!coordinator||!Number.isInteger(Number(coordinator.assignedCount))||Number(coordinator.assignedCount)<1) {
+      throw Object.assign(new Error("Coordinator workload requires reconciliation before this placement can be released."),{status:409});
+    }
+    const now=new Date();
+    const eventId="allocation_"+crypto.randomUUID().replaceAll("-","");
+    tx.delete("volunteerAssignments/"+volunteerId);
+    tx.patch("volunteerApplications/"+volunteerId,{reviewStage:"paused",placementStatus:"paused",updatedAt:now});
+    tx.patch("volunteerCoordinators/"+coordinatorId,{
+      assignedCount:Number(coordinator.assignedCount)-1,updatedAt:now
+    });
+    tx.set("volunteerAllocationAudits/"+eventId,{
+      event:"paused_and_released",volunteerId,coordinatorId,draftId:assignment.draftId,
+      actorUid:user.uid,reason,createdAt:now
+    });
+    tx.set("volunteerNotifications/"+volunteerId+"/messages/"+eventId,{
+      recipientUid:volunteerId,senderUid:user.uid,category:"assignment",
+      title:"Your volunteer assignment is on hold",
+      body:"SpeakOut has paused your placement. Please contact your coordinator or the SpeakOut team for approved next steps.",
+      createdAt:now,readAt:null
+    });
+    return {ok:true,volunteerId,coordinatorId,remainingAllocated:Number(coordinator.assignedCount)-1};
+  });
+}
+
 // Public-only, short-lived per-isolate cache; never store private student data.
 const publicCourseCatalogCache = new Map();
 async function route(request, env, path, data) {
@@ -4497,6 +4542,7 @@ async function route(request, env, path, data) {
   if (path === "/v1/admin/volunteers/ai/suggest") return volunteerGeminiDraft(env,user,data);
   if (path === "/v1/admin/volunteers/ai/draft") return volunteerDraftStatus(env,user,data);
   if (path === "/v1/admin/volunteers/ai/approve") return volunteerApproveAI(env,user,data);
+  if (path === "/v1/admin/volunteers/ai/pause") return volunteerPauseAI(env,user,data);
   if (path === "/v1/admin/volunteers/ai/revise") return volunteerRejectAI(env,user,data);
   if (path === "/v1/admin/traffic/summary") return adminTrafficReport(env,user,data);
 
