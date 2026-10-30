@@ -88,9 +88,56 @@ header p{max-width:780px;color:#e3eefb}
 }
 @media(prefers-reduced-motion:reduce){.application-summary::after{transition:none}}
 
+
+/* AI coordinator directory and per-volunteer recommendation */
+#coordinatorDirectory{border:1px solid #c8d9e8;border-radius:16px;background:#fff;padding:18px;margin:16px 0}
+#coordinatorDirectory summary{cursor:pointer;font-weight:800;color:#12365b}
+#coordinatorDirectory button,.ai-assignment button{min-height:44px;border-radius:10px;cursor:pointer;padding:9px 16px;font:inherit;font-weight:700}
+#coordinatorDirectory button:disabled,.ai-assignment button:disabled{opacity:.55;cursor:wait}
+#coordinatorForm[hidden]{display:none!important}
+#coordinatorForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}
+#coordinatorForm>label{display:grid;gap:4px;font-weight:650;min-width:0}
+#coordinatorForm input{width:100%;padding:9px 11px;border:1px solid #a9bfd2;border-radius:9px;min-height:44px;font:inherit}
+#coordinatorForm label[for="coordinatorActive"]{display:flex;align-items:center}
+#coordinatorForm input[type=checkbox]{width:auto;min-height:0}
+#coordinatorForm fieldset{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;border:1px solid #ccdae6;border-radius:10px;padding:12px}
+#coordinatorForm fieldset legend{font-weight:750}
+#coordinatorForm fieldset label{display:flex;align-items:center;gap:5px;font-size:.92rem}
+#coordinatorForm>button{justify-self:start}
+#coordinatorMessage{font-weight:650}
+.ai-coordinator{display:flex;align-items:center;gap:12px;justify-content:space-between;border-bottom:1px solid #e0e9f1;padding:10px 2px;flex-wrap:wrap}
+.ai-coordinator span{color:#4c667c}
+.ai-assignment .ai-content{display:grid;gap:12px;padding-top:12px}
+.ai-assignment .ai-content>button{justify-self:start}
+.ai-assignment .ai-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ai-assignment .ai-field{background:#fff;border:1px solid #d4e1ed;border-radius:10px;padding:12px;min-width:0;overflow-wrap:anywhere}
+.ai-assignment .ai-field strong{font-size:.85rem;color:#516a80}
+.ai-assignment .ai-field p{margin:6px 0 0;white-space:pre-wrap}
+.ai-assignment input[type=text]{min-height:44px;padding:9px;border:1px solid #aabed2;border-radius:9px}
+.ai-status{font-weight:700;color:#194d75}
+@media(max-width:650px){#coordinatorForm,.ai-assignment .ai-preview{grid-template-columns:1fr}}
+
 </style></head><body>
 <header><div class="container"><nav><a href="admin-dashboard.html">Admin Dashboard</a><a href="admin-users.html">Account Approval</a><a href="portal.html">Portal</a></nav><h1>Volunteer applications</h1><p>Review submitted profiles and record verified onboarding decisions. Account approval is handled separately.</p></div></header>
 <main class="container"><p class="notice" id="notice" role="status" aria-live="polite">Checking administrator access…</p>
+<details id="coordinatorDirectory">
+<summary>Coordinator directory and available capacity</summary>
+<p>Add actual authorised coordinators once. Their expertise, location, available days and maximum supervision capacity determine the allocation. Enter any existing assignments in the baseline count before using AI allocation.</p>
+<div id="coordinatorList" aria-live="polite"></div>
+<button id="newCoordinator" type="button">Add coordinator</button>
+<form id="coordinatorForm" hidden>
+<input name="coordinatorId" type="hidden">
+<label>Full name<input name="name" required maxlength="120" autocomplete="off"></label>
+<label>Approved work email<input name="email" type="email" required maxlength="160"></label>
+<label>Maximum volunteers<input name="capacity" type="number" required min="1" max="100"></label>
+<label>Already assigned outside this system<input name="baselineLoad" type="number" required min="0" max="100" value="0"></label>
+<label>City<input name="city" maxlength="80"></label>
+<label>State<input name="state" maxlength="80"></label>
+<label for="coordinatorActive"><input id="coordinatorActive" name="active" type="checkbox" checked> Available for assignments</label>
+<button type="submit">Save coordinator</button>
+</form>
+<p id="coordinatorMessage" role="status" aria-live="polite"></p>
+</details>
 <div class="volunteer-toolbar" role="search" aria-label="Filter volunteer applications">
   <label for="volunteerSearch">Find a volunteer
     <input id="volunteerSearch" type="search" autocomplete="off" placeholder="Search by name, email or location">
