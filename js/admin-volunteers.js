@@ -327,11 +327,35 @@ async function renderOne(application) {
       email = p.email || "";
     }
   } catch {} // Coordinator can still review a record without public profile details.
+  // Compact, keyboard-accessible parent disclosure. Each volunteer starts folded;
+  // the independent nested panels preserve their own open/closed state.
   const article = document.createElement("article");
   article.className = "application";
-  const heading = document.createElement("h2");
-  heading.textContent = displayName;
-  article.append(heading);
+  article.dataset.searchText = [displayName, email, a.city, a.state, uid]
+    .filter(Boolean).join(" ").toLocaleLowerCase();
+  article.dataset.reviewStage = a.reviewStage || "intake_received";
+  const panel = document.createElement("details");
+  panel.className = "application-accordion";
+  const overview = document.createElement("summary");
+  overview.className = "application-summary";
+  const identity = document.createElement("span");
+  identity.className = "application-identity";
+  const name = document.createElement("strong");
+  name.className = "application-name";
+  name.textContent = displayName;
+  const subline = document.createElement("span");
+  subline.className = "application-subline";
+  subline.textContent = [a.city, a.state].filter(Boolean).join(", ") || "Volunteer application";
+  identity.append(name, subline);
+  const stageBadge = document.createElement("span");
+  stageBadge.className = "application-stage";
+  stageBadge.textContent = "Review: " + (a.reviewStage || "intake_received").replaceAll("_", " ");
+  overview.append(identity, stageBadge);
+  panel.append(overview);
+  const body = document.createElement("div");
+  body.className = "application-content";
+  panel.append(body);
+  article.append(panel);
   const info = document.createElement("dl");
   info.className = "data";
   field(info, "Email", email || "See account record");
@@ -350,7 +374,12 @@ async function renderOne(application) {
   const profileToggle = document.createElement("summary");
   profileToggle.textContent = "View volunteer profile and availability";
   profilePanel.append(profileToggle, info);
-  article.append(profilePanel);
+  body.append(profilePanel);
+  const reviewPanel = document.createElement("details");
+  reviewPanel.className = "assignment-editor review-editor";
+  const reviewSummary = document.createElement("summary");
+  reviewSummary.textContent = "Review decisions & clearance";
+  reviewPanel.append(reviewSummary);
   const controls = document.createElement("div");
   controls.className = "actions";
   const stage = labelledSelect(controls, "Review stage", reviewStages, a.reviewStage);
@@ -400,18 +429,43 @@ async function renderOne(application) {
         reviewStage: stage.value, assessmentStatus: exam.value,
         safeguardingStatus: safety.value, placementStatus: placement.value
       });
-      message.textContent = "Saved. This is a review decision, not an automated notification.";
+      article.dataset.reviewStage = stage.value;
+      stageBadge.textContent = "Review: " + stage.value.replaceAll("_", " ");
+      applyApplicationFilters();
+      message.textContent = changed
+        ? "Review saved. The volunteer was notified in the app."
+        : "Review saved. No status change was needed.";
     } catch {
       message.textContent = "Could not save review. Check permissions and try again.";
     } finally {save.disabled = false;}
   });
   controls.append(save,message);
-  article.append(controls);
-  article.append(credentialReviewPanel(uid, a, exam));
-  article.append(assignmentEditor(uid, a));
-  article.append(notificationEditor(uid, email, a.emailUpdates));
+  reviewPanel.append(controls);
+  body.append(reviewPanel);
+  body.append(credentialReviewPanel(uid, a, exam));
+  body.append(assignmentEditor(uid, a));
+  body.append(notificationEditor(uid, email, a.emailUpdates));
   return article;
 }
+function applyApplicationFilters() {
+  const search = ($("volunteerSearch")?.value || "").trim().toLocaleLowerCase();
+  const stage = $("stageFilter")?.value || "all";
+  let visible = 0;
+  const cards = $("applications").querySelectorAll(".application");
+  cards.forEach(card => {
+    const matches = (!search || card.dataset.searchText.includes(search)) &&
+      (stage === "all" || card.dataset.reviewStage === stage);
+    card.hidden = !matches;
+    if (matches) visible++;
+  });
+  $("filterStatus").textContent = cards.length
+    ? "Showing " + visible + " of " + cards.length + " loaded application(s)." +
+      (visible === 0 ? " Clear the search or choose another review stage." : "")
+    : "";
+}
+$("volunteerSearch").addEventListener("input", applyApplicationFilters);
+$("stageFilter").addEventListener("change", applyApplicationFilters);
+
 async function loadApplications() {
   try {
     const results = await getDocs(query(collection(db,"volunteerApplications"), limit(100)));
@@ -423,6 +477,7 @@ async function loadApplications() {
     }
     $("notice").textContent = "Showing " + results.size + " application(s), limited to 100 per page. Review the Account Approval page separately.";
     for (const item of results.docs) host.append(await renderOne(item));
+    applyApplicationFilters();
   } catch {
     $("notice").textContent = "Unable to load volunteer applications. Check your permissions.";
   }
