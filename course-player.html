@@ -568,11 +568,29 @@ async function renderAssessment(metadata,type,moduleIndex=null){
  assessmentArea.innerHTML='<div class="notice">Loading secure assessment…</div>';
  let assessment;
  try{
-   const response=await learningApi.assessment(courseId,type,moduleIndex);
+   let response;
+   try{
+     response=await learningApi.assessment(courseId,type,moduleIndex);
+   }catch(error){
+     // This endpoint only reads assessment questions. Retry once on transient
+     // throttling. Never retry scoring/submit or bypass locked/denied content.
+     if(type!=="final"||![429,503].includes(error?.status))throw error;
+     await new Promise(resolve=>setTimeout(resolve,1200));
+     response=await learningApi.assessment(courseId,type,moduleIndex);
+   }
    assessment=response.assessment;
  }catch(error){
-   assessmentArea.textContent=error.message||"The secure assessment could not be loaded.";
+   assessmentArea.replaceChildren();
    assessmentArea.className="notice error";
+   const message=document.createElement("p");
+   message.textContent=error?.status===429
+     ?"The secure assessment service is temporarily busy. Please retry shortly."
+     :error?.message||"The secure assessment could not be loaded.";
+   const retry=document.createElement("button");
+   retry.type="button";retry.className="btn soft";
+   retry.textContent="Retry loading assessment";
+   retry.onclick=()=>renderAssessment(metadata,type,moduleIndex);
+   assessmentArea.append(message,retry);
    return;
  }
  const questions=Array.isArray(assessment.questions)?assessment.questions:[];
@@ -626,9 +644,24 @@ async function scoreAssessment(assessment,type,moduleIndex){
    result.innerHTML+=nextModule<modules.length?`<div style="margin-top:12px"><button id="continueAfterQuiz" class="btn green">Continue to Next Module</button></div>`:
      `<div style="margin-top:12px"><button id="openFinalBtn" class="btn green">Continue</button></div>`;
    const b=$("continueAfterQuiz")||$("openFinalBtn");
-   if(b)b.onclick=()=>{
-     if(nextModule<modules.length){currentView={type:"lesson",lessonIndex:lessonGlobalIndex(modules[nextModule].lessons[0].id)}}
-     else if(finalUnlocked()){currentView={type:"final"}}
+   if(b)b.onclick=async()=>{
+     if(nextModule<modules.length){
+       currentView={type:"lesson",lessonIndex:lessonGlobalIndex(modules[nextModule].lessons[0].id)};
+     }else{
+       if(!finalUnlocked()){
+         // Recheck only on a progress mismatch; never self-grant final access.
+         try{await loadProgress()}catch{
+           setNotice("Your assessment passed, but the course progress could not be confirmed. Please retry.", "warning");
+           return;
+         }
+       }
+       if(!finalUnlocked()){
+         setNotice("Your assessment passed, but the course progress is not yet complete. Review the module before continuing.", "warning");
+         renderSidebar();
+         return;
+       }
+       currentView={type:"final"};
+     }
      renderCurrentView();focusLesson();
    };
  }

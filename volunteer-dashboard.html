@@ -80,6 +80,21 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 .notice-read:disabled{opacity:.55}
 #notificationsCard{scroll-margin-top:18px}
 
+/* Certificate review and personally relevant next actions */
+#credentialCard[hidden],#credentialDisclosure[hidden]{display:none!important}
+#credentialCard .credential-note{background:#f2f7fc;border:1px solid var(--line);padding:12px 15px;border-radius:11px;margin:12px 0}
+#credentialForm{display:grid;gap:13px;margin:15px 0}
+#credentialForm label{font-weight:700;display:grid;gap:6px}
+#credentialForm input{width:100%;font:inherit;border:1px solid #91aaba;border-radius:10px;padding:12px;min-height:48px}
+#credentialForm button{font:inherit;border:0;cursor:pointer;min-height:46px}
+#credentialForm button:disabled{opacity:.55;cursor:wait}
+#credentialDisclosure{border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+#credentialDisclosure summary{font-weight:750;color:var(--blue);cursor:pointer}
+#credentialFeedback{font-weight:650;color:#145b49}
+#journeySteps{list-style:none;padding:0;display:grid;gap:13px}
+#journeySteps li{background:#f2f7fc;border:1px solid var(--line);border-radius:12px;padding:15px}
+#journeySteps li p{margin:6px 0 12px}
+
 /* Calm, consistent blue-and-gold surfaces with mobile-sized controls. */
 :root{--blue:#075dcc;--navy:#08357a;--paper:#f3f6fc;--line:#dce5f3}
 .resource-disclosure{margin-block:28px}.resource-disclosure summary{font-weight:750;color:var(--navy);cursor:pointer;min-height:44px;padding-block:8px}.resource-disclosure h2{margin-top:16px}html{scroll-padding-top:24px}body{overflow-wrap:break-word}
@@ -101,6 +116,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
 #connectionStatus[hidden]{display:none}#intakeForm{scroll-margin-top:24px}
 @media(max-width:480px){.container{width:calc(100% - 28px)}.brand{font-size:.95rem}.hero h1{font-size:2rem}.card{padding:20px 17px}.journey-actions{display:grid}.journey-actions .btn-link{width:100%}#intakeDisclosure{padding:12px}#roleNav .btn{min-height:44px}.links .btn-link{flex:1 1 150px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body class="volunteer-auth-pending">
@@ -125,8 +141,9 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
 <a class="btn-link" href="#form-heading" id="journeyAction">Complete my profile</a>
 <a class="btn-link secondary" href="https://wa.me/2348118103510" target="_blank" rel="noopener noreferrer">Ask SpeakOut for help</a>
 </div>
-<p class="journey-note">Already have your volunteer certificate? Do not repeat the assessment. Send it privately to a group admin with your full name and registered email. The team will verify it before final placement.</p>
+<p class="journey-note">Already have your volunteer certificate? Do not repeat the assessment. After saving your volunteer profile, submit the printed certificate ID below for independent SpeakOut verification.</p>
 </section>
+
 <section class="card" aria-labelledby="form-heading">
 <h2 id="form-heading">Your volunteer profile</h2>
 <p id="profileIntro">Loading your saved volunteer information…</p>
@@ -174,6 +191,21 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
 </form>
 </details>
 </section>
+<section id="credentialCard" class="card" aria-labelledby="credentialHeading">
+<h2 id="credentialHeading">Existing training certificate</h2>
+<p id="credentialStatus" role="status" aria-live="polite">Checking your certificate record…</p>
+<p class="credential-note">If you already completed the assessment and received a certificate, you do <strong>not</strong> need to repeat it. Submit the printed certificate ID so SpeakOut can verify your existing result. Submitting an ID does not automatically grant assessment clearance.</p>
+<details id="credentialDisclosure" hidden>
+<summary>Submit an existing certificate ID</summary>
+<p id="credentialGuidance">Only the certificate reference is required; do not enter medical records or personal identification documents.</p>
+<form id="credentialForm">
+<label for="certificateReference">Certificate ID<input id="certificateReference" required autocomplete="off" autocapitalize="characters" spellcheck="false" minlength="8" maxlength="80" placeholder="e.g. MC-CERT-20261029-ABCD"></label>
+<button id="submitCredential" type="submit" class="btn-link">Submit for verification</button>
+</form>
+</details>
+<p id="credentialFeedback" role="status" aria-live="polite"></p>
+<p class="small">If your older certificate has no ID, contact your coordinator privately for manual review. This form does not upload PDF files.</p>
+</section>
 <section id="notificationsCard" class="card" aria-labelledby="notificationsHeading">
 <h2 id="notificationsHeading">Notifications <span id="notificationUnread" hidden aria-label="Unread notifications">0</span></h2>
 <p>Updates from SpeakOut appear here while you are signed in. This is an in-app inbox, not a phone push notification or an automated email.</p>
@@ -199,16 +231,12 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
   <div><strong>Placement</strong><p id="placementStatus">Loading…</p></div>
 </div>
 </section>
-<section class="card" aria-labelledby="next-title"><details class="resource-disclosure"><summary>View all onboarding steps</summary><h2 id="next-title">What happens next?</h2>
-<ol>
-<li><strong>Account approval</strong><p>Your SpeakOut account has been approved for access to this volunteer hub. This is not yet approval to work independently with beneficiaries.</p></li>
-<li><strong>Complete your free volunteer learning</strong><p>Read the five foundation lessons on safe listening, recognising risk, boundaries, privacy and cultural sensitivity.</p><a class="btn-link" href="https://mindcheck.speakoutmentalhealth.org/training-hub.html" target="_blank" rel="noopener noreferrer">Open volunteer training</a></li>
-<li><strong>Take the qualifying assessment</strong><p>After the lessons, follow the official assessment link inside the training centre. Generate your certificate and send it privately to a group admin with your full name and registered email. Already have your certificate? You do not need to repeat the assessment.</p></li>
-<li><strong>Safeguarding and role review</strong><p>SpeakOut will check your suitability for the specific role, confirm boundaries, supervision, location and availability before assigning activities.</p></li>
-<li><strong>Begin approved assignments</strong><p>Once the team confirms your placement, use official email and WhatsApp communication to receive assignment details and reporting instructions.</p></li>
-</ol>
-</details></section>
-<details class="card resource-disclosure"><summary>Resources, support and safeguarding</summary><section class="grid" aria-label="Volunteer resources">
+<section class="card" aria-labelledby="next-title">
+<h2 id="next-title">Your next steps</h2>
+<p id="journeyIntro">Loading your personalised next actions…</p>
+<ol id="journeySteps" aria-live="polite"></ol>
+</section>
+<section class="grid" aria-label="Volunteer resources">
 <div class="card"><h2>Learning &amp; certificate</h2><p>Explore the programme overview, training and certificate verification. Training is free; a certificate does not give professional counselling authority.</p>
 <div class="links"><a class="btn-link" href="https://mindcheck.speakoutmentalhealth.org/volunteers.html" target="_blank" rel="noopener noreferrer">Volunteer programme</a><a class="btn-link secondary" href="https://mindcheck.speakoutmentalhealth.org/verify.html" target="_blank" rel="noopener noreferrer">Verify certificate</a></div></div>
 <div class="card"><h2>News &amp; opportunities</h2><p>Visit these pages for the latest public programme updates, training information and community activities.</p>
@@ -216,7 +244,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
 <div class="card"><h2>Official communication</h2><p>Use the email address registered on your SpeakOut account whenever you contact the team about your application. WhatsApp and email are the approved communication channels.</p>
 <div class="links"><a class="btn-link" href="mailto:speaaakout@gmail.com?subject=SpeakOut%20Volunteer%20Onboarding">Email the team</a><a class="btn-link secondary" href="https://wa.me/2348118103510" rel="noopener noreferrer" target="_blank">WhatsApp SpeakOut</a></div></div>
 <div class="card"><h2>Privacy &amp; safeguarding</h2><p>Your verified onboarding progress is displayed in the record above. MindCheck training and assessment results are not yet synced automatically to this dashboard; SpeakOut verifies them before any supervised assignment.</p><p class="small callout">Do not submit beneficiary names, clinical records or private disclosures through this page, email or group WhatsApp chats.</p></div>
-</section></details>
+</section>
 </main>
 <footer><div class="container">SpeakOut Mental Health Outreach · Participation is subject to supervision, safeguarding and role-specific approval.</div></footer>
 <script type="module" src="js/volunteer-onboarding.js"></script>

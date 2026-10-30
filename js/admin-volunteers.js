@@ -1,6 +1,7 @@
 import { db } from "../firebase-config.js";
 import { collection, doc, getDoc, getDocs, query, limit, updateDoc, setDoc, serverTimestamp, writeBatch, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "../launch-role-guard.js";
+import { setupCoordinatorDirectory, aiAssignmentPanel } from "./admin-volunteer-ai.js";
 
 const $ = id => document.getElementById(id);
 let actingAdminUid = "";
@@ -93,6 +94,13 @@ function assignmentEditor(uid, application) {
       if (saved.exists()) {
         const a = saved.data();
         for (const key of Object.keys(inputs)) inputs[key].value = a[key] || "";
+        if (a.coordinatorId && a.draftId) {
+          for(const input of Object.values(inputs)) input.readOnly=true;
+          button.disabled=true;
+          loaded=true;
+          status.textContent="AI-managed assignment: review or pause it using the Gemini panel above. Manual edits would bypass coordinator capacity limits.";
+          return;
+        }
       }
       loaded = true;
       status.textContent = saved.exists() ? "Saved assignment loaded." : "No coordinator details have been published yet.";
@@ -197,6 +205,124 @@ function notificationEditor(uid, email, allowEmailUpdates) {
   return details;
 }
 
+function credentialReviewPanel(uid, application, assessmentSelect) {
+  const box=document.createElement("details");
+  box.className="assignment-editor";
+  const heading=document.createElement("summary");
+  heading.textContent="Review submitted training certificate";
+  box.append(heading);
+  const content=document.createElement("div");
+  content.className="assignment-form";
+  box.append(content);
+  let loaded=false;
+  let claim=null;
+  const status=document.createElement("p");
+  status.className="wide";
+  status.setAttribute("role","status");
+  const load=async()=>{
+    content.replaceChildren();
+    content.append(status);
+    status.textContent="Checking submitted certificate reference…";
+    try {
+      const record=await getDoc(doc(db,"volunteerCredentialClaims",uid));
+      claim=record.exists()?record.data():null;
+      loaded=true;
+    } catch {
+      loaded=false;
+      status.textContent="Could not load the certificate record. Try reopening this panel.";
+      return;
+    }
+    if(!claim) {
+      status.textContent="No certificate reference has been submitted. The volunteer can submit a printed certificate ID from their dashboard.";
+      return;
+    }
+    const reference=document.createElement("p");
+    reference.className="wide";
+    reference.textContent="Certificate ID submitted: "+claim.certificateId;
+    const instruction=document.createElement("p");
+    instruction.className="wide";
+    instruction.textContent="Check the issuing authority, exact certificate ID, recipient identity, assessment result and current validity using the official MindCheck verification service. A typed ID or client-side result is NOT sufficient proof.";
+    const verify=document.createElement("a");
+    verify.href="https://mindcheck.speakoutmentalhealth.org/verify.html";
+    verify.target="_blank";verify.rel="noopener noreferrer";
+    verify.className="wide";verify.textContent="Open official MindCheck certificate verification";
+    content.append(reference,instruction,verify);
+    if(claim.reviewStatus!=="pending") {
+      status.textContent=claim.reviewStatus==="verified"?"Already verified by SpeakOut.":"Reference rejected. Volunteer may submit a different ID.";
+      return;
+    }
+    const checked=document.createElement("label");
+    checked.className="wide";
+    const checkbox=document.createElement("input");
+    checkbox.type="checkbox";
+    checkbox.required=true;
+    checked.append(checkbox,document.createTextNode(" I independently checked the certificate with the issuer and matched its recipient to this volunteer's SpeakOut account. It is valid and meets the required assessment standard."));
+    const reason=document.createElement("label");
+    reason.className="wide";
+    reason.textContent="Reason if rejecting (no personal or medical information)";
+    const note=document.createElement("textarea");
+    note.maxLength=240;note.rows=2;
+    note.placeholder="e.g. The code was not found in the approved certificate register.";
+    reason.append(note);
+    const buttons=document.createElement("div");
+    buttons.className="wide links";
+    const approve=document.createElement("button");
+    approve.type="button";approve.textContent="Verify certificate and record assessment pass";
+    const reject=document.createElement("button");
+    reject.type="button";reject.textContent="Reject reference";
+    reject.className="secondary-review";
+    buttons.append(approve,reject);
+    content.append(checked,reason,buttons);
+    status.textContent="Pending independent verification.";
+    const save=async verdict=>{
+      if(!loaded || claim.reviewStatus!=="pending") return;
+      if(verdict==="verified" && !checkbox.checked) {
+        status.textContent="Verify the actual issuer, recipient and passing assessment before approving.";
+        return;
+      }
+      if(verdict==="rejected" && note.value.trim().length<6) {
+        status.textContent="Enter a brief reason (at least six characters) for the volunteer.";
+        return;
+      }
+      approve.disabled=true;reject.disabled=true;
+      status.textContent="Recording administrator verification…";
+      try {
+        const batch=writeBatch(db);
+        batch.update(doc(db,"volunteerCredentialClaims",uid),{
+          reviewStatus:verdict,verifierUid:actingAdminUid,reviewedAt:serverTimestamp(),
+          updatedAt:serverTimestamp(),reviewNote:verdict==="rejected"?note.value.trim():""
+        });
+        if(verdict==="verified" && application.assessmentStatus!=="passed") {
+          batch.update(doc(db,"volunteerApplications",uid),{
+            assessmentStatus:"passed",updatedAt:serverTimestamp()
+          });
+        }
+        batch.set(doc(notificationCollection(uid)),newNotification(
+          uid,"onboarding",verdict==="verified"?"Certificate verification completed":"Certificate review needs attention",
+          verdict==="verified"
+            ?"SpeakOut verified your existing certificate. Open the Volunteer Hub to see your updated assessment and safeguarding steps."
+            :"Your submitted certificate reference could not be verified. Open your Volunteer Hub to see the next steps."
+        ));
+        await batch.commit();
+        if(verdict==="verified") {
+          application.assessmentStatus="passed";
+          assessmentSelect.value="passed";
+        }
+        claim.reviewStatus=verdict;
+        status.textContent=verdict==="verified"?"Verified. Assessment marked Passed; safeguarding and placement still require separate approval.":"Reference rejected. Volunteer can resubmit a different code.";
+        checked.remove();reason.remove();buttons.remove();
+      } catch {
+        status.textContent="Save failed. Check verification permissions and try again; no approval has been recorded.";
+        approve.disabled=false;reject.disabled=false;
+      }
+    };
+    approve.addEventListener("click",()=>save("verified"));
+    reject.addEventListener("click",()=>save("rejected"));
+  };
+  box.addEventListener("toggle",()=>{if(box.open&&!loaded)load();});
+  return box;
+}
+
 async function renderOne(application) {
   const uid = application.id;
   const a = application.data();
@@ -209,11 +335,35 @@ async function renderOne(application) {
       email = p.email || "";
     }
   } catch {} // Coordinator can still review a record without public profile details.
+  // Compact, keyboard-accessible parent disclosure. Each volunteer starts folded;
+  // the independent nested panels preserve their own open/closed state.
   const article = document.createElement("article");
   article.className = "application";
-  const heading = document.createElement("h2");
-  heading.textContent = displayName;
-  article.append(heading);
+  article.dataset.searchText = [displayName, email, a.city, a.state, uid]
+    .filter(Boolean).join(" ").toLocaleLowerCase();
+  article.dataset.reviewStage = a.reviewStage || "intake_received";
+  const panel = document.createElement("details");
+  panel.className = "application-accordion";
+  const overview = document.createElement("summary");
+  overview.className = "application-summary";
+  const identity = document.createElement("span");
+  identity.className = "application-identity";
+  const name = document.createElement("strong");
+  name.className = "application-name";
+  name.textContent = displayName;
+  const subline = document.createElement("span");
+  subline.className = "application-subline";
+  subline.textContent = [a.city, a.state].filter(Boolean).join(", ") || "Volunteer application";
+  identity.append(name, subline);
+  const stageBadge = document.createElement("span");
+  stageBadge.className = "application-stage";
+  stageBadge.textContent = "Review: " + (a.reviewStage || "intake_received").replaceAll("_", " ");
+  overview.append(identity, stageBadge);
+  panel.append(overview);
+  const body = document.createElement("div");
+  body.className = "application-content";
+  panel.append(body);
+  article.append(panel);
   const info = document.createElement("dl");
   info.className = "data";
   field(info, "Email", email || "See account record");
@@ -232,7 +382,12 @@ async function renderOne(application) {
   const profileToggle = document.createElement("summary");
   profileToggle.textContent = "View volunteer profile and availability";
   profilePanel.append(profileToggle, info);
-  article.append(profilePanel);
+  body.append(profilePanel);
+  const reviewPanel = document.createElement("details");
+  reviewPanel.className = "assignment-editor review-editor";
+  const reviewSummary = document.createElement("summary");
+  reviewSummary.textContent = "Review decisions & clearance";
+  reviewPanel.append(reviewSummary);
   const controls = document.createElement("div");
   controls.className = "actions";
   const stage = labelledSelect(controls, "Review stage", reviewStages, a.reviewStage);
@@ -282,17 +437,71 @@ async function renderOne(application) {
         reviewStage: stage.value, assessmentStatus: exam.value,
         safeguardingStatus: safety.value, placementStatus: placement.value
       });
-      message.textContent = "Saved. This is a review decision, not an automated notification.";
+      article.dataset.reviewStage = stage.value;
+      stageBadge.textContent = "Review: " + stage.value.replaceAll("_", " ");
+      applyApplicationFilters();
+      message.textContent = changed
+        ? "Review saved. The volunteer was notified in the app."
+        : "Review saved. No status change was needed.";
     } catch {
       message.textContent = "Could not save review. Check permissions and try again.";
     } finally {save.disabled = false;}
   });
+  reviewPanel.addEventListener("toggle", async () => {
+    if(!reviewPanel.open)return;
+    try{
+      const saved=await getDoc(doc(db,"volunteerAssignments",uid));
+      if(saved.exists() && saved.data().coordinatorId && saved.data().draftId){
+        save.disabled=true;
+        message.textContent="This volunteer has an AI-managed placement. Use the Gemini panel to pause it and release the coordinator's slot before changing clearance or placement.";
+      }
+    }catch{ /* The server and Firestore rules still enforce the guard. */ }
+  });
   controls.append(save,message);
-  article.append(controls);
-  article.append(assignmentEditor(uid, a));
-  article.append(notificationEditor(uid, email, a.emailUpdates));
+  reviewPanel.append(controls);
+  body.append(reviewPanel);
+  body.append(credentialReviewPanel(uid, a, exam));
+  const recommendation = aiAssignmentPanel(uid, a);
+  recommendation.addEventListener("volunteerAIApproved", () => {
+    stage.value = "active";
+    placement.value = "assigned";
+    article.dataset.reviewStage = "active";
+    stageBadge.textContent = "Review: active";
+    applyApplicationFilters();
+  });
+  recommendation.addEventListener("volunteerAIPaused", () => {
+    stage.value = "paused";
+    placement.value = "paused";
+    article.dataset.reviewStage = "paused";
+    stageBadge.textContent = "Review: paused";
+    save.disabled=false;
+    message.textContent="Placement paused. You may review eligibility again before generating a new assignment.";
+    applyApplicationFilters();
+  });
+  body.append(recommendation);
+  body.append(assignmentEditor(uid, a));
+  body.append(notificationEditor(uid, email, a.emailUpdates));
   return article;
 }
+function applyApplicationFilters() {
+  const search = ($("volunteerSearch")?.value || "").trim().toLocaleLowerCase();
+  const stage = $("stageFilter")?.value || "all";
+  let visible = 0;
+  const cards = $("applications").querySelectorAll(".application");
+  cards.forEach(card => {
+    const matches = (!search || card.dataset.searchText.includes(search)) &&
+      (stage === "all" || card.dataset.reviewStage === stage);
+    card.hidden = !matches;
+    if (matches) visible++;
+  });
+  $("filterStatus").textContent = cards.length
+    ? "Showing " + visible + " of " + cards.length + " loaded application(s)." +
+      (visible === 0 ? " Clear the search or choose another review stage." : "")
+    : "";
+}
+$("volunteerSearch").addEventListener("input", applyApplicationFilters);
+$("stageFilter").addEventListener("change", applyApplicationFilters);
+
 async function loadApplications() {
   try {
     const results = await getDocs(query(collection(db,"volunteerApplications"), limit(100)));
@@ -304,11 +513,13 @@ async function loadApplications() {
     }
     $("notice").textContent = "Showing " + results.size + " application(s), limited to 100 per page. Review the Account Approval page separately.";
     for (const item of results.docs) host.append(await renderOne(item));
+    applyApplicationFilters();
   } catch {
     $("notice").textContent = "Unable to load volunteer applications. Check your permissions.";
   }
 }
 requireRoles(["admin","super_admin"], async user => {
   actingAdminUid = user.uid;
+  setupCoordinatorDirectory();
   await loadApplications();
 });

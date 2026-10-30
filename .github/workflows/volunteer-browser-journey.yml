@@ -8,6 +8,8 @@ on:
       - 'js/forum-account-approval.js'
       - 'admin-forum-access.html'
       - 'admin-users.html'
+      - 'tests/volunteer-admin-accordion-browser.mjs'
+      - 'tests/volunteer-ai-admin-browser.mjs'
       - 'volunteer-dashboard.html'
       - 'js/volunteer-onboarding.js'
       - 'js/volunteer-inbox.js'
@@ -37,3 +39,7 @@ jobs:
         run: node tests/volunteer-browser-journey.mjs
       - name: Run synthetic room selection and account approval
         run: node tests/forum-people-browser.mjs
+      - name: Run volunteer admin accordion mobile journey
+        run: node tests/volunteer-admin-accordion-browser.mjs
+      - name: Gemini volunteer admin recommendation browser journey
+        run: node tests/volunteer-ai-admin-browser.mjs
