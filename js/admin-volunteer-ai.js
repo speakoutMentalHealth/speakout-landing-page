@@ -71,7 +71,7 @@ export function aiAssignmentPanel(volunteerId,application) {
   panel.append(el("summary","","Gemini proposed role and coordinator"));
   const body=el("div","ai-content");
   body.append(el("p","","Gemini drafts the complete assignment. The allocation engine enforces capacity and expertise. Only an administrator can approve publication after independent clearance."));
-  const generate=el("button","","Generate with Gemini");generate.type="button";
+  const generate=el("button","","Generate or refresh suggestion");generate.type="button";
   const msg=status();
   const preview=el("div","ai-preview");
   const approve=el("button","","Approve and publish");approve.type="button";approve.hidden=true;
@@ -97,8 +97,12 @@ export function aiAssignmentPanel(volunteerId,application) {
   };
   panel.addEventListener("toggle",async()=>{
     if(!panel.open||loaded)return;
-    try{const result=await platformRequest("/v1/admin/volunteers/ai/draft",{volunteerId});loaded=true;render(result.draft);}
-    catch(e){msg.textContent=e.message||"Unable to load draft.";}
+    try{
+      const result=await platformRequest("/v1/admin/volunteers/ai/draft",{volunteerId});
+      loaded=true;
+      if(result.draft) render(result.draft);
+      else generate.click(); // No extra administrator step: opening review starts AI preparation.
+    }catch(e){msg.textContent=e.message||"Unable to load draft.";}
   });
   generate.addEventListener("click",async()=>{
     generate.disabled=true;msg.textContent="Gemini is preparing a role and balancing available coordinators…";
@@ -126,7 +130,8 @@ export function aiAssignmentPanel(volunteerId,application) {
     try{
       await platformRequest("/v1/admin/volunteers/ai/revise",{volunteerId,draftId:draft.draftId,reason:reason.value});
       render({...draft,status:"revision_requested"});
-      msg.textContent="Revision recorded. Generate again to see a new proposal.";
+      msg.textContent="Revision recorded. Preparing a fresh AI proposal…";
+      generate.click();
     }catch(e){msg.textContent=e.message||"Could not request revision.";}
     finally{revise.disabled=false;}
   });
