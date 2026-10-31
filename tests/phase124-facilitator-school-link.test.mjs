@@ -44,6 +44,8 @@ for(const [label,mutate] of [
  ['different school code',f=>f.records.get('users/facilitator').schoolCode='OTHER'],
  ['inactive club',f=>f.records.get('programmes/club').status='archived'],
  ['cross-school club',f=>f.records.get('programmes/club').schoolId='other'],
+ ['legacy active account',f=>f.records.get('users/facilitator').status='active'],
+ ['profile without login',f=>f.records.get('users/facilitator').authLinked=false],
  ['unapproved account',f=>f.records.get('users/facilitator').status='pending'],
  ['wrong role',f=>f.records.get('users/facilitator').role='student'],
  ['unapproved school',f=>f.records.get('schools/school').status='pending'],

@@ -13,7 +13,8 @@ export async function linkFacilitatorSchool(env, actor, data, {runTransaction, s
     const programme = programmeId ? await tx.get('programmes/' + programmeId) : null;
     if (!target || !school || (programmeId && !programme)) fail('Account, school or programme not found.', 404);
     if (target.role !== 'teacher') fail('Select an existing teacher / facilitator account.', 400);
-    if (!['approved', 'active'].includes(target.status)) fail('Approve the facilitator account before linking it.');
+    if (target.authLinked === false) fail('This is a school-created profile without a linked login. Link its authenticated account first.');
+    if (target.status !== 'approved') fail('Approve the facilitator account before linking it.');
     if (!['approved', 'active'].includes(school.status)) fail('The school must be approved or active.');
     if ((target.schoolId && target.schoolId !== schoolId) ||
         (target.schoolCode && target.schoolCode !== school.schoolCode)) {
