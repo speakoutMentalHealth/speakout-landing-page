@@ -13,3 +13,9 @@ test('approval probe uses canonical authenticated guard without dashboard expans
  const browser=readFileSync(new URL('./approval-state-browser.mjs',import.meta.url),'utf8');
  assert.match(browser,/const path = "\/v1\/auth\/approval-check"/);assert.match(browser,/apiResponse.status===429/);assert.match(browser,/no automatic retry/);assert.match(browser,/apiResponse.status, 403/);
 });
+
+test('worker diagnostics also handle streamed query errors without exposing payloads',()=>{
+ const result=firestoreFailure([{error:{status:'RESOURCE_EXHAUSTED',message:'SECRET'}}]);
+ assert.equal(result.status,'RESOURCE_EXHAUSTED');
+ assert.doesNotMatch(JSON.stringify(result),/SECRET/);
+});

@@ -778,16 +778,30 @@ async function loadCourse(){
  loading.style.display="none";renderCourseOverview();showCourseOverview();
 }
 
-onAuthStateChanged(auth,async user=>{
- if(!user){location.href="auth.html";return}
- currentUser=user;await loadProfile();
- if(!isApprovedProfile(currentProfile)){loading.textContent="Your account must be approved before taking guided courses.";return}
+async function initializeCourse(user){
+ currentUser=user;
+ loading.style.display="block";
+ loading.textContent="Loading course…";
+ courseOverview.hidden=true;
+ playerArea.style.display="none";
  try{
+   await loadProfile();
+   if(!isApprovedProfile(currentProfile)){loading.textContent="Your account must be approved before taking guided courses.";return}
    await loadCourse();
  }catch(error){
    console.error(error);
-   loading.textContent=error.message||"Secure learning is temporarily unavailable.";
+   loading.replaceChildren();
+   const message=document.createElement("p");
+   message.textContent=[429,503].includes(error?.status)?"Learning is temporarily busy. Please try again later.":"The course could not load. Please try again.";
+   const retry=document.createElement("button");
+   retry.type="button";retry.className="btn primary";retry.textContent="Try loading course again";
+   retry.onclick=()=>{retry.disabled=true;return initializeCourse(user)};
+   loading.append(message,retry);
  }
+}
+onAuthStateChanged(auth,async user=>{
+ if(!user){location.href="auth.html";return}
+ await initializeCourse(user);
 });
 </script>
 <script defer="" src="portal-ui.js"></script>
