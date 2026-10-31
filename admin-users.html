@@ -139,6 +139,14 @@ input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radi
 <div class="panel">
 <h2>User Details</h2>
 <div class="detail-grid" id="modalContent"></div>
+<form id="schoolLinkForm" hidden style="margin-top:18px">
+<h3>Link existing facilitator to school</h3>
+<p>This keeps the existing login and learning records. Accounts already linked to another school require separate review.</p>
+<label for="linkSchool">School</label><select id="linkSchool" required></select>
+<label for="linkProgramme">Active programme (optional)</label><select id="linkProgramme"></select>
+<p id="schoolLinkStatus" role="status" aria-live="polite"></p>
+<button class="btn primary" id="schoolLinkButton" type="submit">Link facilitator</button>
+</form>
 <div class="actions" style="margin-top:18px">
 <button class="btn dark" id="closeModal">Close</button>
 </div>
@@ -151,6 +159,9 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { requireRoles } from "./launch-role-guard.js";
+import { adminApi } from "./js/platform-api.js";
+import { setupFacilitatorSchoolLink } from "./js/admin-facilitator-school.js";
+const schoolLink = setupFacilitatorSchoolLink({ db, collection, getDocs, adminApi });
 
 let adminActorUid = "";
 let selectedAccounts=new Set();
@@ -244,6 +255,7 @@ function render(){
       const user = ITEMS.find(x=>x.id===btn.dataset.view);
       if(!user) return;
       modalContent.innerHTML = detailHTML(user);
+      schoolLink.open(user);
       userModal.style.display = "block";
     };
   });
@@ -332,7 +344,7 @@ statusFilter.addEventListener("change",clearFilteredSelection);
 roleFilter.addEventListener("change",clearFilteredSelection);
 refreshBtn.addEventListener("click",startRealtime);
 exportBtn.addEventListener("click",exportCSV);
-closeModal.addEventListener("click",()=>userModal.style.display="none");
+closeModal.addEventListener("click",()=>{ userModal.style.display="none"; schoolLink.close(); });
 logoutLink.addEventListener("click",async e=>{e.preventDefault();await signOut(auth);location.href="auth.html";});
 
 requireAdmin();
