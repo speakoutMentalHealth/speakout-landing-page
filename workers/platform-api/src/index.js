@@ -1,3 +1,4 @@
+import {pilotRoute} from './mindcheck-pilot.js';
 import { firestoreFailure } from "./firestore-error.js";
 import { linkFacilitatorSchool } from "./facilitator-school.js";
 import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
@@ -4479,6 +4480,12 @@ async function route(request, env, path, data) {
   let user = await authenticatedUser(request, env);
   // Same canonical approval guard as all protected routes; no dashboard queries.
   if (path === "/v1/auth/approval-check") return {approved:true,role:clean(user.profile.role)};
+  if (["/v1/mindcheck/status", "/v1/mindcheck/token", "/v1/admin/mindcheck/access"].includes(path)) {
+    const origin=request.headers.get('origin');
+    if(!['https://speakoutmentalhealth.org','https://www.speakoutmentalhealth.org','https://speakout-portal-staging.web.app'].includes(origin))throw Object.assign(Error('Portal origin required.'),{status:403});
+    return pilotRoute({path,data,user,env,get:p=>getDocument(env,p),transaction:fn=>runTransaction(env,fn)});
+  }
+
   if (path === "/v1/admin/support/school/start") {
     if (!isSuperAdminUser(user)) {
       throw Object.assign(new Error("Super Admin access required."), { status: 403 });
@@ -5625,7 +5632,7 @@ export default {
     const headers = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
     const path = new URL(request.url).pathname;
-    if (["/v1/admin/traffic/summary", "/v1/auth/sign-in", "/v1/auth/approval-check"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
+    if (["/v1/mindcheck/status", "/v1/mindcheck/token", "/v1/admin/mindcheck/access", "/v1/admin/traffic/summary", "/v1/auth/sign-in", "/v1/auth/approval-check"].includes(path)) Object.assign(headers, { "cache-control": "private, no-store" });
     const publicGetPaths = new Set(["/v1/catalog/courses","/v1/media/tv","/v1/media/audio"]);
     const isPublicGet = request.method === "GET" && publicGetPaths.has(path);
     if (request.method !== "POST" && !isPublicGet) return json({ error: "Method not allowed." }, 405, headers);

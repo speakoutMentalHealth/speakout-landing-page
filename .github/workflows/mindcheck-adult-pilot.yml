@@ -1,0 +1,97 @@
+name: MindCheck adult pilot rollout
+on:
+  pull_request:
+    paths: ['workers/platform-api/src/mindcheck-*.js', 'workers/platform-api/src/index.js', 'tests/mindcheck-pilot-token.test.mjs', 'scripts/provision-mindcheck-signing.mjs', '.github/workflows/mindcheck-adult-pilot.yml']
+  push:
+    branches: [main]
+    paths: ['workers/platform-api/src/mindcheck-*.js', '.github/workflows/mindcheck-adult-pilot.yml']
+permissions:
+  contents: read
+concurrency:
+  group: mindcheck-adult-pilot-production
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm install --no-save --no-package-lock firebase-tools@14
+      - run: npm install --prefix functions --no-package-lock
+      - run: npm run test:rules
+      - run: node --test tests/mindcheck-pilot-token.test.mjs
+      - run: npm ci
+        working-directory: workers/platform-api
+      - run: node --test tests/mindcheck-pilot-http.test.mjs
+      - run: npm run check:production
+        working-directory: workers/platform-api
+      - uses: actions/checkout@v4
+        with:
+          repository: speakoutMentalHealth/MindCheck
+          ref: f44556dda8ce22f80c8f7d46e87c1ddc3cab0f67
+          path: mindcheck-source
+      - run: npm install --no-save --no-package-lock playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/mindcheck-access-browser.cjs
+  deploy:
+    if: github.event_name == 'push'
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: speakoutMentalHealth/MindCheck
+          ref: f44556dda8ce22f80c8f7d46e87c1ddc3cab0f67
+          path: mindcheck-source
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+        working-directory: workers/platform-api
+      - run: npm ci
+        working-directory: mindcheck-source/server/guide
+      - run: npm test
+        working-directory: mindcheck-source/server/guide
+      - name: Authenticate rules deployment
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: |
+          test -n "$FIREBASE_SERVICE_ACCOUNT"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/mindcheck-firebase.json"
+          chmod 600 "$RUNNER_TEMP/mindcheck-firebase.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/mindcheck-firebase.json" >> "$GITHUB_ENV"
+      - run: npx --yes firebase-tools@14 deploy --only firestore:rules --project speaakout-portal --non-interactive
+      - name: Remove temporary credential
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mindcheck-firebase.json"
+      - run: node scripts/provision-mindcheck-signing.mjs
+      - run: npm run deploy:production
+        working-directory: workers/platform-api
+      - run: npx wrangler deploy --var GUIDE_ENABLED:true --var GUIDE_REQUIRE_ADULT_TOKEN:true
+        working-directory: mindcheck-source/server/guide
+      - name: Verify anonymous generation is denied
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          const r=await fetch('https://mindcheck-guide.speakout-platform-api.workers.dev/',{method:'POST',headers:{Origin:'https://mindcheck.speakoutmentalhealth.org','Content-Type':'application/json'},body:JSON.stringify({question:'mood',language:'en',adult:true})});
+          const data=await r.json();assert.equal(data.source,'prepared');assert.equal(data.reason,'authorization');
+          console.log('Live guide denies anonymous generation.');
+          JS
+      - run: npm install --no-save --no-package-lock firebase-admin@13
+      - name: Verify complete synthetic production journey
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: node scripts/mindcheck-production-smoke.mjs

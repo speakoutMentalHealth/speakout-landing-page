@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import worker from '../workers/platform-api/src/index.js';
+const env={ALLOWED_ORIGINS:'https://speakoutmentalhealth.org',FIREBASE_PROJECT_ID:'synthetic-test'};
+test('live route denies missing authentication and forbids foreign origins',async()=>{for(const path of ['/v1/mindcheck/token','/v1/mindcheck/status','/v1/admin/mindcheck/access']){const response=await worker.fetch(new Request('https://worker.test'+path,{method:'POST',headers:{Origin:'https://speakoutmentalhealth.org','Content-Type':'application/json'},body:'{}'}),env);assert.equal(response.status,401);assert.match(response.headers.get('cache-control'),/no-store/)}const r=await worker.fetch(new Request('https://worker.test/v1/mindcheck/token',{method:'POST',headers:{Origin:'https://untrusted.test','Content-Type':'application/json'},body:'{}'}),env);assert.equal(r.status,403)});

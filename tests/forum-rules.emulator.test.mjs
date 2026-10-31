@@ -104,3 +104,5 @@ test("admin may lock/reopen without changing visibility, only with immutable pai
   const teacher = env.authenticatedContext("teacher-a").firestore();
   await assertFails(getDoc(doc(teacher, "forumRooms/mentor-room")));
 });
+
+test("AI eligibility and token records cannot be accessed directly even by Super Admin", async()=>{await seed("users/super-ai",profile("super-ai","super_admin"));for(const name of ["mindcheckAdultAccess","mindcheckAIConsents","mindcheckAccessAudits","mindcheckTokenLimits"]){await seed(name+"/adult-ai",{subject:"adult-ai",status:"active"});for(const uid of ["super-ai","admin-a","learner-a"]){const db=env.authenticatedContext(uid).firestore();await assertFails(getDoc(doc(db,name,"adult-ai")));await assertFails(setDoc(doc(db,name,"adult-ai"),{status:"active"}));}}});
