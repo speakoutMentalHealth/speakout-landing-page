@@ -223,6 +223,7 @@ export const onboardingApi = {
 };
 
 export const adminApi = {
+  linkFacilitatorSchool: payload => platformRequest("/v1/admin/users/link-facilitator-school", payload),
   trafficSummary: period => platformRequest("/v1/admin/traffic/summary", { period }),
   retrieveEvidence,
   startSchoolSupport: schoolId =>

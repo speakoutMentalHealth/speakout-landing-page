@@ -1,3 +1,4 @@
+import { linkFacilitatorSchool } from "./facilitator-school.js";
 import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
 import { validateCoordinator, fairCandidates, modelInput, validateModelDraft } from "./volunteer-allocation.js";
 import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
@@ -4861,6 +4862,10 @@ async function route(request, env, path, data) {
           "school"
       };
     });
+  }
+
+  if (path === "/v1/admin/users/link-facilitator-school") {
+    return linkFacilitatorSchool(env, user, data, { runTransaction, safeId });
   }
 
   if (path === "/v1/roles/overview") {
