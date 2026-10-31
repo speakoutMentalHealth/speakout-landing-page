@@ -92,8 +92,9 @@ function renderRooms() {
         if (next.visibility === room.visibility && next.status === room.status) {
           notice("There are no changes to save."); return;
         }
-        if (privacyWarning(room.visibility, next.visibility) &&
-          !window.confirm("This room is currently private. This changes its intended audience, but no existing private discussions will be published. Continue?")) return;
+        if (privacyWarning(room.visibility, next.visibility)) {
+          notice("Private discussion history cannot become general. Create a separate general room instead.", true); return;
+        }
         await handleAction(async () => updateRoom(room, next, "Administrator changed room controls"));
       }),
       button(room.status === "locked" ? "Reopen room" : "Lock room", async () => {
@@ -107,24 +108,24 @@ function renderRooms() {
       pilot?.mode === "private_pilot" &&
       pilot?.roomIds?.includes(room.id) &&
       pilot?.expiresAt?.toMillis?.() > Date.now());
-    if (room.published || (releaseAllowed && room.visibility === "private" && room.status !== "locked")) {
-      actions.append(button(room.published ? "End pilot for this room" : "Publish private pilot room", async () => {
+    if (room.published || (room.status !== "locked" && (room.visibility !== "private" || releaseAllowed))) {
+      actions.append(button(room.published ? "Unpublish room" : (room.visibility === "private" ? "Publish private pilot room" : "Publish adult community room"), async () => {
         if (busy) return;
-        if (!room.published && (!releaseAllowed || room.visibility !== "private" || room.status === "locked")) {
+        if (!room.published && (room.status === "locked" || (room.visibility === "private" && !releaseAllowed))) {
           notice("Trusted release approval is missing. Publication is blocked.", true); return;
         }
         const promptText = room.published ? "STOP " + room.id : "PUBLISH " + room.id;
-        const typed = window.prompt("Restricted adult pilot. Type " + promptText +
+        const typed = window.prompt("Adult community publication. Type " + promptText +
           " to confirm. Room changes are immutable-audited and access expires with the gate.");
         if (typed !== promptText) return;
         const publish = !room.published;
         await handleAction(async () => updateRoom(room, {
           ...room, published: publish
-        }, publish ? "Approved private adult pilot published" : "Private adult pilot closed"));
+        }, publish ? "Administrator published adult community room" : "Administrator unpublished room"));
       }, room.published ? "danger" : "outline"));
     }
     const note = document.createElement("small");
-    note.textContent = room.published
+    note.textContent = room.visibility !== "private" ? "Published general rooms are available to approved, verified adults. Guests and unverified accounts cannot read them." : room.published
       ? "Live only for specifically granted adults while the trusted release gate remains valid. Locking ends the pilot."
       : "Publication requires an expiring trusted release grant, private visibility and explicit audited confirmation.";
     article.append(heading, summary, controls, actions, note);
@@ -172,7 +173,7 @@ async function updateRoom(room, next, reason) {
   const batch = writeBatch(db);
   const revision = room.version + 1;
   // Changes to privacy/locked state automatically end the pilot.
-  const nextPublished = (next.published === undefined ? room.published : next.published) === true && safe.visibility === "private" &&
+  const nextPublished = (next.published === undefined ? room.published : next.published) === true && safe.visibility === room.visibility &&
     safe.status !== "locked";
   const auditId = writeAudit(batch, roomRef, room, { ...safe, published: nextPublished }, revision, reason);
   batch.update(roomRef, {
@@ -227,7 +228,7 @@ requireRoles(["admin", "super_admin"], async user => {
   adminUI.hidden = false;
   try {
     await refresh();
-    notice(pilot?.enabled === true ? "Restricted private pilot release gate is configured. Review expiry and access before publishing." : "Pilot release control is not enabled. All rooms remain unpublished.");
+    notice(pilot?.enabled === true ? "Restricted private pilot release gate is configured. Review expiry and access before publishing." : "General rooms can be published after review. Private pilot release control is not enabled.");
   } catch (error) {
     notice("Unable to load rooms. Check database access before continuing: " + (error?.message || "Unknown error."), true);
   }

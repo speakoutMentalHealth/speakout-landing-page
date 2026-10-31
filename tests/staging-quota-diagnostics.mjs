@@ -5,7 +5,8 @@ const safe = (value, max = 110) => {
   return /^[A-Za-z0-9_./:-]{1,110}$/.test(text) ? text.slice(0, max) : "unavailable";
 };
 export function firestoreQuotaDetail(body) {
-  const error = body && typeof body === "object" ? body.error : null;
+  const envelope = Array.isArray(body) ? body.find(item => item?.error) : body;
+  const error = envelope && typeof envelope === "object" ? envelope.error : null;
   const details = Array.isArray(error?.details) ? error.details : [];
   const info = details.find(entry => entry?.["@type"] === "type.googleapis.com/google.rpc.ErrorInfo");
   const failures = details.filter(entry => entry?.["@type"] === "type.googleapis.com/google.rpc.QuotaFailure");

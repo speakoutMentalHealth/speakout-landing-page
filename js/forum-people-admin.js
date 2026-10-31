@@ -3,7 +3,7 @@ import {requireRoles} from '../launch-role-guard.js';
 import {collection,getDocs,doc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
 const $=id=>document.getElementById(id);
 let people=[],grants=new Map(),selected=new Set(),busy=false;
-const eligible=(p,g)=>p.status==='approved'&&p.role!=='student'&&g?.active===true&&g.adultVerified===true;
+const eligible=(p,g)=>p.status==='approved'&&(p.role!=='student'||g?.adultStudentVerified===true)&&g?.active===true&&g.adultVerified===true;
 const name=p=>p.fullName||[p.firstName,p.lastName].filter(Boolean).join(' ')||p.email||'Unnamed account';
 function visible(){const q=$('peopleSearch').value.trim().toLowerCase(),role=$('peopleRole').value;return people.filter(p=>(!role||p.role===role)&&(!q||`${name(p)} ${p.email||''}`.toLowerCase().includes(q)));}
 function render(){

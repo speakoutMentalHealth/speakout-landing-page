@@ -401,6 +401,30 @@ async function searchCatalogue(page) {
   }
 }
 
+async function openCourseOverview(page, href, phase) {
+  const evidence = observeCatalogue(page, new URL(baseUrl).origin);
+  try {
+    await page.goto(new URL(href, baseUrl + "/").toString(), { waitUntil: "domcontentloaded" });
+    await waitForPath(page, "course-player.html");
+    await page.locator("#continueLearningButton").waitFor({ timeout: 30000 });
+  } catch (error) {
+    const ui = await page.evaluate(() => {
+      const text = document.querySelector("#loading")?.textContent || "";
+      const category = /quota|resource.exhausted|too many|rate.limit/i.test(text) ? "capacity"
+        : /permission|denied|approved/i.test(text) ? "access"
+        : /not found|not published|not complete|No embedded/i.test(text) ? "content"
+        : /loading/i.test(text) ? "loading" : "other";
+      return { loadingCategory: category,
+        overviewHidden: document.querySelector("#courseOverview")?.hidden ?? null,
+        continueDisabled: document.querySelector("#continueLearningButton")?.disabled ?? null };
+    }).catch(() => null);
+    const diagnostic = { phase, ...(await evidence.capture()), player: ui };
+    await writeFile(`${artifactsDir}/course-open-failure.json`, JSON.stringify(diagnostic, null, 2));
+    console.error("Course opening failure diagnostics:", JSON.stringify(diagnostic));
+    throw error;
+  } finally { evidence.dispose(); }
+}
+
 async function completeCourse(page) {
   await searchCatalogue(page);
 
@@ -410,10 +434,7 @@ async function completeCourse(page) {
   assert.ok(startHref, "SpeakHub course card did not expose a start-course link");
   const expectedStartHref = "course-player.html?id=" + encodeURIComponent(courseId);
   assert.equal(startHref, expectedStartHref, "SpeakHub generated the wrong internal-course route");
-  await page.goto(new URL(startHref, baseUrl + "/").toString(), { waitUntil: "domcontentloaded" });
-
-  await waitForPath(page, "course-player.html");
-  await page.locator("#continueLearningButton").waitFor({ timeout: 30000 });
+  await openCourseOverview(page, startHref, "initial-open");
   await page.locator("#overviewProgressBadge").getByText("0%", { exact: true }).waitFor({ timeout: 30000 });
   await page.locator("#continueLearningButton").click();
 
@@ -428,9 +449,7 @@ async function completeCourse(page) {
   await reopenedCard.locator(".progress-text").getByText("50% complete", { exact: true }).waitFor({ timeout: 30000 });
   const reopenHref = await reopenedCard.locator("a.btn.primary").getAttribute("href");
   assert.ok(reopenHref, "reopened SpeakHub card lost its course link");
-  await page.goto(new URL(reopenHref, baseUrl + "/").toString(), { waitUntil: "domcontentloaded" });
-
-  await page.locator("#continueLearningButton").waitFor({ timeout: 30000 });
+  await openCourseOverview(page, reopenHref, "reopen");
   await page.locator("#overviewProgressBadge").getByText("50%", { exact: true }).waitFor({ timeout: 30000 });
   await page.locator("#continueLearningButton").click();
   const moduleQuizButton = page.locator("#moduleMenu .assessment-item").filter({ hasText: "Module Check" });

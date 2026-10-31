@@ -1079,6 +1079,8 @@ service cloud.firestore {
     }
     function forumPilotWriteAllowed(roomId) {
       return request.resource.data.published == false ||
+        (request.resource.data.published == true && resource.data.visibility in ["public", "members_only"] &&
+         request.resource.data.visibility == resource.data.visibility && request.resource.data.status in ["open", "read_only"]) ||
         (request.resource.data.published == true &&
          resource.data.visibility == "private" &&
          request.resource.data.visibility == "private" &&
@@ -1093,7 +1095,7 @@ service cloud.firestore {
       allow read: if isSuperAdmin();
       allow create, update, delete: if false;
     }
-    // Trusted and expiring private pilot authorization is required to publish.
+    // General publication is explicitly audited; private pilots additionally require the trusted gate.
     function forumRoomValid() {
       let r = request.resource.data;
       return r.keys().hasOnly(["title", "description", "visibility", "status", "published", "createdAt", "updatedAt", "updatedBy", "version", "auditId"]) &&
@@ -1127,7 +1129,8 @@ service cloud.firestore {
 
     match /forumRooms/{roomId} {
       allow get: if forumMayReadRoom(roomId);
-      allow list: if isSuperAdmin();
+      allow list: if isSuperAdmin() || (forumApprovedAdult() && resource.data.published == true &&
+        resource.data.status in ["open", "read_only"] && resource.data.visibility in ["public", "members_only"]);
       allow create: if isSuperAdmin() &&
         roomId.matches("^[a-z][a-z0-9-]{2,55}$") &&
         forumRoomValid() && request.resource.data.published == false && request.resource.data.createdAt == request.time &&
@@ -1135,6 +1138,7 @@ service cloud.firestore {
         forumAuditPaired(roomId, "none", "none", false);
       allow update: if isSuperAdmin() && forumRoomValid() &&
         forumPilotWriteAllowed(roomId) &&
+        (resource.data.visibility != "private" || request.resource.data.visibility == "private") &&
         request.resource.data.createdAt == resource.data.createdAt &&
         request.resource.data.version == resource.data.version + 1 &&
         request.resource.data.auditId != resource.data.auditId &&
@@ -1166,8 +1170,7 @@ service cloud.firestore {
     }
 
     // Phase 2: adult-verified membership and moderated conversations.
-    // The publication flag remains false for all room client writes above.
-    // This code prepares access policy for a future separately authorized release.
+    // Account review records adult eligibility atomically; private membership is separate.
     function forumGrantPath(uid) {
       return /databases/$(database)/documents/forumAccessGrants/$(uid);
     }
@@ -1175,8 +1178,9 @@ service cloud.firestore {
       return get(forumGrantPath(request.auth.uid)).data;
     }
     function forumApprovedAdult() {
-      return isApproved() && userRole() != "student" &&
+      return isApproved() &&
         exists(forumGrantPath(request.auth.uid)) &&
+        (userRole() != "student" || forumGrant().get("adultStudentVerified", false) == true) &&
         forumGrant().active == true &&
         forumGrant().adultVerified == true;
     }
@@ -1199,12 +1203,15 @@ service cloud.firestore {
     }
     function forumMayReadRoom(roomId) {
       return isSuperAdmin() ||
+        (forumApprovedAdult() && get(forumRoomPath(roomId)).data.published == true &&
+         get(forumRoomPath(roomId)).data.status != "locked" &&
+         get(forumRoomPath(roomId)).data.visibility in ["public", "members_only"]) ||
         (forumApprovedAdult() && forumLivePrivateRoom(roomId) &&
           (roomId in forumGrant().privateRoomIds ||
             (forumGrant().memberRole == "moderator" && roomId in forumGrant().moderatedRoomIds)));
     }
     function forumMayModerate(roomId) {
-      return forumModerator(roomId) && forumLivePrivateRoom(roomId);
+      return forumModerator(roomId) && forumMayReadRoom(roomId);
     }
     function forumCanPost(roomId) {
       return forumApprovedAdult() && forumMayReadRoom(roomId) &&
@@ -1214,7 +1221,7 @@ service cloud.firestore {
     function validForumGrant(uid) {
       let g = request.resource.data;
       return g.keys().hasOnly([
-        "uid", "active", "adultVerified", "memberRole", "privateRoomIds",
+        "uid", "active", "adultVerified", "adultStudentVerified", "memberRole", "privateRoomIds",
         "moderatedRoomIds", "createdAt", "reviewedAt", "reviewedBy",
         "version", "auditId", "reason"
       ]) && g.keys().hasAll([
@@ -1224,8 +1231,9 @@ service cloud.firestore {
       ]) &&
       g.uid == uid && uid.size() >= 5 && uid.size() <= 128 &&
       exists(/databases/$(database)/documents/users/$(uid)) &&
-      get(/databases/$(database)/documents/users/$(uid)).data.status == "approved" &&
-      get(/databases/$(database)/documents/users/$(uid)).data.role != "student" &&
+      getAfter(/databases/$(database)/documents/users/$(uid)).data.status == "approved" &&
+      (getAfter(/databases/$(database)/documents/users/$(uid)).data.role != "student" || g.get("adultStudentVerified", false) == true) &&
+      g.get("adultStudentVerified", false) is bool &&
       g.active is bool && g.adultVerified == true &&
       g.memberRole in ["member", "moderator"] &&
       g.privateRoomIds is list && g.privateRoomIds.size() <= 20 &&

@@ -1,10 +1,16 @@
 name: Forum Production Indexes (Add Only)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - firebase/forum-firestore.indexes.json
+      - scripts/forum-indexes-additive.mjs
+      - .github/workflows/forum-production-indexes.yml
   workflow_dispatch:
     inputs:
       confirm:
-        description: 'Type ADD_ONLY_FORUM_INDEXES to create only the three reviewed production forum indexes'
+        description: 'Type ADD_ONLY_FORUM_INDEXES to create only the four reviewed production forum indexes'
         required: true
         type: string
 
@@ -22,6 +28,7 @@ jobs:
     environment: production
     steps:
       - name: Confirm explicit add-only production action
+        if: github.event_name == 'workflow_dispatch'
         env:
           CONFIRM: ${{ inputs.confirm }}
         run: test "$CONFIRM" = ADD_ONLY_FORUM_INDEXES
@@ -32,7 +39,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Refuse index definitions beyond the three reviewed composites
+      - name: Refuse index definitions beyond the four reviewed composites
         run: |
           python3 - <<'PY'
           import json
@@ -42,6 +49,7 @@ jobs:
               ('forumTopics', ['roomId', 'moderationStatus']),
               ('forumReplies', ['roomId', 'topicId', 'moderationStatus']),
               ('forumReplies', ['roomId', 'moderationStatus']),
+              ('forumRooms', ['published', 'visibility', 'status']),
           ]
           normalized = []
           for item in actual:
@@ -50,7 +58,7 @@ jobs:
               assert all(set(f) == {'fieldPath', 'order'} and f['order'] == 'ASCENDING' for f in item['fields'])
               normalized.append((item['collectionGroup'], [f['fieldPath'] for f in item['fields']]))
           assert sorted(normalized) == sorted(expected), 'Unreviewed index definitions refused'
-          print('Verified exact three forum composites; no unrelated definitions.')
+          print('Verified exact four forum composites; no unrelated definitions.')
           PY
       - uses: google-github-actions/auth@v2
         with:
@@ -64,7 +72,7 @@ jobs:
         run: |
           node scripts/forum-indexes-additive.mjs --mode=apply --project=speaakout-portal \
             --ack=ADD_ONLY --production-ack=PRODUCTION_INDEXES_APPROVED --actor="$OPERATOR"
-      - name: Wait for all three indexes to become READY
+      - name: Wait for all four indexes to become READY
         shell: bash
         run: |
           set -euo pipefail
@@ -72,7 +80,7 @@ jobs:
             status=0
             node scripts/forum-indexes-additive.mjs --mode=inspect --project=speaakout-portal || status=$?
             if [[ "$status" == "0" ]]; then
-              echo '### All three production forum indexes READY' >> "$GITHUB_STEP_SUMMARY"
+              echo '### All four production forum indexes READY' >> "$GITHUB_STEP_SUMMARY"
               echo 'No indexes deleted or updated. No rules deployed, members enrolled or pilot gate activated.' >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi

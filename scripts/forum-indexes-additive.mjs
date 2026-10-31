@@ -30,7 +30,7 @@ function logResult(result){console.log(JSON.stringify(result));}
 if(!["plan","inspect","apply"].includes(mode))throw Error("Use --mode=plan|inspect|apply");
 if(mode!=="plan"&&!validProject)throw Error("Remote inspection requires a valid --project=FIREBASE_PROJECT_ID");
 if(!Array.isArray(proposed)||proposed.length<2||proposed.length>8 ||
- proposed.some(x=>!["forumTopics","forumReplies"].includes(x.collectionGroup) ||
+ proposed.some(x=>!["forumTopics","forumReplies","forumRooms"].includes(x.collectionGroup) ||
  x.queryScope!=="COLLECTION"||x.fields.length<2||x.fields.length>5))throw Error("Unexpected forum index definitions.");
 if(mode==="plan"){
   logResult({mode:"OFFLINE_PLAN",requiresCredentials:false,

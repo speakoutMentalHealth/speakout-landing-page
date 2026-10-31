@@ -9,7 +9,7 @@ test("forum indexes operator offline plan never needs credentials or network",()
  const data=JSON.parse(r.stdout.trim());
  assert.equal(data.mode,"OFFLINE_PLAN");
  assert.equal(data.requiresCredentials,false);
- assert.equal(data.proposed.length,3);
+ assert.equal(data.proposed.length,4);
 });
 test("additive index operator rejects apply without exact confirmation before making network calls",()=>{
  const r=spawnSync(process.execPath,[file,"--mode=apply","--project=staging-example"],{

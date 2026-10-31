@@ -1,4 +1,5 @@
 import { runCleanup } from "./staging-cleanup.mjs";
+import { observeCatalogue } from "./staging-diagnostics.mjs";
 import assert from "node:assert/strict";
 import { createHash, createSign, randomBytes } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -282,6 +283,7 @@ async function teacherCreatesProgramme(browser, teacher) {
 
 async function schoolAdminApprovesAndAssigns(browser, schoolAdmin, facilitator, student) {
   const { context, page } = await login(browser, schoolAdmin, "school-dashboard.html");
+  const diagnostics = observeCatalogue(page, new URL(baseUrl).origin);
   try {
     await page.goto(`${baseUrl}/programmes.html`, { waitUntil: "domcontentloaded" });
     const card = page.locator(".program-item").filter({ has: page.getByRole("heading", { name: programmeName, exact: true }) });
@@ -309,7 +311,18 @@ async function schoolAdminApprovesAndAssigns(browser, schoolAdmin, facilitator, 
     await page.locator("#studentSelect").selectOption(student.localId);
     await page.locator("#memberForm button[type='submit']").click();
     await page.locator("#statusBox").getByText("Student added to programme.", { exact: true }).waitFor({ timeout: 30000 });
+  } catch (error) {
+    const ui = await page.evaluate(() => ({
+      facilitatorOptionCount: document.querySelector("#facilitatorSelect")?.options.length ?? 0,
+      studentOptionCount: document.querySelector("#studentSelect")?.options.length ?? 0,
+      facilitatorPanelHidden: document.querySelector("#facilitatorPanel")?.classList.contains("hidden") ?? true
+    })).catch(() => null);
+    const evidence = { ...(await diagnostics.capture()), roster: ui };
+    await writeFile(`${artifactsDir}/assignment-failure.json`, JSON.stringify(evidence, null, 2));
+    console.error("School assignment failure diagnostics:", JSON.stringify(evidence));
+    throw error;
   } finally {
+    diagnostics.dispose();
     await context.close();
   }
 }

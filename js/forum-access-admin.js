@@ -30,7 +30,7 @@ async function loadUser(uid) {
   const snapshot = await getDoc(doc(db, "users", uid));
   if (!snapshot.exists()) throw Error("No matching portal account.");
   const profile = snapshot.data();
-  accountEligible = profile.status === "approved" && profile.role !== "student";
+  accountEligible = profile.status === "approved";
   selectedUid = uid;
   $("userSummary").textContent = "Account: " + uid + " · Role: " + (profile.role || "unknown") +
     " · Status: " + (profile.status || "unknown") +
@@ -59,7 +59,7 @@ async function saveGrant() {
   const auditRef = doc(db, "forumGrantAudits", crypto.randomUUID());
   const version = (currentGrant?.version || 0) + 1;
   const next = {
-    uid: selectedUid, active, adultVerified: true, memberRole,
+    uid: selectedUid, active, adultVerified: true, adultStudentVerified: true, memberRole,
     privateRoomIds, moderatedRoomIds,
     createdAt: currentGrant?.createdAt || serverTimestamp(),
     reviewedAt: serverTimestamp(), reviewedBy: adminUid,

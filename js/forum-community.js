@@ -42,7 +42,7 @@ async function isEligibleAdult(user) {
       getDoc(doc(db, "forumAccessGrants", user.uid))
     ]);
     const valid = profile.exists() && profile.data().status === "approved" &&
-      profile.data().role !== "student" && grant.exists() &&
+      grant.exists() && (profile.data().role !== "student" || grant.data().adultStudentVerified === true) &&
       grant.data().active === true && grant.data().adultVerified === true;
     return { allowed: valid, privateRooms: valid ? [...(grant.data().privateRoomIds || []), ...(grant.data().memberRole === "moderator" ? grant.data().moderatedRoomIds || [] : [])] : [] };
   } catch {
@@ -55,6 +55,13 @@ async function loadRooms(revision) {
   adultGrant = grant.allowed;
   const possible = new Set(STARTER_ROOMS.map(r => r.id));
   for (const id of grant.privateRooms) if (SAFE_ID.test(id)) possible.add(id);
+  if (adultGrant) {
+    try {
+      const general = await getDocs(query(collection(db,"forumRooms"),where("published","==",true),where("visibility","in",["public","members_only"]),where("status","in",["open","read_only"]),limit(100)));
+      if (revision !== accessRevision) return;
+      general.forEach(record=>possible.add(record.id));
+    } catch { notice("General rooms could not be loaded. Please retry; private memberships are checked separately.",true); }
+  }
   const available = [];
   for (const id of possible) {
     try {
@@ -75,7 +82,7 @@ async function loadRooms(revision) {
     $("discussion").hidden = true;
     $("communityEmpty").hidden = false;
     container.querySelector("p")?.classList.add("no-rooms");
-    notice("Your account is approved. No pilot rooms are currently available for your account.");
+    notice("No published rooms are currently available. If your adult eligibility has not been recorded, contact SpeakOut for an account review.");
     return;
   }
   for (const item of available) {

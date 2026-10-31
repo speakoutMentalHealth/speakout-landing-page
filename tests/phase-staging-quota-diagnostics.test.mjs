@@ -57,3 +57,9 @@ test("staging preflight blocks before deploying to staging when direct Firestore
   assert.match(source, /throw new Error\(/);
   assert.ok(workflow.indexOf("node tests/staging-capacity-preflight.mjs") < workflow.indexOf("Deploy branch Firestore rules to staging"));
 });
+
+test('streamed query error envelopes preserve safe quota fields without document data',()=>{
+ const body=[{document:{fields:{secret:'PRIVATE'}}},{error:{status:'RESOURCE_EXHAUSTED',message:'SECRET',details:[{'@type':'type.googleapis.com/google.rpc.ErrorInfo',reason:'RATE_LIMIT_EXCEEDED',metadata:{quota_limit:'ReadRequestsPerMinute'}}]}}];
+ assert.equal(firestoreQuotaDetail(body).reason,'RATE_LIMIT_EXCEEDED');
+ assert.doesNotMatch(firestoreQuotaSummary(body),/PRIVATE|SECRET/);
+});

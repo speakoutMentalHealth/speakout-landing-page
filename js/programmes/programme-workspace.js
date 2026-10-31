@@ -122,6 +122,7 @@ async function loadRoster(){
     roster.forEach(item => rosterMap.set(item.id,item));
   }catch(error){
     console.warn("Roster load failed",error);
+    throw new Error("The school roster could not load. Refresh this page to try again before assigning facilitators or students.", { cause:error });
   }
 }
 
