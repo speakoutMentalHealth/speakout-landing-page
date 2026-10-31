@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # Deploy the reviewed MindCheck source, never a moving cross-repository ref.
-  MINDCHECK_SOURCE: f44556dda8ce22f80c8f7d46e87c1ddc3cab0f67
+  MINDCHECK_SOURCE: 83a30410dd2200a812143e4933715c0420990502
   WRANGLER_SEND_METRICS: "false"
 
 jobs:
@@ -62,6 +62,9 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: speakoutMentalHealth/MindCheck
@@ -127,3 +130,11 @@ jobs:
           echo "MindCheck guide server was deployed with GUIDE_ENABLED=true; the Nigeria geographic restriction remains enforced."
           echo "The existing server secret was retained without reading its value."
           echo "Actual Gemini output requires a verified adult account with consent; anonymous CI checks do not prove generation."
+      - run: npm install --no-save --no-package-lock firebase-admin@13
+        working-directory: .
+      - name: Verify the live assessment explanation with a temporary synthetic adult
+        working-directory: .
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+          MINDCHECK_SMOKE_TOPIC: assessment
+        run: node scripts/mindcheck-production-smoke.mjs

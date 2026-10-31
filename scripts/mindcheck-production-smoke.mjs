@@ -18,7 +18,7 @@ try{
  const now=Math.floor(Date.now()/1000);
  await db.doc('mindcheckAdultAccess/'+uid).set({subject:uid,status:'active',ageBand:'adult',reviewerId:'synthetic-release-check',verificationMethod:'synthetic-release-check',verifiedAt:now,expiresAt:now+600});
  response=await post(api+'/v1/mindcheck/token',{consent:true},session.idToken);const issued=await response.json();if(!response.ok||!issued.token)throw Error('Verified synthetic token issuance failed.');
- response=await post(guide,{question:'mood',language:'en',adult:true},issued.token,'https://mindcheck.speakoutmentalhealth.org');const answer=await response.json();
+ response=await post(guide,{question:process.env.MINDCHECK_SMOKE_TOPIC||'mood',language:'en',adult:true},issued.token,'https://mindcheck.speakoutmentalhealth.org');const answer=await response.json();
  console.log('Live generated-answer check:',JSON.stringify({source:answer.source,reason:answer.reason||null}));
  if(answer.source!=='gemini')throw Error('Verified Gemini generation did not succeed; inspect the safe reason above.');
  await db.doc('mindcheckAdultAccess/'+uid).update({status:'revoked'});
