@@ -81,3 +81,8 @@ jobs:
           const data=await r.json();assert.equal(data.source,'prepared');assert.equal(data.reason,'authorization');
           console.log('Live guide denies anonymous generation.');
           JS
+      - run: npm install --no-save --no-package-lock firebase-admin@13
+      - name: Verify complete synthetic production journey
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPEAAKOUT_PORTAL }}
+        run: node scripts/mindcheck-production-smoke.mjs
