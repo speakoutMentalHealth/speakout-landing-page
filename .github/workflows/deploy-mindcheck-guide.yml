@@ -19,7 +19,7 @@ concurrency:
 
 env:
   # Deploy the reviewed MindCheck source, never a moving cross-repository ref.
-  MINDCHECK_SOURCE: 479566f632a293a84f5142c204b8cbb6d1064283
+  MINDCHECK_SOURCE: f44556dda8ce22f80c8f7d46e87c1ddc3cab0f67
   WRANGLER_SEND_METRICS: "false"
 
 jobs:
@@ -90,7 +90,7 @@ jobs:
           console.log('GEMINI_API_KEY binding exists. Its value was not read or displayed.');
           NODE
       - name: Enable the separate Nigeria/US guide pilot
-        run: npx wrangler deploy --var GUIDE_ENABLED:true
+        run: npx wrangler deploy --var GUIDE_ENABLED:true --var GUIDE_REQUIRE_ADULT_TOKEN:true
       - name: Check public contract from the CI region
         run: |
           node --input-type=module <<'NODE'
@@ -111,7 +111,8 @@ jobs:
           assert.equal(fallback.headers.get('Access-Control-Allow-Origin'), origin);
           const data = await fallback.json();
           console.log('Provider verification:', JSON.stringify({source:data.source,reason:data.reason||null}));
-          assert.equal(data.source, 'gemini', 'live provider generation must succeed in the permitted CI region');
+          assert.equal(data.source, 'prepared', 'anonymous users must receive prepared guidance');
+          assert.equal(data.reason, 'authorization');
           assert.equal(typeof data.answer, 'string');
           assert(data.answer.length >= 10 && data.answer.length <= 900);
           const invalid = await post({ ...selection, prompt: 'TEST_ONLY_PUBLIC_FIXTURE' });
@@ -125,4 +126,4 @@ jobs:
         run: |
           echo "MindCheck guide server was deployed with GUIDE_ENABLED=true; the Nigeria geographic restriction remains enforced."
           echo "The existing server secret was retained without reading its value."
-          echo "Actual Gemini output still requires a permitted Nigeria-origin user test; CI success alone is not proof of generation."
+          echo "Actual Gemini output requires a verified adult account with consent; anonymous CI checks do not prove generation."
