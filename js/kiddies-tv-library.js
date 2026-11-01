@@ -182,8 +182,7 @@ search.addEventListener('input',draw);age.addEventListener('change',draw);
 byId('browse-videos').addEventListener('click',()=>byId('explore').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'}));
 featureButton.addEventListener('click',()=>{if(featured)watch(featured,featureButton);});
 renderChips();featureButton.disabled=true;
-fetch('data/kiddies-tv-approved.json',{cache:'no-store'})
- .then(response=>{if(!response.ok)throw new Error('Video catalogue unavailable');return response.json();})
+import('./kiddies-tv-data.js').then(({loadKiddiesTvCatalogue})=>loadKiddiesTvCatalogue())
  .then(data=>{videos=Array.isArray(data)?data.filter(approved):[];draw();})
  .catch(()=>{videos=[];draw();empty.hidden=false;empty.textContent='The learning library is temporarily unavailable. Please try again later.';});
 })();
