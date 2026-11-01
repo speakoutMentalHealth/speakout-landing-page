@@ -10,7 +10,7 @@ const assert=require('node:assert/strict');
  mkdirSync(artifact,{recursive:true});
  const browser=await chromium.launch({headless:true});
  try{
-  for(const [device,viewport] of [['mobile',{width:390,height:844}],['desktop',{width:1440,height:900}]]){
+  for(const [device,viewport] of [['compact-phone',{width:320,height:780}],['mobile',{width:390,height:844}],['desktop',{width:1440,height:900}]]){
    const page=await browser.newPage({viewport,deviceScaleFactor:1});
    await page.route('https://kiddies.test/**',route=>{
     const name=new URL(route.request().url()).pathname.slice(1);
@@ -31,19 +31,32 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('#player').isHidden(),true,'player should not dominate initial page');
    assert.equal(await page.locator('.tile').count(),25,'no unreviewed candidates published');
    const assetLinks=await page.evaluate(()=>({css:[...document.querySelectorAll('link[rel="stylesheet"]')].map(n=>new URL(n.href).pathname),js:[...document.querySelectorAll('script[src]')].map(n=>new URL(n.src).pathname)}));
-   assert(assetLinks.css.includes('/css/kiddies-tv-cinema-20261101.css'),device+' needs fresh CSS URL');
-   assert(assetLinks.js.includes('/js/kiddies-tv-cinema-20261101.js'),device+' needs fresh JS URL');
+   assert(assetLinks.css.includes('/css/kiddies-tv-premium-20261101.css'),device+' needs fresh CSS URL');
+   assert(assetLinks.js.includes('/js/kiddies-tv-premium-20261101.js'),device+' needs fresh JS URL');
    assert(!assetLinks.css.includes('/css/kiddies-tv.css')&&!assetLinks.js.includes('/js/kiddies-tv-library.js'),device+' must not use stale URL');
    const rendered=await page.evaluate(()=>({searchBackground:getComputedStyle(document.querySelector('.search-field')).backgroundColor,navHome:getComputedStyle(document.querySelector('.nav-home')).display}));
-   if(device==='mobile') assert.equal(rendered.navHome,'none','mobile navigation must fit iPhone');
+   if(device!=='desktop') assert.equal(rendered.navHome,'none','mobile navigation must fit phone');
    assert.notEqual(rendered.searchBackground,'rgba(0, 0, 0, 0)','new CSS applies to search input');
    assert.equal(await page.locator('.rail-section').count(),5,'only nonempty subject shelves render');
    assert.equal(await page.locator('.chip').count(),7,'six subjects and All lessons');
    assert.equal(await page.locator('.hero.has-feature').count(),1,'feature must use approved content');
+   assert.match(await page.locator('#hero-image').getAttribute('src'),/mxzyANgHrS0/,'default spotlight must be an approved science video');
+   assert.equal(await page.locator('#hero-feature-count').textContent(),'01 / 03');
+   await page.locator('#hero-next').click();
+   assert.equal(await page.locator('#hero-feature-count').textContent(),'02 / 03');
+   assert.match(await page.locator('#hero-image').getAttribute('src'),/ZN2rjEVlsmc/,'next spotlight remains approved');
+   await page.locator('#hero-next').click();
+   await page.locator('#hero-next').click();
+   assert.equal(await page.locator('#hero-feature-count').textContent(),'01 / 03','feature cycles back to start');
    assert.equal(await page.locator('#surprise-video').isEnabled(),true);
    assert.equal(await page.locator('#stop-video-quick').count(),0);
    const width=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:innerWidth}));
    assert(width.scroll<=width.viewport+2,device+' horizontal page overflow: '+JSON.stringify(width));
+   const contentBounds=await page.evaluate(()=>{
+     const sel=['.hero','.hero-content','.hero-actions','.primary','.explore','.filter-bar'];
+     return sel.map(s=>{const r=document.querySelector(s).getBoundingClientRect();return {selector:s,left:r.left,right:r.right,width:r.width};});
+   });
+   assert(contentBounds.every(r=>r.left>=-2 && r.right<=viewport.width+2),device+' key controls clipped: '+JSON.stringify(contentBounds));
    await page.screenshot({path:path.join(artifact,device+'-home.png'),fullPage:true,animations:'disabled'});
    await page.locator('.tile-watch').first().click();
    await page.waitForSelector('#player-frame iframe');
