@@ -6,6 +6,7 @@ const groups=[
  ['Mathematics','Mathematics','Numbers, patterns and clever problem solving'],
  ['Science & Nature','Science & Nature','Explore the amazing world around us'],
  ['Life Skills','Life Skills','Everyday ideas for growing minds'],
+ ['Geography & Culture','Geography & Culture','Countries, capitals, maps and African heritage'],
  ['Coding & Digital Literacy','Coding & Digital Literacy','Create, code and learn digital skills']
 ];
 const validAges=['3-5','6-9','10-12','13-17'];
