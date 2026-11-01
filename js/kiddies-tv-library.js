@@ -1,17 +1,26 @@
 /* SpeakOut Kiddies TV: approved-only YouTube video discovery and in-page playback. */
 (()=>{'use strict';
 const groups=[
- ['English & Phonics','English & Phonics','Letters, sounds and the magic of reading'],
- ['English & Grammar','English & Grammar','Words, stories and confident communication'],
- ['Mathematics','Mathematics','Numbers, patterns and clever problem solving'],
- ['Science & Nature','Science & Nature','Explore the amazing world around us'],
- ['Life Skills','Life Skills','Everyday ideas for growing minds'],
- ['Geography & Culture','Geography & Culture','Countries, capitals, maps and African heritage'],
- ['Coding & Digital Literacy','Coding & Digital Literacy','Create, code and learn digital skills']
+ ['English & Phonics','English & Phonics','Letters, sounds and early reading'],
+ ['English & Grammar','English & Grammar','Spelling, vocabulary, writing and communication'],
+ ['Literature & Storytelling','Literature & Storytelling','Stories, folktales, poems and drama'],
+ ['Mathematics','Mathematics','Numbers, geometry, algebra and problem solving'],
+ ['Science & Nature','Science & Nature','Biology, chemistry, physics and discovery'],
+ ['Geography & Culture','Geography & Culture','Nigeria, Africa, the world, maps and heritage'],
+ ['Nigerian History & Citizenship','Nigerian History & Citizenship','Our shared history and civic responsibility'],
+ ['Nigerian Languages','Nigerian Languages','Hausa, Igbo, Yoruba and local language learning'],
+ ['Coding & Digital Literacy','Coding & Digital Literacy','Scratch, Python, web creation and online safety'],
+ ['Creative Arts & Music','Creative Arts & Music','Drawing, music, dance and creative expression'],
+ ['Health & Wellbeing','Health & Wellbeing','Nutrition, hygiene, feelings and personal safety'],
+ ['Life Skills','Life Skills','Friendships, communication and everyday choices'],
+ ['Business & Financial Literacy','Business & Financial Literacy','Money, savings and entrepreneurship'],
+ ['Agriculture & Environment','Agriculture & Environment','Farming, plants, food systems and the environment'],
+ ['Sports & Movement','Sports & Movement','Fitness, movement, play and teamwork'],
+ ['Practical Skills & Careers','Practical Skills & Careers','Trades, making things and future pathways']
 ];
 const validAges=['3-5','6-9','10-12','13-17'];
 const byId=id=>document.getElementById(id);
-const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count'),teenStatus=byId('teen-review-status'),subjectStatus=byId('subject-review-status');
+const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count'),teenStatus=byId('teen-review-status'),subjectStatus=byId('subject-review-status'),caregiverStatus=byId('caregiver-status');
 const player=byId('player'),frame=byId('player-frame'),title=byId('player-title'),description=byId('player-description');
 const hero=document.querySelector('.hero'),heroImage=byId('hero-image'),heroArtwork=byId('hero-artwork'),heroTitle=byId('hero-title'),heroCategory=byId('hero-category'),heroDescription=byId('hero-description'),featureButton=byId('surprise-video'),featureNext=byId('hero-next'),featureCount=byId('hero-feature-count');
 let videos=[],subject='',lastTrigger=null,featured=null,spotlight=[],spotlightIndex=0;
@@ -133,17 +142,17 @@ function draw(){
   if(matching.length)fragment.append(makeSection(groups[i],matching,allSubjects?i+1:i));
  }
  catalog.replaceChildren(fragment);
- const teenCollectionPending=age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'));
+ const caregiverSelected=age.value==='0-2';
+ caregiverStatus.hidden=!caregiverSelected;
+ const teenCollectionPending=!caregiverSelected&&age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'));
  teenStatus.hidden=!teenCollectionPending;
- const pendingSubject=matches.length===0&&(subject==='Geography & Culture'||subject==='Coding & Digital Literacy');
+ const pendingSubject=!caregiverSelected&&matches.length===0&&Boolean(subject)&&!search.value.trim();
  subjectStatus.hidden=!pendingSubject;
  if(pendingSubject){
-  byId('subject-review-title').textContent=subject==='Geography & Culture'?'Explore Africa, Nigeria and the world.':'Make something brilliant with code.';
-  byId('subject-review-description').textContent=subject==='Geography & Culture'
-   ?'Our Nigerian states, African countries and world-capitals lessons are being reviewed for accuracy and age suitability.'
-   :'Scratch, block coding and teen Python projects are being checked before appearing in this collection.';
+  byId('subject-review-title').textContent=subject+' · New lessons in review';
+  byId('subject-review-description').textContent='We are checking age suitability, accuracy, captions and mobile playback before publishing new lessons in this subject.';
  }
- empty.hidden=matches.length>0||teenCollectionPending||pendingSubject;
+ empty.hidden=matches.length>0||teenCollectionPending||pendingSubject||caregiverSelected;
  counter.textContent=matches.length+' learning video'+(matches.length===1?'':'s');
  paintHero(matches);
 }

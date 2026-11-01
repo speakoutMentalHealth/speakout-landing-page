@@ -1,0 +1,247 @@
+{
+  "version": "2026-11-01",
+  "status": "staged_pending_replacement_review",
+  "curriculumBasis": [
+    "https://www.nerdc.gov.ng/content_manager/new_curriculum_home.html",
+    "https://nerdc.gov.ng/content_manager/pdf_files/Basic%20and%20Senior%20Secondary%20Education%20Curriculum%20Offerings.pdf",
+    "https://nerdc.gov.ng/content_manager/Press%20Release%20On%20New%20FG%20Curriculum.pdf"
+  ],
+  "ageBands": [
+    {
+      "id": "0-2",
+      "label": "0–2 years · Caregiver guidance",
+      "type": "caregiver_only",
+      "allowYouTube": false,
+      "goal": "Bonding, talking, reading, singing and responsive play; no autoplay or video recommendations."
+    },
+    {
+      "id": "3-5",
+      "label": "3–5 years · Early years",
+      "type": "video_with_caregiver",
+      "allowYouTube": true,
+      "goal": "Language, numbers, shapes, feelings, music and joyful exploration."
+    },
+    {
+      "id": "6-9",
+      "label": "6–9 years · Primary foundations",
+      "type": "video",
+      "allowYouTube": true,
+      "goal": "Reading, number sense, science, Nigerian culture and digital basics."
+    },
+    {
+      "id": "10-12",
+      "label": "10–12 years · Upper primary",
+      "type": "video",
+      "allowYouTube": true,
+      "goal": "Reading comprehension, problem solving, geography, Scratch and practical science."
+    },
+    {
+      "id": "13-17",
+      "label": "13–17 years · Secondary school",
+      "type": "video",
+      "allowYouTube": true,
+      "goal": "JSS/SSS learning, critical thinking, exam skills, coding, literature and careers."
+    }
+  ],
+  "subjects": [
+    {
+      "id": "English & Phonics",
+      "description": "Reading sounds, letters and early literacy",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9"
+      ]
+    },
+    {
+      "id": "English & Grammar",
+      "description": "Communication, vocabulary, spelling, writing and grammar",
+      "priority": "core",
+      "ageBands": [
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Literature & Storytelling",
+      "description": "Stories, African folktales, poetry, drama and literary analysis",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Mathematics",
+      "description": "Counting, fractions, algebra, geometry and WAEC mathematics",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Science & Nature",
+      "description": "Natural sciences, biology, chemistry, physics and experiments",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Geography & Culture",
+      "description": "Nigeria states and capitals, Africa, world maps, flags and cultures",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Nigerian History & Citizenship",
+      "description": "Nigerian history, civic responsibility and cultural heritage",
+      "priority": "core",
+      "ageBands": [
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Nigerian Languages",
+      "description": "Hausa, Igbo, Yoruba, Pidgin and language appreciation",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Coding & Digital Literacy",
+      "description": "Digital safety, Scratch, Python, web development and tech projects",
+      "priority": "core",
+      "ageBands": [
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Creative Arts & Music",
+      "description": "Drawing, music, drama, dance, design and cultural creativity",
+      "priority": "enrichment",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Health & Wellbeing",
+      "description": "Physical health, nutrition, hygiene, emotions and age-appropriate safety",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Life Skills",
+      "description": "Social skills, problem solving, decision making and communication",
+      "priority": "core",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Business & Financial Literacy",
+      "description": "Money, savings, enterprise and economics for older learners",
+      "priority": "enrichment",
+      "ageBands": [
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Agriculture & Environment",
+      "description": "Plants, food systems, farming, conservation and climate",
+      "priority": "enrichment",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Sports & Movement",
+      "description": "Movement, play, fitness, teamwork and healthy habits",
+      "priority": "enrichment",
+      "ageBands": [
+        "3-5",
+        "6-9",
+        "10-12",
+        "13-17"
+      ]
+    },
+    {
+      "id": "Practical Skills & Careers",
+      "description": "Trades, careers, entrepreneurship and hands-on projects",
+      "priority": "enrichment",
+      "ageBands": [
+        "10-12",
+        "13-17"
+      ]
+    }
+  ],
+  "sourcePolicy": {
+    "publicApprovedOnly": true,
+    "reviewRequirements": [
+      "fullWatch",
+      "factualAccuracy",
+      "ageSuitability",
+      "languageAndCaptions",
+      "sponsorsAndEndCards",
+      "embedSafari",
+      "embedAndroid",
+      "namedReviewerAndDate"
+    ],
+    "verifyCurrentCapitals": true,
+    "doNotUseMutablePlaylists": true
+  },
+  "cutoverCriteria": {
+    "minUniqueNewVideos": 40,
+    "minPerVideoAgeBand": 8,
+    "requiredSubjects": [
+      "English & Phonics",
+      "English & Grammar",
+      "Literature & Storytelling",
+      "Mathematics",
+      "Science & Nature",
+      "Geography & Culture",
+      "Coding & Digital Literacy",
+      "Health & Wellbeing"
+    ],
+    "allNewVideosFullyReviewed": true,
+    "existingPublicCatalogueRetainedUntilReady": true
+  }
+}

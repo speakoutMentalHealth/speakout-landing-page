@@ -3,7 +3,7 @@
 const title=document.getElementById('watch-title'),desc=document.getElementById('watch-description'),box=document.getElementById('watch-video'),status=document.getElementById('watch-status'),full=document.getElementById('watch-fullscreen'),land=document.getElementById('watch-landscape');
 const id=new URLSearchParams(location.search).get('v')||'';
 const validId=/^[A-Za-z0-9_-]{11}$/.test(id);
-const groups=new Set(['English & Phonics','English & Grammar','Mathematics','Science & Nature','Life Skills','Geography & Culture','Coding & Digital Literacy']);
+const groups=new Set(['English & Phonics','English & Grammar','Literature & Storytelling','Mathematics','Science & Nature','Geography & Culture','Nigerian History & Citizenship','Nigerian Languages','Coding & Digital Literacy','Creative Arts & Music','Health & Wellbeing','Life Skills','Business & Financial Literacy','Agriculture & Environment','Sports & Movement','Practical Skills & Careers']);
 const ages=new Set(['3-5','6-9','10-12','13-17']);
 const approved=v=>v&&v.approved===true&&typeof v.title==='string'&&v.title.length<=160&&v.youtubeId===id&&groups.has(v.category)&&Array.isArray(v.ages)&&v.ages.length>0&&v.ages.every(a=>ages.has(a));
 let theatre=false;
