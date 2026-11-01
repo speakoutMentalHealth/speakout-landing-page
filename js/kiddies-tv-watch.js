@@ -1,6 +1,6 @@
 /* Dedicated, approved-only Kiddies TV viewing page. No access to general TV catalogue. */
 (()=>{'use strict';
-const title=document.getElementById('watch-title'),desc=document.getElementById('watch-description'),box=document.getElementById('watch-video'),status=document.getElementById('watch-status'),full=document.getElementById('watch-fullscreen'),land=document.getElementById('watch-landscape');
+const title=document.getElementById('watch-title'),desc=document.getElementById('watch-description'),box=document.getElementById('watch-video'),status=document.getElementById('watch-status'),full=document.getElementById('watch-fullscreen'),land=document.getElementById('watch-landscape'),stop=document.getElementById('watch-stop');
 const params=new URLSearchParams(location.search),id=params.get('v')||'';
 const validId=/^[A-Za-z0-9_-]{11}$/.test(id);
 const groups=new Set(['English & Phonics','English & Grammar','Mathematics','Science & Nature','Life Skills']);
@@ -12,7 +12,7 @@ fetch('data/kiddies-tv-approved.json',{cache:'no-store'}).then(r=>{if(!r.ok)thro
 const video=Array.isArray(data)?data.find(approved):null;if(!video){fail();return;}
 const report=document.createElement('button');report.type='button';report.className='video-report';report.textContent='Report this video';report.dataset.reportVideo=video.youtubeId;report.dataset.reportTitle=video.title;document.querySelector('.watch-actions').append(report);title.textContent=video.title;desc.textContent=(video.description||video.category)+' · Ages '+video.ages.join(', ');
 const iframe=document.createElement('iframe');iframe.title=video.title;iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';iframe.allowFullscreen=true;iframe.setAttribute('webkitallowfullscreen','');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0&autoplay=0&playsinline=1';box.replaceChildren(iframe);
-full.disabled=false;land.disabled=false;status.textContent='Use Full screen for an immersive view, or rotate your device for landscape.';
+full.disabled=false;land.disabled=false;stop.hidden=false;status.textContent='Use Full screen for an immersive view, or rotate your device for landscape.';
 }).catch(fail);
 let theatre=false;
 function setTheatre(enabled){
@@ -23,6 +23,14 @@ function setTheatre(enabled){
   land.setAttribute('aria-pressed',String(enabled));
   status.textContent=enabled?'Landscape viewing mode active. Tap Exit landscape view to return.':'Portrait viewing restored.';
 }
+stop.addEventListener('click',()=>{
+  if(theatre)setTheatre(false);
+  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+  const placeholder=document.createElement('div');placeholder.className='kids-placeholder';
+  placeholder.textContent='Video stopped. Return to SpeakOut Kiddies TV for another lesson.';
+  box.replaceChildren(placeholder);full.disabled=true;land.disabled=true;stop.hidden=true;
+  status.textContent='Playback stopped. Choose More learning videos to select another lesson.';
+});
 full.addEventListener('click',async()=>{
   if(theatre){setTheatre(false);return;}
   try{
