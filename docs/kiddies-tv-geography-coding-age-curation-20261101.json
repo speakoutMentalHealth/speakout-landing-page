@@ -1,0 +1,603 @@
+{
+  "batchId": "GEOGRAPHY-CODING-2026-11-01",
+  "intent": "Country and capital learning plus hands-on coding by age, using submitted videos as directional examples",
+  "ageTracks": {
+    "younger": [
+      "3-5",
+      "6-9",
+      "10-12"
+    ],
+    "secondary": [
+      "13-17"
+    ]
+  },
+  "publicationPolicy": "separate explicit approval after full review",
+  "candidates": [
+    {
+      "reviewId": "GEO-CODE-01",
+      "youtubeId": "G0F2PiVP_FI",
+      "titleWorking": "Sing and learn all the African countries",
+      "publisherExpected": "Bino and Fino",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "3-5",
+        "6-9"
+      ],
+      "discoverySource": "user_sample",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=G0F2PiVP_FI",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-02",
+      "youtubeId": "kB7qOJT5x1A",
+      "titleWorking": "Africa Song and educational kids songs",
+      "publisherExpected": "Kunda & Friends",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "3-5",
+        "6-9"
+      ],
+      "discoverySource": "user_sample",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=kB7qOJT5x1A",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-03",
+      "youtubeId": "53K2jjPjdds",
+      "titleWorking": "Across Africa: countries and cultures",
+      "publisherExpected": "Buki Kids",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "3-5",
+        "6-9"
+      ],
+      "discoverySource": "user_sample",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=53K2jjPjdds",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-04",
+      "youtubeId": "Dl6vJBM4GUw",
+      "titleWorking": "Africa Song: 54 countries",
+      "publisherExpected": "Gracie's Corner",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "3-5",
+        "6-9"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=Dl6vJBM4GUw",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-05",
+      "youtubeId": "0IDi5qzCj9E",
+      "titleWorking": "States and Capitals — lyrics video",
+      "publisherExpected": "Proudly Naija After School Club",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=0IDi5qzCj9E",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-06",
+      "youtubeId": "XmgmbwyPZsM",
+      "titleWorking": "36 States and Capitals of Nigeria",
+      "publisherExpected": "Obillion Kiddies TV",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=XmgmbwyPZsM",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-07",
+      "youtubeId": "CPXaz44AKac",
+      "titleWorking": "Africa Map and Countries of Africa",
+      "publisherExpected": "Kiddopedia",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=CPXaz44AKac",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-08",
+      "youtubeId": "RX0R3xL0Mac",
+      "titleWorking": "Countries, flags and capitals for kids",
+      "publisherExpected": "Play Laugh Learn",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=RX0R3xL0Mac",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-09",
+      "youtubeId": "VroOSToSNx8",
+      "titleWorking": "How to Code in Scratch — Code Along Jr 1",
+      "publisherExpected": "Black Girls Code",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=VroOSToSNx8",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-10",
+      "youtubeId": "8eUmsALu4Gw",
+      "titleWorking": "How to Code a Game in Scratch — Code Along Jr 2",
+      "publisherExpected": "Black Girls Code",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "10-12"
+      ],
+      "discoverySource": "existing_review_lead",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=8eUmsALu4Gw",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-11",
+      "youtubeId": "j-3eArinB7E",
+      "titleWorking": "What Is Coding for Kids?",
+      "publisherExpected": "LearningMole",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "user_playlist",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=j-3eArinB7E",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-12",
+      "youtubeId": "hxeLsf5arBg",
+      "titleWorking": "What Is Block-Based Coding?",
+      "publisherExpected": "LearningMole",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "user_playlist",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=hxeLsf5arBg",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-13",
+      "youtubeId": "GrzHN047UiY",
+      "titleWorking": "African countries and capitals for kids",
+      "publisherExpected": "Bessem and Neba",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "10-12",
+        "13-17"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=GrzHN047UiY",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": true,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-14",
+      "youtubeId": "1IW8vsJ4RJ8",
+      "titleWorking": "African capitals and flags",
+      "publisherExpected": "Kiddopedia",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "10-12",
+        "13-17"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=1IW8vsJ4RJ8",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": true,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-15",
+      "youtubeId": "ilofMqJ21Ec",
+      "titleWorking": "Africa Geography / African Countries Song",
+      "publisherExpected": "KLT",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "10-12",
+        "13-17"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=ilofMqJ21Ec",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": true,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-16",
+      "youtubeId": "0bM_eYpLQ20",
+      "titleWorking": "Countries and Capitals of the World",
+      "publisherExpected": "Kiddopedia",
+      "category": "Geography & Culture",
+      "proposedAges": [
+        "13-17"
+      ],
+      "discoverySource": "educator_page",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=0bM_eYpLQ20",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": true,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-17",
+      "youtubeId": "e_vj0YllVo4",
+      "titleWorking": "Build a Python game — Code Along Season 5",
+      "publisherExpected": "Black Girls Code",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "13-17"
+      ],
+      "discoverySource": "publisher_video",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=e_vj0YllVo4",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-18",
+      "youtubeId": "kQUcVMSgjq0",
+      "titleWorking": "What Is an Algorithm?",
+      "publisherExpected": "LearningMole",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "10-12",
+        "13-17"
+      ],
+      "discoverySource": "user_playlist",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=kQUcVMSgjq0",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    },
+    {
+      "reviewId": "GEO-CODE-19",
+      "youtubeId": "w0PuL73lMQc",
+      "titleWorking": "Coding words for beginners",
+      "publisherExpected": "LearningMole",
+      "category": "Coding & Digital Literacy",
+      "proposedAges": [
+        "6-9",
+        "10-12"
+      ],
+      "discoverySource": "user_playlist",
+      "sourceYouTubeUrl": "https://www.youtube.com/watch?v=w0PuL73lMQc",
+      "verification": {
+        "oEmbedTitle": null,
+        "oEmbedChannel": null,
+        "available": null,
+        "checkedAt": null,
+        "realIframePlayback": null,
+        "fullWatch": false,
+        "captions": null,
+        "accuracy": null,
+        "ageSuitability": null,
+        "adAndEndScreenReviewed": null,
+        "mobileSafari": null,
+        "mobileAndroid": null,
+        "reviewer": null,
+        "decision": "pending_full_video_review"
+      },
+      "requiresCurrentCapitalFactCheck": false,
+      "approved": false
+    }
+  ]
+}
