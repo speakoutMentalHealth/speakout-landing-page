@@ -25,13 +25,21 @@ jobs:
           response="$(curl --fail --silent --show-error "${auth[@]}" "${api}")"
           status="$(printf '%s' "${response}" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("status","unknown"))')"
           echo "Pages deployment ${STUCK_PAGES_SHA} status: ${status}"
-          if [[ "${status}" == "succeed" || "${status}" == "success" || "${status}" == "cancelled" ]]; then
-            echo "Deployment is terminal; refusing to cancel a completed release."
+          # GitHub Pages reports "succeed" for this SHA, but three subsequent
+          # deployment attempts were rejected because this exact SHA still owns
+          # the backend in-progress lock. Explicitly cancel ONLY this SHA.
+          if [[ "${status}" == "cancelled" ]]; then
+            echo "Stale deployment was already cancelled."
             exit 0
           fi
-          if [[ "${status}" != "in_progress" && "${status}" != "pending" && "${status}" != "queued" ]]; then
+          if [[ "${status}" != "succeed" && "${status}" != "success" && "${status}" != "in_progress" && "${status}" != "pending" && "${status}" != "queued" ]]; then
             echo "::error::Unexpected Pages deployment status ${status}; no cancellation performed."
             exit 1
           fi
-          curl --fail --silent --show-error -X POST "${auth[@]}" "${api}/cancel"
-          echo "Cancelled only the stuck Pages deployment ${STUCK_PAGES_SHA}."
+          result="$(curl --silent --show-error -o /tmp/pages-cancel-response -w '%{http_code}' -X POST "${auth[@]}" "${api}/cancel")"
+          if [[ "${result}" != "204" ]]; then
+            echo "::error::Pages cancel returned HTTP ${result} (expected 204)."
+            cat /tmp/pages-cancel-response
+            exit 1
+          fi
+          echo "Cancelled the stale Pages backend lock for ${STUCK_PAGES_SHA} (HTTP 204)."
