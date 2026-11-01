@@ -1,0 +1,37 @@
+name: Clear stuck GitHub Pages deployment (one-time)
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kiddies-tv-pages-recovery.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect and cancel only the known stuck Pages deployment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STUCK_PAGES_SHA: 5c2a3bd4e329f5ca19e1359986abff13e7bac12b
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/${STUCK_PAGES_SHA}"
+          auth=(-H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GH_TOKEN}" -H "X-GitHub-Api-Version: 2026-03-10")
+          response="$(curl --fail --silent --show-error "${auth[@]}" "${api}")"
+          status="$(printf '%s' "${response}" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("status","unknown"))')"
+          echo "Pages deployment ${STUCK_PAGES_SHA} status: ${status}"
+          if [[ "${status}" == "succeed" || "${status}" == "success" || "${status}" == "cancelled" ]]; then
+            echo "Deployment is terminal; refusing to cancel a completed release."
+            exit 0
+          fi
+          if [[ "${status}" != "in_progress" && "${status}" != "pending" && "${status}" != "queued" ]]; then
+            echo "::error::Unexpected Pages deployment status ${status}; no cancellation performed."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "${auth[@]}" "${api}/cancel"
+          echo "Cancelled only the stuck Pages deployment ${STUCK_PAGES_SHA}."
