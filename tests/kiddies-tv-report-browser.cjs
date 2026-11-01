@@ -29,7 +29,8 @@ const {chromium}=require('playwright'),{readFileSync}=require('node:fs'),path=re
   await page.locator('#close-video').click();
   assert.equal(await page.locator('#surprise-video').isDisabled(),true);
   assert.equal(await page.locator('#player-frame iframe').count(),0);
-  assert.equal(await page.locator('#empty').isVisible(),true);
+  assert.equal(await page.locator('#empty').isHidden(),true);
+  assert.equal(await page.locator('#teen-review-status').isVisible(),true);
   await page.goto('https://kiddies.test/kiddies-tv-watch.html?v=xg4_gWt8N_Q');
   await page.waitForSelector('[data-report-video]');
   await page.locator('[data-report-video]').click();
