@@ -40,3 +40,17 @@ No public unreviewed videos, no off-site curated outbound watch links inside the
 ## Next batch
 
 After approvals, add missing teenager-friendly digital literacy, study skills, career exploration, and life skills content by verified African and Nigerian educational creators. Continue the existing 33-lead African discovery pool without treating all leads as playable or appropriate for teens.
+
+## November 1 YouTube metadata check
+
+The independent GitHub Actions [YouTube metadata preflight](https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271) queried the nine individual video IDs through YouTube's oEmbed endpoint. **All nine IDs returned a video title and channel**. This validates metadata only, not full audiovisual suitability or working embeds in Safari/Android. Exact titles and channel names were recorded in the review batch. AFR-26 was attributed to **The uLesson Group** by YouTube's metadata, though content review remains open.
+
+After the reviewer records all checklist fields, explicitly sets `review.decision` to `approved`, adds `review.publicDescription` (15–250 characters), and verifies `youtubeMetadata.embeddable=true`, run:
+
+```bash
+node scripts/kiddies-tv-promote-reviewed-teen.mjs
+node scripts/kiddies-tv-promote-reviewed-teen.mjs --apply
+npm test
+```
+
+The first command is dry-run; `--apply` updates the **local working tree** only after every required check passes. It never deploys or self-approves; a separate reviewed PR and production validation are still required. As of this run, **0 candidates pass the full approval gate**, so `--apply` makes no changes.
