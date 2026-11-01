@@ -75,8 +75,8 @@ test('Studio exposes workflow panels, stages imports as drafts and writes audit 
  const admin=readFileSync('js/kiddies-tv-admin.js','utf8');
  for(const id of ['bulk-file','bulk-text','bulk-preview','bulk-submit','review-queue','coverage-body','audit-list','audit-more'])
   assert(html.includes('id="'+id+'"'),id+' missing');
- assert(html.includes('js/kiddies-tv-admin.js?v=studio-phase3-20261101'));
- assert(html.includes('css/kiddies-tv-admin.css?v=studio-phase3-20261101'));
+ assert(html.includes('js/kiddies-tv-admin-phase3-20261101.js'));
+ assert(html.includes('css/kiddies-tv-admin-phase3-20261101.css'));
  assert(admin.includes('previewBulkImport('));
  assert(admin.includes('await runTransaction(db,async transaction=>'));
  assert(admin.includes("action:'bulk_import_draft'"));
