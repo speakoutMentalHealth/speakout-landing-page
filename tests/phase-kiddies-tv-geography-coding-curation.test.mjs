@@ -31,8 +31,8 @@ test('Geography & Culture is supported by both live views without publishing unr
  assert(library.includes("['Geography & Culture','Geography & Culture'"));
  assert(watch.includes("'Geography & Culture'"));
  assert(library.includes("v.approved===true")&&watch.includes("v.approved===true"));
- assert(html.includes('js/kiddies-tv-geography-20261101.js'));
- assert(watchHtml.includes('js/kiddies-tv-watch-geography-20261101.js'));
- assert.equal(readFileSync('js/kiddies-tv-geography-20261101.js','utf8'),library);
- assert.equal(readFileSync('js/kiddies-tv-watch-geography-20261101.js','utf8'),watch);
+ assert(html.includes('js/kiddies-tv-curriculum-20261101.js'));
+ assert(watchHtml.includes('js/kiddies-tv-watch-curriculum-20261101.js'));
+ assert.equal(readFileSync('js/kiddies-tv-curriculum-20261101.js','utf8'),library);
+ assert.equal(readFileSync('js/kiddies-tv-watch-curriculum-20261101.js','utf8'),watch);
 });
