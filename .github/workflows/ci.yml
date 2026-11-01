@@ -51,4 +51,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run Firestore emulator security tests
-        run: npx --yes firebase-tools@latest emulators:exec --project demo-speakout-rules --only firestore "node --test tests/firestore-rules.emulator.test.mjs"
+        run: npx --yes firebase-tools@latest emulators:exec --project demo-speakout-rules --only firestore "node --test tests/firestore-rules.emulator.test.mjs tests/kiddies-tv-rules.emulator.test.mjs"
