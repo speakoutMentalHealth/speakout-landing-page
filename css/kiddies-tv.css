@@ -32,3 +32,11 @@ body>.speakout-account .speakout-account-action:hover{background:#234e58}
 body>.speakout-account .speakout-account-status:not(:empty){background:#0d2434;border:1px solid #416374;border-radius:9px;padding:8px;color:#e4f3ff}
 @media(max-width:680px){.header-actions{margin-right:58px}body>.speakout-account{top:11px;right:14px}body>.speakout-account .speakout-account-action{min-height:39px;padding:8px 10px;font-size:.7rem}}
 @media(max-width:350px){.header-actions{margin-right:50px}.header-actions .nav-link:first-child{display:none}}
+
+/* iOS Safari: prevent automatic text inflation in the featured section and
+   keep flex/grid content within the phone viewport. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.header-inner,.header-actions,.hero-content,.explore-intro,.section-head{min-width:0}
+.hero-content{overflow-wrap:break-word}
+.hero h1,.hero-description{max-width:100%;overflow-wrap:break-word}
+@media(max-width:680px){.header-actions{flex:0 1 auto}.hero-content{min-width:0}.hero-eyebrow{max-width:100%;white-space:normal}.hero-trust{flex-wrap:wrap}.hero-actions{width:100%}.hero-actions>*{max-width:100%}}
