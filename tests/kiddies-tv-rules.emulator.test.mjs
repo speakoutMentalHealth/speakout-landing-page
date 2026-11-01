@@ -1,7 +1,7 @@
 import {before,after,beforeEach,test} from 'node:test';
 import {readFileSync} from 'node:fs';
 import {initializeTestEnvironment,assertFails,assertSucceeds} from '@firebase/rules-unit-testing';
-import {collection,doc,getDoc,getDocs,query,where,setDoc,updateDoc,deleteDoc} from 'firebase/firestore';
+import {collection,doc,getDoc,getDocs,query,where,setDoc,updateDoc,deleteDoc,serverTimestamp} from 'firebase/firestore';
 const projectId='demo-kiddies-tv-admin';
 let env;
 const sample=(status='draft')=>({
@@ -58,4 +58,23 @@ test('Public config read is allowed but only admin can hide legacy video IDs',as
  await assertSucceeds(getDoc(doc(anon,'kiddiesTvConfig/live')));
  await assertFails(updateDoc(doc(learner,'kiddiesTvConfig/live'),{hiddenLegacyIds:[]}));
  await assertFails(deleteDoc(doc(admin,'kiddiesTvConfig/live')));
+});
+
+test('Kiddies editorial audit is append-only, admin-only and actor-bound',async()=>{
+ const admin=env.authenticatedContext('admin-k').firestore();
+ const learner=env.authenticatedContext('student-k').firestore();
+ const guest=env.unauthenticatedContext().firestore();
+ const id='abcdefghijklmnopqrst';
+ const ref=doc(admin,'kiddiesTvAudit',id);
+ const event={youtubeId:'G0F2PiVP_FI',action:'create_draft',actorUid:'admin-k',
+   at:serverTimestamp(),previousStatus:'none',nextStatus:'draft',
+   title:'African Countries for Kids',batchId:''};
+ await assertFails(setDoc(doc(learner,'kiddiesTvAudit/abcdefghijklmnopqrst'),event));
+ await assertSucceeds(setDoc(ref,event));
+ await assertFails(getDoc(doc(guest,'kiddiesTvAudit',id)));
+ await assertFails(getDoc(doc(learner,'kiddiesTvAudit',id)));
+ await assertSucceeds(getDoc(ref));
+ await assertFails(updateDoc(ref,{action:'publish'}));
+ await assertFails(deleteDoc(ref));
+ await assertFails(setDoc(doc(admin,'kiddiesTvAudit','abcdefghijklmnopqrsu'),{...event,actorUid:'student-k'}));
 });
