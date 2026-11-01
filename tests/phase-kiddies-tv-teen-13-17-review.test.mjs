@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
 const load=path=>JSON.parse(readFileSync(path,'utf8'));
 const candidates=load('docs/kiddies-tv-teen-13-17-review-batch.json');
 const publicVideos=load('data/kiddies-tv-approved.json');
@@ -31,4 +32,13 @@ test('Teen collection status is honest, and ageing filter automatically supports
  assert(app.includes('teenStatus.hidden=!teenCollectionPending'));
  assert(app.includes('v.approved===true'));
  assert(!html.includes('AFR-31')&&!html.includes('unreviewed candidate'));
+});
+
+test('Teen promotion remains a no-op without named full-video approvals',()=>{
+ const before=readFileSync('data/kiddies-tv-approved.json','utf8');
+ const report=execFileSync(process.execPath,['scripts/kiddies-tv-promote-reviewed-teen.mjs'],{encoding:'utf8'});
+ assert.match(report,/Passed complete review gates: 0 of 9 candidates/);
+ assert.match(report,/Dry run: no files changed/);
+ const after=readFileSync('data/kiddies-tv-approved.json','utf8');
+ assert.equal(after,before);
 });
