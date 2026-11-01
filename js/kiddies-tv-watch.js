@@ -10,7 +10,7 @@ function fail(){title.textContent='Lesson unavailable';desc.textContent='This le
 if(!validId){fail();return;}
 fetch('data/kiddies-tv-approved.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('catalogue unavailable');return r.json()}).then(data=>{
 const video=Array.isArray(data)?data.find(approved):null;if(!video){fail();return;}
-title.textContent=video.title;desc.textContent=(video.description||video.category)+' · Ages '+video.ages.join(', ');
+const report=document.createElement('button');report.type='button';report.className='video-report';report.textContent='Report this video';report.dataset.reportVideo=video.youtubeId;report.dataset.reportTitle=video.title;document.querySelector('.watch-actions').append(report);title.textContent=video.title;desc.textContent=(video.description||video.category)+' · Ages '+video.ages.join(', ');
 const iframe=document.createElement('iframe');iframe.title=video.title;iframe.loading='eager';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';iframe.allowFullscreen=true;iframe.setAttribute('webkitallowfullscreen','');iframe.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0&autoplay=0&playsinline=1';box.replaceChildren(iframe);
 full.disabled=false;land.disabled=false;status.textContent='Use Full screen for an immersive view, or rotate your device for landscape.';
 }).catch(fail);

@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Algebra: Linear equations 1",
+    "youtubeId": "bAerID24QJ0",
+    "source": "Khan Academy",
+    "category": "Mathematics",
+    "ages": [
+      "13-17"
+    ],
+    "learningGoal": "Solve linear equations; useful for secondary-school algebra.",
+    "approved": false,
+    "reviewStatus": "pending_full_video_and_playback_review",
+    "discoveredAt": "2026-11-01",
+    "reviewer": null,
+    "reviewedAt": null
+  },
+  {
+    "title": "What Is Photosynthesis? | Biology | FuseSchool",
+    "youtubeId": "CL9A8YhwUps",
+    "source": "FuseSchool",
+    "category": "Science & Nature",
+    "ages": [
+      "13-17"
+    ],
+    "learningGoal": "Understand photosynthesis and connect it to crops, farming and food systems.",
+    "approved": false,
+    "reviewStatus": "pending_full_video_and_playback_review",
+    "discoveredAt": "2026-11-01",
+    "reviewer": null,
+    "reviewedAt": null
+  },
+  {
+    "title": "What Most Schools Don’t Teach",
+    "youtubeId": "nKIu9yen5nc",
+    "source": "Code.org",
+    "category": "Life Skills",
+    "ages": [
+      "13-17"
+    ],
+    "learningGoal": "Explore computer programming and discuss locally useful technology projects.",
+    "approved": false,
+    "reviewStatus": "pending_full_video_and_playback_review",
+    "discoveredAt": "2026-11-01",
+    "reviewer": null,
+    "reviewedAt": null
+  }
+]
