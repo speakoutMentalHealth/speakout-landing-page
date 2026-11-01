@@ -24,6 +24,7 @@ const assert=require('node:assert/strict');
      route.fulfill({body:readFileSync(path.join(root,name)),contentType:type});
     }catch{route.fulfill({status:404,body:''});}
    });
+   await page.route('https://firestore.googleapis.com/**',route=>route.fulfill({status:404,headers:{'access-control-allow-origin':'*'},body:'{}',contentType:'application/json'}));
    await page.route('https://i.ytimg.com/**',route=>route.abort());
    await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({body:'<!doctype html><title>Mock video</title>',contentType:'text/html'}));
    await page.goto('https://kiddies.test/kiddies-tv.html');
@@ -32,7 +33,7 @@ const assert=require('node:assert/strict');
    assert.equal(await page.locator('.tile').count(),30,'the five owner-approved teen lessons must be published');
    const assetLinks=await page.evaluate(()=>({css:[...document.querySelectorAll('link[rel="stylesheet"]')].map(n=>new URL(n.href).pathname),js:[...document.querySelectorAll('script[src]')].map(n=>new URL(n.src).pathname)}));
    assert(assetLinks.css.includes('/css/kiddies-tv-curriculum-20261101.css'),device+' needs fresh CSS URL');
-   assert(assetLinks.js.includes('/js/kiddies-tv-curriculum-20261101.js'),device+' needs fresh JS URL');
+   assert(assetLinks.js.includes('/js/kiddies-tv-managed-20261101.js'),device+' needs fresh JS URL');
    assert(!assetLinks.css.includes('/css/kiddies-tv.css')&&!assetLinks.js.includes('/js/kiddies-tv-library.js'),device+' must not use stale URL');
    const rendered=await page.evaluate(()=>({searchBackground:getComputedStyle(document.querySelector('.search-field')).backgroundColor,navHome:getComputedStyle(document.querySelector('.nav-home')).display}));
    if(device!=='desktop') assert.equal(rendered.navHome,'none','mobile navigation must fit phone');
