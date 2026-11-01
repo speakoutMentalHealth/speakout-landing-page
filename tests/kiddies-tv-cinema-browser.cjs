@@ -15,6 +15,11 @@ const assert=require('node:assert/strict');
    await page.route('https://kiddies.test/**',route=>{
     const name=new URL(route.request().url()).pathname.slice(1);
     try{
+     // Deliberately serve incompatible legacy assets if requested.
+     if(['css/kiddies-tv.css','js/kiddies-tv-library.js'].includes(name)) {
+       route.fulfill({body:name.endsWith('.css')?'body{background:orange!important}':'throw Error("cached old JavaScript executed")',contentType:name.endsWith('.css')?'text/css':'application/javascript'});
+       return;
+     }
      const type=name.endsWith('.js')?'application/javascript':name.endsWith('.json')?'application/json':name.endsWith('.css')?'text/css':'text/html';
      route.fulfill({body:readFileSync(path.join(root,name)),contentType:type});
     }catch{route.fulfill({status:404,body:''});}
@@ -25,6 +30,13 @@ const assert=require('node:assert/strict');
    await page.waitForSelector('.tile');
    assert.equal(await page.locator('#player').isHidden(),true,'player should not dominate initial page');
    assert.equal(await page.locator('.tile').count(),25,'no unreviewed candidates published');
+   const assetLinks=await page.evaluate(()=>({css:[...document.querySelectorAll('link[rel="stylesheet"]')].map(n=>new URL(n.href).pathname),js:[...document.querySelectorAll('script[src]')].map(n=>new URL(n.src).pathname)}));
+   assert(assetLinks.css.includes('/css/kiddies-tv-cinema-20261101.css'),device+' needs fresh CSS URL');
+   assert(assetLinks.js.includes('/js/kiddies-tv-cinema-20261101.js'),device+' needs fresh JS URL');
+   assert(!assetLinks.css.includes('/css/kiddies-tv.css')&&!assetLinks.js.includes('/js/kiddies-tv-library.js'),device+' must not use stale URL');
+   const rendered=await page.evaluate(()=>({searchBackground:getComputedStyle(document.querySelector('.search-field')).backgroundColor,navHome:getComputedStyle(document.querySelector('.nav-home')).display}));
+   if(device==='mobile') assert.equal(rendered.navHome,'none','mobile navigation must fit iPhone');
+   assert.notEqual(rendered.searchBackground,'rgba(0, 0, 0, 0)','new CSS applies to search input');
    assert.equal(await page.locator('.rail-section').count(),5,'only nonempty subject shelves render');
    assert.equal(await page.locator('.chip').count(),7,'six subjects and All lessons');
    assert.equal(await page.locator('.hero.has-feature').count(),1,'feature must use approved content');
