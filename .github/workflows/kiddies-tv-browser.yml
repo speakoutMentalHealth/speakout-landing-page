@@ -17,6 +17,8 @@ on:
       - "js/kiddies-tv-managed-20261101.js"
       - "js/kiddies-tv-watch-managed-20261101.js"
       - "js/kiddies-tv-admin.js"
+      - "js/kiddies-tv-studio-tools.js"
+      - "tests/kiddies-tv-studio-workflow-browser.cjs"
       - "admin-kiddies-tv.html"
       - "css/kiddies-tv-admin.css"
       - "tests/kiddies-tv-managed-browser.cjs"
@@ -55,6 +57,8 @@ on:
       - "js/kiddies-tv-managed-20261101.js"
       - "js/kiddies-tv-watch-managed-20261101.js"
       - "js/kiddies-tv-admin.js"
+      - "js/kiddies-tv-studio-tools.js"
+      - "tests/kiddies-tv-studio-workflow-browser.cjs"
       - "admin-kiddies-tv.html"
       - "css/kiddies-tv-admin.css"
       - "tests/kiddies-tv-managed-browser.cjs"
@@ -106,6 +110,8 @@ jobs:
         run: node tests/kiddies-tv-cinema-browser.cjs
       - name: Test Firestore editorial publishing, hidden legacy videos and outages
         run: node tests/kiddies-tv-managed-browser.cjs
+      - name: Test Studio bulk/review/coverage/audit layout on mobile
+        run: node tests/kiddies-tv-studio-workflow-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

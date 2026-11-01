@@ -56,6 +56,40 @@
     <div class="library-list" id="video-list"><p>Loading video library…</p></div>
    </section>
   </div>
+  <section class="workflow-grid" aria-label="Video operations">
+   <section class="panel workflow-panel" aria-labelledby="bulk-heading">
+    <span class="eyebrow">BULK INTAKE</span><h2 id="bulk-heading">Import multiple draft lessons</h2>
+    <p>Paste a CSV file or choose one from your device. Every import is saved as <strong>Draft</strong>; nothing becomes public until a person completes the full review.</p>
+    <div class="bulk-actions">
+     <button id="bulk-template" type="button" class="secondary">Download CSV template</button>
+     <label for="bulk-file" class="upload-label">Select CSV file<input id="bulk-file" type="file" accept=".csv,text/csv"></label>
+    </div>
+    <label for="bulk-text">CSV data<textarea id="bulk-text" rows="5" placeholder="url,title,description,source,category,ages"></textarea></label>
+    <p class="small-note">Required columns: url, title, description, source, category, ages. Separate multiple ages with | (example: 6-9|10-12). Maximum 40 new videos per import. Duplicate IDs are rejected.</p>
+    <div id="bulk-result" class="import-result" role="status" aria-live="polite">No import prepared.</div>
+    <div class="bulk-actions"><button type="button" id="bulk-preview" class="secondary">Validate and preview</button><button type="button" id="bulk-submit" class="primary" disabled>Import valid drafts</button></div>
+   </section>
+   <section class="panel workflow-panel" aria-labelledby="review-heading">
+    <span class="eyebrow">EDITORIAL REVIEW</span><h2 id="review-heading">Review queue</h2>
+    <p>Work through newly imported drafts, check whole-video accuracy and suitability, then record a named review before publishing.</p>
+    <p class="queue-metric"><strong id="queue-count">0</strong> lessons awaiting attention</p>
+    <div id="review-queue" class="workflow-list" aria-live="polite"><p>Loading review queue…</p></div>
+   </section>
+  </section>
+  <section class="workflow-grid" aria-label="Coverage and accountability">
+   <section class="panel workflow-panel" aria-labelledby="coverage-heading">
+    <span class="eyebrow">CONTENT COVERAGE</span><h2 id="coverage-heading">Age and subject coverage</h2>
+    <p>Counts reflect <strong>currently published</strong> lessons. A gap means no published lesson exists for that age and subject—not that every curriculum requirement is complete.</p>
+    <div id="coverage-summary" class="coverage-summary" role="status"></div>
+    <div class="coverage-scroll"><table class="coverage-table"><thead><tr><th scope="col">Subject</th><th scope="col">3–5</th><th scope="col">6–9</th><th scope="col">10–12</th><th scope="col">13–17</th></tr></thead><tbody id="coverage-body"></tbody></table></div>
+   </section>
+   <section class="panel workflow-panel" aria-labelledby="audit-heading">
+    <span class="eyebrow">ACCOUNTABILITY</span><h2 id="audit-heading">Publication audit history</h2>
+    <p>Every Studio edit and bulk draft import creates an append-only record with its administrator and timestamp. Records cannot be edited or erased through the Studio.</p>
+    <div id="audit-list" class="workflow-list" aria-live="polite"><p>No editorial actions recorded yet.</p></div>
+    <button id="audit-more" type="button" class="secondary" hidden>Load earlier events</button>
+   </section>
+  </section>
  </div>
 </main>
 <script type="module" src="js/kiddies-tv-admin.js"></script>
