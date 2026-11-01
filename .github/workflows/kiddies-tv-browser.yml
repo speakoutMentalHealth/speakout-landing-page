@@ -13,6 +13,7 @@ on:
       - "css/kiddies-tv-watch.css"
       - "tests/kiddies-tv-onsite-browser.cjs"
       - "tests/kiddies-tv-report-browser.cjs"
+      - "tests/kiddies-tv-cinema-browser.cjs"
       - ".github/workflows/kiddies-tv-browser.yml"
   push:
     branches: [main]
@@ -27,6 +28,7 @@ on:
       - "css/kiddies-tv-watch.css"
       - "tests/kiddies-tv-onsite-browser.cjs"
       - "tests/kiddies-tv-report-browser.cjs"
+      - "tests/kiddies-tv-cinema-browser.cjs"
       - ".github/workflows/kiddies-tv-browser.yml"
 permissions:
   contents: read
@@ -52,5 +54,13 @@ jobs:
       - run: npx playwright install chromium --only-shell
       - name: Test reporting, search, age filtering and unknown video denial
         run: node tests/kiddies-tv-report-browser.cjs
-      - name: Test on-site playback and manual Stop video
+      - name: Test on-site playback and discreet close control
         run: node tests/kiddies-tv-onsite-browser.cjs
+      - name: Check mobile and desktop cinematic UI
+        run: node tests/kiddies-tv-cinema-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kiddies-tv-cinema-screenshots
+          path: artifacts/kiddies-tv-cinema
+          retention-days: 14
