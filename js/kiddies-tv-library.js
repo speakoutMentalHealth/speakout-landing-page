@@ -6,11 +6,12 @@ const groups=[
  ['Mathematics','Mathematics','Numbers, patterns and clever problem solving'],
  ['Science & Nature','Science & Nature','Explore the amazing world around us'],
  ['Life Skills','Life Skills','Everyday ideas for growing minds'],
+ ['Geography & Culture','Geography & Culture','Countries, capitals, maps and African heritage'],
  ['Coding & Digital Literacy','Coding & Digital Literacy','Create, code and learn digital skills']
 ];
 const validAges=['3-5','6-9','10-12','13-17'];
 const byId=id=>document.getElementById(id);
-const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count'),teenStatus=byId('teen-review-status');
+const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count'),teenStatus=byId('teen-review-status'),subjectStatus=byId('subject-review-status');
 const player=byId('player'),frame=byId('player-frame'),title=byId('player-title'),description=byId('player-description');
 const hero=document.querySelector('.hero'),heroImage=byId('hero-image'),heroArtwork=byId('hero-artwork'),heroTitle=byId('hero-title'),heroCategory=byId('hero-category'),heroDescription=byId('hero-description'),featureButton=byId('surprise-video'),featureNext=byId('hero-next'),featureCount=byId('hero-feature-count');
 let videos=[],subject='',lastTrigger=null,featured=null,spotlight=[],spotlightIndex=0;
@@ -134,7 +135,15 @@ function draw(){
  catalog.replaceChildren(fragment);
  const teenCollectionPending=age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'));
  teenStatus.hidden=!teenCollectionPending;
- empty.hidden=matches.length>0||teenCollectionPending;
+ const pendingSubject=matches.length===0&&(subject==='Geography & Culture'||subject==='Coding & Digital Literacy');
+ subjectStatus.hidden=!pendingSubject;
+ if(pendingSubject){
+  byId('subject-review-title').textContent=subject==='Geography & Culture'?'Explore Africa, Nigeria and the world.':'Make something brilliant with code.';
+  byId('subject-review-description').textContent=subject==='Geography & Culture'
+   ?'Our Nigerian states, African countries and world-capitals lessons are being reviewed for accuracy and age suitability.'
+   :'Scratch, block coding and teen Python projects are being checked before appearing in this collection.';
+ }
+ empty.hidden=matches.length>0||teenCollectionPending||pendingSubject;
  counter.textContent=matches.length+' learning video'+(matches.length===1?'':'s');
  paintHero(matches);
 }

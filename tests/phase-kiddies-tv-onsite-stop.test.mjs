@@ -11,13 +11,14 @@ const page=read('kiddies-tv.html'),watchPage=read('kiddies-tv-watch.html');
 const approved=JSON.parse(read('data/kiddies-tv-approved.json'));
 test('Cache-safe assets protect the redesigned HTML from stale Safari CSS and JS',()=>{
  assert(page.includes('css/kiddies-tv-teen-launch-20261101.css'));
- assert(page.includes('js/kiddies-tv-teen-launch-20261101.js'));
+ assert(page.includes('js/kiddies-tv-geography-20261101.js'));
  assert(watchPage.includes('css/kiddies-tv-watch-cinema-20261101.css'));
- assert(watchPage.includes('js/kiddies-tv-watch-cinema-20261101.js'));
+ assert(watchPage.includes('js/kiddies-tv-watch-geography-20261101.js'));
  const actual=read('css/kiddies-tv-teen-launch-20261101.css');
  assert(actual.includes('text-size-adjust:100%'));
  assert(actual.includes('hero-feature-card') && actual.includes('intro-strip'),'premium featured artwork and editorial treatments must load');
- assert.equal(read('js/kiddies-tv-teen-launch-20261101.js'),lib);
+ assert.equal(read('js/kiddies-tv-geography-20261101.js'),lib);
+ assert.equal(read('js/kiddies-tv-watch-geography-20261101.js'),watch);
  assert(!read('js/kiddies-tv-premium-20261101.js').includes('teenCollectionPending'),'older release remains immutable for old HTML caches');
 });
 
