@@ -10,6 +10,7 @@ const {chromium}=require('playwright'),{readFileSync}=require('node:fs'),path=re
    try{route.fulfill({body:readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':'text/html'});}
    catch{route.fulfill({status:404,body:''});}
   });
+  await page.route('https://firestore.googleapis.com/**',route=>route.fulfill({status:404,headers:{'access-control-allow-origin':'*'},body:'{}',contentType:'application/json'}));
   await page.route('https://i.ytimg.com/**',route=>route.abort());
   await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({body:'Mock player: no real playback assertion'}));
   await page.goto('https://kiddies.test/kiddies-tv.html');

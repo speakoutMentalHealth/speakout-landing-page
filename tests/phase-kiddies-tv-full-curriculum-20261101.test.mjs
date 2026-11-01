@@ -40,10 +40,10 @@ test('Current approved catalogue is unchanged and archival rollback is exact',()
 });
 test('Both views reference new cache-safe content scripts and share source',()=>{
  assert(html.includes('css/kiddies-tv-curriculum-20261101.css'));
- assert(html.includes('js/kiddies-tv-curriculum-20261101.js'));
- assert(view.includes('js/kiddies-tv-watch-curriculum-20261101.js'));
- assert.equal(raw('js/kiddies-tv-curriculum-20261101.js'),lib);
- assert.equal(raw('js/kiddies-tv-watch-curriculum-20261101.js'),watch);
+ assert(html.includes('js/kiddies-tv-managed-20261101.js'));
+ assert(view.includes('js/kiddies-tv-watch-managed-20261101.js'));
+ assert.equal(raw('js/kiddies-tv-managed-20261101.js'),lib);
+ assert.equal(raw('js/kiddies-tv-watch-managed-20261101.js'),watch);
 });
 test('Reviewed replacements cannot delete existing content prematurely',()=>{
  const before=raw('data/kiddies-tv-approved.json');

@@ -13,6 +13,13 @@ on:
       - "js/kiddies-tv-teen-launch-20261101.js"
       - "js/kiddies-tv-geography-20261101.js"
       - "js/kiddies-tv-curriculum-20261101.js"
+      - "js/kiddies-tv-data.js"
+      - "js/kiddies-tv-managed-20261101.js"
+      - "js/kiddies-tv-watch-managed-20261101.js"
+      - "js/kiddies-tv-admin.js"
+      - "admin-kiddies-tv.html"
+      - "css/kiddies-tv-admin.css"
+      - "tests/kiddies-tv-managed-browser.cjs"
       - "js/kiddies-tv-watch-curriculum-20261101.js"
       - "css/kiddies-tv-curriculum-20261101.css"
       - "data/kiddies-tv-curriculum.json"
@@ -44,6 +51,13 @@ on:
       - "js/kiddies-tv-teen-launch-20261101.js"
       - "js/kiddies-tv-geography-20261101.js"
       - "js/kiddies-tv-curriculum-20261101.js"
+      - "js/kiddies-tv-data.js"
+      - "js/kiddies-tv-managed-20261101.js"
+      - "js/kiddies-tv-watch-managed-20261101.js"
+      - "js/kiddies-tv-admin.js"
+      - "admin-kiddies-tv.html"
+      - "css/kiddies-tv-admin.css"
+      - "tests/kiddies-tv-managed-browser.cjs"
       - "js/kiddies-tv-watch-curriculum-20261101.js"
       - "css/kiddies-tv-curriculum-20261101.css"
       - "data/kiddies-tv-curriculum.json"
@@ -90,6 +104,8 @@ jobs:
         run: node tests/kiddies-tv-onsite-browser.cjs
       - name: Check mobile and desktop cinematic UI
         run: node tests/kiddies-tv-cinema-browser.cjs
+      - name: Test Firestore editorial publishing, hidden legacy videos and outages
+        run: node tests/kiddies-tv-managed-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

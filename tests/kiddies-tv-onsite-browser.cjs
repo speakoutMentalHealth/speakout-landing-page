@@ -16,6 +16,7 @@ const assert=require('node:assert/strict');
     route.fulfill({body:readFileSync(path.join(root,file)),contentType});
    }catch{route.fulfill({status:404,body:''});}
   });
+  await page.route('https://firestore.googleapis.com/**',route=>route.fulfill({status:404,headers:{'access-control-allow-origin':'*'},body:'{}',contentType:'application/json'}));
   await page.route('https://i.ytimg.com/**',route=>route.abort());
   await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({body:'<!doctype html><title>Mock YouTube</title>',contentType:'text/html'}));
   await page.goto('https://kiddies.test/kiddies-tv.html');

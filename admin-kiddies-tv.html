@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#081827">
+<title>Kiddies TV Studio | SpeakOut Admin</title>
+<link rel="icon" href="images/logo.png">
+<link rel="stylesheet" href="css/kiddies-tv-admin.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to video management</a>
+<header class="studio-bar">
+ <a class="brand" href="admin-dashboard.html"><img src="images/logo.png" alt=""><span><strong>SpeakOut</strong><small>KIDDIES TV · STUDIO</small></span></a>
+ <nav aria-label="Admin links"><a href="admin-tv.html">SpeakOut TV Studio</a><a href="admin-dashboard.html">Admin dashboard</a><a href="kiddies-tv.html" target="_blank" rel="noopener">View Kiddies TV ↗</a></nav>
+</header>
+<main id="main" class="shell">
+ <section class="studio-hero"><div><span class="eyebrow">EDITORIAL STUDIO · 0–17 LEARNING</span><h1>Curate a world of learning.</h1><p>Add, edit, review, publish, unpublish and archive lessons here. Changes to approved videos appear on Kiddies TV without editing GitHub or redeploying the website.</p></div>
+ <div class="secure-note"><strong>Human review required</strong><p>Only administrators can publish. The review confirmation means an actual person verified the full video, its accuracy, age suitability and playback. YouTube advertisements remain outside SpeakOut's control.</p></div></section>
+ <p id="studio-status" class="notice" role="status" aria-live="polite">Checking administrator access…</p>
+ <div id="studio-app" hidden>
+  <section class="metrics" aria-label="Video library overview">
+   <div><strong id="metric-total">—</strong><span>Visible lessons</span></div>
+   <div><strong id="metric-draft">—</strong><span>Drafts</span></div>
+   <div><strong id="metric-hidden">—</strong><span>Hidden / archived</span></div>
+   <div><strong id="metric-teen">—</strong><span>Ages 13–17</span></div>
+  </section>
+  <div class="columns">
+   <section class="panel editor" aria-labelledby="form-heading">
+    <div class="section-heading"><span class="eyebrow">LESSON EDITOR</span><h2 id="form-heading">Add a learning video</h2><p>Use an individual YouTube video link, not a playlist. Save a draft first, then publish after reviewing the complete lesson.</p></div>
+    <form id="video-form">
+     <label class="full">YouTube video URL or ID<input id="video-url" required placeholder="https://youtu.be/ABCDEFGHIJK" autocomplete="off"></label>
+     <label class="full">Video title<input id="video-title" maxlength="160" required placeholder="e.g. Nigerian States and Capitals"></label>
+     <label class="full">Learning description<textarea id="video-description" maxlength="250" rows="3" required placeholder="What should a child learn from this video?"></textarea></label>
+     <label>Channel / creator<input id="video-source" maxlength="120" required placeholder="Original YouTube publisher"></label>
+     <label>Subject<select id="video-category" required></select></label>
+     <fieldset class="full age-choices"><legend>Suitable ages (choose at least one)</legend>
+      <label><input type="checkbox" name="ages" value="3-5"> 3–5</label>
+      <label><input type="checkbox" name="ages" value="6-9"> 6–9</label>
+      <label><input type="checkbox" name="ages" value="10-12"> 10–12</label>
+      <label><input type="checkbox" name="ages" value="13-17"> 13–17</label>
+     </fieldset>
+     <label>Editorial status<select id="video-status"><option value="draft">Draft — not visible</option><option value="published">Publish — visible to children</option><option value="archived">Archive — remove from site</option></select></label>
+     <label>Reviewer name<input id="video-reviewer" maxlength="120" placeholder="Person who watched and checked video"></label>
+     <label>Review date<input id="video-review-date" type="date"></label>
+     <label class="full review-consent"><input type="checkbox" id="video-reviewed"><span>I confirm that a named adult reviewed the entire video, verified educational accuracy, the selected age bands, captions, ending/sponsors and on-site playback. This is a real review, not just a video-title check.</span></label>
+     <div class="form-actions full"><button type="submit" class="primary" id="save-video">Save lesson</button><button type="button" class="secondary" id="cancel-edit">Clear editor</button><button type="button" class="secondary" id="preview-video">Preview on YouTube</button></div>
+    </form>
+    <p class="editor-footnote">Published records are saved in the secure SpeakOut Firestore collection. Previous videos remain in the archived catalogue; hiding is reversible. No upload or automatic YouTube feed is needed.</p>
+   </section>
+   <section class="panel library" aria-labelledby="library-heading">
+    <div class="section-heading"><span class="eyebrow">CONTENT CONTROL</span><h2 id="library-heading">Manage Kiddies TV</h2><p>Edit metadata, revise suitable ages, unpublish or archive videos without a new deployment.</p></div>
+    <div class="filters">
+     <label class="search-label">Search<input id="library-search" type="search" placeholder="Title, channel, subject…"></label>
+     <label>Status<select id="library-filter"><option value="all">All lessons</option><option value="published">Published</option><option value="draft">Drafts</option><option value="archived">Archived / hidden</option></select></label>
+    </div>
+    <div class="library-list" id="video-list"><p>Loading video library…</p></div>
+   </section>
+  </div>
+ </div>
+</main>
+<script type="module" src="js/kiddies-tv-admin.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+</body>
+</html>
