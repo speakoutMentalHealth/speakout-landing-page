@@ -15,9 +15,10 @@ const {chromium}=require('playwright'),{readFileSync}=require('node:fs'),path=re
   await page.goto('https://kiddies.test/kiddies-tv.html');
   await page.waitForSelector('[data-report-video]');
   assert.equal(await page.locator('[data-report-video]').count(),30);
+  const selectedVideoId=await page.locator('[data-report-video]').first().getAttribute('data-report-video');
   await page.locator('[data-report-video]').first().click();
   assert.equal(await page.locator('dialog').evaluate(d=>d.open),true);
-  assert.ok(decodeURIComponent(await page.locator('#report-whatsapp').getAttribute('href')).includes('xg4_gWt8N_Q'));
+  assert.ok(decodeURIComponent(await page.locator('#report-whatsapp').getAttribute('href')).includes(selectedVideoId));
   await page.selectOption('#report-reason',{label:'Video unavailable or not playing'});
   assert.ok(decodeURIComponent(await page.locator('#report-email').getAttribute('href')).includes('Video unavailable or not playing'));
   await page.keyboard.press('Escape');assert.equal(await page.locator('dialog').evaluate(d=>d.open),false);
