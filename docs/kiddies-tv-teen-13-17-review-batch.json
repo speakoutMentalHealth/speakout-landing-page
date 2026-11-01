@@ -1,0 +1,344 @@
+[
+  {
+    "reviewId": "AFR-21",
+    "titleWorking": "Grade 10 Mathematics: Algebra revision",
+    "source": "Mindset",
+    "sourceRegion": "South Africa",
+    "category": "Mathematics",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "A2Y2Qa7S6ZE",
+    "sourcePage": "https://www.youtube.com/watch?v=A2Y2Qa7S6ZE",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=A2Y2Qa7S6ZE",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Algebra",
+      "channel": "Mindset",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-22",
+    "titleWorking": "Grade 11 Life Sciences: Photosynthesis & Respiration",
+    "source": "Mindset",
+    "sourceRegion": "South Africa",
+    "category": "Science & Nature",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "uXNh8E5V6Z8",
+    "sourcePage": "https://www.youtube.com/watch?v=uXNh8E5V6Z8",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=uXNh8E5V6Z8",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Grade 11 Life Sciences: Photosynthesis & Respiration (Live)",
+      "channel": "Mindset",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-23",
+    "titleWorking": "Mathematics playlist featured lesson",
+    "source": "FlashLearners",
+    "sourceRegion": "Nigeria-focused",
+    "category": "Mathematics",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "M5I7fWUbwpc",
+    "sourcePage": "https://flashlearners.com/mathematics-videos/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=M5I7fWUbwpc",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Operations On Numbers  - Fall In Love With Mathematics",
+      "channel": "FlashLearners",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-24",
+    "titleWorking": "English playlist featured lesson",
+    "source": "FlashLearners",
+    "sourceRegion": "Nigeria-focused",
+    "category": "English & Grammar",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "j9e2DFVLHR8",
+    "sourcePage": "https://flashlearners.com/english-videos/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=j9e2DFVLHR8",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "English Language - Meaning, Units & Skills",
+      "channel": "FlashLearners",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-25",
+    "titleWorking": "Biology playlist featured lesson",
+    "source": "FlashLearners",
+    "sourceRegion": "Nigeria-focused",
+    "category": "Science & Nature",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "bxa0Fp_o8UI",
+    "sourcePage": "https://flashlearners.com/biology-videos/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=bxa0Fp_o8UI",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Meaning And Branches of Biology (Simplified)",
+      "channel": "FlashLearners",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-26",
+    "titleWorking": "Introduction to Statistics — discovery lead",
+    "source": "uLesson attribution pending direct confirmation",
+    "sourceRegion": "Nigeria-focused",
+    "category": "Mathematics",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "hdUDv9RjMSM",
+    "sourcePage": "https://www.nairaland.com/ulessonedu/posts",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=hdUDv9RjMSM",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Introduction to Statistics | uLesson",
+      "channel": "The uLesson Group",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Metadata discovery only. Verify publisher, exact title, duration, current availability and embedding before review."
+  },
+  {
+    "reviewId": "AFR-31",
+    "titleWorking": "Lexis and Structure: Synonyms, Antonyms, Homonyms and Clauses",
+    "source": "Gopius",
+    "sourceRegion": "Nigeria",
+    "category": "English & Grammar",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "_1mKBtLVb3A",
+    "sourcePage": "https://gopius.com/lexis-and-structure-synonyms-antonyms-homonyms-clauses/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=_1mKBtLVb3A",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Lexis and Structure 1 (Synonyms, Antonyms, Homonyms and Clauses)",
+      "channel": "Gopius E-Learning",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Source-page timestamps reference this YouTube ID; destination retrieval was rate-limited. Confirm actual upload title/publisher, video content, YouTube availability/embeddability, age fit and captions."
+  },
+  {
+    "reviewId": "AFR-32",
+    "titleWorking": "Cell Biology: Cell Theory and Cell Structure (WAEC/JAMB)",
+    "source": "Gopius",
+    "sourceRegion": "Nigeria",
+    "category": "Science & Nature",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "rydMYc1UzDw",
+    "sourcePage": "https://gopius.com/cell-biology-theory-levels-of-organization-structure/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=rydMYc1UzDw",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Cell Biology Part 1: Cell Theory, Levels of Organization,  Structure/Function (JAMB/WAEC Biology)",
+      "channel": "Gopius E-Learning",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Source-page timestamps reference this YouTube ID; destination retrieval was rate-limited. Confirm the actual upload, scientific accuracy, age fit, captions and embed availability."
+  },
+  {
+    "reviewId": "AFR-33",
+    "titleWorking": "Energy Flow: Food Chain, Food Web and Trophic Levels (WAEC/JAMB)",
+    "source": "Gopius",
+    "sourceRegion": "Nigeria",
+    "category": "Science & Nature",
+    "proposedAges": [
+      "13-17"
+    ],
+    "youtubeId": "I5ihznJxPGA",
+    "sourcePage": "https://gopius.com/energy-flow-food-chain-food-web-trophic-levels-pyramid/",
+    "publicYouTubeUrl": "https://www.youtube.com/watch?v=I5ihznJxPGA",
+    "approvalStatus": "pending_full_media_review",
+    "youtubeMetadata": {
+      "title": "Energy Flow Explained: Food Chain, Food Web, Trophic Levels & Pyramids - JAMB/WAEC Biology",
+      "channel": "Gopius E-Learning",
+      "embeddable": null,
+      "checkedAt": "2026-11-01T10:28:39.345Z",
+      "source": "youtube_oembed_via_github_actions",
+      "sourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41297638271"
+    },
+    "review": {
+      "reviewer": null,
+      "reviewedAt": null,
+      "watchComplete": false,
+      "ageAppropriate": null,
+      "accuracyVerified": null,
+      "languageReviewed": null,
+      "advertAndExternalLinkRisksReviewed": null,
+      "captionsVerified": null,
+      "fullscreenIOSVerified": null,
+      "fullscreenAndroidVerified": null,
+      "endScreenReviewed": null,
+      "decision": null,
+      "concernsWithTimestamps": []
+    },
+    "notes": "Source-page timestamps reference this YouTube ID; destination retrieval was rate-limited. Check scientific accuracy, actual publisher, age fit, full playback, captions and embeddability."
+  }
+]

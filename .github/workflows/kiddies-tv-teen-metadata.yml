@@ -1,0 +1,29 @@
+name: Kiddies TV Teen Metadata Preflight
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/kiddies-tv-teen-13-17-review-batch.json"
+      - "scripts/kiddies-tv-teen-metadata-check.mjs"
+      - ".github/workflows/kiddies-tv-teen-metadata.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  metadata:
+    name: Non-approving YouTube metadata check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Probe publisher and title metadata (never approve videos)
+        run: node scripts/kiddies-tv-teen-metadata-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kiddies-tv-teen-metadata
+          path: artifacts/kiddies-tv-teen/metadata-preflight.json
+          retention-days: 14
