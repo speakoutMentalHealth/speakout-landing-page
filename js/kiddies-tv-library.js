@@ -12,8 +12,8 @@ const validAges=['3-5','6-9','10-12','13-17'];
 const byId=id=>document.getElementById(id);
 const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count');
 const player=byId('player'),frame=byId('player-frame'),title=byId('player-title'),description=byId('player-description');
-const hero= document.querySelector('.hero'),heroImage=byId('hero-image'),heroTitle=byId('hero-title'),heroCategory=byId('hero-category'),heroDescription=byId('hero-description'),featureButton=byId('surprise-video');
-let videos=[],subject='',lastTrigger=null,featured=null;
+const hero=document.querySelector('.hero'),heroImage=byId('hero-image'),heroArtwork=byId('hero-artwork'),heroTitle=byId('hero-title'),heroCategory=byId('hero-category'),heroDescription=byId('hero-description'),featureButton=byId('surprise-video'),featureNext=byId('hero-next'),featureCount=byId('hero-feature-count');
+let videos=[],subject='',lastTrigger=null,featured=null,spotlight=[],spotlightIndex=0;
 const reducedMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const approved=v=>v&&v.approved===true&&typeof v.title==='string'&&v.title.length<=160&&/^[A-Za-z0-9_-]{11}$/.test(v.youtubeId||'')&&groups.some(g=>g[0]===v.category)&&Array.isArray(v.ages)&&v.ages.length>0&&v.ages.every(a=>validAges.includes(a));
 const filtered=()=>{const query=search.value.trim().toLowerCase(),targetAge=age.value;return videos.filter(v=>(!subject||v.category===subject)&&(!targetAge||v.ages.includes(targetAge))&&(!query||(v.title+' '+(v.description||'')+' '+(v.source||'')+' '+v.category).toLowerCase().includes(query)));};
@@ -33,23 +33,45 @@ function renderChips(){
  for(const group of groups) chips.append(chip(group[0],group[0]));
 }
 function updateChips(){for(const button of chips.children)button.setAttribute('aria-pressed',String(button.textContent===(subject||'All lessons')));}
-function paintHero(matches){
- featured=matches[0]||null;
+function spotlightCandidates(matches){
+ // Spotlight choices come exclusively from the approved catalogue, never from
+ // YouTube recommendations or unreviewed candidate leads.
+ if(subject||age.value||search.value.trim())return matches.slice(0,3);
+ const ids=['mxzyANgHrS0','ZN2rjEVlsmc','xg4_gWt8N_Q'];
+ const curated=ids.map(id=>matches.find(v=>v.youtubeId===id)).filter(Boolean);
+ return curated.length?curated:matches.slice(0,3);
+}
+function renderSpotlight(){
+ featured=spotlight[spotlightIndex]||null;
  featureButton.disabled=!featured;
+ featureNext.disabled=spotlight.length<=1;
+ featureCount.textContent=featured?String(spotlightIndex+1).padStart(2,'0')+' / '+String(spotlight.length).padStart(2,'0'):'00 / 00';
  if(!featured){
-  hero.classList.remove('has-feature');
-  heroImage.removeAttribute('src');
-  heroTitle.textContent='Find your next adventure.';
-  heroCategory.textContent='EXPLORE SOMETHING NEW';
-  heroDescription.textContent=videos.length?'Try another subject, age or search to find a learning video.':'A world of learning adventures is just around the corner.';
+  hero.classList.remove('has-feature');heroImage.removeAttribute('src');heroArtwork.removeAttribute('src');
+  heroTitle.textContent=videos.length?'Find a new favourite.':'A world of wonder is waiting.';
+  heroCategory.textContent='SPEAKOUT SPOTLIGHT';
+  heroDescription.textContent=videos.length?'Try another subject, age or search to discover a lesson.':'Big discoveries start with one little question. Explore something amazing today.';
   return;
  }
- heroTitle.textContent=featured.title;
- heroCategory.textContent=featured.category+' · AGES '+featured.ages.join(' / ');
- heroDescription.textContent=featured.description||'Watch, learn and explore a new idea.';
- heroImage.src=imageUrl(featured.youtubeId);
+ // Build highlighted text with DOM nodes rather than untrusted HTML.
+ const words=featured.title.split(' '),tail=words.splice(-Math.min(2,words.length)).join(' ');
+ const mark=document.createElement('em');mark.textContent=tail;
+ heroTitle.replaceChildren(document.createTextNode((words.join(' ')||'Discover')+' '),mark);
+ heroCategory.textContent='SPEAKOUT SPOTLIGHT · '+featured.category.toUpperCase();
+ heroDescription.textContent=(featured.description||'Find something wonderful to learn.')+' · '+(featured.source||'Educational publisher')+' · Ages '+featured.ages.join(', ');
+ heroImage.src=imageUrl(featured.youtubeId);heroArtwork.src=imageUrl(featured.youtubeId);
  hero.classList.add('has-feature');
 }
+function paintHero(matches){
+ spotlight=spotlightCandidates(matches);
+ spotlightIndex=0;
+ renderSpotlight();
+}
+featureNext.addEventListener('click',()=>{
+ if(spotlight.length<2)return;
+ spotlightIndex=(spotlightIndex+1)%spotlight.length;
+ renderSpotlight();
+});
 function makeTile(video){
  const article=document.createElement('article');article.className='tile';
  const button=document.createElement('button');button.className='tile-watch';button.type='button';

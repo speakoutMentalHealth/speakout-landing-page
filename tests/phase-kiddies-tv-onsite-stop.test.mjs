@@ -10,14 +10,14 @@ const lib=read('js/kiddies-tv-library.js'),watch=read('js/kiddies-tv-watch.js');
 const page=read('kiddies-tv.html'),watchPage=read('kiddies-tv-watch.html');
 const approved=JSON.parse(read('data/kiddies-tv-approved.json'));
 test('Cache-safe assets protect the redesigned HTML from stale Safari CSS and JS',()=>{
- assert(page.includes('css/kiddies-tv-cinema-20261101.css'));
- assert(page.includes('js/kiddies-tv-cinema-20261101.js'));
+ assert(page.includes('css/kiddies-tv-premium-20261101.css'));
+ assert(page.includes('js/kiddies-tv-premium-20261101.js'));
  assert(watchPage.includes('css/kiddies-tv-watch-cinema-20261101.css'));
  assert(watchPage.includes('js/kiddies-tv-watch-cinema-20261101.js'));
- const actual=read('css/kiddies-tv-cinema-20261101.css');
+ const actual=read('css/kiddies-tv-premium-20261101.css');
  assert(actual.includes('text-size-adjust:100%'));
- assert.equal(actual,read('css/kiddies-tv.css'));
- assert.equal(read('js/kiddies-tv-cinema-20261101.js'),lib);
+ assert(actual.includes('hero-feature-card') && actual.includes('intro-strip'),'premium featured artwork and editorial treatments must load');
+ assert.equal(read('js/kiddies-tv-premium-20261101.js'),lib);
 });
 
 
@@ -41,7 +41,15 @@ test('Featured-first cinema layout opens video only after a user choice',()=>{
  assert(read('css/kiddies-tv.css').includes('.rail-section')&&read('css/kiddies-tv.css').includes('.hero-media'));
 });
 test('YouTube advertising and recommendations remain transparently disclosed',()=>{
- assert(page.includes('YouTube may display advertisements'));
+ assert(page.includes('YouTube may show advertisements'));
  assert(watchPage.includes('YouTube may display adverts'));
  assert(!/(adCountdown|skipAd\s*\(|adOverlay|adBlock)/i.test(lib+watch),'unsupported ad overlay must remain absent');
+});
+
+test('Spotlight rotates only through pre-approved lessons without invented age claims',()=>{
+ assert(lib.includes('function spotlightCandidates(matches)'));
+ assert(lib.includes("['mxzyANgHrS0','ZN2rjEVlsmc','xg4_gWt8N_Q']"));
+ assert(lib.includes('const curated=ids.map(id=>matches.find(v=>v.youtubeId===id)).filter(Boolean)'));
+ assert(page.includes('id="hero-next"') && page.includes('id="hero-feature-count"'));
+ assert(!page.includes('AGES 3–17'),'do not imply that teen videos are already approved');
 });

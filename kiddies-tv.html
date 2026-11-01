@@ -3,76 +3,85 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071320">
+<meta name="theme-color" content="#07101b">
 <meta name="robots" content="index,follow">
-<meta name="description" content="SpeakOut Kiddies TV: carefully selected educational videos for young minds, organised by subject and age.">
-<title>Kiddies TV | SpeakOut</title>
+<meta name="description" content="SpeakOut Kiddies TV: beautifully curated educational YouTube lessons, organised by age and subject.">
+<title>Kiddies TV | Watch. Discover. Grow. | SpeakOut</title>
 <link rel="canonical" href="https://speakoutmentalhealth.org/kiddies-tv.html">
 <link rel="icon" href="images/logo.png">
 <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
-<link rel="stylesheet" href="css/kiddies-tv-cinema-20261101.css">
-<script defer src="js/kiddies-tv-cinema-20261101.js"></script>
+<link rel="stylesheet" href="css/kiddies-tv-premium-20261101.css">
+<script defer src="js/kiddies-tv-premium-20261101.js"></script>
 </head>
-<body>
+<body class="kiddies-premium">
 <a class="skip" href="#main">Skip to learning videos</a>
 <header class="tv-header">
   <div class="shell header-inner">
-    <a class="brand" href="kiddies-tv.html" aria-label="SpeakOut Kiddies TV home">
-      <img src="images/logo.png" alt="" width="39" height="39">
-      <span class="brand-name">SpeakOut <strong>Kiddies<span class="brand-accent">TV</span></strong></span>
+    <a class="brand" href="kiddies-tv.html" aria-label="SpeakOut Kiddies TV">
+      <img src="images/logo.png" alt="" width="40" height="40">
+      <span class="brand-name"><strong>SpeakOut</strong><small>KIDDIES <span class="brand-accent">TV</span></small></span>
     </a>
     <nav class="header-actions" aria-label="Learning navigation">
       <a class="nav-link active" href="#explore">Discover</a>
-      <a class="nav-link" href="kiddies.html">Kiddies Learn</a>
+      <a class="nav-link" href="kiddies.html">Learn</a>
       <a class="nav-link nav-home" href="portal.html">SpeakOut Home</a>
     </nav>
   </div>
 </header>
 <main id="main" class="shell">
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-media" aria-hidden="true"><img id="hero-image" alt="" width="640" height="360"></div>
+    <div class="hero-media" aria-hidden="true"><img id="hero-image" alt="" width="960" height="540" decoding="async"></div>
+    <div class="hero-grain" aria-hidden="true"></div>
     <div class="hero-content">
-      <span class="hero-eyebrow"><span class="live-dot"></span> THE SPEAKOUT LEARNING COLLECTION</span>
-      <p class="hero-category" id="hero-category">FEATURED LEARNING</p>
-      <h1 id="hero-title">Big ideas.<br>Bright minds.</h1>
-      <p class="hero-description" id="hero-description">Learning adventures worth watching, made easy to discover. Choose a subject and explore together.</p>
+      <span class="hero-eyebrow"><span class="live-dot"></span> A LITTLE CURIOSITY GOES A LONG WAY</span>
+      <p class="hero-category" id="hero-category">SPEAKOUT SPOTLIGHT</p>
+      <h1 id="hero-title">A world of <em>wonder</em> is waiting.</h1>
+      <p id="hero-description" class="hero-description">Big discoveries start with one little question. Explore something amazing today.</p>
       <div class="hero-actions">
-        <button class="primary" id="surprise-video" type="button"><span aria-hidden="true">▶</span> Play featured lesson</button>
-        <button class="secondary" id="browse-videos" type="button">Browse the library <span aria-hidden="true">↗</span></button>
+        <button class="primary" id="surprise-video" type="button" disabled><span class="button-play" aria-hidden="true">▶</span> Watch featured lesson</button>
+        <button class="secondary" id="browse-videos" type="button">Explore videos <span aria-hidden="true">↗</span></button>
       </div>
-      <div class="hero-trust"><span>CURATED EDUCATIONAL VIDEOS</span><span class="hero-divider" aria-hidden="true"></span><span>AGES 3–17</span></div>
+      <div class="hero-trust"><span class="trust-check" aria-hidden="true">✓</span> SELECTED LEARNING VIDEOS <span class="hero-divider" aria-hidden="true"></span> WATCH RIGHT HERE</div>
     </div>
+    <div class="hero-feature-card" aria-hidden="true"><span class="feature-card-label">TODAY'S SPOTLIGHT</span><div class="hero-feature-thumbnail"><img id="hero-artwork" alt="" loading="eager" decoding="async"></div><span class="hero-feature-footer"><span>Curiosity looks good on you</span><span class="feature-playmark">▶</span></span></div>
+    <div class="hero-pager"><span id="hero-feature-count">01 / 03</span><button id="hero-next" type="button" aria-label="Show next featured lesson" title="Next featured lesson">→</button></div>
   </section>
 
   <section id="player" class="watch-stage" aria-label="Selected learning video" hidden>
     <div class="watch-stage-heading">
-      <div><span class="tv-kicker">NOW WATCHING</span><h2 id="player-title">Choose a lesson</h2><p id="player-description"></p></div>
-      <button id="close-video" class="close-player" type="button" aria-label="Close player and return to lessons" title="Close player" hidden>×</button>
+      <div><span class="tv-kicker">NOW PLAYING ON KIDDIES TV</span><h2 id="player-title">Choose a lesson</h2><p id="player-description"></p></div>
+      <button id="close-video" class="close-player" type="button" aria-label="Close video and return to lessons" title="Close video" hidden>×</button>
     </div>
     <div class="player-frame" id="player-frame"></div>
-    <p class="player-note">You are watching within SpeakOut. YouTube may show adverts and links we cannot control.</p>
+    <p class="player-note">YouTube may show ads and links outside SpeakOut's control. Ask an adult for help if anything seems unsuitable.</p>
   </section>
 
-  <section id="explore" class="explore" aria-label="Discover educational videos">
-    <div class="explore-intro"><div><span class="tv-kicker">MADE FOR CURIOUS MINDS</span><h2>Find your next adventure<span class="heading-dot">.</span></h2><p>Pick a subject, search a lesson, or explore by age.</p></div><span id="video-count" class="library-count" role="status">Loading lessons…</span></div>
-    <div class="filter-bar">
-      <label class="search-field"><span class="search-glyph" aria-hidden="true"></span><input id="search" type="search" placeholder="Search lessons, topics, creators…" autocomplete="off" aria-label="Search learning videos"></label>
-      <label class="age-field"><span class="age-label">Age</span><select id="age" aria-label="Filter learning videos by age"><option value="">All ages</option><option value="3-5">3–5 years</option><option value="6-9">6–9 years</option><option value="10-12">10–12 years</option><option value="13-17">13–17 years</option></select></label>
+  <section class="intro-strip" aria-label="The SpeakOut learning experience">
+    <div><span class="intro-spark" aria-hidden="true">✳</span><span><strong>Made for curious minds.</strong><small>Choose a lesson. Discover something new. Keep growing.</small></span></div>
+    <span class="intro-stamp">SMALL SCREENS. BIG DISCOVERIES.</span>
+  </section>
+
+  <section id="explore" class="explore" aria-label="Explore learning videos">
+    <div class="explore-intro">
+      <div><span class="tv-kicker">YOUR NEXT DISCOVERY STARTS HERE</span><h2>Something good to <em>learn.</em></h2><p>Explore by subject or find exactly what you are curious about.</p></div>
+      <span id="video-count" class="library-count" role="status">Loading the collection…</span>
     </div>
-    <div id="subjects" class="subject-chips" role="group" aria-label="Choose a learning subject"></div>
+    <div class="filter-bar">
+      <label class="search-field"><span class="search-glyph" aria-hidden="true"></span><input id="search" type="search" placeholder="What would you like to learn?" autocomplete="off" aria-label="Search educational videos"></label>
+      <label class="age-field"><span class="age-label">FOR AGES</span><select id="age" aria-label="Filter learning videos by age"><option value="">Everyone</option><option value="3-5">3–5 years</option><option value="6-9">6–9 years</option><option value="10-12">10–12 years</option><option value="13-17">13–17 years</option></select></label>
+    </div>
+    <div id="subjects" class="subject-chips" role="group" aria-label="Choose subject"></div>
   </section>
-
   <div id="catalogue" class="catalogue" aria-live="polite"></div>
-  <p class="empty" id="empty" role="status" hidden>No lessons match these filters. Try a different subject or age group.</p>
-
+  <p class="empty" id="empty" role="status" hidden>Nothing found yet. Try another subject, search or age group.</p>
   <details class="viewer-notice">
-    <summary>About video safety and YouTube playback</summary>
-    <p>We show only videos in SpeakOut's reviewed learning catalogue, but YouTube may display advertisements, recommendations and external links outside our control. Younger children should watch with a caregiver. You can close a selected video at any time.</p>
+    <summary>Our approach to videos and safety</summary>
+    <p>Only lessons in the approved SpeakOut catalogue appear here. YouTube may show advertisements, recommendations and external links that SpeakOut cannot block. Please supervise younger children and use the Report control if you notice unsuitable content.</p>
   </details>
 </main>
 <footer class="shell footer">
-  <span><strong>SpeakOut Kiddies TV</strong> · Discover. Imagine. Grow.</span>
-  <span>Made for learning, with care.</span>
+  <div><span class="footer-mark" aria-hidden="true">✳</span><strong>SpeakOut Kiddies TV</strong><span class="footer-tag">Wonder more. Learn more. Become more.</span></div>
+  <span>Part of SpeakOut's learning community.</span>
 </footer>
 <script type="module" src="js/account-controls.js"></script>
 <script defer src="js/kiddies-tv-report.js"></script>
