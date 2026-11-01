@@ -22,7 +22,7 @@ function setTheatre(enabled){
  status.textContent=enabled?'Landscape mode active. Use Exit landscape to return.':'Portrait view restored.';
 }
 if(!validId){fail();return;}
-fetch('data/kiddies-tv-approved.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('catalogue unavailable');return r.json()}).then(data=>{
+import('./kiddies-tv-data.js').then(({loadKiddiesTvCatalogue})=>loadKiddiesTvCatalogue()).then(data=>{
  const video=Array.isArray(data)?data.find(approved):null;
  if(!video){fail();return;}
  title.textContent=video.title;desc.textContent=(video.description||video.category)+' · Ages '+video.ages.join(', ');
