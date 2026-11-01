@@ -26,10 +26,10 @@
       "discoverySource": "user_sample",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=G0F2PiVP_FI",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Sing and learn all the African countries - Bino and Fino Kids Songs / Dance",
+        "oEmbedChannel": "Bino and Fino",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -39,7 +39,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -57,10 +59,10 @@
       "discoverySource": "user_sample",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=kB7qOJT5x1A",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Africa Song + MORE Fun & Educative Kids Songs | Kunda & Friends Nursery Rhymes | Kids Cartoons",
+        "oEmbedChannel": "Kunda & Friends",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -70,7 +72,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -88,10 +92,10 @@
       "discoverySource": "user_sample",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=53K2jjPjdds",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Across Africa Song for Kids | Learn African Countries, Culture & Dance | Buki Kids 🌍✈️",
+        "oEmbedChannel": "Buki Kids",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -101,7 +105,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -119,10 +125,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=Dl6vJBM4GUw",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Africa Song | Naming the Countries of Africa with @graciescorner | Kids Songs + Nursery Rhymes",
+        "oEmbedChannel": "Gracie's Corner",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -132,7 +138,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -150,10 +158,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=0IDi5qzCj9E",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "States And Capitals (Lyrics Video) | Nursery Rhymes For Nigerian Kids",
+        "oEmbedChannel": "Proudly Naija After School Club",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -163,7 +171,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -172,7 +182,7 @@
       "reviewId": "GEO-CODE-06",
       "youtubeId": "XmgmbwyPZsM",
       "titleWorking": "36 States and Capitals of Nigeria",
-      "publisherExpected": "Obillion Kiddies TV",
+      "publisherExpected": "OKids",
       "category": "Geography & Culture",
       "proposedAges": [
         "6-9",
@@ -181,10 +191,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=XmgmbwyPZsM",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "36 States and Capitals of Nigeria | Educational Song for Kids |  Nursery Rhymes for Babies",
+        "oEmbedChannel": "OKids",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -194,7 +204,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -212,10 +224,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=CPXaz44AKac",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "AFRICAN COUNTRIES - Learn Africa Map and the Countries of Africa Continent",
+        "oEmbedChannel": "Kiddopedia",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -225,7 +237,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -243,10 +257,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=RX0R3xL0Mac",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Countries of the World | Names, Flags & Capitals for Kids",
+        "oEmbedChannel": "Play Laugh Learn",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -256,7 +270,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -274,10 +290,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=VroOSToSNx8",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "How to Code in Scratch | Episode 1/8 of Code Along Jr. from Black Girls Code",
+        "oEmbedChannel": "Black Girls Code",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -287,7 +303,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -304,10 +322,10 @@
       "discoverySource": "existing_review_lead",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=8eUmsALu4Gw",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "How to Code a Game in Scratch | Episode 2/8 of Code Along Jr. from Black Girls Code",
+        "oEmbedChannel": "Black Girls Code",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -317,7 +335,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -335,10 +355,10 @@
       "discoverySource": "user_playlist",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=j-3eArinB7E",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Coding for Kids |What is coding for kids? | Coding for beginners | Types of Coding |Coding Languages",
+        "oEmbedChannel": "LearningMole",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -348,7 +368,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -366,10 +388,10 @@
       "discoverySource": "user_playlist",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=hxeLsf5arBg",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "What is Block Based Coding | Coding for Kids | Block Coding for Kids | What is Coding | Kids Coding",
+        "oEmbedChannel": "LearningMole",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -379,7 +401,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -397,10 +421,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=GrzHN047UiY",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "African Countries and Capitals for Kids | Learn All 54 Countries! 🌍",
+        "oEmbedChannel": "Bessem and Neba",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -410,7 +434,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": true,
       "approved": false
@@ -428,10 +454,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=1IW8vsJ4RJ8",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "AFRICAN CAPITALS - Learn Countries and Capital Cities of Africa with Flags",
+        "oEmbedChannel": "Kiddopedia",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -441,7 +467,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": true,
       "approved": false
@@ -459,10 +487,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=ilofMqJ21Ec",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Africa Geography/African Countries Song",
+        "oEmbedChannel": "KLT",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -472,7 +500,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": true,
       "approved": false
@@ -489,10 +519,10 @@
       "discoverySource": "educator_page",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=0bM_eYpLQ20",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Countries and Capitals of the World - Learn Names of Capital Cities",
+        "oEmbedChannel": "Kiddopedia",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -502,7 +532,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": true,
       "approved": false
@@ -519,10 +551,10 @@
       "discoverySource": "publisher_video",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=e_vj0YllVo4",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "How to Build Your Own Video Game in Minutes (Python for Beginners) | CODE Along Season 5, Ep 1",
+        "oEmbedChannel": "Black Girls Code",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -532,7 +564,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -550,10 +584,10 @@
       "discoverySource": "user_playlist",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=kQUcVMSgjq0",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "I Wonder What Is an Algorithm | Algorithm Facts for Kids | Fun Facts about Algorithms #algorithm",
+        "oEmbedChannel": "LearningMole",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -563,7 +597,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
@@ -581,10 +617,10 @@
       "discoverySource": "user_playlist",
       "sourceYouTubeUrl": "https://www.youtube.com/watch?v=w0PuL73lMQc",
       "verification": {
-        "oEmbedTitle": null,
-        "oEmbedChannel": null,
-        "available": null,
-        "checkedAt": null,
+        "oEmbedTitle": "Coding for Kids |What is coding for kids? | Coding for beginners |Understanding Coding |Coding Words",
+        "oEmbedChannel": "LearningMole",
+        "available": true,
+        "checkedAt": "2026-11-01",
         "realIframePlayback": null,
         "fullWatch": false,
         "captions": null,
@@ -594,7 +630,9 @@
         "mobileSafari": null,
         "mobileAndroid": null,
         "reviewer": null,
-        "decision": "pending_full_video_review"
+        "decision": "pending_full_video_review",
+        "metadataSourceRun": "https://github.com/speakoutMentalHealth/speakout-landing-page/actions/runs/41304202414",
+        "metadataMethod": "youtube_oembed_in_github_actions"
       },
       "requiresCurrentCapitalFactCheck": false,
       "approved": false
