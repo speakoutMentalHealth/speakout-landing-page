@@ -13,3 +13,6 @@ body.kiddies-landscape-active{overflow:hidden!important}
 .watch-video.landscape-theatre iframe{width:100%!important;height:100%!important}
 body.kiddies-landscape-active #watch-landscape{position:fixed;z-index:10001;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:auto;min-height:44px;padding:8px 12px;background:#fff;color:#0b2746;box-shadow:0 4px 18px #0005;font-size:.78rem}
 @media(max-width:650px){.watch-main{padding:12px 0 24px}.watch-main h1{font-size:clamp(1.25rem,5.2vw,1.7rem)}.watch-description{font-size:.9rem;line-height:1.4}.watch-actions>*{flex:1 1 calc(50% - 8px);padding:10px 9px;min-height:44px}.watch-actions>a{flex-basis:100%}.watch-page .trust-note{font-size:.75rem}}
+
+/* .secondary-watch uses inline-flex, so explicitly honour the stop action's hidden state. */
+#watch-stop[hidden]{display:none}
