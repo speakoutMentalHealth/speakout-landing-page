@@ -290,5 +290,60 @@
     "youtubeId": "VwvFE0OEMtI",
     "source": "Scratch Garden",
     "description": "Remember the twelve months in order."
+  },
+  {
+    "approved": true,
+    "title": "Lexis and Structure 1 (Synonyms, Antonyms, Homonyms and Clauses)",
+    "category": "English & Grammar",
+    "ages": [
+      "13-17"
+    ],
+    "youtubeId": "_1mKBtLVb3A",
+    "source": "Gopius E-Learning",
+    "description": "Learn how synonyms, antonyms, homonyms and clauses work in English language study."
+  },
+  {
+    "approved": true,
+    "title": "Cell Biology Part 1: Cell Theory, Levels of Organization,  Structure/Function (JAMB/WAEC Biology)",
+    "category": "Science & Nature",
+    "ages": [
+      "13-17"
+    ],
+    "youtubeId": "rydMYc1UzDw",
+    "source": "Gopius E-Learning",
+    "description": "Explore cell theory, levels of biological organisation and the structure and functions of cells."
+  },
+  {
+    "approved": true,
+    "title": "Energy Flow Explained: Food Chain, Food Web, Trophic Levels & Pyramids - JAMB/WAEC Biology",
+    "category": "Science & Nature",
+    "ages": [
+      "13-17"
+    ],
+    "youtubeId": "I5ihznJxPGA",
+    "source": "Gopius E-Learning",
+    "description": "Understand food chains, food webs, trophic levels and the movement of energy in ecosystems."
+  },
+  {
+    "approved": true,
+    "title": "Operations On Numbers  - Fall In Love With Mathematics",
+    "category": "Mathematics",
+    "ages": [
+      "13-17"
+    ],
+    "youtubeId": "M5I7fWUbwpc",
+    "source": "FlashLearners",
+    "description": "Build a foundation in mathematics through operations with numbers."
+  },
+  {
+    "approved": true,
+    "title": "English Language - Meaning, Units & Skills",
+    "category": "English & Grammar",
+    "ages": [
+      "13-17"
+    ],
+    "youtubeId": "j9e2DFVLHR8",
+    "source": "FlashLearners",
+    "description": "Explore the meaning of language, its units and the skills used in English communication."
   }
 ]

@@ -21,7 +21,7 @@ const assert=require('node:assert/strict');
   await page.goto('https://kiddies.test/kiddies-tv.html');
   await page.waitForSelector('.tile');
   assert.equal(await page.locator('#player').isHidden(),true);
-  assert.equal(await page.locator('.tile').count(),25);
+  assert.equal(await page.locator('.tile').count(),30);
   await page.locator('.tile-watch').first().click();
   await page.waitForSelector('#player-frame iframe');
   assert.equal(new URL(page.url()).pathname,'/kiddies-tv.html');
