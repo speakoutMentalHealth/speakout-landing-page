@@ -1,0 +1,26 @@
+name: Volunteer Pilot Branch Safeguard
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  branch-safeguard:
+    name: Pilot branch safeguard evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test the fail-closed branch protection classifier
+        run: node --test tests/phase-volunteer-branch-safeguard.test.mjs
+      - name: Check the actual main branch protection flag (read only)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PILOT_BASE_BRANCH: main
+        run: node scripts/check-volunteer-branch-safeguard.mjs
