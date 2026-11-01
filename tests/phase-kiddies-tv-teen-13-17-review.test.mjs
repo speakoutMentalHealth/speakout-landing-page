@@ -6,39 +6,43 @@ const load=path=>JSON.parse(readFileSync(path,'utf8'));
 const candidates=load('docs/kiddies-tv-teen-13-17-review-batch.json');
 const publicVideos=load('data/kiddies-tv-approved.json');
 const html=readFileSync('kiddies-tv.html','utf8');
-const app=readFileSync('js/kiddies-tv-premium-teen-20261101.js','utf8');
-
-test('Teen approval batch consists of 9 unique 13–17 candidates, not public approvals',()=>{
+const app=readFileSync('js/kiddies-tv-teen-launch-20261101.js','utf8');
+const ownerApproved=['AFR-31','AFR-32','AFR-33','AFR-23','AFR-24'];
+test('Only the five explicitly owner-approved 13–17 videos may enter public catalogue',()=>{
  assert.equal(candidates.length,9);
- assert.equal(new Set(candidates.map(x=>x.youtubeId)).size,candidates.length);
+ assert.equal(new Set(candidates.map(x=>x.youtubeId)).size,9);
  assert(candidates.every(x=>x.proposedAges.join(',')==='13-17'));
- assert(candidates.every(x=>x.approvalStatus==='pending_full_media_review'));
- assert(candidates.every(x=>x.review.reviewer===null && x.review.reviewedAt===null && x.review.watchComplete===false && x.review.decision===null));
- assert(candidates.every(x=>/^[A-Za-z0-9_-]{11}$/.test(x.youtubeId)));
+ const approved=candidates.filter(x=>x.ownerApproval?.decision==='approved_for_publication');
+ assert.deepEqual(approved.map(x=>x.reviewId).sort(),[...ownerApproved].sort());
+ for(const x of approved){
+  assert(x.ownerApproval.evidence.includes("Approved… continue"));
+  assert(x.ownerApproval.fullVideoReviewAttested===false);
+  assert(x.ownerApproval.fullVideoReviewVerifiedByAssistant===false);
+  assert(x.ownerApproval.devicePlaybackVerifiedByAssistant===false);
+  assert(x.review.watchComplete===false && x.review.decision===null,'do not fabricate a completed safety review');
+ }
+ assert.equal(publicVideos.length,30);
+ assert.equal(publicVideos.filter(x=>x.ages.includes('13-17')).length,5);
+ assert(publicVideos.every(x=>x.approved===true));
+ const ids=new Set(publicVideos.map(x=>x.youtubeId));
+ assert.equal(ids.size,publicVideos.length,'no duplicates');
+ for(const c of candidates){
+  assert.equal(ids.has(c.youtubeId),ownerApproved.includes(c.reviewId),c.reviewId+' authorisation mismatch');
+ }
 });
-test('Only vetted, explicitly approved video records are in the public catalogue',()=>{
- assert.equal(publicVideos.length,25,'review must not expand public video count');
- assert(publicVideos.every(v=>v.approved===true));
- assert(!publicVideos.some(v=>v.ages.includes('13-17')),'no unreviewed teen videos allowed in public catalogue');
- const published=new Set(publicVideos.map(v=>v.youtubeId));
- assert(candidates.every(v=>!published.has(v.youtubeId)));
-});
-test('Teen collection status is honest, and ageing filter automatically supports future approved videos',()=>{
+test('Teen catalogue displays a discoverable secondary-school shelf and age filter',()=>{
  assert(html.includes('id="teen-review-status"'));
- assert(html.includes('being reviewed for educational accuracy'));
- assert(html.includes('css/kiddies-tv-premium-teen-20261101.css'));
- assert(html.includes('js/kiddies-tv-premium-teen-20261101.js'));
- assert(app.includes("age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'))"));
- assert(app.includes('teenStatus.hidden=!teenCollectionPending'));
+ assert(html.includes('css/kiddies-tv-teen-launch-20261101.css'));
+ assert(html.includes('js/kiddies-tv-teen-launch-20261101.js'));
+ assert(app.includes("age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'))"),'pending state only when no approved teens');
+ assert(app.includes('rail-section--teen'));
+ assert(app.includes('Secondary School · Ages 13–17'));
  assert(app.includes('v.approved===true'));
- assert(!html.includes('AFR-31')&&!html.includes('unreviewed candidate'));
 });
-
-test('Teen promotion remains a no-op without named full-video approvals',()=>{
- const before=readFileSync('data/kiddies-tv-approved.json','utf8');
+test('Strict full-review promotion script remains a dry-run no-op for incomplete checks',()=>{
+ const original=readFileSync('data/kiddies-tv-approved.json','utf8');
  const report=execFileSync(process.execPath,['scripts/kiddies-tv-promote-reviewed-teen.mjs'],{encoding:'utf8'});
  assert.match(report,/Passed complete review gates: 0 of 9 candidates/);
  assert.match(report,/Dry run: no files changed/);
- const after=readFileSync('data/kiddies-tv-approved.json','utf8');
- assert.equal(after,before);
+ assert.equal(readFileSync('data/kiddies-tv-approved.json','utf8'),original);
 });
