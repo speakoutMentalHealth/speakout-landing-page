@@ -11,6 +11,9 @@ const categories = new Set(['English & Phonics', 'English & Grammar', 'Mathemati
 const reviewIds = new Set();
 const youtubeIds = new Set();
 const liveIds = new Set(approved.filter(v => v && v.approved === true).map(v => v.youtubeId));
+const reviews = JSON.parse(fs.readFileSync(path.join(root, 'docs/kiddies-tv-teen-13-17-review-batch.json'),'utf8'));
+const authorised = new Set(reviews.filter(v => v.ownerApproval?.decision === 'approved_for_publication' && v.ownerApproval.fullVideoReviewAttested === false).map(v => v.youtubeId));
+assert.equal(authorised.size,5,'Only five explicit owner approvals may override unpublished discovery state');
 assert(Array.isArray(pool) && pool.length > 0, 'Pool must be a nonempty array');
 for (const [i, item] of pool.entries()) {
   const tag = item.reviewId || 'item ' + i;
@@ -31,11 +34,11 @@ for (const [i, item] of pool.entries()) {
   if (item.youtubeId !== null) {
     assert.match(item.youtubeId, /^[a-zA-Z0-9_-]{11}$/, tag + ' invalid YouTube ID');
     assert(!youtubeIds.has(item.youtubeId), tag + ' duplicates a review video');
-    assert(!liveIds.has(item.youtubeId), tag + ' duplicates already-approved public video');
+    if(liveIds.has(item.youtubeId)) assert(authorised.has(item.youtubeId), tag + ' is published without explicit owner approval');
     youtubeIds.add(item.youtubeId);
   }
 }
 const subjects = pool.reduce((acc, v) => ((acc[v.category] = (acc[v.category] || 0) + 1), acc), {});
 console.log('Unpublished Kiddies TV queue: ' + pool.length + ' candidates; ' + youtubeIds.size + ' unique YouTube IDs; ' + (pool.length - youtubeIds.size) + ' without video IDs.');
 console.log('Subject distribution: ' + JSON.stringify(subjects));
-console.log('PASS: all candidates remain unapproved, distinct and outside the public approved catalogue.');
+console.log('PASS: discovery leads stay distinct; only five explicitly owner-authorized IDs overlap the public catalogue.');
