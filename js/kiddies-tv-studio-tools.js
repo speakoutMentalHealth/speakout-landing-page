@@ -76,7 +76,7 @@ export function buildCoverage(videos){
 }
 export function getReviewQueue(rows){
  return rows.filter(x=>x.status==='draft'||(x.status==='published'&&!x.reviewConfirmed))
-  .sort((a,b)=>Number(a.status==='draft')-Number(b.status==='draft')||a.title.localeCompare(b.title));
+  .sort((a,b)=>Number(b.status==='draft')-Number(a.status==='draft')||a.title.localeCompare(b.title));
 }
 export function determineAction(previous,next,{bulk=false}={}){
  if(bulk)return 'bulk_import_draft';
