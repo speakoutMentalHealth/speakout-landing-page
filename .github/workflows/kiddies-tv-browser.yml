@@ -1,0 +1,56 @@
+name: Kiddies TV Browser Acceptance
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "kiddies-tv.html"
+      - "kiddies-tv-watch.html"
+      - "data/kiddies-tv-approved.json"
+      - "js/kiddies-tv-library.js"
+      - "js/kiddies-tv-watch.js"
+      - "js/kiddies-tv-report.js"
+      - "css/kiddies-tv.css"
+      - "css/kiddies-tv-watch.css"
+      - "tests/kiddies-tv-onsite-browser.cjs"
+      - "tests/kiddies-tv-report-browser.cjs"
+      - ".github/workflows/kiddies-tv-browser.yml"
+  push:
+    branches: [main]
+    paths:
+      - "kiddies-tv.html"
+      - "kiddies-tv-watch.html"
+      - "data/kiddies-tv-approved.json"
+      - "js/kiddies-tv-library.js"
+      - "js/kiddies-tv-watch.js"
+      - "js/kiddies-tv-report.js"
+      - "css/kiddies-tv.css"
+      - "css/kiddies-tv-watch.css"
+      - "tests/kiddies-tv-onsite-browser.cjs"
+      - "tests/kiddies-tv-report-browser.cjs"
+      - ".github/workflows/kiddies-tv-browser.yml"
+permissions:
+  contents: read
+concurrency:
+  group: kiddies-tv-browser-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  acceptance:
+    name: Mocked child-safe YouTube browser journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm install --no-save playwright@1.56.1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-headless-chromium-1.56.1
+      - run: npx playwright install chromium --only-shell
+      - name: Test reporting, search, age filtering and unknown video denial
+        run: node tests/kiddies-tv-report-browser.cjs
+      - name: Test on-site playback and manual Stop video
+        run: node tests/kiddies-tv-onsite-browser.cjs
