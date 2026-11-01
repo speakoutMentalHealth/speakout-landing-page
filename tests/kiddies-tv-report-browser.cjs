@@ -26,6 +26,7 @@ const {chromium}=require('playwright'),{readFileSync}=require('node:fs'),path=re
   await page.locator('#surprise-video').click();
   assert.match(await page.locator('#player-title').textContent(),/Multiplication/);
   await page.selectOption('#age','13-17');
+  await page.getByRole('button',{name:'All lessons',exact:true}).click();
   await page.locator('#close-video').click();
   assert.equal(await page.locator('#surprise-video').isEnabled(),true);
   assert.equal(await page.locator('#player-frame iframe').count(),0);
