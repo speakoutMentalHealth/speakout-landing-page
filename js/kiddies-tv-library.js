@@ -118,9 +118,18 @@ function makeSection(group,items,index){
 }
 function draw(){
  const matches=filtered();const fragment=document.createDocumentFragment();
+ const allSubjects=!subject;
+ const teenMatches=matches.filter(v=>v.ages.includes('13-17'));
+ // Netflix-style discovery, without displaying the same video twice in the same
+ // view. On All Subjects, secondary-school lessons form a dedicated first shelf.
+ if(allSubjects&&teenMatches.length){
+  const shelf=makeSection(['Teen Learning','Secondary School · Ages 13–17','WAEC/JAMB-ready lessons from Nigerian educational publishers'],teenMatches,0);
+  shelf.classList.add('rail-section--teen');
+  fragment.append(shelf);
+ }
  for(let i=0;i<groups.length;i++){
-  const matching=matches.filter(v=>v.category===groups[i][0]);
-  if(matching.length)fragment.append(makeSection(groups[i],matching,i));
+  const matching=matches.filter(v=>v.category===groups[i][0]&&(!allSubjects||!v.ages.includes('13-17')));
+  if(matching.length)fragment.append(makeSection(groups[i],matching,allSubjects?i+1:i));
  }
  catalog.replaceChildren(fragment);
  const teenCollectionPending=age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'));
