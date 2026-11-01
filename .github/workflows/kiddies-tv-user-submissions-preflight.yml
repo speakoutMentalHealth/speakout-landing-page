@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "docs/kiddies-tv-user-submitted-african-videos-20261101.json"
+      - "docs/kiddies-tv-geography-coding-age-curation-20261101.json"
       - "scripts/kiddies-tv-user-submissions-preflight.mjs"
       - ".github/workflows/kiddies-tv-user-submissions-preflight.yml"
   workflow_dispatch:
