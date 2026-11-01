@@ -32,7 +32,7 @@ test('Only the five explicitly owner-approved 13–17 videos may enter public ca
 });
 test('Teen catalogue displays a discoverable secondary-school shelf and age filter',()=>{
  assert(html.includes('id="teen-review-status"'));
- assert(html.includes('css/kiddies-tv-teen-launch-20261101.css'));
+ assert(html.includes('css/kiddies-tv-curriculum-20261101.css'));
  assert(html.includes('js/kiddies-tv-curriculum-20261101.js'));
  assert(app.includes("age.value==='13-17'&&!videos.some(v=>v.ages.includes('13-17'))"),'pending state only when no approved teens');
  assert(app.includes('rail-section--teen'));
