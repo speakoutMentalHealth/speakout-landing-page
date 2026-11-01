@@ -153,6 +153,141 @@ async function save(event){
  }catch(error){status(error.message||'Save failed.','error');}
  finally{setBusy(false);}
 }
+function drawReviewQueue(){
+ const queue=getReviewQueue(allRows());
+ $('queue-count').textContent=String(queue.length);
+ const host=$('review-queue');host.replaceChildren();
+ if(queue.length===0){const p=document.createElement('p');p.textContent='No pending drafts or unverified published records.';host.append(p);return;}
+ const fragment=document.createDocumentFragment();
+ for(const video of queue){
+  const card=document.createElement('div');card.className='queue-item';
+  const label=document.createElement('div');
+  const title=document.createElement('strong');title.textContent=video.title;
+  const meta=document.createElement('small');meta.textContent=(video.status==='draft'?'Draft · ready for human review':'Existing published lesson · review evidence to confirm')+' · '+video.category;
+  label.append(title,meta);
+  const button=action('Review',()=>fill(video));
+  button.setAttribute('aria-label','Review '+video.title);
+  card.append(label,button);fragment.append(card);
+ }
+ host.append(fragment);
+}
+function drawCoverage(){
+ const published=mergeKiddiesCatalogue(baseline,[...records.values()],Array.from(hidden));
+ const data=buildCoverage(published),tbody=$('coverage-body');tbody.replaceChildren();
+ $('coverage-summary').textContent=published.length+' published lessons · '+data.empty.length+' subjects with no published lessons · Ages 3–5: '+data.ageTotals['3-5']+' · 6–9: '+data.ageTotals['6-9']+' · 10–12: '+data.ageTotals['10-12']+' · 13–17: '+data.ageTotals['13-17'];
+ const frag=document.createDocumentFragment();
+ for(const subject of SUBJECTS){
+  const tr=document.createElement('tr');
+  const th=document.createElement('th');th.scope='row';th.textContent=subject;tr.append(th);
+  for(const age of AGES){
+   const td=document.createElement('td'),n=data.cells[subject][age];
+   td.textContent=String(n);
+   if(n===0){td.className='gap';td.title='No published lessons in this age and subject';}
+   tr.append(td);
+  }
+  frag.append(tr);
+ }
+ tbody.append(frag);
+}
+async function loadAuditPage(){
+ const host=$('audit-list');
+ $('audit-more').disabled=true;
+ try{
+  const parts=[collection(db,'kiddiesTvAudit')];
+  const constraints=[orderBy('at','desc'),limit(40)];
+  if(auditCursor)constraints.push(startAfter(auditCursor));
+  const data=await getDocs(query(parts[0],...constraints));
+  const entries=data.docs;
+  if(!auditCursor)host.replaceChildren();
+  for(const item of entries){
+   const record=item.data();
+   const row=document.createElement('div');row.className='audit-item';
+   const title=document.createElement('strong');title.textContent=record.title||record.youtubeId;
+   const actionEl=document.createElement('span');actionEl.className='audit-action';
+   actionEl.textContent=String(record.action||'update').replaceAll('_',' ');
+   const detail=document.createElement('small');
+   const date=record.at?.toDate?.();
+   detail.textContent=(date instanceof Date?date.toLocaleString():'Date pending')+' · '+record.actorUid+' · '+record.previousStatus+' → '+record.nextStatus;
+   row.append(title,actionEl,detail);host.append(row);
+  }
+  if(!host.children.length){const p=document.createElement('p');p.textContent='No editorial changes have been recorded yet.';host.append(p);}
+  auditCursor=entries.at(-1)||null;
+  auditDone=entries.length<40;
+  $('audit-more').hidden=auditDone;
+ }catch(error){status('Could not load the editorial audit: '+(error?.message||'Unknown error'),'error');}
+ finally{$('audit-more').disabled=false;}
+}
+async function refreshAudit(){
+ auditCursor=null;auditDone=false;
+ await loadAuditPage();
+}
+function showImport(message,tone=''){
+ const el=$('bulk-result');el.textContent=message;el.className='import-result'+(tone?' '+tone:'');
+}
+function validateBulk(){
+ bulkDrafts=[];$('bulk-submit').disabled=true;
+ const existing=allRows().map(v=>v.youtubeId);
+ const result=previewBulkImport($('bulk-text').value,existing);
+ if(result.errors.length){showImport(result.errors.slice(0,12).join('\n')+(result.errors.length>12?'\n… and '+(result.errors.length-12)+' additional errors.':''),'error');return;}
+ bulkDrafts=result.videos;
+ showImport(bulkDrafts.length+' validated unique lessons, all staged as DRAFT. No imported video will appear publicly until reviewed.','ok');
+ $('bulk-submit').disabled=false;
+}
+async function bulkImport(){
+ if(busy||!bulkDrafts.length)return;
+ // Re-validate just before writing to avoid stale previews or duplicate changes.
+ const result=previewBulkImport($('bulk-text').value,allRows().map(x=>x.youtubeId));
+ if(result.errors.length||!result.videos.length){bulkDrafts=[];$('bulk-submit').disabled=true;showImport('Revalidate the CSV before importing: '+result.errors.join(' '),'error');return;}
+ const count=result.videos.length;
+ if(!confirm('Import '+count+' lessons as private drafts? They will NOT be published.'))return;
+ const user=auth.currentUser;
+ if(!user){status('Sign in again to import.','error');return;}
+ const id=crypto.randomUUID();
+ const videoRefs=result.videos.map(x=>doc(db,'kiddiesTvVideos',x.youtubeId));
+ const auditRefs=result.videos.map(()=>doc(collection(db,'kiddiesTvAudit')));
+ try{
+  setBusy(true);status('Importing '+count+' draft lessons…');
+  await runTransaction(db,async transaction=>{
+   const config=await transaction.get(configRef);
+   const snapshots=await Promise.all(videoRefs.map(ref=>transaction.get(ref)));
+   const seen=snapshots.find(x=>x.exists());
+   if(seen)throw Error('A video was added by another administrator. Refresh and validate the CSV again.');
+   const oldHidden=config.exists()?(config.data().hiddenLegacyIds||[]):[];
+   transaction.set(configRef,{mode:'overlay',hiddenLegacyIds:oldHidden,updatedAt:now(),updatedBy:user.uid});
+   result.videos.forEach((video,i)=>{
+    transaction.set(videoRefs[i],{
+     ...video,createdAt:now(),createdBy:user.uid,updatedAt:now(),updatedBy:user.uid
+    });
+    transaction.set(auditRefs[i],{
+     youtubeId:video.youtubeId,action:'bulk_import_draft',actorUid:user.uid,at:serverTimestamp(),
+     previousStatus:'none',nextStatus:'draft',title:video.title,batchId:id
+    });
+   });
+  });
+  $('bulk-text').value='';$('bulk-file').value='';bulkDrafts=[];
+  await refresh();await refreshAudit();
+  showImport(count+' drafts imported successfully. Open the Review queue to approve them one by one.','ok');
+  status(count+' video drafts imported with audit history. None published.','ok');
+ }catch(error){showImport('Import failed; no drafts were saved in this transaction: '+(error?.message||'Unknown error'),'error');status('Bulk import was not completed.','error');}
+ finally{setBusy(false);}
+}
+function setupBulk(){
+ const input=$('bulk-text');
+ input.addEventListener('input',()=>{bulkDrafts=[];$('bulk-submit').disabled=true;showImport('CSV changed. Validate and preview before importing.');});
+ $('bulk-preview').addEventListener('click',validateBulk);
+ $('bulk-submit').addEventListener('click',bulkImport);
+ $('bulk-file').addEventListener('change',async event=>{
+  const file=event.target.files?.[0];if(!file)return;
+  if(file.size>250000){showImport('CSV file is too large; split into groups of up to 40 lessons.','error');return;}
+  input.value=await file.text();validateBulk();
+ });
+ $('bulk-template').addEventListener('click',()=>{
+  const csv='url,title,description,source,category,ages\n"https://youtu.be/ABCDEFGHIJK","Your video title","Describe what the learner will achieve in this lesson","Original publisher","Mathematics","6-9|10-12"\n';
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob),link=document.createElement('a');
+  link.href=url;link.download='kiddies-tv-bulk-import-template.csv';document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+ });
+}
 function setup(){
  const select=$('video-category');for(const name of names){const option=new Option(name,name);select.append(option);}
  $('video-form').addEventListener('submit',save);
