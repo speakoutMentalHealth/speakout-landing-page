@@ -1,3 +1,42 @@
-const {chromium}=require('playwright');
-const {readFileSync}=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
-(async()=>{const root=path.resolve(__dirname,'..'),browser=await chromium.launch({headless:true});try{const page=await browser.newPage({viewport:{width:390,height:844}});await page.route('https://kiddies.test/**',route=>{const file=new URL(route.request().url()).pathname.slice(1);try{route.fulfill({body:readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':'text/html'});}catch{route.fulfill({status:404,body:''});}});await page.route('https://i.ytimg.com/**',r=>r.abort());await page.route('https://www.youtube-nocookie.com/**',r=>r.fulfill({body:'Mock player: no real playback assertion'}));await page.goto('https://kiddies.test/kiddies-tv.html');await page.waitForSelector('[data-report-video]');assert.equal(await page.locator('[data-report-video]').count(),25);await page.locator('[data-report-video]').first().click();assert.equal(await page.locator('dialog').evaluate(d=>d.open),true);let href=await page.locator('#report-whatsapp').getAttribute('href');assert.ok(decodeURIComponent(href).includes('xg4_gWt8N_Q'));await page.selectOption('#report-reason',{label:'Video unavailable or not playing'});assert.ok(decodeURIComponent(await page.locator('#report-email').getAttribute('href')).includes('Video unavailable or not playing'));await page.keyboard.press('Escape');assert.equal(await page.locator('dialog').evaluate(d=>d.open),false);await page.selectOption('#age','10-12');await page.getByRole('button',{name:'Mathematics',exact:true}).click();await page.locator('#surprise-video').click();assert.match(await page.locator('#player-title').textContent(),/Multiplication/);await page.selectOption('#age','13-17');await page.locator('#close-video').click();await page.locator('#surprise-video').click();assert.equal(await page.locator('#player-frame iframe').count(),0);await page.goto('https://kiddies.test/kiddies-tv-watch.html?v=xg4_gWt8N_Q');await page.waitForSelector('[data-report-video]');await page.locator('[data-report-video]').click();assert.ok(decodeURIComponent(await page.locator('#report-email').getAttribute('href')).includes('xg4_gWt8N_Q'));await page.goto('https://kiddies.test/kiddies-tv-watch.html?v=aaaaaaaaaaa');await page.waitForFunction(()=>document.querySelector('#watch-title').textContent==='Lesson unavailable');assert.equal(await page.locator('[data-report-video]').count(),0);console.log('PASS: report context, reason changes, dialog close, age/subject filtering, empty teen filter and approved-only watch reporting. Provider playback and message delivery are not tested.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
+/* Kiddies TV report, filters, and approved-video browser acceptance. Provider playback mocked. */
+'use strict';
+const {chromium}=require('playwright'),{readFileSync}=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+(async()=>{
+ const root=path.resolve(__dirname,'..'),browser=await chromium.launch({headless:true});
+ try{
+  const page=await browser.newPage({viewport:{width:390,height:844}});
+  await page.route('https://kiddies.test/**',route=>{
+   const file=new URL(route.request().url()).pathname.slice(1);
+   try{route.fulfill({body:readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':'text/html'});}
+   catch{route.fulfill({status:404,body:''});}
+  });
+  await page.route('https://i.ytimg.com/**',route=>route.abort());
+  await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({body:'Mock player: no real playback assertion'}));
+  await page.goto('https://kiddies.test/kiddies-tv.html');
+  await page.waitForSelector('[data-report-video]');
+  assert.equal(await page.locator('[data-report-video]').count(),25);
+  await page.locator('[data-report-video]').first().click();
+  assert.equal(await page.locator('dialog').evaluate(d=>d.open),true);
+  assert.ok(decodeURIComponent(await page.locator('#report-whatsapp').getAttribute('href')).includes('xg4_gWt8N_Q'));
+  await page.selectOption('#report-reason',{label:'Video unavailable or not playing'});
+  assert.ok(decodeURIComponent(await page.locator('#report-email').getAttribute('href')).includes('Video unavailable or not playing'));
+  await page.keyboard.press('Escape');assert.equal(await page.locator('dialog').evaluate(d=>d.open),false);
+  await page.selectOption('#age','10-12');
+  await page.getByRole('button',{name:'Mathematics',exact:true}).click();
+  await page.locator('#surprise-video').click();
+  assert.match(await page.locator('#player-title').textContent(),/Multiplication/);
+  await page.selectOption('#age','13-17');
+  await page.locator('#close-video').click();
+  assert.equal(await page.locator('#surprise-video').isDisabled(),true);
+  assert.equal(await page.locator('#player-frame iframe').count(),0);
+  assert.equal(await page.locator('#empty').isVisible(),true);
+  await page.goto('https://kiddies.test/kiddies-tv-watch.html?v=xg4_gWt8N_Q');
+  await page.waitForSelector('[data-report-video]');
+  await page.locator('[data-report-video]').click();
+  assert.ok(decodeURIComponent(await page.locator('#report-email').getAttribute('href')).includes('xg4_gWt8N_Q'));
+  await page.goto('https://kiddies.test/kiddies-tv-watch.html?v=aaaaaaaaaaa');
+  await page.waitForFunction(()=>document.querySelector('#watch-title').textContent==='This lesson is unavailable');
+  assert.equal(await page.locator('[data-report-video]').count(),0);
+  console.log('PASS: reporting, age/subject filters, empty state, featured selection, approved-only watch reporting. Third-party playback remains mocked.');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
