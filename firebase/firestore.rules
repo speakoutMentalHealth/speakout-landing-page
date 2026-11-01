@@ -897,6 +897,34 @@ service cloud.firestore {
       allow create, update: if isSuperAdmin() && validKiddiesVideo(videoId);
       allow delete: if false;
     }
+    // Append-only editorial history. Only approved administrators can read it.
+    match /kiddiesTvAudit/{eventId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin() &&
+        eventId.matches('^[A-Za-z0-9]{20}$') &&
+        request.resource.data.keys().hasOnly([
+          'youtubeId','action','actorUid','at','previousStatus','nextStatus','title','batchId'
+        ]) &&
+        request.resource.data.keys().hasAll([
+          'youtubeId','action','actorUid','at','previousStatus','nextStatus','title','batchId'
+        ]) &&
+        request.resource.data.youtubeId.matches('^[A-Za-z0-9_-]{11}$') &&
+        request.resource.data.action in [
+          'create_draft','edit_draft','edit_published','publish',
+          'unpublish','archive','restore_draft','bulk_import_draft'
+        ] &&
+        request.resource.data.actorUid == request.auth.uid &&
+        request.resource.data.at == request.time &&
+        request.resource.data.previousStatus in ['none','draft','published','archived'] &&
+        request.resource.data.nextStatus in ['draft','published','archived'] &&
+        request.resource.data.title is string &&
+        request.resource.data.title.size() >= 5 &&
+        request.resource.data.title.size() <= 160 &&
+        request.resource.data.batchId is string &&
+        request.resource.data.batchId.size() <= 80;
+      allow update, delete: if false;
+    }
+
     match /kiddiesTvConfig/{configId} {
       allow get: if configId == 'live';
       allow list: if isSuperAdmin();
@@ -1503,11 +1531,11 @@ service cloud.firestore {
 
     // Session state is exclusively managed by the authenticated Worker.
     match /{collection}/{document=**} {
-      allow read: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
-      allow delete: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow create: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow read: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig','kiddiesTvAudit']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin();
+      allow delete: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig','kiddiesTvAudit']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() && !resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
+      allow create: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig','kiddiesTvAudit']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.keys().hasAny(["communicationHistory", "lastCommunicationAt"]);
-      allow update: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
+      allow update: if !(collection in ['kiddiesTvVideos','kiddiesTvConfig','kiddiesTvAudit']) && !(collection in ["mindcheckAdultAccess", "mindcheckAccessAudits", "mindcheckTokenLimits", "mindcheckAIConsents"]) && collection != "adminSupportSessions" && collection != "trafficSignIns" && collection != "volunteerApplications" && collection != "volunteerAssignments" && collection != "volunteerNotifications" && collection != "volunteerCredentialClaims" && !(collection in ["volunteerCoordinators", "volunteerAllocationDrafts", "volunteerAllocationAudits"]) && !(collection in ["forumRooms", "forumRoomAudits", "forumTopics", "forumReplies", "forumRoomMembers", "forumAccessGrants", "forumGrantAudits", "forumModerationAudits", "forumReports", "forumReleaseControls", "forumReleaseControlAudits"]) && !isHomeLearningReviewCollection(collection) && isSuperAdmin() &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny(["communicationHistory", "lastCommunicationAt"]);
     }
   }
