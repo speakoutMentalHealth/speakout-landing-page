@@ -1,18 +1,26 @@
-.watch-main{max-width:1100px;padding:28px 0 52px}.watch-main h1{font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:-.04em;margin:9px 0}.watch-description{color:#526b7f;line-height:1.55;max-width:75ch}.watch-video{aspect-ratio:16/9;background:#09192b;border-radius:20px;overflow:hidden;display:grid;place-items:center;color:white;position:relative}.watch-video iframe{border:0;width:100%;height:100%;display:block}.watch-video:fullscreen{width:100vw;height:100dvh;max-height:100dvh;border-radius:0;aspect-ratio:auto;background:#000}.watch-video:fullscreen iframe{width:100%;height:100%}.watch-actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.secondary-watch{border:1px solid #bcd4e9;border-radius:14px;min-height:46px;padding:12px 18px;background:#e8f3ff;color:#153e60;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;justify-content:center}.watch-actions button:disabled{opacity:.55;cursor:not-allowed}.watch-actions :focus-visible{outline:3px solid #d48715;outline-offset:3px}#watch-status{color:#315b76;line-height:1.5}@media(max-width:650px){.watch-main{padding:20px 0 35px}.watch-video{border-radius:13px}.watch-actions>*{flex:1 1 150px}.watch-video:fullscreen{border-radius:0}}@media(orientation:landscape) and (max-height:520px){.watch-video:not(:fullscreen){max-height:calc(100dvh - 24px);width:min(100%,calc((100dvh - 24px)*16/9));margin:auto}}@media(prefers-reduced-motion:reduce){.watch-video{scroll-behavior:auto}}
-/* SpeakOut TV-inspired watch layout: content-first and compact on phones. */
-.watch-main{padding-top:18px}
-.watch-main>.tv-kicker{margin:0 0 5px}
-.watch-main h1{line-height:1.12;margin:5px 0 8px}
-.watch-description{margin:0 0 15px}
-.watch-video{box-shadow:0 14px 42px #07122522}
-.watch-actions{margin:12px 0;gap:8px}
-.watch-actions>*{font-size:.92rem}
-.watch-page .trust-note{max-width:75ch}
+/* The deep-linked player shares Kiddies TV's design tokens and navigation. */
+.watch-main{width:min(1140px,calc(100% - 88px));padding:37px 0 42px}
+.watch-shell{background:linear-gradient(165deg,#122636,#0b1b2a);border:1px solid #365061;border-radius:24px;padding:clamp(18px,3vw,36px);box-shadow:0 25px 65px #0005}
+.watch-shell>.tv-kicker{color:var(--accent);margin-bottom:9px}
+.watch-main h1{font-size:clamp(1.4rem,3vw,2.4rem);letter-spacing:-.045em;line-height:1.14;margin:0 0 9px;max-width:30ch}
+.watch-description{color:#b1c9d9;line-height:1.5;margin:0 0 23px;font-size:.91rem}
+.watch-video{width:100%;aspect-ratio:16/9;background:#020608;border-radius:18px;overflow:hidden;display:grid;place-items:center;position:relative;color:#d9eafa;border:1px solid #ffffff18}
+.watch-video iframe{width:100%;height:100%;border:0;display:block}
+.watch-video:fullscreen{width:100vw;height:100dvh;aspect-ratio:auto;border:0;border-radius:0;background:black}
+.watch-video:fullscreen iframe{width:100%;height:100%}
+.kids-placeholder{text-align:center;padding:20px;color:#c6d8e2}
+.watch-actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap;margin:18px 0 2px}
+.secondary-watch{border:1px solid #3c6072;background:#162e40;border-radius:11px;color:#d9ebf6;min-height:45px;padding:10px 15px;text-decoration:none;font-weight:750;font-size:.83rem;display:inline-flex;align-items:center;justify-content:center}
+.secondary-watch:hover{background:#23495c}
+.watch-actions .primary{font-size:.83rem;min-height:45px;text-decoration:none;padding:11px 17px}
+.watch-actions .video-report{margin-left:auto;color:#b2c9d7;border:1px solid transparent;padding:10px 12px;font-size:.78rem;min-height:44px}
+.watch-actions button:disabled{opacity:.55;cursor:not-allowed}
+.watch-status{color:#a9c1d0;font-size:.75rem;line-height:1.5;margin:14px 0 0}
+.watch-main .viewer-notice{margin-top:22px}
 body.kiddies-landscape-active{overflow:hidden!important}
 .watch-video.landscape-theatre{position:fixed!important;z-index:10000!important;top:50%!important;left:50%!important;width:100dvh!important;height:100vw!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;transform:translate(-50%,-50%) rotate(90deg)!important;border-radius:0!important;background:#000!important}
 .watch-video.landscape-theatre iframe{width:100%!important;height:100%!important}
-body.kiddies-landscape-active #watch-landscape{position:fixed;z-index:10001;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:auto;min-height:44px;padding:8px 12px;background:#fff;color:#0b2746;box-shadow:0 4px 18px #0005;font-size:.78rem}
-@media(max-width:650px){.watch-main{padding:12px 0 24px}.watch-main h1{font-size:clamp(1.25rem,5.2vw,1.7rem)}.watch-description{font-size:.9rem;line-height:1.4}.watch-actions>*{flex:1 1 calc(50% - 8px);padding:10px 9px;min-height:44px}.watch-actions>a{flex-basis:100%}.watch-page .trust-note{font-size:.75rem}}
-
-/* .secondary-watch uses inline-flex, so explicitly honour the stop action's hidden state. */
-#watch-stop[hidden]{display:none}
+body.kiddies-landscape-active #watch-landscape{position:fixed;z-index:10001;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));width:auto;min-height:44px;padding:8px 12px;background:#f2fff9;color:#092c28;font-size:.75rem}
+@media(max-width:680px){.watch-main{width:calc(100% - 28px);padding:16px 0 26px}.watch-shell{padding:16px;border-radius:16px}.watch-main h1{font-size:clamp(1.28rem,5vw,1.8rem)}.watch-description{font-size:.83rem;margin-bottom:13px}.watch-video{border-radius:11px}.watch-actions{gap:7px}.watch-actions>*{flex:1 1 calc(50% - 7px);font-size:.74rem;padding:9px 8px}.watch-actions>a{flex:1 1 100%}.watch-actions .video-report{margin-left:0;flex:1 1 100%;font-size:.74rem}.watch-status{font-size:.71rem}}
+@media(orientation:landscape) and (max-height:520px){.watch-video:not(:fullscreen):not(.landscape-theatre){max-height:calc(100dvh - 24px);width:min(100%,calc((100dvh - 24px)*16/9));margin:auto}}
+@media(prefers-reduced-motion:reduce){.watch-video{scroll-behavior:auto}}
