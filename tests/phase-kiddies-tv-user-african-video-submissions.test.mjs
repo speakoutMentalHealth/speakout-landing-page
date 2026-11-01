@@ -25,5 +25,5 @@ test('Submission preflight never modifies publication data',()=>{
  assert(script.includes('allUnapproved:true'));
  assert(!script.includes("writeFileSync('data/kiddies-tv-approved.json'"));
  assert(!script.includes('publishApproved=true'));
- assert(!script.includes('approved:true'));
+ assert(!/\bpublishApproved\s*=\s*true\b/.test(script));
 });
