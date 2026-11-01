@@ -10,28 +10,27 @@ const lib=read('js/kiddies-tv-library.js'),watch=read('js/kiddies-tv-watch.js');
 const page=read('kiddies-tv.html'),watchPage=read('kiddies-tv-watch.html');
 const approved=JSON.parse(read('data/kiddies-tv-approved.json'));
 
-test('Kiddies TV tiles remain approved-only YouTube videos in an on-page player',()=>{
-  assert(approved.every(v=>v.approved===true&&/^[A-Za-z0-9_-]{11}$/.test(v.youtubeId)));
-  assert(lib.includes("v.approved===true"),'approved-only library validation must remain intact');
-  assert(watch.includes("v.approved===true"),'approved-only watch validation must remain intact');
-  assert(lib.includes("iframe.src='https://www.youtube-nocookie.com/embed/'"),'library must use an embedded YouTube player');
-  assert(watch.includes("iframe.src='https://www.youtube-nocookie.com/embed/'"),'watch page must use an embedded YouTube player');
-  assert(!/window\.open\(|location\.href\s*=\s*['"]https?:/.test(lib),'lesson tiles must not navigate to external destinations');
-  assert(!/href=["']https?:\/\/(?:www\.)?youtube\.com\/(?:watch|shorts)/.test(page+watchPage),'no owner-controlled outbound YouTube watch links');
+test('Streaming-style library displays approved-only YouTube lessons without external video links',()=>{
+ assert(approved.length>0&&approved.every(v=>v.approved===true&&/^[A-Za-z0-9_-]{11}$/.test(v.youtubeId)));
+ assert(lib.includes("v.approved===true"),'library approval validation stays mandatory');
+ assert(watch.includes("v.approved===true"),'watch page approval validation stays mandatory');
+ assert(lib.includes("iframe.src='https://www.youtube-nocookie.com/embed/'"));
+ assert(watch.includes("iframe.src='https://www.youtube-nocookie.com/embed/'"));
+ assert(!/window\.open\(|location\.href\s*=\s*['"]https?:/.test(lib),'library cannot navigate to external videos');
+ assert(!/href=["']https?:\/\/(?:www\.)?youtube\.com\/(?:watch|shorts)/.test(page+watchPage),'no owner-controlled outbound YouTube watch links');
 });
-
-test('Both learning views offer a manual Stop video action that clears the iframe',()=>{
-  assert(page.includes('id="stop-video-quick"')&&page.includes('id="close-video"'));
-  assert(watchPage.includes('id="watch-stop"'));
-  assert(lib.includes("stopQuick.addEventListener('click',close)"));
-  assert(lib.includes("frame.replaceChildren(placeholder)"),'library close must remove iframe and stop playback');
-  assert(watch.includes("stop.addEventListener('click'"));
-  assert(watch.includes('box.replaceChildren(placeholder)'), 'watch stop must remove iframe and stop playback');
-  assert(read('css/kiddies-tv-watch.css').includes('#watch-stop[hidden]{display:none}'));
+test('Featured-first cinema layout opens video only after a user choice',()=>{
+ assert(page.includes('id="hero-image"')&&page.includes('id="hero-title"'),'featured media');
+ assert(page.includes('id="player"')&&page.includes('class="watch-stage"')&&page.includes('hidden'),'player is hidden initially');
+ assert(page.includes('id="close-video"'),'a discreet close control exists');
+ assert(!page.includes('id="stop-video-quick"')&&!watchPage.includes('id="watch-stop"'),'no bulky Stop video actions');
+ assert(lib.includes("player.hidden=false"),'selecting a lesson reveals the stage');
+ assert(lib.includes("frame.replaceChildren(iframe)"),'the player is replaced, not stacked');
+ assert(lib.includes("frame.replaceChildren();player.hidden=true"),'close unmounts the iframe');
+ assert(read('css/kiddies-tv.css').includes('.rail-section')&&read('css/kiddies-tv.css').includes('.hero-media'));
 });
-
-test('Do not misrepresent YouTube adverts or implement a simulated ad shield',()=>{
-  assert(page.includes('cannot control or hide'));
-  assert(watchPage.includes('cannot automatically hide or skip'));
-  assert(!/ad[-_]?block|skipAd\s*\(|adCountdown|adOverlay/i.test(lib+watch),'no unsupported YouTube advert manipulation');
+test('YouTube advertising and recommendations remain transparently disclosed',()=>{
+ assert(page.includes('YouTube may display advertisements'));
+ assert(watchPage.includes('YouTube may display adverts'));
+ assert(!/(adCountdown|skipAd\s*\(|adOverlay|adBlock)/i.test(lib+watch),'unsupported ad overlay must remain absent');
 });
