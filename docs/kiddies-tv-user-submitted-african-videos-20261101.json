@@ -1,0 +1,183 @@
+{
+  "batchId": "USER-SHARED-2026-11-01",
+  "purpose": "Owner-supplied African educational video links for SpeakOut Kiddies TV; source discovery, not publication approval",
+  "receivedDate": "2026-11-01",
+  "playlist": {
+    "url": "https://www.youtube.com/playlist?list=PLEp6HdXIBkhrkn3esl9tsw-hhLJKkRHwB",
+    "playlistId": "PLEp6HdXIBkhrkn3esl9tsw-hhLJKkRHwB",
+    "status": "pending_playlist_item_discovery",
+    "maxItemsForFirstPass": 30,
+    "items": [],
+    "approval": "none"
+  },
+  "videos": [
+    {
+      "reviewId": "SUB-01",
+      "youtubeId": "tcGWl2TN4Ec",
+      "submittedUrl": "https://youtu.be/tcGWl2TN4Ec",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    },
+    {
+      "reviewId": "SUB-02",
+      "youtubeId": "g6CVApMxmqg",
+      "submittedUrl": "https://youtu.be/g6CVApMxmqg",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    },
+    {
+      "reviewId": "SUB-03",
+      "youtubeId": "X7ic17zx0gA",
+      "submittedUrl": "https://youtu.be/X7ic17zx0gA",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    },
+    {
+      "reviewId": "SUB-04",
+      "youtubeId": "kB7qOJT5x1A",
+      "submittedUrl": "https://youtu.be/kB7qOJT5x1A",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    },
+    {
+      "reviewId": "SUB-05",
+      "youtubeId": "G0F2PiVP_FI",
+      "submittedUrl": "https://youtu.be/G0F2PiVP_FI",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    },
+    {
+      "reviewId": "SUB-06",
+      "youtubeId": "53K2jjPjdds",
+      "submittedUrl": "https://youtu.be/53K2jjPjdds",
+      "status": "submitted_pending_full_review",
+      "metadata": {
+        "title": null,
+        "channel": null,
+        "checkedAt": null,
+        "embeddable": null,
+        "source": null
+      },
+      "subject": null,
+      "proposedAges": [],
+      "review": {
+        "reviewer": null,
+        "completedFullWatch": false,
+        "captionsChecked": false,
+        "ageSuitabilityConfirmed": false,
+        "accuracyChecked": false,
+        "embedIOSChecked": false,
+        "embedAndroidChecked": false,
+        "advertAndEndCardsChecked": false,
+        "decision": null,
+        "notes": []
+      },
+      "publishApproved": false
+    }
+  ]
+}
