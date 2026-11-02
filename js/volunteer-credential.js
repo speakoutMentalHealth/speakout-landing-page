@@ -1,3 +1,4 @@
+import { setupCertificateDownload } from "./volunteer-certificate-download.js";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { volunteerNextActions } from "./volunteer-next-actions.js";
 
@@ -92,11 +93,13 @@ export async function setupVolunteerCredentials(db,uid,application,coordinatorPu
     const found=await getDoc(claimPath(db,uid));
     credentialClaim=found.exists()?found.data():null;
   } catch {
+    setupCertificateDownload();
     byId("credentialStatus").textContent="Unable to load certificate status. Refresh before submitting.";
     byId("credentialDisclosure").hidden=true;
     renderChecklist();
     return;
   }
+  setupCertificateDownload(credentialClaim?.certificateId || "");
   render();
   byId("credentialForm").addEventListener("submit",async event=>{
     event.preventDefault();

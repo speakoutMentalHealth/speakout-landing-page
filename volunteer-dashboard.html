@@ -81,6 +81,7 @@ body:not(.volunteer-auth-pending) #volunteerAccessStatus{display:none}
 #notificationsCard{scroll-margin-top:18px}
 
 /* Certificate review and personally relevant next actions */
+#downloadCertificatePdf[hidden]{display:none!important}
 #credentialCard[hidden],#credentialDisclosure[hidden]{display:none!important}
 #credentialCard .credential-note{background:#f2f7fc;border:1px solid var(--line);padding:12px 15px;border-radius:11px;margin:12px 0}
 #credentialForm{display:grid;gap:13px;margin:15px 0}
@@ -192,7 +193,14 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px soli
 </details>
 </section>
 <section id="credentialCard" class="card" aria-labelledby="credentialHeading">
-<h2 id="credentialHeading">Existing training certificate</h2>
+<h2 id="credentialHeading">My training certificate</h2>
+<form id="certificateDownloadForm">
+<label for="downloadCertificateId">Certificate ID<input id="downloadCertificateId" required autocomplete="off" autocapitalize="characters" spellcheck="false" minlength="8" maxlength="80" pattern="[A-Za-z0-9-]{8,80}" placeholder="Enter your assessment certificate ID"></label>
+<p class="small">Verify your certificate first. Once verified, you can download the official PDF. You do not need to repeat a passed assessment.</p>
+<button id="verifyDownloadCertificate" type="submit" class="btn-link">Verify my certificate</button>
+<button id="downloadCertificatePdf" type="button" class="btn-link secondary" hidden>Download certificate PDF</button>
+<p id="certificateDownloadStatus" role="status" aria-live="polite"></p>
+</form>
 <p id="credentialStatus" role="status" aria-live="polite">Checking your certificate record…</p>
 <p class="credential-note">If you already completed the assessment and received a certificate, you do <strong>not</strong> need to repeat it. Submit the printed certificate ID so SpeakOut can verify your existing result. Submitting an ID does not automatically grant assessment clearance.</p>
 <details id="credentialDisclosure" hidden>
