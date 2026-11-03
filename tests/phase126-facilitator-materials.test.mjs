@@ -142,3 +142,11 @@ test("private R2 upload and download preserve the file and enforce live assignme
     user:identity("teacher-b","teacher")
   }),e=>e.status===403);
 });
+
+test("central super admin can discover programme materials across schools without a school link",()=>{
+  const ui=read("js/programmes/facilitator-materials.js");
+  assert.match(ui,/if \(superAdmin\(\)\) \{\s*\/\/ Central SpeakOut admins/s);
+  assert.match(ui,/getDocs\(collection\(db,"programmes"\)\)/);
+  assert.match(ui,/item.schoolName \|\| item.schoolCode \|\| item.schoolId/);
+  assert.match(ui,/filter\(ownProgramme\)/);
+});
