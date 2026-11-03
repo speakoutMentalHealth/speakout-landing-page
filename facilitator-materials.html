@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>My Programme Materials | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<style>
+.materials-shell{max-width:1040px;margin:0 auto;padding:24px 16px 60px}
+.materials-header{background:#071b3a;color:#fff;border-radius:24px;padding:24px;margin:18px 0}
+.materials-header h1{color:#fff;margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.3rem)}
+.materials-header p{color:#d8e6fa;max-width:70ch;margin:0}
+.materials-row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.materials-row label{display:grid;gap:8px;flex:1;min-width:230px;font-weight:700}
+.materials-panel{background:#fff;border:1px solid #dee8f5;border-radius:20px;padding:20px;margin-top:18px}
+.materials-panel h2{margin:0 0 10px;font-size:1.24rem}
+.materials-panel select,.materials-panel input,.materials-panel textarea{width:100%;padding:12px;border:1px solid #9cafca;border-radius:10px;font:inherit;background:#fff}
+.materials-panel textarea{min-height:88px;resize:vertical}
+.materials-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.materials-form label{display:grid;gap:7px;font-weight:700}
+.materials-form .full{grid-column:1/-1}
+.material-card{padding:16px;border:1px solid #dce8f5;border-radius:15px;margin-top:12px;display:grid;gap:8px}
+.material-card h3{font-size:1.06rem;margin:0}
+.material-card p{margin:0;color:#384e6a;white-space:pre-wrap;overflow-wrap:anywhere}
+.material-card .meta{color:#526783;font-size:.86rem}
+.material-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.material-btn{display:inline-flex;justify-content:center;align-items:center;background:#0a64cb;color:white;border:0;border-radius:10px;padding:10px 15px;min-height:44px;text-decoration:none;cursor:pointer;font:inherit;font-weight:750}
+.material-btn.secondary{background:#e9f2ff;color:#073977}
+.material-btn:disabled{opacity:.5;cursor:wait}
+.material-note{padding:12px;border-radius:10px;background:#edf4ff;color:#102c57}
+.material-note.error{background:#fff1f2;color:#89142c}
+[hidden]{display:none!important}
+@media(max-width:600px){.materials-form{grid-template-columns:1fr}.materials-form .full{grid-column:auto}}
+</style>
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="teacher-dashboard.html"><img src="logo.png" alt="SpeakOut logo"><div><h2>SpeakOut</h2><p>Facilitator Resource Inbox</p></div></a><nav class="links" id="roleNav"></nav></div></header>
+<main id="main-content" class="materials-shell">
+<div class="materials-header"><h1>My Programme Materials</h1><p>Find the latest guides, weekly lesson plans, worksheets and briefing notes for clubs or programmes assigned to you. Downloads are restricted to authorised accounts.</p></div>
+<section class="materials-panel">
+  <div class="materials-row">
+    <label for="programmeSelect">Select my club or programme
+      <select id="programmeSelect"><option value="">Loading programmes…</option></select>
+    </label>
+    <button class="material-btn secondary" id="refreshButton" type="button">Refresh materials</button>
+  </div>
+  <p class="material-note" id="materialsStatus" role="status" aria-live="polite">Checking your programme assignments…</p>
+</section>
+<section class="materials-panel" aria-labelledby="materialsHeading">
+  <h2 id="materialsHeading">Available downloads</h2>
+  <div id="materialsList"></div>
+</section>
+<section class="materials-panel" id="publishPanel" hidden aria-labelledby="publishHeading">
+  <h2 id="publishHeading">Send materials to assigned facilitators</h2>
+  <p>Upload a PDF, Word file, PowerPoint or image. The resource appears in this programme’s material inbox for its assigned facilitators. Student personal or clinical information must not be uploaded here.</p>
+  <form class="materials-form" id="uploadForm">
+    <label class="full">Resource title <input id="materialTitle" maxlength="140" placeholder="e.g. Week 1 — Understanding Our Emotions" required></label>
+    <label>Friday / session week
+      <select id="materialWeek"><option value="0">General / whole programme</option></select>
+    </label>
+    <label>Choose file (10 MB maximum)
+      <input id="materialFile" type="file" accept=".pdf,.docx,.pptx,.jpg,.jpeg,.png,application/pdf" required>
+    </label>
+    <label class="full">Instructions for facilitator (optional)
+      <textarea id="materialNote" maxlength="800" placeholder="What to prepare, materials needed and what to do after the session."></textarea>
+    </label>
+    <div class="full"><button id="publishButton" type="submit" class="material-btn">Publish to this programme</button></div>
+  </form>
+</section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach · Programme materials</div></footer>
+<script type="module" src="js/programmes/facilitator-materials.js"></script>
+<script defer src="js/learner-shell.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+</body>
+</html>
