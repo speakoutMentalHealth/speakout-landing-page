@@ -749,3 +749,21 @@ test("manifest candidates deny all browser access even for super administrators"
   await assertFails(deleteDoc(ref));
  }
 });
+
+test("private facilitator resources are blocked from direct Firestore SDK access", async () => {
+  await seed("users/super-a", profile("super-a", "super_admin"));
+  await seed("users/admin-a", profile("admin-a", "school_admin"));
+  await seed("users/teacher-a", profile("teacher-a", "teacher"));
+  await seed("programmeMaterials/private-resource", {
+    programmeId:"club-a",schoolId:"school-a",status:"active",
+    title:"Internal facilitation guide",filePublicId:"private-storage-key"
+  });
+  for (const uid of ["super-a", "admin-a", "teacher-a"]) {
+    const firestore = testEnv.authenticatedContext(uid).firestore();
+    await assertFails(getDoc(doc(firestore, "programmeMaterials/private-resource")));
+    await assertFails(setDoc(doc(firestore, "programmeMaterials/new-" + uid), {
+      programmeId:"club-a",schoolId:"school-a",title:"forged"
+    }));
+    await assertFails(deleteDoc(doc(firestore, "programmeMaterials/private-resource")));
+  }
+});
