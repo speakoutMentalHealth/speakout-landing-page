@@ -88,3 +88,57 @@ test("private metadata cannot be read from the super-admin Firestore fallback",(
   assert.equal(rules.match(/collection != "programmeMaterials"/g)?.length,4);
   assert.match(worker,/"programmeMaterials"\s*\]/);
 });
+
+test("private R2 upload and download preserve the file and enforce live assignment",async()=>{
+  const files = new Map();
+  const metadata = new Map();
+  const env = {EVIDENCE_BUCKET:{
+    async put(key,stream,options){
+      files.set(key,await new Response(stream).arrayBuffer());
+      metadata.set(key,options.customMetadata);
+      return {key};
+    },
+    async get(key){
+      if(!files.has(key))return null;
+      return {
+        body:new Blob([files.get(key)]).stream(),
+        customMetadata:metadata.get(key)
+      };
+    }
+  }};
+  let saved = null;
+  const fixtures = {
+    env,
+    getDocument:async(_env,path)=>{
+      if(path==="programmes/club-a")return programme;
+      if(path.startsWith("programmeMaterials/"))return saved ? {id:path.split("/")[1],...saved}:null;
+      return null;
+    },
+    transactionalSet:async(_env,path,record)=>{saved=record;return {ok:true};},
+    queryDocumentsByField:async()=>({documents:[],truncated:false}),
+    runTransaction:async()=>({}),
+    sha1Hex:async()=>"",sha1Base64Url:async()=>""
+  };
+  const uploaded=await programmeMaterialsRoute({
+    ...fixtures,path:"/v1/programme-materials/upload",
+    data:{programmeId:"club-a",title:"Friday facilitator guide",week:"1",
+      file:new File(["private guide contents"],"guide.pdf",{type:"application/pdf"})},
+    user:identity("admin-a","school_admin")
+  });
+  assert.equal(uploaded.ok,true);
+  assert.equal(saved.fileStorage,"r2");
+  assert.equal(saved.schoolId,"school-a");
+  const response=await programmeMaterialsRoute({
+    ...fixtures,path:"/v1/programme-materials/download",
+    data:{materialId:uploaded.material.id},
+    user:identity("teacher-a","teacher")
+  });
+  assert.equal(response.status,200);
+  assert.equal(await response.text(),"private guide contents");
+  assert.match(response.headers.get("cache-control"),/no-store/);
+  await assert.rejects(programmeMaterialsRoute({
+    ...fixtures,path:"/v1/programme-materials/download",
+    data:{materialId:uploaded.material.id},
+    user:identity("teacher-b","teacher")
+  }),e=>e.status===403);
+});
