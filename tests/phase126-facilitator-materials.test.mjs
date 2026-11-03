@@ -144,6 +144,7 @@ test("private R2 upload and download preserve the file and enforce live assignme
 });
 
 test("central super admin can discover programme materials across schools without a school link",()=>{
+  assert.match(read("admin-dashboard.html"),/href="facilitator-materials\.html"/);
   const ui=read("js/programmes/facilitator-materials.js");
   assert.match(ui,/if \(superAdmin\(\)\) \{\s*\/\/ Central SpeakOut admins/s);
   assert.match(ui,/getDocs\(collection\(db,"programmes"\)\)/);
