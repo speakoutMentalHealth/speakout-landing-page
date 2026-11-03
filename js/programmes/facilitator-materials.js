@@ -20,9 +20,13 @@ const manager = () => ["super_admin", "admin", "school_admin", "school"].include
 const superAdmin = () => role() === "super_admin";
 const assigned = p => p.createdBy === account.uid ||
   (Array.isArray(p.facilitatorIds) && p.facilitatorIds.includes(account.uid));
-const ownProgramme = p => Boolean(p && (superAdmin() ||
-  ((p.schoolId === linkedSchoolId || (profile.schoolCode && p.schoolCode === profile.schoolCode)) &&
-    (manager() || (role() === "teacher" && assigned(p)))));
+const ownProgramme = p => {
+  if (!p) return false;
+  if (superAdmin()) return true;
+  const inSchool = p.schoolId === linkedSchoolId ||
+    Boolean(profile.schoolCode && p.schoolCode === profile.schoolCode);
+  return inSchool && (manager() || (role() === "teacher" && assigned(p)));
+};
 const allowedType = {
   "application/pdf":true,
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document":true,
