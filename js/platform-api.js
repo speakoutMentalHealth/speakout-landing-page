@@ -310,6 +310,7 @@ export const programmeMaterialsApi = {
 // Private weekly delivery reports; all role and programme checks run server-side.
 export const programmeReportsApi = {
   list: programmeId => platformRequest("/v1/programme-reports/list",{programmeId}),
+  candidates: programmeId => platformRequest("/v1/programme-reports/candidates",{programmeId}),
   submit: payload => platformRequest("/v1/programme-reports/submit",payload),
   review: (programmeId,reportId,decision,note) =>
     platformRequest("/v1/programme-reports/review",{programmeId,reportId,decision,note}),
