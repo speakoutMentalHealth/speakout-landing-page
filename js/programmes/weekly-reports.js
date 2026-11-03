@@ -75,6 +75,22 @@ function summary(){
   ].map(([name,n])=>'<div class="week-stat"><strong>'+n+'</strong>'+escapeHtml(name)+'</div>').join("");
 }
 
+async function loadSupervisorCandidates(){
+  const select=$("weeklySupervisorCandidate");
+  select.innerHTML='<option value="">Loading school staff…</option>';
+  try{
+    const result=await programmeReportsApi.candidates(activeId);
+    const candidates=Array.isArray(result.candidates)?result.candidates:[];
+    select.innerHTML='<option value="">Select approved staff or use UID below</option>'+
+      candidates.map(person=>'<option value="'+escapeHtml(person.uid)+'">'+
+        escapeHtml(person.fullName+" · "+person.role)+'</option>').join("");
+    if(result.truncated)status("School staff directory is incomplete. You can still assign an approved account using its UID.",true);
+  }catch(error){
+    select.innerHTML='<option value="">Directory unavailable — use UID</option>';
+    status("Supervisor directory could not be loaded. An approved account UID may still be entered.",true);
+  }
+}
+
 function renderSupervisors(){
   $("weeklySupervisorPanel").hidden=!permissions.manage;
   if(!permissions.manage)return;
@@ -171,6 +187,7 @@ async function loadReports(){
     $("weeklyReportsPanel").hidden=false;
     $("weeklySummaryPanel").hidden=false;
     summary();renderSupervisors();renderReports();
+    if(permissions.manage)await loadSupervisorCandidates();
     status(reports.length+" weekly report"+(reports.length===1?"":"s")+" loaded for "+(result.programmeName||"this programme")+".");
     if(result.truncated)status("More reports exist than this page can display. Contact your programme administrator.",true);
   }catch(error){
@@ -213,9 +230,12 @@ $("weeklySupervisorForm").addEventListener("submit",async event=>{
   const button=event.target.querySelector("button");
   button.disabled=true;
   try{
-    const result=await programmeReportsApi.supervisor(activeId,input("weeklySupervisorUid"),"assign");
+    const selected=input("weeklySupervisorCandidate")||input("weeklySupervisorUid");
+    if(!selected)throw new Error("Choose approved staff or enter the account UID.");
+    const result=await programmeReportsApi.supervisor(activeId,selected,"assign");
     supervisors=result.supervisors||[];
     $("weeklySupervisorUid").value="";
+    $("weeklySupervisorCandidate").value="";
     renderSupervisors();
     status("Supervisor assigned. Share this page with the programme-specific ?id link.");
   }catch(error){status(error.message||"Could not assign supervisor.",true);}
