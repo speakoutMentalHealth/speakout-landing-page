@@ -88,8 +88,21 @@ export async function programmeReportsRoute({
       throw fail("Only currently assigned facilitators can submit for an active programme.",403);
     if(data.privacyAttested!==true) throw fail("Confirm that no student-identifying or confidential wellbeing details are included.");
     const term=termKey(data.termKey),week=validWeek(data.week),sessionDate=validDate(data.sessionDate);
-    const reportId=safeId(id+"__"+term+"__w"+week+"__"+safeId(user.uid));
+    // A deterministic opaque key makes submissions idempotent for each week,
+    // even when programme IDs are long. Do not expose the facilitator UID in paths.
+    const uniqueKey=[id,term,String(week),safeId(user.uid)].join("|");
+    const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(uniqueKey));
+    const reportId="weekly_"+[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
     const now=new Date().toISOString();
+    // Refuse common direct identifiers in operational fields. Staff must use
+    // the separate safeguarding channel for identifiable concerns.
+    for(const value of [data.topic,data.activities,data.learningOutcomes,data.challenges,data.nextSteps]){
+      const written=str(value);
+      if(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(written) ||
+         /(?:\+?234|0)[\s-]?[789][01][\d\s-]{7,12}\d/.test(written)){
+        throw fail("Remove contact details or student-identifying information from this report.");
+      }
+    }
     const payload={
       programmeId:id,schoolId:str(programme.schoolId),termKey:term,week,sessionDate,
       topic:textField(data.topic,160,"Topic",3),
