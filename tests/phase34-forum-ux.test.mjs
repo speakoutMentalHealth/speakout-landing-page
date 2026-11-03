@@ -26,5 +26,6 @@ test("forum rooms and topic search filter locally without unlocking unpublished 
   assert.match(ui, /adultVerified/);
   assert.match(ui, /moderationStatus: "pending"/);
   assert.match(ui, /textContent =/);
+  assert.match(ui, /label\.append\(input\);\s*form\.append\(label, send\);/, "Each reply editor must have an associated visible label");
   assert.match(rules, /r\.published == false/);
 });
