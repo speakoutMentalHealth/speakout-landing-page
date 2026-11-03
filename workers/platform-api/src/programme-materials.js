@@ -21,8 +21,12 @@ export function canAccessProgrammeMaterial(user, programme, publish = false) {
   const role = roleOf(user);
   if (role === "super_admin") return true;
   const schoolId = str(user.profile?.schoolId);
-  if (!schoolId || schoolId !== str(programme.schoolId)) return false;
-  if (["school_admin", "school"].includes(role)) return true;
+  const schoolCode = str(user.profile?.schoolCode);
+  const sameSchool = schoolId
+    ? schoolId === str(programme.schoolId)
+    : Boolean(schoolCode && schoolCode === str(programme.schoolCode));
+  if (!sameSchool) return false;
+  if (["school_admin", "school", "admin"].includes(role)) return true;
   if (publish || role !== "teacher") return false;
   return programme.createdBy === user.uid ||
     (Array.isArray(programme.facilitatorIds) && programme.facilitatorIds.includes(user.uid));
