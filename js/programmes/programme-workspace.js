@@ -225,6 +225,7 @@ async function loadSubmissions(){
 }
 
 function renderHeader(){
+  $("materialsShortcut").hidden = isStudent() || (isTeacher() && !isFacilitator());
   $("programmeTypeLabel").textContent = pretty(programme.type || "Programme");
   $("programmeTitle").textContent = programme.name || "Programme";
   $("programmeDescription").textContent = programme.description || "No description yet.";
