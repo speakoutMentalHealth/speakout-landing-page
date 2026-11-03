@@ -21,7 +21,7 @@ const superAdmin = () => role() === "super_admin";
 const assigned = p => p.createdBy === account.uid ||
   (Array.isArray(p.facilitatorIds) && p.facilitatorIds.includes(account.uid));
 const ownProgramme = p => Boolean(p && (superAdmin() ||
-  ((p.schoolId === profile.schoolId || (profile.schoolCode && p.schoolCode === profile.schoolCode)) &&
+  ((p.schoolId === linkedSchoolId || (profile.schoolCode && p.schoolCode === profile.schoolCode)) &&
     (manager() || (role() === "teacher" && assigned(p)))));
 const allowedType = {
   "application/pdf":true,
