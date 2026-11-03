@@ -53,6 +53,7 @@ async function resolveSchoolId(){
 async function loadProgrammes(){
   programmes = [];
   const schoolId = await resolveSchoolId();
+  linkedSchoolId = schoolId;
   if (schoolId){
     const snap = await getDocs(query(collection(db,"programmes"),where("schoolId","==",schoolId)));
     programmes = snap.docs.map(item => ({id:item.id,...item.data()})).filter(ownProgramme);
