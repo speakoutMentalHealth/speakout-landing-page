@@ -81,10 +81,20 @@ export function setupCertificateDownload(savedId = "", options = {}) {
 }
 
 export function decodeCertificatePdf(base64) {
-  if (typeof base64 !== "string" || base64.length > 7000000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) throw Error("Invalid PDF");
-  const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0));
-  if (String.fromCharCode(...bytes.slice(0, 5)) !== "%PDF-") throw Error("Invalid PDF");
-  return bytes;
+  // Browser sanity checks only: the authenticated issuer service MUST also
+  // enforce file type, size, ownership, validity and revocation before release.
+  const MAX_PDF_BYTES = 5_000_000;
+  const maxEncodedLength = Math.ceil(MAX_PDF_BYTES / 3) * 4;
+  if (typeof base64 !== "string" || !base64 || base64.length > maxEncodedLength ||
+      base64.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) {
+    throw Error("Invalid PDF");
+  }
+  const binary = atob(base64);
+  if (binary.length < 16 || binary.length > MAX_PDF_BYTES ||
+      !binary.startsWith("%PDF-") || !/%%EOF[\s\x00]*$/.test(binary.slice(-2048))) {
+    throw Error("Invalid PDF");
+  }
+  return Uint8Array.from(binary, character => character.charCodeAt(0));
 }
 function savePdf(bytes, filename) {
   const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
