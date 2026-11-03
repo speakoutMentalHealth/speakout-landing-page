@@ -10,6 +10,7 @@ let account = null;
 let profile = null;
 let programmes = [];
 let activeId = "";
+let linkedSchoolId = "";
 const status = (message, error = false) => {
   $("materialsStatus").textContent = message;
   $("materialsStatus").className = "material-note" + (error ? " error" : "");
