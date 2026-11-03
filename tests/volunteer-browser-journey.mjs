@@ -27,6 +27,7 @@ const server=createServer(async (req,res)=>{
  if(req.url==="/volunteer-dashboard.html")return send("text/html",html);
  if(req.url==="/js/volunteer-onboarding.js")return send("text/javascript",app);
  if(req.url==="/js/volunteer-credential.js")return send("text/javascript",credentialApp);
+ if(req.url==="/js/volunteer-certificate-download.js")return send("text/javascript",await readFile(new URL("../js/volunteer-certificate-download.js",import.meta.url),"utf8"));
  if(req.url==="/js/volunteer-next-actions.js")return send("text/javascript",nextActions);
  if(req.url==="/js/volunteer-inbox.js")return send("text/javascript",inboxApp);
  if(req.url==="/firebase-config.js")return send("text/javascript","export const auth={};export const db={};");
