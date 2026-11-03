@@ -28,8 +28,8 @@ export function canAccessProgrammeMaterial(user, programme, publish = false) {
   if (!sameSchool) return false;
   if (["school_admin", "school", "admin"].includes(role)) return true;
   if (publish || role !== "teacher") return false;
-  return programme.createdBy === user.uid ||
-    (Array.isArray(programme.facilitatorIds) && programme.facilitatorIds.includes(user.uid));
+  // Only the current facilitator roster grants access. Historical creators are not exempt.
+  return Array.isArray(programme.facilitatorIds) && programme.facilitatorIds.includes(user.uid);
 }
 
 export function validateProgrammeMaterialFile(file) {
