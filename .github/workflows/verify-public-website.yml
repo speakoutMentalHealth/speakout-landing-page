@@ -5,7 +5,11 @@ on:
   push:
     branches: [main]
     paths:
+      - "index.html"
+      - "pages/about.html"
+      - "pages/impact.html"
       - "pages/schools.html"
+      - "pages/donate.html"
       - "pages/academy.html"
       - "pages/resources.html"
       - "auth.html"
@@ -30,34 +34,49 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
+          import os
           import time
           import urllib.error
           import urllib.request
+          from pathlib import Path
 
           base = "https://speakoutmentalhealth.org"
+          # Each live marker must first exist in the exact checked-out release source.
+          # Otherwise a stale workflow assertion could fail after a correct deployment.
           checks = {
-              "/pages/schools.html": 'href="../auth.html#school"',
-              "/pages/academy.html": "Open Member Portal",
-              "/pages/resources.html": "These topic cards lead to the member portal",
+              "/": ("index.html", 'aria-label="SpeakOut program pathways"'),
+              "/pages/about.html": ("pages/about.html", "School programmes"),
+              "/pages/impact.html": ("pages/impact.html", "School programmes"),
+              "/pages/schools.html": ("pages/schools.html", "School programmes"),
+              "/pages/donate.html": ("pages/donate.html", "School partnerships"),
+              "/pages/academy.html": ("pages/academy.html", "Open Member Portal"),
+              "/pages/resources.html": ("pages/resources.html", "Member Portal links open sign-in. Availability of individual handbooks is not confirmed here."),
           }
           failures = []
-          for path, marker in checks.items():
+          for path, (source_path, marker) in checks.items():
+              if marker not in Path(source_path).read_text(encoding="utf-8"):
+                  raise SystemExit(f"Stale verifier marker is absent from release source: {source_path}")
               ok = False
-              for attempt in range(6):
+              for attempt in range(4):
                   try:
-                      request = urllib.request.Request(base + path,
-                          headers={"User-Agent": "SpeakOut-release-verifier/1.0",
+                      # A commit-scoped URL avoids comparing an older CDN cache entry.
+                      url = f"{base}{path}?release={os.environ.get('GITHUB_SHA', '')[:12]}&attempt={attempt}"
+                      request = urllib.request.Request(url,
+                          headers={"User-Agent": "SpeakOut-release-verifier/1.1",
                                    "Cache-Control": "no-cache"})
                       with urllib.request.urlopen(request, timeout=20) as response:
                           page = response.read().decode("utf-8", "replace")
-                          ok = response.status == 200 and marker in page
+                          old_claim = source_path in {"index.html", "pages/about.html", "pages/impact.html", "pages/schools.html", "pages/donate.html"} and '<strong data-count="21">21+</strong>' in page
+                          ok = response.status == 200 and marker in page and not old_claim
+                          if old_claim:
+                              print(f"{path}: retired unverified impact counter still published", flush=True)
                   except (urllib.error.URLError, TimeoutError) as error:
                       print(f"{path}: request failed: {error}", flush=True)
                   if ok:
                       print(f"PASS {path}: live marker verified", flush=True)
                       break
-                  if attempt < 5:
-                      time.sleep(30)
+                  if attempt < 3:
+                      time.sleep(10)
               if not ok:
                   failures.append(path)
                   print(f"FAIL {path}: publication marker not verified", flush=True)
