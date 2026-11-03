@@ -22,7 +22,7 @@ const stub = overrides => ({
 
 test("facilitators can read only programmes they are assigned to",()=>{
   assert.equal(canAccessProgrammeMaterial(identity("teacher-a","teacher"),programme),true);
-  assert.equal(canAccessProgrammeMaterial(identity("creator","teacher"),programme),true);
+  assert.equal(canAccessProgrammeMaterial(identity("creator","teacher"),programme),false);
   assert.equal(canAccessProgrammeMaterial(identity("teacher-b","teacher"),programme),false);
   assert.equal(canAccessProgrammeMaterial(identity("teacher-a","teacher","school-b"),programme),false);
   assert.equal(canAccessProgrammeMaterial(identity("student-a","student"),programme),false);
