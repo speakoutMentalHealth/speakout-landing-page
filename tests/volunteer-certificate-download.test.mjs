@@ -11,7 +11,7 @@ function harness(request) {
 }
 test('download locked until holder verification and official PDF readiness succeed',async()=>{
   let calls=0;
-  const h=harness(async path=>{calls++;return path.endsWith('/verify')?valid:{ok:true,certificateId,pdfBase64:btoa('%PDF-1.7\nsynthetic test')};});
+  const h=harness(async path=>{calls++;return path.endsWith('/verify')?valid:{ok:true,certificateId,pdfBase64:btoa('%PDF-1.7\nsynthetic test\n%%EOF\n')};});
   await h.download();assert.equal(calls,0);assert.equal(h.saves.length,0);
   await h.verify();assert.equal(h.elements.downloadCertificatePdf.hidden,false);
   await h.download();assert.equal(h.saves.length,1);assert.match(h.saves[0][1],/\.pdf$/);
@@ -32,8 +32,16 @@ test('network failure and malformed PDF never produce a downloaded certificate',
 });
 test('edited ID discards an in-flight download',async()=>{
   let resolve;const h=harness(path=>path.endsWith('/verify')?Promise.resolve(valid):new Promise(r=>resolve=r));
-  await h.verify();const pending=h.download();h.edit();resolve({ok:true,certificateId,pdfBase64:btoa('%PDF-1.7\nsynthetic')});await pending;assert.equal(h.saves.length,0);
+  await h.verify();const pending=h.download();h.edit();resolve({ok:true,certificateId,pdfBase64:btoa('%PDF-1.7\nsynthetic\n%%EOF\n')});await pending;assert.equal(h.saves.length,0);
 });
-test('PDF validation rejects invalid content and oversized responses',()=>{
-  assert.throws(()=>decodeCertificatePdf('!'));assert.throws(()=>decodeCertificatePdf('A'.repeat(7000001)));
+test('PDF sanity checking rejects malformed, truncated and oversized files',()=>{
+  assert.throws(()=>decodeCertificatePdf('!'));
+  assert.throws(()=>decodeCertificatePdf('A'.repeat(7000001)));
+  assert.throws(()=>decodeCertificatePdf(btoa('<html>Not a PDF</html>')));
+  assert.throws(()=>decodeCertificatePdf(btoa('%PDF-1.7\ntruncated without trailer')));
+  // A valid-looking header and trailer must not bypass the exact 5MB cap.
+  const oversized = '%PDF-1.7\n' + 'X'.repeat(5_000_000) + '\n%%EOF\n';
+  assert.throws(()=>decodeCertificatePdf(btoa(oversized)));
+  const bytes = decodeCertificatePdf(btoa('%PDF-1.7\nsynthetic\n%%EOF\n'));
+  assert.equal(new TextDecoder().decode(bytes).startsWith('%PDF-'),true);
 });
