@@ -172,6 +172,7 @@ function render(){
       '</div>' +
       '<div class="program-actions">' +
       '<a class="program-btn dark" href="programme-workspace.html?id=' + encodeURIComponent(item.id) + '">' + manageLabel + '</a>' +
+      ((isTeacher() || isSchoolAdmin()) ? '<a class="program-btn soft" href="facilitator-materials.html?id=' + encodeURIComponent(item.id) + '">Materials</a>' : '') +
       statusActions(item) +
       '</div></article>';
   }).join("");
