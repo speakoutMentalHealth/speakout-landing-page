@@ -41,6 +41,7 @@ on:
       - "parent-results.html"
       - "facilitator-materials.html"
       - "programme-workspace.html"
+      - "programme-weekly-reports.html"
       - "programmes.html"
       - "school-dashboard.html"
       - "school-results.html"
@@ -99,6 +100,7 @@ on:
       - "parent-results.html"
       - "facilitator-materials.html"
       - "programme-workspace.html"
+      - "programme-weekly-reports.html"
       - "programmes.html"
       - "school-dashboard.html"
       - "school-results.html"
@@ -182,6 +184,9 @@ jobs:
 
       - name: Verify facilitator material permissions and inbox wiring
         run: node --test tests/phase126-facilitator-materials.test.mjs
+
+      - name: Verify private weekly reporting and supervisor approvals
+        run: node --test tests/phase127-weekly-programme-reports.test.mjs
 
       - name: Check staging Firestore capacity before expensive browser tests
         run: node tests/staging-capacity-preflight.mjs

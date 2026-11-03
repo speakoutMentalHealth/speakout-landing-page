@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Weekly Programme Reports | SpeakOut</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/production-ready.css">
+<link rel="stylesheet" href="css/learner-portal.css">
+<link rel="stylesheet" href="css/pages/role-dashboard.css">
+<link rel="stylesheet" href="css/programmes.css">
+<style>
+.week-shell{max-width:1120px;margin:0 auto;padding:22px 16px 60px}
+.week-hero{background:linear-gradient(115deg,#07152b,#15549c);padding:28px;color:#fff;border-radius:20px}
+.week-hero h1{color:#fff;margin:0 0 6px}
+.week-panel{background:#fff;border:1px solid #dbe5f2;border-radius:18px;padding:20px;margin-top:18px}
+.week-panel h2{margin:0 0 12px}
+.week-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.week-fields label{display:grid;gap:7px;font-weight:700}
+.week-fields .full{grid-column:1/-1}
+.week-fields :is(input,select,textarea),.week-panel textarea,.week-panel select,.week-panel input{font:inherit;padding:11px;border:1px solid #9cacc1;border-radius:9px;background:#fff;min-height:44px;max-width:100%}
+.week-fields textarea{min-height:94px;resize:vertical}
+.week-btn{font:inherit;background:#175eb6;color:#fff;border:0;border-radius:9px;padding:11px 16px;min-height:44px;cursor:pointer}
+.week-btn.secondary{background:#ecf3fb;color:#15345d;border:1px solid #c8d7e7}
+.week-btn:disabled{opacity:.6;cursor:wait}
+.week-note{background:#edf4ff;border-left:4px solid #1d63a9;border-radius:6px;padding:12px;margin:14px 0}
+.week-note.error{background:#fff0f0;border-color:#c52323;color:#822}
+.week-row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.week-row label{display:grid;gap:6px;flex:1;min-width:220px}
+.week-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.week-stat{background:#f5f8ff;padding:15px;border-radius:12px}
+.week-stat strong{display:block;font-size:1.6rem}
+.week-item{border:1px solid #dbe5f2;padding:17px;border-radius:12px;margin-top:12px;overflow-wrap:anywhere}
+.week-item h3{margin:0 0 6px}
+.week-item p{margin:7px 0}
+.week-meta{color:#52667d;font-size:.9rem}
+.week-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.week-item .review-note{width:100%;min-height:72px}
+.week-private{font-size:.95rem;color:#334967}
+@media(max-width:650px){.week-fields{grid-template-columns:1fr}.week-panel{padding:15px}.week-hero{padding:22px}}
+</style>
+<script defer src="production-ready.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="nav"><div class="container nav-inner">
+<a class="brand" href="teacher-dashboard.html"><img src="logo.png" alt="SpeakOut"><div><h2>SpeakOut</h2><p>School Programmes</p></div></a>
+<nav class="links" id="roleNav"></nav>
+</div></header>
+<main id="main-content" class="week-shell">
+<section class="week-hero"><span class="kicker">Programme Accountability</span><h1>Weekly Club Reports</h1>
+<p>Facilitators submit the session outcome. Assigned supervisors review, approve or request corrections. Administrators see the delivery record.</p></section>
+<div class="week-note" id="weeklyStatus" role="status" aria-live="polite">Loading programme access…</div>
+<section class="week-panel">
+<div class="week-row"><label><strong>School club or programme</strong>
+<select id="reportProgramme" aria-label="Programme"><option value="">Loading…</option></select></label>
+<button class="week-btn secondary" type="button" id="weeklyRefresh">Refresh reports</button></div>
+</section>
+<section class="week-panel" id="weeklySummaryPanel" hidden>
+<h2>Programme reporting overview</h2>
+<div class="week-cards" id="weeklySummary"></div>
+<p class="week-private">This view contains operational records only. Escalate safeguarding concerns through the approved confidential route immediately; do not add names, diagnoses, contact information or incident narratives here.</p>
+<button type="button" class="week-btn secondary" id="weeklyExport">Export operational summary CSV</button>
+</section>
+<section class="week-panel" id="weeklySubmitPanel" hidden>
+<h2>Submit Friday's session report</h2>
+<p>One report per facilitator, programme, term and week. Submitted reports are locked unless a reviewer requests a revision.</p>
+<form id="weeklyForm" class="week-fields">
+<label>Term or semester <input id="weeklyTerm" maxlength="7" placeholder="2026-T1" pattern="20[0-9]{2}-(T[123]|S[12])" required></label>
+<label>Week number <select id="weeklyWeek" required></select></label>
+<label>Session date <input id="weeklyDate" type="date" required></label>
+<label>Number attending <input id="weeklyAttendance" type="number" min="0" max="10000" step="1" required></label>
+<label class="full">Topic covered <input id="weeklyTopic" minlength="3" maxlength="160" required></label>
+<label class="full">Activities completed <textarea id="weeklyActivities" minlength="10" maxlength="1500" required></textarea></label>
+<label class="full">Learning outcomes (no student identifiers) <textarea id="weeklyOutcomes" maxlength="1000"></textarea></label>
+<label class="full">Operational challenges (no case details) <textarea id="weeklyChallenges" maxlength="800"></textarea></label>
+<label class="full">Next week's plan <textarea id="weeklyNext" maxlength="800"></textarea></label>
+<label class="full"><span><input id="weeklySafety" type="checkbox"> A safeguarding concern was escalated separately through the approved pathway (no details recorded here).</span></label>
+<label class="full"><span><input id="weeklyPrivacy" type="checkbox" required> I confirm that this report contains no names, student-identifying information, diagnoses or confidential disclosures.</span></label>
+<button class="week-btn full" id="weeklySubmit" type="submit">Submit for supervisor review</button>
+</form>
+</section>
+<section class="week-panel" id="weeklySupervisorPanel" hidden>
+<h2>Programme supervisor assignments</h2>
+<p>Assign an approved staff member or SpeakOut volunteer by account UID. Only assigned supervisors and programme administrators can review reports; nobody can approve their own submission.</p>
+<form id="weeklySupervisorForm" class="week-row">
+<label>Choose approved school staff <select id="weeklySupervisorCandidate"><option value="">Select approved staff</option></select></label>
+<label>Or supervisor account UID (organisation-wide volunteers) <input id="weeklySupervisorUid" placeholder="Optional UID from Users dashboard" maxlength="180"></label>
+<button class="week-btn" type="submit">Assign supervisor</button></form>
+<div id="weeklySupervisors"></div>
+</section>
+<section class="week-panel" id="weeklyReportsPanel" hidden>
+<h2>Weekly report history and review queue</h2>
+<div id="weeklyReports"></div>
+</section>
+</main>
+<footer class="footer"><div class="container">SpeakOut Mental Health Outreach • Programme delivery and accountability</div></footer>
+<script type="module" src="js/programmes/weekly-reports.js"></script>
+<script defer src="js/learner-shell.js"></script>
+<script type="module" src="js/account-controls.js"></script>
+</body></html>
