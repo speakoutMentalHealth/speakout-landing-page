@@ -39,7 +39,7 @@ function renderProgrammeSelect(){
   const select = $("programmeSelect");
   select.innerHTML = programmes.length
     ? programmes.map(item => '<option value="' + escapeHtml(item.id) + '">' +
-        escapeHtml(item.name || "Programme") + '</option>').join("")
+        escapeHtml(superAdmin() ? ((item.schoolName || item.schoolCode || item.schoolId || "School") + " · " + (item.name || "Programme")) : (item.name || "Programme")) + '</option>').join("")
     : '<option value="">No linked programmes</option>';
   activeId = programmes.some(p => p.id === qsId) ? qsId : (programmes[0]?.id || "");
   select.value = activeId;
@@ -57,7 +57,12 @@ async function loadProgrammes(){
   programmes = [];
   const schoolId = await resolveSchoolId();
   linkedSchoolId = schoolId;
-  if (schoolId){
+  if (superAdmin()) {
+    // Central SpeakOut admins can publish to any school, even if their profile
+    // is not itself linked to that school. Firestore verifies super_admin role.
+    const snap = await getDocs(collection(db,"programmes"));
+    programmes = snap.docs.map(item => ({id:item.id,...item.data()})).filter(ownProgramme);
+  } else if (schoolId) {
     const snap = await getDocs(query(collection(db,"programmes"),where("schoolId","==",schoolId)));
     programmes = snap.docs.map(item => ({id:item.id,...item.data()})).filter(ownProgramme);
   }
