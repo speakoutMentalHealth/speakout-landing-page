@@ -5,7 +5,11 @@ on:
   push:
     branches: [main]
     paths:
+      - "index.html"
+      - "pages/about.html"
+      - "pages/impact.html"
       - "pages/schools.html"
+      - "pages/donate.html"
       - "pages/academy.html"
       - "pages/resources.html"
       - "auth.html"
