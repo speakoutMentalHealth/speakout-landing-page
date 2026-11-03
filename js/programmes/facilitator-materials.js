@@ -18,8 +18,7 @@ const status = (message, error = false) => {
 const role = () => String(profile?.actualRole || profile?.role || "").toLowerCase();
 const manager = () => ["super_admin", "admin", "school_admin", "school"].includes(role());
 const superAdmin = () => role() === "super_admin";
-const assigned = p => p.createdBy === account.uid ||
-  (Array.isArray(p.facilitatorIds) && p.facilitatorIds.includes(account.uid));
+const assigned = p => Array.isArray(p.facilitatorIds) && p.facilitatorIds.includes(account.uid);
 const ownProgramme = p => {
   if (!p) return false;
   if (superAdmin()) return true;
