@@ -4004,7 +4004,8 @@ async function deleteSchoolPermanently(env, user, data) {
     "programmeSessions",
     "programmeAttendance",
     "programmeAssignments",
-    "programmeSubmissions"
+    "programmeSubmissions",
+    "programmeMaterials"
   ];
 
   const linkedByCollection = [];
