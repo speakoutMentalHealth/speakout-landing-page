@@ -106,6 +106,7 @@ async function loadProgramme(){
   const snap = await getDoc(doc(db,"programmes",programmeId));
   if(!snap.exists()) throw new Error("Programme not found.");
   programme = { id:snap.id, ...snap.data() };
+  document.getElementById("materialsShortcut").href = "facilitator-materials.html?id=" + encodeURIComponent(programmeId);
   if(!sameSchool()) throw new Error("This programme is not linked to your school.");
 }
 
@@ -224,6 +225,7 @@ async function loadSubmissions(){
 }
 
 function renderHeader(){
+  $("materialsShortcut").hidden = isStudent() || (isTeacher() && !(Array.isArray(programme.facilitatorIds) && programme.facilitatorIds.includes(currentUser.uid)));
   $("programmeTypeLabel").textContent = pretty(programme.type || "Programme");
   $("programmeTitle").textContent = programme.name || "Programme";
   $("programmeDescription").textContent = programme.description || "No description yet.";

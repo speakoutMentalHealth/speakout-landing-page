@@ -267,3 +267,41 @@ export const adminApi = {
   reviewTvCuratorCandidate: (id, decision) =>
     platformRequest("/v1/admin/tv-curator/review", { id, decision })
 };
+
+/**
+ * Secure programme handouts are always downloaded through the authenticated
+ * Worker. No Cloudinary/R2 asset identifier is sent to a facilitator.
+ */
+async function uploadProgrammeMaterial(file, fields = {}) {
+  if (!(file instanceof File)) throw new Error("Select a material file.");
+  const form = new FormData();
+  form.append("file", file);
+  for (const [key, value] of Object.entries(fields)) form.append(key, String(value ?? ""));
+  appendSupportContextToForm(form);
+  const response = await fetch(endpoint("/v1/programme-materials/upload"), {
+    method:"POST", headers:{Authorization:await authorizationHeader()},
+    body:form, credentials:"omit", cache:"no-store"
+  });
+  return parseResponse(response);
+}
+
+async function downloadProgrammeMaterial(materialId) {
+  const response = await fetch(endpoint("/v1/programme-materials/download"), {
+    method:"POST",
+    headers:{Authorization:await authorizationHeader(), "Content-Type":"application/json"},
+    body:JSON.stringify({materialId}),
+    credentials:"omit", cache:"no-store"
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.error || "Unable to download this programme material.");
+  }
+  return response.blob();
+}
+
+export const programmeMaterialsApi = {
+  list: programmeId => platformRequest("/v1/programme-materials/list", {programmeId}),
+  upload: uploadProgrammeMaterial,
+  download: downloadProgrammeMaterial,
+  archive: materialId => platformRequest("/v1/programme-materials/archive", {materialId})
+};

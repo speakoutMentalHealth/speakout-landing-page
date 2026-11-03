@@ -39,6 +39,7 @@ on:
       - "parent-child-link.html"
       - "parent-dashboard.html"
       - "parent-results.html"
+      - "facilitator-materials.html"
       - "programme-workspace.html"
       - "programmes.html"
       - "school-dashboard.html"
@@ -96,6 +97,7 @@ on:
       - "parent-child-link.html"
       - "parent-dashboard.html"
       - "parent-results.html"
+      - "facilitator-materials.html"
       - "programme-workspace.html"
       - "programmes.html"
       - "school-dashboard.html"
@@ -178,6 +180,9 @@ jobs:
       - name: Install repository dependencies
         run: npm ci
 
+      - name: Verify facilitator material permissions and inbox wiring
+        run: node --test tests/phase126-facilitator-materials.test.mjs
+
       - name: Check staging Firestore capacity before expensive browser tests
         run: node tests/staging-capacity-preflight.mjs
 
@@ -194,6 +199,10 @@ jobs:
       - name: Install Worker dependencies
         working-directory: workers/platform-api
         run: npm ci
+
+      - name: Check Worker module bundle before staging deployment
+        working-directory: workers/platform-api
+        run: npm run check
 
       - name: Deploy branch Worker to staging
         working-directory: workers/platform-api
