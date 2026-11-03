@@ -80,3 +80,11 @@ test("dashboard and programme workspaces link to the same reusable material inbo
   assert.match(read("workers/platform-api/src/index.js"),/programmeMaterialsRoute/);
   assert.match(read("js/programmes/facilitator-materials.js"),/requireRoles\(\["teacher"/);
 });
+
+test("private metadata cannot be read from the super-admin Firestore fallback",()=>{
+  const rules = read("firebase/firestore.rules");
+  const worker = read("workers/platform-api/src/index.js");
+  assert.match(rules,/match \/programmeMaterials\/\{materialId\} \{ allow read, write: if false; \}/);
+  assert.equal(rules.match(/collection != "programmeMaterials"/g)?.length,4);
+  assert.match(worker,/"programmeMaterials"\s*\]/);
+});
