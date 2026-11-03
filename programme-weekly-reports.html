@@ -85,7 +85,8 @@
 <h2>Programme supervisor assignments</h2>
 <p>Assign an approved staff member or SpeakOut volunteer by account UID. Only assigned supervisors and programme administrators can review reports; nobody can approve their own submission.</p>
 <form id="weeklySupervisorForm" class="week-row">
-<label>Supervisor account UID <input id="weeklySupervisorUid" placeholder="UID from Users dashboard" maxlength="180" required></label>
+<label>Choose approved school staff <select id="weeklySupervisorCandidate"><option value="">Select approved staff</option></select></label>
+<label>Or supervisor account UID (organisation-wide volunteers) <input id="weeklySupervisorUid" placeholder="Optional UID from Users dashboard" maxlength="180"></label>
 <button class="week-btn" type="submit">Assign supervisor</button></form>
 <div id="weeklySupervisors"></div>
 </section>
