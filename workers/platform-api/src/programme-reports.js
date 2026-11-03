@@ -72,6 +72,28 @@ export async function programmeReportsRoute({
   if(!canViewWeeklyReports(user,programme))throw fail("No current assignment for this programme.",403);
   const isManager=manager(user,programme);
   const isReviewer=canReviewWeeklyReport(user,programme);
+  if(path==="/v1/programme-reports/candidates"){
+    if(!isManager)throw fail("Programme administrator required.",403);
+    const page=await queryDocumentsByField(env,"users","schoolId",str(programme.schoolId),200);
+    const extras=programme.schoolCode
+      ? await queryDocumentsByField(env,"users","schoolCode",str(programme.schoolCode),200)
+      : {documents:[],truncated:false};
+    const seen=new Set();
+    const candidates=[...page.documents,...extras.documents].filter(person=>{
+      const id=str(person.id);
+      if(!id||seen.has(id))return false;
+      seen.add(id);
+      return ["approved","active"].includes(str(person.status).toLowerCase()) &&
+        ["teacher","volunteer","school_admin"].includes(str(person.actualRole||person.role).toLowerCase()) &&
+        (str(person.schoolId)===str(programme.schoolId) ||
+         (!str(person.schoolId) && str(person.schoolCode)===str(programme.schoolCode)));
+    }).map(person=>({
+      uid:person.id,
+      fullName:str(person.fullName||[person.firstName,person.lastName].filter(Boolean).join(" ")||"Approved staff member").slice(0,120),
+      role:str(person.actualRole||person.role)
+    })).sort((a,b)=>a.fullName.localeCompare(b.fullName));
+    return {ok:true,candidates,truncated:page.truncated||extras.truncated};
+  }
   if(path==="/v1/programme-reports/list"){
     const page=await queryDocumentsByField(env,"programmeWeeklyReports","programmeId",id,300);
     const reports=page.documents
