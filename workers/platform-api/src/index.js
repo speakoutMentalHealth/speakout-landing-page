@@ -2,6 +2,7 @@ import {pilotRoute} from './mindcheck-pilot.js';
 import { firestoreFailure } from "./firestore-error.js";
 import { linkFacilitatorSchool } from "./facilitator-school.js";
 import { programmeMaterialsRoute } from "./programme-materials.js";
+import { programmeReportsRoute } from "./programme-reports.js";
 import { trafficWindow, signInReceipt, loginSummary, mindCheckSummary } from "./admin-traffic.js";
 import { validateCoordinator, fairCandidates, modelInput, validateModelDraft } from "./volunteer-allocation.js";
 import { SUPPORT_SESSION_MS, requireActiveSupportSession } from "./support-session.js";
@@ -4005,7 +4006,9 @@ async function deleteSchoolPermanently(env, user, data) {
     "programmeAttendance",
     "programmeAssignments",
     "programmeSubmissions",
-    "programmeMaterials"
+    "programmeMaterials",
+    "programmeWeeklyReports",
+    "programmeWeeklyReportAudits"
   ];
 
   const linkedByCollection = [];
@@ -4484,6 +4487,9 @@ async function route(request, env, path, data) {
   if (path === "/v1/auth/approval-check") return {approved:true,role:clean(user.profile.role)};
   if (path.startsWith("/v1/programme-materials/")) {
     return programmeMaterialsRoute({path, data, user, env, getDocument, queryDocumentsByField, transactionalSet, runTransaction, sha1Hex, sha1Base64Url});
+  }
+  if (path.startsWith("/v1/programme-reports/")) {
+    return programmeReportsRoute({path, data, user, env, getDocument, queryDocumentsByField, runTransaction});
   }
   if (["/v1/mindcheck/status", "/v1/mindcheck/token", "/v1/admin/mindcheck/access"].includes(path)) {
     const origin=request.headers.get('origin');
