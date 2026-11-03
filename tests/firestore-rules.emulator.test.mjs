@@ -767,3 +767,26 @@ test("private facilitator resources are blocked from direct Firestore SDK access
     await assertFails(deleteDoc(doc(firestore, "programmeMaterials/private-resource")));
   }
 });
+
+
+test("weekly programme reports and audit records are Worker-only for every role",async()=>{
+  await seed("users/super-week",profile("super-week","super_admin"));
+  await seed("users/admin-week",profile("admin-week","school_admin"));
+  await seed("users/teacher-week",profile("teacher-week","teacher"));
+  await seed("programmeWeeklyReports/report-1",{
+    programmeId:"club-a",schoolId:"school-a",status:"submitted",attendanceCount:20
+  });
+  await seed("programmeWeeklyReportAudits/audit-1",{
+    programmeId:"club-a",schoolId:"school-a",action:"submitted"
+  });
+  for(const uid of ["super-week","admin-week","teacher-week"]){
+    const firestore=testEnv.authenticatedContext(uid).firestore();
+    for(const [collection,id] of [["programmeWeeklyReports","report-1"],["programmeWeeklyReportAudits","audit-1"]]){
+      const ref=doc(firestore,collection+"/"+id);
+      await assertFails(getDoc(ref));
+      await assertFails(setDoc(doc(firestore,collection+"/forged-"+uid),{schoolId:"school-a",status:"approved"}));
+      await assertFails(updateDoc(ref,{status:"approved"}));
+      await assertFails(deleteDoc(ref));
+    }
+  }
+});
