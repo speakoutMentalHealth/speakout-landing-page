@@ -103,6 +103,8 @@ test("safeguarding attestation is mandatory; no narrative field accepts an incid
   await assert.rejects(call(st,"submit",teacher,{...report,attendanceCount:-1}),e=>e.status===400);
   await assert.rejects(call(st,"submit",teacher,{...report,week:25}),e=>e.status===400);
   await assert.rejects(call(st,"submit",teacher,{...report,sessionDate:"2026-02-30"}),e=>e.status===400);
+  await assert.rejects(call(st,"submit",teacher,{...report,challenges:"Contact 08031234567 urgently"}),e=>e.status===400);
+  await assert.rejects(call(st,"submit",teacher,{...report,activities:"Send this information to pupil@example.com"}),e=>e.status===400);
 });
 
 test("school manager assigns scoped reviewer and revocation blocks review immediately",async()=>{
