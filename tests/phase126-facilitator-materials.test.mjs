@@ -86,7 +86,7 @@ test("private metadata cannot be read from the super-admin Firestore fallback",(
   const worker = read("workers/platform-api/src/index.js");
   assert.match(rules,/match \/programmeMaterials\/\{materialId\} \{ allow read, write: if false; \}/);
   assert.equal(rules.match(/collection != "programmeMaterials"/g)?.length,4);
-  assert.match(worker,/"programmeMaterials"\s*\]/);
+  assert.match(worker,/"programmeMaterials",\s*"programmeWeeklyReports",\s*"programmeWeeklyReportAudits"/);
 });
 
 test("private R2 upload and download preserve the file and enforce live assignment",async()=>{
