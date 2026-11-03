@@ -139,3 +139,19 @@ test("private report Firestore collections cannot bypass worker even as super ad
   assert.match(read("admin-dashboard.html"),/href="programme-weekly-reports\.html"/);
   assert.match(read("school-dashboard.html"),/href="programme-weekly-reports\.html"/);
 });
+
+
+test("supervisor candidate directory includes approved school staff but never students",async()=>{
+  const st=fixtures();
+  st.records.set("users/teacher-a",{role:"teacher",status:"approved",schoolId:"school-a",fullName:"KPA Facilitator"});
+  st.records.set("users/student-a",{role:"student",status:"approved",schoolId:"school-a"});
+  st.records.set("users/teacher-other",{role:"teacher",status:"approved",schoolId:"other"});
+  const admin=person("school-admin","school_admin");
+  const response=await call(st,"candidates",admin,{programmeId:"club-a"});
+  assert.ok(response.candidates.some(x=>x.uid==="teacher-a"));
+  assert.ok(response.candidates.some(x=>x.uid==="reviewer-a"));
+  assert.ok(!response.candidates.some(x=>x.uid==="student-a"));
+  assert.ok(!response.candidates.some(x=>x.uid==="teacher-other"));
+  await assert.rejects(call(st,"candidates",person("teacher-a","teacher"),{programmeId:"club-a"}),e=>e.status===403);
+  assert.match(read("programme-weekly-reports.html"),/weeklySupervisorCandidate/);
+});
