@@ -1,0 +1,25 @@
+name: Volunteer Pilot Branch Protection Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protection-audit:
+    name: Pilot branch protection status
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test branch protection evaluation
+        run: node --test tests/phase-volunteer-branch-safeguard.test.mjs
+      - name: Read current main branch protection flag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PILOT_BASE_BRANCH: main
+        run: node scripts/check-volunteer-branch-safeguard.mjs
