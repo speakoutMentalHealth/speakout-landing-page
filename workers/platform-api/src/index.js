@@ -4480,11 +4480,11 @@ async function route(request, env, path, data) {
   }
 
   let user = await authenticatedUser(request, env);
+  // Same canonical approval guard as all protected routes; no dashboard queries.
+  if (path === "/v1/auth/approval-check") return {approved:true,role:clean(user.profile.role)};
   if (path.startsWith("/v1/programme-materials/")) {
     return programmeMaterialsRoute({path, data, user, env, getDocument, queryDocumentsByField, transactionalSet, runTransaction, sha1Hex, sha1Base64Url});
   }
-  // Same canonical approval guard as all protected routes; no dashboard queries.
-  if (path === "/v1/auth/approval-check") return {approved:true,role:clean(user.profile.role)};
   if (["/v1/mindcheck/status", "/v1/mindcheck/token", "/v1/admin/mindcheck/access"].includes(path)) {
     const origin=request.headers.get('origin');
     if(!['https://speakoutmentalhealth.org','https://www.speakoutmentalhealth.org','https://speakout-portal-staging.web.app'].includes(origin))throw Object.assign(Error('Portal origin required.'),{status:403});
