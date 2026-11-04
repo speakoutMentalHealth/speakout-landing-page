@@ -29,14 +29,19 @@ test("admin school deletion is explicit and routed through the privileged API",(
   assert.match(worker,/approved:\s*false/u);
 });
 
-test("public navigation keeps standalone Academy and SpeakOut TV without submenu duplicates",()=>{
-  const files=["index.html","pages/about.html","pages/programs.html","pages/academy.html","pages/resources.html","pages/schools.html","pages/impact.html","pages/research.html","pages/news.html","pages/contact.html","pages/donate.html","pages/partners.html","pages/volunteer.html"];
+test("public navigation groups Academy and SpeakOut TV under Programs without duplicates",()=>{
+  const files=["index.html","pages/about.html","pages/programs.html","pages/academy.html","pages/resources.html","pages/schools.html","pages/impact.html","pages/research.html","pages/news.html","pages/contact.html","pages/donate.html","pages/partners.html","pages/volunteer.html","pages/join-us.html"];
   for(const path of files){
     const source=read(path);
-    const nav=source.match(/<nav class="links">[\s\S]*?<\/nav>/u)?.[0]||"";
-    assert.ok(nav,`missing public nav in ${path}`);
-    assert.equal((nav.match(/>Academy<\/a>/gu)||[]).length,1,`Academy count in ${path}`);
-    assert.equal((nav.match(/>SpeakOut TV<\/a>/gu)||[]).length,1,`SpeakOut TV count in ${path}`);
-    assert.doesNotMatch(nav,/>SpeakHub Academy<\/a>/u,`duplicate SpeakHub Academy submenu in ${path}`);
+    const nav=source.match(/<nav\b[^>]*class="links"[^>]*>[\s\S]*?<\/nav>/u)?.[0]||"";
+    assert.ok(nav,"missing public nav in "+path);
+
+    const programs=nav.match(/<div class="drop">\s*<button class="drop-toggle"[^>]*>Programs\b[\s\S]*?<\/div>\s*<\/div>/u)?.[0]||"";
+    assert.ok(programs,"missing Programs submenu in "+path);
+    for(const [label,pattern] of [["Academy",/>Academy<\/a>/gu],["SpeakOut TV",/>SpeakOut TV<\/a>/gu]]){
+      assert.equal((nav.match(pattern)||[]).length,1,label+" appears exactly once in "+path);
+      assert.match(programs,pattern,label+" belongs in Programs submenu in "+path);
+    }
+    assert.doesNotMatch(nav,/>SpeakHub Academy<\/a>/u,"duplicate SpeakHub Academy submenu in "+path);
   }
 });
