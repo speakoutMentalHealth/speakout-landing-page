@@ -123,7 +123,7 @@ function safeId(value, label = "identifier") {
 }
 
 const CMS_COLLECTION_FIELDS = Object.freeze({
-  newsEvents: ["title", "description", "category", "date", "location", "imageUrl", "url"],
+  newsEvents: ["title", "description", "body", "category", "date", "location", "imageUrl", "url"],
   homepageStats: ["title", "description", "value", "suffix", "category"],
   homepageMedia: ["title", "description", "type", "url", "imageUrl"],
   homepagePartners: ["title", "description", "logoUrl", "websiteUrl", "category"],
@@ -169,7 +169,8 @@ function cmsRecord(collectionName, input) {
   const record = {};
   for (const field of CMS_COLLECTION_FIELDS[collectionName]) {
     const value = clean(input[field]);
-    if (value.length > 2000) throw Object.assign(new Error(`${field} is too long.`), { status: 400 });
+    const maxLength = collectionName === "newsEvents" && field === "body" ? 12000 : 2000;
+    if (value.length > maxLength) throw Object.assign(new Error(`${field} is too long.`), { status: 400 });
     record[field] = value;
   }
   if (!record.title) throw Object.assign(new Error("Title is required."), { status: 400 });
