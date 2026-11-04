@@ -190,7 +190,7 @@ function cmsRecord(collectionName, input) {
     }
     if (record.date) {
       const parsed = new Date(record.date + "T12:00:00Z");
-      if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(record.date) ||
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(record.date) ||
           Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0,10) !== record.date) {
         throw Object.assign(new Error("Enter a valid date (YYYY-MM-DD)."), { status: 400 });
       }
