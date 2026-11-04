@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>News &amp; Events Editor | SpeakOut Admin</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="css/admin-cms.css">
+<style>
+:root { --navy:#071b3a; --blue:#0a5fbf; --gold:#f4a21c; --line:#dce6f0; --muted:#46566b }
+* { box-sizing:border-box }
+body { margin:0; color:#14243a; background:#f5f8fc; font-family:Outfit,system-ui,Arial,sans-serif; line-height:1.5 }
+a { color:var(--blue) }
+header { background:linear-gradient(120deg,var(--navy),#0b65a9); color:#fff; padding:32px max(4%,20px) }
+header a { color:white; font-weight:800 }
+header h1 { font-size:clamp(1.8rem,4vw,2.7rem); margin:16px 0 6px }
+header p { max-width:800px; margin:0 }
+.container { width:min(1160px,92%); margin:24px auto 60px }
+.panel { background:#fff; border:1px solid var(--line); border-radius:20px; padding:24px; margin:16px 0; box-shadow:0 8px 24px #071b3a10 }
+.form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px }
+.cms-field { display:grid; gap:5px; font-weight:700 }
+.cms-field input, .cms-field select, .cms-field textarea { display:block; width:100%; min-height:44px; border:1px solid #b1c2d5; border-radius:10px; padding:11px; font:inherit }
+.cms-field textarea { min-height:120px }
+.btn { display:inline-flex; align-items:center; justify-content:center; min-height:44px; background:var(--blue); color:#fff; border:0; border-radius:10px; padding:10px 17px; font:inherit; font-weight:800; cursor:pointer; text-decoration:none }
+.btn.soft { color:var(--blue); background:#e8f2ff }
+.btn.dark { background:var(--navy) }
+.notice { border-radius:12px; padding:14px; background:#e8f2ff; color:var(--navy) }
+.notice.bad { background:#fbe7e7; color:#892329 }
+.notice.ok { background:#e8f8f0; color:#0b6446 }
+.table-wrap { overflow-x:auto }
+table { width:100%; border-collapse:collapse }
+th, td { padding:12px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line) }
+th { color:var(--muted) }
+.actions { display:flex; flex-wrap:wrap; gap:6px }
+.admin-links { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px }
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+@media(max-width:720px){ .form-grid{grid-template-columns:1fr} .panel{padding:16px} }
+</style>
+</head>
+<body>
+<a class="visually-hidden" href="#main">Skip to editor</a>
+<header><a href="admin-dashboard.html">← Admin dashboard</a>
+<h1>News &amp; Events Publisher</h1>
+<p>Create public updates, programme announcements and event notices. Save as a draft until details and consent are confirmed, then publish. Do not include private case details, minors' identifying information or confidential student records.</p>
+</header>
+<main class="container" id="main">
+<nav class="admin-links" aria-label="Admin content navigation"><a href="admin-dashboard.html">Dashboard</a><a href="admin-media.html">Media library</a><a href="pages/news.html">View public News &amp; Events</a></nav>
+<p class="notice" id="statusBox" role="status" aria-live="polite">Checking administrator access…</p>
+<section class="panel" aria-labelledby="editor-heading">
+<h2 id="editor-heading">Create or update a news item</h2>
+<form class="form-grid" id="cmsForm">
+<input id="title" maxlength="150" placeholder="Headline" required>
+<select id="category" aria-label="Category">
+<option value="news">News</option><option value="event">Event</option><option value="school">School</option><option value="outreach">Outreach</option><option value="media">Media</option><option value="partnership">Partnership</option>
+</select>
+<input id="date" type="date" aria-label="Event or publication date" required>
+<input id="location" maxlength="80" placeholder="Location (optional)">
+<textarea id="description" maxlength="1400" placeholder="Public summary (minimum 40 characters to publish)" required></textarea>
+<input id="imageUrl" type="url" placeholder="Public HTTPS image URL (optional)">
+<input id="url" type="url" placeholder="Public HTTPS more-details URL (optional)">
+<select id="status" aria-label="Publication status"><option value="draft">Draft — not public</option><option value="published">Published — public</option><option value="hidden">Hidden — not public</option></select>
+<input id="order" type="number" value="0" placeholder="Order (optional)">
+<button class="btn" type="submit">Save record</button>
+</form>
+</section>
+<section class="panel" aria-labelledby="published-heading">
+<h2 id="published-heading">Manage announcements</h2>
+<p>Use Edit to update, Hide to unpublish immediately, or Delete to permanently remove a record.</p>
+<div class="table-wrap"><table><thead><tr><th>Headline</th><th>Status</th><th>Order</th><th>Actions</th></tr></thead><tbody id="rows"><tr><td colspan="4">Loading…</td></tr></tbody></table></div>
+</section>
+</main>
+<script type="module">
+import { createAdminCmsController } from "./js/admin-cms-ui.js";
+createAdminCmsController({
+  collectionName: "newsEvents",
+  fieldIds: ["title","description","category","date","location","imageUrl","url","status","order"]
+});
+</script>
+<script type="module" src="js/account-controls.js"></script>
+</body></html>
