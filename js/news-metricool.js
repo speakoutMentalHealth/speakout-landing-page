@@ -29,7 +29,6 @@ function loadTracker() {
   const script = document.createElement('script');
   script.src = trackerUrl;
   script.async = true;
-  script.crossOrigin = 'anonymous';
   script.referrerPolicy = 'strict-origin-when-cross-origin';
   script.onload = () => {
     if (currentChoice() === 'allow' && window.beTracker?.t) {
