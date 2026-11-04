@@ -46,7 +46,7 @@ test("AdSense publisher declaration and privacy notice match the hardened config
   assert.match(privacy,/Advertising is not currently enabled through the site\x27s SpeakHub ad-placement feature/u);
   assert.match(privacy,/not private wellbeing responses, protected learning records, sign-in pages or known child-directed experiences/u);
   assert.match(privacy,/does not remove consent requirements/u);
-  assert.match(privacy,/Last updated:<\/strong> 18 October 2026/u);
+  assert.match(privacy,/Last updated:<\/strong> 4 November 2026/u);
 });
 
 
