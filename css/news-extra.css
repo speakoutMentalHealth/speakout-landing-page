@@ -402,6 +402,9 @@
 .newsroom-more-links strong { font-size:1.12rem; }
 .newsroom-more-links span { color:#476078; font-size:.91rem; }
 .newsroom-minimal a:focus-visible { outline:3px solid #f6ae33; outline-offset:4px; }
+@media(max-width:1180px) {
+  .newsroom-minimal .news-live-card:first-child { grid-column:auto; }
+}
 @media(max-width:900px) {
   .newsroom-instagram-inner { grid-template-columns:1fr; gap:37px; }
   .newsroom-instagram-visual { min-height:290px; max-width:600px; }
