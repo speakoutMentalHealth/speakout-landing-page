@@ -17,7 +17,7 @@ test('Minimal newsroom prioritizes published stories and Instagram without repea
   assert.match(news, /id="news-live-grid"/);
   assert.match(news, /id="instagram"/);
   assert.match(news, /instagram\.com\/speaaakout\//);
-  assert.match(news, /Programme photographs from the SpeakOut website/);
+  assert.match(news, /Images from the SpeakOut website; visit Instagram for actual posts/);
   assert.doesNotMatch(news, /class="news-stats"/);
   assert.doesNotMatch(news, /class="upcoming-section"/);
   assert.doesNotMatch(news, /class="news-category-grid"/);
