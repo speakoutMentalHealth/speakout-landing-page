@@ -51,11 +51,15 @@ function renderArticle(item) {
     info.append(date);
   }
   info.append(description);
-  const linkUrl = safeUrl(item.url);
+  const fullStory = typeof item.body === 'string' && item.body.trim().length > 0 &&
+    /^[A-Za-z0-9_-]{1,180}$/.test(String(item.id || ''));
+  const linkUrl = fullStory
+    ? new URL('article.html?id=' + encodeURIComponent(item.id), document.baseURI).href
+    : safeUrl(item.url);
   if (linkUrl) {
     const link = document.createElement('a');
     link.href = linkUrl;
-    link.textContent = 'Read more';
+    link.textContent = fullStory ? 'Read full story' : 'Read more';
     link.className = 'btn primary';
     if (new URL(linkUrl).origin !== location.origin) {
       link.target = '_blank';
@@ -75,7 +79,7 @@ async function loadPublishedNews() {
       collection(db, 'newsEvents'),
       where('status', 'in', ['active', 'published'])
     ));
-    const records = snap.docs.map(doc => doc.data())
+    const records = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
       .filter(item => item.title && item.description && validDate(item.date))
       .sort((a,b) => String(b.date).localeCompare(String(a.date)))
       .slice(0, 12);
