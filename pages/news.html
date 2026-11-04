@@ -64,6 +64,7 @@
         youth campaigns, radio conversations, parent sessions, teacher trainings and community outreach.
       </p>
 <div class="actions">
+<a class="btn gold" href="#news-updates">Latest News</a>
 <a class="btn gold" href="#latest-events">View Events</a>
 <a class="btn light" href="#media-coverage">Media Coverage</a>
 <a class="btn outline" href="../auth/auth.html">Volunteer</a>
@@ -84,6 +85,17 @@
 <div class="reveal"><strong>1</strong><span>Secondary School Partnership</span></div>
 <div class="reveal"><strong>2</strong><span>College of Health Partnerships</span></div>
 <div class="reveal"><strong>Ongoing</strong><span>School and Community Engagement</span></div>
+</div>
+</section>
+<section class="news-editorial-section" id="news-updates" aria-labelledby="news-updates-heading">
+<div class="container">
+<div class="section-title">
+<span class="label">Newsroom</span>
+<h2 id="news-updates-heading">Latest News &amp; Announcements</h2>
+<p>Official SpeakOut updates, school programmes, community campaigns and upcoming events.</p>
+</div>
+<p id="news-live-status" class="news-live-status" role="status" aria-live="polite">Loading published updates…</p>
+<div id="news-live-grid" class="event-grid" aria-label="Published news and events"></div>
 </div>
 </section>
 <section class="latest-events-section" id="latest-events">
@@ -255,5 +267,18 @@
 </footer>
 <script src="../js/main.js"></script>
 <div aria-label="Quick actions" class="so-mobile-actions"><a class="secondary" href="contact.html">Contact SpeakOut</a><a class="primary" href="donate.html">Support the Mission</a></div><script type="module" src="../js/account-controls.js"></script>
+<aside id="news-analytics-choice" class="news-analytics-choice" hidden role="region" aria-label="Website analytics choices">
+  <div>
+    <strong>Help us improve News &amp; Events</strong>
+    <p>Allow Metricool to count visits to this public news page. It receives the page URL and network information such as IP address. We do not send account details or mental-health responses. <a href="privacy.html">Privacy information</a>.</p>
+  </div>
+  <div class="news-analytics-actions">
+    <button id="news-analytics-decline" type="button">Not now</button>
+    <button id="news-analytics-allow" type="button">Allow analytics</button>
+  </div>
+</aside>
+<button id="news-analytics-settings" class="news-analytics-settings" type="button">Analytics choices</button>
+<script type="module" src="../js/news-public-feed.js"></script>
+<script defer src="../js/news-metricool.js"></script>
 </body>
 </html>
