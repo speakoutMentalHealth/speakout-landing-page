@@ -37,9 +37,51 @@ th { color:var(--muted) }
 .admin-links { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px }
 .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
 @media(max-width:720px){ .form-grid{grid-template-columns:1fr} .panel{padding:16px} }
+
+/* Mobile-first publishing workspace: concise, scannable, accessible. */
+body.news-admin-page { font-size:15px; line-height:1.5 }
+.news-admin-page header { padding:22px max(4%,16px) 20px }
+.news-admin-page header h1 { font-size:clamp(1.45rem,4.2vw,2.25rem); line-height:1.15; margin:10px 0 7px }
+.news-admin-page header p { font-size:.92rem; line-height:1.55; max-width:760px; color:#eaf4ff }
+.news-admin-page .container { width:min(1080px,94%); margin:18px auto 50px }
+.news-admin-page .admin-links { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 17px }
+.news-admin-page .admin-links a { display:inline-flex; align-items:center; padding:9px 12px; min-height:42px; border:1px solid #cbdaea; background:#fff; border-radius:10px; text-decoration:none; font-size:.9rem; font-weight:700; line-height:1.2 }
+.news-admin-page .admin-links a:hover { background:#eef6ff }
+.news-admin-page .panel { padding:clamp(16px,3.5vw,25px); border-radius:17px; margin:16px 0 }
+.news-admin-page .panel h2 { font-size:clamp(1.32rem,3vw,1.65rem); margin:0 0 13px; line-height:1.2 }
+.news-admin-page .panel > p { font-size:.92rem; color:#42576c }
+.news-admin-page .notice { font-size:.9rem; line-height:1.55; overflow-wrap:anywhere; margin:0 0 12px; min-height:0 }
+.news-admin-page .form-grid { gap:13px 16px }
+.news-admin-page .cms-field { font-size:.9rem; gap:5px }
+.news-admin-page .cms-field-description, .news-admin-page .cms-field-body { grid-column:1 / -1 }
+.news-admin-page .cms-field input,.news-admin-page .cms-field select,.news-admin-page .cms-field textarea { font-size:16px; min-width:0; border-radius:9px }
+.news-admin-page .cms-field textarea { min-height:110px }
+.news-admin-page .cms-field-body textarea { min-height:175px }
+.news-admin-page .form-grid > .btn[type="submit"] { justify-self:start; min-width:145px }
+.news-admin-page .news-editor-help { margin:-4px 0 17px; font-size:.88rem; color:#43596c }
+.news-admin-page .news-editor-help summary { cursor:pointer; color:#0a5fbf; font-weight:750; padding:4px 0 }
+.news-admin-page .news-editor-help p { margin:7px 0; line-height:1.6 }
+.news-admin-page .cms-load-more { display:block; margin:16px auto 5px }
+.news-admin-page .cms-load-more[hidden] { display:none!important }
+.news-admin-page .cms-toolbar { flex-wrap:wrap; }
+.news-admin-page button:focus-visible,.news-admin-page input:focus-visible,.news-admin-page select:focus-visible,.news-admin-page textarea:focus-visible,.news-admin-page a:focus-visible { outline:3px solid #ffbd4b; outline-offset:2px }
+@media (max-width:720px) {
+ .news-admin-page header { padding:16px 4% }
+ .news-admin-page header p { font-size:.85rem }
+ .news-admin-page .panel { padding:17px 15px }
+ .news-admin-page .admin-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)) }
+ .news-admin-page .admin-links a { justify-content:center; text-align:center; overflow-wrap:anywhere }
+ .news-admin-page .admin-links a:last-child { grid-column:1 / -1 }
+ .news-admin-page .form-grid { grid-template-columns:minmax(0,1fr); gap:12px }
+ .news-admin-page .cms-field-description,.news-admin-page .cms-field-body { grid-column:auto }
+ .news-admin-page .form-grid > .btn[type="submit"] { width:100%; }
+ .news-admin-page .table-wrap { overflow-x:visible }
+ .news-admin-page .notice { padding:11px 12px }
+}
+@media (prefers-reduced-motion:reduce) { .news-admin-page * { scroll-behavior:auto!important } }
 </style>
 </head>
-<body>
+<body class="news-admin-page">
 <a class="visually-hidden" href="#main">Skip to editor</a>
 <header><a href="admin-dashboard.html">← Admin dashboard</a>
 <h1>News &amp; Events Publisher</h1>
@@ -50,7 +92,7 @@ th { color:var(--muted) }
 <p class="notice" id="statusBox" role="status" aria-live="polite">Checking administrator access…</p>
 <section class="panel" aria-labelledby="editor-heading">
 <h2 id="editor-heading">Create or update a news item</h2>
-<p>Use the short introduction for announcements. Add the full article to publish a shareable story page. New items start as drafts.</p>
+<details class="news-editor-help"><summary>Publishing guidance</summary><p>Use the short introduction for announcements. Add the full article to publish a shareable story page. New items start as drafts. Confirm permission before sharing photographs or identifying beneficiaries.</p></details>
 <form class="form-grid" id="cmsForm">
 <input id="title" maxlength="150" placeholder="Headline" required>
 <select id="category" aria-label="Category">
@@ -77,7 +119,8 @@ th { color:var(--muted) }
 import { createAdminCmsController } from "./js/admin-cms-ui.js";
 createAdminCmsController({
   collectionName: "newsEvents",
-  fieldIds: ["title","description","body","category","date","location","imageUrl","url","status","order"]
+  fieldIds: ["title","description","body","category","date","location","imageUrl","url","status","order"],
+  pageSize: 25
 });
 </script>
 <script type="module" src="js/account-controls.js"></script>

@@ -1,6 +1,6 @@
 import { db } from '../firebase-config.js';
 import {
-  collection, getDocs, query, where
+  collection, getDocs, query, where, limit
 } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';
 
 const list = document.getElementById('news-live-grid');
@@ -77,7 +77,9 @@ async function loadPublishedNews() {
     // Query excludes hidden/draft records in Firestore and in the UI.
     const snap = await getDocs(query(
       collection(db, 'newsEvents'),
-      where('status', 'in', ['active', 'published'])
+      where('status', 'in', ['active', 'published']),
+      // Bound each visitor's Firestore reads; don't fetch the entire collection.
+      limit(30)
     ));
     const records = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
       .filter(item => item.title && item.description && validDate(item.date))
@@ -86,10 +88,13 @@ async function loadPublishedNews() {
     list.replaceChildren(...records.map(renderArticle));
     message.textContent = records.length
       ? `${records.length} published update${records.length === 1 ? '' : 's'}`
-      : 'New updates will appear here as they are published. Explore our recent activities below.';
+      : 'No public updates are available yet. Visit our Instagram section for recent activities.';
   } catch (error) {
     console.error('News feed could not load', error);
-    message.textContent = 'Latest updates are temporarily unavailable. Browse our recent activities below.';
+    const quota = error?.code === 'resource-exhausted' || /quota|resource.exhausted/i.test(String(error?.message || ''));
+    message.textContent = quota
+      ? 'News updates are temporarily unavailable because our database has reached a usage limit. Please check back later.'
+      : 'News updates are temporarily unavailable. You can still explore SpeakOut on Instagram below.';
   }
 }
 loadPublishedNews();

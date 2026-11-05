@@ -5698,6 +5698,17 @@ export default {
       }
       return json(result, 200, headers);
     } catch (error) {
+      // Firestore capacity errors can contain provider metadata and document paths.
+      // Never expose raw upstream messages or force callers into high-frequency retries.
+      if (error.firestoreStatus === "RESOURCE_EXHAUSTED" ||
+          error.providerFailure?.status === "RESOURCE_EXHAUSTED") {
+        console.warn("Firestore capacity unavailable", error.providerFailure || { status: "RESOURCE_EXHAUSTED" });
+        return json(
+          { error: "Database capacity temporarily unavailable. No change was confirmed; try again later.", code: "DATABASE_CAPACITY" },
+          429,
+          { ...headers, "retry-after": "300", "cache-control": "no-store" }
+        );
+      }
       console.error(error);
       return json({ error: error.message || "Request failed.", ...(error.providerFailure ? {providerFailure:error.providerFailure} : {}) }, error.status || 500, headers);
     }
