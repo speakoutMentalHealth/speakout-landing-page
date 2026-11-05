@@ -821,3 +821,51 @@ test("News & Events: only published updates are readable publicly; admin can man
     title: "Forged", status: "published"
   }));
 });
+
+test("News & Events lifecycle: public access follows publish, edit, hide and removal", async () => {
+  await seed("users/news-editor", profile("news-editor", "admin"));
+  await seed("users/ordinary-reader", profile("ordinary-reader", "student"));
+  const articlePath = "newsEvents/lifecycle-article";
+  await seed(articlePath, {
+    title: "Synthetic school outreach test",
+    description: "Fictional staging-style content for testing the public news lifecycle safely.",
+    body: "An entirely fictional draft; no beneficiary information.",
+    status: "draft", date: "2026-11-05", category: "news", order: 44
+  });
+
+  const visitor = testEnv.unauthenticatedContext().firestore();
+  const editor = testEnv.authenticatedContext("news-editor").firestore();
+  const ordinary = testEnv.authenticatedContext("ordinary-reader").firestore();
+  const article = db => doc(db, articlePath);
+  const publishedQuery = db => query(
+    collection(db, "newsEvents"), where("status", "in", ["active", "published"])
+  );
+
+  await assertFails(getDoc(article(visitor)));
+  await assertFails(getDoc(article(ordinary)));
+  await assertFails(updateDoc(article(ordinary), { status: "published" }));
+  const before = await assertSucceeds(getDocs(publishedQuery(visitor)));
+  assert.equal(before.size, 0, "drafts must not leak through a public listing");
+
+  await assertSucceeds(updateDoc(article(editor), { status: "published" }));
+  const released = await assertSucceeds(getDoc(article(visitor)));
+  assert.equal(released.data().status, "published");
+  const liveList = await assertSucceeds(getDocs(publishedQuery(visitor)));
+  assert.equal(liveList.size, 1);
+
+  const revisedBody = "Updated fictional news content with no identifying details.";
+  await assertSucceeds(updateDoc(article(editor), { body: revisedBody }));
+  const updated = await assertSucceeds(getDoc(article(visitor)));
+  assert.equal(updated.data().body, revisedBody);
+
+  await assertSucceeds(updateDoc(article(editor), { status: "hidden" }));
+  await assertFails(getDoc(article(visitor)));
+  const hiddenList = await assertSucceeds(getDocs(publishedQuery(visitor)));
+  assert.equal(hiddenList.size, 0);
+  const editorCopy = await assertSucceeds(getDoc(article(editor)));
+  assert.equal(editorCopy.data().status, "hidden");
+
+  await assertSucceeds(deleteDoc(article(editor)));
+  const removed = await assertSucceeds(getDoc(article(editor)));
+  assert.equal(removed.exists(), false);
+});
