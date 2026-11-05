@@ -197,7 +197,6 @@ export function createAdminCmsController({ collectionName, fieldIds, libraryFiel
       if (id) {
         const previous = items.find(item => item.id === id);
         items = [{ ...(previous || {}), ...payload, id }, ...items.filter(item => item.id !== id)];
-        if (pageSize > 0 && items.length > pageSize) items.length = pageSize;
         render();
       }
       resetEditor();
