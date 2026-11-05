@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where, setDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 
 const PROJECT_ID = "demo-speakout-rules";
 const rules = readFileSync(new URL("../firebase/firestore.rules", import.meta.url), "utf8");
@@ -789,4 +789,35 @@ test("weekly programme reports and audit records are Worker-only for every role"
       await assertFails(deleteDoc(ref));
     }
   }
+});
+
+test("News & Events: only published updates are readable publicly; admin can manage drafts", async () => {
+  await seed("users/news-admin", profile("news-admin", "admin"));
+  await seed("newsEvents/draft-a", {
+    title: "Confidential draft", description: "Not yet approved for publication.",
+    status: "draft", date: "2026-11-04", category: "news"
+  });
+  await seed("newsEvents/hidden-a", {
+    title: "Hidden notice", description: "Removed from public publication.",
+    status: "hidden", date: "2026-11-04", category: "news"
+  });
+  await seed("newsEvents/published-a", {
+    title: "Public event announcement", description: "Approved text for the public News and Events page.",
+    status: "published", date: "2026-11-04", category: "event"
+  });
+  const guest = testEnv.unauthenticatedContext().firestore();
+  const admin = testEnv.authenticatedContext("news-admin").firestore();
+  await assertFails(getDoc(doc(guest, "newsEvents/draft-a")));
+  await assertFails(getDoc(doc(guest, "newsEvents/hidden-a")));
+  await assertSucceeds(getDoc(doc(guest, "newsEvents/published-a")));
+  await assertFails(getDocs(collection(guest, "newsEvents")));
+  const publicQuery = query(collection(guest, "newsEvents"),
+    where("status", "in", ["active", "published"]));
+  const visible = await assertSucceeds(getDocs(publicQuery));
+  assert.equal(visible.size, 1);
+  await assertSucceeds(getDoc(doc(admin, "newsEvents/draft-a")));
+  await assertSucceeds(updateDoc(doc(admin, "newsEvents/draft-a"), { status: "published" }));
+  await assertFails(setDoc(doc(guest, "newsEvents/forged"), {
+    title: "Forged", status: "published"
+  }));
 });
