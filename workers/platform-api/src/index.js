@@ -123,6 +123,7 @@ function safeId(value, label = "identifier") {
 }
 
 const CMS_COLLECTION_FIELDS = Object.freeze({
+  newsEvents: ["title", "description", "body", "category", "date", "location", "imageUrl", "url"],
   homepageStats: ["title", "description", "value", "suffix", "category"],
   homepageMedia: ["title", "description", "type", "url", "imageUrl"],
   homepagePartners: ["title", "description", "logoUrl", "websiteUrl", "category"],
@@ -168,17 +169,49 @@ function cmsRecord(collectionName, input) {
   const record = {};
   for (const field of CMS_COLLECTION_FIELDS[collectionName]) {
     const value = clean(input[field]);
-    if (value.length > 2000) throw Object.assign(new Error(`${field} is too long.`), { status: 400 });
+    const maxLength = collectionName === "newsEvents" && field === "body" ? 12000 : 2000;
+    if (value.length > maxLength) throw Object.assign(new Error(`${field} is too long.`), { status: 400 });
     record[field] = value;
   }
   if (!record.title) throw Object.assign(new Error("Title is required."), { status: 400 });
-  const status = normalized(input.status) || "active";
+  const status = normalized(input.status) || (collectionName === "newsEvents" ? "draft" : "active");
   if (!["active", "published", "draft", "hidden"].includes(status)) {
     throw Object.assign(new Error("Invalid content status."), { status: 400 });
   }
   const order = Number(input.order || 0);
   if (!Number.isFinite(order) || !Number.isInteger(order) || Math.abs(order) > 100000) {
     throw Object.assign(new Error("Invalid content order."), { status: 400 });
+  }
+  if (collectionName === "newsEvents") {
+    const isPublished = ["active", "published"].includes(status);
+    const types = ["news", "event", "school", "outreach", "media", "partnership"];
+    record.category = normalized(record.category);
+    if (record.category && !types.includes(record.category)) {
+      throw Object.assign(new Error("Choose an approved news category."), { status: 400 });
+    }
+    if (record.date) {
+      const parsed = new Date(record.date + "T12:00:00Z");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(record.date) ||
+          Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0,10) !== record.date) {
+        throw Object.assign(new Error("Enter a valid date (YYYY-MM-DD)."), { status: 400 });
+      }
+    }
+    for (const field of ["url", "imageUrl"]) {
+      const value = record[field];
+      if (!value) continue;
+      try {
+        const parsed = new URL(value, "https://speakoutmentalhealth.org");
+        if (parsed.protocol !== "https:" || parsed.username || parsed.password ||
+            value.startsWith("//") || (parsed.hostname === "localhost")) throw new Error();
+        if (!value.startsWith("https://") && !value.startsWith("/")) throw new Error();
+      } catch {
+        throw Object.assign(new Error("News links and images must be public HTTPS or same-site paths."), { status: 400 });
+      }
+    }
+    if (isPublished && (record.title.length < 8 ||
+      record.description.length < 40 || !record.category || !record.date)) {
+      throw Object.assign(new Error("Publish requires a title (8+ characters), description (40+), category and valid date."), { status: 409 });
+    }
   }
   if (collectionName === "tvEpisodes") {
     const format = normalized(record.format || "episode");
@@ -5587,7 +5620,7 @@ async function route(request, env, path, data) {
       const existing = await tx.get(`${collectionName}/${recordId}`);
       if (!existing) throw Object.assign(new Error("Content record not found."), { status: 404 });
       if (collectionName === "tvShows" && ["active", "published"].includes(status)) validatePublicTvShow(existing);
-      const validated = collectionName === "tvEpisodes" && ["active", "published"].includes(status)
+      const validated = ["tvEpisodes", "newsEvents"].includes(collectionName) && ["active", "published"].includes(status)
         ? cmsRecord(collectionName, { ...existing, status })
         : null;
       tx.set(`${collectionName}/${recordId}`, {
