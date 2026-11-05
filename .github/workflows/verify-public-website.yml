@@ -44,10 +44,10 @@ jobs:
           # Each live marker must first exist in the exact checked-out release source.
           # Otherwise a stale workflow assertion could fail after a correct deployment.
           checks = {
-              "/": ("index.html", 'aria-label="SpeakOut program pathways"'),
-              "/pages/about.html": ("pages/about.html", "School programmes"),
+              "/": ("index.html", 'id="home-newsroom-title"'),
+              "/pages/about.html": ("pages/about.html", 'id="how-we-work"'),
               "/pages/impact.html": ("pages/impact.html", "School programmes"),
-              "/pages/schools.html": ("pages/schools.html", "School programmes"),
+              "/pages/schools.html": ("pages/schools.html", 'id="journey"'),
               "/pages/donate.html": ("pages/donate.html", "School partnerships"),
               "/pages/academy.html": ("pages/academy.html", "Open Member Portal"),
               "/pages/resources.html": ("pages/resources.html", "Member Portal links open sign-in. Availability of individual handbooks is not confirmed here."),
