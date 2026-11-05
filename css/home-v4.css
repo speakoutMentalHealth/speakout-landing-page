@@ -757,3 +757,20 @@ p,li{text-wrap:pretty}
 button,input,select,textarea{font:inherit}
 @media(max-width:760px){input,select,textarea{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Lean editorial link to the live News & Events newsroom. */
+.home-newsroom-teaser { background:#f4f8fc; border-block:1px solid #dfe9f3; padding:clamp(45px,6vw,76px) 0; }
+.home-newsroom-inner { display:flex; justify-content:space-between; align-items:center; gap:30px; }
+.home-newsroom-inner h2 { color:#071b3a; margin:8px 0 10px; font-size:clamp(2rem,3.7vw,3.4rem); }
+.home-newsroom-inner p { color:#435b71; line-height:1.6; max-width:610px; margin:0; }
+.home-newsroom-actions { display:flex; flex-wrap:wrap; gap:12px; flex-shrink:0; }
+.home-newsroom-actions .btn { min-height:48px; border-radius:12px; }
+.home-newsroom-actions .btn-white { color:#074c82; border:1px solid #c7dbea; }
+@media(max-width:850px) {
+  .home-newsroom-inner { display:block; }
+  .home-newsroom-actions { margin-top:22px; }
+}
+@media(max-width:460px) {
+  .home-newsroom-actions { display:grid; grid-template-columns:1fr; }
+  .home-newsroom-actions .btn { width:100%; text-align:center; justify-content:center; }
+}
