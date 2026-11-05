@@ -963,7 +963,8 @@ service cloud.firestore {
     }
 
     match /newsEvents/{eventId} {
-      allow read: if true;
+      // Drafts and hidden updates must never be visible to public queries.
+      allow get, list: if resource.data.status in ["active", "published"] || isSuperAdmin();
       allow write: if isSuperAdmin();
     }
 
