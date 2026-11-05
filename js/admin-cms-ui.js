@@ -33,7 +33,7 @@ export function createAdminCmsController({ collectionName, fieldIds, libraryFiel
     const control = document.getElementById(id);
     if (!control || control.closest("label")) continue;
     const label = document.createElement("label");
-    label.className = "cms-field";
+    label.className = `cms-field cms-field-${id}`;
     const labelText = document.createElement("span");
     labelText.textContent = control.placeholder || humanize(id);
     control.removeAttribute("placeholder");
