@@ -234,7 +234,7 @@ export function routeForRole(role){
    CURRENT USER PROFILE
 ========================================================= */
 
-export async function getCurrentProfile(user){
+export async function getCurrentProfile(user, { propagateErrors = false } = {}){
 
   if(!user){
     return null;
@@ -267,12 +267,8 @@ export async function getCurrentProfile(user){
 
   }catch(error){
 
-    console.error(
-      "Could not load user profile:",
-      error
-    );
-
-
+    console.error("Could not load user profile", { code: error?.code || "unavailable" });
+    if (propagateErrors) throw error;
     return null;
   }
 
@@ -407,10 +403,30 @@ export function requireRoles(
         Load the Firestore profile.
       */
 
-      const profile =
-        await getCurrentProfile(
-          user
-        );
+      // A temporary Firestore outage must not be treated as a deleted account.
+      // Fail closed without granting access or signing out an existing session.
+      let profile;
+      try {
+        profile = await getCurrentProfile(user, { propagateErrors: true });
+      } catch (error) {
+        const status = document.getElementById("statusBox");
+        const text = "Unable to verify your account while the database is unavailable. You remain signed in, but access is paused. Try again later.";
+        if (status) {
+          status.textContent = text;
+          status.classList.add("bad");
+        } else {
+          let notice = document.getElementById("profile-access-alert");
+          if (!notice) {
+            notice = document.createElement("p");
+            notice.id = "profile-access-alert";
+            notice.setAttribute("role", "alert");
+            notice.style.cssText = "padding:16px;margin:16px auto;max-width:960px;background:#fff1f1;color:#7f1d1d;border:1px solid #fecaca;border-radius:12px";
+            (document.querySelector("main") || document.body).prepend(notice);
+          }
+          notice.textContent = text;
+        }
+        return;
+      }
 
 
       if(!profile){
