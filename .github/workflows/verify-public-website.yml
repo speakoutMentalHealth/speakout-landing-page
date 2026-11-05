@@ -7,6 +7,8 @@ on:
     paths:
       - "index.html"
       - "pages/about.html"
+      - "pages/news.html"
+      - "pages/article.html"
       - "pages/impact.html"
       - "pages/schools.html"
       - "pages/donate.html"
@@ -46,6 +48,8 @@ jobs:
           checks = {
               "/": ("index.html", 'id="home-newsroom-title"'),
               "/pages/about.html": ("pages/about.html", 'id="how-we-work"'),
+              "/pages/news.html": ("pages/news.html", 'id="instagram"'),
+              "/pages/article.html": ("pages/article.html", 'id="story-heading"'),
               "/pages/impact.html": ("pages/impact.html", "School programmes"),
               "/pages/schools.html": ("pages/schools.html", 'id="journey"'),
               "/pages/donate.html": ("pages/donate.html", "School partnerships"),
