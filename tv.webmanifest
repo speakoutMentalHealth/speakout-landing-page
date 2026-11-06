@@ -13,8 +13,8 @@
     "standalone",
     "minimal-ui"
   ],
-  "background_color": "#05101d",
-  "theme_color": "#05101d",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "categories": [
     "education",
     "entertainment",
