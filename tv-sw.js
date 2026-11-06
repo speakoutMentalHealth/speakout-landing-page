@@ -28,7 +28,7 @@ self.addEventListener("fetch",event=>{
    }
    return response;
   }).catch(async()=>{
-   const cached=await caches.match(event.request,{ignoreSearch:event.request.mode==="navigate"});
+   const cached=await caches.match(event.request,{ignoreSearch:true});
    if(cached)return cached;
    if(event.request.mode==="navigate")return caches.match("./tv.html");
    return Response.error();
