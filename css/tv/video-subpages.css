@@ -1,0 +1,60 @@
+/* Unified clean browsing on SpeakOut TV Discover, Watch, Series and Listen */
+body.tv-video-subpage{background:#fff;color:#1b293c;--tv-bg:#fff;--tv-text:#1b293c;--tv-muted:#64748a;--tv-line:#e5e9f0;--tv-surface:#fff;--tv-surface-2:#f7f8fa;--tv-blue:#1857b8;--tv-orange:#d97828;padding-bottom:90px}
+.tv-video-subpage .ios-topbar-inner{display:flex;justify-content:space-between;gap:16px;min-height:65px}
+.tv-video-subpage .ios-brand-wordmark{color:#19283c}
+.tv-video-subpage .ios-icon-btn{background:#f4f6f9;color:#1b293c;border-color:#e5e9f0;border-radius:100%}
+.tv-video-subpage main{min-height:calc(100vh - 190px)}
+.tv-video-subpage .youth-eyebrow,.tv-video-subpage .search-discovery-hero h1 em{color:#1857b8}
+.tv-video-subpage .search-discovery-hero{padding:28px 0 18px}
+.tv-video-subpage .search-discovery-hero h1{font-size:clamp(1.8rem,4vw,2.65rem);line-height:1.16;letter-spacing:-.04em;color:#1b293c}
+.tv-video-subpage .search-discovery-hero>p{font-size:.94rem;color:#69768a}
+.tv-video-subpage .discovery-search-box input{background:#f6f8fb;color:#1b293c;border:1px solid #dce3ec;border-radius:25px;font-size:1rem;min-height:48px}
+.tv-video-subpage .search-glyph{color:#34465b}
+.tv-video-subpage .search-topic-rail button,.tv-video-subpage .search-kind-tabs button,.tv-video-subpage .listen-filter-rail button{color:#273a51;background:#f1f4f8;border-color:transparent;border-radius:10px}
+.tv-video-subpage .search-topic-rail button.active,.tv-video-subpage .search-kind-tabs button.active,.tv-video-subpage .listen-filter-rail button.active{background:#1b2738;color:#fff;border-color:#1b2738}
+.tv-video-subpage .discovery-results-head h2,.tv-video-subpage .discovery-group-title h3{color:#1a2b41}
+.tv-video-subpage .discovery-media-grid,.tv-video-subpage .discovery-series-grid{gap:25px 16px}
+.tv-video-subpage .discovery-media-card{border:0;background:transparent;box-shadow:none;overflow:visible;border-radius:0}
+.tv-video-subpage .discovery-media-art{border-radius:12px;overflow:hidden}
+.tv-video-subpage .discovery-media-copy strong{color:#182b40;font-size:.94rem;padding:10px 0 0}
+.tv-video-subpage .discovery-media-copy p{color:#66768c;font-size:.79rem;padding:5px 0 0}
+.tv-video-subpage .discovery-media-type{color:#2e598b}
+.tv-video-subpage .discovery-series-card{border-radius:12px}
+.tv-video-subpage .watch-back,.tv-video-subpage .show-back{color:#1857b8}
+.tv-video-subpage .watch-player-shell{border:0;border-radius:12px;overflow:hidden}
+.tv-video-subpage .watch-details h1{font-size:clamp(1.5rem,3vw,2rem);color:#18283b}
+.tv-video-subpage .watch-details p{font-size:.94rem}
+.tv-video-subpage .watch-action{border-color:#e1e6ee;background:#f0f3f8;color:#273a50;border-radius:22px;font-size:.85rem}
+.tv-video-subpage .watch-action.primary{background:#1857b8;color:#fff;border-color:#1857b8}
+.tv-video-subpage .watch-series-pill{color:#1857b8}
+.tv-video-subpage .show-world-hero{min-height:290px;background:#172b43}
+.tv-video-subpage .show-world-copy h1{font-size:clamp(2rem,5vw,3.7rem);color:#fff}
+.tv-video-subpage .show-world-copy p{color:#e5eaf2}
+.tv-video-subpage .listen-hero h1{font-size:clamp(1.9rem,4vw,2.9rem);color:#1b293c}
+.tv-video-subpage .listen-now-card,.tv-video-subpage .listen-card{border-color:#e6eaf0;background:#fff;color:#18283d}
+.tv-video-subpage .listen-now-copy h2,.tv-video-subpage .listen-card-copy strong{color:#18283d}
+.tv-video-subpage .listen-now-copy p,.tv-video-subpage .listen-card-copy p{color:#64748a}
+.tv-video-subpage .listen-library-grid .listen-card{border-radius:12px}
+.tv-video-subpage .ios-tabbar{border-color:#e4e9ef;background:#fff;box-shadow:none}
+.tv-video-subpage .youth-nav a.active,.tv-video-subpage .youth-nav a[aria-current="page"]{color:#1857b8}
+.tv-video-subpage .youth-nav a.active span,.tv-video-subpage .youth-nav a[aria-current="page"] span{color:#1857b8}
+@media(min-width:1050px){
+  body.tv-video-subpage{padding-bottom:0}
+  .tv-video-subpage main{margin-left:236px}
+  .tv-video-subpage .youth-nav{position:fixed;left:0;right:auto;top:68px;bottom:0;transform:none;width:224px;height:calc(100vh - 68px);display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:25px 12px;border:0;border-right:1px solid #e5e9f0;border-radius:0;background:#fff;overflow-y:auto}
+  .tv-video-subpage .youth-nav a{display:flex;flex-direction:row;justify-content:flex-start;gap:15px;min-height:45px;padding:0 14px;border-radius:10px;color:#35465c}
+  .tv-video-subpage .youth-nav a small{font-size:.9rem}
+  .tv-video-subpage .youth-nav a.active{background:#eaf2fd;color:#1857b8}
+}
+@media(max-width:1049px){
+  .tv-video-subpage .ios-tabbar{position:fixed;z-index:90;left:0;right:0;bottom:0;width:100%;transform:none;min-height:61px;border:0;border-top:1px solid #e5e9f0;border-radius:0;box-shadow:none;background:#fff;padding:4px 8px calc(4px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,minmax(0,1fr))}
+  .tv-video-subpage .youth-nav a{color:#64748a;min-height:50px}
+}
+@media(max-width:720px){
+  .tv-video-subpage .tv-container{width:calc(100% - 28px)}
+  .tv-video-subpage .discovery-media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}
+  .tv-video-subpage .discovery-media-card{min-width:0;width:100%;max-width:none;flex:none}
+  .tv-video-subpage .search-discovery-hero h1{font-size:1.9rem}
+  .tv-video-subpage .discovery-search-box input{font-size:.9rem}
+}
+@media(max-width:390px){.tv-video-subpage .discovery-media-grid{grid-template-columns:1fr}}
