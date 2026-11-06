@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v15/u);
+  assert.match(sw, /speakout-tv-v16/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -597,8 +597,8 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v15/u);
-  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
+  assert.match(sw, /speakout-tv-v16/u);
+  for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./css/tv/video-first.css","./css/tv/tell-my-story-channel.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
 });
