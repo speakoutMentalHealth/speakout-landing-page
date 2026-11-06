@@ -39,6 +39,14 @@ jobs:
       - name: Confirm Chrome
         run: google-chrome --version
 
+      - name: Install reproducible Lighthouse CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lighthouse-cli"
+          printf '%s\n' '{"private":true,"dependencies":{"lighthouse":"13.5.0"},"overrides":{"import-in-the-middle":"3.5.3"}}' > "$RUNNER_TEMP/lighthouse-cli/package.json"
+          npm install --prefix "$RUNNER_TEMP/lighthouse-cli" --no-audit --no-fund
+
       - name: Audit live launch surfaces
         shell: bash
         run: |
@@ -52,7 +60,7 @@ jobs:
             [tv]="https://speakoutmentalhealth.org/tv.html"
           )
           for name in home contact donate academy tv; do
-            npx --yes lighthouse@13.5.0 "${URLS[$name]}"               --output=json               --output-path="lighthouse-results/$name.json"               --only-categories=performance,accessibility,best-practices,seo               --chrome-flags="--headless --no-sandbox --disable-gpu"               --quiet
+            "$RUNNER_TEMP/lighthouse-cli/node_modules/.bin/lighthouse" "${URLS[$name]}"               --output=json               --output-path="lighthouse-results/$name.json"               --only-categories=performance,accessibility,best-practices,seo               --chrome-flags="--headless --no-sandbox --disable-gpu"               --quiet
           done
 
       - name: Summarize launch scores
