@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="css/tv/media.css">
 <link rel="stylesheet" href="css/tv/discover.css">
 <link rel="stylesheet" href="css/tv/tell-my-story.css">
-<link rel="stylesheet" href="css/tv/video-first.css">
+<link rel="stylesheet" href="css/tv/video-first.css?v=17">
 <link rel="dns-prefetch" href="//www.youtube-nocookie.com"><link rel="dns-prefetch" href="//open.spotify.com">
 <link rel="canonical" href="https://speakoutmentalhealth.org/tv.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SpeakOut TV">
@@ -406,7 +406,7 @@ html.tv-immersive-active,body.tv-immersive-active{overflow:hidden!important;over
 #liveCinemaShell.tv-immersive #livePlayer iframe{display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;border:0!important}
 #liveCinemaShell.tv-immersive .live-info-card{display:none!important}
 </style>
-<script type="module" src="js/speakout-tv.js"></script>
+<script type="module" src="js/speakout-tv.js?v=17"></script>
 <script>
 (function(){
 const shell=document.getElementById("liveCinemaShell"),theater=document.getElementById("liveTheaterButton"),full=document.getElementById("liveFullscreenButton");
@@ -428,7 +428,7 @@ document.addEventListener("keydown",event=>{if(event.key==="Escape"&&shell.class
 
 })();
 </script>
-<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js").catch(()=>{}))}</script>
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("tv-sw.js",{updateViaCache:"none"}).catch(()=>{}))}</script>
 <script type="module" src="js/account-controls.js"></script>
-<script src="js/speakout-platform-switcher.js" defer></script>
+
 </body></html>
