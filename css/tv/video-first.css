@@ -157,3 +157,142 @@ body.tv-clean{--tv-text:var(--browse-ink);--tv-muted:var(--browse-muted);--tv-mu
   .tv-clean #for-you .content-rail,.tv-clean #fresh .content-rail{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.tv-clean .youth-content-card:hover .youth-content-thumb{filter:none}}
+
+
+/* 2026-11-06 — Compact, consistent video cards.
+   Media tiles always wrap their thumbnail and visible content, never filling the
+   height of a taller sibling or a carousel viewport. */
+.tv-clean #for-you .content-rail,
+.tv-clean #fresh .content-rail,
+.tv-clean #courses .content-rail,
+.tv-clean #books .content-rail,
+.tv-clean #regional-learning .content-rail,
+.tv-clean #shelf .content-rail,
+.tv-clean #series .originals-rail {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:24px 16px;
+  width:100%;
+  overflow:visible!important;
+  scroll-snap-type:none;
+  align-items:start!important;
+  align-content:start!important;
+  grid-auto-rows:max-content;
+}
+.tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail > .youth-content-card,
+.tv-clean #series .originals-rail > .original-card {
+  flex:none!important;
+  width:100%!important;
+  max-width:100%;
+  min-width:0!important;
+  min-height:0!important;
+  height:max-content!important;
+  align-self:start!important;
+  justify-self:stretch;
+  margin:0;
+}
+.tv-clean .content-rail > .youth-content-card,
+.tv-clean .originals-rail > .original-card,
+.tv-clean .ios-episode-strip > .ios-episode-card {
+  min-height:0!important;
+  height:max-content!important;
+  align-self:flex-start!important;
+}
+.tv-clean .youth-content-open {
+  display:block;
+  width:100%;
+  height:auto!important;
+  min-height:0!important;
+  margin:0;
+  padding:0;
+}
+.tv-clean .youth-content-thumb,
+.tv-clean .original-card .original-art,
+.tv-clean .ios-episode-card .ios-episode-art {
+  display:block;
+  position:relative;
+  width:100%;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-radius:12px;
+}
+.tv-clean .youth-content-thumb img,
+.tv-clean .original-card .original-art img,
+.tv-clean .ios-episode-card .ios-episode-art img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.tv-clean .youth-content-open > small {
+  display:block;
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  line-height:1.45;
+}
+.tv-clean .youth-content-open > strong,
+.tv-clean .original-card .original-copy strong {
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.38;
+  max-height:2.76em;
+  overflow-wrap:anywhere;
+}
+.tv-clean .youth-content-open > p,
+.tv-clean .original-card .original-copy p {
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  line-height:1.4;
+  max-height:2.8em;
+  overflow-wrap:anywhere;
+}
+.tv-clean .original-card .original-copy{
+  position:static;
+  z-index:auto;
+  background:transparent;
+}
+.tv-clean #series .original-card {
+  border:0!important;
+  border-radius:0!important;
+  background:transparent;
+}
+.tv-clean #series .original-card :is(.original-copy small,.original-copy strong,.original-copy p,.original-copy > span) {
+  padding-left:0;
+  padding-right:0;
+}
+/* All of these groups are grids, not carousels: avoid misleading arrows. */
+.tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf,#series)
+  :is(.tv-global-rail-nav,.tv-rail-nav) {
+  display:none!important;
+}
+@media(max-width:1320px) {
+  .tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+  .tv-clean #series .originals-rail {grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:900px) {
+  .tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+  .tv-clean #series .originals-rail {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px) {
+  .tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+  .tv-clean #series .originals-rail {gap:17px 12px}
+  .tv-clean .youth-content-open > p,
+  .tv-clean .original-card .original-copy p {-webkit-line-clamp:1;max-height:1.4em}
+  .tv-clean .youth-content-open > strong,
+  .tv-clean .original-card .original-copy strong {font-size:.83rem;line-height:1.35;max-height:2.7em}
+  .tv-clean .youth-content-thumb,
+  .tv-clean .original-card .original-art {border-radius:10px}
+}
+@media(max-width:350px) {
+  .tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+  .tv-clean #series .originals-rail {grid-template-columns:1fr}
+}

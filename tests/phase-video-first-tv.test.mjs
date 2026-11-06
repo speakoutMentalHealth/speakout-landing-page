@@ -53,7 +53,7 @@ test("Browse, Watch, Series and Listen share the video-first theme",()=>{
 });
 test("PWA includes updated styles and protected interview page",()=>{
   const sw=read("tv-sw.js");
-  assert.match(sw,/speakout-tv-v16/);
+  assert.match(sw,/speakout-tv-v17/);
   for(const asset of ["./css/tv/video-first.css","./css/tv/video-subpages.css","./css/tv/tell-my-story-channel.css","./pages/tell-my-story.html","./js/tell-my-story-page.js"])
     assert.ok(sw.includes(asset),asset);
 });

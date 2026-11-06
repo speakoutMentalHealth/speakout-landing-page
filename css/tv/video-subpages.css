@@ -58,3 +58,22 @@ body.tv-video-subpage{background:#fff;color:#1b293c;--tv-bg:#fff;--tv-text:#1b29
   .tv-video-subpage .discovery-search-box input{font-size:.9rem}
 }
 @media(max-width:390px){.tv-video-subpage .discovery-media-grid{grid-template-columns:1fr}}
+
+
+/* Unified compact sizing in Discover, Watch recommendations and series. */
+.tv-video-subpage :is(.discovery-media-grid,.discovery-series-grid,.show-episode-grid,.listen-library-grid){align-items:start;grid-auto-rows:max-content}
+.tv-video-subpage :is(.discovery-media-card,.show-episode-card,.watch-related-card,.listen-card){height:max-content;min-height:0;align-self:start}
+.tv-video-subpage :is(.discovery-media-art,.show-episode-art,.watch-related-art){aspect-ratio:16/9;height:auto;min-height:0}
+.tv-video-subpage :is(.discovery-media-copy strong,.show-episode-copy strong,.watch-related-card strong){
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;max-height:2.8em;overflow-wrap:anywhere;
+}
+.tv-video-subpage :is(.discovery-media-copy p,.show-episode-copy p,.watch-related-card p){
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;max-height:2.9em;
+}
+@media(max-width:620px){
+  .tv-video-subpage :is(.discovery-media-copy p,.show-episode-copy p,.watch-related-card p){
+    -webkit-line-clamp:1;max-height:1.5em;
+  }
+}
