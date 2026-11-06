@@ -3,81 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tell My Story | SpeakOut TV</title>
-  <meta name="description" content="Explore Tell My Story films, youth mental health conversations, and approved interviews featured on SpeakOut TV.">
+  <title>Tell My Story — SpeakOut TV</title>
+  <meta name="description" content="Explore Tell My Story documentaries, youth mental health conversations, trailers and approved interviews on SpeakOut TV.">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <meta name="theme-color" content="#071225">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="../images/logo.png">
   <link rel="canonical" href="https://speakoutmentalhealth.org/pages/tell-my-story.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Tell My Story | SpeakOut TV">
-  <meta property="og:description" content="Stories that open conversations about youth mental health. Explore documentaries, screenings and approved student interviews.">
+  <meta property="og:title" content="Tell My Story — SpeakOut TV">
+  <meta property="og:description" content="Youth mental health films and conversations. Explore the Tell My Story channel on SpeakOut TV.">
   <meta property="og:url" content="https://speakoutmentalhealth.org/pages/tell-my-story.html">
-  <meta property="og:image" content="https://speakoutmentalhealth.org/images/logo.png">
+  <meta property="og:image" content="https://speakoutmentalhealth.org/images/tell-my-story-logo.png">
   <link rel="stylesheet" href="../css/tv/tokens.css">
   <link rel="stylesheet" href="../css/tv/base.css">
   <link rel="stylesheet" href="../css/tv/tell-my-story.css">
+  <link rel="stylesheet" href="../css/tv/video-first.css">
+  <link rel="stylesheet" href="../css/tv/tell-my-story-channel.css">
 </head>
 <body class="tms-page">
   <a class="tms-skip" href="#mainContent">Skip to content</a>
   <header class="tms-top">
     <div class="tv-container tms-top-inner">
-      <a class="tms-back" href="../tv.html" aria-label="Return to SpeakOut TV">← SpeakOut <strong>TV</strong></a>
-      <a class="tms-top-link" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Official Tell My Story website ↗</a>
+      <a class="tms-back" href="../tv.html" aria-label="Return to SpeakOut TV"><img src="../images/logo.png" width="32" height="32" alt=""><span>SpeakOut <strong>TV</strong></span></a>
+      <form class="tv-search-form" role="search" method="get" action="../tv-search.html">
+        <label class="sr-only" for="tmsSearchQuery">Search SpeakOut TV</label>
+        <input id="tmsSearchQuery" type="search" name="q" placeholder="Search SpeakOut TV" autocomplete="off">
+        <button type="submit">Search</button>
+      </form>
+      <a class="tms-top-link" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Official website ↗</a>
     </div>
   </header>
 
   <main id="mainContent" class="tv-container tms-main">
-    <section class="tms-hero" aria-labelledby="tmsTitle">
-      <div class="tms-eyebrow">SPEAKOUT TV · STORYTELLING SPOTLIGHT</div>
+    <div class="tms-channel-banner" aria-hidden="true"><span>Stories connect us.</span></div>
+    <section class="tms-channel-header" aria-labelledby="tmsTitle">
       <div class="tms-logo-panel"><img src="../images/tell-my-story-logo.png" width="160" height="66" alt="Tell My Story"></div>
-      <h1 id="tmsTitle">Every young person deserves to be heard.</h1>
-      <p>Tell My Story is a youth mental health nonprofit using documentary films, personal stories and guided community conversations to help young people, families and educators speak more openly about wellbeing.</p>
-      <div class="tms-actions">
-        <a class="tms-button tms-button-primary" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Visit Tell My Story ↗</a>
-        <a class="tms-button tms-button-outline" href="#interviews">Browse stories and interviews ↓</a>
+      <div class="tms-channel-info">
+        <div class="tms-eyebrow">STORYTELLING CHANNEL ON SPEAKOUT TV</div>
+        <h1 id="tmsTitle">Tell My Story</h1>
+        <p>Youth mental health documentaries, real-life stories and conversations that help young people feel heard and connected.</p>
+        <div class="tms-actions">
+          <a class="tms-button tms-button-primary" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Visit official website ↗</a>
+          <a class="tms-button tms-button-outline" href="#interviews">View videos</a>
+        </div>
       </div>
     </section>
 
-    <section class="tms-section" aria-labelledby="shiftTitle">
-      <div class="tms-section-label">FEATURED DOCUMENTARY</div>
+    <nav class="tms-channel-tabs" aria-label="Tell My Story content">
+      <a href="#shift">Featured film</a>
+      <a href="#interviews">Videos &amp; interviews</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <section class="tms-section" id="shift" aria-labelledby="shiftTitle">
+      <div class="tms-section-label">FEATURED</div>
+      <h2 id="shiftTitle">SHIFT: Do What Moves You</h2>
       <div class="tms-feature">
-        <div>
-          <h2 id="shiftTitle">SHIFT: Do What Moves You</h2>
+        <div class="tms-shift-art" aria-hidden="true"><span>SHIFT</span><small>DO WHAT MOVES YOU</small></div>
+        <div class="tms-feature-copy">
           <p class="tms-subtitle">A Youth Mental Health Documentary + Community Conversation</p>
-          <p>Through young people's experiences with music, sport, art and other passions, SHIFT explores connection, resilience and the activities that help them thrive.</p>
-          <p class="tms-fine">A facilitated campus screening and conversation is planned for 12 November 2026, subject to organiser and venue confirmation. The full film is not hosted here; screening and streaming permissions remain with Tell My Story.</p>
-          <a class="tms-text-link" href="https://www.tellmystory.org/films/shift" target="_blank" rel="noopener noreferrer">Discover SHIFT on the official website ↗</a>
-        </div>
-        <div class="tms-feature-aside">
-          <span>FILM + CONVERSATION</span>
-          <strong>Watch. Reflect. Connect.</strong>
-          <p>Meaningful discussion after the screening, with support information available for participants.</p>
+          <p>Explore how music, sport, art and other passions can help young people find connection, resilience and belonging.</p>
+          <a class="tms-button tms-button-primary" href="https://www.tellmystory.org/films/shift" target="_blank" rel="noopener noreferrer">Explore the film ↗</a>
+          <p class="tms-fine">The November 12 campus screening is planned subject to organiser and college confirmation. The full documentary is not hosted here; screening and streaming rights remain with Tell My Story.</p>
         </div>
       </div>
     </section>
 
     <section class="tms-section" id="interviews" aria-labelledby="interviewsTitle">
       <div class="tms-section-head">
-        <div><div class="tms-section-label">TELL MY STORY COLLECTION</div><h2 id="interviewsTitle">Stories, trailers and interviews</h2></div>
-        <p>Approved videos published through the SpeakOut TV Studio will appear here.</p>
+        <div><div class="tms-section-label">THE COLLECTION</div><h2 id="interviewsTitle">Videos &amp; interviews</h2></div>
+        <p>Officially approved trailers, student voices and conversations, published through SpeakOut TV Studio.</p>
       </div>
       <div id="tmsContentStatus" class="tms-status" role="status" aria-live="polite">Loading published stories…</div>
       <div id="tmsContentGrid" class="tms-grid" aria-label="Tell My Story video collection"></div>
     </section>
 
-    <section class="tms-section tms-join" aria-labelledby="connectionTitle">
-      <div class="tms-section-label">BEYOND THE SCREENING</div>
-      <h2 id="connectionTitle">From a conversation to continued support.</h2>
-      <p>Through the proposed SpeakOut and Tell My Story collaboration, we hope to connect campus storytelling, voluntary student interviews and community conversations to continuing wellbeing awareness. Participation in recorded interviews is optional and requires informed consent; private support conversations are never recorded for publicity.</p>
-      <div class="tms-actions">
-        <a class="tms-button tms-button-outline" href="../tv.html">Explore SpeakOut TV</a>
-        <a class="tms-button tms-button-outline" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Learn more from Tell My Story ↗</a>
-      </div>
+    <section class="tms-section tms-join" id="about" aria-labelledby="connectionTitle">
+      <div class="tms-section-label">ABOUT TELL MY STORY</div>
+      <h2 id="connectionTitle">Real stories. Better conversations.</h2>
+      <p>Tell My Story uses documentary storytelling and community conversations to help young people, families and educators speak more openly about mental wellbeing. SpeakOut TV is providing a dedicated place to discover approved films, trailers and interviews as our campus storytelling collaboration develops.</p>
+      <p>Participation in recorded interviews is optional and requires informed consent. Private support conversations are never recorded for publicity.</p>
+      <a class="tms-text-link" href="https://www.tellmystory.org/" target="_blank" rel="noopener noreferrer">Learn more about Tell My Story on its official website ↗</a>
     </section>
   </main>
 
-  <footer class="tms-footer"><div class="tv-container"><span>SpeakOut Mental Health Outreach · Educational awareness, not a substitute for professional care.</span><a href="../index.html">SpeakOut home</a></div></footer>
+  <footer class="tms-footer"><div class="tv-container"><span>SpeakOut Mental Health Outreach · Educational awareness, not a substitute for professional care.</span><a href="../tv.html">Back to SpeakOut TV</a></div></footer>
   <script type="module" src="../js/tell-my-story-page.js"></script>
   <script type="module" src="../js/account-controls.js"></script>
 </body>
