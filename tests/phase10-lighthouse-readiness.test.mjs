@@ -6,7 +6,9 @@ const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8"
 
 test("Lighthouse readiness is pinned and covers the launch surfaces", () => {
   const workflow = read(".github/workflows/lighthouse-readiness.yml");
-  assert.match(workflow, /lighthouse@13\.5\.0/);
+  assert.match(workflow, /"lighthouse":"13\.5\.0"/);
+  assert.match(workflow, /"import-in-the-middle":"3\.5\.3"/);
+  assert.doesNotMatch(workflow, /npx --yes lighthouse@/);
   assert.match(workflow, /speakoutmentalhealth\.org\/speakhub\.html/);
   assert.match(workflow, /pages\/donate\.html/);
   assert.match(workflow, /pages\/contact\.html/);
