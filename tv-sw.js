@@ -1,8 +1,8 @@
-const CACHE="speakout-tv-v15";
+const CACHE="speakout-tv-v16";
 const STATIC=[
  "./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html","./tv-privacy.html","./tv.webmanifest",
- "./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",
- "./js/speakout-tv.js","./js/speakout-radio.js","./js/tv-search.js","./js/tv-show.js","./js/tv-watch.js","./js/tv-art.js","./js/tv-data.js","./js/tv-rail-controls.js","./js/platform-config.js"
+ "./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./css/tv/tell-my-story.css","./css/tv/video-first.css","./css/tv/tell-my-story-channel.css","./css/tv/video-subpages.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",
+ "./pages/tell-my-story.html","./images/tell-my-story-logo.png","./js/tell-my-story-page.js","./js/speakout-tv.js","./js/speakout-radio.js","./js/tv-search.js","./js/tv-show.js","./js/tv-watch.js","./js/tv-art.js","./js/tv-data.js","./js/tv-rail-controls.js","./js/platform-config.js"
 ];
 
 self.addEventListener("install",event=>{

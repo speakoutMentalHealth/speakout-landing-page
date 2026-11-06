@@ -16,25 +16,31 @@
 <link rel="stylesheet" href="css/tv/media.css">
 <link rel="stylesheet" href="css/tv/discover.css">
 <link rel="stylesheet" href="css/tv/tell-my-story.css">
+<link rel="stylesheet" href="css/tv/video-first.css">
 <link rel="dns-prefetch" href="//www.youtube-nocookie.com"><link rel="dns-prefetch" href="//open.spotify.com">
 <link rel="canonical" href="https://speakoutmentalhealth.org/tv.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SpeakOut TV">
 <meta property="og:title" content="SpeakOut TV — Youth Mental Health, Stories & Conversations"><meta property="og:description" content="Discover SpeakOut TV: youth mental health conversations, real stories, podcasts, quick wellbeing resets, campus voices and live programmes.">
 <meta property="og:image" content="https://speakoutmentalhealth.org/images/logo.png"><meta property="og:url" content="https://speakoutmentalhealth.org/tv.html">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="SpeakOut TV — Youth Mental Health, Stories & Conversations"><meta name="twitter:description" content="Discover SpeakOut TV: youth mental health conversations, real stories, podcasts, quick wellbeing resets, campus voices and live programmes."><meta name="twitter:image" content="https://speakoutmentalhealth.org/images/logo.png">
-<meta name="theme-color" content="#071225"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
+<meta name="theme-color" content="#ffffff"><link rel="manifest" href="tv.webmanifest"><link rel="apple-touch-icon" href="images/logo.png">
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SpeakOut TV","url":"https://speakoutmentalhealth.org/tv.html","description":"Youth mental health conversations, real stories, podcasts, live programmes and practical wellbeing content.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://speakoutmentalhealth.org/tv-search.html?q={search_term_string}"},"query-input":"required name=search_term_string"},"publisher":{"@type":"Organization","name":"SpeakOut Mental Health Outreach","url":"https://speakoutmentalhealth.org/","logo":{"@type":"ImageObject","url":"https://speakoutmentalhealth.org/images/logo.png"}}}</script>
 <script defer src="js/marketing-foundation.js"></script>
 </head>
-<body class="tv-ios youth-tv">
+<body class="tv-ios youth-tv tv-clean">
 <a class="tv-skip-link" href="#mainContent">Skip to content</a>
 <header class="ios-topbar youth-topbar">
   <div class="tv-container ios-topbar-inner">
-    <a class="ios-brand" href="index.html" aria-label="SpeakOut TV home"><span class="ios-brand-wordmark">SpeakOut <b>TV</b></span></a>
+    <a class="ios-brand" href="tv.html" aria-label="SpeakOut TV home"><img src="images/logo.png" width="36" height="36" alt=""><span class="ios-brand-wordmark">SpeakOut <b>TV</b></span></a>
+    <form class="tv-search-form" role="search" method="get" action="tv-search.html">
+      <label class="sr-only" for="tvSearchQuery">Search SpeakOut TV</label>
+      <input id="tvSearchQuery" type="search" name="q" placeholder="Search videos, voices and topics" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
     <div class="youth-top-actions">
-      <span class="youth-now">For young people. By real people.</span>
-      <a class="ios-icon-btn" href="tv-search.html" aria-label="Search SpeakOut TV"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"/><path d="m15.5 15.5 4 4"/></svg></a>
+      <a class="tv-top-partner" href="pages/tell-my-story.html">Tell My Story</a>
+      <a class="ios-icon-btn" href="index.html" aria-label="SpeakOut main website" title="SpeakOut home"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M3.5 10.7 12 3.8l8.5 6.9v9.1H14.8v-5.6H9.2v5.6H3.5z"/></svg></a>
     </div>
   </div>
 </header>
@@ -42,19 +48,39 @@
 <main id="mainContent" class="youth-shell">
 <section class="tv-container youth-welcome home-only" id="home">
   <div class="youth-welcome-copy">
-    <span class="youth-eyebrow">SPEAKOUT TV</span>
-    <h1>How are you, <em>really?</em></h1>
-    <p>Start where you are. Choose what feels relevant right now.</p>
+    <span class="youth-eyebrow">STORIES · LEARNING · WELLBEING</span>
+    <h1>Videos for <em>real life.</em></h1>
+    <p>Watch conversations, student voices and ideas worth sharing.</p>
   </div>
   <div class="mood-rail" id="moodRail" aria-label="Choose what you want to explore">
-    <button type="button" class="mood-chip active" data-topic="all">Just browsing</button>
+    <button type="button" class="mood-chip active" data-topic="all">All</button>
     <button type="button" class="mood-chip" data-topic="stress">Stressed</button>
     <button type="button" class="mood-chip" data-topic="overthinking">Overthinking</button>
-    <button type="button" class="mood-chip" data-topic="motivation">Need motivation</button>
+    <button type="button" class="mood-chip" data-topic="motivation">Motivation</button>
     <button type="button" class="mood-chip" data-topic="adhd">ADHD</button>
-    <button type="button" class="mood-chip" data-topic="school">School pressure</button>
+    <button type="button" class="mood-chip" data-topic="school">Student life</button>
     <button type="button" class="mood-chip" data-topic="relationships">Relationships</button>
-    <button type="button" class="mood-chip" data-topic="men">Men’s mental health</button>
+    <button type="button" class="mood-chip" data-topic="men">Men’s health</button>
+  </div>
+</section>
+
+<section class="tv-container youth-section home-only" id="for-you">
+  <div class="youth-section-head">
+    <div><span>DISCOVER</span><h2>Recommended videos</h2><p id="forYouSub">Videos selected for discovery and everyday life.</p></div>
+    <a href="tv-search.html">Browse all</a>
+  </div>
+  <div class="content-rail" id="forYouRail"></div>
+</section>
+
+<section class="tv-container youth-section home-only" id="tell-my-story" aria-labelledby="tmsHomeTitle">
+  <div class="tms-home-feature">
+    <div>
+      <span class="tms-home-eyebrow">PARTNER STORYTELLING · NEW COLLECTION</span>
+      <img class="tms-home-logo" src="images/tell-my-story-logo.png" width="160" height="66" alt="" loading="lazy" decoding="async">
+      <h2 id="tmsHomeTitle">Tell My Story</h2>
+      <p>Documentaries, guided conversations and approved student interviews that open up discussions about youth mental wellbeing.</p>
+    </div>
+    <a href="pages/tell-my-story.html">Explore Tell My Story ↗</a>
   </div>
 </section>
 
@@ -85,13 +111,7 @@
   <div class="content-rail" id="dailyFocusRail"></div>
 </section>
 
-<section class="tv-container youth-section home-only" id="for-you">
-  <div class="youth-section-head">
-    <div><span>DISCOVER</span><h2>For You</h2><p id="forYouSub">A mix of stories, conversations and ideas worth your time.</p></div>
-    <a href="tv-search.html">Search all</a>
-  </div>
-  <div class="content-rail" id="forYouRail"></div>
-</section>
+
 
 <section class="tv-container youth-section topic-journeys home-only" id="topic-journeys">
   <div class="youth-section-head">
@@ -208,17 +228,7 @@
   <div class="originals-rail" id="seriesRail"></div>
 </section>
 
-<section class="tv-container youth-section home-only" id="tell-my-story" aria-labelledby="tmsHomeTitle">
-  <div class="tms-home-feature">
-    <div>
-      <span class="tms-home-eyebrow">PARTNER STORYTELLING · NEW COLLECTION</span>
-      <img class="tms-home-logo" src="images/tell-my-story-logo.png" width="160" height="66" alt="" loading="lazy" decoding="async">
-      <h2 id="tmsHomeTitle">Tell My Story</h2>
-      <p>Documentaries, guided conversations and approved student interviews that open up discussions about youth mental wellbeing.</p>
-    </div>
-    <a href="pages/tell-my-story.html">Explore Tell My Story ↗</a>
-  </div>
-</section>
+
 
 <section class="tv-container youth-section home-only" id="stories">
   <div class="youth-section-head">
@@ -322,6 +332,7 @@
 <a href="#watch" data-view="watch"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></span><small>Watch</small></a>
 <a href="radio.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13v-2a7 7 0 0 1 14 0v2"/><rect x="3.5" y="12" width="4" height="7" rx="2"/><rect x="16.5" y="12" width="4" height="7" rx="2"/></svg></span><small>Listen</small></a>
 <a href="#live" data-view="live"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><path d="M7.7 7.7a6 6 0 0 0 0 8.6M16.3 7.7a6 6 0 0 1 0 8.6"/><path d="M4.7 4.7a10.2 10.2 0 0 0 0 14.6M19.3 4.7a10.2 10.2 0 0 1 0 14.6"/></svg></span><small>Live</small></a>
+<a class="tv-channel-nav" href="pages/tell-my-story.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg></span><small>Tell My Story</small></a>
 </nav>
 
 <style>
