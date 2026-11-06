@@ -86,3 +86,18 @@
   .tms-page .tms-grid{grid-template-columns:1fr}
   .tms-page .tms-button{font-size:.8rem}
 }
+
+
+/* Keep partner video cards as compact as the wider SpeakOut library. */
+.tms-page .tms-grid{align-items:start;grid-auto-rows:max-content}
+.tms-page .tms-card{height:max-content;min-height:0;align-self:start}
+.tms-page .tms-card-thumb{aspect-ratio:16/9;min-height:0;height:auto}
+.tms-page .tms-card-copy h3{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;max-height:2.75em;overflow-wrap:anywhere;
+}
+.tms-page .tms-card-copy p{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;max-height:3em;overflow-wrap:anywhere;
+}
+@media(max-width:620px){.tms-page .tms-card-copy p{-webkit-line-clamp:1;max-height:1.5em}}
