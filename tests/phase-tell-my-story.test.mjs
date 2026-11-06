@@ -17,6 +17,7 @@ test("Dedicated page links to verified Tell My Story source and SHIFT",()=>{
   assert.match(page,/https:\/\/www\.tellmystory\.org\/films\/shift/);
   assert.match(page,/SHIFT: Do What Moves You/);
   assert.match(page,/id="tmsContentGrid"/);
+  assert.match(page,/images\/tell-my-story-logo\.png/);
   assert.match(page,/js\/tell-my-story-page\.js/);
   assert.doesNotMatch(page,/<iframe\b/i,"Never embed a full documentary without approved rights.");
 });
