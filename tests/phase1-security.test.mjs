@@ -716,7 +716,7 @@ test("SpeakOut TV keeps Featured and mixed discovery content home-only", () => {
   assert.match(page,/document\.documentElement\.dataset\.tvRoute/u);
   assert.match(script,/document\.documentElement\.dataset\.tvRoute=chosen/u);
   assert.match(script,/if\(hash==="listen"\|\|hash==="audio"\)\{location\.replace\("radio\.html"\)/u);
-  assert.match(script,/home:\["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","regional-learning","shelf","reset","series","stories"\]/u);
+  assert.match(script,/home:\["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","regional-learning","shelf","reset","series","tell-my-story","stories"\]/u);
   assert.match(script,/watch:\["episodes"\]/u);
   assert.match(script,/live:\["live"\]/u);
 });
