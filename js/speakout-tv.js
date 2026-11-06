@@ -463,7 +463,7 @@ function renderLiveExperience(allEpisodes){
 }
 
 const viewGroups={
- home:["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","regional-learning","shelf","reset","series","stories"],
+ home:["home","featured","today-focus","for-you","topic-journeys","fresh","courses","books","regional-learning","shelf","reset","series","tell-my-story","stories"],
  watch:["episodes"],
  listen:["audio"],
  live:["live"]
