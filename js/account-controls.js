@@ -6,7 +6,7 @@ const header = document.querySelector("header");
 if(header){
   const stylesheet = document.createElement("link");
   stylesheet.rel = "stylesheet";
-  stylesheet.href = new URL("../css/account-controls.css", import.meta.url).href;
+  stylesheet.href = new URL("../css/account-controls.css", import.meta.url).href + (document.body.matches(".tv-ios,.tms-page") ? "?tv=19" : "");
   document.head.append(stylesheet);
 
   // Keep account actions outside navigation panels that collapse on phones.
