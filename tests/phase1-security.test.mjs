@@ -225,7 +225,7 @@ test("SpeakOut TV final viewer journey keeps navigation and interactions consist
 
   assert.match(styles, /:focus-visible/u);
   assert.match(styles, /prefers-reduced-motion:reduce/u);
-  assert.match(sw, /speakout-tv-v17/u);
+  assert.match(sw, /speakout-tv-v18/u);
 });
 
 test("SpeakOut TV browser modules pass JavaScript syntax checks", () => {
@@ -583,7 +583,7 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
   for (const page of ["tv.html","show.html","watch.html","tv-search.html","radio.html"]) {
     const html=read(page);
     assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/u, page);
-    assert.match(html, /meta name="theme-color" content="#ffffff"/u, page);
+    assert.match(html, /meta name="theme-color" content="#0c121d"/u, page);
     assert.match(html, /css\/tv\/tokens\.css/u, page);
     assert.match(html, /css\/tv\/base\.css/u, page);
   }
@@ -597,7 +597,7 @@ test("SpeakOut TV visual system uses a readable youth-first type hierarchy", () 
 
 test("SpeakOut TV cache refreshes for the new visual system", () => {
   const sw=read("tv-sw.js");
-  assert.match(sw, /speakout-tv-v17/u);
+  assert.match(sw, /speakout-tv-v18/u);
   for(const asset of ["./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./css/tv/video-first.css","./css/tv/tell-my-story-channel.css","./css/tv/video-subpages.css","./js/tv-art.js","./js/tv-data.js","./js/platform-config.js"]) {
     assert.ok(sw.includes(asset),asset);
   }
