@@ -41,7 +41,7 @@ test("TV service worker does not intercept unrelated SpeakOut pages or delete ot
     addEventListener:(name,callback)=>{handlers[name]=callback}
   };
   const caches={
-    keys:async()=>["mindcheck-v3","speakout-academy-v2","speakout-tv-v16","speakout-tv-v17","speakout-tv-v18"],
+    keys:async()=>["mindcheck-v3","speakout-academy-v2","speakout-tv-v16","speakout-tv-v17","speakout-tv-v19"],
     delete:async key=>{deletions.push(key);return true},
     open:async()=>({addAll:async()=>{},put:async()=>{}}),
     match:async()=>undefined
@@ -60,6 +60,6 @@ test("TV service worker does not intercept unrelated SpeakOut pages or delete ot
   let activation;
   handlers.activate({waitUntil:promise=>{activation=promise}});
   await activation;
-  assert.equal(JSON.stringify(deletions),JSON.stringify(["speakout-tv-v16","speakout-tv-v17"]));
-  assert.match(source,/speakout-tv-v18/);
+  assert.equal(JSON.stringify(deletions),JSON.stringify(["speakout-tv-v16","speakout-tv-v17","speakout-tv-v18"]));
+  assert.match(source,/speakout-tv-v19/);
 });
