@@ -27,7 +27,7 @@ body.tms-page .tms-grid{
 body.tv-clean .content-rail > .youth-content-card,
 body.tv-clean #series .originals-rail > .original-card,
 body.tv-clean .ios-episode-strip > .ios-episode-card,
-body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card,.listen-card),
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
 body.tms-page .tms-grid > .tms-card{
   box-sizing:border-box;
   display:block;
@@ -49,7 +49,7 @@ body.tv-clean #series .originals-rail > .original-card{
 body.tv-clean .content-rail > .youth-content-card:hover,
 body.tv-clean #series .originals-rail > .original-card:hover,
 body.tv-clean .ios-episode-strip > .ios-episode-card:hover,
-body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card,.listen-card):hover,
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card):hover,
 body.tms-page .tms-grid > .tms-card:hover{
   background:#1d2b40!important;
   border-color:var(--tv-card-hover)!important;
@@ -57,7 +57,7 @@ body.tms-page .tms-grid > .tms-card:hover{
 body.tv-clean .content-rail > .youth-content-card:focus-within,
 body.tv-clean #series .originals-rail > .original-card:focus-visible,
 body.tv-clean .ios-episode-strip > .ios-episode-card:focus-visible,
-body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card,.listen-card):focus-visible,
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card):focus-visible,
 body.tms-page .tms-grid > .tms-card:focus-visible{
   outline:3px solid #ffca83!important;
   outline-offset:3px!important;
@@ -73,7 +73,7 @@ body.tv-clean .content-rail .youth-content-open:focus-visible{
 body.tv-clean .youth-content-card .youth-content-thumb,
 body.tv-clean #series .original-card .original-art,
 body.tv-clean .ios-episode-strip .ios-episode-art,
-body.tv-video-subpage :is(.discovery-media-art,.discovery-series-art,.show-episode-art,.watch-related-art,.listen-card-art),
+body.tv-video-subpage :is(.discovery-media-art,.discovery-series-art,.show-episode-art,.watch-related-art),
 body.tms-page .tms-card-thumb{
   border-radius:10px!important;
   aspect-ratio:16/9;
@@ -228,7 +228,7 @@ body.tms-page .tms-card-copy span{color:#bcd6fa!important}
   }
   body.tv-clean .content-rail > .youth-content-card,
   body.tv-clean #series .originals-rail > .original-card,
-  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card,.listen-card),
+  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
   body.tms-page .tms-grid > .tms-card{
     padding:9px!important;
     border-radius:14px!important;
@@ -250,7 +250,7 @@ body.tms-page .tms-card-copy span{color:#bcd6fa!important}
 @media(prefers-reduced-motion:reduce){
   body.tv-clean .content-rail > .youth-content-card,
   body.tv-clean #series .originals-rail > .original-card,
-  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card,.listen-card),
+  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
   body.tms-page .tms-card{
     transition:none!important;
     transform:none!important;
