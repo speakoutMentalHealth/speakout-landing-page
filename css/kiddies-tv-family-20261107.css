@@ -350,3 +350,22 @@ body.kiddies-premium :is(.age-choice,.parent-link,.clear-filters,.tile-watch,.vi
     transform:none!important;
   }
 }
+
+
+/* Calm follow-through on the approved video watch page. */
+body.watch-page.kiddies-premium .watch-shell{
+  background:#102535;
+  border-color:#527181;
+  box-shadow:0 12px 35px #0003;
+}
+body.watch-page.kiddies-premium .watch-family-tip{
+  margin:16px 0 0;
+  padding:13px 15px;
+  border:1px solid #486878;
+  border-radius:12px;
+  background:#1b3849;
+  color:#e3eef6;
+  font-size:.85rem;
+  line-height:1.55;
+}
+body.watch-page.kiddies-premium .watch-family-tip strong{color:#ffe0a2}
