@@ -42,7 +42,7 @@ test("dark theme maintains compact media layout and refreshes the TV PWA",()=>{
   const grid=read("css/tv/video-first.css"),sw=read("tv-sw.js"),manifest=JSON.parse(read("tv.webmanifest"));
   assert.match(grid,/grid-auto-rows:max-content/);
   assert.match(grid,/aspect-ratio:16\/9/);
-  assert.match(sw,/speakout-tv-v19/);
+  assert.match(sw,/speakout-tv-v20/);
   assert.match(sw,/\.\/css\/tv\/dark-readable\.css/);
   assert.equal(manifest.background_color,"#0c121d");
   assert.equal(manifest.theme_color,"#0c121d");
