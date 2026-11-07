@@ -5,13 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07101b">
 <meta name="robots" content="index,follow">
-<meta name="description" content="SpeakOut Kiddies TV: beautifully curated educational YouTube lessons, organised by age and subject.">
-<title>Kiddies TV | Watch. Discover. Grow. | SpeakOut</title>
+<meta name="description" content="Explore SpeakOut Kiddies TV: human-reviewed educational videos for ages 3–17, organised by age and subject with caregiver guidance and a video reporting option.">
+<title>Kiddies TV | Educational Videos by Age & Subject | SpeakOut</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kiddies TV — Learn something wonderful | SpeakOut">
+<meta property="og:description" content="Browse human-reviewed educational videos by age and subject. Created for curious young learners, with guidance for families and teachers.">
+<meta property="og:image" content="https://speakoutmentalhealth.org/images/logo.png">
+<meta property="og:url" content="https://speakoutmentalhealth.org/kiddies-tv.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://speakoutmentalhealth.org/kiddies-tv.html">
 <link rel="icon" href="images/logo.png">
 <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
 <link rel="stylesheet" href="css/kiddies-tv-curriculum-20261101.css">
-<script defer src="js/kiddies-tv-managed-20261101.js"></script>
+<link rel="stylesheet" href="css/kiddies-tv-family-20261107.css?v=1">
+<script defer src="js/kiddies-tv-managed-20261101.js?v=1"></script>
 </head>
 <body class="kiddies-premium">
 <a class="skip" href="#main">Skip to learning videos</a>
@@ -33,15 +40,15 @@
     <div class="hero-media" aria-hidden="true"><img id="hero-image" alt="" width="960" height="540" decoding="async"></div>
     <div class="hero-grain" aria-hidden="true"></div>
     <div class="hero-content">
-      <span class="hero-eyebrow"><span class="live-dot"></span> A LITTLE CURIOSITY GOES A LONG WAY</span>
+      <span class="hero-eyebrow"><span class="live-dot"></span> EXPLORE · LEARN · GROW</span>
       <p class="hero-category" id="hero-category">SPEAKOUT SPOTLIGHT</p>
-      <h1 id="hero-title">A world of <em>wonder</em> is waiting.</h1>
-      <p id="hero-description" class="hero-description">Big discoveries start with one little question. Explore something amazing today.</p>
+      <h1 id="hero-title">Learning made for <em>curious minds.</em></h1>
+      <p id="hero-description" class="hero-description">Find educational videos for each age and interest. Choose a subject, watch a lesson and learn something new.</p>
       <div class="hero-actions">
         <button class="primary" id="surprise-video" type="button" disabled><span class="button-play" aria-hidden="true">▶</span> Watch featured lesson</button>
         <button class="secondary" id="browse-videos" type="button">Explore videos <span aria-hidden="true">↗</span></button>
       </div>
-      <div class="hero-trust"><span class="trust-check" aria-hidden="true">✓</span> SELECTED LEARNING VIDEOS <span class="hero-divider" aria-hidden="true"></span> WATCH RIGHT HERE</div>
+      <div class="hero-trust"><span class="trust-check" aria-hidden="true">✓</span> HUMAN-REVIEWED COLLECTION <span class="hero-divider" aria-hidden="true"></span> AGE-BASED DISCOVERY</div>
     </div>
     <div class="hero-feature-card" aria-hidden="true"><span class="feature-card-label">TODAY'S SPOTLIGHT</span><div class="hero-feature-thumbnail"><img id="hero-artwork" alt="" loading="eager" decoding="async"></div><span class="hero-feature-footer"><span>Curiosity looks good on you</span><span class="feature-playmark">▶</span></span></div>
     <div class="hero-pager"><span id="hero-feature-count">01 / 03</span><button id="hero-next" type="button" aria-label="Show next featured lesson" title="Next featured lesson">→</button></div>
@@ -57,14 +64,29 @@
   </section>
 
   <section class="intro-strip" aria-label="The SpeakOut learning experience">
-    <div><span class="intro-spark" aria-hidden="true">✳</span><span><strong>Made for curious minds.</strong><small>Choose a lesson. Discover something new. Keep growing.</small></span></div>
-    <span class="intro-stamp">SMALL SCREENS. BIG DISCOVERIES.</span>
+    <div><span class="intro-spark" aria-hidden="true">✳</span><span><strong>Find their next learning moment.</strong><small>Human-reviewed lessons, grouped by age and subject.</small></span></div>
+    <a class="intro-stamp" href="#parent-guide">FOR PARENTS &amp; TEACHERS</a>
+  </section>
+
+  <section class="age-path" aria-labelledby="age-path-title">
+    <div class="age-path-heading">
+      <div><span class="tv-kicker">START HERE</span><h2 id="age-path-title">Who is learning today?</h2><p>Choose an age group to see lessons selected for that stage.</p></div>
+      <a href="#parent-guide" class="parent-link">Parent guide</a>
+    </div>
+    <div id="age-shortcuts" class="age-shortcuts" role="group" aria-label="Choose learner age">
+      <button type="button" class="age-choice" data-age-choice="" aria-pressed="true">All ages</button>
+      <button type="button" class="age-choice" data-age-choice="3-5" aria-pressed="false">Ages 3–5</button>
+      <button type="button" class="age-choice" data-age-choice="6-9" aria-pressed="false">Ages 6–9</button>
+      <button type="button" class="age-choice" data-age-choice="10-12" aria-pressed="false">Ages 10–12</button>
+      <button type="button" class="age-choice" data-age-choice="13-17" aria-pressed="false">Ages 13–17</button>
+      <button type="button" class="age-choice age-choice-caregiver" data-age-choice="0-2" aria-pressed="false">Under 3 · Caregiver tips</button>
+    </div>
   </section>
 
   <section id="explore" class="explore" aria-label="Explore learning videos">
     <div class="explore-intro">
       <div><span class="tv-kicker">YOUR NEXT DISCOVERY STARTS HERE</span><h2>Something good to <em>learn.</em></h2><p>Explore by subject or find exactly what you are curious about.</p></div>
-      <span id="video-count" class="library-count" role="status">Loading the collection…</span>
+      <div class="library-tools"><span id="video-count" class="library-count" role="status">Loading the collection…</span><button id="clear-filters" class="clear-filters" type="button" hidden>Clear filters</button></div>
     </div>
     <div class="filter-bar">
       <label class="search-field"><span class="search-glyph" aria-hidden="true"></span><input id="search" type="search" placeholder="What would you like to learn?" autocomplete="off" aria-label="Search educational videos"></label>
@@ -99,6 +121,15 @@
   </section>
   <div id="catalogue" class="catalogue" aria-live="polite"></div>
   <p class="empty" id="empty" role="status" hidden>Nothing found yet. Try another subject, search or age group.</p>
+  <section id="parent-guide" class="parent-guide" aria-labelledby="parent-guide-title">
+    <div class="parent-guide-heading"><span class="tv-kicker">FOR PARENTS &amp; TEACHERS</span><h2 id="parent-guide-title">Explore together with confidence.</h2></div>
+    <div class="parent-guide-grid">
+      <div><strong>Age-based discovery</strong><p>Choose the age and subject that fit your child's interests. Younger children benefit from an adult watching alongside them.</p></div>
+      <div><strong>Human editorial checks</strong><p>Lessons are selected for educational value and reviewed before publication. The available collection grows as more videos pass review.</p></div>
+      <div><strong>Report a concern</strong><p>Use the Report control on any lesson to prepare a message for SpeakOut's team. An adult must review and send it.</p></div>
+    </div>
+    <p class="parent-safety-note"><strong>Important:</strong> These are embedded YouTube videos. YouTube may show advertisements, recommendations or links that SpeakOut cannot fully control. This is a curated learning library, not a guaranteed ad-free or risk-free service.</p>
+  </section>
   <details class="viewer-notice">
     <summary>Our approach to videos and safety</summary>
     <p>Only lessons in the approved SpeakOut catalogue appear here. YouTube may show advertisements, recommendations and external links that SpeakOut cannot block. Please supervise younger children and use the Report control if you notice unsuitable content.</p>
