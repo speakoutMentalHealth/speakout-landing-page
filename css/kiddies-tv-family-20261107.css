@@ -1,0 +1,371 @@
+/* SpeakOut Kiddies TV — age-first, calm family learning design.
+   Loaded after the current curriculum stylesheet; children and parents share
+   the same clear reading hierarchy. No new content or autoplay is introduced. */
+body.kiddies-premium{
+  --family-bg:#081722;
+  --family-surface:#102535;
+  --family-border:#426171;
+  --family-text:#f7fbff;
+  --family-muted:#cbdce8;
+  --family-mint:#b8f0dd;
+  --family-gold:#ffe0a2;
+  background:linear-gradient(180deg,#071521 0%,#0a1a29 60%,#071521 100%);
+  color:var(--family-text);
+}
+body.kiddies-premium .hero{
+  border:1px solid #567686;
+  box-shadow:0 16px 34px #0004;
+}
+body.kiddies-premium .hero h1{max-width:15ch;line-height:1.07}
+body.kiddies-premium .hero-description{color:#e3eef4;max-width:50ch}
+body.kiddies-premium .hero-trust{color:#def2e9}
+body.kiddies-premium .intro-strip{margin-bottom:0}
+body.kiddies-premium .intro-strip small{color:var(--family-muted)}
+body.kiddies-premium a.intro-stamp{
+  display:inline-flex;
+  align-items:center;
+  text-decoration:none;
+  min-height:39px;
+  padding:9px 13px;
+  border:1px solid #57778b;
+  background:#163349;
+  color:#e8f5ff;
+  border-radius:24px;
+  white-space:nowrap;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.035em;
+}
+body.kiddies-premium a.intro-stamp:hover{background:#234b62}
+
+/* A clear first choice for parents and learners, not a wall of categories. */
+body.kiddies-premium .age-path{
+  margin:22px 0 24px;
+  padding:21px 24px 19px;
+  border:1px solid #496878;
+  border-radius:20px;
+  background:#112a3a;
+  box-shadow:0 8px 24px #0002;
+  scroll-margin-top:100px;
+}
+body.kiddies-premium .age-path-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  min-width:0;
+}
+body.kiddies-premium .age-path-heading h2{
+  font-size:clamp(1.25rem,2.4vw,1.7rem);
+  font-weight:850;
+  margin:6px 0 5px;
+  line-height:1.2;
+  color:#fff;
+  letter-spacing:-.035em;
+}
+body.kiddies-premium .age-path-heading p{margin:0;color:#d0e1ed;font-size:.85rem;line-height:1.5}
+body.kiddies-premium .parent-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #6a91a1;
+  border-radius:12px;
+  padding:10px 15px;
+  text-decoration:none;
+  color:#f4fbff;
+  white-space:nowrap;
+  font-weight:750;
+  font-size:.79rem;
+  min-height:43px;
+}
+body.kiddies-premium .parent-link:hover{background:#24475b}
+body.kiddies-premium .age-shortcuts{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px;
+}
+body.kiddies-premium .age-choice{
+  min-height:47px;
+  border:1px solid #627e8d;
+  border-radius:13px;
+  background:#1b3a4b;
+  padding:11px 16px;
+  color:#eaf5fb;
+  font-size:.86rem;
+  font-weight:780;
+  line-height:1.25;
+  white-space:nowrap;
+  transition:background .12s ease,border-color .12s ease;
+}
+body.kiddies-premium .age-choice:hover{background:#2b5266}
+body.kiddies-premium .age-choice[aria-pressed="true"]{
+  background:#ffe0a2;
+  color:#122738;
+  border-color:#ffe0a2;
+  box-shadow:none;
+}
+body.kiddies-premium .age-choice-caregiver{color:#e7f4ff}
+body.kiddies-premium .library-tools{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+body.kiddies-premium .clear-filters{
+  border-radius:12px;
+  min-height:42px;
+  padding:8px 13px;
+  color:#0d2937;
+  background:#c8f4e7;
+  border:1px solid #c8f4e7;
+  font-size:.8rem;
+  font-weight:800;
+}
+body.kiddies-premium .clear-filters:hover{background:#fff}
+
+/* Distinct cards for easier scanning and reliable tap targets. */
+body.kiddies-premium .rail-section{margin:26px 0 38px}
+body.kiddies-premium .rail{
+  column-gap:18px;
+  padding:6px 4px 16px;
+  align-items:stretch;
+}
+body.kiddies-premium .tile{
+  min-width:0;
+  height:auto;
+  padding:10px;
+  background:#122737;
+  border:1px solid #527181;
+  border-radius:18px;
+  box-shadow:0 6px 18px #0003;
+}
+body.kiddies-premium .tile:hover,
+body.kiddies-premium .tile:focus-within{
+  background:#193547;
+  border-color:#96c7c8;
+}
+body.kiddies-premium .tile-watch{height:auto;min-height:0}
+body.kiddies-premium .tile-watch .art{
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:11px;
+  border:0;
+  box-shadow:none;
+  overflow:hidden;
+}
+body.kiddies-premium .tile-copy{
+  display:block;
+  padding:11px 3px 7px;
+}
+body.kiddies-premium .tile-copy strong{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  max-height:2.8em;
+  min-height:2.8em;
+  font-size:1.02rem;
+  font-weight:800;
+  line-height:1.4;
+  color:#f9fcff;
+}
+body.kiddies-premium .tile-copy small{
+  display:block;
+  padding-top:7px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#d2e3ed;
+  font-size:.83rem;
+}
+body.kiddies-premium .tile-footer{
+  padding:9px 3px 2px;
+  border-top:1px solid #425f70;
+  gap:8px;
+}
+body.kiddies-premium .tile-footer .tile-subject{
+  color:#bcebdc;
+  font-size:.74rem;
+  font-weight:750;
+  line-height:1.35;
+}
+body.kiddies-premium .tile-footer .video-report{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:63px;
+  min-height:41px;
+  padding:8px 10px;
+  color:#eef6ff;
+  font-size:.78rem;
+  border:1px solid #628394;
+  border-radius:10px;
+  background:#1a384a;
+}
+body.kiddies-premium .tile-footer .video-report:hover{background:#28576c}
+body.kiddies-premium .age-tag{font-size:.69rem;letter-spacing:0;color:#fff}
+body.kiddies-premium .section-head p{color:#c7dbe7}
+body.kiddies-premium .rail-arrow{min-height:42px;min-width:42px}
+
+/* Parent assurance is factual; embedded third-party content is still third-party. */
+body.kiddies-premium .parent-guide{
+  margin:15px 0 22px;
+  border:1px solid #516e7b;
+  background:#102535;
+  border-radius:21px;
+  padding:25px 26px;
+  scroll-margin-top:94px;
+}
+body.kiddies-premium .parent-guide-heading h2{
+  font-size:clamp(1.4rem,2.8vw,2rem);
+  letter-spacing:-.04em;
+  color:#f8fcff;
+  line-height:1.2;
+  margin:7px 0 20px;
+}
+body.kiddies-premium .parent-guide-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+body.kiddies-premium .parent-guide-grid>div{
+  padding:17px 18px;
+  background:#1a3546;
+  border:1px solid #446376;
+  border-radius:15px;
+}
+body.kiddies-premium .parent-guide-grid strong{
+  display:block;color:#f8fcff;
+  font-size:.97rem;line-height:1.35;
+}
+body.kiddies-premium .parent-guide-grid p{
+  margin:8px 0 0;color:#d1e0e9;
+  font-size:.83rem;line-height:1.55;
+}
+body.kiddies-premium .parent-safety-note{
+  margin:18px 0 0;
+  border-top:1px solid #3b5968;
+  padding-top:14px;
+  color:#d1e0e9;
+  font-size:.82rem;
+  line-height:1.6;
+}
+body.kiddies-premium .parent-safety-note strong{color:#ffe0a2}
+body.kiddies-premium :is(.age-choice,.parent-link,.clear-filters,.tile-watch,.video-report):focus-visible{
+  outline:3px solid #ffe0a2;outline-offset:3px;
+}
+@media(max-width:800px){
+  body.kiddies-premium .parent-guide-grid{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  body.kiddies-premium .hero{
+    margin-top:11px;
+    min-height:375px;
+    border-radius:20px;
+  }
+  body.kiddies-premium .hero-content{padding:18px 18px 23px}
+  body.kiddies-premium .hero h1{
+    font-size:clamp(1.9rem,8vw,2.4rem);
+    line-height:1.05;
+    max-width:15ch;
+  }
+  body.kiddies-premium .hero-category{margin-top:12px}
+  body.kiddies-premium .hero-description{font-size:.84rem}
+  body.kiddies-premium .hero-actions{margin:14px 0 10px}
+  body.kiddies-premium .hero-trust{font-size:.57rem;line-height:1.5}
+  body.kiddies-premium .intro-strip{padding:15px 1px}
+  body.kiddies-premium a.intro-stamp{display:none}
+  body.kiddies-premium .age-path{
+    margin:18px 0 16px;
+    padding:17px 14px;
+    border-radius:16px;
+  }
+  body.kiddies-premium .age-path-heading{align-items:flex-start;gap:8px}
+  body.kiddies-premium .age-path-heading h2{font-size:1.31rem}
+  body.kiddies-premium .age-path-heading p{font-size:.79rem}
+  body.kiddies-premium .parent-link{font-size:.73rem;padding:8px 10px;min-height:42px}
+  body.kiddies-premium .age-shortcuts{
+    gap:8px;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    padding:2px 2px 10px;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+  }
+  body.kiddies-premium .age-choice{
+    flex:0 0 auto;
+    min-height:45px;
+    padding:10px 14px;
+    font-size:.81rem;
+    scroll-snap-align:start;
+  }
+  body.kiddies-premium .explore{margin-top:20px}
+  body.kiddies-premium .explore-intro{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:9px;
+  }
+  body.kiddies-premium .library-count{margin-top:0}
+  body.kiddies-premium .filter-bar{margin:16px 0 14px}
+  body.kiddies-premium .rail{
+    display:grid;
+    grid-auto-flow:row;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+    overflow:visible;
+    padding:2px 1px 10px;
+    scroll-snap-type:none;
+  }
+  body.kiddies-premium .rail-arrow{display:none}
+  body.kiddies-premium .tile{
+    width:100%;
+    padding:8px;
+    border-radius:14px;
+    scroll-snap-align:none;
+  }
+  body.kiddies-premium .tile-copy strong{font-size:.89rem;line-height:1.35;max-height:2.7em;min-height:2.7em}
+  body.kiddies-premium .tile-copy small{font-size:.75rem}
+  body.kiddies-premium .tile-footer .tile-subject{font-size:.69rem}
+  body.kiddies-premium .tile-footer .video-report{min-width:58px}
+  body.kiddies-premium .parent-guide{padding:18px 16px;border-radius:16px}
+  body.kiddies-premium .parent-guide-grid{gap:10px}
+  body.kiddies-premium .parent-guide-grid>div{padding:14px 15px}
+}
+@media(max-width:450px){
+  body.kiddies-premium .rail{grid-template-columns:1fr;row-gap:15px}
+  body.kiddies-premium .tile{padding:10px}
+  body.kiddies-premium .tile-copy strong{font-size:1rem}
+  body.kiddies-premium .tile-footer .tile-subject{font-size:.78rem}
+  body.kiddies-premium .hero{min-height:360px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.kiddies-premium .age-choice,
+  body.kiddies-premium .tile,
+  body.kiddies-premium .hero-media img{
+    transition:none!important;
+    transform:none!important;
+  }
+}
+
+
+/* Calm follow-through on the approved video watch page. */
+body.watch-page.kiddies-premium .watch-shell{
+  background:#102535;
+  border-color:#527181;
+  box-shadow:0 12px 35px #0003;
+}
+body.watch-page.kiddies-premium .watch-family-tip{
+  margin:16px 0 0;
+  padding:13px 15px;
+  border:1px solid #486878;
+  border-radius:12px;
+  background:#1b3849;
+  color:#e3eef6;
+  font-size:.85rem;
+  line-height:1.55;
+}
+body.watch-page.kiddies-premium .watch-family-tip strong{color:#ffe0a2}

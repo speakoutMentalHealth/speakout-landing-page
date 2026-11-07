@@ -23,6 +23,7 @@ const byId=id=>document.getElementById(id);
 const catalog=byId('catalogue'),search=byId('search'),age=byId('age'),chips=byId('subjects'),empty=byId('empty'),counter=byId('video-count'),teenStatus=byId('teen-review-status'),subjectStatus=byId('subject-review-status'),caregiverStatus=byId('caregiver-status');
 const player=byId('player'),frame=byId('player-frame'),title=byId('player-title'),description=byId('player-description');
 const hero=document.querySelector('.hero'),heroImage=byId('hero-image'),heroArtwork=byId('hero-artwork'),heroTitle=byId('hero-title'),heroCategory=byId('hero-category'),heroDescription=byId('hero-description'),featureButton=byId('surprise-video'),featureNext=byId('hero-next'),featureCount=byId('hero-feature-count');
+const ageShortcuts=byId('age-shortcuts'),clearFilters=byId('clear-filters');
 let videos=[],subject='',lastTrigger=null,featured=null,spotlight=[],spotlightIndex=0;
 const reducedMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const approved=v=>v&&v.approved===true&&typeof v.title==='string'&&v.title.length<=160&&/^[A-Za-z0-9_-]{11}$/.test(v.youtubeId||'')&&groups.some(g=>g[0]===v.category)&&Array.isArray(v.ages)&&v.ages.length>0&&v.ages.every(a=>validAges.includes(a));
@@ -40,9 +41,15 @@ function chip(label,key){
 }
 function renderChips(){
  chips.replaceChildren(chip('All lessons',''));
- for(const group of groups) chips.append(chip(group[0],group[0]));
+ for(const group of groups)if(videos.some(v=>v.category===group[0])) chips.append(chip(group[0],group[0]));
 }
 function updateChips(){for(const button of chips.children)button.setAttribute('aria-pressed',String(button.textContent===(subject||'All lessons')));}
+function syncAgeChoices(){
+ for(const button of ageShortcuts.querySelectorAll('[data-age-choice]')){
+  const selected=button.dataset.ageChoice===age.value;
+  button.setAttribute('aria-pressed',String(selected));
+ }
+}
 function spotlightCandidates(matches){
  // Spotlight choices come exclusively from the approved catalogue, never from
  // YouTube recommendations or unreviewed candidate leads.
@@ -115,7 +122,7 @@ function makeSection(group,items,index){
  copy.append(label,title,sub);
  const tools=document.createElement('div');tools.className='section-tools';
  const count=document.createElement('span');count.className='section-count';count.textContent=items.length+' videos';
- const rail=document.createElement('div');rail.className='rail';rail.tabIndex=0;rail.setAttribute('aria-label',heading+' videos: swipe or scroll to browse');
+ const rail=document.createElement('div');rail.className='rail';rail.setAttribute('aria-label',heading+' learning videos');
  const left=document.createElement('button'),right=document.createElement('button');
  left.type=right.type='button';left.className=right.className='rail-arrow';
  left.textContent='‹';right.textContent='›';
@@ -128,12 +135,13 @@ function makeSection(group,items,index){
 }
 function draw(){
  const matches=filtered();const fragment=document.createDocumentFragment();
+ syncAgeChoices();clearFilters.hidden=!(subject||age.value||search.value.trim());
  const allSubjects=!subject;
  const teenMatches=matches.filter(v=>v.ages.includes('13-17'));
  // Netflix-style discovery, without displaying the same video twice in the same
  // view. On All Subjects, secondary-school lessons form a dedicated first shelf.
  if(allSubjects&&teenMatches.length){
-  const shelf=makeSection(['Teen Learning','Secondary School · Ages 13–17','WAEC/JAMB-ready lessons from Nigerian educational publishers'],teenMatches,0);
+  const shelf=makeSection(['Teen Learning','Secondary School · Ages 13–17','Learning videos for secondary-school students'],teenMatches,0);
   shelf.classList.add('rail-section--teen');
   fragment.append(shelf);
  }
@@ -178,11 +186,24 @@ function close(){
 }
 byId('close-video').addEventListener('click',close);
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!player.hidden)close();});
-search.addEventListener('input',draw);age.addEventListener('change',draw);
+search.addEventListener('input',draw);
+age.addEventListener('change',draw);
+ageShortcuts.addEventListener('click',event=>{
+ const choice=event.target.closest('[data-age-choice]');
+ if(!choice||!ageShortcuts.contains(choice))return;
+ age.value=choice.dataset.ageChoice;
+ draw();
+ const target=age.value==='0-2'?caregiverStatus:byId('explore');
+ target.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
+});
+clearFilters.addEventListener('click',()=>{
+ search.value='';age.value='';subject='';updateChips();draw();
+ byId('explore').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
+});
 byId('browse-videos').addEventListener('click',()=>byId('explore').scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'}));
 featureButton.addEventListener('click',()=>{if(featured)watch(featured,featureButton);});
 renderChips();featureButton.disabled=true;
 import('./kiddies-tv-data.js').then(({loadKiddiesTvCatalogue})=>loadKiddiesTvCatalogue())
- .then(data=>{videos=Array.isArray(data)?data.filter(approved):[];draw();})
- .catch(()=>{videos=[];draw();empty.hidden=false;empty.textContent='The learning library is temporarily unavailable. Please try again later.';});
+ .then(data=>{videos=Array.isArray(data)?data.filter(approved):[];renderChips();draw();})
+ .catch(()=>{videos=[];renderChips();draw();empty.hidden=false;empty.textContent='The learning library is temporarily unavailable. Please try again later.';});
 })();
