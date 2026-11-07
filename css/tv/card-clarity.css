@@ -196,7 +196,7 @@ body.tms-page .tms-card-copy p{
   line-height:1.45;
 }
 body.tv-video-subpage .discovery-series-card{
-  min-height:0;
+  min-height:190px!important;
   padding:0!important;
   border-radius:15px!important;
   overflow:hidden!important;
