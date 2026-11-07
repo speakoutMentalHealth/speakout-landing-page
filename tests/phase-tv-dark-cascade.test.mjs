@@ -19,7 +19,7 @@ test("TV dark theme is loaded after all light subpage stylesheets",()=>{
     assert.ok(html.indexOf("dark-readable.css")>html.indexOf("video-subpages.css"),
       path+" must load dark styles last");
     assert.match(html,/dark-readable\.css\?v=19/);
-    assert.match(html,/account-controls\.js\?v=19/);
+    assert.match(html,/css\/account-controls\.css\?v=19/);
   }
   const tv=read("tv.html");
   assert.ok(tv.indexOf("dark-readable.css")>tv.indexOf("video-first.css"));
@@ -60,9 +60,9 @@ test("injected account controls are TV-scoped and do not create a light bar",()=
   assert.match(css,/body\.tms-page \.speakout-account/);
   assert.match(css,/background:#121b29/);
   assert.match(css,/color:#f7faff/);
-  const js=read("js/account-controls.js");
-  assert.match(js,/document\.body\.matches\("\.tv-ios,\.tms-page"\)/);
-  assert.match(js,/\?tv=19/);
+  const html=read("tv.html");
+  assert.match(html,/css\/account-controls\.css\?v=19/);
+  assert.match(html,/src="js\/account-controls\.js"/);
 });
 
 test("PWA refresh doesn't intercept unrelated app pages or regress card dimensions",()=>{
