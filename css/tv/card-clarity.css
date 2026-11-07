@@ -1,0 +1,258 @@
+/* SpeakOut TV: distinct, calm video cards (November 2026).
+   Loaded after the TV dark theme. Applies to video browsing only. */
+body.tv-clean{
+  --tv-card-bg:#172336;
+  --tv-card-border:#435672;
+  --tv-card-hover:#7392ba;
+  --tv-card-gap:18px;
+}
+body.tv-video-subpage,body.tms-page{
+  --tv-card-bg:#172336;
+  --tv-card-border:#435672;
+  --tv-card-hover:#7392ba;
+  --tv-card-gap:18px;
+}
+
+/* Clearly delineated items. Never stretch a card to a carousel's height. */
+body.tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+body.tv-clean #series .originals-rail,
+body.tv-video-subpage :is(.discovery-media-grid,.discovery-series-grid,.show-episode-grid,.listen-library-grid),
+body.tms-page .tms-grid{
+  column-gap:var(--tv-card-gap)!important;
+  row-gap:24px!important;
+  align-items:start!important;
+  align-content:start!important;
+  grid-auto-rows:max-content;
+}
+body.tv-clean .content-rail > .youth-content-card,
+body.tv-clean #series .originals-rail > .original-card,
+body.tv-clean .ios-episode-strip > .ios-episode-card,
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
+body.tms-page .tms-grid > .tms-card{
+  box-sizing:border-box;
+  display:block;
+  min-height:0!important;
+  height:max-content!important;
+  width:100%;
+  align-self:start!important;
+  background:var(--tv-card-bg)!important;
+  border:1px solid var(--tv-card-border)!important;
+  border-radius:16px!important;
+  padding:10px!important;
+  overflow:visible!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.16)!important;
+  transition:border-color .15s ease,background-color .15s ease;
+}
+body.tv-clean #series .originals-rail > .original-card{
+  position:relative;
+}
+body.tv-clean .content-rail > .youth-content-card:hover,
+body.tv-clean #series .originals-rail > .original-card:hover,
+body.tv-clean .ios-episode-strip > .ios-episode-card:hover,
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card):hover,
+body.tms-page .tms-grid > .tms-card:hover{
+  background:#1d2b40!important;
+  border-color:var(--tv-card-hover)!important;
+}
+body.tv-clean .content-rail > .youth-content-card:focus-within,
+body.tv-clean #series .originals-rail > .original-card:focus-visible,
+body.tv-clean .ios-episode-strip > .ios-episode-card:focus-visible,
+body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card):focus-visible,
+body.tms-page .tms-grid > .tms-card:focus-visible{
+  outline:3px solid #ffca83!important;
+  outline-offset:3px!important;
+  border-color:#ffca83!important;
+}
+body.tv-clean .content-rail .youth-content-open:focus-visible{
+  outline:2px solid #ffca83!important;
+  outline-offset:2px!important;
+  border-radius:10px;
+}
+
+/* The image remains 16:9, fully contained inside the card outline. */
+body.tv-clean .youth-content-card .youth-content-thumb,
+body.tv-clean #series .original-card .original-art,
+body.tv-clean .ios-episode-strip .ios-episode-art,
+body.tv-video-subpage :is(.discovery-media-art,.discovery-series-art,.show-episode-art,.watch-related-art),
+body.tms-page .tms-card-thumb{
+  border-radius:10px!important;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  margin:0;
+}
+body.tv-clean .content-rail .youth-content-open{
+  height:auto!important;
+  width:100%;
+  min-height:0!important;
+}
+/* Consistent reading order: image, category, title, concise summary. */
+body.tv-clean .youth-content-card .youth-content-open > small{
+  padding:11px 2px 0!important;
+  color:#bdd7ff!important;
+  line-height:1.35;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.tv-clean .youth-content-card .youth-content-open > strong{
+  padding:6px 2px 0!important;
+  min-height:2.7em!important;
+  max-height:2.7em;
+  font-size:.94rem;
+  line-height:1.35;
+  color:#f8fafc!important;
+  -webkit-line-clamp:2;
+}
+body.tv-clean .youth-content-card .youth-content-open > p{
+  padding:6px 2px 1px!important;
+  min-height:1.42em;
+  max-height:2.84em;
+  font-size:.79rem;
+  line-height:1.42;
+  color:#cbd6e6!important;
+  -webkit-line-clamp:2;
+}
+body.tv-clean #series .original-card .original-copy{
+  padding:11px 2px 3px!important;
+  background:transparent!important;
+}
+body.tv-clean #series .original-card .original-copy :is(small,strong,span,p){
+  display:block;
+  padding:0!important;
+  margin:0 0 6px;
+}
+body.tv-clean #series .original-card .original-copy strong{
+  min-height:2.7em;
+  max-height:2.7em;
+  line-height:1.35;
+}
+body.tv-clean .ios-episode-strip > .ios-episode-card > span{
+  padding:10px 2px 3px!important;
+  color:#f8fafc;
+}
+
+/* Clear attribution without competing YouTube + SpeakOut badges over the thumbnail. */
+body.tv-clean .youth-content-thumb:has(.tv-source-attribution) .tv-art-bug,
+body.tv-video-subpage .discovery-media-art:has(.tv-source-attribution) .tv-art-bug{
+  display:none!important;
+}
+body.tv-clean .youth-content-thumb .tv-source-attribution,
+body.tv-video-subpage .discovery-media-art .tv-source-attribution{
+  top:8px!important;
+  left:8px!important;
+  right:auto!important;
+  max-width:calc(100% - 57px);
+  padding:4px 7px;
+  background:rgba(9,17,29,.89);
+  border:1px solid rgba(214,229,247,.4);
+  border-radius:7px;
+  color:#fff;
+  font-size:.65rem;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.tv-video-subpage .discovery-media-art .tv-source-attribution{
+  max-width:calc(100% - 16px);
+}
+body.tv-clean .content-save{
+  right:17px;
+  top:17px;
+  min-width:40px;
+  min-height:40px;
+  width:40px;
+  height:40px;
+  border:1px solid #71839b;
+  background:rgba(11,20,34,.94);
+  color:#fff;
+  border-radius:10px;
+  z-index:6;
+}
+body.tv-clean .content-save:hover{background:#2e4868}
+body.tv-clean .content-save.is-saved{background:#cfe3ff;color:#12243c}
+
+/* Discovery, related clips and the partner channel have the same card spacing. */
+body.tv-video-subpage .discovery-media-copy,
+body.tv-video-subpage .show-episode-copy,
+body.tms-page .tms-card-copy{
+  padding:11px 2px 3px!important;
+}
+body.tv-video-subpage .discovery-media-copy strong,
+body.tv-video-subpage .show-episode-copy strong,
+body.tms-page .tms-card-copy h3{
+  padding:0!important;
+  margin:0 0 5px!important;
+  color:#f8fafc!important;
+  line-height:1.4;
+  -webkit-line-clamp:2;
+}
+body.tv-video-subpage .discovery-media-copy p,
+body.tv-video-subpage .show-episode-copy p,
+body.tms-page .tms-card-copy p{
+  padding:0!important;
+  margin:0!important;
+  color:#cbd6e6!important;
+  line-height:1.45;
+}
+body.tv-video-subpage .discovery-series-card{
+  min-height:190px!important;
+  padding:0!important;
+  border-radius:15px!important;
+  overflow:hidden!important;
+}
+body.tv-video-subpage .discovery-series-copy{
+  padding:14px!important;
+}
+body.tv-video-subpage .discovery-series-copy strong,
+body.tv-video-subpage .discovery-series-copy p{
+  color:#f8fafc!important;
+}
+body.tv-video-subpage .discovery-series-art{
+  width:100%;
+  min-height:185px;
+}
+body.tms-page .tms-card-copy span{color:#bcd6fa!important}
+
+/* Reduce optical density on smaller screens; maintain two clear cards per row. */
+@media(max-width:700px){
+  body.tv-clean{
+    --tv-card-gap:14px;
+  }
+  body.tv-video-subpage,body.tms-page{--tv-card-gap:14px}
+  body.tv-clean :is(#for-you,#fresh,#courses,#books,#regional-learning,#shelf) .content-rail,
+  body.tv-clean #series .originals-rail,
+  body.tv-video-subpage :is(.discovery-media-grid,.discovery-series-grid,.show-episode-grid,.listen-library-grid),
+  body.tms-page .tms-grid{
+    row-gap:20px!important;
+  }
+  body.tv-clean .content-rail > .youth-content-card,
+  body.tv-clean #series .originals-rail > .original-card,
+  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
+  body.tms-page .tms-grid > .tms-card{
+    padding:9px!important;
+    border-radius:14px!important;
+  }
+  body.tv-clean .youth-content-card .youth-content-open > small{
+    font-size:.68rem;
+    padding-top:9px!important;
+  }
+  body.tv-clean .youth-content-card .youth-content-open > strong{
+    font-size:.85rem;
+  }
+  body.tv-clean .youth-content-card .youth-content-open > p{
+    font-size:.75rem;
+    -webkit-line-clamp:1;
+    max-height:1.42em;
+  }
+  body.tv-clean .content-save{right:15px;top:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.tv-clean .content-rail > .youth-content-card,
+  body.tv-clean #series .originals-rail > .original-card,
+  body.tv-video-subpage :is(.discovery-media-card,.discovery-series-card,.show-episode-card,.watch-related-card),
+  body.tms-page .tms-card{
+    transition:none!important;
+    transform:none!important;
+  }
+}
