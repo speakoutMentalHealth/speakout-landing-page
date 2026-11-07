@@ -1,4 +1,4 @@
-const CACHE="speakout-tv-v18";
+const CACHE="speakout-tv-v19";
 const STATIC=[
  "./tv.html","./radio.html","./tv-search.html","./show.html","./watch.html","./tv-privacy.html","./tv.webmanifest",
  "./css/tv/tokens.css","./css/tv/base.css","./css/tv/art.css","./css/tv/home.css","./css/tv/media.css","./css/tv/discover.css","./css/tv/tell-my-story.css","./css/tv/video-first.css","./css/tv/tell-my-story-channel.css","./css/tv/video-subpages.css","./css/tv/dark-readable.css","./images/logo.png","./tv.webmanifest","./firebase-config.js",

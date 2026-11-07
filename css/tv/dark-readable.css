@@ -206,3 +206,161 @@ body.tms-page :is(a,button,input):focus-visible{
   }
   .tv-clean .youth-content-open>p,.tms-page .tms-card-copy p{color:#e2e8f0}
 }
+
+
+/* Theme reconciliation — Nov 2026.  Keep the existing video-first geometry,
+   but apply one readable colour system to every TV view and embedded panel. */
+body.tv-clean,body.tv-video-subpage,body.tms-page{
+  --tv-bg:#0c121d;
+  --tv-bg-2:#111a29;
+  --tv-surface:#182435;
+  --tv-surface-2:#213047;
+  --tv-surface-3:#283950;
+  --tv-text:#f8fafc;
+  --tv-muted:#d0d9e5;
+  --tv-muted-2:#b8c8da;
+  --tv-line:#34465d;
+  --tv-line-strong:#4b607a;
+  --tv-blue:#a5c9ff;
+  --tv-orange:#ffc078;
+  --browse-ink:#f8fafc;
+  --browse-muted:#d0d9e5;
+  --browse-line:#34465d;
+}
+body.tv-clean :is(h1,h2,h3,h4),
+body.tv-video-subpage :is(h1,h2,h3,h4),
+body.tms-page :is(h1,h2,h3,h4){color:#f8fafc}
+
+/* Discovers, filters and input states need consistent legible values. */
+body.tv-video-subpage .search-discovery-hero h1,
+body.tv-video-subpage .discovery-results-head h2,
+body.tv-video-subpage #resultTitle,
+body.tv-video-subpage .discovery-group-title h3,
+body.tv-video-subpage .discovery-empty h2,
+body.tv-video-subpage .discovery-media-copy strong,
+body.tv-video-subpage .discovery-series-copy strong,
+body.tv-video-subpage .watch-details h1,
+body.tv-video-subpage .listen-hero h1,
+body.tv-video-subpage .listen-now-copy h2,
+body.tv-video-subpage .listen-card-copy strong{color:#f8fafc}
+body.tv-video-subpage .search-discovery-hero h1 em{color:#a9ccff}
+body.tv-video-subpage .youth-eyebrow,
+body.tv-video-subpage .discovery-results-head>div>span,
+body.tv-video-subpage .discovery-media-type{color:#a9ccff}
+body.tv-video-subpage :is(.search-discovery-hero>p,.discovery-group-title>span,.discovery-media-copy p,.discovery-series-copy p,.watch-details p,.listen-now-copy p,.listen-card-copy p),
+body.tv-video-subpage #resultCount{color:#cbd6e4}
+body.tv-video-subpage .discovery-results-head{border-bottom-color:#35475e}
+body.tv-video-subpage .discovery-search-box input{
+  color:#f8fafc;background:#172436;border:1px solid #435770;
+  box-shadow:none;
+}
+body.tv-video-subpage .discovery-search-box input::placeholder{
+  color:#bac8d8;opacity:1;
+}
+body.tv-video-subpage .discovery-search-box:focus-within input{
+  border-color:#a5c9ff;outline:2px solid #a5c9ff;outline-offset:2px;
+}
+body.tv-video-subpage .search-glyph{color:#d1e0f5}
+body.tv-video-subpage #clearSearch{
+  background:#29394e;color:#f8fafc;
+}
+body.tv-video-subpage :is(.search-topic-rail,.search-kind-tabs,.listen-filter-rail) button{
+  background:#202d3d;
+  color:#f0f5fc;
+  border:1px solid #374961;
+  border-radius:10px;
+  min-height:38px;
+  padding:7px 13px;
+  line-height:1.2;
+  font-size:.82rem;
+  font-weight:680;
+}
+body.tv-video-subpage :is(.search-topic-rail,.search-kind-tabs,.listen-filter-rail) button:hover{
+  background:#30435c;color:#fff;border-color:#6280a6;
+}
+body.tv-video-subpage :is(.search-topic-rail,.search-kind-tabs,.listen-filter-rail) button:is(.active,[aria-selected="true"]){
+  background:#dce9ff;
+  color:#142238;
+  border-color:#dce9ff;
+}
+body.tv-video-subpage .discovery-empty button{
+  color:#122139;background:#dce9ff;border:1px solid #dce9ff;
+}
+body.tv-video-subpage .discovery-series-card{
+  color:#f8fafc;border-color:#34465d;background:#182435;
+}
+body.tv-video-subpage .discovery-series-copy p{color:#e0e6ee}
+body.tv-video-subpage .discovery-series-copy small{color:#bfd9ff}
+
+/* Prevent pale panels in the live/watch views, including after inline live CSS. */
+body.tv-clean .watch-cinema-shell,
+body.tv-clean #live .live-stage{
+  color:#f8fafc;background:#111b2b;border-color:#354966;
+}
+body.tv-clean .watch-cinema-meta h3,
+body.tv-clean #live .live-info-card h3,
+body.tv-clean #live .live-next-copy h3,
+body.tv-clean #live .live-program-heading h2{
+  color:#f8fafc!important;
+}
+body.tv-clean .watch-cinema-meta p,
+body.tv-clean #live .live-info-card p,
+body.tv-clean #live .live-next-copy p{
+  color:#cbd6e4!important;
+}
+body.tv-clean #live .live-info-card,
+body.tv-clean #live #liveCinemaShell:not(.tv-immersive) .live-info-card,
+body.tv-clean #live .live-next-panel{
+  color:#f8fafc!important;
+  background:#182435!important;
+  border:1px solid #3c506c!important;
+  box-shadow:none;
+}
+body.tv-clean #live .live-info-card :is(.player-label,.live-program-eyebrow),
+body.tv-clean #live .live-next-panel :is(.live-next-copy>span){
+  color:#b9d6ff!important;
+}
+body.tv-clean #live .live-action:not(.primary){
+  color:#f3f7fd;background:#253750;border:1px solid #516782;
+}
+body.tv-clean #live .live-action:not(.primary):hover{
+  background:#334a67;
+}
+body.tv-clean #live .live-action.primary{
+  color:#152138;background:#dce9ff;border-color:#dce9ff;
+}
+body.tv-clean #live .live-countdown span,
+body.tv-clean #live .live-meta span,
+body.tv-clean #live .live-next-meta span{
+  color:#f8fafc;background:#223248;border-color:#394d67;
+}
+body.tv-clean #live .live-stage-top{color:#f8fafc;background:#122035}
+body.tv-clean #live .live-view-control{color:#f8fafc;background:#25364d}
+body.tv-clean #live .live-expand-primary{
+  color:#13243b!important;background:#dce9ff!important;border-color:#dce9ff!important;
+}
+/* An external Twitch player controls its own colours; the surrounding shell does not. */
+
+/* Nav bars: selected item, its icon and its caption must contrast together. */
+body.tv-clean .youth-nav a:is(.active,[aria-current="page"]),
+body.tv-video-subpage .youth-nav a:is(.active,[aria-current="page"]){
+  color:#e3efff;
+  background:#263c59;
+}
+body.tv-clean .youth-nav a:is(.active,[aria-current="page"]) :is(span,small,svg),
+body.tv-video-subpage .youth-nav a:is(.active,[aria-current="page"]) :is(span,small,svg){
+  color:#e3efff;
+}
+body.tv-clean .ios-tabbar a small,
+body.tv-video-subpage .ios-tabbar a small{color:inherit}
+body.tv-clean .tv-top-partner{color:#dce9ff}
+
+/* Small typography, clean hierarchy and no oversized tiles. */
+body.tv-video-subpage .discovery-results-head h2{font-weight:760;letter-spacing:-.02em}
+body.tv-video-subpage .discovery-series-copy strong,
+body.tv-video-subpage .discovery-media-copy strong{line-height:1.4}
+@media(max-width:620px){
+  body.tv-video-subpage .search-discovery-hero h1{font-size:clamp(1.65rem,7.2vw,2rem);line-height:1.14;letter-spacing:-.04em}
+  body.tv-video-subpage :is(.search-topic-rail,.search-kind-tabs) button{font-size:.79rem;min-height:37px;padding:7px 12px}
+  body.tv-clean #live .live-info-card{padding:14px!important}
+}

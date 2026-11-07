@@ -28,13 +28,13 @@ test("TV dark theme keeps headings and descriptions WCAG AA readable",()=>{
 test("all SpeakOut TV pages ship the dark theme after existing design CSS",()=>{
   for(const page of ["tv.html","tv-search.html","watch.html","show.html","radio.html"]){
     const html=read(page);
-    assert.match(html,/css\/tv\/dark-readable\.css\?v=18/);
+    assert.match(html,/css\/tv\/dark-readable\.css\?v=19/);
     const dark=html.indexOf("dark-readable.css"),previous=html.indexOf("video-first.css");
     assert.ok(previous>0 && dark>previous,page);
     assert.match(html,/meta name="theme-color" content="#0c121d"/);
   }
   const partner=read("pages/tell-my-story.html");
-  assert.match(partner,/css\/tv\/dark-readable\.css\?v=18/);
+  assert.match(partner,/css\/tv\/dark-readable\.css\?v=19/);
   assert.ok(partner.indexOf("dark-readable.css")>partner.indexOf("tell-my-story-channel.css"));
   assert.match(partner,/meta name="theme-color" content="#0c121d"/);
 });
@@ -42,7 +42,7 @@ test("dark theme maintains compact media layout and refreshes the TV PWA",()=>{
   const grid=read("css/tv/video-first.css"),sw=read("tv-sw.js"),manifest=JSON.parse(read("tv.webmanifest"));
   assert.match(grid,/grid-auto-rows:max-content/);
   assert.match(grid,/aspect-ratio:16\/9/);
-  assert.match(sw,/speakout-tv-v18/);
+  assert.match(sw,/speakout-tv-v19/);
   assert.match(sw,/\.\/css\/tv\/dark-readable\.css/);
   assert.equal(manifest.background_color,"#0c121d");
   assert.equal(manifest.theme_color,"#0c121d");
