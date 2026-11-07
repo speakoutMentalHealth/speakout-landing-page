@@ -67,7 +67,7 @@ test("injected account controls are TV-scoped and do not create a light bar",()=
 
 test("PWA refresh doesn't intercept unrelated app pages or regress card dimensions",()=>{
   const sw=read("tv-sw.js"),css=read("css/tv/video-first.css");
-  assert.match(sw,/speakout-tv-v19/);
+  assert.match(sw,/speakout-tv-v20/);
   assert.match(sw,/key\.startsWith\("speakout-tv-"\)/);
   assert.match(sw,/TV_PATHS\.has\(url\.pathname\)/);
   assert.doesNotMatch(sw,/"\.\/css\/account-controls\.css"/);
